@@ -51,6 +51,7 @@ script:
 
 after_success:
   - cd ${TRAVIS_BUILD_DIR}
+  - ls
   - lcov --directory . --capture --output-file coverage.info
   - lcov --remove coverage.info '/usr/*' --output-file coverage.info
   - lcov --list coverage.info
