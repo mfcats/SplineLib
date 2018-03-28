@@ -2,6 +2,6 @@
 
 using ::testing::Eq;
 
-TEST(ASimpleTest, IsRunning) {
+TEST(ASimpleTest, IsRunning) { // NOLINT
   ASSERT_THAT(true, Eq(true));
 }
