@@ -33,8 +33,7 @@ install:
       git clone --depth 50 https://github.com/spack/spack.git $SPACK_ROOT &&
       echo -e "config:""\n  build_jobs:"" 2" > $SPACK_ROOT/etc/spack/config.yaml;
     fi
-  - spack install -v cmake
-  - spack install -v googletest+gmock
+  - spack repo add $(echo ${TRAVIS_BUILD_DIR})/scripts/spack-repo
   - spack clean -a
   - source /etc/profile &&
     source $SPACK_ROOT/share/spack/setup-env.sh
@@ -43,7 +42,8 @@ install:
 script:
   - mkdir -p $HOME/build
   - cd $HOME/build
-  - cmake $TRAVIS_BUILD_DIR
+  - spack setup splinelib@github
+  - ./spconfig.py $TRAVIS_BUILD_DIR
   - make VERBOSE=on -j 2
   - ./test/SplineLibTests
   - ls
