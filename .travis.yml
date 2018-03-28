@@ -31,8 +31,8 @@ install:
       git clone --depth 50 https://github.com/spack/spack.git $SPACK_ROOT &&
       echo -e "config:""\n  build_jobs:"" 2" > $SPACK_ROOT/etc/spack/config.yaml;
     fi
-  - travis_wait spack install cmake
-  - travis_wait spack install googletest+gmock
+  - travis_wait spack install -v cmake
+  - travis_wait spack install -v googletest+gmock
   - spack clean -a
   - source /etc/profile &&
     source $SPACK_ROOT/share/spack/setup-env.sh
