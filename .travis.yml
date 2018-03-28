@@ -24,6 +24,7 @@ before_install:
   - export CXX=g++-7
   - export CC=gcc-7
   - export FC=gfortran-7
+  - export CXXFLAGS="-coverage"
 
 install:
   - if ! which spack >/dev/null; then
@@ -44,3 +45,10 @@ script:
   - cmake $TRAVIS_BUILD_DIR
   - make -j 2
   - make test
+
+after_success:
+  - cd ${TRAVIS_BUILD_DIR}
+  - lcov --directory . --capture --output-file coverage.info
+  - lcov --remove coverage.info '/usr/*' --output-file coverage.info
+  - lcov --list coverage.info
+  - bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
