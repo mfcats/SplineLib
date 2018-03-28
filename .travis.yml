@@ -44,8 +44,10 @@ script:
   - mkdir -p $HOME/build
   - cd $HOME/build
   - cmake $TRAVIS_BUILD_DIR
-  - make -j 2
+  - make VERBOSE=on -j 2
   - ./test/SplineLibTests
+  - ls
+  - ls ./test
 
 after_success:
   - cd ${TRAVIS_BUILD_DIR}
