@@ -14,6 +14,7 @@ addons:
     packages:
       - g++-7
       - environment-modules
+      - lcov
 
 env:
   global:
@@ -44,7 +45,7 @@ script:
   - cd $HOME/build
   - cmake $TRAVIS_BUILD_DIR
   - make -j 2
-  - make test
+  - ./test/SplineLibTests
 
 after_success:
   - cd ${TRAVIS_BUILD_DIR}
