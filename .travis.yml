@@ -10,9 +10,9 @@ cache:
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
+      - ubuntu-toolchain-r/test
     packages:
-      - gcc-8
+      - gcc-7
       - environment-modules
 
 env:
@@ -21,9 +21,9 @@ env:
     - PATH: $PATH:$HOME/.cache/spack/bin
 
 before_install:
-  - export CXX=g++-8
-  - export CC=gcc-8
-  - export FC=gfortran-8
+  - export CXX=g++-7
+  - export CC=gcc-7
+  - export FC=gfortran-7
 
 install:
   - if ! which spack >/dev/null; then
