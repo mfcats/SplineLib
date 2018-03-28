@@ -26,6 +26,7 @@ before_install:
   - export CC=gcc-7
   - export FC=gfortran-7
   - export CXXFLAGS="-coverage"
+  - alias gcov=gcov-7
 
 install:
   - if ! which spack >/dev/null; then
@@ -46,12 +47,12 @@ script:
   - ./spconfig.py $TRAVIS_BUILD_DIR
   - make VERBOSE=on -j 2
   - ./test/SplineLibTests
-  - ls
-  - ls ./test
+  - ls -la
+  - ls -la ./test
 
 after_success:
   - cd ${TRAVIS_BUILD_DIR}
-  - ls
+  - ls -la
   - lcov --directory . --capture --output-file coverage.info
   - lcov --remove coverage.info '/usr/*' --output-file coverage.info
   - lcov --list coverage.info
