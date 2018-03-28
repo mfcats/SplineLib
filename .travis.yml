@@ -25,6 +25,7 @@ before_install:
   - export CXX=g++-7
   - export CC=gcc-7
   - export FC=gfortran-7
+  - export F77=gfortran-7
   - export CXXFLAGS="-coverage"
   - alias gcov=gcov-7
 
@@ -35,6 +36,7 @@ install:
       echo -e "config:""\n  build_jobs:"" 2" > $SPACK_ROOT/etc/spack/config.yaml;
     fi
   - spack repo add $(echo ${TRAVIS_BUILD_DIR})/scripts/spack-repo
+  - spack compiler find
   - spack clean -a
   - source /etc/profile &&
     source $SPACK_ROOT/share/spack/setup-env.sh
