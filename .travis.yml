@@ -13,6 +13,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-7
+      - gfortran-7
       - environment-modules
       - lcov
 
@@ -43,6 +44,7 @@ install:
   - spack load cmake googletest
   
 script:
+  - cat $HOME/.spack/*/compilers.yaml
   - mkdir -p $HOME/build
   - cd $HOME/build
   - spack setup -v splinelib@github
