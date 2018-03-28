@@ -47,7 +47,7 @@ script:
   - ./spconfig.py $TRAVIS_BUILD_DIR
   - make VERBOSE=on -j 2
   - ./test/SplineLibTests
-  - ls -la
+  - ls -la .
   - ls -la ./test
 
 after_success:
