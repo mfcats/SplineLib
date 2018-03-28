@@ -45,7 +45,7 @@ install:
 script:
   - mkdir -p $HOME/build
   - cd $HOME/build
-  - spack setup splinelib@github
+  - spack setup -v splinelib@github
   - ./spconfig.py $TRAVIS_BUILD_DIR
   - make VERBOSE=on -j 2
   - ./test/SplineLibTests
