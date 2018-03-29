@@ -23,7 +23,7 @@ env:
     - PATH: $PATH:$HOME/.cache/spack/bin
 
 before_install:
-  - update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-7 100
+  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-7 100
   - export CXX=g++-7
   - export CC=gcc-7
   - export FC=gfortran-7
@@ -56,7 +56,6 @@ script:
 
 after_success:
   - cd ${TRAVIS_BUILD_DIR}
-  - alias gcov=gcov-7
   - ls -la
   - lcov --directory . --capture --output-file coverage.info
   - lcov --remove coverage.info '/usr/*' --output-file coverage.info
