@@ -23,12 +23,12 @@ env:
     - PATH: $PATH:$HOME/.cache/spack/bin
 
 before_install:
+  - update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-7 100
   - export CXX=g++-7
   - export CC=gcc-7
   - export FC=gfortran-7
   - export F77=gfortran-7
   - export CXXFLAGS="-coverage"
-  - alias gcov=gcov-7
 
 install:
   - if ! which spack >/dev/null; then
