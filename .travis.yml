@@ -44,11 +44,11 @@ install:
   - spack load cmake googletest
 
 before_script:
+  - mkdir -p ${TRAVIS_BUILD_DIR}/build
   - cd ${TRAVIS_BUILD_DIR}/build
   - lcov --directory . --zerocounters
 
 script:
-  - mkdir -p ${TRAVIS_BUILD_DIR}/build
   - cd ${TRAVIS_BUILD_DIR}/build
   - spack setup -v splinelib@github
   - ./spconfig.py $TRAVIS_BUILD_DIR
