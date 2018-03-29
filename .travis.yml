@@ -42,9 +42,12 @@ install:
   - source /etc/profile &&
     source $SPACK_ROOT/share/spack/setup-env.sh
   - spack load cmake googletest
-  
+
+before_script:
+  - cd $HOME/build
+  - lcov --directory . --zerocounters
+
 script:
-  - cat $HOME/.spack/*/compilers.yaml
   - mkdir -p $HOME/build
   - cd $HOME/build
   - spack setup -v splinelib@github
@@ -55,9 +58,8 @@ script:
   - ls -la ./test
 
 after_success:
-  - cd ${TRAVIS_BUILD_DIR}
+  - cd $HOME/build
   - ls -la
   - lcov --directory . --capture --output-file coverage.info
-  - lcov --remove coverage.info '/usr/*' --output-file coverage.info
   - lcov --list coverage.info
   - bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
