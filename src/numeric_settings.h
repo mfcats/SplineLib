@@ -12,10 +12,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#ifndef SPLINELIB_NUMERIC_SETTINGS_H
+#define SPLINELIB_NUMERIC_SETTINGS_H
 
-using ::testing::Eq;
+#include <limits>
 
-TEST(ASimpleTest, IsRunning) { // NOLINT
-  ASSERT_THAT(true, Eq(true));
-}
+template<typename T>
+class NumericSettings {
+ public:
+  constexpr static double kEpsilon() {
+    return kEpsilonFactor_ * std::numeric_limits<T>::epsilon();
+  }
+
+ private:
+  NumericSettings() {}
+
+  NumericSettings(const NumericSettings &numericSettings) = delete;
+  void operator=(const NumericSettings &numericSettings)  = delete;
+
+  constexpr static T kEpsilonFactor_ = 10;
+};
+
+#endif //SPLINELIB_NUMERIC_SETTINGS_H

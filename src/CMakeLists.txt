@@ -13,10 +13,15 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
+set(SOURCES
+        knot_vector.cc
+        control_point.cc
+        basis_function.cc
+        basis_function_factory.cc
+        zero_degree_b_spline_basis_function.cc
+        b_spline_basis_function.cc)
 
-project(SplineLib VERSION 0.0.1 LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 17)
+add_library(SplineLib SHARED ${SOURCES})
+target_include_directories(SplineLib PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
-add_subdirectory(test)
-add_subdirectory(src)

@@ -14,9 +14,12 @@
 #
 
 set(TEST_SOURCES
-    example_test.cc)
+        knot_vector_test.cc
+        control_point_test.cc
+        zero_degree_b_spline_basis_function_test.cc
+        b_spline_basis_function_test.cc)
 
 find_package(GTest REQUIRED)
 
 add_executable(SplineLibTests ${TEST_SOURCES})
-target_link_libraries(SplineLibTests GTest::Main)
+target_link_libraries(SplineLibTests SplineLib GTest::Main)
