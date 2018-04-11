@@ -114,3 +114,8 @@ TEST_F(AKnotVector, CanBeMovedInAssignment) { // NOLINT
   knotVector = KnotVector({0.0, 0.25, 0.5});
   ASSERT_THAT(knotVector, Eq(KnotVector({0.0, 0.25, 0.5})));
 }
+
+TEST_F(AKnotVector, CanBeAssignedByIterators) { // NOLINT
+  KnotVector knotVector = KnotVector(knot_vector_.begin(), knot_vector_.end());
+  ASSERT_THAT(knotVector, Eq(this->knot_vector_));
+}
