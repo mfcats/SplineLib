@@ -41,6 +41,7 @@ uint64_t BasisFunction::GetStartOfSupport() const {
 int BasisFunction::GetDegree() const {
   return degree_;
 }
+
 bool BasisFunction::IsCoordinateInSupport(double param_coord) const {
   return knotVector_.IsInKnotVectorRange(param_coord)
       && (IsCoordinateInSupportSpan(param_coord) || IsCoordinateSpecialCaseWithLastKnot(param_coord));
