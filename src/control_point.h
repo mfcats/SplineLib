@@ -23,7 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 class ControlPoint {
  public:
   explicit ControlPoint(std::initializer_list<double> coordinates);
-  explicit ControlPoint(std::vector<double> coordinates);
+  explicit ControlPoint(const std::vector<double> &coordinates);
 
   Dimension dimension() const;
   double GetValue(Dimension dimension) const;

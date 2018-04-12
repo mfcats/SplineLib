@@ -20,7 +20,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function_factory.h"
 
-BSpline::BSpline(KnotVector knot_vector, Degree degree, std::vector<ControlPoint> control_points) :
+BSpline::BSpline(const KnotVector &knot_vector,
+                 Degree degree,
+                 const std::vector<ControlPoint> &control_points) :
     degree_(degree), control_points_(control_points), knot_vector_(knot_vector) {
   BasisFunctionFactory factory;
   basis_functions_.reserve(control_points_.size());

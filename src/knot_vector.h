@@ -21,13 +21,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 
-#include <iostream>
 typedef std::vector<double>::const_iterator ConstKnotIterator;
 
 class KnotVector {
  public:
   KnotVector() = default;
-  explicit KnotVector(std::vector<double> knots);
+  explicit KnotVector(const std::vector<double> &knots);
   KnotVector(std::initializer_list<double> knots);
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
 

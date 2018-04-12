@@ -24,9 +24,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 class BSpline {
  public:
-  BSpline(KnotVector knot_vector,
+  BSpline(const KnotVector &knot_vector,
           Degree degree,
-          std::vector<ControlPoint> control_points);
+          const std::vector<ControlPoint> &control_points);
 
   std::vector<double> Evaluate(double param_coord, std::vector<Dimension> dimensions) const;
   std::vector<double> EvaluateDerivative(double param_coord,

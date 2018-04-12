@@ -16,11 +16,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function_factory.h"
 
-BSplineBasisFunction::BSplineBasisFunction(KnotVector knot_vector,
+BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
                                            Degree deg,
                                            uint64_t start_of_support) :
     BasisFunction(knot_vector, deg, start_of_support) {
-  SetLowerDegreeBsisFunctions(knot_vector, start_of_support, deg);
+  SetLowerDegreeBasisFunctions(knot_vector, start_of_support, deg);
 }
 
 double BSplineBasisFunction::EvaluateOnSupport(double param_coord) const {
@@ -36,9 +36,9 @@ double BSplineBasisFunction::EvaluateDerivativeOnSupport(Derivative derivative,
           * right_lower_degree_->EvaluateDerivative(derivative - 1, param_coord));
 }
 
-void BSplineBasisFunction::SetLowerDegreeBsisFunctions(KnotVector knot_vector,
-                                                       uint64_t start_of_support,
-                                                       Degree deg) {
+void BSplineBasisFunction::SetLowerDegreeBasisFunctions(KnotVector knot_vector,
+                                                        uint64_t start_of_support,
+                                                        Degree deg) {
   BasisFunctionFactory basis_function_factory;
 
   left_lower_degree_.reset(basis_function_factory.CreateDynamic(knot_vector,

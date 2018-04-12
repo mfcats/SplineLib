@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 class ZeroDegreeBSplineBasisFunction : public BasisFunction {
  public:
-  explicit ZeroDegreeBSplineBasisFunction(KnotVector knot_vector,
+  explicit ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
                                           uint64_t start_of_support);
 
  protected:

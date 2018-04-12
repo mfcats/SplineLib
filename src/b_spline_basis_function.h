@@ -19,14 +19,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <limits>
 #include <memory>
 
-#include <iostream>
-
 #include "basis_function.h"
 #include "numeric_settings.h"
 
 class BSplineBasisFunction : public BasisFunction {
  public:
-  BSplineBasisFunction(KnotVector knot_vector,
+  BSplineBasisFunction(const KnotVector &knot_vector,
                        Degree deg,
                        uint64_t start_of_support);
 
@@ -39,9 +37,9 @@ class BSplineBasisFunction : public BasisFunction {
   std::unique_ptr<BasisFunction> right_lower_degree_;
 
  private:
-  void SetLowerDegreeBsisFunctions(KnotVector knot_vector,
-                                   uint64_t start_of_support,
-                                   Degree deg);
+  void SetLowerDegreeBasisFunctions(KnotVector knot_vector,
+                                    uint64_t start_of_support,
+                                    Degree deg);
 
   double ComputeLeftQuotientDenominatorInverse() const;
   double ComputeRightQuotientDenominatorInverse() const;

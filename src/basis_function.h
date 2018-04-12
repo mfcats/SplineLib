@@ -32,7 +32,7 @@ class BasisFunction {
   double EvaluateDerivative(Derivative derivative, double param_coord) const;
 
  protected:
-  BasisFunction(KnotVector knot_vector, int degree, uint64_t start);
+  BasisFunction(const KnotVector &knot_vector, int degree, uint64_t start);
 
   double GetKnot(uint64_t knot_position) const;
   uint64_t GetStartOfSupport() const;

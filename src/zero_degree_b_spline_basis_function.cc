@@ -12,13 +12,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include "zero_degree_b_spline_basis_function.h"
+
 #include <cmath>
 
 #include "numeric_settings.h"
 
-#include "zero_degree_b_spline_basis_function.h"
-
-ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(KnotVector knot_vector,
+ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
                                                                uint64_t start_of_support)
     : BasisFunction(knot_vector, 0, start_of_support) {}
 

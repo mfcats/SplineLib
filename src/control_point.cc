@@ -12,15 +12,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
 #include "control_point.h"
 
 ControlPoint::ControlPoint(std::initializer_list<double> coordinates) : coordinates_(coordinates) {}
 
-ControlPoint::ControlPoint(std::vector<double> coordinates) : coordinates_(coordinates) {}
+ControlPoint::ControlPoint(const std::vector<double> &coordinates) : coordinates_(coordinates) {}
 
 int ControlPoint::dimension() const {
-  return coordinates_.size();
+  return static_cast<int>(coordinates_.size());
 }
 
 double ControlPoint::GetValue(int dimension) const {

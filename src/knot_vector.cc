@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "numeric_settings.h"
 
-KnotVector::KnotVector(std::vector<double> knots) : knots_(std::move(knots)) {}
+KnotVector::KnotVector(const std::vector<double> &knots) : knots_(knots) {}
 
 KnotVector::KnotVector(std::initializer_list<double> knots) : knots_(knots) {}
 

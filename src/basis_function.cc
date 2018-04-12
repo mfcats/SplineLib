@@ -13,7 +13,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include <cmath>
-#include <iostream>
 
 #include "basis_function.h"
 #include "numeric_settings.h"
@@ -30,7 +29,7 @@ double BasisFunction::EvaluateDerivative(Derivative derivative,
                                                    : 0.0;
 }
 
-BasisFunction::BasisFunction(KnotVector knot_vector,
+BasisFunction::BasisFunction(const KnotVector &knot_vector,
                              Degree degree,
                              uint64_t start)
     : knotVector_(knot_vector), degree_(degree), start_of_support_(start) {}
