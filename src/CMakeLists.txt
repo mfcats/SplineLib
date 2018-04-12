@@ -13,14 +13,16 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(TEST_SOURCES
-        knot_vector_test.cc
-        control_point_test.cc
-        zero_degree_b_spline_basis_function_test.cc
-        b_spline_basis_function_test.cc
-        b_spline_test.cc)
+set(SOURCES
+        knot_vector.cc
+        control_point.cc
+        basis_function.cc
+        basis_function_factory.cc
+        zero_degree_b_spline_basis_function.cc
+        b_spline_basis_function.cc
+        b_spline.cc)
 
-find_package(GTest REQUIRED)
+add_library(SplineLib SHARED ${SOURCES})
+target_include_directories(SplineLib PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
-add_executable(SplineLibTests ${TEST_SOURCES})
-target_link_libraries(SplineLibTests SplineLib GTest::Main)
