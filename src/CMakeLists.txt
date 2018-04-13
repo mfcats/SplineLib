@@ -22,6 +22,8 @@ set(SOURCES
         b_spline_basis_function.cc
         parameter_space.cc
         b_spline.cc
+        element.cc
+        element_generator.cc
         )
 
 add_library(SplineLib SHARED ${SOURCES})
