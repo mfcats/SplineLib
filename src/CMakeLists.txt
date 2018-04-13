@@ -20,6 +20,7 @@ set(SOURCES
         basis_function_factory.cc
         zero_degree_b_spline_basis_function.cc
         b_spline_basis_function.cc
+        parameter_space.cc
         b_spline.cc)
 
 add_library(SplineLib SHARED ${SOURCES})

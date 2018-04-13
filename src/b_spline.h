@@ -15,12 +15,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SPLINELIB_B_SPLINE_H
 #define SPLINELIB_B_SPLINE_H
 
-#include <utility>
+//#include <utility>
 #include <vector>
 
-#include "basis_function.h"
 #include "control_point.h"
-#include "knot_vector.h"
+#include "parameter_space.h"
 
 class BSpline {
  public:
@@ -33,28 +32,16 @@ class BSpline {
                                          std::vector<int> dimensions,
                                          int derivative) const;
 
-  int degree() const {
-    return degree_;
-  }
-  KnotVector knot_vector() const {
-    return knot_vector_;
-  }
-  std::vector<std::unique_ptr<BasisFunction>> *basis_functions() {
-    return &basis_functions_;
-  }
+  int degree() const;
+  KnotVector knot_vector() const;
 
  private:
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(double param_coord) const;
-  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord,
-                                                                 int derivative) const;
   std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const;
   double ComputeWeightedSum(std::vector<double> basis_function_values,
                             std::vector<double> control_point_values) const;
 
-  KnotVector knot_vector_;
-  Degree degree_;
-  std::vector<ControlPoint> control_points_;
-  std::vector<std::unique_ptr<BasisFunction>> basis_functions_;
+  ParameterSpace parameter_space_;
+  std::vector<std::vector<double>> control_points_;
 };
 
 #endif // SPLINELIB_B_SPLINE_H

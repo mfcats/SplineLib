@@ -15,24 +15,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 
 #include <algorithm>
-#include <functional>
-#include <numeric>
 
 #include "basis_function_factory.h"
 
-BSpline::BSpline(const KnotVector &knot_vector,
-                 Degree degree,
+BSpline::BSpline(const KnotVector &knot_vector, Degree degree,
                  const std::vector<ControlPoint> &control_points) :
-    degree_(degree), control_points_(control_points), knot_vector_(knot_vector) {
-  BasisFunctionFactory factory;
-  basis_functions_.reserve(control_points_.size());
-  for (uint64_t i = 0; i < control_points_.size(); ++i) {
-    basis_functions_.emplace_back(factory.CreateDynamic(knot_vector_, i, degree_));
+    parameter_space_(ParameterSpace(knot_vector, degree)),
+    control_points_(control_points.size(), std::vector<double>(control_points[0].dimension())) {
+  for (int control_point = 0; control_point < control_points.size(); control_point++) {
+    for (int dimension = 0; dimension < control_points[0].dimension(); dimension++) {
+      control_points_[control_point][dimension] = control_points[control_point].GetValue(dimension);
+    }
   }
 }
 
 std::vector<double> BSpline::Evaluate(double param_coord, std::vector<Dimension> dimensions) const {
-  auto basis_function_values = EvaluateAllNonZeroBasisFunctions(param_coord);
+  auto basis_function_values = parameter_space_.EvaluateAllNonZeroBasisFunctions(param_coord);
   std::vector<double> evaluated_point(dimensions.size(), 0);
   for (int i = 0; i < dimensions.size(); ++i) {
     evaluated_point[i] = ComputeWeightedSum(basis_function_values,
@@ -44,7 +42,8 @@ std::vector<double> BSpline::Evaluate(double param_coord, std::vector<Dimension>
 std::vector<double> BSpline::EvaluateDerivative(double param_coord,
                                                 std::vector<int> dimensions,
                                                 int derivative) const {
-  auto basis_function_values = EvaluateAllNonZeroBasisFunctionDerivatives(param_coord, derivative);
+  auto basis_function_values =
+      parameter_space_.EvaluateAllNonZeroBasisFunctionDerivatives(param_coord, derivative);
   std::vector<double> evaluated_point(dimensions.size(), 0);
   for (int i = 0; i < dimensions.size(); ++i) {
     evaluated_point[i] = ComputeWeightedSum(basis_function_values,
@@ -53,32 +52,19 @@ std::vector<double> BSpline::EvaluateDerivative(double param_coord,
   return evaluated_point;
 }
 
-std::vector<double> BSpline::EvaluateAllNonZeroBasisFunctions(double param_coord) const {
-  auto first_non_zero = basis_functions_.begin() + knot_vector_.GetKnotSpan(param_coord) - degree_;
-  std::vector<double> basis_function_values(degree_ + 1, 0);
-  for (int i = 0; i < degree_ + 1; ++i) {
-    basis_function_values[i] = (*first_non_zero)->Evaluate(param_coord);
-    ++first_non_zero;
-  }
-  return basis_function_values;
+int BSpline::degree() const {
+  return parameter_space_.degree();
 }
 
-std::vector<double> BSpline::EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord,
-                                                                        int derivative) const {
-  auto first_non_zero = basis_functions_.begin() + knot_vector_.GetKnotSpan(param_coord) - degree_;
-  std::vector<double> basis_function_values(degree_ + 1, 0);
-  for (int i = 0; i < degree_ + 1; ++i) {
-    basis_function_values[i] = (*first_non_zero)->EvaluateDerivative(derivative, param_coord);
-    ++first_non_zero;
-  }
-  return basis_function_values;
+KnotVector BSpline::knot_vector() const {
+  return parameter_space_.knot_vector();
 }
 
 std::vector<double> BSpline::ExtractControlPointValues(double param_coord, int dimension) const {
-  std::vector<double> control_point_values(static_cast<uint64_t>(degree_ + 1), 0.0);
-  auto control_points = control_points_.begin() + knot_vector_.GetKnotSpan(param_coord) - degree_;
-  for (int i = 0; i < degree_ + 1; ++i) {
-    control_point_values[i] = control_points->GetValue(dimension);
+  std::vector<double> control_point_values(static_cast<uint64_t>(degree() + 1), 0.0);
+  auto control_points = control_points_.begin() + knot_vector().GetKnotSpan(param_coord) - degree();
+  for (int i = 0; i < degree() + 1; ++i) {
+    control_point_values[i] = (*control_points)[dimension];
     ++control_points;
   }
   return control_point_values;
