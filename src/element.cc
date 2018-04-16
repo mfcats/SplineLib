@@ -16,7 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <utility>
 
-Element::Element(int dimension, const std::vector<ControlPoint> &nodes)
+Element::Element(int dimension, const std::vector<double> &nodes)
     : dimension_(dimension), number_of_nodes_(static_cast<int>(nodes.size())), nodes_(nodes) {}
 
 int Element::dimension() const {
@@ -27,10 +27,10 @@ int Element::numberOfNodes() const {
   return number_of_nodes_;
 }
 
-ControlPoint Element::node(int dimension) const {
+double Element::node(int number) const {
 #ifdef DEBUG
-  return nodes_.at(static_cast<unsigned long>(dimension));
+  return nodes_.at(static_cast<unsigned long>(number));
 #else
-  return nodes_[dimension];
+  return nodes_[number];
 #endif
 }

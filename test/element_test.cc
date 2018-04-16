@@ -17,10 +17,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "element_generator.h"
 
 using testing::Test;
+using testing::DoubleEq;
 
 class A1DElement : public Test {
  public:
-  A1DElement() : element(1, {ControlPoint({1.0, 1.0}), ControlPoint({1.0, 2.0})}) {}
+  A1DElement() : element(1, {0.5, 1.0}) {}
 
  protected:
   Element element;
@@ -35,21 +36,38 @@ TEST_F(A1DElement, ReturnsCorrectNumberOfNodes) { // NOLINT
 }
 
 TEST_F(A1DElement, ReturnsCorrectNode) { // NOLINT
-  ASSERT_THAT(element.node(1).dimension(), 2);
-  ASSERT_THAT(element.node(1).GetValue(0), 1);
-  ASSERT_THAT(element.node(1).GetValue(1), 2);
+  ASSERT_THAT(element.node(0), DoubleEq(0.5));
+  ASSERT_THAT(element.node(1), DoubleEq(1.0));
 }
 
 class A1DElementGenerator : public Test {
  public:
-  A1DElementGenerator() : element_generator(1,
-                                            KnotVector({0, 0, 1, 1}),
-                                            {ControlPoint({0}), ControlPoint({1})}) {}
+  A1DElementGenerator() : element_generator(2, KnotVector({0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5})) {}
 
  protected:
   ElementGenerator element_generator;
 };
 
 TEST_F(A1DElementGenerator, ReturnsCorrectNumberOfElements) { // NOLINT
-  ASSERT_THAT(element_generator.GetElementList().size(), 1);
+  ASSERT_THAT(element_generator.GetElementList().size(), 5);
+}
+
+TEST_F(A1DElementGenerator, Returns1DElements) { // NOLINT
+  for (auto &element : element_generator.GetElementList()) {
+    ASSERT_THAT(element.dimension(), 1);
+  }
+}
+
+TEST_F(A1DElementGenerator, ReturnsElementsWith2Nodes) { // NOLINT
+  for (auto &element : element_generator.GetElementList()) {
+    ASSERT_THAT(element.numberOfNodes(), 2);
+  }
+}
+
+TEST_F(A1DElementGenerator, ReturnsElementsWithCorrectNodes) { // NOLINT
+  auto element_list = element_generator.GetElementList();
+  for (int element = 0; element < element_list.size(); element++) {
+    ASSERT_THAT(element_list[element].node(0), element);
+    ASSERT_THAT(element_list[element].node(1), element + 1);
+  }
 }

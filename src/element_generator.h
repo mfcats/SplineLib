@@ -15,32 +15,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SPLINELIB_ELEMENT_GENERATOR_H
 #define SPLINELIB_ELEMENT_GENERATOR_H
 
-#include "b_spline.h"
 #include "element.h"
+#include "knot_vector.h"
 
 class ElementGenerator {
  public:
-  ElementGenerator(int degree,
-                   const KnotVector &knot_vector,
-                   const std::vector<ControlPoint> &control_points);
+  ElementGenerator(int degree, const KnotVector &knot_vector);
 
-  std::vector<Element> GetElementList() {
-    std::vector<Element> elements;
-    for (uint64_t currentKnotSpan = 0;
-         currentKnotSpan < knot_vector_.Size() - degree_ - 1; currentKnotSpan++) {
-      double upper = knot_vector_.knot(currentKnotSpan + 1);
-      double lower = knot_vector_.knot(currentKnotSpan);
-      if ((upper - lower) != 0) {
-        elements.emplace_back(Element(1, control_points_));
-      }
-    }
-    return elements;
-  }
+  std::vector<Element> GetElementList();
 
  private:
+  double GetLowerElementBound(uint64_t currentKnot);
+  double GetHigherElementBound(uint64_t currentKnot);
+  std::vector<double> GetElementNodes(uint64_t currentKnot);
+
   int degree_;
   KnotVector knot_vector_;
-  std::vector<ControlPoint> control_points_;
 };
 
 #endif //SPLINELIB_ELEMENT_GENERATOR_H

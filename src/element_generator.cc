@@ -13,9 +13,28 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "element_generator.h"
-ElementGenerator::ElementGenerator(int degree,
-                                   const KnotVector &knot_vector,
-                                   const std::vector<ControlPoint> &control_points)
-    : degree_(degree), knot_vector_(knot_vector), control_points_(control_points) {
 
+ElementGenerator::ElementGenerator(int degree, const KnotVector &knot_vector)
+    : degree_(degree), knot_vector_(knot_vector) {}
+
+std::vector<Element> ElementGenerator::GetElementList() {
+  std::vector<Element> elements;
+  for (uint64_t currentKnot = 0; currentKnot < knot_vector_.Size() - degree_ - 1; currentKnot++) {
+    if ((GetLowerElementBound(currentKnot) - GetHigherElementBound(currentKnot)) != 0) {
+      elements.emplace_back(Element(1, GetElementNodes(currentKnot)));
+    }
+  }
+  return elements;
+}
+
+double ElementGenerator::GetLowerElementBound(uint64_t currentKnot) {
+  return knot_vector_[currentKnot];
+}
+
+double ElementGenerator::GetHigherElementBound(uint64_t currentKnot) {
+  return knot_vector_[currentKnot + 1];
+}
+
+std::vector<double> ElementGenerator::GetElementNodes(uint64_t currentKnot) {
+  return {GetLowerElementBound(currentKnot), GetHigherElementBound(currentKnot)};
 }

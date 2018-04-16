@@ -21,16 +21,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 class Element {
  public:
-  Element(int dimension, const std::vector<ControlPoint> &nodes);
+  Element(int dimension, const std::vector<double> &nodes);
 
   int dimension() const;
   int numberOfNodes() const;
-  ControlPoint node(int dimension) const;
+  double node(int number) const;
 
  private:
   int dimension_;
   int number_of_nodes_;
-  std::vector<ControlPoint> nodes_;
+  std::vector<double> nodes_;
 };
 
 #endif //SPLINELIB_ELEMENT_H
