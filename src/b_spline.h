@@ -15,7 +15,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SPLINELIB_B_SPLINE_H
 #define SPLINELIB_B_SPLINE_H
 
-//#include <utility>
 #include <vector>
 
 #include "control_point.h"
