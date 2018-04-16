@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 
 #include <algorithm>
+#include <numeric>
 
 #include "basis_function_factory.h"
 
