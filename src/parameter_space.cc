@@ -53,7 +53,3 @@ int ParameterSpace::degree() const {
 KnotVector ParameterSpace::knot_vector() const {
   return knot_vector_;
 }
-
-std::vector<std::unique_ptr<BasisFunction>> *ParameterSpace::basis_functions() {
-  return &basis_functions_;
-}

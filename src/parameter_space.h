@@ -29,7 +29,6 @@ class ParameterSpace {
                                                                  int derivative) const;
   int degree() const;
   KnotVector knot_vector() const;
-  std::vector<std::unique_ptr<BasisFunction>> *basis_functions();
 
  private:
   KnotVector knot_vector_;
