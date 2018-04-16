@@ -14,7 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "element.h"
+#include "element_generator.h"
 
 using testing::Test;
 
@@ -38,4 +38,18 @@ TEST_F(A1DElement, ReturnsCorrectNode) { // NOLINT
   ASSERT_THAT(element.node(1).dimension(), 2);
   ASSERT_THAT(element.node(1).GetValue(0), 1);
   ASSERT_THAT(element.node(1).GetValue(1), 2);
+}
+
+class A1DElementGenerator : public Test {
+ public:
+  A1DElementGenerator() : element_generator(1,
+                                            KnotVector({0, 0, 1, 1}),
+                                            {ControlPoint({0}), ControlPoint({1})}) {}
+
+ protected:
+  ElementGenerator element_generator;
+};
+
+TEST_F(A1DElementGenerator, ReturnsCorrectNumberOfElements) { // NOLINT
+  ASSERT_THAT(element_generator.GetElementList().size(), 1);
 }

@@ -13,8 +13,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "element_generator.h"
-ElementGenerator::ElementGenerator(int degree_,
-                                   KnotVector knot_vector_,
-                                   std::vector<ControlPoint> control_points_) {
+ElementGenerator::ElementGenerator(int degree,
+                                   const KnotVector &knot_vector,
+                                   const std::vector<ControlPoint> &control_points)
+    : degree_(degree), knot_vector_(knot_vector), control_points_(control_points) {
 
 }

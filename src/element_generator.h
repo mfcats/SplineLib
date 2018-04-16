@@ -20,7 +20,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 class ElementGenerator {
  public:
-  ElementGenerator(int degree_, KnotVector knot_vector_, std::vector<ControlPoint> control_points_);
+  ElementGenerator(int degree,
+                   const KnotVector &knot_vector,
+                   const std::vector<ControlPoint> &control_points);
 
   std::vector<Element> GetElementList() {
     std::vector<Element> elements;
@@ -32,6 +34,7 @@ class ElementGenerator {
         elements.emplace_back(Element(1, control_points_));
       }
     }
+    return elements;
   }
 
  private:
