@@ -25,6 +25,7 @@ set(SOURCES
         element.cc
         element_generator.cc
         one_dimensional_integration_rule.cc
+        integration_rule.h
         )
 
 add_library(SplineLib SHARED ${SOURCES})
