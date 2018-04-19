@@ -99,3 +99,16 @@ TEST_F(ABSpline, ReturnsElementsWithCorrectNodes) {
     ASSERT_THAT(element_list[element].node(1), element + 1);
   }
 }
+
+TEST_F(ABSpline, ReturnsCorrectNumberOfNonZeroElementBasisFunctions) {
+  ASSERT_THAT(b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1)).size(),
+              1);
+  ASSERT_THAT(b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1))[0].size(),
+              3);
+  ASSERT_THAT(b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1))[0][0],
+              DoubleEq(0.125));
+  ASSERT_THAT(b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1))[0][1],
+              DoubleEq(0.75));
+  ASSERT_THAT(b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1))[0][2],
+              DoubleEq(0.125));
+}

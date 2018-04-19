@@ -20,6 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "control_point.h"
 #include "parameter_space.h"
 #include "element_generator.h"
+#include "integration_rule.h"
 #include "knot_vector.h"
 
 class BSpline {
@@ -42,6 +43,8 @@ class BSpline {
   std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const;
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,
                             std::vector<double> control_point_values) const;
+
+  double TransformElementPoint(double upper, double lower, double point) const;
 
   ParameterSpace parameter_space_;
   std::vector<double> control_points_;

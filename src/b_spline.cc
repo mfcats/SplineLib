@@ -102,3 +102,7 @@ double BSpline::ComputeWeightedSum(const std::vector<double> &basis_function_val
                  std::multiplies<double>());
   return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
 }
+
+double BSpline::TransformElementPoint(double upper, double lower, double point) const {
+  return ((upper - lower) * point + (upper + lower)) / 2.0;
+}

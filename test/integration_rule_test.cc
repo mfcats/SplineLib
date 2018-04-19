@@ -82,3 +82,7 @@ TEST_F(A2DIntegrationRuleWith3PointsEach, ReturnsCorrectWeights) {
 TEST(A3DIntegrationRuleWith3PointsEach, ReturnsCorrectNumberOfPoints) {
   ASSERT_THAT(IntegrationRule<3>(3).points(), 27);
 }
+
+TEST(A3DIntegrationRuleWith1PointEach, ReturnsCorrectNumberOfPoints) {
+  ASSERT_THAT(IntegrationRule<3>(1).points(), 1);
+}
