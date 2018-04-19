@@ -27,7 +27,7 @@ class ZeroDegreeBSplineBasisFunction : public BasisFunction {
 
  protected:
   double EvaluateOnSupport(double param_coord) const override;
-  double EvaluateDerivativeOnSupport(Derivative derivative,
+  double EvaluateDerivativeOnSupport(int derivative,
                                      double param_coord) const override;
 };
 

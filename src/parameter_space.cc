@@ -16,7 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function_factory.h"
 
-ParameterSpace::ParameterSpace(const KnotVector &knot_vector, Degree degree) :
+ParameterSpace::ParameterSpace(const KnotVector &knot_vector, int degree) :
     degree_(degree), knot_vector_(knot_vector) {
   BasisFunctionFactory factory;
   basis_functions_.reserve(knot_vector_.Size() - degree_ - 1);

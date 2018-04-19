@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 class ParameterSpace {
  public:
-  ParameterSpace(const KnotVector &knot_vector, Degree degree);
+  ParameterSpace(const KnotVector &knot_vector, int degree);
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(double param_coord) const;
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord,
@@ -32,7 +32,7 @@ class ParameterSpace {
 
  private:
   KnotVector knot_vector_;
-  Degree degree_;
+  int degree_;
   std::vector<std::unique_ptr<BasisFunction>> basis_functions_;
 };
 

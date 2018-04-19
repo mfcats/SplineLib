@@ -28,6 +28,6 @@ double ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(double param_coord) con
 }
 
 double ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(
-    Derivative derivative, double param_coord) const {
+    int derivative, double param_coord) const {
   return 0.0;
 }

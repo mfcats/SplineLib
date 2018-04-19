@@ -21,7 +21,7 @@ class BasisFunctionFactory {
  public:
   BasisFunction *CreateDynamic(KnotVector knot_vector,
                                uint64_t start_of_support,
-                               Degree degree) const;
+                               int degree) const;
 };
 
 #endif // SPLINELIB_BASIS_FUNCTION_FACTORY_H

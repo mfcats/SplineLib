@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 BasisFunction *BasisFunctionFactory::CreateDynamic(KnotVector knot_vector,
                                                    uint64_t start_of_support,
-                                                   Degree degree) const {
+                                                   int degree) const {
   if (degree < 0) throw std::runtime_error("Basis function degree must be positive.");
   if (degree == 0) return new ZeroDegreeBSplineBasisFunction(knot_vector, start_of_support);
   return new BSplineBasisFunction(knot_vector, degree, start_of_support);
