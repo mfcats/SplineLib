@@ -19,6 +19,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "control_point.h"
 #include "parameter_space.h"
+#include "element_generator.h"
+#include "knot_vector.h"
 
 class BSpline {
  public:
@@ -29,6 +31,12 @@ class BSpline {
 
   int GetDegree() const;
   KnotVector GetKnotVector() const;
+
+  std::vector<Element> GetElementList();
+
+  std::vector<std::unique_ptr<BasisFunction>> *basis_functions() {
+    return &basis_functions_;
+  }
 
  private:
   std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const;

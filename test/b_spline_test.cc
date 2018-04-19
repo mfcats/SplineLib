@@ -75,3 +75,27 @@ TEST_F(ABSpline, Returns12_0For5_0Dim0AndDer1) {
 TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) {
   ASSERT_THAT(b_spline->EvaluateDerivative(2.25, {1}, 1)[0], DoubleEq(0.325));
 }
+
+TEST_F(ABSpline, ReturnsCorrectNumberOfElements) {
+  ASSERT_THAT(b_spline->GetElementList().size(), 5);
+}
+
+TEST_F(ABSpline, Returns1DElements) {
+  for (auto &element : b_spline->GetElementList()) {
+    ASSERT_THAT(element.dimension(), 1);
+  }
+}
+
+TEST_F(ABSpline, ReturnsElementsWith2Nodes) {
+  for (auto &element : b_spline->GetElementList()) {
+    ASSERT_THAT(element.numberOfNodes(), 2);
+  }
+}
+
+TEST_F(ABSpline, ReturnsElementsWithCorrectNodes) {
+  auto element_list = b_spline->GetElementList();
+  for (int element = 0; element < element_list.size(); element++) {
+    ASSERT_THAT(element_list[element].node(0), element);
+    ASSERT_THAT(element_list[element].node(1), element + 1);
+  }
+}
