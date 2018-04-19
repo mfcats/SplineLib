@@ -101,14 +101,17 @@ TEST_F(ABSpline, ReturnsElementsWithCorrectNodes) {
 }
 
 TEST_F(ABSpline, ReturnsCorrectNumberOfNonZeroElementBasisFunctions) {
-  ASSERT_THAT(b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1)).size(),
-              1);
-  ASSERT_THAT(b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1))[0].size(),
-              3);
-  ASSERT_THAT(b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1))[0][0],
-              DoubleEq(0.125));
-  ASSERT_THAT(b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1))[0][1],
-              DoubleEq(0.75));
-  ASSERT_THAT(b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1))[0][2],
-              DoubleEq(0.125));
+  auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1));
+  ASSERT_THAT(values.size(), 1);
+  ASSERT_THAT(values[0].size(), 3);
+  ASSERT_THAT(values[0][0], DoubleEq(0.125));
+  ASSERT_THAT(values[0][1], DoubleEq(0.75));
+  ASSERT_THAT(values[0][2], DoubleEq(0.125));
+}
+
+TEST_F(ABSpline, ReturnsCorrectNumberOfNonZeroElementBasisFunctionsFor2PointIntegrationRule) {
+  auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(2));
+  ASSERT_THAT(values.size(), 2);
+  ASSERT_THAT(values[0].size(), 3);
+  ASSERT_THAT(values[1].size(), 3);
 }
