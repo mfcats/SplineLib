@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_PARAMETER_SPACE_H
-#define SPLINELIB_PARAMETER_SPACE_H
+#ifndef SRC_PARAMETER_SPACE_H_
+#define SRC_PARAMETER_SPACE_H_
 
 #include <vector>
 
@@ -25,15 +25,16 @@ class ParameterSpace {
   ParameterSpace(const KnotVector &knot_vector, int degree);
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(double param_coord) const;
-  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord,
-                                                                 int derivative) const;
+  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord, int derivative) const;
   int degree() const;
   KnotVector knot_vector() const;
 
  private:
+  std::vector<std::unique_ptr<BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;
+
   KnotVector knot_vector_;
   int degree_;
   std::vector<std::unique_ptr<BasisFunction>> basis_functions_;
 };
 
-#endif // SPLINELIB_B_SPLINE_H
+#endif  // SRC_PARAMETER_SPACE_H_

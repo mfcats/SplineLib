@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_NUMERIC_SETTINGS_H
-#define SPLINELIB_NUMERIC_SETTINGS_H
+#ifndef SRC_NUMERIC_SETTINGS_H_
+#define SRC_NUMERIC_SETTINGS_H_
 
 #include <limits>
 
@@ -37,4 +37,4 @@ class NumericSettings {
   constexpr static T kEpsilonFactor_ = 10;
 };
 
-#endif //SPLINELIB_NUMERIC_SETTINGS_H
+#endif  // SRC_NUMERIC_SETTINGS_H_

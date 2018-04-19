@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_ZERODEGREEBSPLINEBASISFUNCTION_H
-#define SPLINELIB_ZERODEGREEBSPLINEBASISFUNCTION_H
+#ifndef SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
+#define SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
 
 #include <vector>
 
@@ -22,13 +22,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 class ZeroDegreeBSplineBasisFunction : public BasisFunction {
  public:
-  explicit ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
-                                          uint64_t start_of_support);
+  ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, uint64_t start_of_support);
 
  protected:
   double EvaluateOnSupport(double param_coord) const override;
-  double EvaluateDerivativeOnSupport(int derivative,
-                                     double param_coord) const override;
+  double EvaluateDerivativeOnSupport(int derivative, double param_coord) const override;
 };
 
-#endif // SPLINELIB_ZERODEGREEBSPLINEBASISFUNCTION_H
+#endif  // SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
