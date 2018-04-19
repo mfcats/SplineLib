@@ -20,6 +20,7 @@ set(TEST_SOURCES
         b_spline_basis_function_test.cc
         b_spline_test.cc
         element_test.cc
+        integration_rule_test.cc
         )
 
 find_package(GTest REQUIRED)
