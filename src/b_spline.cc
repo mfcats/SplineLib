@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <numeric>
 
 BSpline::BSpline(const KnotVector &knot_vector, int degree, const std::vector<ControlPoint> &control_points)
-    : parameter_space_(ParameterSpace(knot_vector, degree)), dim(control_points[0].dimension()) {
+    : parameter_space_(ParameterSpace(knot_vector, degree)), dim(control_points[0].GetDimension()) {
   for (auto &&cp : control_points) {
     for (int i = 0; i < dim; ++i) {
       control_points_.emplace_back(cp.GetValue(i));

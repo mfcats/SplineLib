@@ -28,7 +28,7 @@ class AControlPoint : public Test {
 };
 
 TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.dimension(), 2);
+  ASSERT_THAT(control_point.GetDimension(), 2);
 }
 
 TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT

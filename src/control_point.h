@@ -12,24 +12,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_CONTROL_POINT_H
-#define SPLINELIB_CONTROL_POINT_H
+#ifndef SRC_CONTROL_POINT_H_
+#define SRC_CONTROL_POINT_H_
 
 #include <initializer_list>
 #include <vector>
-
-#include "definitions.h"
 
 class ControlPoint {
  public:
   explicit ControlPoint(std::initializer_list<double> coordinates);
   explicit ControlPoint(const std::vector<double> &coordinates);
 
-  Dimension dimension() const;
-  double GetValue(Dimension dimension) const;
+  int GetDimension() const;
+  double GetValue(int dimension) const;
 
  protected:
   std::vector<double> coordinates_;
 };
 
-#endif //SPLINELIB_CONTROL_POINT_H
+#endif  // SRC_CONTROL_POINT_H_
