@@ -12,16 +12,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_BASIS_FUNCTION_FACTORY_H
-#define SPLINELIB_BASIS_FUNCTION_FACTORY_H
+#ifndef SRC_BASIS_FUNCTION_FACTORY_H_
+#define SRC_BASIS_FUNCTION_FACTORY_H_
 
 #include "basis_function.h"
 
 class BasisFunctionFactory {
  public:
-  BasisFunction *CreateDynamic(KnotVector knot_vector,
-                               uint64_t start_of_support,
-                               int degree) const;
+  BasisFunction *CreateDynamic(KnotVector knot_vector, uint64_t start_of_support, int degree) const;
 };
 
-#endif // SPLINELIB_BASIS_FUNCTION_FACTORY_H
+#endif  // SRC_BASIS_FUNCTION_FACTORY_H_
