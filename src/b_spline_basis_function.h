@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_BSPLINEBASISFUNCTION_H
-#define SPLINELIB_BSPLINEBASISFUNCTION_H
+#ifndef SRC_B_SPLINE_BASIS_FUNCTION_H_
+#define SRC_B_SPLINE_BASIS_FUNCTION_H_
 
 #include <cmath>
 #include <limits>
@@ -24,28 +24,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 class BSplineBasisFunction : public BasisFunction {
  public:
-  BSplineBasisFunction(const KnotVector &knot_vector,
-                       Degree deg,
-                       uint64_t start_of_support);
+  BSplineBasisFunction(const KnotVector &knot_vector, int deg, uint64_t start_of_support);
 
  protected:
   double EvaluateOnSupport(double param_coord) const override;
-  double EvaluateDerivativeOnSupport(Derivative derivative,
-                                     double param_coord) const override;
+  double EvaluateDerivativeOnSupport(int derivative, double param_coord) const override;
 
   std::unique_ptr<BasisFunction> left_lower_degree_;
   std::unique_ptr<BasisFunction> right_lower_degree_;
 
  private:
-  void SetLowerDegreeBasisFunctions(KnotVector knot_vector,
-                                    uint64_t start_of_support,
-                                    Degree deg);
+  void SetLowerDegreeBasisFunctions(const KnotVector &knot_vector, uint64_t start_of_support, int deg);
 
   double ComputeLeftQuotientDenominatorInverse() const;
   double ComputeRightQuotientDenominatorInverse() const;
 
   double ComputeLeftQuotient(double param_coord) const;
   double ComputeRightQuotient(double param_coord) const;
+
+  double InverseWithPossiblyZeroDenominator(double denominator) const;
 };
 
-#endif // SPLINELIB_BSPLINEBASISFUNCTION_H
+#endif  // SRC_B_SPLINE_BASIS_FUNCTION_H_
