@@ -12,6 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <numeric>
+
 #include "gmock/gmock.h"
 
 #include "b_spline.h"

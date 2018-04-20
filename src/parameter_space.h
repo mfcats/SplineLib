@@ -28,15 +28,17 @@ class ParameterSpace {
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(double param_coord) const;
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord, int derivative) const;
+
   int degree() const;
   KnotVector knot_vector() const;
+
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
                                                                            const IntegrationRule<1> &rule) const;
-  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number,
-                                                                                     const IntegrationRule<1> &rule) const;
+  std::vector<std::vector<double>>
+  EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const IntegrationRule<1> &rule) const;
   std::vector<Element> GetElementList() const;
-
   double TransformElementPoint(double upper, double lower, double point) const;
+
  private:
   std::vector<std::unique_ptr<BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;
 

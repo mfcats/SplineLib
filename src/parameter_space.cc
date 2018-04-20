@@ -19,7 +19,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 ParameterSpace::ParameterSpace(const KnotVector &knot_vector, int degree) : degree_(degree), knot_vector_(knot_vector) {
   BasisFunctionFactory factory;
-
   basis_functions_.reserve(knot_vector_.Size() - degree_ - 1);
   for (uint64_t i = 0; i < (knot_vector_.Size() - degree_ - 1); ++i) {
     basis_functions_.emplace_back(factory.CreateDynamic(knot_vector_, i, degree_));
@@ -65,8 +64,8 @@ ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number, cons
   Element element = GetElementList()[element_number];
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.points(); point++) {
-    double ref_el_point = TransformElementPoint(element.node(1), element.node(0), rule.point(point, 0));
-    basis_function_values.push_back(EvaluateAllNonZeroBasisFunctions(ref_el_point));
+    double integration_point = TransformElementPoint(element.node(1), element.node(0), rule.point(point, 0));
+    basis_function_values.push_back(EvaluateAllNonZeroBasisFunctions(integration_point));
   }
   return basis_function_values;
 }
@@ -77,8 +76,8 @@ std::vector<std::vector<double>> ParameterSpace::EvaluateAllElementNonZeroBasisF
   Element element = GetElementList()[element_number];
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.points(); point++) {
-    double ref_el_point = TransformElementPoint(element.node(1), element.node(0), rule.point(point, 0));
-    basis_function_values.push_back(EvaluateAllNonZeroBasisFunctionDerivatives(ref_el_point, 1));
+    double integration_point = TransformElementPoint(element.node(1), element.node(0), rule.point(point, 0));
+    basis_function_values.push_back(EvaluateAllNonZeroBasisFunctionDerivatives(integration_point, 1));
   }
   return basis_function_values;
 }
