@@ -18,7 +18,7 @@ ControlPoint::ControlPoint(std::initializer_list<double> coordinates) : coordina
 
 ControlPoint::ControlPoint(const std::vector<double> &coordinates) : coordinates_(coordinates) {}
 
-int ControlPoint::dimension() const {
+int ControlPoint::GetDimension() const {
   return static_cast<int>(coordinates_.size());
 }
 

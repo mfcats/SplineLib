@@ -12,16 +12,20 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_NUMERIC_SETTINGS_H
-#define SPLINELIB_NUMERIC_SETTINGS_H
+#ifndef SRC_NUMERIC_SETTINGS_H_
+#define SRC_NUMERIC_SETTINGS_H_
 
 #include <limits>
 
 template<typename T>
 class NumericSettings {
  public:
-  constexpr static double kEpsilon() {
+  constexpr static T kEpsilon() {
     return kEpsilonFactor_ * std::numeric_limits<T>::epsilon();
+  }
+
+  constexpr static bool AreEqual(const T &a, const T &b) {
+    return std::fabs(a - b) < kEpsilon();
   }
 
  private:
@@ -33,4 +37,4 @@ class NumericSettings {
   constexpr static T kEpsilonFactor_ = 10;
 };
 
-#endif //SPLINELIB_NUMERIC_SETTINGS_H
+#endif  // SRC_NUMERIC_SETTINGS_H_

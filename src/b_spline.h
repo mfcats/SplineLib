@@ -12,49 +12,32 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_B_SPLINE_H
-#define SPLINELIB_B_SPLINE_H
+#ifndef SRC_B_SPLINE_H_
+#define SRC_B_SPLINE_H_
 
-#include <utility>
 #include <vector>
 
-#include "basis_function.h"
 #include "control_point.h"
-#include "knot_vector.h"
+#include "parameter_space.h"
 
 class BSpline {
  public:
-  BSpline(const KnotVector &knot_vector,
-          Degree degree,
-          const std::vector<ControlPoint> &control_points);
+  BSpline(const KnotVector &knot_vector, int degree, const std::vector<ControlPoint> &control_points);
 
-  std::vector<double> Evaluate(double param_coord, std::vector<Dimension> dimensions) const;
-  std::vector<double> EvaluateDerivative(double param_coord,
-                                         std::vector<int> dimensions,
-                                         int derivative) const;
+  std::vector<double> Evaluate(double param_coord, const std::vector<int> &dimensions) const;
+  std::vector<double> EvaluateDerivative(double param_coord, const std::vector<int> &dimensions, int derivative) const;
 
-  int degree() const {
-    return degree_;
-  }
-  KnotVector knot_vector() const {
-    return knot_vector_;
-  }
-  std::vector<std::unique_ptr<BasisFunction>> *basis_functions() {
-    return &basis_functions_;
-  }
+  int GetDegree() const;
+  KnotVector GetKnotVector() const;
 
  private:
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(double param_coord) const;
-  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord,
-                                                                 int derivative) const;
   std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const;
-  double ComputeWeightedSum(std::vector<double> basis_function_values,
+  double ComputeWeightedSum(const std::vector<double> &basis_function_values,
                             std::vector<double> control_point_values) const;
 
-  KnotVector knot_vector_;
-  Degree degree_;
-  std::vector<ControlPoint> control_points_;
-  std::vector<std::unique_ptr<BasisFunction>> basis_functions_;
+  ParameterSpace parameter_space_;
+  std::vector<double> control_points_;
+  int dim;
 };
 
-#endif // SPLINELIB_B_SPLINE_H
+#endif  // SRC_B_SPLINE_H_

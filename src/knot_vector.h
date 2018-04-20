@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_KNOTVECTOR_H
-#define SPLINELIB_KNOTVECTOR_H
+#ifndef SRC_KNOT_VECTOR_H_
+#define SRC_KNOT_VECTOR_H_
 
 #include <initializer_list>
 #include <limits>
@@ -53,4 +53,4 @@ class KnotVector {
   std::vector<double> knots_;
 };
 
-#endif  // SPLINELIB_KNOTVECTOR_H
+#endif  // SRC_KNOT_VECTOR_H_

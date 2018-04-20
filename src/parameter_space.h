@@ -12,14 +12,29 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_BASIS_FUNCTION_FACTORY_H_
-#define SRC_BASIS_FUNCTION_FACTORY_H_
+#ifndef SRC_PARAMETER_SPACE_H_
+#define SRC_PARAMETER_SPACE_H_
+
+#include <vector>
 
 #include "basis_function.h"
+#include "knot_vector.h"
 
-class BasisFunctionFactory {
+class ParameterSpace {
  public:
-  BasisFunction *CreateDynamic(KnotVector knot_vector, uint64_t start_of_support, int degree) const;
+  ParameterSpace(const KnotVector &knot_vector, int degree);
+
+  std::vector<double> EvaluateAllNonZeroBasisFunctions(double param_coord) const;
+  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord, int derivative) const;
+  int degree() const;
+  KnotVector knot_vector() const;
+
+ private:
+  std::vector<std::unique_ptr<BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;
+
+  KnotVector knot_vector_;
+  int degree_;
+  std::vector<std::unique_ptr<BasisFunction>> basis_functions_;
 };
 
-#endif  // SRC_BASIS_FUNCTION_FACTORY_H_
+#endif  // SRC_PARAMETER_SPACE_H_

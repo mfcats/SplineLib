@@ -12,35 +12,29 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_BASISFUNCTION_H
-#define SPLINELIB_BASISFUNCTION_H
+#ifndef SRC_BASIS_FUNCTION_H_
+#define SRC_BASIS_FUNCTION_H_
 
 #include <memory>
 #include <utility>
 #include <vector>
 
-#include "definitions.h"
 #include "knot_vector.h"
-
-typedef std::shared_ptr<const KnotVector> ConstKnotVectorPtr;
-typedef std::shared_ptr<KnotVector> KnotVectorPtr;
-typedef int Derivative;
 
 class BasisFunction {
  public:
   double Evaluate(double paramCoord) const;
-  double EvaluateDerivative(Derivative derivative, double param_coord) const;
+  double EvaluateDerivative(int derivative, double param_coord) const;
 
  protected:
   BasisFunction(const KnotVector &knot_vector, int degree, uint64_t start);
 
   double GetKnot(uint64_t knot_position) const;
   uint64_t GetStartOfSupport() const;
-  Degree GetDegree() const;
+  int GetDegree() const;
 
   virtual double EvaluateOnSupport(double param_coord) const = 0;
-  virtual double EvaluateDerivativeOnSupport(Derivative derivative,
-                                             double param_coord) const = 0;
+  virtual double EvaluateDerivativeOnSupport(int derivative, double param_coord) const = 0;
 
  private:
   bool IsCoordinateInSupport(double param_coord) const;
@@ -48,8 +42,8 @@ class BasisFunction {
   bool IsCoordinateSpecialCaseWithLastKnot(double param_coord) const;
 
   KnotVector knotVector_;
-  Degree degree_;
+  int degree_;
   uint64_t start_of_support_;
 };
 
-#endif  // SPLINELIB_BASISFUNCTION_H
+#endif  // SRC_BASIS_FUNCTION_H_

@@ -14,8 +14,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "knot_vector.h"
 
-#include <algorithm>
 #include <cmath>
+#include <algorithm>
 #include <functional>
 
 #include "numeric_settings.h"
@@ -24,18 +24,15 @@ KnotVector::KnotVector(const std::vector<double> &knots) : knots_(knots) {}
 
 KnotVector::KnotVector(std::initializer_list<double> knots) : knots_(knots) {}
 
-KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) :
-    knots_(std::vector<double>(begin, end)) {}
+KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<double>(begin, end)) {}
 
 bool KnotVector::operator==(const KnotVector &rhs) const {
-  if (this->Size() != rhs.Size()) return false;
+  if (this->Size()!=rhs.Size()) return false;
   auto difference = this->knots_;
   std::transform(this->begin(), this->end(), rhs.begin(), difference.begin(), std::minus<double>());
   return !std::any_of(difference.begin(),
                       difference.end(),
-                      [](double knt) {
-                        return std::fabs(knt) > NumericSettings<double>::kEpsilon();
-                      });
+                      [](double knt) { return std::fabs(knt) > NumericSettings<double>::kEpsilon(); });
 }
 
 double &KnotVector::operator[](uint64_t index) {
@@ -59,9 +56,9 @@ double KnotVector::GetLastKnot() const {
 }
 
 int64_t KnotVector::GetKnotSpan(double param_coord) const {
-  return std::fabs(param_coord - knots_.back()) < NumericSettings<double>::kEpsilon() ?
-         std::lower_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1 :
-         std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1;
+  return NumericSettings<double>::AreEqual(param_coord, knots_.back()) ?
+      std::lower_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1 :
+      std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1;
 }
 
 ConstKnotIterator KnotVector::begin() const {
@@ -77,7 +74,7 @@ bool KnotVector::IsInKnotVectorRange(double param_coord) const {
 }
 
 bool KnotVector::IsLastKnot(double param_coord) const {
-  return fabs(param_coord - knots_.back()) < NumericSettings<double>::kEpsilon();
+  return NumericSettings<double>::AreEqual(param_coord, knots_.back());
 }
 
 uint64_t KnotVector::Size() const {
