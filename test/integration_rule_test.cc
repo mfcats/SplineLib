@@ -13,6 +13,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "integration_rule.h"
+#include "integration_rule_1_point.h"
+#include "integration_rule_2_points.h"
+#include "integration_rule_3_points.h"
+#include "integration_rule_4_points.h"
+#include "integration_rule_5_points.h"
+
 #include <gmock/gmock.h>
 
 using testing::Test;
@@ -22,9 +28,11 @@ using testing::DoubleNear;
 class A1DIntegrationRule : public Test {
  public:
   A1DIntegrationRule() {
-    for (int points = 1; points <= 5; points++) {
-      rules_.emplace_back(OneDimensionalIntegrationRule(points));
-    }
+    rules_.emplace_back(IntegrationRule1Point());
+    rules_.emplace_back(IntegrationRule2Points());
+    rules_.emplace_back(IntegrationRule3Points());
+    rules_.emplace_back(IntegrationRule4Points());
+    rules_.emplace_back(IntegrationRule5Points());
   };
 
  protected:
@@ -59,7 +67,7 @@ TEST_F(A1DIntegrationRule, ReturnsCorrectPoints) {
 
 class A2DIntegrationRuleWith3PointsEach : public Test {
  public:
-  A2DIntegrationRuleWith3PointsEach() : rule_(IntegrationRule<2>(3)) {}
+  A2DIntegrationRuleWith3PointsEach() : rule_(IntegrationRule<2>(IntegrationRule3Points())) {}
 
  protected:
   IntegrationRule<2> rule_;
@@ -80,9 +88,9 @@ TEST_F(A2DIntegrationRuleWith3PointsEach, ReturnsCorrectWeights) {
 }
 
 TEST(A3DIntegrationRuleWith3PointsEach, ReturnsCorrectNumberOfPoints) {
-  ASSERT_THAT(IntegrationRule<3>(3).points(), 27);
+  ASSERT_THAT(IntegrationRule<3>(IntegrationRule3Points()).points(), 27);
 }
 
 TEST(A3DIntegrationRuleWith1PointEach, ReturnsCorrectNumberOfPoints) {
-  ASSERT_THAT(IntegrationRule<3>(1).points(), 1);
+  ASSERT_THAT(IntegrationRule<3>(IntegrationRule1Point()).points(), 1);
 }

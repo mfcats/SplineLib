@@ -13,6 +13,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "b_spline.h"
+#include "integration_rule_1_point.h"
+#include "integration_rule_2_points.h"
 
 #include "gmock/gmock.h"
 
@@ -101,7 +103,7 @@ TEST_F(ABSpline, ReturnsElementsWithCorrectNodes) {
 }
 
 TEST_F(ABSpline, ReturnsCorrectNumberOfNonZeroElementBasisFunctions) {
-  auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(1));
+  auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(IntegrationRule1Point()));
   ASSERT_THAT(values.size(), 1);
   ASSERT_THAT(values[0].size(), 3);
   ASSERT_THAT(values[0][0], DoubleEq(0.125));
@@ -110,7 +112,7 @@ TEST_F(ABSpline, ReturnsCorrectNumberOfNonZeroElementBasisFunctions) {
 }
 
 TEST_F(ABSpline, ReturnsCorrectNumberOfNonZeroElementBasisFunctionsFor2PointIntegrationRule) {
-  auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(2));
+  auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(IntegrationRule2Points()));
   ASSERT_THAT(values.size(), 2);
   ASSERT_THAT(values[0].size(), 3);
   ASSERT_THAT(values[1].size(), 3);

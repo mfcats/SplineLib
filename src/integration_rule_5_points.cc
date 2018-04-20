@@ -12,29 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_INTEGRATION_RULE_H
-#define SPLINELIB_INTEGRATION_RULE_H
+#include "integration_rule_5_points.h"
 
-#include <vector>
-#include "one_dimensional_integration_rule.h"
-
-template<int dimensions>
-class IntegrationRule {
- public:
-  explicit IntegrationRule(const OneDimensionalIntegrationRule &rule) : rules_(rule) {}
-
-  int points() const {
-    return pow(rules_.points(), dimensions);
-  }
-  double point(int point, int dimension) const {
-    return rules_.point(point);
-  }
-  double weight(int point, int dimension) const {
-    return rules_.weight(point);
-  }
-
- private:
-  OneDimensionalIntegrationRule rules_;
-};
-
-#endif //SPLINELIB_INTEGRATION_RULE_H
+IntegrationRule5Points::IntegrationRule5Points() :
+    OneDimensionalIntegrationRule({-(1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7)),
+                                   -(1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7)), 0,
+                                   (1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7)),
+                                   (1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7))},
+                                  {(322.0 - 13 * sqrt(70)) / 900, (322.0 + 13 * sqrt(70)) / 900, 128.0 / 225,
+                                   (322.0 + 13 * sqrt(70)) / 900, (322.0 - 13 * sqrt(70)) / 900}) {}

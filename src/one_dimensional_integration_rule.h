@@ -23,8 +23,7 @@ class OneDimensionalIntegrationRule {
  public:
   OneDimensionalIntegrationRule(const std::vector<double> &points,
                                 const std::vector<double> &weights)
-      : number_of_points_(points.size()), points_(points), weights_(weights) {}
-  explicit OneDimensionalIntegrationRule(int points);
+      : number_of_points_(static_cast<int>(points.size())), points_(points), weights_(weights) {}
 
   int points() const;
   double point(int point) const;
