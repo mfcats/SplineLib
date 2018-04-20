@@ -63,11 +63,9 @@ std::vector<std::unique_ptr<BasisFunction>>::const_iterator ParameterSpace::GetF
 std::vector<std::vector<double>>
 ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number, const IntegrationRule<1> &rule) const {
   Element element = GetElementList()[element_number];
-  double low = element.node(0);
-  double high = element.node(1);
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.points(); point++) {
-    double ref_el_point = TransformElementPoint(high, low, rule.point(point, 0));
+    double ref_el_point = TransformElementPoint(element.node(1), element.node(0), rule.point(point, 0));
     basis_function_values.push_back(EvaluateAllNonZeroBasisFunctions(ref_el_point));
   }
   return basis_function_values;
@@ -77,11 +75,9 @@ std::vector<std::vector<double>> ParameterSpace::EvaluateAllElementNonZeroBasisF
     int element_number,
     const IntegrationRule<1> &rule) const {
   Element element = GetElementList()[element_number];
-  double low = element.node(0);
-  double high = element.node(1);
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.points(); point++) {
-    double ref_el_point = TransformElementPoint(high, low, rule.point(point, 0));
+    double ref_el_point = TransformElementPoint(element.node(1), element.node(0), rule.point(point, 0));
     basis_function_values.push_back(EvaluateAllNonZeroBasisFunctionDerivatives(ref_el_point, 1));
   }
   return basis_function_values;

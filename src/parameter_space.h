@@ -36,9 +36,9 @@ class ParameterSpace {
                                                                                      const IntegrationRule<1> &rule) const;
   std::vector<Element> GetElementList() const;
 
+  double TransformElementPoint(double upper, double lower, double point) const;
  private:
   std::vector<std::unique_ptr<BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;
-  double TransformElementPoint(double upper, double lower, double point) const;
 
   KnotVector knot_vector_;
   int degree_;

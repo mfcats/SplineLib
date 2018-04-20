@@ -12,14 +12,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include "gmock/gmock.h"
+
 #include "integration_rule.h"
 #include "integration_rule_1_point.h"
 #include "integration_rule_2_points.h"
 #include "integration_rule_3_points.h"
 #include "integration_rule_4_points.h"
 #include "integration_rule_5_points.h"
-
-#include <gmock/gmock.h>
+#include "numeric_settings.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -61,36 +62,36 @@ TEST_F(A1DIntegrationRule, ReturnsCorrectPoints) {
     for (int point = 0; point < points; point++) {
       point_sum += rules_[points - 1].point(point);
     }
-    ASSERT_THAT(point_sum, DoubleNear(0, pow(10, -35)));
+    ASSERT_THAT(point_sum, DoubleNear(0.0, NumericSettings<double>::kEpsilon()));
   }
 }
 
-class A2DIntegrationRuleWith3PointsEach : public Test {
+class A2DIntegrationRuleWith3Points : public Test {
  public:
-  A2DIntegrationRuleWith3PointsEach() : rule_(IntegrationRule<2>(IntegrationRule3Points())) {}
+  A2DIntegrationRuleWith3Points() : rule_(IntegrationRule<2>(IntegrationRule3Points())) {}
 
  protected:
   IntegrationRule<2> rule_;
 };
 
-TEST_F(A2DIntegrationRuleWith3PointsEach, ReturnsCorrectNumberOfPoints) {
+TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {
   ASSERT_THAT(rule_.points(), 9);
 }
 
-TEST_F(A2DIntegrationRuleWith3PointsEach, ReturnsCorrectPoint) {
+TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPoint) {
   ASSERT_THAT(rule_.point(1, 0), 0);
   ASSERT_THAT(rule_.point(1, 1), 0);
 }
 
-TEST_F(A2DIntegrationRuleWith3PointsEach, ReturnsCorrectWeights) {
+TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectWeights) {
   ASSERT_THAT(rule_.weight(1, 0), DoubleEq(8.0 / 9.0));
   ASSERT_THAT(rule_.weight(0, 1), DoubleEq(5.0 / 9.0));
 }
 
-TEST(A3DIntegrationRuleWith3PointsEach, ReturnsCorrectNumberOfPoints) {
+TEST(A3DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {
   ASSERT_THAT(IntegrationRule<3>(IntegrationRule3Points()).points(), 27);
 }
 
-TEST(A3DIntegrationRuleWith1PointEach, ReturnsCorrectNumberOfPoints) {
+TEST(A3DIntegrationRuleWith1Point, ReturnsCorrectNumberOfPoints) {
   ASSERT_THAT(IntegrationRule<3>(IntegrationRule1Point()).points(), 1);
 }

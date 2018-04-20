@@ -12,17 +12,19 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <integration_rule_5_points.h>
-#include <integration_rule_4_points.h>
-#include <integration_rule_3_points.h>
+#include "gmock/gmock.h"
+
 #include "b_spline.h"
 #include "integration_rule_1_point.h"
 #include "integration_rule_2_points.h"
-
-#include "gmock/gmock.h"
+#include "integration_rule_3_points.h"
+#include "integration_rule_4_points.h"
+#include "integration_rule_5_points.h"
+#include "numeric_settings.h"
 
 using testing::Test;
 using testing::DoubleEq;
+using testing::DoubleNear;
 
 class ABSpline : public Test {
  public:
@@ -130,11 +132,14 @@ TEST_F(ABSpline, ReturnsCorrectNonZeroElementBasisFunctionsFor1PointIntegrationR
 
 TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctions) {
   for (int rule = 1; rule <= 5; rule++) {
-    auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, rules_[rule - 1]);
-    ASSERT_THAT(values.size(), rule);
-    for (int point = 0; point < rule; point++) {
-      ASSERT_THAT(values[point].size(), 3);
-      ASSERT_THAT(std::accumulate(values[point].cbegin(), values[point].cend(), 0.0, std::plus<double>()), DoubleEq(1));
+    for (int element = 0; element < 5; element++) {
+      auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(element, rules_[rule - 1]);
+      ASSERT_THAT(values.size(), rule);
+      for (int point = 0; point < rule; point++) {
+        ASSERT_THAT(values[point].size(), 3);
+        ASSERT_THAT(std::accumulate(values[point].cbegin(), values[point].cend(), 0.0, std::plus<double>()),
+                    DoubleEq(1.0));
+      }
     }
   }
 }
@@ -151,11 +156,14 @@ TEST_F(ABSpline, ReturnsCorrectNonZeroElementBasisFunctionDerivativesFor1PointIn
 
 TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctionDerivatives) {
   for (int rule = 1; rule <= 5; rule++) {
-    auto values = b_spline->EvaluateAllElementNonZeroBasisFunctionDerivatives(1, rules_[rule - 1]);
-    ASSERT_THAT(values.size(), rule);
-    for (int point = 0; point < rule; point++) {
-      ASSERT_THAT(values[point].size(), 3);
-      ASSERT_THAT(std::accumulate(values[point].cbegin(), values[point].cend(), 0.0, std::plus<double>()), DoubleEq(0));
+    for (int element = 0; element < 5; element++) {
+      auto values = b_spline->EvaluateAllElementNonZeroBasisFunctionDerivatives(element, rules_[rule - 1]);
+      ASSERT_THAT(values.size(), rule);
+      for (int point = 0; point < rule; point++) {
+        ASSERT_THAT(values[point].size(), 3);
+        ASSERT_THAT(std::accumulate(values[point].cbegin(), values[point].cend(), 0.0, std::plus<double>()),
+                    DoubleNear(0.0, NumericSettings<double>::kEpsilon()));
+      }
     }
   }
 }

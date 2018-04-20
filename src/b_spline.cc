@@ -91,5 +91,18 @@ std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunction
 std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunctionDerivatives(
     int element_number,
     const IntegrationRule<1> &rule) const {
-  return parameter_space_.EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule);
+  Element element = GetElementList()[element_number];
+  auto values = parameter_space_.EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule);
+  for (int point = 0; point < rule.points(); point++) {
+    for (auto i : values[point]) {
+      i = i / JacobianDeterminant(parameter_space_.TransformElementPoint(element.node(0),
+                                                                         element.node(1),
+                                                                         rule.point(point, 0)));
+    }
+  }
+  return values;
+}
+
+double BSpline::JacobianDeterminant(double param_coord) const {
+  return EvaluateDerivative(param_coord, {0}, 1)[0];
 }

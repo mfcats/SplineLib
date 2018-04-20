@@ -35,13 +35,14 @@ class BSpline {
   std::vector<Element> GetElementList() const;
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
                                                                            const IntegrationRule<1> &rule) const;
-  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number,
-                                                                                     const IntegrationRule<1> &rule) const;
+  std::vector<std::vector<double>>
+  EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const IntegrationRule<1> &rule) const;
 
  private:
   std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const;
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,
                             std::vector<double> control_point_values) const;
+  double JacobianDeterminant(double param_coord) const;
 
   ParameterSpace parameter_space_;
   std::vector<double> control_points_;
