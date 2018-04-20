@@ -50,7 +50,7 @@ std::vector<double> BSpline::EvaluateDerivative(double param_coord,
 }
 
 std::vector<Element> BSpline::GetElementList() {
-  return ElementGenerator(parameter_space_.degree(), parameter_space_.knot_vector()).GetElementList();
+  return parameter_space_.GetElementList();
 }
 
 int BSpline::GetDegree() const {
@@ -80,8 +80,4 @@ double BSpline::ComputeWeightedSum(const std::vector<double> &basis_function_val
                  control_point_values.begin(),
                  std::multiplies<double>());
   return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
-}
-
-double BSpline::TransformElementPoint(double upper, double lower, double point) const {
-  return ((upper - lower) * point + (upper + lower)) / 2.0;
 }

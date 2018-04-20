@@ -40,8 +40,6 @@ class BSpline {
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,
                             std::vector<double> control_point_values) const;
 
-  double TransformElementPoint(double upper, double lower, double point) const;
-
   ParameterSpace parameter_space_;
   std::vector<double> control_points_;
   int dim;
