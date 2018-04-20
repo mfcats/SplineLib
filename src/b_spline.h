@@ -35,6 +35,8 @@ class BSpline {
   std::vector<Element> GetElementList() const;
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
                                                                            const IntegrationRule<1> &rule) const;
+  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number,
+                                                                                     const IntegrationRule<1> &rule) const;
 
  private:
   std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const;

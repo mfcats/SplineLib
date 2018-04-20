@@ -64,7 +64,7 @@ KnotVector BSpline::GetKnotVector() const {
 std::vector<double> BSpline::ExtractControlPointValues(double param_coord, int dimension) const {
   std::vector<double> control_point_values(static_cast<uint64_t>(GetDegree() + 1), 0.0);
   auto control_points =
-      control_points_.begin() + (GetKnotVector().GetKnotSpan(param_coord) - GetDegree())*dim + dimension;
+      control_points_.begin() + (GetKnotVector().GetKnotSpan(param_coord) - GetDegree()) * dim + dimension;
   for (int i = 0; i < GetDegree() + 1; ++i) {
     control_point_values[i] = *control_points;
     control_points += dim;
@@ -86,4 +86,10 @@ std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunction
     int element_number,
     const IntegrationRule<1> &rule) const {
   return parameter_space_.EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
+}
+
+std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunctionDerivatives(
+    int element_number,
+    const IntegrationRule<1> &rule) const {
+  return parameter_space_.EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule);
 }

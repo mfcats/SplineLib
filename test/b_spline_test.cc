@@ -12,6 +12,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <integration_rule_5_points.h>
+#include <integration_rule_4_points.h>
+#include <integration_rule_3_points.h>
 #include "b_spline.h"
 #include "integration_rule_1_point.h"
 #include "integration_rule_2_points.h"
@@ -102,7 +105,21 @@ TEST_F(ABSpline, ReturnsElementsWithCorrectNodes) {
   }
 }
 
-TEST_F(ABSpline, ReturnsCorrectNumberOfNonZeroElementBasisFunctions) {
+class AnIntegrationRule : public ABSpline {
+ public:
+  AnIntegrationRule() {
+    rules_.emplace_back(IntegrationRule1Point());
+    rules_.emplace_back(IntegrationRule2Points());
+    rules_.emplace_back(IntegrationRule3Points());
+    rules_.emplace_back(IntegrationRule4Points());
+    rules_.emplace_back(IntegrationRule5Points());
+  }
+
+ protected:
+  std::vector<IntegrationRule<1>> rules_;
+};
+
+TEST_F(ABSpline, ReturnsCorrectNonZeroElementBasisFunctionsFor1PointIntegrationRule) {
   auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(IntegrationRule1Point()));
   ASSERT_THAT(values.size(), 1);
   ASSERT_THAT(values[0].size(), 3);
@@ -111,9 +128,34 @@ TEST_F(ABSpline, ReturnsCorrectNumberOfNonZeroElementBasisFunctions) {
   ASSERT_THAT(values[0][2], DoubleEq(0.125));
 }
 
-TEST_F(ABSpline, ReturnsCorrectNumberOfNonZeroElementBasisFunctionsFor2PointIntegrationRule) {
-  auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(IntegrationRule2Points()));
-  ASSERT_THAT(values.size(), 2);
+TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctions) {
+  for (int rule = 1; rule <= 5; rule++) {
+    auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, rules_[rule - 1]);
+    ASSERT_THAT(values.size(), rule);
+    for (int point = 0; point < rule; point++) {
+      ASSERT_THAT(values[point].size(), 3);
+      ASSERT_THAT(std::accumulate(values[point].cbegin(), values[point].cend(), 0.0, std::plus<double>()), DoubleEq(1));
+    }
+  }
+}
+
+TEST_F(ABSpline, ReturnsCorrectNonZeroElementBasisFunctionDerivativesFor1PointIntegrationRule) {
+  auto values =
+      b_spline->EvaluateAllElementNonZeroBasisFunctionDerivatives(1, IntegrationRule<1>(IntegrationRule1Point()));
+  ASSERT_THAT(values.size(), 1);
   ASSERT_THAT(values[0].size(), 3);
-  ASSERT_THAT(values[1].size(), 3);
+  ASSERT_THAT(values[0][0], DoubleEq(-0.5));
+  ASSERT_THAT(values[0][1], DoubleEq(0));
+  ASSERT_THAT(values[0][2], DoubleEq(0.5));
+}
+
+TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctionDerivatives) {
+  for (int rule = 1; rule <= 5; rule++) {
+    auto values = b_spline->EvaluateAllElementNonZeroBasisFunctionDerivatives(1, rules_[rule - 1]);
+    ASSERT_THAT(values.size(), rule);
+    for (int point = 0; point < rule; point++) {
+      ASSERT_THAT(values[point].size(), 3);
+      ASSERT_THAT(std::accumulate(values[point].cbegin(), values[point].cend(), 0.0, std::plus<double>()), DoubleEq(0));
+    }
+  }
 }

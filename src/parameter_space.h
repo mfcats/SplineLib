@@ -32,6 +32,8 @@ class ParameterSpace {
   KnotVector knot_vector() const;
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
                                                                            const IntegrationRule<1> &rule) const;
+  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number,
+                                                                                     const IntegrationRule<1> &rule) const;
   std::vector<Element> GetElementList() const;
 
  private:
