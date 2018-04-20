@@ -34,6 +34,7 @@ class BSpline {
   KnotVector GetKnotVector() const;
 
   std::vector<Element> GetElementList();
+  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number, IntegrationRule<1> rule);
 
  private:
   std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const;

@@ -81,3 +81,7 @@ double BSpline::ComputeWeightedSum(const std::vector<double> &basis_function_val
                  std::multiplies<double>());
   return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
 }
+std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunctions(int element_number,
+                                                                                  IntegrationRule<1> rule) {
+  return parameter_space_.EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
+}
