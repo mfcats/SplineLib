@@ -12,28 +12,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_ONE_DIMENSIONAL_INTEGRATION_RULE_H
-#define SPLINELIB_ONE_DIMENSIONAL_INTEGRATION_RULE_H
+#ifndef SPLINELIB_INTEGRATION_RULE_1_POINT_H
+#define SPLINELIB_INTEGRATION_RULE_1_POINT_H
 
-#include <stdexcept>
-#include <vector>
-#include <cmath>
+#include "one_dimensional_integration_rule.h"
 
-class OneDimensionalIntegrationRule {
+class IntegrationRule1Point : public OneDimensionalIntegrationRule {
  public:
-  OneDimensionalIntegrationRule(const std::vector<double> &points,
-                                const std::vector<double> &weights)
-      : number_of_points_(points.size()), points_(points), weights_(weights) {}
-  explicit OneDimensionalIntegrationRule(int points);
-
-  int points();
-  double point(int point);
-  double weight(int point);
-
- private:
-  int number_of_points_;
-  std::vector<double> points_;
-  std::vector<double> weights_;
+  IntegrationRule1Point();
 };
 
-#endif //SPLINELIB_ONE_DIMENSIONAL_INTEGRATION_RULE_H
+#endif //SPLINELIB_INTEGRATION_RULE_1_POINT_H

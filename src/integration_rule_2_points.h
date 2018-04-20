@@ -1,0 +1,12 @@
+//
+// Created by in132078 on 4/20/18.
+//
+
+#ifndef SPLINELIB_INTEGRATION_RULE_2_POINTS_H
+#define SPLINELIB_INTEGRATION_RULE_2_POINTS_H
+
+class IntegrationRule2Points {
+
+};
+
+#endif //SPLINELIB_INTEGRATION_RULE_2_POINTS_H
