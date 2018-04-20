@@ -15,7 +15,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "parameter_space.h"
 
 #include "basis_function_factory.h"
-#include "element.h"
 #include "element_generator.h"
 
 ParameterSpace::ParameterSpace(const KnotVector &knot_vector, int degree) : degree_(degree), knot_vector_(knot_vector) {
@@ -62,7 +61,7 @@ std::vector<std::unique_ptr<BasisFunction>>::const_iterator ParameterSpace::GetF
 }
 
 std::vector<std::vector<double>>
-ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number, IntegrationRule<1> rule) {
+ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number, const IntegrationRule<1> &rule) const {
   Element element = GetElementList()[element_number];
   double low = element.node(0);
   double high = element.node(1);
@@ -78,7 +77,6 @@ double ParameterSpace::TransformElementPoint(double upper, double lower, double 
   return ((upper - lower) * point + (upper + lower)) / 2.0;
 }
 
-std::vector<Element> ParameterSpace::GetElementList() {
+std::vector<Element> ParameterSpace::GetElementList() const {
   return ElementGenerator(degree_, knot_vector_).GetElementList();
 }
-

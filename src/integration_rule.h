@@ -23,13 +23,13 @@ class IntegrationRule {
  public:
   explicit IntegrationRule(int points) : rules_(OneDimensionalIntegrationRule(points)) {}
 
-  int points() {
+  int points() const {
     return pow(rules_.points(), dimensions);
   }
-  double point(int point, int dimension) {
+  double point(int point, int dimension) const {
     return rules_.point(point);
   }
-  double weight(int point, int dimension) {
+  double weight(int point, int dimension) const {
     return rules_.weight(point);
   }
 

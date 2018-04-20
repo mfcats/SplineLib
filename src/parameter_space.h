@@ -18,9 +18,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "basis_function.h"
-#include "knot_vector.h"
-#include "integration_rule.h"
 #include "element.h"
+#include "integration_rule.h"
+#include "knot_vector.h"
 
 class ParameterSpace {
  public:
@@ -30,8 +30,9 @@ class ParameterSpace {
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord, int derivative) const;
   int degree() const;
   KnotVector knot_vector() const;
-  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number, IntegrationRule<1> rule);
-  std::vector<Element> GetElementList();
+  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
+                                                                           const IntegrationRule<1> &rule) const;
+  std::vector<Element> GetElementList() const;
 
  private:
   std::vector<std::unique_ptr<BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;

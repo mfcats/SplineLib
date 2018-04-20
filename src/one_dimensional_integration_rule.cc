@@ -46,11 +46,11 @@ OneDimensionalIntegrationRule::OneDimensionalIntegrationRule(int points)
   }
 }
 
-int OneDimensionalIntegrationRule::points() {
+int OneDimensionalIntegrationRule::points() const {
   return number_of_points_;
 }
 
-double OneDimensionalIntegrationRule::point(int point) {
+double OneDimensionalIntegrationRule::point(int point) const {
 #ifdef DEBUG
   return points_.at(point);
 #else
@@ -58,7 +58,7 @@ double OneDimensionalIntegrationRule::point(int point) {
 #endif
 }
 
-double OneDimensionalIntegrationRule::weight(int point) {
+double OneDimensionalIntegrationRule::weight(int point) const {
 #ifdef DEBUG
   return weights_.at(point);
 #else

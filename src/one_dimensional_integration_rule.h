@@ -26,9 +26,9 @@ class OneDimensionalIntegrationRule {
       : number_of_points_(points.size()), points_(points), weights_(weights) {}
   explicit OneDimensionalIntegrationRule(int points);
 
-  int points();
-  double point(int point);
-  double weight(int point);
+  int points() const;
+  double point(int point) const;
+  double weight(int point) const;
 
  private:
   int number_of_points_;
