@@ -35,10 +35,6 @@ class BSpline {
 
   std::vector<Element> GetElementList();
 
-  std::vector<std::unique_ptr<BasisFunction>> *basis_functions() {
-    return &basis_functions_;
-  }
-
  private:
   std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const;
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,

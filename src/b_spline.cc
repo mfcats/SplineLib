@@ -50,28 +50,7 @@ std::vector<double> BSpline::EvaluateDerivative(double param_coord,
 }
 
 std::vector<Element> BSpline::GetElementList() {
-  return ElementGenerator(degree_, knot_vector_).GetElementList();
-}
-
-std::vector<double> BSpline::EvaluateAllNonZeroBasisFunctions(double param_coord) const {
-  auto first_non_zero = basis_functions_.begin() + knot_vector_.GetKnotSpan(param_coord) - degree_;
-  std::vector<double> basis_function_values(degree_ + 1, 0);
-  for (int i = 0; i < degree_ + 1; ++i) {
-    basis_function_values[i] = (*first_non_zero)->Evaluate(param_coord);
-    ++first_non_zero;
-  }
-  return basis_function_values;
-}
-
-std::vector<double> BSpline::EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord,
-                                                                        int derivative) const {
-  auto first_non_zero = basis_functions_.begin() + knot_vector_.GetKnotSpan(param_coord) - degree_;
-  std::vector<double> basis_function_values(degree_ + 1, 0);
-  for (int i = 0; i < degree_ + 1; ++i) {
-    basis_function_values[i] = (*first_non_zero)->EvaluateDerivative(derivative, param_coord);
-    ++first_non_zero;
-  }
-  return basis_function_values;
+  return ElementGenerator(parameter_space_.degree(), parameter_space_.knot_vector()).GetElementList();
 }
 
 int BSpline::GetDegree() const {
