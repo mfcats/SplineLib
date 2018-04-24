@@ -40,5 +40,3 @@ cmake-build-debug
 # mac related files
 .DS_Store
 ._.DS_Store
-
-.pdf
