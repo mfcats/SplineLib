@@ -15,6 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SPLINELIB_ELEMENT_GENERATOR_H
 #define SPLINELIB_ELEMENT_GENERATOR_H
 
+#include <vector>
+
 #include "element.h"
 #include "knot_vector.h"
 

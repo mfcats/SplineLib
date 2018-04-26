@@ -37,7 +37,7 @@ class ParameterSpace {
   std::vector<std::vector<double>>
   EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const IntegrationRule<1> &rule) const;
   std::vector<Element> GetElementList() const;
-  double TransformElementPoint(double upper, double lower, double point) const;
+  double TransformToParameterSpace(double upper, double lower, double point) const;
 
  private:
   std::vector<std::unique_ptr<BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;

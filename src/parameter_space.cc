@@ -64,7 +64,7 @@ ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number, cons
   Element element = GetElementList()[element_number];
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.points(); point++) {
-    double integration_point = TransformElementPoint(element.node(1), element.node(0), rule.point(point, 0));
+    double integration_point = TransformToParameterSpace(element.node(1), element.node(0), rule.point(point, 0));
     basis_function_values.push_back(EvaluateAllNonZeroBasisFunctions(integration_point));
   }
   return basis_function_values;
@@ -76,13 +76,13 @@ std::vector<std::vector<double>> ParameterSpace::EvaluateAllElementNonZeroBasisF
   Element element = GetElementList()[element_number];
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.points(); point++) {
-    double integration_point = TransformElementPoint(element.node(1), element.node(0), rule.point(point, 0));
+    double integration_point = TransformToParameterSpace(element.node(1), element.node(0), rule.point(point, 0));
     basis_function_values.push_back(EvaluateAllNonZeroBasisFunctionDerivatives(integration_point, 1));
   }
   return basis_function_values;
 }
 
-double ParameterSpace::TransformElementPoint(double upper, double lower, double point) const {
+double ParameterSpace::TransformToParameterSpace(double upper, double lower, double point) const {
   return ((upper - lower) * point + (upper + lower)) / 2.0;
 }
 

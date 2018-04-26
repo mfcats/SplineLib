@@ -14,6 +14,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element_generator.h"
 
+#include <vector>
+
 ElementGenerator::ElementGenerator(int degree, const KnotVector &knot_vector)
     : degree_(degree), knot_vector_(knot_vector) {}
 

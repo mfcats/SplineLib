@@ -15,9 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SPLINELIB_ONE_DIMENSIONAL_INTEGRATION_RULE_H
 #define SPLINELIB_ONE_DIMENSIONAL_INTEGRATION_RULE_H
 
-#include <stdexcept>
-#include <vector>
 #include <cmath>
+#include <vector>
 
 class OneDimensionalIntegrationRule {
  public:

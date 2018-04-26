@@ -91,18 +91,26 @@ std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunction
 std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunctionDerivatives(
     int element_number,
     const IntegrationRule<1> &rule) const {
-  Element element = GetElementList()[element_number];
-  auto values = parameter_space_.EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule);
-  for (int point = 0; point < rule.points(); point++) {
-    for (auto i : values[point]) {
-      i = i / JacobianDeterminant(parameter_space_.TransformElementPoint(element.node(0),
-                                                                         element.node(1),
-                                                                         rule.point(point, 0)));
-    }
-  }
-  return values;
+  return TransformToPhysicalSpace(parameter_space_.EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number,
+                                                                                                     rule),
+                                  element_number,
+                                  rule);
 }
 
 double BSpline::JacobianDeterminant(double param_coord) const {
   return EvaluateDerivative(param_coord, {0}, 1)[0];
+}
+
+std::vector<std::vector<double>> BSpline::TransformToPhysicalSpace(std::vector<std::vector<double>> values,
+                                                                   int element_number,
+                                                                   const IntegrationRule<1> &rule) const {
+  Element element = GetElementList()[element_number];
+  for (int point = 0; point < rule.points(); point++) {
+    std::transform(values[point].cbegin(),
+                   values[point].cend(),
+                   values[point].begin(),
+                   std::bind2nd(std::divides<double>(), JacobianDeterminant(parameter_space_.TransformToParameterSpace(
+                       element.node(0), element.node(1), rule.point(point, 0)))));
+  }
+  return values;
 }

@@ -151,9 +151,9 @@ TEST_F(ABSpline, ReturnsCorrectNonZeroElementBasisFunctionDerivativesFor1PointIn
       b_spline->EvaluateAllElementNonZeroBasisFunctionDerivatives(1, IntegrationRule<1>(IntegrationRule1Point()));
   ASSERT_THAT(values.size(), 1);
   ASSERT_THAT(values[0].size(), 3);
-  ASSERT_THAT(values[0][0], DoubleEq(-0.5));
+  ASSERT_THAT(values[0][0], DoubleEq(-0.6666666666666666));
   ASSERT_THAT(values[0][1], DoubleEq(0));
-  ASSERT_THAT(values[0][2], DoubleEq(0.5));
+  ASSERT_THAT(values[0][2], DoubleEq(0.6666666666666666));
 }
 
 TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctionDerivatives) {
