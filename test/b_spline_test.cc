@@ -169,3 +169,7 @@ TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctionDeriv
     }
   }
 }
+
+TEST_F(ABSpline, ReturnsCorrectJacobianDeterminant) {
+  ASSERT_THAT(b_spline->JacobianDeterminant(1, 1, IntegrationRule<1>(IntegrationRule3Points())), DoubleEq(0.375));
+}

@@ -38,11 +38,12 @@ class BSpline {
   std::vector<std::vector<double>>
   EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const IntegrationRule<1> &rule) const;
 
+  double JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const;
+
  private:
   std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const;
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,
                             std::vector<double> control_point_values) const;
-  double JacobianDeterminant(double param_coord) const;
   std::vector<std::vector<double>> TransformToPhysicalSpace(std::vector<std::vector<double>> values,
                                                             int element_number,
                                                             const IntegrationRule<1> &rule) const;
