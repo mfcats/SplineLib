@@ -12,10 +12,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_ELEMENT_H
-#define SPLINELIB_ELEMENT_H
+#ifndef SRC_ELEMENT_H_
+#define SRC_ELEMENT_H_
 
 #include <memory>
+#include <vector>
 
 #include "control_point.h"
 
@@ -33,4 +34,4 @@ class Element {
   std::vector<double> nodes_;
 };
 
-#endif //SPLINELIB_ELEMENT_H
+#endif  // SRC_ELEMENT_H_

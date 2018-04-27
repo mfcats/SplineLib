@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_ONE_DIMENSIONAL_INTEGRATION_RULE_H
-#define SPLINELIB_ONE_DIMENSIONAL_INTEGRATION_RULE_H
+#ifndef SRC_ONE_DIMENSIONAL_INTEGRATION_RULE_H_
+#define SRC_ONE_DIMENSIONAL_INTEGRATION_RULE_H_
 
 #include <cmath>
 #include <vector>
@@ -34,4 +34,4 @@ class OneDimensionalIntegrationRule {
   std::vector<double> weights_;
 };
 
-#endif //SPLINELIB_ONE_DIMENSIONAL_INTEGRATION_RULE_H
+#endif  // SRC_ONE_DIMENSIONAL_INTEGRATION_RULE_H_

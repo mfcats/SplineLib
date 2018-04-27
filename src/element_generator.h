@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_ELEMENT_GENERATOR_H
-#define SPLINELIB_ELEMENT_GENERATOR_H
+#ifndef SRC_ELEMENT_GENERATOR_H_
+#define SRC_ELEMENT_GENERATOR_H_
 
 #include <vector>
 
@@ -35,4 +35,4 @@ class ElementGenerator {
   KnotVector knot_vector_;
 };
 
-#endif //SPLINELIB_ELEMENT_GENERATOR_H
+#endif  // SRC_ELEMENT_GENERATOR_H_

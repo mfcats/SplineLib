@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_INTEGRATION_RULE_3_POINTS_H
-#define SPLINELIB_INTEGRATION_RULE_3_POINTS_H
+#ifndef SRC_INTEGRATION_RULE_3_POINTS_H_
+#define SRC_INTEGRATION_RULE_3_POINTS_H_
 
 #include "one_dimensional_integration_rule.h"
 
@@ -22,4 +22,4 @@ class IntegrationRule3Points : public OneDimensionalIntegrationRule {
   IntegrationRule3Points();
 };
 
-#endif //SPLINELIB_INTEGRATION_RULE_3_POINTS_H
+#endif  // SRC_INTEGRATION_RULE_3_POINTS_H_

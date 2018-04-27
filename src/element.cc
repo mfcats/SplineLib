@@ -14,8 +14,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element.h"
 
-#include <utility>
-
 Element::Element(int dimension, const std::vector<double> &nodes)
     : dimension_(dimension), number_of_nodes_(static_cast<int>(nodes.size())), nodes_(nodes) {}
 
