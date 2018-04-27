@@ -12,7 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "b_spline.h"
+#include "b_spline_2_d.h"
 
 #include "gmock/gmock.h"
 
@@ -23,35 +23,35 @@ class A2DBSpline : public Test {
  public:
 
     A2DBSpline() {
-        std::vector<KnotVector> knot_tensor = {{0, 0, 0, 0.5, 1, 1, 1}, {0, 0, 0, 0.5, 1, 1, 1}};
-        std::vector<std::vector<ControlPoint>> control_points;
+      std::vector<KnotVector> knot_tensor = {KnotVector({0, 0, 0, 0.5, 1, 1, 1}), KnotVector({0, 0, 0, 0.5, 1, 1, 1})};
+      std::vector<int> degrees = {2, 2};
+      std::vector<std::vector<ControlPoint>> control_points;
 
-        std::vector<ControlPoint> control_points1 = {
-                ControlPoint(std::vector<double> ({-1.0, 1.0})),
-                ControlPoint(std::vector<double> ({0.0, -1.0})),
-                ControlPoint(std::vector<double> ({1.0, -1.0})),
-        };
-        std::vector<ControlPoint> control_points2 = {
-                ControlPoint(std::vector<double> ({-1.0, 0.0})),
-                ControlPoint(std::vector<double> ({0.0, 0.0})),
-                ControlPoint(std::vector<double> ({1.0, 0.0})),
-        };
-        std::vector<ControlPoint> control_points3 = {
-                ControlPoint(std::vector<double> ({-1.0, 1.0})),
-                ControlPoint(std::vector<double> ({0.0, 1.0})),
-                ControlPoint(std::vector<double> ({1.0, 1.0})),
-        };
+      std::vector<ControlPoint> control_points1 = {
+          ControlPoint(std::vector<double>({-1.0, 1.0})),
+          ControlPoint(std::vector<double>({0.0, -1.0})),
+          ControlPoint(std::vector<double>({1.0, -1.0})),
+      };
+      std::vector<ControlPoint> control_points2 = {
+          ControlPoint(std::vector<double>({-1.0, 0.0})),
+          ControlPoint(std::vector<double>({0.0, 0.0})),
+          ControlPoint(std::vector<double>({1.0, 0.0})),
+      };
+      std::vector<ControlPoint> control_points3 = {
+          ControlPoint(std::vector<double>({-1.0, 1.0})),
+          ControlPoint(std::vector<double>({0.0, 1.0})),
+          ControlPoint(std::vector<double>({1.0, 1.0})),
+      };
 
-        control_points.push_back(control_points1);
-        control_points.push_back(control_points2);
-        control_points.push_back(control_points3);
+      control_points.push_back(control_points1);
+      control_points.push_back(control_points2);
+      control_points.push_back(control_points3);
 
-        b_spline = std::make_unique<BSpline>(knot_tensor, 2, control_points);
-
+      b_spline = std::make_unique<BSpline2D>(knot_tensor, degrees, control_points);
     }
 
  protected:
-  std::unique_ptr<BSpline> b_spline;
+  std::unique_ptr<BSpline2D> b_spline;
 };
 
 TEST_F(A2DBSpline, Returns0_0For0AndDim0) {
