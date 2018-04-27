@@ -35,8 +35,9 @@ class BSpline {
   std::vector<Element> GetElementList() const;
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
                                                                            const IntegrationRule<1> &rule) const;
-  std::vector<std::vector<double>>
-  EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const IntegrationRule<1> &rule) const;
+  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(
+      int element_number,
+      const IntegrationRule<1> &rule) const;
 
   double JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const;
 
@@ -47,6 +48,7 @@ class BSpline {
   std::vector<std::vector<double>> TransformToPhysicalSpace(std::vector<std::vector<double>> values,
                                                             int element_number,
                                                             const IntegrationRule<1> &rule) const;
+  double TransformToParameterSpace(double upper, double lower, double point) const;
 
   ParameterSpace parameter_space_;
   std::vector<double> control_points_;

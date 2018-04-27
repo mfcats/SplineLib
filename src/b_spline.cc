@@ -53,6 +53,31 @@ std::vector<Element> BSpline::GetElementList() const {
   return parameter_space_.GetElementList();
 }
 
+std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunctions(
+    int element_number,
+    const IntegrationRule<1> &rule) const {
+  return parameter_space_.EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
+}
+
+std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunctionDerivatives(
+    int element_number,
+    const IntegrationRule<1> &rule) const {
+  return TransformToPhysicalSpace(
+      parameter_space_.EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule),
+      element_number,
+      rule);
+}
+
+double BSpline::JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const {
+  Element element = GetElementList()[element_number];
+  double dx_dxi =
+      EvaluateDerivative(TransformToParameterSpace(element.node(0), element.node(1), rule.point(integration_point, 0)),
+                         {0},
+                         1)[0];
+  double dxi_dtildexi = (element.node(1) - element.node(0)) / 2;
+  return dx_dxi * dxi_dtildexi;
+}
+
 int BSpline::GetDegree() const {
   return parameter_space_.degree();
 }
@@ -82,29 +107,6 @@ double BSpline::ComputeWeightedSum(const std::vector<double> &basis_function_val
   return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
 }
 
-std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunctions(
-    int element_number,
-    const IntegrationRule<1> &rule) const {
-  return parameter_space_.EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
-}
-
-std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunctionDerivatives(
-    int element_number,
-    const IntegrationRule<1> &rule) const {
-  return TransformToPhysicalSpace(parameter_space_.EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number,
-                                                                                                     rule),
-                                  element_number,
-                                  rule);
-}
-
-double BSpline::JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const {
-  Element element = GetElementList()[element_number];
-  double dx_dxi = EvaluateDerivative(parameter_space_.TransformToParameterSpace(
-      element.node(0), element.node(1), rule.point(integration_point, 0)), {0}, 1)[0];
-  double dxi_dtildexi = (element.node(1) - element.node(0)) / 2;
-  return dx_dxi * dxi_dtildexi;
-}
-
 std::vector<std::vector<double>> BSpline::TransformToPhysicalSpace(std::vector<std::vector<double>> values,
                                                                    int element_number,
                                                                    const IntegrationRule<1> &rule) const {
@@ -113,10 +115,14 @@ std::vector<std::vector<double>> BSpline::TransformToPhysicalSpace(std::vector<s
     std::transform(values[point].cbegin(),
                    values[point].cend(),
                    values[point].begin(),
-                   std::bind2nd(std::divides<double>(), EvaluateDerivative(
-                       parameter_space_.TransformToParameterSpace(element.node(0),
-                                                                  element.node(1),
-                                                                  rule.point(point, 0)), {0}, 1)[0]));
+                   std::bind2nd(std::divides<double>(),
+                                EvaluateDerivative(TransformToParameterSpace(element.node(0),
+                                                                             element.node(1),
+                                                                             rule.point(point, 0)), {0}, 1)[0]));
   }
   return values;
+}
+
+double BSpline::TransformToParameterSpace(double upper, double lower, double point) const {
+  return parameter_space_.TransformToParameterSpace(upper, lower, point);
 }

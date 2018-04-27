@@ -82,10 +82,10 @@ std::vector<std::vector<double>> ParameterSpace::EvaluateAllElementNonZeroBasisF
   return basis_function_values;
 }
 
-double ParameterSpace::TransformToParameterSpace(double upper, double lower, double point) const {
-  return ((upper - lower) * point + (upper + lower)) / 2.0;
-}
-
 std::vector<Element> ParameterSpace::GetElementList() const {
   return ElementGenerator(degree_, knot_vector_).GetElementList();
+}
+
+double ParameterSpace::TransformToParameterSpace(double upper, double lower, double point) const {
+  return ((upper - lower) * point + (upper + lower)) / 2.0;
 }
