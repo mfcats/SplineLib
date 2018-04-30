@@ -33,11 +33,11 @@ class ABSpline : public Test {
         ControlPoint(std::vector<double>({4.0, 1.5})),
         ControlPoint(std::vector<double>({4.0, 0.0}))
     };
-    b_spline = std::make_unique<BSpline>(knot_vector, 2, control_points);
+    b_spline = std::make_unique<BSpline<1>>(knot_vector, 2, control_points);
   }
 
  protected:
-  std::unique_ptr<BSpline> b_spline;
+  std::unique_ptr<BSpline<1>> b_spline;
 };
 
 TEST_F(ABSpline, Returns0_0For0AndDim0) {
