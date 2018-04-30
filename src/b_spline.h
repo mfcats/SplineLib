@@ -15,25 +15,75 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_B_SPLINE_H_
 #define SRC_B_SPLINE_H_
 
+#include <algorithm>
+#include <functional>
+#include <numeric>
 #include <vector>
 
 #include "control_point.h"
 #include "parameter_space.h"
 
+template <int DIM>
 class BSpline {
  public:
-  BSpline(const KnotVector &knot_vector, int degree, const std::vector<ControlPoint> &control_points);
+  BSpline(const KnotVector &knot_vector, int degree, const std::vector<ControlPoint> &control_points)
+      : parameter_space_(ParameterSpace(knot_vector, degree)), dim(control_points[0].GetDimension()) {
+    for (auto &&cp : control_points) {
+      for (int i = 0; i < dim; ++i) {
+        control_points_.emplace_back(cp.GetValue(i));
+      }
+    }
+  }
 
-  std::vector<double> Evaluate(double param_coord, const std::vector<int> &dimensions) const;
-  std::vector<double> EvaluateDerivative(double param_coord, const std::vector<int> &dimensions, int derivative) const;
+  std::vector<double> Evaluate(double param_coord, const std::vector<int> &dimensions) const {
+    auto basis_function_values = parameter_space_.EvaluateAllNonZeroBasisFunctions(param_coord);
+    std::vector<double> evaluated_point(dimensions.size(), 0);
+    for (int i = 0; i < dimensions.size(); ++i) {
+      evaluated_point[i] =
+          ComputeWeightedSum(basis_function_values, ExtractControlPointValues(param_coord, dimensions[i]));
+    }
+    return evaluated_point;
+  }
 
-  int GetDegree() const;
-  KnotVector GetKnotVector() const;
+  std::vector<double> EvaluateDerivative(double param_coord, const std::vector<int> &dimensions, int derivative) const {
+    auto basis_function_values = parameter_space_.EvaluateAllNonZeroBasisFunctionDerivatives(param_coord, derivative);
+    std::vector<double> evaluated_point(dimensions.size(), 0);
+    for (int i = 0; i < dimensions.size(); ++i) {
+      evaluated_point[i] =
+          ComputeWeightedSum(basis_function_values, ExtractControlPointValues(param_coord, dimensions[i]));
+    }
+    return evaluated_point;
+  }
+
+  int GetDegree() const {
+    return parameter_space_.degree();
+  }
+
+  KnotVector GetKnotVector() const {
+    return parameter_space_.knot_vector();
+  }
 
  private:
-  std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const;
+  std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const {
+    std::vector<double> control_point_values(static_cast<uint64_t>(GetDegree() + 1), 0.0);
+    auto control_points =
+        control_points_.begin() + (GetKnotVector().GetKnotSpan(param_coord) - GetDegree())*dim + dimension;
+    for (int i = 0; i < GetDegree() + 1; ++i) {
+      control_point_values[i] = *control_points;
+      control_points += dim;
+    }
+    return control_point_values;
+  }
+
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,
-                            std::vector<double> control_point_values) const;
+                            std::vector<double> control_point_values) const {
+    std::transform(basis_function_values.begin(),
+                   basis_function_values.end(),
+                   control_point_values.begin(),
+                   control_point_values.begin(),
+                   std::multiplies<double>());
+    return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
+  }
 
   ParameterSpace parameter_space_;
   std::vector<double> control_points_;

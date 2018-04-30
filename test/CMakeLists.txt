@@ -19,7 +19,7 @@ set(TEST_SOURCES
         zero_degree_b_spline_basis_function_test.cc
         b_spline_basis_function_test.cc
         b_spline_test.cc
-        2d_b_spline_test.cc)
+        )
 
 find_package(GTest REQUIRED)
 
