@@ -31,7 +31,7 @@ class BSpline2D {
     for (auto &dimension : control_points) {
       for (auto &cp : dimension) {
         for (int i = 0; i < dim; ++i) {
-          control_points_.emplace_back(cp.GetValue(i));
+          control_points_.emplace_back(std::vector<double>({cp.GetValue(i)}));
         }
       }
     }
