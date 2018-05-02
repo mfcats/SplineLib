@@ -45,7 +45,6 @@ TEST_F(ABSpline, Returns0_0For0AndDim0) {
   ASSERT_THAT(b_spline->Evaluate({0.0}, {0})[0], DoubleEq(0.0));
 }
 
-
 TEST_F(ABSpline, Returns0_0For0AndDim1) {
   ASSERT_THAT(b_spline->Evaluate({0.0}, {1})[0], DoubleEq(0.0));
 }
