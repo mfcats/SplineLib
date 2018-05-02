@@ -62,7 +62,7 @@ TEST_F(ABSpline, Returns1_5For2_5AndDim0) {
   ASSERT_THAT(b_spline->Evaluate({2.5}, {0})[0], DoubleEq(1.5));
 }
 
-/*TEST_F(ABSpline, Returns0_0For0_0Dim0AndDer1) {
+TEST_F(ABSpline, Returns0_0For0_0Dim0AndDer1) {
   ASSERT_THAT(b_spline->EvaluateDerivative({0.0}, {0}, 1)[0], DoubleEq(0.0));
 }
 
@@ -76,4 +76,4 @@ TEST_F(ABSpline, Returns12_0For5_0Dim0AndDer1) {
 
 TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) {
   ASSERT_THAT(b_spline->EvaluateDerivative({2.25}, {1}, 1)[0], DoubleEq(0.325));
-} */
+}

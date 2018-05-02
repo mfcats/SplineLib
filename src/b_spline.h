@@ -52,8 +52,10 @@ class BSpline {
     return evaluated_point;
   }
 
-  std::vector<double> EvaluateDerivative(double param_coord, const std::vector<int> &dimensions, int derivative) const {
-    auto basis_function_values = parameter_space_.EvaluateAllNonZeroBasisFunctionDerivatives(param_coord, derivative);
+  std::vector<double> EvaluateDerivative(std::array<double, DIM> param_coord,
+                                         const std::vector<int> &dimensions,
+                                         int derivative) const {
+    auto basis_function_values = EvaluateAllNonZeroBasisFunctionDerivatives(param_coord, derivative);
     std::vector<double> evaluated_point(dimensions.size(), 0);
     for (int i = 0; i < dimensions.size(); ++i) {
       evaluated_point[i] =
@@ -144,6 +146,31 @@ class BSpline {
     for (int i = 0; i < M; ++i) {
       for (int j = 0; j < DIM; ++j) {
         vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j]);
+      }
+      multiIndexHandler++;
+    }
+    return vector;
+  }
+
+  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<double, DIM> param_coord,
+                                                                 int derivative) const {
+    std::array<std::vector<std::unique_ptr<BasisFunction>>::const_iterator, DIM> first_non_zero;
+    for (int i = 0; i < DIM; ++i) {
+      first_non_zero[i] = parameter_space_[i].GetFirstNonZeroKnot(param_coord[i]);
+    }
+    std::array<int, DIM> lastKnotOffset;
+    for (int i = 0; i < DIM; ++i) {
+      lastKnotOffset[i] = parameter_space_[i].degree();
+    }
+    MultiIndexHandler<DIM> multiIndexHandler(lastKnotOffset);
+    int M = 1;
+    for (int i = 0; i < DIM; ++i) {
+      M *= lastKnotOffset[i] + 1;
+    }
+    std::vector<double> vector(M, 1);
+    for (int i = 0; i < M; ++i) {
+      for (int j = 0; j < DIM; ++j) {
+        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->EvaluateDerivative(derivative, param_coord[j]);
       }
       multiIndexHandler++;
     }
