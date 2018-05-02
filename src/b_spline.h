@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <functional>
 #include <numeric>
 #include <vector>
+#include <array>
 
 #include "control_point.h"
 #include "parameter_space.h"
@@ -26,8 +27,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 template <int DIM>
 class BSpline {
  public:
-  BSpline(const KnotVector &knot_vector, int degree, const std::vector<ControlPoint> &control_points)
-      : parameter_space_(ParameterSpace(knot_vector, degree)), dim(control_points[0].GetDimension()) {
+  BSpline(const std::array<KnotVector, DIM> &knot_vector,
+          std::array<int, DIM> degree,
+          const std::vector<ControlPoint> &control_points)
+      : dim(control_points[0].GetDimension()) {
+    for (int i = 0; i < DIM, ++i) {
+      parameter_space_[i] = parameter_space_(knot_vector[i], degree[i]);
+    }
     for (auto &&cp : control_points) {
       for (int i = 0; i < dim; ++i) {
         control_points_.emplace_back(cp.GetValue(i));
@@ -35,7 +41,7 @@ class BSpline {
     }
   }
 
-  std::vector<double> Evaluate(double param_coord, const std::vector<int> &dimensions) const {
+  std::vector<double> Evaluate(std::array<double, DIM> param_coord, const std::vector<int> &dimensions) const {
     auto basis_function_values = parameter_space_.EvaluateAllNonZeroBasisFunctions(param_coord);
     std::vector<double> evaluated_point(dimensions.size(), 0);
     for (int i = 0; i < dimensions.size(); ++i) {
@@ -85,7 +91,31 @@ class BSpline {
     return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
   }
 
-  ParameterSpace parameter_space_;
+  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const {
+    std::array<std::vector<std::unique_ptr<BasisFunction>>::const_iterator, DIM> first_non_zero;
+    for (int i = 0; i < DIM; ++i) {
+      first_non_zero[i] = parameter_space_[i].GetFirstNonZeroKnot(param_coord[i]);
+    }
+    std::array<int, DIM> lastKnotOffset;
+    for (int i = 0; i < DIM; ++i) {
+      lastKnotOffset[i] = parameter_space_[i].degree_;
+    }
+    MultiIndexHandler MultiIndexHandler(lastKnotOffset);
+    int M = 1;
+    for (int i = 0; i < DIM; ++i) {
+      M *= tensor[i].size();
+    }
+    std::vector<double> vector(M, 1);
+    for (int i = 0; i < M; ++i) {
+      for (int j = 0; j < DIM; ++j) {
+        vector[i] *= (first_non_zero[j] + MultiIndexHandler[j])->Evaluate(param_coord[j]);
+        MultiIndexHandler++;
+      }
+    }
+    return vector;
+  }
+
+  std::array<ParameterSpace, DIM> parameter_space_;
   std::vector<double> control_points_;
   int dim;
 };
