@@ -12,30 +12,36 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_PARAMETER_SPACE_H_
-#define SRC_PARAMETER_SPACE_H_
+#ifndef SPLINELIB_MULTI_INDEX_HANDLER_H
+#define SPLINELIB_MULTI_INDEX_HANDLER_H
 
-#include <vector>
+#include "multi_index_handler.h"
+#include <array>
 
-#include "basis_function.h"
-#include "knot_vector.h"
-
-class ParameterSpace {
+template<int DIM>
+class MultiIndexHandler {
  public:
-  ParameterSpace() {};
-  ParameterSpace(const KnotVector &knot_vector, int degree);
+  MultiIndexHandler(std::array<int, DIM> &lastKnotOffset)
+      : lastKnotOffset(lastKnotOffset), currentMultiIndex({0}) {}
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(double param_coord) const;
-  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord, int derivative) const;
-  int degree() const;
-  KnotVector knot_vector() const;
+  int operator[](int i) {
+    return currentMultiIndex[i];
+  }
+
+  void MultiIndexHandler::operator++() {
+    for (int i = 0; i < DIM; ++i) {
+      if (currentMultiIndex[i] == lastKnotOffset[i]) {
+        currentMultiIndex[i] = 0;
+      } else {
+        currentMultiIndex[i]++;
+        break;
+      }
+    }
+  }
 
  private:
-  std::vector<std::unique_ptr<BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;
-
-  KnotVector knot_vector_;
-  int degree_;
-  std::vector<std::unique_ptr<BasisFunction>> basis_functions_;
+  std::array<int, DIM> lastKnotOffset;
+  std::array<int, DIM> currentMultiIndex;
 };
 
-#endif  // SRC_PARAMETER_SPACE_H_
+#endif //SPLINELIB_MULTI_INDEX_HANDLER_H
