@@ -28,7 +28,7 @@ class MultiIndexHandler {
     return currentMultiIndex[i];
   }
 
-  void MultiIndexHandler::operator++() {
+  MultiIndexHandler &operator++() {
     for (int i = 0; i < DIM; ++i) {
       if (currentMultiIndex[i] == lastKnotOffset[i]) {
         currentMultiIndex[i] = 0;
@@ -37,6 +37,13 @@ class MultiIndexHandler {
         break;
       }
     }
+    return *this;
+  }
+
+  MultiIndexHandler operator++(int) {
+    MultiIndexHandler result(*this);
+    ++(*this);
+    return result;
   }
 
  private:

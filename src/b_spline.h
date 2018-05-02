@@ -23,6 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "control_point.h"
 #include "parameter_space.h"
+#include "multi_index_handler.h"
 
 template <int DIM>
 class BSpline {
@@ -32,7 +33,7 @@ class BSpline {
           const std::vector<ControlPoint> &control_points)
       : dim(control_points[0].GetDimension()) {
     for (int i = 0; i < DIM; ++i) {
-      parameter_space_[i] = parameter_space_(knot_vector[i], degree[i]);
+      parameter_space_[i] = ParameterSpace(knot_vector[i], degree[i]);
     }
     for (auto &&cp : control_points) {
       for (int i = 0; i < dim; ++i) {
@@ -42,7 +43,7 @@ class BSpline {
   }
 
   std::vector<double> Evaluate(std::array<double, DIM> param_coord, const std::vector<int> &dimensions) const {
-    auto basis_function_values = parameter_space_.EvaluateAllNonZeroBasisFunctions(param_coord);
+    auto basis_function_values = EvaluateAllNonZeroBasisFunctions(param_coord);
     std::vector<double> evaluated_point(dimensions.size(), 0);
     for (int i = 0; i < dimensions.size(); ++i) {
       evaluated_point[i] =
@@ -71,15 +72,15 @@ class BSpline {
 
  private:
   std::vector<double> ExtractControlPointValues(std::array<double, DIM> param_coord, int dimension) const {
-    std::vector<int, DIM> firstNonZeroKnots;
+    std::vector<int> firstNonZeroKnots;
     for (int i = 0; i < DIM; ++i) {
       firstNonZeroKnots.push_back(GetKnotVector(i).GetKnotSpan(param_coord[i]) - GetDegree(i));
     }
     std::array<int, DIM> lastKnotOffset;
     for (int i = 0; i < DIM; ++i) {
-      lastKnotOffset[i] = parameter_space_[i].degree_;
+      lastKnotOffset[i] = parameter_space_[i].degree();
     }
-    MultiIndexHandler MultiIndexHandler(lastKnotOffset);
+    MultiIndexHandler<DIM> multiIndexHandler(lastKnotOffset);
     int M = 1;
     for (int i = 0; i < DIM; ++i) {
       M *= lastKnotOffset[i] + 1;
@@ -88,15 +89,15 @@ class BSpline {
     std::array<int, DIM> controlPointIndices;
     for (int i = 0; i < M; ++i) {
       for (int j = 0; j < DIM; ++j) {
-        controlPointIndices = MultiIndexHandler[j] + firstNonZeroKnots[j];
+        controlPointIndices[j] = multiIndexHandler[j] + firstNonZeroKnots[j];
       }
       vector.push_back(control_points_[GetControlPointIndex(controlPointIndices, dimension)]);
-      MultiIndexHandler++;
+      multiIndexHandler++;
     }
     return vector;
   }
 
-  int GetControlPointIndex(std::array<int, DIM> controlPointIndices, int dimension) {
+  int GetControlPointIndex(std::array<int, DIM> controlPointIndices, int dimension) const {
     std::vector<int> numberCpPerDimension;
     for (int i = 0; i < DIM; ++i) {
       numberCpPerDimension.push_back(GetKnotVector(i).Size() - GetDegree(i) - 1);
@@ -132,9 +133,9 @@ class BSpline {
     }
     std::array<int, DIM> lastKnotOffset;
     for (int i = 0; i < DIM; ++i) {
-      lastKnotOffset[i] = parameter_space_[i].degree_;
+      lastKnotOffset[i] = parameter_space_[i].degree();
     }
-    MultiIndexHandler MultiIndexHandler(lastKnotOffset);
+    MultiIndexHandler<DIM> multiIndexHandler(lastKnotOffset);
     int M = 1;
     for (int i = 0; i < DIM; ++i) {
       M *= lastKnotOffset[i] + 1;
@@ -142,9 +143,9 @@ class BSpline {
     std::vector<double> vector(M, 1);
     for (int i = 0; i < M; ++i) {
       for (int j = 0; j < DIM; ++j) {
-        vector[i] *= (first_non_zero[j] + MultiIndexHandler[j])->Evaluate(param_coord[j]);
+        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j]);
       }
-      MultiIndexHandler++;
+      multiIndexHandler++;
     }
     return vector;
   }
