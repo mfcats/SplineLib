@@ -25,15 +25,15 @@ class A2DBSpline : public Test {
     std::array<KnotVector, 2> knot_vector = {KnotVector({0, 0, 0, 0.5, 1, 1, 1}), KnotVector({0, 0, 0, 0.5, 1, 1, 1})};
     std::array<int, 2> degree = {2, 2};
     std::vector<ControlPoint> control_points = {
-        ControlPoint(std::vector<double>({-1.0, -1.0})),
-        ControlPoint(std::vector<double>({0.0, -1.0})),
-        ControlPoint(std::vector<double>({1.0, -1.0})),
-        ControlPoint(std::vector<double>({-1.0, 0.0})),
-        ControlPoint(std::vector<double>({0.0, 0.0})),
-        ControlPoint(std::vector<double>({1.0, 0.0})),
-        ControlPoint(std::vector<double>({-1.0, 1.0})),
-        ControlPoint(std::vector<double>({0.0, 1.0})),
-        ControlPoint(std::vector<double>({1.0, 1.0}))
+        ControlPoint(std::vector<double>({-1.0, -1.0, 0.0})),
+        ControlPoint(std::vector<double>({0.0, -1.0, 0.0})),
+        ControlPoint(std::vector<double>({1.0, -1.0, 0.0})),
+        ControlPoint(std::vector<double>({-1.0, 0.0, 0.0})),
+        ControlPoint(std::vector<double>({0.0, 0.0, 1.0})),
+        ControlPoint(std::vector<double>({1.0, 0.0, 0.0})),
+        ControlPoint(std::vector<double>({-1.0, 1.0, 0.0})),
+        ControlPoint(std::vector<double>({0.0, 1.0, 0.0})),
+        ControlPoint(std::vector<double>({1.0, 1.0, 0.0}))
     };
     b_spline = std::make_unique<BSpline<2>>(knot_vector, degree, control_points);
   }
@@ -42,40 +42,32 @@ class A2DBSpline : public Test {
   std::unique_ptr<BSpline<2>> b_spline;
 };
 
-TEST_F(A2DBSpline, Returns0_0For0AndDim0) {
+TEST_F(A2DBSpline, Corner) {
   ASSERT_THAT(b_spline->Evaluate({0.0, 0.0}, {0})[0], DoubleEq(-1.0));
+  ASSERT_THAT(b_spline->Evaluate({0.0, 0.0}, {1})[0], DoubleEq(-1.0));
+  ASSERT_THAT(b_spline->Evaluate({0.0, 0.0}, {2})[0], DoubleEq(0.0));
 }
 
-/*
-TEST_F(ABSpline, Returns0_0For0AndDim1) {
-  ASSERT_THAT(b_spline->Evaluate({0.0}, {1})[0], DoubleEq(0.0));
+TEST_F(A2DBSpline, EdgeDim0) {
+  ASSERT_THAT(b_spline->Evaluate({0.0, 0.33333}, {0})[0], DoubleEq(-1.0));
+  ASSERT_THAT(b_spline->Evaluate({0.0, 0.33333}, {1})[0], DoubleEq(-0.33333));
+  ASSERT_THAT(b_spline->Evaluate({0.0, 0.33333}, {2})[0], DoubleEq(0.0));
 }
 
-TEST_F(ABSpline, Returns4_0For5AndDim0) {
-  ASSERT_THAT(b_spline->Evaluate({5.0}, {0})[0], DoubleEq(4.0));
+TEST_F(A2DBSpline, EdgeDim1) {
+  ASSERT_THAT(b_spline->Evaluate({0.33333, 0.0}, {0})[0], DoubleEq(-0.33333));
+  ASSERT_THAT(b_spline->Evaluate({0.33333, 0.0}, {1})[0], DoubleEq(-1.0));
+  ASSERT_THAT(b_spline->Evaluate({0.33333, 0.0}, {2})[0], DoubleEq(0.0));
 }
 
-TEST_F(ABSpline, Returns0_0For5AndDim1) {
-  ASSERT_THAT(b_spline->Evaluate({5.0}, {1})[0], DoubleEq(0.0));
+TEST_F(A2DBSpline, Center) {
+  ASSERT_THAT(b_spline->Evaluate({0.5, 0.5}, {0})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({0.5, 0.5}, {1})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({0.5, 0.5}, {2})[0], DoubleEq(1.0));
 }
 
-TEST_F(ABSpline, Returns1_5For2_5AndDim0) {
-  ASSERT_THAT(b_spline->Evaluate({2.5}, {0})[0], DoubleEq(1.5));
+TEST_F(A2DBSpline, Random) {
+  ASSERT_THAT(b_spline->Evaluate({0.75, 0.25}, {0})[0], DoubleEq(0.5));
+  ASSERT_THAT(b_spline->Evaluate({0.75, 0.25}, {1})[0], DoubleEq(-0.5));
+  ASSERT_THAT(b_spline->Evaluate({0.75, 0.25}, {2})[0], DoubleEq(0.14063));
 }
-
-TEST_F(ABSpline, Returns0_0For0_0Dim0AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({0.0}, {0}, 1)[0], DoubleEq(0.0));
-}
-
-TEST_F(ABSpline, Returns1_0For0_0Dim1AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({0.0}, {1}, 1)[0], DoubleEq(2.0));
-}
-
-TEST_F(ABSpline, Returns12_0For5_0Dim0AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({5.0}, {0}, 1)[0], DoubleEq(0.0));
-}
-
-TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({2.25}, {1}, 1)[0], DoubleEq(0.325));
-}
-*/
