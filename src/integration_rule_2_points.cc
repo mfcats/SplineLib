@@ -13,6 +13,3 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "integration_rule_2_points.h"
-
-IntegrationRule2Points::IntegrationRule2Points() : OneDimensionalIntegrationRule({-sqrt(1.0 / 3), sqrt(1.0 / 3.0)},
-                                                                                 {1, 1}) {}

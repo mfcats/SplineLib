@@ -13,11 +13,3 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "integration_rule_5_points.h"
-
-IntegrationRule5Points::IntegrationRule5Points() :
-    OneDimensionalIntegrationRule({-(1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7)),
-                                   -(1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7)), 0,
-                                   (1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7)),
-                                   (1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7))},
-                                  {(322.0 - 13 * sqrt(70)) / 900, (322.0 + 13 * sqrt(70)) / 900, 128.0 / 225,
-                                   (322.0 + 13 * sqrt(70)) / 900, (322.0 - 13 * sqrt(70)) / 900}) {}

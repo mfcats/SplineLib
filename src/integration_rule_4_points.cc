@@ -13,9 +13,3 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "integration_rule_4_points.h"
-
-IntegrationRule4Points::IntegrationRule4Points() :
-    OneDimensionalIntegrationRule({-sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5)), -sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5)),
-                                   sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5)), sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))},
-                                  {(18.0 - sqrt(30)) / 36, (18.0 + sqrt(30)) / 36, (18.0 + sqrt(30)) / 36,
-                                   (18.0 - sqrt(30)) / 36}) {}

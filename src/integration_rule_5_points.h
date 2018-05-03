@@ -15,11 +15,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_INTEGRATION_RULE_5_POINTS_H_
 #define SRC_INTEGRATION_RULE_5_POINTS_H_
 
-#include "one_dimensional_integration_rule.h"
+#include "integration_rule.h"
 
-class IntegrationRule5Points : public OneDimensionalIntegrationRule {
+#include <array>
+#include <cmath>
+
+template<int dimensions>
+class IntegrationRule5Points : public IntegrationRule<dimensions> {
  public:
-  IntegrationRule5Points();
+  IntegrationRule5Points() : IntegrationRule<dimensions>(
+      {IntegrationPoint<1>(std::array<double, 1>{-(1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7))},
+                           (322.0 - 13 * sqrt(70)) / 900),
+       IntegrationPoint<1>(std::array<double, 1>{-(1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7))},
+                           (322.0 + 13 * sqrt(70)) / 900),
+       IntegrationPoint<1>(std::array<double, 1>{0},
+                           128.0 / 225),
+       IntegrationPoint<1>(std::array<double, 1>{(1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7))},
+                           (322.0 + 13 * sqrt(70)) / 900),
+       IntegrationPoint<1>(std::array<double, 1>{(1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7))},
+                           (322.0 - 13 * sqrt(70)) / 900)}) {}
 };
 
 #endif  // SRC_INTEGRATION_RULE_5_POINTS_H_

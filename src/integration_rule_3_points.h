@@ -15,11 +15,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_INTEGRATION_RULE_3_POINTS_H_
 #define SRC_INTEGRATION_RULE_3_POINTS_H_
 
-#include "one_dimensional_integration_rule.h"
+#include "integration_rule.h"
 
-class IntegrationRule3Points : public OneDimensionalIntegrationRule {
+#include <array>
+#include <cmath>
+
+template<int dimensions>
+class IntegrationRule3Points : public IntegrationRule<dimensions> {
  public:
-  IntegrationRule3Points();
+  IntegrationRule3Points() : IntegrationRule<dimensions>(
+      {IntegrationPoint<1>(std::array<double, 1>{-sqrt(3.0 / 5)}, 5.0 / 9.0),
+       IntegrationPoint<1>(std::array<double, 1>{0}, 8.0 / 9.0),
+       IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0 / 5)}, 5.0 / 9.0)}) {}
 };
 
 #endif  // SRC_INTEGRATION_RULE_3_POINTS_H_

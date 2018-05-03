@@ -16,28 +16,46 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_INTEGRATION_RULE_H_
 
 #include <vector>
+#include <cmath>
 
-#include "one_dimensional_integration_rule.h"
+#include "integration_point.h"
+#include "multi_index_handler.h"
 
 template<int dimensions>
 class IntegrationRule {
  public:
-  explicit IntegrationRule(const OneDimensionalIntegrationRule &rule) : rules_(rule) {}
+  explicit IntegrationRule(const std::vector<IntegrationPoint<1>> &points) : points_(points) {}
 
   int points() const {
-    return pow(rules_.points(), dimensions);
+    return pow(points_.size(), dimensions);
   }
 
-  double point(int point, int dimension) const {
-    return rules_.point(point);
+  int point(int point, int dimension) const {
+    return points_[0].GetCoordinates()[dimension];
   }
 
-  double weight(int point, int dimension) const {
-    return rules_.weight(point);
+  std::vector<IntegrationPoint<dimensions>> GetIntegrationPoints() {
+    std::vector<IntegrationPoint<dimensions>> integration_points;
+    std::array<int, dimensions> max_dimension_points;
+    for (int i = 0; i < dimensions; i++) {
+      max_dimension_points[i] = dimensions;
+    }
+    MultiIndexHandler<dimensions> multiIndexHandler(max_dimension_points);
+    for (int i = 0; i < points(); i++) {
+      double weight = 1;
+      std::array<double, dimensions> coordinates;
+      for (int j = 0; j < dimensions; j++) {
+        weight *= points_[multiIndexHandler[j]].GetWeight();
+        coordinates[j] = points_[multiIndexHandler[j]].GetCoordinates()[j];
+      }
+      multiIndexHandler++;
+      integration_points.push_back(IntegrationPoint<dimensions>(coordinates, weight));
+    }
+    return integration_points;
   }
 
  private:
-  OneDimensionalIntegrationRule rules_;
+  std::vector<IntegrationPoint<1>> points_;
 };
 
 #endif  // SRC_INTEGRATION_RULE_H_

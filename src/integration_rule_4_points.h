@@ -15,11 +15,19 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_INTEGRATION_RULE_4_POINTS_H_
 #define SRC_INTEGRATION_RULE_4_POINTS_H_
 
-#include "one_dimensional_integration_rule.h"
+#include "integration_rule.h"
 
-class IntegrationRule4Points : public OneDimensionalIntegrationRule {
+#include <array>
+#include <cmath>
+
+template<int dimensions>
+class IntegrationRule4Points : public IntegrationRule<dimensions> {
  public:
-  IntegrationRule4Points();
+  IntegrationRule4Points() : IntegrationRule<dimensions>(
+      {IntegrationPoint<1>(std::array<double, 1>{-sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))}, (18.0 - sqrt(30)) / 36),
+       IntegrationPoint<1>(std::array<double, 1>{-sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))}, (18.0 + sqrt(30)) / 36),
+       IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))}, (18.0 + sqrt(30)) / 36),
+       IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))}, (18.0 - sqrt(30)) / 36)}) {}
 };
 
 #endif  // SRC_INTEGRATION_RULE_4_POINTS_H_

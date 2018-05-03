@@ -17,12 +17,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_INTEGRATION_POINT_H_
 #define SRC_INTEGRATION_POINT_H_
 
-template <int DIM>
+template<int DIM>
 class IntegrationPoint {
  public:
-  IntegrationPoint(const std::array<double, DIM> &coordinates, double weight) : coordinates_(coordinates), weight_(weight) {}
+  IntegrationPoint(const std::array<double, DIM> &coordinates, double weight)
+      : coordinates_(coordinates), weight_(weight) {}
 
-  constexpr int GetDimension() const {
+  int GetDimension() const {
     return DIM;
   }
 

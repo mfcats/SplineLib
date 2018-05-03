@@ -13,5 +13,3 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "integration_rule_1_point.h"
-
-IntegrationRule1Point::IntegrationRule1Point() : OneDimensionalIntegrationRule({0}, {2}) {}

@@ -26,10 +26,10 @@ set(SOURCES
         element_generator.cc
         one_dimensional_integration_rule.cc
         integration_rule_1_point.cc
-        integration_rule_2_points.cc
-        integration_rule_3_points.cc
-        integration_rule_4_points.cc
-        integration_rule_5_points.cc
+        #integration_rule_2_points.cc
+        #integration_rule_3_points.cc
+        #integration_rule_4_points.cc
+        #integration_rule_5_points.cc
         )
 
 add_library(SplineLib SHARED ${SOURCES})

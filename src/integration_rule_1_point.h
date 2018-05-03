@@ -15,11 +15,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_INTEGRATION_RULE_1_POINT_H_
 #define SRC_INTEGRATION_RULE_1_POINT_H_
 
-#include "one_dimensional_integration_rule.h"
+#include "integration_rule.h"
 
-class IntegrationRule1Point : public OneDimensionalIntegrationRule {
+template<int dimensions>
+class IntegrationRule1Point : public IntegrationRule<dimensions> {
  public:
-  IntegrationRule1Point();
+  IntegrationRule1Point() : IntegrationRule<dimensions>({IntegrationPoint<1>(std::array<double, 1>{0}, 2)}) {}
 };
 
 #endif  // SRC_INTEGRATION_RULE_1_POINT_H_
