@@ -17,24 +17,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "multi_index_handler.h"
 #include <array>
-#include <iostream>
 
 template<int DIM>
 class MultiIndexHandler {
  public:
-  MultiIndexHandler(std::array<int, DIM> &lastKnotOffset)
-      : lastKnotOffset(lastKnotOffset), currentMultiIndex({0}) {}
+  MultiIndexHandler(std::array<int, DIM> &multi_index_length)
+      : multi_index_length(multi_index_length), current_multi_index_value({0}) {}
 
   int operator[](int i) {
-    return currentMultiIndex[i];
+    return current_multi_index_value[i];
   }
 
   MultiIndexHandler &operator++() {
     for (int i = 0; i < DIM; ++i) {
-      if (currentMultiIndex[i] == lastKnotOffset[i]) {
-        currentMultiIndex[i] = 0;
+      if (current_multi_index_value[i] == multi_index_length[i] - 1) {
+        current_multi_index_value[i] = 0;
       } else {
-        currentMultiIndex[i]++;
+        current_multi_index_value[i]++;
         break;
       }
     }
@@ -49,26 +48,26 @@ class MultiIndexHandler {
 
   void SetIndices(std::array<int, DIM> &indices){
 	  for (int i = 0; i < DIM; ++i) {
-		  currentMultiIndex[i] = indices[i];
+        current_multi_index_value[i] = indices[i];
 	  }
   }
 
   int Get1DIndex(){
-	  int temp;
-	  int a = 0;
+    int index_1d = 0;
+    int temp;
 	  for (int i = 0; i < DIM; ++i){
-		  temp = currentMultiIndex[i];
+        temp = current_multi_index_value[i];
 		  for(int j = i-1; j >= 0; --j){
-			  temp *= lastKnotOffset[j];
+            temp *= multi_index_length[j];
 		  }
-		  a += temp;
+        index_1d += temp;
 	  }
-	  return a;
+    return index_1d;
   }
 
  private:
-  std::array<int, DIM> lastKnotOffset;
-  std::array<int, DIM> currentMultiIndex;
+  std::array<int, DIM> multi_index_length;
+  std::array<int, DIM> current_multi_index_value;
 };
 
 #endif //SPLINELIB_MULTI_INDEX_HANDLER_H

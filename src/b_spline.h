@@ -21,8 +21,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 #include <array>
 
-#include <iostream>
-
 #include "control_point.h"
 #include "parameter_space.h"
 #include "multi_index_handler.h"
@@ -124,14 +122,14 @@ class BSpline {
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] = parameter_space_[i].GetFirstNonZeroKnot(param_coord[i]);
     }
-    std::array<int, DIM> lastKnotOffset;
+    std::array<int, DIM> total_length;
     for (int i = 0; i < DIM; ++i) {
-      lastKnotOffset[i] = parameter_space_[i].degree();
+      total_length[i] = parameter_space_[i].degree() + 1;
     }
-    MultiIndexHandler<DIM> multiIndexHandler(lastKnotOffset);
+    MultiIndexHandler<DIM> multiIndexHandler(total_length);
     int M = 1;
     for (int i = 0; i < DIM; ++i) {
-      M *= lastKnotOffset[i] + 1;
+      M *= total_length[i];
     }
     std::vector<double> vector(M, 1);
     for (int i = 0; i < M; ++i) {
@@ -149,14 +147,14 @@ class BSpline {
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] = parameter_space_[i].GetFirstNonZeroKnot(param_coord[i]);
     }
-    std::array<int, DIM> lastKnotOffset;
+    std::array<int, DIM> total_length;
     for (int i = 0; i < DIM; ++i) {
-      lastKnotOffset[i] = parameter_space_[i].degree();
+      total_length[i] = parameter_space_[i].degree() + 1;
     }
-    MultiIndexHandler<DIM> multiIndexHandler(lastKnotOffset);
+    MultiIndexHandler<DIM> multiIndexHandler(total_length);
     int M = 1;
     for (int i = 0; i < DIM; ++i) {
-      M *= lastKnotOffset[i] + 1;
+      M *= total_length[i];
     }
     std::vector<double> vector(M, 1);
     for (int i = 0; i < M; ++i) {
