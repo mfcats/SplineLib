@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "multi_index_handler.h"
 #include <array>
+#include <iostream>
 
 template<int DIM>
 class MultiIndexHandler {
@@ -44,6 +45,25 @@ class MultiIndexHandler {
     MultiIndexHandler result(*this);
     ++(*this);
     return result;
+  }
+
+  void SetIndices(std::array<int, DIM> &indices){
+	  for (int i = 0; i < DIM; ++i) {
+		  currentMultiIndex[i] = indices[i];
+	  }
+  }
+
+  int Get1DIndex(){
+	  int temp;
+	  int a = 0;
+	  for (int i = 0; i < DIM; ++i){
+		  temp = currentMultiIndex[i];
+		  for(int j = i-1; j >= 0; --j){
+			  temp *= lastKnotOffset[j];
+		  }
+		  a += temp;
+	  }
+	  return a;
   }
 
  private:

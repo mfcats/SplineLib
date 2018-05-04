@@ -71,3 +71,4 @@ TEST_F(A2DBSpline, Random) {
   ASSERT_THAT(b_spline->Evaluate({0.75, 0.25}, {1})[0], DoubleEq(-0.5));
   ASSERT_THAT(b_spline->Evaluate({0.75, 0.25}, {2})[0], DoubleEq(0.14063));
 }
+
