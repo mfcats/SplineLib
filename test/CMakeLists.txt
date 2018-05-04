@@ -18,7 +18,11 @@ set(TEST_SOURCES
         control_point_test.cc
         zero_degree_b_spline_basis_function_test.cc
         b_spline_basis_function_test.cc
-        b_spline_test.cc)
+        b_spline_test.cc
+        element_test.cc
+        integration_rule_test.cc
+        integration_point_test.cc
+        )
 
 find_package(GTest REQUIRED)
 

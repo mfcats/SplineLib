@@ -18,6 +18,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "control_point.h"
+#include "integration_rule.h"
+#include "knot_vector.h"
 #include "parameter_space.h"
 
 class BSpline {
@@ -30,14 +32,27 @@ class BSpline {
   int GetDegree() const;
   KnotVector GetKnotVector() const;
 
+  std::vector<Element> GetElementList() const;
+  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
+                                                                           const IntegrationRule<1> &rule) const;
+  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(
+      int element_number,
+      const IntegrationRule<1> &rule) const;
+
+  double JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const;
+
  private:
   std::vector<double> ExtractControlPointValues(double param_coord, int dimension) const;
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,
                             std::vector<double> control_point_values) const;
+  std::vector<std::vector<double>> TransformToPhysicalSpace(std::vector<std::vector<double>> values,
+                                                            int element_number,
+                                                            const IntegrationRule<1> &rule) const;
+  double TransformToParameterSpace(double upper, double lower, double point) const;
 
   ParameterSpace parameter_space_;
   std::vector<double> control_points_;
-  int dim;
+  int spline_dimension_;
 };
 
 #endif  // SRC_B_SPLINE_H_

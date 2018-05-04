@@ -15,10 +15,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "parameter_space.h"
 
 #include "basis_function_factory.h"
+#include "element_generator.h"
 
 ParameterSpace::ParameterSpace(const KnotVector &knot_vector, int degree) : degree_(degree), knot_vector_(knot_vector) {
   BasisFunctionFactory factory;
-
   basis_functions_.reserve(knot_vector_.Size() - degree_ - 1);
   for (uint64_t i = 0; i < (knot_vector_.Size() - degree_ - 1); ++i) {
     basis_functions_.emplace_back(factory.CreateDynamic(knot_vector_, i, degree_));
@@ -57,4 +57,35 @@ KnotVector ParameterSpace::knot_vector() const {
 std::vector<std::unique_ptr<BasisFunction>>::const_iterator ParameterSpace::GetFirstNonZeroKnot(
     double param_coord) const {
   return basis_functions_.begin() + knot_vector_.GetKnotSpan(param_coord) - degree_;
+}
+
+std::vector<std::vector<double>>
+ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number, const IntegrationRule<1> &rule) const {
+  Element element = GetElementList()[element_number];
+  std::vector<std::vector<double>> basis_function_values;
+  for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
+    double integration_point = TransformToParameterSpace(element.node(1), element.node(0), rule.coordinate(point, 0));
+    basis_function_values.push_back(EvaluateAllNonZeroBasisFunctions(integration_point));
+  }
+  return basis_function_values;
+}
+
+std::vector<std::vector<double>> ParameterSpace::EvaluateAllElementNonZeroBasisFunctionDerivatives(
+    int element_number,
+    const IntegrationRule<1> &rule) const {
+  Element element = GetElementList()[element_number];
+  std::vector<std::vector<double>> basis_function_values;
+  for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
+    double integration_point = TransformToParameterSpace(element.node(1), element.node(0), rule.coordinate(point, 0));
+    basis_function_values.push_back(EvaluateAllNonZeroBasisFunctionDerivatives(integration_point, 1));
+  }
+  return basis_function_values;
+}
+
+std::vector<Element> ParameterSpace::GetElementList() const {
+  return ElementGenerator(degree_, knot_vector_).GetElementList();
+}
+
+double ParameterSpace::TransformToParameterSpace(double upper, double lower, double point) const {
+  return ((upper - lower) * point + (upper + lower)) / 2.0;
 }
