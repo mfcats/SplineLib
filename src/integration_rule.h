@@ -15,8 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_INTEGRATION_RULE_H_
 #define SRC_INTEGRATION_RULE_H_
 
-#include <vector>
 #include <cmath>
+#include <vector>
 
 #include "integration_point.h"
 #include "multi_index_handler.h"
@@ -30,15 +30,19 @@ class IntegrationRule {
     return pow(points_.size(), dimensions);
   }
 
-  int point(int point, int dimension) const {
-    return points_[0].GetCoordinates()[dimension];
+  double coordinate(int point, int dimension) const {
+#ifdef DEBUG
+    return points_.at(point).GetCoordinates().at(dimension);
+#else
+    return points_[point].GetCoordinates()[dimension];
+#endif
   }
 
   std::vector<IntegrationPoint<dimensions>> GetIntegrationPoints() {
     std::vector<IntegrationPoint<dimensions>> integration_points;
     std::array<int, dimensions> max_dimension_points;
     for (int i = 0; i < dimensions; i++) {
-      max_dimension_points[i] = dimensions;
+      max_dimension_points[i] = points_.size() - 1;
     }
     MultiIndexHandler<dimensions> multiIndexHandler(max_dimension_points);
     for (int i = 0; i < points(); i++) {

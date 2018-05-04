@@ -71,7 +71,8 @@ std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunction
 double BSpline::JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const {
   Element element = GetElementList()[element_number];
   double dx_dxi =
-      EvaluateDerivative(TransformToParameterSpace(element.node(0), element.node(1), rule.point(integration_point, 0)),
+      EvaluateDerivative(TransformToParameterSpace(element.node(0), element.node(1),
+                                                   rule.coordinate(integration_point, 0)),
                          {0},
                          1)[0];
   double dxi_dtildexi = (element.node(1) - element.node(0)) / 2;
@@ -118,7 +119,7 @@ std::vector<std::vector<double>> BSpline::TransformToPhysicalSpace(std::vector<s
                    std::bind2nd(std::divides<double>(),
                                 EvaluateDerivative(TransformToParameterSpace(element.node(0),
                                                                              element.node(1),
-                                                                             rule.point(point, 0)), {0}, 1)[0]));
+                                                                             rule.coordinate(point, 0)), {0}, 1)[0]));
   }
   return values;
 }

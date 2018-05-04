@@ -25,7 +25,7 @@ class IntegrationRule2Points : public IntegrationRule<dimensions> {
  public:
   IntegrationRule2Points() : IntegrationRule<dimensions>(
       {IntegrationPoint<1>(std::array<double, 1>{-sqrt(1.0 / 3)}, 1),
-       IntegrationPoint<1>(std::array<double, 1>{-sqrt(1.0 / 3)}, 1)}) {}
+       IntegrationPoint<1>(std::array<double, 1>{sqrt(1.0 / 3)}, 1)}) {}
 };
 
 #endif  // SRC_INTEGRATION_RULE_2_POINTS_H_

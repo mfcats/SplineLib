@@ -69,18 +69,17 @@ TEST_F(A1DIntegrationRule, ReturnsCorrectNumberOfPoints) {
   }
 }
 
-TEST_F(A1DIntegrationRule, ReturnsCorrectWeights) {
+TEST_F(A1DIntegrationRule, ReturnsCorrectWeightSum) {
   for (int points = 1; points <= 5; points++) {
     double weight_sum = 0;
     for (int weight = 0; weight < points; weight++) {
       weight_sum += rules_[points - 1].GetIntegrationPoints()[weight].GetWeight();
     }
-    //ASSERT_THAT((2 * (322.0 - 13 * sqrt(70)) / 900.0 + 2*(322.0 + 13 * sqrt(70)) / 900.0 + 128.0 / 225.0), DoubleEq(2));
     ASSERT_THAT(weight_sum, DoubleEq(2));
   }
 }
 
-TEST_F(A1DIntegrationRule, ReturnsCorrectPoints) {
+TEST_F(A1DIntegrationRule, ReturnsCorrectPointSum) {
   for (int points = 1; points <= 5; points++) {
     double point_sum = 0;
     for (int point = 0; point < points; point++) {
@@ -100,23 +99,33 @@ class A2DIntegrationRuleWith3Points : public Test {
 
 TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {
   ASSERT_THAT(rule_.points(), 9);
+  ASSERT_THAT(rule_.GetIntegrationPoints().size(), 9);
 }
 
 TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPoint) {
-  ASSERT_THAT(rule_.point(1, 0), 0);
-  ASSERT_THAT(rule_.point(1, 1), 0);
+  ASSERT_THAT(rule_.coordinate(0, 0), DoubleNear(-sqrt(3.0 / 5), NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(rule_.coordinate(1, 0), DoubleNear(0, NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(rule_.coordinate(2, 0), DoubleNear(sqrt(3.0 / 5), NumericSettings<double>::kEpsilon()));
 }
 
-TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectWeights) {
-  ASSERT_THAT(rule_.GetIntegrationPoints()[0].GetWeight(), DoubleEq(25.0 / 81.0));
-  ASSERT_THAT(rule_.GetIntegrationPoints()[1].GetWeight(), DoubleEq(40.0 / 81.0));
-  ASSERT_THAT(rule_.GetIntegrationPoints()[2].GetWeight(), DoubleEq(25.0 / 81.0));
-  ASSERT_THAT(rule_.GetIntegrationPoints()[3].GetWeight(), DoubleEq(40.0 / 81.0));
-  ASSERT_THAT(rule_.GetIntegrationPoints()[4].GetWeight(), DoubleEq(64.0 / 81.0));
-  ASSERT_THAT(rule_.GetIntegrationPoints()[5].GetWeight(), DoubleEq(40.0 / 81.0));
-  ASSERT_THAT(rule_.GetIntegrationPoints()[6].GetWeight(), DoubleEq(25.0 / 81.0));
-  ASSERT_THAT(rule_.GetIntegrationPoints()[7].GetWeight(), DoubleEq(40.0 / 81.0));
-  ASSERT_THAT(rule_.GetIntegrationPoints()[8].GetWeight(), DoubleEq(25.0 / 81.0));
+TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectWeightSum) {
+  double weight_sum = 0;
+  for (int weight = 0; weight < rule_.points(); weight++) {
+    weight_sum += rule_.GetIntegrationPoints()[weight].GetWeight();
+  }
+  ASSERT_THAT(weight_sum, DoubleEq(4));
+}
+
+TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPointSum) {
+  double point_sum = 0;
+  for (int weight_dim0 = 0; weight_dim0 < 3; weight_dim0++) {
+    for (int weight_dim1 = 0; weight_dim1 < 3; weight_dim1++) {
+      for (int dimension = 0; dimension < 2; dimension++) {
+        point_sum += rule_.GetIntegrationPoints()[weight_dim1 * 3 + weight_dim0].GetCoordinates()[0];
+      }
+    }
+  }
+  ASSERT_THAT(point_sum, DoubleEq(0));
 }
 
 TEST(A3DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {
