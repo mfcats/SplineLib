@@ -21,11 +21,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 template<int DIM>
 class MultiIndexHandler {
  public:
-  MultiIndexHandler(std::array<int, DIM> &multi_index_length)
-      : multi_index_length(multi_index_length), current_multi_index_value({0}) {}
+  explicit MultiIndexHandler(const std::array<int, DIM> &maximum_multi_index_value) : maximum_multi_index_value_(
+      multi_index_length), current_multi_index_value_({0}) {}
 
   int operator[](int i) {
-    return current_multi_index_value[i];
+    return current_multi_index_value_[i];
   }
 
   MultiIndexHandler &operator++() {
@@ -40,7 +40,7 @@ class MultiIndexHandler {
     return *this;
   }
 
-  MultiIndexHandler operator++(int) {
+  const MultiIndexHandler operator++(int) {
     MultiIndexHandler result(*this);
     ++(*this);
     return result;

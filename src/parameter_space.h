@@ -18,6 +18,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "basis_function.h"
+#include "element.h"
+#include "integration_rule.h"
 #include "knot_vector.h"
 
 class ParameterSpace {
@@ -31,6 +33,13 @@ class ParameterSpace {
   int degree() const;
 
   KnotVector knot_vector() const;
+
+  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
+                                                                           const IntegrationRule<1> &rule) const;
+  std::vector<std::vector<double>>
+  EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const IntegrationRule<1> &rule) const;
+  std::vector<Element> GetElementList() const;
+  double TransformToParameterSpace(double upper, double lower, double point) const;
 
  private:
   KnotVector knot_vector_;

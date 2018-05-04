@@ -22,6 +22,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 
 #include "control_point.h"
+#include "integration_rule.h"
+#include "knot_vector.h"
 #include "parameter_space.h"
 #include "multi_index_handler.h"
 
@@ -72,6 +74,15 @@ class BSpline {
     return parameter_space_[i].knot_vector();
   }
 
+  std::vector<Element> GetElementList() const;
+  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
+                                                                           const IntegrationRule<1> &rule) const;
+  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(
+      int element_number,
+      const IntegrationRule<1> &rule) const;
+
+  double JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const;
+
  private:
   std::vector<double> ExtractControlPointValues(std::array<double, DIM> param_coord, int dimension) const {
     std::array<int, DIM + 1> start;
@@ -116,6 +127,11 @@ class BSpline {
                    std::multiplies<double>());
     return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
   }
+
+  std::vector<std::vector<double>> TransformToPhysicalSpace(std::vector<std::vector<double>> values,
+                                                            int element_number,
+                                                            const IntegrationRule<1> &rule) const;
+  double TransformToParameterSpace(double upper, double lower, double point) const;
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const {
     std::array<std::vector<std::unique_ptr<BasisFunction>>::const_iterator, DIM> first_non_zero;
