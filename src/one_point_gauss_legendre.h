@@ -12,20 +12,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_INTEGRATION_RULE_2_POINTS_H_
-#define SRC_INTEGRATION_RULE_2_POINTS_H_
+#ifndef SRC_ONE_POINT_GAUSS_LEGENDRE_H_
+#define SRC_ONE_POINT_GAUSS_LEGENDRE_H_
 
 #include "integration_rule.h"
 
-#include <array>
-#include <cmath>
-
-template<int dimensions>
-class IntegrationRule2Points : public IntegrationRule<dimensions> {
+template<int DIM>
+class OnePointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  IntegrationRule2Points() : IntegrationRule<dimensions>(
-      {IntegrationPoint<1>(std::array<double, 1>{-sqrt(1.0 / 3)}, 1),
-       IntegrationPoint<1>(std::array<double, 1>{sqrt(1.0 / 3)}, 1)}) {}
+  OnePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{0}, 2)}) {}
 };
 
-#endif  // SRC_INTEGRATION_RULE_2_POINTS_H_
+#endif  // SRC_ONE_POINT_GAUSS_LEGENDRE_H_

@@ -12,28 +12,27 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_MULTI_INDEX_HANDLER_H
-#define SPLINELIB_MULTI_INDEX_HANDLER_H
+#ifndef SRC_MULTI_INDEX_HANDLER_H_
+#define SRC_MULTI_INDEX_HANDLER_H_
 
-#include "multi_index_handler.h"
 #include <array>
 
 template<int DIM>
 class MultiIndexHandler {
  public:
-  MultiIndexHandler(std::array<int, DIM> &lastKnotOffset)
-      : lastKnotOffset(lastKnotOffset), currentMultiIndex({0}) {}
+  explicit MultiIndexHandler(const std::array<int, DIM> &maximum_multi_index_value) : maximum_multi_index_value_(
+      maximum_multi_index_value), current_multi_index_value_({0}) {}
 
   int operator[](int i) {
-    return currentMultiIndex[i];
+    return current_multi_index_value_[i];
   }
 
   MultiIndexHandler &operator++() {
     for (int i = 0; i < DIM; ++i) {
-      if (currentMultiIndex[i] == lastKnotOffset[i]) {
-        currentMultiIndex[i] = 0;
+      if (current_multi_index_value_[i] == maximum_multi_index_value_[i]) {
+        current_multi_index_value_[i] = 0;
       } else {
-        currentMultiIndex[i]++;
+        current_multi_index_value_[i]++;
         break;
       }
     }
@@ -47,8 +46,8 @@ class MultiIndexHandler {
   }
 
  private:
-  std::array<int, DIM> lastKnotOffset;
-  std::array<int, DIM> currentMultiIndex;
+  std::array<int, DIM> maximum_multi_index_value_;
+  std::array<int, DIM> current_multi_index_value_;
 };
 
-#endif //SPLINELIB_MULTI_INDEX_HANDLER_H
+#endif  // SRC_MULTI_INDEX_HANDLER_H_

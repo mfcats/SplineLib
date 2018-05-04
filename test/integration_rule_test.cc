@@ -14,49 +14,26 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include <cmath>
-
+#include "five_point_gauss_legendre.h"
+#include "four_point_gauss_legendre.h"
 #include "integration_rule.h"
-#include "integration_rule_1_point.h"
-#include "integration_rule_2_points.h"
-#include "integration_rule_3_points.h"
-#include "integration_rule_4_points.h"
-#include "integration_rule_5_points.h"
 #include "numeric_settings.h"
+#include "one_point_gauss_legendre.h"
+#include "three_point_gauss_legendre.h"
+#include "two_point_gauss_legendre.h"
 
 using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
-class A1DIntegrationPoint : public Test {
- public:
-  A1DIntegrationPoint() : integration_point_({1.5}, 0.5) {}
-
- protected:
-  IntegrationPoint<1> integration_point_;
-};
-
-TEST_F(A1DIntegrationPoint, ReturnsCorrectCoordinate) {
-  ASSERT_THAT(integration_point_.GetCoordinates().size(), 1);
-  ASSERT_THAT(integration_point_.GetCoordinates()[0], DoubleEq(1.5));
-}
-
-TEST_F(A1DIntegrationPoint, ReturnsCorrectWeight) {
-  ASSERT_THAT(integration_point_.GetWeight(), DoubleEq(0.5));
-}
-
-TEST_F(A1DIntegrationPoint, ReturnsCorrectDimension) {
-  ASSERT_THAT(integration_point_.GetDimension(), 1);
-}
-
 class A1DIntegrationRule : public Test {
  public:
   A1DIntegrationRule() {
-    rules_.emplace_back(IntegrationRule1Point<1>());
-    rules_.emplace_back(IntegrationRule2Points<1>());
-    rules_.emplace_back(IntegrationRule3Points<1>());
-    rules_.emplace_back(IntegrationRule4Points<1>());
-    rules_.emplace_back(IntegrationRule5Points<1>());
+    rules_.emplace_back(OnePointGaussLegendre<1>());
+    rules_.emplace_back(TwoPointGaussLegendre<1>());
+    rules_.emplace_back(ThreePointGaussLegendre<1>());
+    rules_.emplace_back(FourPointGaussLegendre<1>());
+    rules_.emplace_back(FivePointGaussLegendre<1>());
   };
 
  protected:
@@ -65,7 +42,7 @@ class A1DIntegrationRule : public Test {
 
 TEST_F(A1DIntegrationRule, ReturnsCorrectNumberOfPoints) {
   for (int points = 1; points <= 5; points++) {
-    ASSERT_THAT(rules_[points - 1].points(), points);
+    ASSERT_THAT(rules_[points - 1].GetNumberOfIntegrationPoints(), points);
   }
 }
 
@@ -91,14 +68,14 @@ TEST_F(A1DIntegrationRule, ReturnsCorrectPointSum) {
 
 class A2DIntegrationRuleWith3Points : public Test {
  public:
-  A2DIntegrationRuleWith3Points() : rule_(IntegrationRule3Points<2>()) {}
+  A2DIntegrationRuleWith3Points() : rule_(ThreePointGaussLegendre<2>()) {}
 
  protected:
   IntegrationRule<2> rule_;
 };
 
 TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {
-  ASSERT_THAT(rule_.points(), 9);
+  ASSERT_THAT(rule_.GetNumberOfIntegrationPoints(), 9);
   ASSERT_THAT(rule_.GetIntegrationPoints().size(), 9);
 }
 
@@ -110,7 +87,7 @@ TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPoint) {
 
 TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectWeightSum) {
   double weight_sum = 0;
-  for (int weight = 0; weight < rule_.points(); weight++) {
+  for (int weight = 0; weight < rule_.GetNumberOfIntegrationPoints(); weight++) {
     weight_sum += rule_.GetIntegrationPoints()[weight].GetWeight();
   }
   ASSERT_THAT(weight_sum, DoubleEq(4));
@@ -129,9 +106,9 @@ TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPointSum) {
 }
 
 TEST(A3DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {
-  ASSERT_THAT(IntegrationRule3Points<3>().points(), 27);
+  ASSERT_THAT(ThreePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 27);
 }
 
 TEST(A3DIntegrationRuleWith1Point, ReturnsCorrectNumberOfPoints) {
-  ASSERT_THAT(IntegrationRule1Point<3>().points(), 1);
+  ASSERT_THAT(OnePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 1);
 }

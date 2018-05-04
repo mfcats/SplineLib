@@ -52,7 +52,7 @@ class BSpline {
 
   ParameterSpace parameter_space_;
   std::vector<double> control_points_;
-  int dim;
+  int spline_dimension_;
 };
 
 #endif  // SRC_B_SPLINE_H_

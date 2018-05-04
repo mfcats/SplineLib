@@ -12,21 +12,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_INTEGRATION_RULE_3_POINTS_H_
-#define SRC_INTEGRATION_RULE_3_POINTS_H_
+#ifndef SRC_THREE_POINT_GAUSS_LEGENDRE_H_
+#define SRC_THREE_POINT_GAUSS_LEGENDRE_H_
+
+#include <cmath>
+#include <array>
 
 #include "integration_rule.h"
 
-#include <array>
-#include <cmath>
-
-template<int dimensions>
-class IntegrationRule3Points : public IntegrationRule<dimensions> {
+template<int DIM>
+class ThreePointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  IntegrationRule3Points() : IntegrationRule<dimensions>(
-      {IntegrationPoint<1>(std::array<double, 1>{-sqrt(3.0 / 5)}, 5.0 / 9.0),
-       IntegrationPoint<1>(std::array<double, 1>{0}, 8.0 / 9.0),
-       IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0 / 5)}, 5.0 / 9.0)}) {}
+  ThreePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{-sqrt(3.0/5)}, 5.0/9.0),
+                                                      IntegrationPoint<1>(std::array<double, 1>{0}, 8.0/9.0),
+                                                      IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0/5)},
+                                                                          5.0/9.0)}) {}
 };
 
-#endif  // SRC_INTEGRATION_RULE_3_POINTS_H_
+#endif  // SRC_THREE_POINT_GAUSS_LEGENDRE_H_

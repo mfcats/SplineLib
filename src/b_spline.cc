@@ -19,9 +19,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <numeric>
 
 BSpline::BSpline(const KnotVector &knot_vector, int degree, const std::vector<ControlPoint> &control_points)
-    : parameter_space_(ParameterSpace(knot_vector, degree)), dim(control_points[0].GetDimension()) {
+    : parameter_space_(ParameterSpace(knot_vector, degree)), spline_dimension_(control_points[0].GetDimension()) {
   for (auto &&cp : control_points) {
-    for (int i = 0; i < dim; ++i) {
+    for (int i = 0; i < spline_dimension_; ++i) {
       control_points_.emplace_back(cp.GetValue(i));
     }
   }
@@ -70,13 +70,11 @@ std::vector<std::vector<double>> BSpline::EvaluateAllElementNonZeroBasisFunction
 
 double BSpline::JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const {
   Element element = GetElementList()[element_number];
-  double dx_dxi =
-      EvaluateDerivative(TransformToParameterSpace(element.node(0), element.node(1),
-                                                   rule.coordinate(integration_point, 0)),
-                         {0},
-                         1)[0];
-  double dxi_dtildexi = (element.node(1) - element.node(0)) / 2;
-  return dx_dxi * dxi_dtildexi;
+  double dx_dxi = EvaluateDerivative(TransformToParameterSpace(element.node(0),
+                                                               element.node(1),
+                                                               rule.coordinate(integration_point, 0)), {0}, 1)[0];
+  double dxi_dtildexi = (element.node(1) - element.node(0))/2.0;
+  return dx_dxi*dxi_dtildexi;
 }
 
 int BSpline::GetDegree() const {
@@ -90,10 +88,10 @@ KnotVector BSpline::GetKnotVector() const {
 std::vector<double> BSpline::ExtractControlPointValues(double param_coord, int dimension) const {
   std::vector<double> control_point_values(static_cast<uint64_t>(GetDegree() + 1), 0.0);
   auto control_points =
-      control_points_.begin() + (GetKnotVector().GetKnotSpan(param_coord) - GetDegree()) * dim + dimension;
+      control_points_.begin() + (GetKnotVector().GetKnotSpan(param_coord) - GetDegree())*spline_dimension_ + dimension;
   for (int i = 0; i < GetDegree() + 1; ++i) {
     control_point_values[i] = *control_points;
-    control_points += dim;
+    control_points += spline_dimension_;
   }
   return control_point_values;
 }
@@ -112,7 +110,7 @@ std::vector<std::vector<double>> BSpline::TransformToPhysicalSpace(std::vector<s
                                                                    int element_number,
                                                                    const IntegrationRule<1> &rule) const {
   Element element = GetElementList()[element_number];
-  for (int point = 0; point < rule.points(); point++) {
+  for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
     std::transform(values[point].cbegin(),
                    values[point].cend(),
                    values[point].begin(),

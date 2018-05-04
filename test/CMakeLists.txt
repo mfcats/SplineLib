@@ -21,6 +21,7 @@ set(TEST_SOURCES
         b_spline_test.cc
         element_test.cc
         integration_rule_test.cc
+        integration_point_test.cc
         )
 
 find_package(GTest REQUIRED)

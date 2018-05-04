@@ -12,15 +12,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_INTEGRATION_RULE_1_POINT_H_
-#define SRC_INTEGRATION_RULE_1_POINT_H_
+#ifndef SRC_FOUR_POINT_GAUSS_LEGENDRE_H_
+#define SRC_FOUR_POINT_GAUSS_LEGENDRE_H_
+
+#include <cmath>
+#include <array>
 
 #include "integration_rule.h"
 
-template<int dimensions>
-class IntegrationRule1Point : public IntegrationRule<dimensions> {
+template<int DIM>
+class FourPointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  IntegrationRule1Point() : IntegrationRule<dimensions>({IntegrationPoint<1>(std::array<double, 1>{0}, 2)}) {}
+  FourPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{
+      -sqrt(3.0/7 + 2.0/7*sqrt(6.0/5))}, (18.0 - sqrt(30))/36), IntegrationPoint<1>(std::array<double, 1>{
+      -sqrt(3.0/7 - 2.0/7*sqrt(6.0/5))}, (18.0 + sqrt(30))/36), IntegrationPoint<1>(std::array<double, 1>{
+      sqrt(3.0/7 - 2.0/7*sqrt(6.0/5))}, (18.0 + sqrt(30))/36), IntegrationPoint<1>(std::array<double, 1>{
+      sqrt(3.0/7 + 2.0/7*sqrt(6.0/5))}, (18.0 - sqrt(30))/36)}) {}
 };
 
-#endif  // SRC_INTEGRATION_RULE_1_POINT_H_
+#endif  // SRC_FOUR_POINT_GAUSS_LEGENDRE_H_

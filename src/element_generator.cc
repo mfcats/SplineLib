@@ -20,7 +20,7 @@ ElementGenerator::ElementGenerator(int degree, const KnotVector &knot_vector)
 std::vector<Element> ElementGenerator::GetElementList() {
   std::vector<Element> elements;
   for (uint64_t currentKnot = 0; currentKnot < knot_vector_.Size() - degree_ - 1; currentKnot++) {
-    if ((GetLowerElementBound(currentKnot) - GetHigherElementBound(currentKnot)) != 0) {
+    if ((GetLowerElementBound(currentKnot) - GetHigherElementBound(currentKnot))!=0) {
       elements.emplace_back(Element(1, GetElementNodes(currentKnot)));
     }
   }
