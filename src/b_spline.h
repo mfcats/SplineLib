@@ -21,6 +21,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 #include <array>
 
+#include <iostream>
+
 #include "control_point.h"
 #include "parameter_space.h"
 #include "multi_index_handler.h"
@@ -74,7 +76,6 @@ class BSpline {
 
  private:
   std::vector<double> ExtractControlPointValues(std::array<double, DIM> param_coord, int dimension) const {
-
     std::array<int, DIM + 1> start;
     std::array<int, DIM + 1> last;
     std::array<int, DIM + 1> total_length;
@@ -91,11 +92,10 @@ class BSpline {
       current[i + 1] = start[i + 1];
       M *= (last[i + 1] - start[i + 1]);
     }
-
     MultiIndexHandler<DIM + 1> multiIndexHandler(total_length);
     std::vector<double> vector;
-
     for (int i = 0; i < M; ++i) {
+      multiIndexHandler.SetIndices(current);
       vector.push_back(control_points_[multiIndexHandler.Get1DIndex()]);
       for (int i = 0; i < DIM; ++i) {
         if (current[i + 1] == last[i + 1] - 1) {
@@ -105,28 +105,8 @@ class BSpline {
           break;
         }
       }
-      multiIndexHandler.SetIndices(current);
     }
     return vector;
-  }
-
-  int GetControlPointIndex(std::array<int, DIM> controlPointIndices, int dimension) const {
-    std::vector<int> numberCpPerDimension;
-    for (int i = 0; i < DIM; ++i) {
-      numberCpPerDimension.push_back(GetKnotVector(i).Size() - GetDegree(i) - 1);
-    }
-    std::vector<int> offset;
-    offset.push_back(numberCpPerDimension[0]);
-    for (int i = 1; i < DIM; ++i) {
-      offset.push_back(numberCpPerDimension[i] * offset[i - 1]);
-    }
-    std::vector<int> multipliedOffset;
-    multipliedOffset.push_back(controlPointIndices[0]);
-    for (int i = 1; i < DIM; ++i) {
-      multipliedOffset.push_back(controlPointIndices[i] * multipliedOffset[i - 1]);
-    }
-    return std::accumulate(multipliedOffset.begin(), multipliedOffset.end(), 0.0, std::plus<double>()) * dim
-        + dimension;
   }
 
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,

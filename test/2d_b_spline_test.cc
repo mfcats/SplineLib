@@ -22,7 +22,7 @@ using testing::DoubleEq;
 class A2DBSpline : public Test {
  public:
   A2DBSpline() {
-    std::array<KnotVector, 2> knot_vector = {KnotVector({0, 0, 0, 0.5, 1, 1, 1}), KnotVector({0, 0, 0, 0.5, 1, 1, 1})};
+    std::array<KnotVector, 2> knot_vector = {KnotVector({0, 0, 0, 1, 1, 1}), KnotVector({0, 0, 0, 1, 1, 1})};
     std::array<int, 2> degree = {2, 2};
     std::vector<ControlPoint> control_points = {
         ControlPoint(std::vector<double>({-1.0, -1.0, 0.0})),
@@ -43,32 +43,31 @@ class A2DBSpline : public Test {
 };
 
 TEST_F(A2DBSpline, Corner) {
-  ASSERT_THAT(b_spline->Evaluate({0.0, 0.0}, {0})[0], DoubleEq(-1.0));
-  ASSERT_THAT(b_spline->Evaluate({0.0, 0.0}, {1})[0], DoubleEq(-1.0));
-  ASSERT_THAT(b_spline->Evaluate({0.0, 0.0}, {2})[0], DoubleEq(0.0));
+  ASSERT_NEAR(b_spline->Evaluate({0.0, 0.0}, {0})[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({0.0, 0.0}, {1})[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({0.0, 0.0}, {2})[0], 0.0, 0.00005);
 }
 
 TEST_F(A2DBSpline, EdgeDim0) {
-  ASSERT_THAT(b_spline->Evaluate({0.0, 0.33333}, {0})[0], DoubleEq(-1.0));
-  ASSERT_THAT(b_spline->Evaluate({0.0, 0.33333}, {1})[0], DoubleEq(-0.33333));
-  ASSERT_THAT(b_spline->Evaluate({0.0, 0.33333}, {2})[0], DoubleEq(0.0));
+  ASSERT_NEAR(b_spline->Evaluate({0.0, 0.33333}, {0})[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({0.0, 0.33333}, {1})[0], -0.33333, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({0.0, 0.33333}, {2})[0], 0.0, 0.00005);
 }
 
 TEST_F(A2DBSpline, EdgeDim1) {
-  ASSERT_THAT(b_spline->Evaluate({0.33333, 0.0}, {0})[0], DoubleEq(-0.33333));
-  ASSERT_THAT(b_spline->Evaluate({0.33333, 0.0}, {1})[0], DoubleEq(-1.0));
-  ASSERT_THAT(b_spline->Evaluate({0.33333, 0.0}, {2})[0], DoubleEq(0.0));
+  ASSERT_NEAR(b_spline->Evaluate({0.33333, 0.0}, {0})[0], -0.33333, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({0.33333, 0.0}, {1})[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({0.33333, 0.0}, {2})[0], 0.0, 0.00005);
 }
 
 TEST_F(A2DBSpline, Center) {
-  ASSERT_THAT(b_spline->Evaluate({0.5, 0.5}, {0})[0], DoubleEq(0.0));
-  ASSERT_THAT(b_spline->Evaluate({0.5, 0.5}, {1})[0], DoubleEq(0.0));
-  ASSERT_THAT(b_spline->Evaluate({0.5, 0.5}, {2})[0], DoubleEq(1.0));
+  ASSERT_NEAR(b_spline->Evaluate({0.5, 0.5}, {0})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({0.5, 0.5}, {1})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({0.5, 0.5}, {2})[0], 0.25, 0.00005);
 }
 
 TEST_F(A2DBSpline, Random) {
-  ASSERT_THAT(b_spline->Evaluate({0.75, 0.25}, {0})[0], DoubleEq(0.5));
-  ASSERT_THAT(b_spline->Evaluate({0.75, 0.25}, {1})[0], DoubleEq(-0.5));
-  ASSERT_THAT(b_spline->Evaluate({0.75, 0.25}, {2})[0], DoubleEq(0.14063));
+  ASSERT_NEAR(b_spline->Evaluate({0.75, 0.25}, {0})[0], 0.5, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({0.75, 0.25}, {1})[0], -0.5, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({0.75, 0.25}, {2})[0], 0.14063, 0.00005);
 }
-
