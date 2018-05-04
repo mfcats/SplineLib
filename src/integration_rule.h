@@ -42,7 +42,7 @@ class IntegrationRule {
     std::vector<IntegrationPoint<DIM>> integration_points;
     std::array<int, DIM> max_dimension_points;
     for (int i = 0; i < DIM; i++) {
-      max_dimension_points[i] = points_.size() - 1;
+      max_dimension_points[i] = points_.size();
     }
     MultiIndexHandler<DIM> multiIndexHandler(max_dimension_points);
     for (int i = 0; i < GetNumberOfIntegrationPoints(); i++) {

@@ -74,14 +74,33 @@ class BSpline {
     return parameter_space_[i].knot_vector();
   }
 
-  std::vector<Element> GetElementList() const;
-  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
-                                                                           const IntegrationRule<1> &rule) const;
+  std::vector<Element> GetElementList() const {
+    return parameter_space_[0].GetElementList();
+  }
+
+  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(
+      int element_number,
+      const IntegrationRule<1> &rule) const {
+    return parameter_space_[0].EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
+  }
+
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(
       int element_number,
-      const IntegrationRule<1> &rule) const;
+      const IntegrationRule<1> &rule) const {
+    return TransformToPhysicalSpace(
+        parameter_space_[0].EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule),
+        element_number,
+        rule);
+  }
 
-  double JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const;
+  double JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const {
+    Element element = GetElementList()[element_number];
+    double dx_dxi = EvaluateDerivative({TransformToParameterSpace(element.node(0),
+                                                                 element.node(1),
+                                                                 rule.coordinate(integration_point, 0))}, {0}, 1)[0];
+    double dxi_dtildexi = (element.node(1) - element.node(0))/2.0;
+    return dx_dxi*dxi_dtildexi;
+  }
 
  private:
   std::vector<double> ExtractControlPointValues(std::array<double, DIM> param_coord, int dimension) const {
@@ -129,9 +148,24 @@ class BSpline {
   }
 
   std::vector<std::vector<double>> TransformToPhysicalSpace(std::vector<std::vector<double>> values,
-                                                            int element_number,
-                                                            const IntegrationRule<1> &rule) const;
-  double TransformToParameterSpace(double upper, double lower, double point) const;
+                                                                     int element_number,
+                                                                     const IntegrationRule<1> &rule) const {
+    Element element = GetElementList()[element_number];
+    for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
+      std::transform(values[point].cbegin(),
+                     values[point].cend(),
+                     values[point].begin(),
+                     std::bind2nd(std::divides<double>(),
+                                  EvaluateDerivative({TransformToParameterSpace(element.node(0),
+                                                                               element.node(1),
+                                                                               rule.coordinate(point, 0))}, {0}, 1)[0]));
+    }
+    return values;
+  }
+
+  double TransformToParameterSpace(double upper, double lower, double point) const {
+    return parameter_space_[0].TransformToParameterSpace(upper, lower, point);
+  }
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const {
     std::array<std::vector<std::unique_ptr<BasisFunction>>::const_iterator, DIM> first_non_zero;
