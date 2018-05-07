@@ -16,8 +16,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
+#include "numeric_settings.h"
+
 using testing::Test;
 using testing::DoubleEq;
+using testing::DoubleNear;
 
 class ASquare : public Test {
  public:
@@ -40,16 +43,34 @@ TEST_F(ASquare, ReturnsCorrectKnotVectorSizes) {
   ASSERT_THAT(square_->GetKnotVector(1).Size(), 6);
 }
 
-TEST_F(ASquare, ReturnsCorrectEdge) {
+TEST_F(ASquare, ReturnsCorrectLeftLowerCorner) {
   ASSERT_THAT(square_->Evaluate({0, 0}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({0, 0}, {1})[0], DoubleEq(-1));
+}
+
+TEST_F(ASquare, ReturnsCorrectLeftUpperCorner) {
+  ASSERT_THAT(square_->Evaluate({0, 1}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({0, 1}, {1})[0], DoubleEq(1));
 }
 
 TEST_F(ASquare, ReturnsCorrectMiddle) {
   ASSERT_THAT(square_->Evaluate({0.5, 0.5}, {0})[0], DoubleEq(0));
+  ASSERT_THAT(square_->Evaluate({0.5, 0.5}, {1})[0], DoubleEq(0));
 }
 
-TEST_F(ASquare, ReturnsCorrectLastEdge) {
+TEST_F(ASquare, ReturnsCorrectCoordinatesOfRandomPoint) {
+  ASSERT_THAT(square_->Evaluate({0.2, 0.75}, {0})[0], DoubleEq(-0.6));
+  ASSERT_THAT(square_->Evaluate({0.2, 0.75}, {1})[0], DoubleEq(0.5));
+}
+
+TEST_F(ASquare, ReturnsCorrectRightLowerCorner) {
+  ASSERT_THAT(square_->Evaluate({1, 0}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({1, 0}, {1})[0], DoubleEq(-1));
+}
+
+TEST_F(ASquare, ReturnsCorrectRightUpperCorner) {
   ASSERT_THAT(square_->Evaluate({1, 1}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({1, 1}, {1})[0], DoubleEq(1));
 }
 
 class ASquareWithDegree3And8Knots : public Test {
@@ -73,13 +94,43 @@ TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectKnotVectorSizes) {
   ASSERT_THAT(square_->GetKnotVector(1).Size(), 8);
 }
 
+TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectLeftLowerCorner) {
+  ASSERT_THAT(square_->Evaluate({0, 0}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({0, 0}, {1})[0], DoubleEq(-1));
+}
+
+TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectLeftUpperCorner) {
+  ASSERT_THAT(square_->Evaluate({0, 1}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({0, 1}, {1})[0], DoubleEq(1));
+}
+
+TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectMiddle) {
+  ASSERT_THAT(square_->Evaluate({0.5, 0.5}, {0})[0], DoubleNear(0, NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(square_->Evaluate({0.5, 0.5}, {1})[0], DoubleNear(0, NumericSettings<double>::kEpsilon()));
+}
+
+TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectCoordinatesOfRandomPoint) {
+  ASSERT_THAT(square_->Evaluate({0.2, 0.75}, {0})[0], DoubleEq(-0.6));
+  ASSERT_THAT(square_->Evaluate({0.2, 0.75}, {1})[0], DoubleEq(0.5));
+}
+
+TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectRightLowerCorner) {
+  ASSERT_THAT(square_->Evaluate({1, 0}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({1, 0}, {1})[0], DoubleEq(-1));
+}
+
+TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectRightUpperCorner) {
+  ASSERT_THAT(square_->Evaluate({1, 1}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({1, 1}, {1})[0], DoubleEq(1));
+}
+
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectControlPoints) {
 }
 
 class ASquareWithDegree3And10Knots : public Test {
  public:
   ASquareWithDegree3And10Knots() {
-    SquareGenerator squareGenerator = SquareGenerator(3, 10);
+    SquareGenerator squareGenerator = SquareGenerator(3, 9);
     square_ = squareGenerator.CreateSquare();
   }
 
@@ -95,4 +146,34 @@ TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectDegree) {
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectKnotVectorSizes) {
   ASSERT_THAT(square_->GetKnotVector(0).Size(), 10);
   ASSERT_THAT(square_->GetKnotVector(1).Size(), 10);
+}
+
+TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectLeftLowerCorner) {
+  ASSERT_THAT(square_->Evaluate({0, 0}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({0, 0}, {1})[0], DoubleEq(-1));
+}
+
+TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectLeftUpperCorner) {
+  ASSERT_THAT(square_->Evaluate({0, 1}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({0, 1}, {1})[0], DoubleEq(1));
+}
+
+TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectMiddle) {
+  ASSERT_THAT(square_->Evaluate({0.5, 0.5}, {0})[0], DoubleNear(0, NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(square_->Evaluate({0.5, 0.5}, {1})[0], DoubleNear(0, NumericSettings<double>::kEpsilon()));
+}
+
+TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectCoordinatesOfRandomPoint) {
+  ASSERT_THAT(square_->Evaluate({0.2, 0.75}, {0})[0], DoubleEq(-0.6));
+  ASSERT_THAT(square_->Evaluate({0.2, 0.75}, {1})[0], DoubleEq(0.5));
+}
+
+TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectRightLowerCorner) {
+  ASSERT_THAT(square_->Evaluate({1, 0}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({1, 0}, {1})[0], DoubleEq(-1));
+}
+
+TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectRightUpperCorner) {
+  ASSERT_THAT(square_->Evaluate({1, 1}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({1, 1}, {1})[0], DoubleEq(1));
 }
