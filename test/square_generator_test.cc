@@ -124,13 +124,10 @@ TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectRightUpperCorner) {
   ASSERT_THAT(square_->Evaluate({1, 1}, {1})[0], DoubleEq(1));
 }
 
-TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectControlPoints) {
-}
-
 class ASquareWithDegree3And10Knots : public Test {
  public:
   ASquareWithDegree3And10Knots() {
-    SquareGenerator squareGenerator = SquareGenerator(3, 9);
+    SquareGenerator squareGenerator = SquareGenerator(3, 10);
     square_ = squareGenerator.CreateSquare();
   }
 
@@ -164,8 +161,8 @@ TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectMiddle) {
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectCoordinatesOfRandomPoint) {
-  ASSERT_THAT(square_->Evaluate({0.2, 0.75}, {0})[0], DoubleEq(-0.6));
-  ASSERT_THAT(square_->Evaluate({0.2, 0.75}, {1})[0], DoubleEq(0.5));
+  ASSERT_THAT(square_->Evaluate({0.2, 0.75}, {0})[0], DoubleNear(-0.46, NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(square_->Evaluate({0.2, 0.7}, {1})[0], DoubleEq(0.2845));
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectRightLowerCorner) {
