@@ -42,6 +42,7 @@ class A2DBSpline : public Test {
   std::unique_ptr<BSpline<2>> b_spline;
 };
 
+/*
 TEST_F(A2DBSpline, Corner) {
   ASSERT_NEAR(b_spline->Evaluate({0.0, 0.0}, {0})[0], -1.0, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({0.0, 0.0}, {1})[0], -1.0, 0.00005);
@@ -70,4 +71,36 @@ TEST_F(A2DBSpline, Random) {
   ASSERT_NEAR(b_spline->Evaluate({0.75, 0.25}, {0})[0], 0.5, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({0.75, 0.25}, {1})[0], -0.5, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({0.75, 0.25}, {2})[0], 0.14063, 0.00005);
+}
+
+TEST_F(A2DBSpline, CornerDer1) {
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {0}, 1)[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {1}, 1)[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {2}, 1)[0], 0.0, 0.00005);
+}
+
+TEST_F(A2DBSpline, EdgeDim0Der1) {
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {0}, 1)[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {1}, 1)[0], -0.33333, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {2}, 1)[0], 0.0, 0.00005);
+}
+
+TEST_F(A2DBSpline, EdgeDim1Der1) {
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.33333, 0.0}, {0}, 1)[0], -0.33333, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.33333, 0.0}, {1}, 1)[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.33333, 0.0}, {2}, 1)[0], 0.0, 0.00005);
+}
+
+TEST_F(A2DBSpline, CenterDer1) {
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.5, 0.5}, {0}, {1, 0})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.5, 0.5}, {1}, 1)[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.5, 0.5}, {2}, 1)[0], 0.25, 0.00005);
+}
+*/
+
+TEST_F(A2DBSpline, RandomDer1) {
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {2}, {1, 0})[0], -0.375, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.25, 0.75}, {2}, {0, 1})[0], -0.375, 0.00005);
+  //ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {1}, 1)[0], -0.5, 0.00005);
+  //ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {2}, 1)[0], 0.14063, 0.00005);
 }
