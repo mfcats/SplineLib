@@ -72,36 +72,43 @@ TEST_F(A2DBSpline, Random) {
   ASSERT_NEAR(b_spline->Evaluate({0.75, 0.25}, {2})[0], 0.14063, 0.00005);
 }
 
-/*
-TEST_F(A2DBSpline, CornerDer1) {
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {0}, 1)[0], -1.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {1}, 1)[0], -1.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {2}, 1)[0], 0.0, 0.00005);
+TEST_F(A2DBSpline, CornerDer10) {
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {0}, {1, 0})[0], 2.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {1}, {1, 0})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {2}, {1, 0})[0], 0.0, 0.00005);
 }
 
-TEST_F(A2DBSpline, EdgeDim0Der1) {
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {0}, 1)[0], -1.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {1}, 1)[0], -0.33333, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {2}, 1)[0], 0.0, 0.00005);
+TEST_F(A2DBSpline, CornerDer01) {
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {0}, {0, 1})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {1}, {0, 1})[0], 2.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.0}, {2}, {0, 1})[0], 0.0, 0.00005);
 }
 
-TEST_F(A2DBSpline, EdgeDim1Der1) {
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.33333, 0.0}, {0}, 1)[0], -0.33333, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.33333, 0.0}, {1}, 1)[0], -1.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.33333, 0.0}, {2}, 1)[0], 0.0, 0.00005);
+TEST_F(A2DBSpline, EdgeDim0Der10) {
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {0}, {1, 0})[0], 2.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {1}, {1, 0})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {2}, {1, 0})[0], 0.888889, 0.00005);
 }
 
-TEST_F(A2DBSpline, CenterDer1) {
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.5, 0.5}, {0}, {1, 0})[0], 0.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.5, 0.5}, {1}, 1)[0], 0.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({0.5, 0.5}, {2}, 1)[0], 0.25, 0.00005);
+TEST_F(A2DBSpline, EdgeDim0Der01) {
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {0}, {0, 1})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {1}, {0, 1})[0], 2.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.0, 0.33333}, {2}, {0, 1})[0], 0.0, 0.00005);
 }
-*/
 
-TEST_F(A2DBSpline, RandomDer1) {
+TEST_F(A2DBSpline, CenterDer10) {
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.5, 0.5}, {0}, {1, 0})[0], 2.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.5, 0.5}, {1}, {1, 0})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.5, 0.5}, {2}, {1, 0})[0], 0.0, 0.00005);
+}
+
+TEST_F(A2DBSpline, RandomDer10) {
   ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {0}, {1, 0})[0], 2.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {1}, {1, 0})[0], 0.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {2}, {1, 0})[0], -0.375, 0.00005);
+}
+
+TEST_F(A2DBSpline, RandomDer01) {
   ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {0}, {0, 1})[0], 0.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {1}, {0, 1})[0], 2.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {2}, {0, 1})[0], 0.375, 0.00005);
