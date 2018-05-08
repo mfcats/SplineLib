@@ -113,3 +113,10 @@ TEST_F(A2DBSpline, RandomDer01) {
   ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {1}, {0, 1})[0], 2.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {2}, {0, 1})[0], 0.375, 0.00005);
 }
+
+TEST_F(A2DBSpline, RandomDer12) {
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {0}, {1, 2})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {1}, {1, 2})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({0.75, 0.25}, {2}, {1, 2})[0], 4.0, 0.00005);
+}
+
