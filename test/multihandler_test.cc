@@ -39,9 +39,7 @@ class MultiHandlers : public Test {
 		std::unique_ptr<MultiIndexHandler<1>> multiIndexHandler1D;
 		std::unique_ptr<MultiIndexHandler<2>> multiIndexHandler2D;
 		std::unique_ptr<MultiIndexHandler<3>> multiIndexHandler3D;
-
 };
-
 
 TEST_F(MultiHandlers, 1D_multiIndex_ind0) {
 	ASSERT_THAT(multiIndexHandler1D->Get1DIndex(), Eq(0));
