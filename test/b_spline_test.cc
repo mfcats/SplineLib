@@ -71,19 +71,19 @@ TEST_F(ABSpline, Returns1_5For2_5AndDim0) {
 }
 
 TEST_F(ABSpline, Returns0_0For0_0Dim0AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({0.0}, {0}, 1)[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({0.0}, {0}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns1_0For0_0Dim1AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({0.0}, {1}, 1)[0], DoubleEq(2.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({0.0}, {1}, {1})[0], DoubleEq(2.0));
 }
 
 TEST_F(ABSpline, Returns12_0For5_0Dim0AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({5.0}, {0}, 1)[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({5.0}, {0}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({2.25}, {1}, 1)[0], DoubleEq(0.325));
+  ASSERT_THAT(b_spline->EvaluateDerivative({2.25}, {1}, {1})[0], DoubleEq(0.325));
 }
 
 TEST_F(ABSpline, ReturnsCorrectNumberOfElements) {
