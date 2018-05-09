@@ -193,7 +193,6 @@ class BSpline {
   }
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const {
-
     auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction (param_coord);
     auto total_length = this->ArrayTotalLength();
     auto M = MultiIndexHandlerShort();
