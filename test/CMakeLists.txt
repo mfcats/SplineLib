@@ -19,6 +19,9 @@ set(TEST_SOURCES
         zero_degree_b_spline_basis_function_test.cc
         b_spline_basis_function_test.cc
         b_spline_test.cc
+        2d_b_spline_test.cc
+        square_generator_test.cc
+        multihandler_test.cc
         element_test.cc
         integration_rule_test.cc
         integration_point_test.cc

@@ -12,16 +12,17 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_MULTI_INDEX_HANDLER_H_
-#define SRC_MULTI_INDEX_HANDLER_H_
+#ifndef SPLINELIB_MULTI_INDEX_HANDLER_H
+#define SPLINELIB_MULTI_INDEX_HANDLER_H
 
+#include "multi_index_handler.h"
 #include <array>
 
 template<int DIM>
 class MultiIndexHandler {
  public:
-  explicit MultiIndexHandler(const std::array<int, DIM> &maximum_multi_index_value) : maximum_multi_index_value_(
-      maximum_multi_index_value), current_multi_index_value_({0}) {}
+  explicit MultiIndexHandler(const std::array<int, DIM> &multi_index_length) : multi_index_length_(
+      multi_index_length), current_multi_index_value_({0}) {}
 
   int operator[](int i) {
     return current_multi_index_value_[i];
@@ -29,7 +30,7 @@ class MultiIndexHandler {
 
   MultiIndexHandler &operator++() {
     for (int i = 0; i < DIM; ++i) {
-      if (current_multi_index_value_[i] == maximum_multi_index_value_[i]) {
+      if (current_multi_index_value_[i] == multi_index_length_[i] - 1) {
         current_multi_index_value_[i] = 0;
       } else {
         current_multi_index_value_[i]++;
@@ -45,9 +46,28 @@ class MultiIndexHandler {
     return result;
   }
 
+  void SetIndices(std::array<int, DIM> &indices){
+	  for (int i = 0; i < DIM; ++i) {
+        current_multi_index_value_[i] = indices[i];
+	  }
+  }
+
+  int Get1DIndex(){
+    int index_1d = 0;
+    int temp;
+	  for (int i = 0; i < DIM; ++i){
+        temp = current_multi_index_value_[i];
+		  for(int j = i-1; j >= 0; --j){
+            temp *= multi_index_length_[j];
+		  }
+        index_1d += temp;
+	  }
+    return index_1d;
+  }
+
  private:
-  std::array<int, DIM> maximum_multi_index_value_;
+  std::array<int, DIM> multi_index_length_;
   std::array<int, DIM> current_multi_index_value_;
 };
 
-#endif  // SRC_MULTI_INDEX_HANDLER_H_
+#endif //SPLINELIB_MULTI_INDEX_HANDLER_H

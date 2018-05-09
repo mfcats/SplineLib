@@ -36,3 +36,7 @@ build/*
 # IDE files
 cmake-build-debug
 .idea
+
+# mac related files
+.DS_Store
+._.DS_Store

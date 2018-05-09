@@ -21,10 +21,11 @@ set(SOURCES
         zero_degree_b_spline_basis_function.cc
         b_spline_basis_function.cc
         parameter_space.cc
-        b_spline.cc
+        square_generator.cc
         element.cc
         element_generator.cc
         )
 
 add_library(SplineLib SHARED ${SOURCES})
 target_include_directories(SplineLib PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+

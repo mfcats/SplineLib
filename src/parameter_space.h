@@ -24,12 +24,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 class ParameterSpace {
  public:
+  ParameterSpace() {};
   ParameterSpace(const KnotVector &knot_vector, int degree);
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(double param_coord) const;
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord, int derivative) const;
-
+  std::vector<std::unique_ptr<BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;
   int degree() const;
+
   KnotVector knot_vector() const;
 
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
@@ -40,8 +42,6 @@ class ParameterSpace {
   double TransformToParameterSpace(double upper, double lower, double point) const;
 
  private:
-  std::vector<std::unique_ptr<BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;
-
   KnotVector knot_vector_;
   int degree_;
   std::vector<std::unique_ptr<BasisFunction>> basis_functions_;
