@@ -56,7 +56,7 @@ class BSpline {
 
   std::vector<double> EvaluateDerivative(std::array<double, DIM> param_coord,
                                          const std::vector<int> &dimensions,
-                                         int derivative) const {
+                                         std::array<int, DIM> derivative) const {
     auto basis_function_values = EvaluateAllNonZeroBasisFunctionDerivatives(param_coord, derivative);
     std::vector<double> evaluated_point(dimensions.size(), 0);
     for (int i = 0; i < dimensions.size(); ++i) {
@@ -97,7 +97,7 @@ class BSpline {
     Element element = GetElementList()[element_number];
     double dx_dxi = EvaluateDerivative({TransformToParameterSpace(element.node(0),
                                                                  element.node(1),
-                                                                 rule.coordinate(integration_point, 0))}, {0}, 1)[0];
+                                                                 rule.coordinate(integration_point, 0))}, {0}, {1})[0];
     double dxi_dtildexi = (element.node(1) - element.node(0))/2.0;
     return dx_dxi*dxi_dtildexi;
   }
@@ -158,7 +158,7 @@ class BSpline {
                      std::bind2nd(std::divides<double>(),
                                   EvaluateDerivative({TransformToParameterSpace(element.node(0),
                                                                                element.node(1),
-                                                                               rule.coordinate(point, 0))}, {0}, 1)[0]));
+                                                                               rule.coordinate(point, 0))}, {0}, {1})[0]));
     }
     return values;
   }
@@ -167,20 +167,39 @@ class BSpline {
     return parameter_space_[0].TransformToParameterSpace(upper, lower, point);
   }
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const {
+  std::array<std::vector<std::unique_ptr<BasisFunction>>::const_iterator, DIM> CreateArrayFirstNonZeroBasisFunction(std::array<double, DIM> param_coord) const {
     std::array<std::vector<std::unique_ptr<BasisFunction>>::const_iterator, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] = parameter_space_[i].GetFirstNonZeroKnot(param_coord[i]);
     }
+    return first_non_zero;
+  }
+
+  std::array<int, DIM> ArrayTotalLength () const {
     std::array<int, DIM> total_length;
     for (int i = 0; i < DIM; ++i) {
       total_length[i] = parameter_space_[i].degree() + 1;
     }
-    MultiIndexHandler<DIM> multiIndexHandler(total_length);
+    return total_length;
+  }
+
+  int MultiIndexHandlerShort() const {
     int M = 1;
+    std::array<int, DIM> total_length = ArrayTotalLength();
     for (int i = 0; i < DIM; ++i) {
       M *= total_length[i];
     }
+    return M;
+  }
+
+  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const {
+
+    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction (param_coord);
+    auto total_length = this->ArrayTotalLength();
+    auto M = MultiIndexHandlerShort();
+
+    MultiIndexHandler<DIM> multiIndexHandler(total_length);
+
     std::vector<double> vector(M, 1);
     for (int i = 0; i < M; ++i) {
       for (int j = 0; j < DIM; ++j) {
@@ -192,24 +211,17 @@ class BSpline {
   }
 
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<double, DIM> param_coord,
-                                                                 int derivative) const {
-    std::array<std::vector<std::unique_ptr<BasisFunction>>::const_iterator, DIM> first_non_zero;
-    for (int i = 0; i < DIM; ++i) {
-      first_non_zero[i] = parameter_space_[i].GetFirstNonZeroKnot(param_coord[i]);
-    }
-    std::array<int, DIM> total_length;
-    for (int i = 0; i < DIM; ++i) {
-      total_length[i] = parameter_space_[i].degree() + 1;
-    }
+                                                                 std::array<int, DIM> derivative) const {
+    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction (param_coord);
+    auto total_length = this->ArrayTotalLength();
+    auto M = MultiIndexHandlerShort();
+
     MultiIndexHandler<DIM> multiIndexHandler(total_length);
-    int M = 1;
-    for (int i = 0; i < DIM; ++i) {
-      M *= total_length[i];
-    }
+
     std::vector<double> vector(M, 1);
     for (int i = 0; i < M; ++i) {
       for (int j = 0; j < DIM; ++j) {
-        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->EvaluateDerivative(derivative, param_coord[j]);
+        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->EvaluateDerivative(derivative[j], param_coord[j]);
       }
       multiIndexHandler++;
     }
