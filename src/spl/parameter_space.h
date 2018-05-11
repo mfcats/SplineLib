@@ -16,11 +16,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_PARAMETER_SPACE_H_
 
 #include <vector>
+#include <element_integration_point.h>
 
 #include "basis_function.h"
 #include "element.h"
 #include "integration_rule.h"
 #include "knot_vector.h"
+#include "element_integration_point.h"
 
 namespace spl {
 class ParameterSpace {
@@ -37,9 +39,9 @@ class ParameterSpace {
 
   baf::KnotVector knot_vector() const;
 
-  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
-                                                                           const itg::IntegrationRule<1> &rule) const;
-  std::vector<std::vector<double>>
+  std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctions(int element_number,
+                                                                                    const itg::IntegrationRule<1> &rule) const;
+  std::vector<elm::ElementIntegrationPoint>
   EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const itg::IntegrationRule<1> &rule) const;
 
   std::vector<elm::Element> GetElementList() const;

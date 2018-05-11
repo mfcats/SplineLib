@@ -20,7 +20,7 @@ elm::ElementIntegrationPoint::ElementIntegrationPoint(const std::vector<double> 
     : non_zero_basis_functions_(non_zero_basis_functions) {}
 
 std::vector<double> elm::ElementIntegrationPoint::non_zero_basis_functions() {
-  return non_zero_basis_functions_:
+  return non_zero_basis_functions_;
 }
 
 double elm::ElementIntegrationPoint::GetBasisFunctionValue(int firstNonZeroOffset) {
