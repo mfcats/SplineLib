@@ -20,19 +20,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "integration_rule.h"
 
-template<int DIM>
-class FivePointGaussLegendre : public IntegrationRule<DIM> {
- public:
-  FivePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{
-      -(1.0/3)*sqrt(5 + 2.0*sqrt(10.0/7))}, (322.0 - 13*sqrt(70))/900), IntegrationPoint<1>(std::array<double, 1>{
-      -(1.0/3)*sqrt(5 - 2.0*sqrt(10.0/7))}, (322.0 + 13*sqrt(70))/900),
-                                                      IntegrationPoint<1>(std::array<double, 1>{0}, 128.0/225),
-                                                      IntegrationPoint<1>(std::array<double, 1>{
-                                                                              (1.0/3)*sqrt(5 - 2.0*sqrt(10.0/7))},
-                                                                          (322.0 + 13*sqrt(70))/900),
-                                                      IntegrationPoint<1>(std::array<double, 1>{
-                                                                              (1.0/3)*sqrt(5 + 2.0*sqrt(10.0/7))},
-                                                                          (322.0 - 13*sqrt(70))/900)}) {}
-};
+namespace itg {
+    template<int DIM>
+    class FivePointGaussLegendre : public IntegrationRule<DIM> {
+    public:
+        FivePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{
+                -(1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7))}, (322.0 - 13 * sqrt(70)) / 900),
+                                                         IntegrationPoint<1>(std::array<double, 1>{
+                                                                                     -(1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7))},
+                                                                             (322.0 + 13 * sqrt(70)) / 900),
+                                                         IntegrationPoint<1>(std::array<double, 1>{0}, 128.0 / 225),
+                                                         IntegrationPoint<1>(std::array<double, 1>{
+                                                                                     (1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7))},
+                                                                             (322.0 + 13 * sqrt(70)) / 900),
+                                                         IntegrationPoint<1>(std::array<double, 1>{
+                                                                                     (1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7))},
+                                                                             (322.0 - 13 * sqrt(70)) / 900)}) {}
+    };
+}
 
 #endif  // SRC_FIVE_POINT_GAUSS_LEGENDRE_H_

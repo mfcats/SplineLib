@@ -29,15 +29,15 @@ using testing::DoubleNear;
 class A1DIntegrationRule : public Test {
  public:
   A1DIntegrationRule() {
-    rules_.emplace_back(OnePointGaussLegendre<1>());
-    rules_.emplace_back(TwoPointGaussLegendre<1>());
-    rules_.emplace_back(ThreePointGaussLegendre<1>());
-    rules_.emplace_back(FourPointGaussLegendre<1>());
-    rules_.emplace_back(FivePointGaussLegendre<1>());
+    rules_.emplace_back(itg::OnePointGaussLegendre<1>());
+    rules_.emplace_back(itg::TwoPointGaussLegendre<1>());
+    rules_.emplace_back(itg::ThreePointGaussLegendre<1>());
+    rules_.emplace_back(itg::FourPointGaussLegendre<1>());
+    rules_.emplace_back(itg::FivePointGaussLegendre<1>());
   };
 
  protected:
-  std::vector<IntegrationRule<1>> rules_;
+    std::vector<itg::IntegrationRule<1>> rules_;
 };
 
 TEST_F(A1DIntegrationRule, ReturnsCorrectNumberOfPoints) {
@@ -68,10 +68,10 @@ TEST_F(A1DIntegrationRule, ReturnsCorrectPointSum) {
 
 class A2DIntegrationRuleWith3Points : public Test {
  public:
-  A2DIntegrationRuleWith3Points() : rule_(ThreePointGaussLegendre<2>()) {}
+    A2DIntegrationRuleWith3Points() : rule_(itg::ThreePointGaussLegendre<2>()) {}
 
  protected:
-  IntegrationRule<2> rule_;
+    itg::IntegrationRule<2> rule_;
 };
 
 TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {
@@ -106,9 +106,9 @@ TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPointSum) {
 }
 
 TEST(A3DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {
-  ASSERT_THAT(ThreePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 27);
+  ASSERT_THAT(itg::ThreePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 27);
 }
 
 TEST(A3DIntegrationRuleWith1Point, ReturnsCorrectNumberOfPoints) {
-  ASSERT_THAT(OnePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 1);
+  ASSERT_THAT(itg::OnePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 1);
 }

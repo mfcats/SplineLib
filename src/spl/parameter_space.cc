@@ -61,7 +61,7 @@ std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator ParameterSpace:
 }
 
 std::vector<std::vector<double>>
-ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number, const IntegrationRule<1> &rule) const {
+ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number, const itg::IntegrationRule<1> &rule) const {
   elm::Element element = GetElementList()[element_number];
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
@@ -72,8 +72,8 @@ ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number, cons
 }
 
 std::vector<std::vector<double>> ParameterSpace::EvaluateAllElementNonZeroBasisFunctionDerivatives(
-    int element_number,
-    const IntegrationRule<1> &rule) const {
+        int element_number,
+        const itg::IntegrationRule<1> &rule) const {
   elm::Element element = GetElementList()[element_number];
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {

@@ -20,13 +20,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "integration_rule.h"
 
-template<int DIM>
-class ThreePointGaussLegendre : public IntegrationRule<DIM> {
- public:
-  ThreePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{-sqrt(3.0/5)}, 5.0/9.0),
-                                                      IntegrationPoint<1>(std::array<double, 1>{0}, 8.0/9.0),
-                                                      IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0/5)},
-                                                                          5.0/9.0)}) {}
-};
+namespace itg {
+    template<int DIM>
+    class ThreePointGaussLegendre : public IntegrationRule<DIM> {
+    public:
+        ThreePointGaussLegendre() : IntegrationRule<DIM>(
+                {IntegrationPoint<1>(std::array<double, 1>{-sqrt(3.0 / 5)}, 5.0 / 9.0),
+                 IntegrationPoint<1>(std::array<double, 1>{0}, 8.0 / 9.0),
+                 IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0 / 5)},
+                                     5.0 / 9.0)}) {}
+    };
+}
 
 #endif  // SRC_THREE_POINT_GAUSS_LEGENDRE_H_

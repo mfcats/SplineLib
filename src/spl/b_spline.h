@@ -79,21 +79,21 @@ class BSpline {
   }
 
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(
-      int element_number,
-      const IntegrationRule<1> &rule) const {
+          int element_number,
+          const itg::IntegrationRule<1> &rule) const {
     return parameter_space_[0].EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
   }
 
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(
-      int element_number,
-      const IntegrationRule<1> &rule) const {
+          int element_number,
+          const itg::IntegrationRule<1> &rule) const {
     return TransformToPhysicalSpace(
         parameter_space_[0].EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule),
         element_number,
         rule);
   }
 
-  double JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const {
+    double JacobianDeterminant(int element_number, int integration_point, const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
     double dx_dxi = EvaluateDerivative({TransformToParameterSpace(element.node(0),
                                                                  element.node(1),
@@ -148,8 +148,8 @@ class BSpline {
   }
 
   std::vector<std::vector<double>> TransformToPhysicalSpace(std::vector<std::vector<double>> values,
-                                                                     int element_number,
-                                                                     const IntegrationRule<1> &rule) const {
+                                                            int element_number,
+                                                            const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
     for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
       std::transform(values[point].cbegin(),

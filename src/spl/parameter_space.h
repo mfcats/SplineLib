@@ -37,9 +37,9 @@ class ParameterSpace {
     baf::KnotVector knot_vector() const;
 
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
-                                                                           const IntegrationRule<1> &rule) const;
+                                                                           const itg::IntegrationRule<1> &rule) const;
   std::vector<std::vector<double>>
-  EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const IntegrationRule<1> &rule) const;
+  EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const itg::IntegrationRule<1> &rule) const;
 
     std::vector<elm::Element> GetElementList() const;
   double TransformToParameterSpace(double upper, double lower, double point) const;
