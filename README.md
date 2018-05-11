@@ -18,3 +18,29 @@ http://www.gnu.org/licenses/.
 [![CodeFactor](https://www.codefactor.io/repository/github/mfcats/splinelib/badge)](https://www.codefactor.io/repository/github/mfcats/splinelib)
 [![codecov](https://codecov.io/gh/mfcats/SplineLib/branch/master/graph/badge.svg)](https://codecov.io/gh/mfcats/SplineLib)
 [![Build Status](https://travis-ci.org/mfcats/SplineLib.svg?branch=master)](https://travis-ci.org/mfcats/SplineLib)
+
+## Installation
+
+Requirements : fortran compiler
+Prefered : all gnu compiler
+
+git clone https://github.com/mfcats/SplineLib.git
+cd SplineLib
+
+install spack (Do not forget about the .zshrc-file)
+spack bootstrap
+spack repo add path/to/SplineLib/scripts/spack-repo
+spack setup splinelib@github -> this requires a fortran compiler
+spack load cmake
+
+
+# usefull commands for spack
+spack spec splinelib -> to see dependencies
+spack location -i cmake -> to see location
+
+# build project
+mkdir build
+cd build
+$GTEST_ROOT = spack location -i googletest+gmock
+cmake -DGTEST_ROOT=$GTEST_ROOT ..
+make 
