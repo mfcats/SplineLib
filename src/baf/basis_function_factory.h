@@ -12,29 +12,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#ifndef SRC_BASIS_FUNCTION_FACTORY_H_
+#define SRC_BASIS_FUNCTION_FACTORY_H_
 
-#include "control_point.h"
+#include "basis_function.h"
 
-using testing::Test;
-using testing::DoubleEq;
-
-class AControlPoint : public Test {
+namespace baf {
+class BasisFunctionFactory {
  public:
-  AControlPoint() : control_point({1.0, 2.0}) {}
-
- protected:
-  baf::ControlPoint control_point;
+  BasisFunction *CreateDynamic(KnotVector knot_vector, uint64_t start_of_support, int degree) const;
 };
-
-TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.GetDimension(), 2);
 }
 
-TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
-}
-
-TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
-}
+#endif  // SRC_BASIS_FUNCTION_FACTORY_H_

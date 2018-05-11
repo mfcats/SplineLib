@@ -13,21 +13,6 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(TEST_SOURCES
-        knot_vector_test.cc
-        control_point_test.cc
-        zero_degree_b_spline_basis_function_test.cc
-        b_spline_basis_function_test.cc
-        b_spline_test.cc
-        2d_b_spline_test.cc
-        square_generator_test.cc
-        multihandler_test.cc
-        element_test.cc
-        integration_rule_test.cc
-        integration_point_test.cc
-        )
+add_library(splinelibutil INTERFACE)
+target_include_directories(splinelibutil INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
-find_package(GTest REQUIRED)
-
-add_executable(SplineLibTests ${TEST_SOURCES})
-target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil GTest::Main)

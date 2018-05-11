@@ -31,23 +31,23 @@ using testing::DoubleNear;
 class ABSpline : public Test {
  public:
   ABSpline() {
-    std::array<KnotVector, 1> knot_vector = {KnotVector({0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5})};
+    std::array<baf::KnotVector, 1> knot_vector = {baf::KnotVector({0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5})};
     std::array<int, 1> degree = {2};
-    std::vector<ControlPoint> control_points = {
-        ControlPoint(std::vector<double>({0.0, 0.0})),
-        ControlPoint(std::vector<double>({0.0, 1.0})),
-        ControlPoint(std::vector<double>({1.0, 1.0})),
-        ControlPoint(std::vector<double>({1.5, 1.5})),
-        ControlPoint(std::vector<double>({2.0, 1.3})),
-        ControlPoint(std::vector<double>({3.0, 2.0})),
-        ControlPoint(std::vector<double>({4.0, 1.5})),
-        ControlPoint(std::vector<double>({4.0, 0.0}))
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.5, 1.5})),
+        baf::ControlPoint(std::vector<double>({2.0, 1.3})),
+        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({4.0, 1.5})),
+        baf::ControlPoint(std::vector<double>({4.0, 0.0}))
     };
-    b_spline = std::make_unique<BSpline<1>>(knot_vector, degree, control_points);
+    b_spline = std::make_unique<spl::BSpline<1>>(knot_vector, degree, control_points);
   }
 
  protected:
-  std::unique_ptr<BSpline<1>> b_spline;
+  std::unique_ptr<spl::BSpline<1>> b_spline;
 };
 
 TEST_F(ABSpline, Returns0_0For0AndDim0) {
@@ -113,19 +113,20 @@ TEST_F(ABSpline, ReturnsElementsWithCorrectNodes) {
 class AnIntegrationRule : public ABSpline {
  public:
   AnIntegrationRule() {
-    rules_.emplace_back(OnePointGaussLegendre<1>());
-    rules_.emplace_back(TwoPointGaussLegendre<1>());
-    rules_.emplace_back(ThreePointGaussLegendre<1>());
-    rules_.emplace_back(FourPointGaussLegendre<1>());
-    rules_.emplace_back(FivePointGaussLegendre<1>());
+    rules_.emplace_back(itg::OnePointGaussLegendre<1>());
+    rules_.emplace_back(itg::TwoPointGaussLegendre<1>());
+    rules_.emplace_back(itg::ThreePointGaussLegendre<1>());
+    rules_.emplace_back(itg::FourPointGaussLegendre<1>());
+    rules_.emplace_back(itg::FivePointGaussLegendre<1>());
   }
 
  protected:
-  std::vector<IntegrationRule<1>> rules_;
+  std::vector<itg::IntegrationRule<1>> rules_;
 };
 
 TEST_F(ABSpline, ReturnsCorrectNonZeroElementBasisFunctionsFor1PointIntegrationRule) {
-  auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, IntegrationRule<1>(OnePointGaussLegendre<1>()));
+  auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, itg::IntegrationRule<1>(
+      itg::OnePointGaussLegendre<1>()));
   ASSERT_THAT(values.size(), 1);
   ASSERT_THAT(values[0].size(), 3);
   ASSERT_THAT(values[0][0], DoubleEq(0.125));
@@ -149,7 +150,8 @@ TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctions) {
 
 TEST_F(ABSpline, ReturnsCorrectNonZeroElementBasisFunctionDerivativesFor1PointIntegrationRule) {
   auto values =
-      b_spline->EvaluateAllElementNonZeroBasisFunctionDerivatives(1, IntegrationRule<1>(OnePointGaussLegendre<1>()));
+      b_spline->EvaluateAllElementNonZeroBasisFunctionDerivatives(1, itg::IntegrationRule<1>(
+          itg::OnePointGaussLegendre<1>()));
   ASSERT_THAT(values.size(), 1);
   ASSERT_THAT(values[0].size(), 3);
   ASSERT_THAT(values[0][0], DoubleEq(-0.6666666666666666));
@@ -165,12 +167,12 @@ TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctionDeriv
       for (int point = 0; point < rule; point++) {
         ASSERT_THAT(values[point].size(), 3);
         ASSERT_THAT(std::accumulate(values[point].cbegin(), values[point].cend(), 0.0, std::plus<double>()),
-                    DoubleNear(0.0, NumericSettings<double>::kEpsilon()));
+                    DoubleNear(0.0, util::NumericSettings<double>::kEpsilon()));
       }
     }
   }
 }
 
 TEST_F(ABSpline, ReturnsCorrectJacobianDeterminant) {
-  ASSERT_THAT(b_spline->JacobianDeterminant(1, 1, ThreePointGaussLegendre<1>()), DoubleEq(0.375));
+  ASSERT_THAT(b_spline->JacobianDeterminant(1, 1, itg::ThreePointGaussLegendre<1>()), DoubleEq(0.375));
 }

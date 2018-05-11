@@ -12,29 +12,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#include "element.h"
 
-#include "control_point.h"
+elm::Element::Element(int dimension, const std::vector<double> &nodes)
+    : dimension_(dimension), number_of_nodes_(static_cast<int>(nodes.size())), nodes_(nodes) {}
 
-using testing::Test;
-using testing::DoubleEq;
-
-class AControlPoint : public Test {
- public:
-  AControlPoint() : control_point({1.0, 2.0}) {}
-
- protected:
-  baf::ControlPoint control_point;
-};
-
-TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.GetDimension(), 2);
+int elm::Element::dimension() const {
+  return dimension_;
 }
 
-TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
+int elm::Element::numberOfNodes() const {
+  return number_of_nodes_;
 }
 
-TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
+double elm::Element::node(int number) const {
+#ifdef DEBUG
+  return nodes_.at(static_cast<unsigned long>(number));
+#else
+  return nodes_[number];
+#endif
 }

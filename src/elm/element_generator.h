@@ -12,29 +12,31 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#ifndef SRC_ELEMENT_GENERATOR_H_
+#define SRC_ELEMENT_GENERATOR_H_
 
-#include "control_point.h"
+#include <vector>
 
-using testing::Test;
-using testing::DoubleEq;
+#include "element.h"
+#include "knot_vector.h"
 
-class AControlPoint : public Test {
+namespace elm {
+class ElementGenerator {
  public:
-  AControlPoint() : control_point({1.0, 2.0}) {}
+  ElementGenerator(int degree, const baf::KnotVector &knot_vector);
 
- protected:
-  baf::ControlPoint control_point;
+  std::vector<Element> GetElementList();
+
+ private:
+  double GetLowerElementBound(uint64_t currentKnot);
+
+  double GetHigherElementBound(uint64_t currentKnot);
+
+  std::vector<double> GetElementNodes(uint64_t currentKnot);
+
+  int degree_;
+  baf::KnotVector knot_vector_;
 };
-
-TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.GetDimension(), 2);
 }
 
-TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
-}
-
-TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
-}
+#endif  // SRC_ELEMENT_GENERATOR_H_

@@ -32,8 +32,8 @@ class BasisFunctionEx21N01 : public Test {
       basis_function_(knot_vector_, 1, 0) {}
 
  protected:
-  KnotVector knot_vector_;
-  BSplineBasisFunction basis_function_;
+  baf::KnotVector knot_vector_;
+  baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N01, IsZeroAt0_0) {
@@ -64,8 +64,8 @@ class BasisFunctionEx21N11 : public Test {
       basis_function_(knot_vector_, 1, 1) {}
 
  protected:
-  KnotVector knot_vector_;
-  BSplineBasisFunction basis_function_;
+  baf::KnotVector knot_vector_;
+  baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N11, IsZeroAt0_0) {
@@ -96,8 +96,8 @@ class BasisFunctionEx21N21 : public Test {
       basis_function_(knot_vector_, 1, 2) {}
 
  protected:
-  KnotVector knot_vector_;
-  BSplineBasisFunction basis_function_;
+  baf::KnotVector knot_vector_;
+  baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N21, IsZeroAt0_0) {
@@ -128,8 +128,8 @@ class BasisFunctionEx21N31 : public Test {
       basis_function_(knot_vector_, 1, 3) {}
 
  protected:
-  KnotVector knot_vector_;
-  BSplineBasisFunction basis_function_;
+  baf::KnotVector knot_vector_;
+  baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N31, IsZeroAt0_0) {
@@ -160,8 +160,8 @@ class BasisFunctionEx21N02 : public Test {
       basis_function_(knot_vector_, 2, 0) {}
 
  protected:
-  KnotVector knot_vector_;
-  BSplineBasisFunction basis_function_;
+  baf::KnotVector knot_vector_;
+  baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N02, IsZeroAt0_0) {
@@ -192,8 +192,8 @@ class BasisFunctionEx21N12 : public Test {
       basis_function_(knot_vector_, 2, 1) {}
 
  protected:
-  KnotVector knot_vector_;
-  BSplineBasisFunction basis_function_;
+  baf::KnotVector knot_vector_;
+  baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N12, IsZeroAt0_0) {
@@ -224,8 +224,8 @@ class BasisFunctionEx21N22 : public Test {
       basis_function_(knot_vector_, 2, 2) {}
 
  protected:
-  KnotVector knot_vector_;
-  BSplineBasisFunction basis_function_;
+  baf::KnotVector knot_vector_;
+  baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N22, IsZeroAt0_0) {
@@ -255,8 +255,8 @@ class BasisFunctionEx22N01 : public Test {
                            basis_function_(knot_vector_, 1, 0) {}
 
  protected:
-  KnotVector knot_vector_;
-  BSplineBasisFunction basis_function_;
+  baf::KnotVector knot_vector_;
+  baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt0_0) {
@@ -323,8 +323,8 @@ class BasisFunctionEx22N13 : public Test {
                            basis_function_(knot_vector_, 1, 3) {}
 
  protected:
-  KnotVector knot_vector_;
-  BSplineBasisFunction basis_function_;
+  baf::KnotVector knot_vector_;
+  baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N13, FirstDerevitveIsEqualZeroAt0_0) {
@@ -366,8 +366,8 @@ class BasisFunctionEx22N61 : public Test {
                            basis_function_(knot_vector_, 1, 6) {}
 
  protected:
-  KnotVector knot_vector_;
-  BSplineBasisFunction basis_function_;
+  baf::KnotVector knot_vector_;
+  baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N61, FirstDerevitveIsEqualMinus1At4_0) {
@@ -385,8 +385,8 @@ class BasisFunctionEx22N72 : public Test {
                            basis_function_(knot_vector_, 2, 7) {}
 
  protected:
-  KnotVector knot_vector_;
-  BSplineBasisFunction basis_function_;
+  baf::KnotVector knot_vector_;
+  baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N72, FirstDerevitveIsEqual0At4_0) {

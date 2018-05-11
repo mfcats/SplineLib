@@ -12,29 +12,34 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#include <array>
 
-#include "control_point.h"
+#ifndef SRC_INTEGRATION_POINT_H_
+#define SRC_INTEGRATION_POINT_H_
 
-using testing::Test;
-using testing::DoubleEq;
-
-class AControlPoint : public Test {
+namespace itg {
+template<int DIM>
+class IntegrationPoint {
  public:
-  AControlPoint() : control_point({1.0, 2.0}) {}
+  IntegrationPoint(const std::array<double, DIM> &coordinates, double weight)
+      : coordinates_(coordinates), weight_(weight) {}
 
- protected:
-  baf::ControlPoint control_point;
+  int GetDimension() const {
+    return DIM;
+  }
+
+  std::array<double, DIM> GetCoordinates() const {
+    return coordinates_;
+  }
+
+  double GetWeight() const {
+    return weight_;
+  }
+
+ private:
+  std::array<double, DIM> coordinates_;
+  double weight_;
 };
-
-TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.GetDimension(), 2);
 }
 
-TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
-}
-
-TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
-}
+#endif  // SRC_INTEGRATION_POINT_H_

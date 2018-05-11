@@ -12,29 +12,31 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#ifndef SRC_NUMERIC_SETTINGS_H_
+#define SRC_NUMERIC_SETTINGS_H_
 
-#include "control_point.h"
+#include <limits>
 
-using testing::Test;
-using testing::DoubleEq;
-
-class AControlPoint : public Test {
+namespace util {
+template<typename T>
+class NumericSettings {
  public:
-  AControlPoint() : control_point({1.0, 2.0}) {}
+  constexpr static T kEpsilon() {
+    return kEpsilonFactor_ * std::numeric_limits<T>::epsilon();
+  }
 
- protected:
-  baf::ControlPoint control_point;
+  constexpr static bool AreEqual(const T &a, const T &b) {
+    return std::fabs(a - b) < kEpsilon();
+  }
+
+ private:
+  NumericSettings() {}
+
+  NumericSettings(const NumericSettings &numericSettings) = delete;
+  void operator=(const NumericSettings &numericSettings)  = delete;
+
+  constexpr static T kEpsilonFactor_ = 10;
 };
-
-TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.GetDimension(), 2);
 }
 
-TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
-}
-
-TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
-}
+#endif  // SRC_NUMERIC_SETTINGS_H_

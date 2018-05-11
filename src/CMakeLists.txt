@@ -13,19 +13,10 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(SOURCES
-        knot_vector.cc
-        control_point.cc
-        basis_function.cc
-        basis_function_factory.cc
-        zero_degree_b_spline_basis_function.cc
-        b_spline_basis_function.cc
-        parameter_space.cc
-        square_generator.cc
-        element.cc
-        element_generator.cc
-        )
+add_subdirectory(util)
+add_subdirectory(baf)
+add_subdirectory(elm)
+add_subdirectory(itg)
+add_subdirectory(spl)
 
-add_library(SplineLib SHARED ${SOURCES})
-target_include_directories(SplineLib PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 

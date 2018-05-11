@@ -12,29 +12,26 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#ifndef SRC_CONTROL_POINT_H_
+#define SRC_CONTROL_POINT_H_
 
-#include "control_point.h"
+#include <initializer_list>
+#include <vector>
 
-using testing::Test;
-using testing::DoubleEq;
-
-class AControlPoint : public Test {
+namespace baf {
+class ControlPoint {
  public:
-  AControlPoint() : control_point({1.0, 2.0}) {}
+  explicit ControlPoint(std::initializer_list<double> coordinates);
+
+  explicit ControlPoint(const std::vector<double> &coordinates);
+
+  int GetDimension() const;
+
+  double GetValue(int dimension) const;
 
  protected:
-  baf::ControlPoint control_point;
+  std::vector<double> coordinates_;
 };
-
-TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.GetDimension(), 2);
 }
 
-TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
-}
-
-TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
-}
+#endif  // SRC_CONTROL_POINT_H_

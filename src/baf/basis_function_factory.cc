@@ -12,29 +12,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#include "basis_function_factory.h"
 
-#include "control_point.h"
+#include "b_spline_basis_function.h"
+#include "zero_degree_b_spline_basis_function.h"
 
-using testing::Test;
-using testing::DoubleEq;
-
-class AControlPoint : public Test {
- public:
-  AControlPoint() : control_point({1.0, 2.0}) {}
-
- protected:
-  baf::ControlPoint control_point;
-};
-
-TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.GetDimension(), 2);
-}
-
-TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
-}
-
-TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
+baf::BasisFunction *baf::BasisFunctionFactory::CreateDynamic(baf::KnotVector knot_vector,
+                                                             uint64_t start_of_support,
+                                                             int degree) const {
+  if (degree < 0) throw std::runtime_error("Basis function degree must be positive.");
+  if (degree == 0) return new baf::ZeroDegreeBSplineBasisFunction(knot_vector, start_of_support);
+  return new baf::BSplineBasisFunction(knot_vector, degree, start_of_support);
 }

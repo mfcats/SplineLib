@@ -12,29 +12,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#ifndef SRC_TWO_POINT_GAUSS_LEGENDRE_H_
+#define SRC_TWO_POINT_GAUSS_LEGENDRE_H_
 
-#include "control_point.h"
+#include <cmath>
+#include <array>
 
-using testing::Test;
-using testing::DoubleEq;
+#include "integration_rule.h"
 
-class AControlPoint : public Test {
+namespace itg {
+template<int DIM>
+class TwoPointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  AControlPoint() : control_point({1.0, 2.0}) {}
-
- protected:
-  baf::ControlPoint control_point;
+  TwoPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{-sqrt(1.0 / 3)}, 1),
+                                                  IntegrationPoint<1>(std::array<double, 1>{sqrt(1.0 / 3)},
+                                                                      1)}) {}
 };
-
-TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.GetDimension(), 2);
 }
 
-TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
-}
-
-TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
-}
+#endif  // SRC_TWO_POINT_GAUSS_LEGENDRE_H_

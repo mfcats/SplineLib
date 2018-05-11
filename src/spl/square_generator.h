@@ -12,29 +12,28 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#ifndef SPLINELIB_SQUARE_GENERATOR_H
+#define SPLINELIB_SQUARE_GENERATOR_H
 
-#include "control_point.h"
+#include <array>
+#include <vector>
 
-using testing::Test;
-using testing::DoubleEq;
+#include "b_spline.h"
+#include "knot_vector.h"
 
-class AControlPoint : public Test {
+namespace spl {
+class SquareGenerator {
  public:
-  AControlPoint() : control_point({1.0, 2.0}) {}
+  SquareGenerator();
+  SquareGenerator(int degree, int number_of_knots);
 
- protected:
-  baf::ControlPoint control_point;
+  std::unique_ptr<BSpline<2>> CreateSquare() const;
+
+ private:
+  std::array<baf::KnotVector, 2> knot_vectors_;
+  std::array<int, 2> degrees_;
+  std::vector<baf::ControlPoint> control_points_;
 };
-
-TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.GetDimension(), 2);
 }
 
-TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
-}
-
-TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
-}
+#endif //SPLINELIB_SQUARE_GENERATOR_H

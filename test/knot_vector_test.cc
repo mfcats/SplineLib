@@ -26,7 +26,7 @@ class AKnotVector : public Test {
   AKnotVector() : knot_vector_({0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 1.0, 1.0, 1.0}) {}
 
  protected:
-  KnotVector knot_vector_;
+  baf::KnotVector knot_vector_;
 };
 
 // The i-th knot span is defined as the half-open interval (u_i, u_{i+1}]. For
@@ -99,23 +99,23 @@ TEST_F(AKnotVector, DoesNotFindLargeParametricCoordinateInKnotVectorRange) { // 
 }
 
 TEST_F(AKnotVector, CanBeCopied) { // NOLINT
-  KnotVector knotVector = this->knot_vector_;
+  baf::KnotVector knotVector = this->knot_vector_;
   ASSERT_THAT(knotVector, Eq(this->knot_vector_));
 }
 
 TEST_F(AKnotVector, CanBeAssigned) { // NOLINT
-  KnotVector knotVector;
+  baf::KnotVector knotVector;
   knotVector = this->knot_vector_;
   ASSERT_THAT(knotVector, Eq(this->knot_vector_));
 }
 
 TEST_F(AKnotVector, CanBeMovedInAssignment) { // NOLINT
-  KnotVector knotVector;
-  knotVector = KnotVector({0.0, 0.25, 0.5});
-  ASSERT_THAT(knotVector, Eq(KnotVector({0.0, 0.25, 0.5})));
+  baf::KnotVector knotVector;
+  knotVector = baf::KnotVector({0.0, 0.25, 0.5});
+  ASSERT_THAT(knotVector, Eq(baf::KnotVector({0.0, 0.25, 0.5})));
 }
 
 TEST_F(AKnotVector, CanBeAssignedByIterators) { // NOLINT
-  KnotVector knotVector = KnotVector(knot_vector_.begin(), knot_vector_.end());
+  baf::KnotVector knotVector = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
   ASSERT_THAT(knotVector, Eq(this->knot_vector_));
 }

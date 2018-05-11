@@ -12,29 +12,24 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#ifndef SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
+#define SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
 
-#include "control_point.h"
+#include <vector>
 
-using testing::Test;
-using testing::DoubleEq;
+#include "basis_function.h"
+#include "knot_vector.h"
 
-class AControlPoint : public Test {
+namespace baf {
+class ZeroDegreeBSplineBasisFunction : public baf::BasisFunction {
  public:
-  AControlPoint() : control_point({1.0, 2.0}) {}
+  ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, uint64_t start_of_support);
 
  protected:
-  baf::ControlPoint control_point;
+  double EvaluateOnSupport(double param_coord) const override;
+
+  double EvaluateDerivativeOnSupport(int derivative, double param_coord) const override;
 };
-
-TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.GetDimension(), 2);
 }
 
-TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
-}
-
-TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
-}
+#endif  // SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
