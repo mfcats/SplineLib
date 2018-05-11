@@ -79,13 +79,13 @@ class BSpline {
     return parameter_space_[0].GetElementList();
   }
 
-  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(
+  std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctions(
       int element_number,
       const itg::IntegrationRule<1> &rule) const {
     return parameter_space_[0].EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
   }
 
-  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(
+  std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctionDerivatives(
       int element_number,
       const itg::IntegrationRule<1> &rule) const {
     return ParameterSpace2PhysicalSpace(
@@ -164,6 +164,25 @@ class BSpline {
                                                      {1})[0]));
     }
     return values;
+  }
+
+  std::vector<elm::ElementIntegrationPoint> ParameterSpace2PhysicalSpace(std::vector<elm::ElementIntegrationPoint> element_integration_points,
+                                                                         int element_number,
+                                                                         const itg::IntegrationRule<1> &rule) const {
+    elm::Element element = GetElementList()[element_number];
+    std::vector<elm::ElementIntegrationPoint> element_integration_points_ = element_integration_points;
+    for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
+      std::transform(element_integration_points[i].non_zero_basis_functions().cbegin(),
+                     element_integration_points[i].non_zero_basis_functions().cend(),
+                     element_integration_points[i].non_zero_basis_functions().begin(),
+                     std::bind2nd(std::divides<double>(),
+                                  EvaluateDerivative({ReferenceSpace2ParameterSpace(element.node(0),
+                                                                                    element.node(1),
+                                                                                    rule.coordinate(i, 0))},
+                                                     {0},
+                                                     {1})[0]));
+    }
+    return element_integration_points_;
   }
 
   double ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {

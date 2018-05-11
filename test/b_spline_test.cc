@@ -128,7 +128,7 @@ TEST_F(ABSpline, ReturnsCorrectNonZeroElementBasisFunctionsFor1PointIntegrationR
   auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(1, itg::IntegrationRule<1>(
       itg::OnePointGaussLegendre<1>()));
   ASSERT_THAT(values.size(), 1);
-  ASSERT_THAT(values[0].size(), 3);
+  ASSERT_THAT(values[0].NumberOfNonZeroBasisFunctions(), 3);
   ASSERT_THAT(values[0][0], DoubleEq(0.125));
   ASSERT_THAT(values[0][1], DoubleEq(0.75));
   ASSERT_THAT(values[0][2], DoubleEq(0.125));

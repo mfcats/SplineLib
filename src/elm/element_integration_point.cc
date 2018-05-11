@@ -23,6 +23,10 @@ std::vector<double> elm::ElementIntegrationPoint::non_zero_basis_functions() {
   return non_zero_basis_functions_;
 }
 
+int elm::ElementIntegrationPoint::NumberOfNonZeroBasisFunctions() {
+  return static_cast<int>(non_zero_basis_functions_.size());
+}
+
 double elm::ElementIntegrationPoint::GetBasisFunctionValue(int firstNonZeroOffset) {
 #ifdef DEBUG
   return non_zero_basis_functions_.at(firstNonZeroOffset);
