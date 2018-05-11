@@ -51,7 +51,7 @@ class BSpline : public Spline<DIM> {
     std::vector<double> vector(M, 1);
     for (int i = 0; i < M; ++i) {
       for (int j = 0; j < DIM; ++j) {
-        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->EvaluateDerivative(derivative[j], param_coord[j]);
+        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->EvaluateDerivative(param_coord[j], derivative[j]);
       }
       multiIndexHandler++;
     }
