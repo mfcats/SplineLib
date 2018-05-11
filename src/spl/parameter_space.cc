@@ -66,7 +66,8 @@ spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number,
   elm::Element element = GetElementList()[element_number];
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
-    double integration_point = TransformToParameterSpace(element.node(1), element.node(0), rule.coordinate(point, 0));
+    double integration_point =
+        ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(point, 0));
     basis_function_values.push_back(EvaluateAllNonZeroBasisFunctions(integration_point));
   }
   return basis_function_values;
@@ -78,7 +79,8 @@ std::vector<std::vector<double>> spl::ParameterSpace::EvaluateAllElementNonZeroB
   elm::Element element = GetElementList()[element_number];
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
-    double integration_point = TransformToParameterSpace(element.node(1), element.node(0), rule.coordinate(point, 0));
+    double integration_point =
+        ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(point, 0));
     basis_function_values.push_back(EvaluateAllNonZeroBasisFunctionDerivatives(integration_point, 1));
   }
   return basis_function_values;
@@ -88,6 +90,6 @@ std::vector<elm::Element> spl::ParameterSpace::GetElementList() const {
   return elm::ElementGenerator(degree_, knot_vector_).GetElementList();
 }
 
-double spl::ParameterSpace::TransformToParameterSpace(double upper, double lower, double point) const {
+double spl::ParameterSpace::ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
   return ((upper - lower) * point + (upper + lower)) / 2.0;
 }
