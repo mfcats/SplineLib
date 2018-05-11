@@ -24,7 +24,7 @@ class A1DElement : public Test {
   A1DElement() : element(1, {0.5, 1.0}) {}
 
  protected:
-    elm::Element element;
+  elm::Element element;
 };
 
 TEST_F(A1DElement, ReturnsCorrectDimension) { // NOLINT
@@ -42,10 +42,10 @@ TEST_F(A1DElement, ReturnsCorrectNode) { // NOLINT
 
 class A1DElementGenerator : public Test {
  public:
-    A1DElementGenerator() : element_generator(2, baf::KnotVector({0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5})) {}
+  A1DElementGenerator() : element_generator(2, baf::KnotVector({0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5})) {}
 
  protected:
-    elm::ElementGenerator element_generator;
+  elm::ElementGenerator element_generator;
 };
 
 TEST_F(A1DElementGenerator, ReturnsCorrectNumberOfElements) { // NOLINT

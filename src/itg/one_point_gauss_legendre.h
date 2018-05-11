@@ -18,11 +18,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "integration_rule.h"
 
 namespace itg {
-    template<int DIM>
-    class OnePointGaussLegendre : public IntegrationRule<DIM> {
-    public:
-        OnePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{0}, 2)}) {}
-    };
+template<int DIM>
+class OnePointGaussLegendre : public IntegrationRule<DIM> {
+ public:
+  OnePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{0}, 2)}) {}
+};
 }
 
 #endif  // SRC_ONE_POINT_GAUSS_LEGENDRE_H_

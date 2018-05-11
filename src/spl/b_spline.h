@@ -28,7 +28,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "multi_index_handler.h"
 
 namespace spl {
-template <int DIM>
+template<int DIM>
 class BSpline {
  public:
   BSpline(const std::array<baf::KnotVector, DIM> &knot_vector,
@@ -99,8 +99,8 @@ class BSpline {
     double dx_dxi = EvaluateDerivative({TransformToParameterSpace(element.node(0),
                                                                   element.node(1),
                                                                   rule.coordinate(integration_point, 0))}, {0}, {1})[0];
-    double dxi_dtildexi = (element.node(1) - element.node(0))/2.0;
-    return dx_dxi*dxi_dtildexi;
+    double dxi_dtildexi = (element.node(1) - element.node(0)) / 2.0;
+    return dx_dxi * dxi_dtildexi;
   }
 
  private:
@@ -159,7 +159,9 @@ class BSpline {
                      std::bind2nd(std::divides<double>(),
                                   EvaluateDerivative({TransformToParameterSpace(element.node(0),
                                                                                 element.node(1),
-                                                                                rule.coordinate(point, 0))}, {0}, {1})[0]));
+                                                                                rule.coordinate(point, 0))},
+                                                     {0},
+                                                     {1})[0]));
     }
     return values;
   }
@@ -177,7 +179,7 @@ class BSpline {
     return first_non_zero;
   }
 
-  std::array<int, DIM> ArrayTotalLength () const {
+  std::array<int, DIM> ArrayTotalLength() const {
     std::array<int, DIM> total_length;
     for (int i = 0; i < DIM; ++i) {
       total_length[i] = parameter_space_[i].degree() + 1;
@@ -195,7 +197,7 @@ class BSpline {
   }
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const {
-    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction (param_coord);
+    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
     auto total_length = this->ArrayTotalLength();
     auto M = MultiIndexHandlerShort();
 
@@ -213,7 +215,7 @@ class BSpline {
 
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<double, DIM> param_coord,
                                                                  std::array<int, DIM> derivative) const {
-    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction (param_coord);
+    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
     auto total_length = this->ArrayTotalLength();
     auto M = MultiIndexHandlerShort();
 

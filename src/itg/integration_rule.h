@@ -22,46 +22,46 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "multi_index_handler.h"
 
 namespace itg {
-    template<int DIM>
-    class IntegrationRule {
-    public:
-        explicit IntegrationRule(const std::vector<IntegrationPoint<1>> &points) : points_(points) {}
+template<int DIM>
+class IntegrationRule {
+ public:
+  explicit IntegrationRule(const std::vector<IntegrationPoint<1>> &points) : points_(points) {}
 
-        int GetNumberOfIntegrationPoints() const {
-          return pow(points_.size(), DIM);
-        }
+  int GetNumberOfIntegrationPoints() const {
+    return pow(points_.size(), DIM);
+  }
 
-        double coordinate(int point, int dimension) const {
+  double coordinate(int point, int dimension) const {
 #ifdef DEBUG
-          return points_.at(point).GetCoordinates().at(dimension);
+    return points_.at(point).GetCoordinates().at(dimension);
 #else
-          return points_[point].GetCoordinates()[dimension];
+    return points_[point].GetCoordinates()[dimension];
 #endif
-        }
+  }
 
-        std::vector<IntegrationPoint<DIM>> GetIntegrationPoints() {
-          std::vector<IntegrationPoint<DIM>> integration_points;
-          std::array<int, DIM> max_dimension_points;
-          for (int i = 0; i < DIM; i++) {
-            max_dimension_points[i] = points_.size();
-          }
-          util::MultiIndexHandler<DIM> multiIndexHandler(max_dimension_points);
-          for (int i = 0; i < GetNumberOfIntegrationPoints(); i++) {
-            double weight = 1;
-            std::array<double, DIM> coordinates;
-            for (int j = 0; j < DIM; j++) {
-              weight *= points_[multiIndexHandler[j]].GetWeight();
-              coordinates[j] = points_[multiIndexHandler[j]].GetCoordinates()[j];
-            }
-            ++multiIndexHandler;
-            integration_points.push_back(IntegrationPoint<DIM>(coordinates, weight));
-          }
-          return integration_points;
-        }
+  std::vector<IntegrationPoint<DIM>> GetIntegrationPoints() {
+    std::vector<IntegrationPoint<DIM>> integration_points;
+    std::array<int, DIM> max_dimension_points;
+    for (int i = 0; i < DIM; i++) {
+      max_dimension_points[i] = points_.size();
+    }
+    util::MultiIndexHandler<DIM> multiIndexHandler(max_dimension_points);
+    for (int i = 0; i < GetNumberOfIntegrationPoints(); i++) {
+      double weight = 1;
+      std::array<double, DIM> coordinates;
+      for (int j = 0; j < DIM; j++) {
+        weight *= points_[multiIndexHandler[j]].GetWeight();
+        coordinates[j] = points_[multiIndexHandler[j]].GetCoordinates()[j];
+      }
+      ++multiIndexHandler;
+      integration_points.push_back(IntegrationPoint<DIM>(coordinates, weight));
+    }
+    return integration_points;
+  }
 
-    private:
-        std::vector<IntegrationPoint<1>> points_;
-    };
+ private:
+  std::vector<IntegrationPoint<1>> points_;
+};
 }
 
 #endif  // SRC_INTEGRATION_RULE_H_

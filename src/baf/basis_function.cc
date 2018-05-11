@@ -24,7 +24,7 @@ double baf::BasisFunction::Evaluate(double paramCoord) const {
 
 double baf::BasisFunction::EvaluateDerivative(int derivative, double param_coord) const {
   return derivative == 0 ? Evaluate(param_coord) :
-      IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(derivative, param_coord) : 0.0;
+         IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(derivative, param_coord) : 0.0;
 }
 
 baf::BasisFunction::BasisFunction(const KnotVector &knot_vector, int degree, uint64_t start)

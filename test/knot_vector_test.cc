@@ -26,7 +26,7 @@ class AKnotVector : public Test {
   AKnotVector() : knot_vector_({0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 1.0, 1.0, 1.0}) {}
 
  protected:
-    baf::KnotVector knot_vector_;
+  baf::KnotVector knot_vector_;
 };
 
 // The i-th knot span is defined as the half-open interval (u_i, u_{i+1}]. For

@@ -24,7 +24,7 @@ class AControlPoint : public Test {
   AControlPoint() : control_point({1.0, 2.0}) {}
 
  protected:
-    baf::ControlPoint control_point;
+  baf::ControlPoint control_point;
 };
 
 TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT

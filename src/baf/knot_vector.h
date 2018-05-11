@@ -22,43 +22,43 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 namespace baf {
-    typedef std::vector<double>::const_iterator ConstKnotIterator;
+typedef std::vector<double>::const_iterator ConstKnotIterator;
 
-    class KnotVector {
-    public:
-        KnotVector() = default;
+class KnotVector {
+ public:
+  KnotVector() = default;
 
-        explicit KnotVector(const std::vector<double> &knots);
+  explicit KnotVector(const std::vector<double> &knots);
 
-        KnotVector(std::initializer_list<double> knots);
+  KnotVector(std::initializer_list<double> knots);
 
-        KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
+  KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
 
-        // Check if absolute distance between all knots is smaller than the epsilon defined in
-        // NumericSettings.
-        bool operator==(const KnotVector &rhs) const;
+  // Check if absolute distance between all knots is smaller than the epsilon defined in
+  // NumericSettings.
+  bool operator==(const KnotVector &rhs) const;
 
-        double &operator[](uint64_t index);
+  double &operator[](uint64_t index);
 
-        double knot(uint64_t index) const;
+  double knot(uint64_t index) const;
 
-        double GetLastKnot() const;
+  double GetLastKnot() const;
 
-        int64_t GetKnotSpan(double param_coord) const;
+  int64_t GetKnotSpan(double param_coord) const;
 
-        ConstKnotIterator begin() const;
+  ConstKnotIterator begin() const;
 
-        ConstKnotIterator end() const;
+  ConstKnotIterator end() const;
 
-        bool IsInKnotVectorRange(double param_coord) const;
+  bool IsInKnotVectorRange(double param_coord) const;
 
-        bool IsLastKnot(double param_coord) const;
+  bool IsLastKnot(double param_coord) const;
 
-        uint64_t Size() const;
+  uint64_t Size() const;
 
-    private:
-        std::vector<double> knots_;
-    };
+ private:
+  std::vector<double> knots_;
+};
 }
 
 #endif  // SRC_KNOT_VECTOR_H_

@@ -18,28 +18,28 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_INTEGRATION_POINT_H_
 
 namespace itg {
-    template<int DIM>
-    class IntegrationPoint {
-    public:
-        IntegrationPoint(const std::array<double, DIM> &coordinates, double weight)
-                : coordinates_(coordinates), weight_(weight) {}
+template<int DIM>
+class IntegrationPoint {
+ public:
+  IntegrationPoint(const std::array<double, DIM> &coordinates, double weight)
+      : coordinates_(coordinates), weight_(weight) {}
 
-        int GetDimension() const {
-            return DIM;
-        }
+  int GetDimension() const {
+    return DIM;
+  }
 
-        std::array<double, DIM> GetCoordinates() const {
-            return coordinates_;
-        }
+  std::array<double, DIM> GetCoordinates() const {
+    return coordinates_;
+  }
 
-        double GetWeight() const {
-            return weight_;
-        }
+  double GetWeight() const {
+    return weight_;
+  }
 
-    private:
-        std::array<double, DIM> coordinates_;
-        double weight_;
-    };
+ private:
+  std::array<double, DIM> coordinates_;
+  double weight_;
+};
 }
 
 #endif  // SRC_INTEGRATION_POINT_H_

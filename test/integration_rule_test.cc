@@ -37,7 +37,7 @@ class A1DIntegrationRule : public Test {
   };
 
  protected:
-    std::vector<itg::IntegrationRule<1>> rules_;
+  std::vector<itg::IntegrationRule<1>> rules_;
 };
 
 TEST_F(A1DIntegrationRule, ReturnsCorrectNumberOfPoints) {
@@ -68,10 +68,10 @@ TEST_F(A1DIntegrationRule, ReturnsCorrectPointSum) {
 
 class A2DIntegrationRuleWith3Points : public Test {
  public:
-    A2DIntegrationRuleWith3Points() : rule_(itg::ThreePointGaussLegendre<2>()) {}
+  A2DIntegrationRuleWith3Points() : rule_(itg::ThreePointGaussLegendre<2>()) {}
 
  protected:
-    itg::IntegrationRule<2> rule_;
+  itg::IntegrationRule<2> rule_;
 };
 
 TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {

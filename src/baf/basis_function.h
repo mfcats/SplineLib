@@ -22,36 +22,36 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "knot_vector.h"
 
 namespace baf {
-    class BasisFunction {
-    public:
-        double Evaluate(double paramCoord) const;
+class BasisFunction {
+ public:
+  double Evaluate(double paramCoord) const;
 
-        double EvaluateDerivative(int derivative, double param_coord) const;
+  double EvaluateDerivative(int derivative, double param_coord) const;
 
-    protected:
-        BasisFunction(const KnotVector &knot_vector, int degree, uint64_t start);
+ protected:
+  BasisFunction(const KnotVector &knot_vector, int degree, uint64_t start);
 
-        double GetKnot(uint64_t knot_position) const;
+  double GetKnot(uint64_t knot_position) const;
 
-        uint64_t GetStartOfSupport() const;
+  uint64_t GetStartOfSupport() const;
 
-        int GetDegree() const;
+  int GetDegree() const;
 
-        virtual double EvaluateOnSupport(double param_coord) const = 0;
+  virtual double EvaluateOnSupport(double param_coord) const = 0;
 
-        virtual double EvaluateDerivativeOnSupport(int derivative, double param_coord) const = 0;
+  virtual double EvaluateDerivativeOnSupport(int derivative, double param_coord) const = 0;
 
-    private:
-        bool IsCoordinateInSupport(double param_coord) const;
+ private:
+  bool IsCoordinateInSupport(double param_coord) const;
 
-        bool IsCoordinateInSupportSpan(double param_coord) const;
+  bool IsCoordinateInSupportSpan(double param_coord) const;
 
-        bool IsCoordinateSpecialCaseWithLastKnot(double param_coord) const;
+  bool IsCoordinateSpecialCaseWithLastKnot(double param_coord) const;
 
-        KnotVector knotVector_;
-        int degree_;
-        uint64_t start_of_support_;
-    };
+  KnotVector knotVector_;
+  int degree_;
+  uint64_t start_of_support_;
+};
 }
 
 #endif  // SRC_BASIS_FUNCTION_H_

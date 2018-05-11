@@ -21,21 +21,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "integration_rule.h"
 
 namespace itg {
-    template<int DIM>
-    class FourPointGaussLegendre : public IntegrationRule<DIM> {
-    public:
-        FourPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{
-                -sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))}, (18.0 - sqrt(30)) / 36),
-                                                         IntegrationPoint<1>(std::array<double, 1>{
-                                                                                     -sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))},
-                                                                             (18.0 + sqrt(30)) / 36),
-                                                         IntegrationPoint<1>(std::array<double, 1>{
-                                                                                     sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))},
-                                                                             (18.0 + sqrt(30)) / 36),
-                                                         IntegrationPoint<1>(std::array<double, 1>{
-                                                                                     sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))},
-                                                                             (18.0 - sqrt(30)) / 36)}) {}
-    };
+template<int DIM>
+class FourPointGaussLegendre : public IntegrationRule<DIM> {
+ public:
+  FourPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{
+      -sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))}, (18.0 - sqrt(30)) / 36),
+                                                   IntegrationPoint<1>(std::array<double, 1>{
+                                                                           -sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))},
+                                                                       (18.0 + sqrt(30)) / 36),
+                                                   IntegrationPoint<1>(std::array<double, 1>{
+                                                                           sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))},
+                                                                       (18.0 + sqrt(30)) / 36),
+                                                   IntegrationPoint<1>(std::array<double, 1>{
+                                                                           sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))},
+                                                                       (18.0 - sqrt(30)) / 36)}) {}
+};
 }
 
 #endif  // SRC_FOUR_POINT_GAUSS_LEGENDRE_H_

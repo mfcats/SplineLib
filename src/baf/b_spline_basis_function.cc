@@ -22,15 +22,15 @@ baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector, i
 }
 
 double baf::BSplineBasisFunction::EvaluateOnSupport(double param_coord) const {
-  return ComputeLeftQuotient(param_coord)*left_lower_degree_->Evaluate(param_coord)
-      + ComputeRightQuotient(param_coord)*right_lower_degree_->Evaluate(param_coord);
+  return ComputeLeftQuotient(param_coord) * left_lower_degree_->Evaluate(param_coord)
+      + ComputeRightQuotient(param_coord) * right_lower_degree_->Evaluate(param_coord);
 }
 
 double baf::BSplineBasisFunction::EvaluateDerivativeOnSupport(int derivative, double param_coord) const {
   return GetDegree()
-      * (ComputeLeftQuotientDenominatorInverse()*left_lower_degree_->EvaluateDerivative(derivative - 1, param_coord)
+      * (ComputeLeftQuotientDenominatorInverse() * left_lower_degree_->EvaluateDerivative(derivative - 1, param_coord)
           - ComputeRightQuotientDenominatorInverse()
-              *right_lower_degree_->EvaluateDerivative(derivative - 1, param_coord));
+              * right_lower_degree_->EvaluateDerivative(derivative - 1, param_coord));
 }
 
 void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
@@ -53,11 +53,11 @@ double baf::BSplineBasisFunction::ComputeRightQuotientDenominatorInverse() const
 }
 
 double baf::BSplineBasisFunction::ComputeLeftQuotient(double param_coord) const {
-  return (param_coord - GetKnot(GetStartOfSupport()))*ComputeLeftQuotientDenominatorInverse();
+  return (param_coord - GetKnot(GetStartOfSupport())) * ComputeLeftQuotientDenominatorInverse();
 }
 
 double baf::BSplineBasisFunction::ComputeRightQuotient(double param_coord) const {
-  return (GetKnot(GetStartOfSupport() + GetDegree() + 1) - param_coord)*ComputeRightQuotientDenominatorInverse();
+  return (GetKnot(GetStartOfSupport() + GetDegree() + 1) - param_coord) * ComputeRightQuotientDenominatorInverse();
 }
 
 double baf::BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {

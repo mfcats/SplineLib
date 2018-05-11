@@ -21,21 +21,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "control_point.h"
 
 namespace elm {
-    class Element {
-    public:
-        Element(int dimension, const std::vector<double> &nodes);
+class Element {
+ public:
+  Element(int dimension, const std::vector<double> &nodes);
 
-        int dimension() const;
+  int dimension() const;
 
-        int numberOfNodes() const;
+  int numberOfNodes() const;
 
-        double node(int number) const;
+  double node(int number) const;
 
-    private:
-        int dimension_;
-        int number_of_nodes_;
-        std::vector<double> nodes_;
-    };
+ private:
+  int dimension_;
+  int number_of_nodes_;
+  std::vector<double> nodes_;
+};
 }
 
 #endif  // SRC_ELEMENT_H_

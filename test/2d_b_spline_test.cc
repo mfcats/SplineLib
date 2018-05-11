@@ -26,15 +26,15 @@ class A2DBSpline : public Test {
                                                   baf::KnotVector({0, 0, 0, 1, 1, 1})};
     std::array<int, 2> degree = {2, 2};
     std::vector<baf::ControlPoint> control_points = {
-            baf::ControlPoint(std::vector<double>({-1.0, -1.0, 0.0})),
-            baf::ControlPoint(std::vector<double>({0.0, -1.0, 0.0})),
-            baf::ControlPoint(std::vector<double>({1.0, -1.0, 0.0})),
-            baf::ControlPoint(std::vector<double>({-1.0, 0.0, 0.0})),
-            baf::ControlPoint(std::vector<double>({0.0, 0.0, 1.0})),
-            baf::ControlPoint(std::vector<double>({1.0, 0.0, 0.0})),
-            baf::ControlPoint(std::vector<double>({-1.0, 1.0, 0.0})),
-            baf::ControlPoint(std::vector<double>({0.0, 1.0, 0.0})),
-            baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.0}))
+        baf::ControlPoint(std::vector<double>({-1.0, -1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, -1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, -1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({-1.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({-1.0, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.0}))
     };
     b_spline = std::make_unique<spl::BSpline<2>>(knot_vector, degree, control_points);
   }

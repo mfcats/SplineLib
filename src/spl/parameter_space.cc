@@ -73,8 +73,8 @@ spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number,
 }
 
 std::vector<std::vector<double>> spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctionDerivatives(
-        int element_number,
-        const itg::IntegrationRule<1> &rule) const {
+    int element_number,
+    const itg::IntegrationRule<1> &rule) const {
   elm::Element element = GetElementList()[element_number];
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {

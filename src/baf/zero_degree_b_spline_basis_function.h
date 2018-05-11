@@ -21,15 +21,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "knot_vector.h"
 
 namespace baf {
-    class ZeroDegreeBSplineBasisFunction : public baf::BasisFunction {
-    public:
-        ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, uint64_t start_of_support);
+class ZeroDegreeBSplineBasisFunction : public baf::BasisFunction {
+ public:
+  ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, uint64_t start_of_support);
 
-    protected:
-        double EvaluateOnSupport(double param_coord) const override;
+ protected:
+  double EvaluateOnSupport(double param_coord) const override;
 
-        double EvaluateDerivativeOnSupport(int derivative, double param_coord) const override;
-    };
+  double EvaluateDerivativeOnSupport(int derivative, double param_coord) const override;
+};
 }
 
 #endif  // SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
