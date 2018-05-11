@@ -60,9 +60,9 @@ std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator spl::ParameterS
   return basis_functions_.begin() + knot_vector_.GetKnotSpan(param_coord) - degree_;
 }
 
-std::vector<elm::ElementIntegrationPoint> spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number,
-                                                                                                       const itg::IntegrationRule<
-                                                                                                           1> &rule) const {
+std::vector<elm::ElementIntegrationPoint>
+spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number,
+                                                             const itg::IntegrationRule<1> &rule) const {
   elm::Element element = GetElementList()[element_number];
   std::vector<elm::ElementIntegrationPoint> element_integration_points;
   std::vector<double> non_zero_basis_functions;
@@ -74,9 +74,9 @@ std::vector<elm::ElementIntegrationPoint> spl::ParameterSpace::EvaluateAllElemen
   return element_integration_points;
 }
 
-std::vector<elm::ElementIntegrationPoint> spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number,
-                                                                                                                 const itg::IntegrationRule<
-                                                                                                                     1> &rule) const {
+std::vector<elm::ElementIntegrationPoint>
+spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number,
+                                                                       const itg::IntegrationRule<1> &rule) const {
   elm::Element element = GetElementList()[element_number];
   std::vector<elm::ElementIntegrationPoint> element_integration_points;
   std::vector<double> non_zero_basis_function_derivatives;

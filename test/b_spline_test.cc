@@ -129,9 +129,9 @@ TEST_F(ABSpline, ReturnsCorrectNonZeroElementBasisFunctionsFor1PointIntegrationR
       itg::OnePointGaussLegendre<1>()));
   ASSERT_THAT(values.size(), 1);
   ASSERT_THAT(values[0].NumberOfNonZeroBasisFunctions(), 3);
-  ASSERT_THAT(values[0][0], DoubleEq(0.125));
-  ASSERT_THAT(values[0][1], DoubleEq(0.75));
-  ASSERT_THAT(values[0][2], DoubleEq(0.125));
+  ASSERT_THAT(values[0].GetBasisFunctionValue(0), DoubleEq(0.125));
+  ASSERT_THAT(values[0].GetBasisFunctionValue(1), DoubleEq(0.75));
+  ASSERT_THAT(values[0].GetBasisFunctionValue(2), DoubleEq(0.125));
 }
 
 TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctions) {
@@ -140,9 +140,10 @@ TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctions) {
       auto values = b_spline->EvaluateAllElementNonZeroBasisFunctions(element, rules_[rule - 1]);
       ASSERT_THAT(values.size(), rule);
       for (int point = 0; point < rule; point++) {
-        ASSERT_THAT(values[point].size(), 3);
-        ASSERT_THAT(std::accumulate(values[point].cbegin(), values[point].cend(), 0.0, std::plus<double>()),
-                    DoubleEq(1.0));
+        ASSERT_THAT(values[point].NumberOfNonZeroBasisFunctions(), 3);
+        auto a = values[point].non_zero_basis_functions();
+        auto b = values[point].non_zero_basis_functions();
+        ASSERT_THAT(std::accumulate(a.cbegin(), a.cend(), 0.0, std::plus<double>()), DoubleEq(1.0));
       }
     }
   }
@@ -153,10 +154,10 @@ TEST_F(ABSpline, ReturnsCorrectNonZeroElementBasisFunctionDerivativesFor1PointIn
       b_spline->EvaluateAllElementNonZeroBasisFunctionDerivatives(1, itg::IntegrationRule<1>(
           itg::OnePointGaussLegendre<1>()));
   ASSERT_THAT(values.size(), 1);
-  ASSERT_THAT(values[0].size(), 3);
-  ASSERT_THAT(values[0][0], DoubleEq(-0.6666666666666666));
-  ASSERT_THAT(values[0][1], DoubleEq(0));
-  ASSERT_THAT(values[0][2], DoubleEq(0.6666666666666666));
+  ASSERT_THAT(values[0].NumberOfNonZeroBasisFunctions(), 3);
+  ASSERT_THAT(values[0].GetBasisFunctionValue(0), DoubleEq(-0.6666666666666666));
+  ASSERT_THAT(values[0].GetBasisFunctionValue(1), DoubleEq(0));
+  ASSERT_THAT(values[0].GetBasisFunctionValue(2), DoubleEq(0.6666666666666666));
 }
 
 TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctionDerivatives) {
@@ -165,8 +166,9 @@ TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctionDeriv
       auto values = b_spline->EvaluateAllElementNonZeroBasisFunctionDerivatives(element, rules_[rule - 1]);
       ASSERT_THAT(values.size(), rule);
       for (int point = 0; point < rule; point++) {
-        ASSERT_THAT(values[point].size(), 3);
-        ASSERT_THAT(std::accumulate(values[point].cbegin(), values[point].cend(), 0.0, std::plus<double>()),
+        ASSERT_THAT(values[point].NumberOfNonZeroBasisFunctions(), 3);
+        auto a = values[point].non_zero_basis_functions();
+        ASSERT_THAT(std::accumulate(a.cbegin(), a.cend(), 0.0, std::plus<double>()),
                     DoubleNear(0.0, util::NumericSettings<double>::kEpsilon()));
       }
     }
