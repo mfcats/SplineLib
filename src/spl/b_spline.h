@@ -88,7 +88,7 @@ class BSpline {
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(
       int element_number,
       const itg::IntegrationRule<1> &rule) const {
-    return TransformToPhysicalSpace(
+    return ParameterSpace2PhysicalSpace(
         parameter_space_[0].EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule),
         element_number,
         rule);
@@ -96,9 +96,9 @@ class BSpline {
 
   double JacobianDeterminant(int element_number, int integration_point, const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
-    double dx_dxi = EvaluateDerivative({TransformToParameterSpace(element.node(0),
-                                                                  element.node(1),
-                                                                  rule.coordinate(integration_point, 0))}, {0}, {1})[0];
+    double dx_dxi = EvaluateDerivative({ReferenceSpace2ParameterSpace(element.node(0),
+                                                                      element.node(1),
+                                                                      rule.coordinate(integration_point, 0))}, {0}, {1})[0];
     double dxi_dtildexi = (element.node(1) - element.node(0)) / 2.0;
     return dx_dxi * dxi_dtildexi;
   }
@@ -148,26 +148,26 @@ class BSpline {
     return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
   }
 
-  std::vector<std::vector<double>> TransformToPhysicalSpace(std::vector<std::vector<double>> values,
-                                                            int element_number,
-                                                            const itg::IntegrationRule<1> &rule) const {
+  std::vector<std::vector<double>> ParameterSpace2PhysicalSpace(std::vector<std::vector<double>> values,
+                                                                int element_number,
+                                                                const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
     for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
       std::transform(values[point].cbegin(),
                      values[point].cend(),
                      values[point].begin(),
                      std::bind2nd(std::divides<double>(),
-                                  EvaluateDerivative({TransformToParameterSpace(element.node(0),
-                                                                                element.node(1),
-                                                                                rule.coordinate(point, 0))},
+                                  EvaluateDerivative({ReferenceSpace2ParameterSpace(element.node(0),
+                                                                                    element.node(1),
+                                                                                    rule.coordinate(point, 0))},
                                                      {0},
                                                      {1})[0]));
     }
     return values;
   }
 
-  double TransformToParameterSpace(double upper, double lower, double point) const {
-    return parameter_space_[0].TransformToParameterSpace(upper, lower, point);
+  double ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
+    return parameter_space_[0].ReferenceSpace2ParameterSpace(upper, lower, point);
   }
 
   std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM>
