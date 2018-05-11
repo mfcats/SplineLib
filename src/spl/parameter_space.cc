@@ -16,7 +16,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function_factory.h"
 #include "element_generator.h"
-#include "element_integration_point.h"
 
 spl::ParameterSpace::ParameterSpace(const baf::KnotVector &knot_vector, int degree) : degree_(degree),
                                                                                       knot_vector_(knot_vector) {
@@ -68,7 +67,7 @@ std::vector<elm::ElementIntegrationPoint> spl::ParameterSpace::EvaluateAllElemen
   std::vector<elm::ElementIntegrationPoint> element_integration_points;
   std::vector<double> non_zero_basis_functions;
   for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-    double integration_point = TransformToParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
+    double integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
     non_zero_basis_functions = EvaluateAllNonZeroBasisFunctions(integration_point);
     element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_functions));
   }
@@ -82,7 +81,7 @@ std::vector<elm::ElementIntegrationPoint> spl::ParameterSpace::EvaluateAllElemen
   std::vector<elm::ElementIntegrationPoint> element_integration_points;
   std::vector<double> non_zero_basis_function_derivatives;
   for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-    double integration_point = TransformToParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
+    double integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
     non_zero_basis_function_derivatives = EvaluateAllNonZeroBasisFunctionDerivatives(integration_point, 1);
     element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_function_derivatives));
   }
@@ -93,6 +92,6 @@ std::vector<elm::Element> spl::ParameterSpace::GetElementList() const {
   return elm::ElementGenerator(degree_, knot_vector_).GetElementList();
 }
 
-double spl::ParameterSpace::TransformToParameterSpace(double upper, double lower, double point) const {
+double spl::ParameterSpace::ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
   return ((upper - lower) * point + (upper + lower)) / 2.0;
 }
