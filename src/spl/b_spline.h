@@ -121,7 +121,7 @@ class BSpline {
       current[i + 1] = start[i + 1];
       M *= (last[i + 1] - start[i + 1]);
     }
-    MultiIndexHandler<DIM + 1> multiIndexHandler(total_length);
+    util::MultiIndexHandler<DIM + 1> multiIndexHandler(total_length);
     std::vector<double> vector;
     for (int i = 0; i < M; ++i) {
       multiIndexHandler.SetIndices(current);
@@ -199,7 +199,7 @@ class BSpline {
     auto total_length = this->ArrayTotalLength();
     auto M = MultiIndexHandlerShort();
 
-    MultiIndexHandler<DIM> multiIndexHandler(total_length);
+    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
 
     std::vector<double> vector(M, 1);
     for (int i = 0; i < M; ++i) {
@@ -217,7 +217,7 @@ class BSpline {
     auto total_length = this->ArrayTotalLength();
     auto M = MultiIndexHandlerShort();
 
-    MultiIndexHandler<DIM> multiIndexHandler(total_length);
+    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
 
     std::vector<double> vector(M, 1);
     for (int i = 0; i < M; ++i) {

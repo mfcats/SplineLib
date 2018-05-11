@@ -24,21 +24,21 @@ class MultiHandlers : public Test {
 		MultiHandlers(){
 			std::array<int, 1> lastKnotOffset1D;
 			lastKnotOffset1D[0] = 10;
-			multiIndexHandler1D = std::make_unique<MultiIndexHandler<1>>(lastKnotOffset1D);
+			multiIndexHandler1D = std::make_unique<util::MultiIndexHandler<1>>(lastKnotOffset1D);
 			std::array<int, 2> lastKnotOffset2D;
 			lastKnotOffset2D[0] = 10;
 			lastKnotOffset2D[1] = 3;
-			multiIndexHandler2D = std::make_unique<MultiIndexHandler<2>>(lastKnotOffset2D);
+			multiIndexHandler2D = std::make_unique<util::MultiIndexHandler<2>>(lastKnotOffset2D);
 			std::array<int, 3> lastKnotOffset3D;
 			lastKnotOffset3D[0] = 4;
 			lastKnotOffset3D[1] = 3;
 			lastKnotOffset3D[2] = 5;
-			multiIndexHandler3D = std::make_unique<MultiIndexHandler<3>>(lastKnotOffset3D);
+			multiIndexHandler3D = std::make_unique<util::MultiIndexHandler<3>>(lastKnotOffset3D);
 		}
 	protected:
-		std::unique_ptr<MultiIndexHandler<1>> multiIndexHandler1D;
-		std::unique_ptr<MultiIndexHandler<2>> multiIndexHandler2D;
-		std::unique_ptr<MultiIndexHandler<3>> multiIndexHandler3D;
+  std::unique_ptr<util::MultiIndexHandler<1>> multiIndexHandler1D;
+  std::unique_ptr<util::MultiIndexHandler<2>> multiIndexHandler2D;
+  std::unique_ptr<util::MultiIndexHandler<3>> multiIndexHandler3D;
 };
 
 TEST_F(MultiHandlers, 1D_multiIndex_ind0) {

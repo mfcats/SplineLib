@@ -45,7 +45,7 @@ namespace itg {
           for (int i = 0; i < DIM; i++) {
             max_dimension_points[i] = points_.size();
           }
-          MultiIndexHandler<DIM> multiIndexHandler(max_dimension_points);
+          util::MultiIndexHandler<DIM> multiIndexHandler(max_dimension_points);
           for (int i = 0; i < GetNumberOfIntegrationPoints(); i++) {
             double weight = 1;
             std::array<double, DIM> coordinates;

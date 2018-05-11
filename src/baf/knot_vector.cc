@@ -32,7 +32,7 @@ bool baf::KnotVector::operator==(const KnotVector &rhs) const {
   std::transform(this->begin(), this->end(), rhs.begin(), difference.begin(), std::minus<double>());
   return !std::any_of(difference.begin(),
                       difference.end(),
-                      [](double knt) { return std::fabs(knt) > NumericSettings<double>::kEpsilon(); });
+                      [](double knt) { return std::fabs(knt) > util::NumericSettings<double>::kEpsilon(); });
 }
 
 double &baf::KnotVector::operator[](uint64_t index) {
@@ -56,9 +56,9 @@ double baf::KnotVector::GetLastKnot() const {
 }
 
 int64_t baf::KnotVector::GetKnotSpan(double param_coord) const {
-  return NumericSettings<double>::AreEqual(param_coord, knots_.back()) ?
-      std::lower_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1 :
-      std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1;
+  return util::NumericSettings<double>::AreEqual(param_coord, knots_.back()) ?
+         std::lower_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1 :
+         std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1;
 }
 
 baf::ConstKnotIterator baf::KnotVector::begin() const {
@@ -74,7 +74,7 @@ bool baf::KnotVector::IsInKnotVectorRange(double param_coord) const {
 }
 
 bool baf::KnotVector::IsLastKnot(double param_coord) const {
-  return NumericSettings<double>::AreEqual(param_coord, knots_.back());
+  return util::NumericSettings<double>::AreEqual(param_coord, knots_.back());
 }
 
 uint64_t baf::KnotVector::Size() const {

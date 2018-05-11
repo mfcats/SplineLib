@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "multi_index_handler.h"
 #include <array>
 
+namespace util {
 template<int DIM>
 class MultiIndexHandler {
  public:
@@ -47,21 +48,21 @@ class MultiIndexHandler {
   }
 
   void SetIndices(std::array<int, DIM> &indices){
-	  for (int i = 0; i < DIM; ++i) {
-        current_multi_index_value_[i] = indices[i];
-	  }
+    for (int i = 0; i < DIM; ++i) {
+      current_multi_index_value_[i] = indices[i];
+    }
   }
 
   int Get1DIndex(){
     int index_1d = 0;
     int temp;
-	  for (int i = 0; i < DIM; ++i){
-        temp = current_multi_index_value_[i];
-		  for(int j = i-1; j >= 0; --j){
-            temp *= multi_index_length_[j];
-		  }
-        index_1d += temp;
-	  }
+    for (int i = 0; i < DIM; ++i){
+      temp = current_multi_index_value_[i];
+      for(int j = i-1; j >= 0; --j){
+        temp *= multi_index_length_[j];
+      }
+      index_1d += temp;
+    }
     return index_1d;
   }
 
@@ -69,5 +70,6 @@ class MultiIndexHandler {
   std::array<int, DIM> multi_index_length_;
   std::array<int, DIM> current_multi_index_value_;
 };
+}
 
 #endif //SPLINELIB_MULTI_INDEX_HANDLER_H

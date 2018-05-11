@@ -167,7 +167,7 @@ TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctionDeriv
       for (int point = 0; point < rule; point++) {
         ASSERT_THAT(values[point].size(), 3);
         ASSERT_THAT(std::accumulate(values[point].cbegin(), values[point].cend(), 0.0, std::plus<double>()),
-                    DoubleNear(0.0, NumericSettings<double>::kEpsilon()));
+                    DoubleNear(0.0, util::NumericSettings<double>::kEpsilon()));
       }
     }
   }

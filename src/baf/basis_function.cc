@@ -53,6 +53,7 @@ bool baf::BasisFunction::IsCoordinateInSupportSpan(double param_coord) const {
 }
 
 bool baf::BasisFunction::IsCoordinateSpecialCaseWithLastKnot(double param_coord) const {
-  return NumericSettings<double>::AreEqual(param_coord, knotVector_.GetLastKnot()) &&
-      NumericSettings<double>::AreEqual(knotVector_.GetLastKnot(), knotVector_.knot(start_of_support_ + degree_ + 1));
+  return util::NumericSettings<double>::AreEqual(param_coord, knotVector_.GetLastKnot()) &&
+      util::NumericSettings<double>::AreEqual(knotVector_.GetLastKnot(),
+                                              knotVector_.knot(start_of_support_ + degree_ + 1));
 }
