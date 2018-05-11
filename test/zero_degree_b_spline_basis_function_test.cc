@@ -29,8 +29,8 @@ class ZeroDegreeBasisFunctionEx21N00 : public Test {
                                      basis_function_(knot_vector_, 0) {}
 
  protected:
-  KnotVector knot_vector_;
-  ZeroDegreeBSplineBasisFunction basis_function_;
+    baf::KnotVector knot_vector_;
+    baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAt0_0) {
@@ -60,8 +60,8 @@ class ZeroDegreeBasisFunctionEx21N20 : public Test {
                                      basis_function_(knot_vector_, 2) {}
 
  protected:
-  KnotVector knot_vector_;
-  ZeroDegreeBSplineBasisFunction basis_function_;
+    baf::KnotVector knot_vector_;
+    baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx21N20, IsOneAt0_0) {
@@ -91,8 +91,8 @@ class ZeroDegreeBasisFunctionEx21N40 : public Test {
                                      basis_function_(knot_vector_, 0) {}
 
  protected:
-  KnotVector knot_vector_;
-  ZeroDegreeBSplineBasisFunction basis_function_;
+    baf::KnotVector knot_vector_;
+    baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAt0_0) {
@@ -122,8 +122,8 @@ class ZeroDegreeBasisFunctionEx22N00 : public Test {
                                      basis_function_(knot_vector_, 0) {}
 
  protected:
-  KnotVector knot_vector_;
-  ZeroDegreeBSplineBasisFunction basis_function_;
+    baf::KnotVector knot_vector_;
+    baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt0_0) {
@@ -190,8 +190,8 @@ class ZeroDegreeBasisFunctionEx22N40 : public Test {
                                      basis_function_(knot_vector_, 0) {}
 
  protected:
-  KnotVector knot_vector_;
-  ZeroDegreeBSplineBasisFunction basis_function_;
+    baf::KnotVector knot_vector_;
+    baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt0_0) {

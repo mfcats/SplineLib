@@ -17,9 +17,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function.h"
 
-class BasisFunctionFactory {
- public:
-  BasisFunction *CreateDynamic(KnotVector knot_vector, uint64_t start_of_support, int degree) const;
-};
+namespace baf {
+    class BasisFunctionFactory {
+    public:
+        BasisFunction *CreateDynamic(KnotVector knot_vector, uint64_t start_of_support, int degree) const;
+    };
+}
 
 #endif  // SRC_BASIS_FUNCTION_FACTORY_H_

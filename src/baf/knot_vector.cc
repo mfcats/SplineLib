@@ -20,13 +20,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "numeric_settings.h"
 
-KnotVector::KnotVector(const std::vector<double> &knots) : knots_(knots) {}
+baf::KnotVector::KnotVector(const std::vector<double> &knots) : knots_(knots) {}
 
-KnotVector::KnotVector(std::initializer_list<double> knots) : knots_(knots) {}
+baf::KnotVector::KnotVector(std::initializer_list<double> knots) : knots_(knots) {}
 
-KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<double>(begin, end)) {}
+baf::KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<double>(begin, end)) {}
 
-bool KnotVector::operator==(const KnotVector &rhs) const {
+bool baf::KnotVector::operator==(const KnotVector &rhs) const {
   if (this->Size()!=rhs.Size()) return false;
   auto difference = this->knots_;
   std::transform(this->begin(), this->end(), rhs.begin(), difference.begin(), std::minus<double>());
@@ -35,7 +35,7 @@ bool KnotVector::operator==(const KnotVector &rhs) const {
                       [](double knt) { return std::fabs(knt) > NumericSettings<double>::kEpsilon(); });
 }
 
-double &KnotVector::operator[](uint64_t index) {
+double &baf::KnotVector::operator[](uint64_t index) {
 #ifdef DEBUG
   return knots_.at(index);
 #else
@@ -43,7 +43,7 @@ double &KnotVector::operator[](uint64_t index) {
 #endif
 }
 
-double KnotVector::knot(uint64_t index) const {
+double baf::KnotVector::knot(uint64_t index) const {
 #ifdef DEBUG
   return knots_.at(index);
 #else
@@ -51,32 +51,32 @@ double KnotVector::knot(uint64_t index) const {
 #endif
 }
 
-double KnotVector::GetLastKnot() const {
+double baf::KnotVector::GetLastKnot() const {
   return knots_.back();
 }
 
-int64_t KnotVector::GetKnotSpan(double param_coord) const {
+int64_t baf::KnotVector::GetKnotSpan(double param_coord) const {
   return NumericSettings<double>::AreEqual(param_coord, knots_.back()) ?
       std::lower_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1 :
       std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1;
 }
 
-ConstKnotIterator KnotVector::begin() const {
+baf::ConstKnotIterator baf::KnotVector::begin() const {
   return knots_.begin();
 }
 
-ConstKnotIterator KnotVector::end() const {
+baf::ConstKnotIterator baf::KnotVector::end() const {
   return knots_.end();
 }
 
-bool KnotVector::IsInKnotVectorRange(double param_coord) const {
+bool baf::KnotVector::IsInKnotVectorRange(double param_coord) const {
   return param_coord >= knots_.front() && param_coord <= knots_.back();
 }
 
-bool KnotVector::IsLastKnot(double param_coord) const {
+bool baf::KnotVector::IsLastKnot(double param_coord) const {
   return NumericSettings<double>::AreEqual(param_coord, knots_.back());
 }
 
-uint64_t KnotVector::Size() const {
+uint64_t baf::KnotVector::Size() const {
   return knots_.size();
 }

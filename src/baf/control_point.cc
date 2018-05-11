@@ -14,15 +14,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "control_point.h"
 
-ControlPoint::ControlPoint(std::initializer_list<double> coordinates) : coordinates_(coordinates) {}
+baf::ControlPoint::ControlPoint(std::initializer_list<double> coordinates) : coordinates_(coordinates) {}
 
-ControlPoint::ControlPoint(const std::vector<double> &coordinates) : coordinates_(coordinates) {}
+baf::ControlPoint::ControlPoint(const std::vector<double> &coordinates) : coordinates_(coordinates) {}
 
-int ControlPoint::GetDimension() const {
+int baf::ControlPoint::GetDimension() const {
   return static_cast<int>(coordinates_.size());
 }
 
-double ControlPoint::GetValue(int dimension) const {
+double baf::ControlPoint::GetValue(int dimension) const {
 #ifdef DEBUG
   return coordinates_.at(static_cast<unsigned long>(dimension));
 #else

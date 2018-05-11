@@ -30,9 +30,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 template <int DIM>
 class BSpline {
  public:
-  BSpline(const std::array<KnotVector, DIM> &knot_vector,
-          std::array<int, DIM> degree,
-          const std::vector<ControlPoint> &control_points)
+    BSpline(const std::array<baf::KnotVector, DIM> &knot_vector,
+            std::array<int, DIM> degree,
+            const std::vector<baf::ControlPoint> &control_points)
       : dim(control_points[0].GetDimension()) {
     for (int i = 0; i < DIM; ++i) {
       parameter_space_[i] = ParameterSpace(knot_vector[i], degree[i]);
@@ -70,7 +70,7 @@ class BSpline {
     return parameter_space_[i].degree();
   }
 
-  KnotVector GetKnotVector(int i) const {
+    baf::KnotVector GetKnotVector(int i) const {
     return parameter_space_[i].knot_vector();
   }
 
@@ -167,8 +167,9 @@ class BSpline {
     return parameter_space_[0].TransformToParameterSpace(upper, lower, point);
   }
 
-  std::array<std::vector<std::unique_ptr<BasisFunction>>::const_iterator, DIM> CreateArrayFirstNonZeroBasisFunction(std::array<double, DIM> param_coord) const {
-    std::array<std::vector<std::unique_ptr<BasisFunction>>::const_iterator, DIM> first_non_zero;
+    std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM>
+    CreateArrayFirstNonZeroBasisFunction(std::array<double, DIM> param_coord) const {
+      std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] = parameter_space_[i].GetFirstNonZeroKnot(param_coord[i]);
     }

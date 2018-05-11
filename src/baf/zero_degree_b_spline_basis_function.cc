@@ -18,13 +18,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "numeric_settings.h"
 
-ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, uint64_t start_of_support)
+baf::ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
+                                                                    uint64_t start_of_support)
     : BasisFunction(knot_vector, 0, start_of_support) {}
 
-double ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(double param_coord) const {
+double baf::ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(double param_coord) const {
   return NumericSettings<double>::AreEqual(GetKnot(GetStartOfSupport()) + 1, GetKnot(GetStartOfSupport())) ? 0.0 : 1.0;
 }
 
-double ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(int derivative, double param_coord) const {
+double baf::ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(int derivative, double param_coord) const {
   return 0.0;
 }

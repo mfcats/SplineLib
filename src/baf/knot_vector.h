@@ -21,36 +21,44 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 
-typedef std::vector<double>::const_iterator ConstKnotIterator;
+namespace baf {
+    typedef std::vector<double>::const_iterator ConstKnotIterator;
 
-class KnotVector {
- public:
-  KnotVector() = default;
-  explicit KnotVector(const std::vector<double> &knots);
-  KnotVector(std::initializer_list<double> knots);
-  KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
+    class KnotVector {
+    public:
+        KnotVector() = default;
 
-  // Check if absolute distance between all knots is smaller than the epsilon defined in
-  // NumericSettings.
-  bool operator==(const KnotVector &rhs) const;
+        explicit KnotVector(const std::vector<double> &knots);
 
-  double &operator[](uint64_t index);
-  double knot(uint64_t index) const;
-  double GetLastKnot() const;
+        KnotVector(std::initializer_list<double> knots);
 
-  int64_t GetKnotSpan(double param_coord) const;
+        KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
 
-  ConstKnotIterator begin() const;
-  ConstKnotIterator end() const;
+        // Check if absolute distance between all knots is smaller than the epsilon defined in
+        // NumericSettings.
+        bool operator==(const KnotVector &rhs) const;
 
-  bool IsInKnotVectorRange(double param_coord) const;
+        double &operator[](uint64_t index);
 
-  bool IsLastKnot(double param_coord) const;
+        double knot(uint64_t index) const;
 
-  uint64_t Size() const;
+        double GetLastKnot() const;
 
- private:
-  std::vector<double> knots_;
-};
+        int64_t GetKnotSpan(double param_coord) const;
+
+        ConstKnotIterator begin() const;
+
+        ConstKnotIterator end() const;
+
+        bool IsInKnotVectorRange(double param_coord) const;
+
+        bool IsLastKnot(double param_coord) const;
+
+        uint64_t Size() const;
+
+    private:
+        std::vector<double> knots_;
+    };
+}
 
 #endif  // SRC_KNOT_VECTOR_H_

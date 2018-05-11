@@ -18,16 +18,20 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <initializer_list>
 #include <vector>
 
-class ControlPoint {
- public:
-  explicit ControlPoint(std::initializer_list<double> coordinates);
-  explicit ControlPoint(const std::vector<double> &coordinates);
+namespace baf {
+    class ControlPoint {
+    public:
+        explicit ControlPoint(std::initializer_list<double> coordinates);
 
-  int GetDimension() const;
-  double GetValue(int dimension) const;
+        explicit ControlPoint(const std::vector<double> &coordinates);
 
- protected:
-  std::vector<double> coordinates_;
-};
+        int GetDimension() const;
+
+        double GetValue(int dimension) const;
+
+    protected:
+        std::vector<double> coordinates_;
+    };
+}
 
 #endif  // SRC_CONTROL_POINT_H_

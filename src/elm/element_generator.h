@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 class ElementGenerator {
  public:
-  ElementGenerator(int degree, const KnotVector &knot_vector);
+    ElementGenerator(int degree, const baf::KnotVector &knot_vector);
 
   std::vector<Element> GetElementList();
 
@@ -32,7 +32,7 @@ class ElementGenerator {
   std::vector<double> GetElementNodes(uint64_t currentKnot);
 
   int degree_;
-  KnotVector knot_vector_;
+    baf::KnotVector knot_vector_;
 };
 
 #endif  // SRC_ELEMENT_GENERATOR_H_

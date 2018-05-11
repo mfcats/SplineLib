@@ -29,9 +29,9 @@ class SquareGenerator {
   std::unique_ptr<BSpline<2>> CreateSquare() const;
 
  private:
-  std::array<KnotVector, 2> knot_vectors_;
+    std::array<baf::KnotVector, 2> knot_vectors_;
   std::array<int, 2> degrees_;
-  std::vector<ControlPoint> control_points_;
+    std::vector<baf::ControlPoint> control_points_;
 };
 
 #endif //SPLINELIB_SQUARE_GENERATOR_H

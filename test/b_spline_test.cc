@@ -31,17 +31,17 @@ using testing::DoubleNear;
 class ABSpline : public Test {
  public:
   ABSpline() {
-    std::array<KnotVector, 1> knot_vector = {KnotVector({0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5})};
+      std::array<baf::KnotVector, 1> knot_vector = {baf::KnotVector({0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5})};
     std::array<int, 1> degree = {2};
-    std::vector<ControlPoint> control_points = {
-        ControlPoint(std::vector<double>({0.0, 0.0})),
-        ControlPoint(std::vector<double>({0.0, 1.0})),
-        ControlPoint(std::vector<double>({1.0, 1.0})),
-        ControlPoint(std::vector<double>({1.5, 1.5})),
-        ControlPoint(std::vector<double>({2.0, 1.3})),
-        ControlPoint(std::vector<double>({3.0, 2.0})),
-        ControlPoint(std::vector<double>({4.0, 1.5})),
-        ControlPoint(std::vector<double>({4.0, 0.0}))
+      std::vector<baf::ControlPoint> control_points = {
+              baf::ControlPoint(std::vector<double>({0.0, 0.0})),
+              baf::ControlPoint(std::vector<double>({0.0, 1.0})),
+              baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+              baf::ControlPoint(std::vector<double>({1.5, 1.5})),
+              baf::ControlPoint(std::vector<double>({2.0, 1.3})),
+              baf::ControlPoint(std::vector<double>({3.0, 2.0})),
+              baf::ControlPoint(std::vector<double>({4.0, 1.5})),
+              baf::ControlPoint(std::vector<double>({4.0, 0.0}))
     };
     b_spline = std::make_unique<BSpline<1>>(knot_vector, degree, control_points);
   }

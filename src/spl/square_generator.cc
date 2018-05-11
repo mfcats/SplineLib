@@ -14,17 +14,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "square_generator.h"
 
-SquareGenerator::SquareGenerator() : knot_vectors_({KnotVector{0, 0, 0, 1, 1, 1}, KnotVector{0, 0, 0, 1, 1, 1}}),
+SquareGenerator::SquareGenerator() : knot_vectors_(
+        {baf::KnotVector{0, 0, 0, 1, 1, 1}, baf::KnotVector{0, 0, 0, 1, 1, 1}}),
                                      degrees_({2, 2}),
-                                     control_points_({ControlPoint(std::vector<double>({-1.0, -1.0})),
-                                                      ControlPoint(std::vector<double>({0.0, -1.0})),
-                                                      ControlPoint(std::vector<double>({1.0, -1.0})),
-                                                      ControlPoint(std::vector<double>({-1.0, 0.0})),
-                                                      ControlPoint(std::vector<double>({0.0, 0.0})),
-                                                      ControlPoint(std::vector<double>({1.0, 0.0})),
-                                                      ControlPoint(std::vector<double>({-1.0, 1.0})),
-                                                      ControlPoint(std::vector<double>({0.0, 1.0})),
-                                                      ControlPoint(std::vector<double>({1.0, 1.0}))}) {}
+                                     control_points_({baf::ControlPoint(std::vector<double>({-1.0, -1.0})),
+                                                      baf::ControlPoint(std::vector<double>({0.0, -1.0})),
+                                                      baf::ControlPoint(std::vector<double>({1.0, -1.0})),
+                                                      baf::ControlPoint(std::vector<double>({-1.0, 0.0})),
+                                                      baf::ControlPoint(std::vector<double>({0.0, 0.0})),
+                                                      baf::ControlPoint(std::vector<double>({1.0, 0.0})),
+                                                      baf::ControlPoint(std::vector<double>({-1.0, 1.0})),
+                                                      baf::ControlPoint(std::vector<double>({0.0, 1.0})),
+                                                      baf::ControlPoint(std::vector<double>({1.0, 1.0}))}) {}
 
 SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({degree, degree}) {
   std::vector<double> knots;
@@ -37,11 +38,11 @@ SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({de
   for (int i = 0; i <= degree; i++) {
     knots.push_back(1);
   }
-  knot_vectors_ = {KnotVector(knots), KnotVector(knots)};
+  knot_vectors_ = {baf::KnotVector(knots), baf::KnotVector(knots)};
 
   for (int dimension1 = 0; dimension1 < number_of_knots - degree - 1; dimension1++) {
     for (int dimension2 = 0; dimension2 < number_of_knots - degree - 1; dimension2++) {
-      control_points_.push_back(ControlPoint({2.0 * dimension2 / (number_of_knots - degree - 2) - 1,
+      control_points_.push_back(baf::ControlPoint({2.0 * dimension2 / (number_of_knots - degree - 2) - 1,
                                               2.0 * dimension1 / (number_of_knots - degree - 2) - 1}));
     }
   }

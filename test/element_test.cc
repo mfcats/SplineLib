@@ -42,7 +42,7 @@ TEST_F(A1DElement, ReturnsCorrectNode) { // NOLINT
 
 class A1DElementGenerator : public Test {
  public:
-  A1DElementGenerator() : element_generator(2, KnotVector({0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5})) {}
+    A1DElementGenerator() : element_generator(2, baf::KnotVector({0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5})) {}
 
  protected:
   ElementGenerator element_generator;
