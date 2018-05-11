@@ -20,19 +20,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "element.h"
 #include "knot_vector.h"
 
-class ElementGenerator {
- public:
-    ElementGenerator(int degree, const baf::KnotVector &knot_vector);
+namespace elm {
+    class ElementGenerator {
+    public:
+        ElementGenerator(int degree, const baf::KnotVector &knot_vector);
 
-  std::vector<Element> GetElementList();
+        std::vector<Element> GetElementList();
 
- private:
-  double GetLowerElementBound(uint64_t currentKnot);
-  double GetHigherElementBound(uint64_t currentKnot);
-  std::vector<double> GetElementNodes(uint64_t currentKnot);
+    private:
+        double GetLowerElementBound(uint64_t currentKnot);
 
-  int degree_;
-    baf::KnotVector knot_vector_;
-};
+        double GetHigherElementBound(uint64_t currentKnot);
+
+        std::vector<double> GetElementNodes(uint64_t currentKnot);
+
+        int degree_;
+        baf::KnotVector knot_vector_;
+    };
+}
 
 #endif  // SRC_ELEMENT_GENERATOR_H_

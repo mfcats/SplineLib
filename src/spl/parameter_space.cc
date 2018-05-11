@@ -62,7 +62,7 @@ std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator ParameterSpace:
 
 std::vector<std::vector<double>>
 ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number, const IntegrationRule<1> &rule) const {
-  Element element = GetElementList()[element_number];
+  elm::Element element = GetElementList()[element_number];
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
     double integration_point = TransformToParameterSpace(element.node(1), element.node(0), rule.coordinate(point, 0));
@@ -74,7 +74,7 @@ ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number, cons
 std::vector<std::vector<double>> ParameterSpace::EvaluateAllElementNonZeroBasisFunctionDerivatives(
     int element_number,
     const IntegrationRule<1> &rule) const {
-  Element element = GetElementList()[element_number];
+  elm::Element element = GetElementList()[element_number];
   std::vector<std::vector<double>> basis_function_values;
   for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
     double integration_point = TransformToParameterSpace(element.node(1), element.node(0), rule.coordinate(point, 0));
@@ -83,8 +83,8 @@ std::vector<std::vector<double>> ParameterSpace::EvaluateAllElementNonZeroBasisF
   return basis_function_values;
 }
 
-std::vector<Element> ParameterSpace::GetElementList() const {
-  return ElementGenerator(degree_, knot_vector_).GetElementList();
+std::vector<elm::Element> ParameterSpace::GetElementList() const {
+  return elm::ElementGenerator(degree_, knot_vector_).GetElementList();
 }
 
 double ParameterSpace::TransformToParameterSpace(double upper, double lower, double point) const {

@@ -74,7 +74,7 @@ class BSpline {
     return parameter_space_[i].knot_vector();
   }
 
-  std::vector<Element> GetElementList() const {
+    std::vector<elm::Element> GetElementList() const {
     return parameter_space_[0].GetElementList();
   }
 
@@ -94,7 +94,7 @@ class BSpline {
   }
 
   double JacobianDeterminant(int element_number, int integration_point, const IntegrationRule<1> &rule) const {
-    Element element = GetElementList()[element_number];
+    elm::Element element = GetElementList()[element_number];
     double dx_dxi = EvaluateDerivative({TransformToParameterSpace(element.node(0),
                                                                  element.node(1),
                                                                  rule.coordinate(integration_point, 0))}, {0}, {1})[0];
@@ -150,7 +150,7 @@ class BSpline {
   std::vector<std::vector<double>> TransformToPhysicalSpace(std::vector<std::vector<double>> values,
                                                                      int element_number,
                                                                      const IntegrationRule<1> &rule) const {
-    Element element = GetElementList()[element_number];
+    elm::Element element = GetElementList()[element_number];
     for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
       std::transform(values[point].cbegin(),
                      values[point].cend(),

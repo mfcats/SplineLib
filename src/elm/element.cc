@@ -14,18 +14,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element.h"
 
-Element::Element(int dimension, const std::vector<double> &nodes)
+elm::Element::Element(int dimension, const std::vector<double> &nodes)
     : dimension_(dimension), number_of_nodes_(static_cast<int>(nodes.size())), nodes_(nodes) {}
 
-int Element::dimension() const {
+int elm::Element::dimension() const {
   return dimension_;
 }
 
-int Element::numberOfNodes() const {
+int elm::Element::numberOfNodes() const {
   return number_of_nodes_;
 }
 
-double Element::node(int number) const {
+double elm::Element::node(int number) const {
 #ifdef DEBUG
   return nodes_.at(static_cast<unsigned long>(number));
 #else

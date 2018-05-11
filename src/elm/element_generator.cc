@@ -14,10 +14,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element_generator.h"
 
-ElementGenerator::ElementGenerator(int degree, const baf::KnotVector &knot_vector)
+elm::ElementGenerator::ElementGenerator(int degree, const baf::KnotVector &knot_vector)
     : degree_(degree), knot_vector_(knot_vector) {}
 
-std::vector<Element> ElementGenerator::GetElementList() {
+std::vector<elm::Element> elm::ElementGenerator::GetElementList() {
   std::vector<Element> elements;
   for (uint64_t currentKnot = 0; currentKnot < knot_vector_.Size() - degree_ - 1; currentKnot++) {
     if ((GetLowerElementBound(currentKnot) - GetHigherElementBound(currentKnot))!=0) {
@@ -27,14 +27,14 @@ std::vector<Element> ElementGenerator::GetElementList() {
   return elements;
 }
 
-double ElementGenerator::GetLowerElementBound(uint64_t currentKnot) {
+double elm::ElementGenerator::GetLowerElementBound(uint64_t currentKnot) {
   return knot_vector_[currentKnot];
 }
 
-double ElementGenerator::GetHigherElementBound(uint64_t currentKnot) {
+double elm::ElementGenerator::GetHigherElementBound(uint64_t currentKnot) {
   return knot_vector_[currentKnot + 1];
 }
 
-std::vector<double> ElementGenerator::GetElementNodes(uint64_t currentKnot) {
+std::vector<double> elm::ElementGenerator::GetElementNodes(uint64_t currentKnot) {
   return {GetLowerElementBound(currentKnot), GetHigherElementBound(currentKnot)};
 }
