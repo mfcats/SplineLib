@@ -141,9 +141,11 @@ TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctions) {
       ASSERT_THAT(values.size(), rule);
       for (int point = 0; point < rule; point++) {
         ASSERT_THAT(values[point].NumberOfNonZeroBasisFunctions(), 3);
-        auto a = values[point].non_zero_basis_functions();
-        auto b = values[point].non_zero_basis_functions();
-        ASSERT_THAT(std::accumulate(a.cbegin(), a.cend(), 0.0, std::plus<double>()), DoubleEq(1.0));
+        std::vector<double> non_zero_basis_functions = values[point].non_zero_basis_functions();
+        ASSERT_THAT(std::accumulate(non_zero_basis_functions.cbegin(),
+                                    non_zero_basis_functions.cend(),
+                                    0.0,
+                                    std::plus<double>()), DoubleEq(1.0));
       }
     }
   }
@@ -155,9 +157,9 @@ TEST_F(ABSpline, ReturnsCorrectNonZeroElementBasisFunctionDerivativesFor1PointIn
           itg::OnePointGaussLegendre<1>()));
   ASSERT_THAT(values.size(), 1);
   ASSERT_THAT(values[0].NumberOfNonZeroBasisFunctions(), 3);
-  ASSERT_THAT(values[0].GetBasisFunctionValue(0), DoubleEq(-0.6666666666666666));
+  ASSERT_THAT(values[0].GetBasisFunctionValue(0), DoubleEq(-2.0 / 3.0));
   ASSERT_THAT(values[0].GetBasisFunctionValue(1), DoubleEq(0));
-  ASSERT_THAT(values[0].GetBasisFunctionValue(2), DoubleEq(0.6666666666666666));
+  ASSERT_THAT(values[0].GetBasisFunctionValue(2), DoubleEq(2.0 / 3.0));
 }
 
 TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctionDerivatives) {
@@ -167,8 +169,11 @@ TEST_F(AnIntegrationRule, LeadsToCorrectNumberOfNonZeroElementBasisFunctionDeriv
       ASSERT_THAT(values.size(), rule);
       for (int point = 0; point < rule; point++) {
         ASSERT_THAT(values[point].NumberOfNonZeroBasisFunctions(), 3);
-        auto a = values[point].non_zero_basis_functions();
-        ASSERT_THAT(std::accumulate(a.cbegin(), a.cend(), 0.0, std::plus<double>()),
+        std::vector<double> non_zero_basis_functions = values[point].non_zero_basis_functions();
+        ASSERT_THAT(std::accumulate(non_zero_basis_functions.cbegin(),
+                                    non_zero_basis_functions.cend(),
+                                    0.0,
+                                    std::plus<double>()),
                     DoubleNear(0.0, util::NumericSettings<double>::kEpsilon()));
       }
     }

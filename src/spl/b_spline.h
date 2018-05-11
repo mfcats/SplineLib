@@ -159,11 +159,10 @@ class BSpline {
                      values[point].cend(),
                      values[point].begin(),
                      std::bind2nd(std::divides<double>(),
-                                  EvaluateDerivative({ReferenceSpace2ParameterSpace(element.node(0),
-                                                                                    element.node(1),
-                                                                                    rule.coordinate(point, 0))},
-                                                     {0},
-                                                     {1})[0]));
+                                  EvaluateDerivative(
+                                      {ReferenceSpace2ParameterSpace(element.node(0),
+                                                                     element.node(1),
+                                                                     rule.coordinate(point, 0))}, {0}, {1})[0]));
     }
     return values;
   }
@@ -179,11 +178,10 @@ class BSpline {
                      element_non_zero_basis_functions.cend(),
                      element_non_zero_basis_functions.begin(),
                      std::bind2nd(std::divides<double>(),
-                                  EvaluateDerivative({ReferenceSpace2ParameterSpace(element.node(0),
-                                                                                    element.node(1),
-                                                                                    rule.coordinate(i, 0))},
-                                                     {0},
-                                                     {1})[0]));
+                                  EvaluateDerivative(
+                                      {ReferenceSpace2ParameterSpace(element.node(0),
+                                                                     element.node(1),
+                                                                     rule.coordinate(i, 0))}, {0}, {1})[0]));
 
       element_integration_points[i] = elm::ElementIntegrationPoint(element_non_zero_basis_functions);
     };
