@@ -27,12 +27,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "parameter_space.h"
 #include "multi_index_handler.h"
 
+namespace spl {
 template <int DIM>
 class BSpline {
  public:
-    BSpline(const std::array<baf::KnotVector, DIM> &knot_vector,
-            std::array<int, DIM> degree,
-            const std::vector<baf::ControlPoint> &control_points)
+  BSpline(const std::array<baf::KnotVector, DIM> &knot_vector,
+          std::array<int, DIM> degree,
+          const std::vector<baf::ControlPoint> &control_points)
       : dim(control_points[0].GetDimension()) {
     for (int i = 0; i < DIM; ++i) {
       parameter_space_[i] = ParameterSpace(knot_vector[i], degree[i]);
@@ -70,34 +71,34 @@ class BSpline {
     return parameter_space_[i].degree();
   }
 
-    baf::KnotVector GetKnotVector(int i) const {
+  baf::KnotVector GetKnotVector(int i) const {
     return parameter_space_[i].knot_vector();
   }
 
-    std::vector<elm::Element> GetElementList() const {
+  std::vector<elm::Element> GetElementList() const {
     return parameter_space_[0].GetElementList();
   }
 
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(
-          int element_number,
-          const itg::IntegrationRule<1> &rule) const {
+      int element_number,
+      const itg::IntegrationRule<1> &rule) const {
     return parameter_space_[0].EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
   }
 
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(
-          int element_number,
-          const itg::IntegrationRule<1> &rule) const {
+      int element_number,
+      const itg::IntegrationRule<1> &rule) const {
     return TransformToPhysicalSpace(
         parameter_space_[0].EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule),
         element_number,
         rule);
   }
 
-    double JacobianDeterminant(int element_number, int integration_point, const itg::IntegrationRule<1> &rule) const {
+  double JacobianDeterminant(int element_number, int integration_point, const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
     double dx_dxi = EvaluateDerivative({TransformToParameterSpace(element.node(0),
-                                                                 element.node(1),
-                                                                 rule.coordinate(integration_point, 0))}, {0}, {1})[0];
+                                                                  element.node(1),
+                                                                  rule.coordinate(integration_point, 0))}, {0}, {1})[0];
     double dxi_dtildexi = (element.node(1) - element.node(0))/2.0;
     return dx_dxi*dxi_dtildexi;
   }
@@ -157,8 +158,8 @@ class BSpline {
                      values[point].begin(),
                      std::bind2nd(std::divides<double>(),
                                   EvaluateDerivative({TransformToParameterSpace(element.node(0),
-                                                                               element.node(1),
-                                                                               rule.coordinate(point, 0))}, {0}, {1})[0]));
+                                                                                element.node(1),
+                                                                                rule.coordinate(point, 0))}, {0}, {1})[0]));
     }
     return values;
   }
@@ -167,9 +168,9 @@ class BSpline {
     return parameter_space_[0].TransformToParameterSpace(upper, lower, point);
   }
 
-    std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM>
-    CreateArrayFirstNonZeroBasisFunction(std::array<double, DIM> param_coord) const {
-      std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM> first_non_zero;
+  std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM>
+  CreateArrayFirstNonZeroBasisFunction(std::array<double, DIM> param_coord) const {
+    std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] = parameter_space_[i].GetFirstNonZeroKnot(param_coord[i]);
     }
@@ -232,5 +233,6 @@ class BSpline {
   std::vector<double> control_points_;
   int dim;
 };
+}
 
 #endif  // SRC_B_SPLINE_H_

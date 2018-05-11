@@ -36,11 +36,11 @@ class A2DBSpline : public Test {
             baf::ControlPoint(std::vector<double>({0.0, 1.0, 0.0})),
             baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.0}))
     };
-    b_spline = std::make_unique<BSpline<2>>(knot_vector, degree, control_points);
+    b_spline = std::make_unique<spl::BSpline<2>>(knot_vector, degree, control_points);
   }
 
  protected:
-  std::unique_ptr<BSpline<2>> b_spline;
+  std::unique_ptr<spl::BSpline<2>> b_spline;
 };
 
 TEST_F(A2DBSpline, Corner) {

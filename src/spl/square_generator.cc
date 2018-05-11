@@ -14,10 +14,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "square_generator.h"
 
-SquareGenerator::SquareGenerator() : knot_vectors_(
+spl::SquareGenerator::SquareGenerator() : knot_vectors_(
         {baf::KnotVector{0, 0, 0, 1, 1, 1}, baf::KnotVector{0, 0, 0, 1, 1, 1}}),
-                                     degrees_({2, 2}),
-                                     control_points_({baf::ControlPoint(std::vector<double>({-1.0, -1.0})),
+                                          degrees_({2, 2}),
+                                          control_points_({baf::ControlPoint(std::vector<double>({-1.0, -1.0})),
                                                       baf::ControlPoint(std::vector<double>({0.0, -1.0})),
                                                       baf::ControlPoint(std::vector<double>({1.0, -1.0})),
                                                       baf::ControlPoint(std::vector<double>({-1.0, 0.0})),
@@ -27,7 +27,7 @@ SquareGenerator::SquareGenerator() : knot_vectors_(
                                                       baf::ControlPoint(std::vector<double>({0.0, 1.0})),
                                                       baf::ControlPoint(std::vector<double>({1.0, 1.0}))}) {}
 
-SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({degree, degree}) {
+spl::SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({degree, degree}) {
   std::vector<double> knots;
   for (int i = 0; i <= degree; i++) {
     knots.push_back(0);
@@ -48,6 +48,6 @@ SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({de
   }
 }
 
-std::unique_ptr<BSpline<2>> SquareGenerator::CreateSquare() const {
+std::unique_ptr<spl::BSpline<2>> spl::SquareGenerator::CreateSquare() const {
   return std::make_unique<BSpline<2>>(knot_vectors_, degrees_, control_points_);
 }

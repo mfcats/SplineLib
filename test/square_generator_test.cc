@@ -25,12 +25,12 @@ using testing::DoubleNear;
 class ASquare : public Test {
  public:
   ASquare() {
-    SquareGenerator squareGenerator = SquareGenerator();
+    spl::SquareGenerator squareGenerator = spl::SquareGenerator();
     square_ = squareGenerator.CreateSquare();
   }
 
  protected:
-  std::unique_ptr<BSpline<2>> square_;
+  std::unique_ptr<spl::BSpline<2>> square_;
 };
 
 TEST_F(ASquare, ReturnsCorrectDegree) {
@@ -76,12 +76,12 @@ TEST_F(ASquare, ReturnsCorrectRightUpperCorner) {
 class ASquareWithDegree3And8Knots : public Test {
  public:
   ASquareWithDegree3And8Knots() {
-    SquareGenerator squareGenerator = SquareGenerator(3, 8);
+    spl::SquareGenerator squareGenerator = spl::SquareGenerator(3, 8);
     square_ = squareGenerator.CreateSquare();
   }
 
  protected:
-  std::unique_ptr<BSpline<2>> square_;
+  std::unique_ptr<spl::BSpline<2>> square_;
 };
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectDegree) {
@@ -127,12 +127,12 @@ TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectRightUpperCorner) {
 class ASquareWithDegree3And10Knots : public Test {
  public:
   ASquareWithDegree3And10Knots() {
-    SquareGenerator squareGenerator = SquareGenerator(3, 10);
+    spl::SquareGenerator squareGenerator = spl::SquareGenerator(3, 10);
     square_ = squareGenerator.CreateSquare();
   }
 
  protected:
-  std::unique_ptr<BSpline<2>> square_;
+  std::unique_ptr<spl::BSpline<2>> square_;
 };
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectDegree) {

@@ -22,32 +22,34 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "integration_rule.h"
 #include "knot_vector.h"
 
+namespace spl {
 class ParameterSpace {
  public:
   ParameterSpace() {};
 
-    ParameterSpace(const baf::KnotVector &knot_vector, int degree);
+  ParameterSpace(const baf::KnotVector &knot_vector, int degree);
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(double param_coord) const;
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord, int derivative) const;
 
-    std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;
+  std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;
   int degree() const;
 
-    baf::KnotVector knot_vector() const;
+  baf::KnotVector knot_vector() const;
 
   std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(int element_number,
                                                                            const itg::IntegrationRule<1> &rule) const;
   std::vector<std::vector<double>>
   EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const itg::IntegrationRule<1> &rule) const;
 
-    std::vector<elm::Element> GetElementList() const;
+  std::vector<elm::Element> GetElementList() const;
   double TransformToParameterSpace(double upper, double lower, double point) const;
 
  private:
-    baf::KnotVector knot_vector_;
+  baf::KnotVector knot_vector_;
   int degree_;
-    std::vector<std::unique_ptr<baf::BasisFunction>> basis_functions_;
+  std::vector<std::unique_ptr<baf::BasisFunction>> basis_functions_;
 };
+}
 
 #endif  // SRC_PARAMETER_SPACE_H_
