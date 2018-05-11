@@ -79,13 +79,13 @@ class BSpline {
     return parameter_space_[0].GetElementList();
   }
 
-  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(
+  std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctions(
       int element_number,
       const itg::IntegrationRule<1> &rule) const {
     return parameter_space_[0].EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
   }
 
-  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(
+  std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctionDerivatives(
       int element_number,
       const itg::IntegrationRule<1> &rule) const {
     return ParameterSpace2PhysicalSpace(
@@ -98,7 +98,9 @@ class BSpline {
     elm::Element element = GetElementList()[element_number];
     double dx_dxi = EvaluateDerivative({ReferenceSpace2ParameterSpace(element.node(0),
                                                                       element.node(1),
-                                                                      rule.coordinate(integration_point, 0))}, {0}, {1})[0];
+                                                                      rule.coordinate(integration_point, 0))},
+                                       {0},
+                                       {1})[0];
     double dxi_dtildexi = (element.node(1) - element.node(0)) / 2.0;
     return dx_dxi * dxi_dtildexi;
   }
@@ -157,13 +159,33 @@ class BSpline {
                      values[point].cend(),
                      values[point].begin(),
                      std::bind2nd(std::divides<double>(),
-                                  EvaluateDerivative({ReferenceSpace2ParameterSpace(element.node(0),
-                                                                                    element.node(1),
-                                                                                    rule.coordinate(point, 0))},
-                                                     {0},
-                                                     {1})[0]));
+                                  EvaluateDerivative(
+                                      {ReferenceSpace2ParameterSpace(element.node(0),
+                                                                     element.node(1),
+                                                                     rule.coordinate(point, 0))}, {0}, {1})[0]));
     }
     return values;
+  }
+
+  std::vector<elm::ElementIntegrationPoint> ParameterSpace2PhysicalSpace(
+      std::vector<elm::ElementIntegrationPoint> element_integration_points,
+      int element_number,
+      const itg::IntegrationRule<1> &rule) const {
+    elm::Element element = GetElementList()[element_number];
+    for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
+      std::vector<double> element_non_zero_basis_functions = element_integration_points[i].non_zero_basis_functions();
+      std::transform(element_non_zero_basis_functions.cbegin(),
+                     element_non_zero_basis_functions.cend(),
+                     element_non_zero_basis_functions.begin(),
+                     std::bind2nd(std::divides<double>(),
+                                  EvaluateDerivative(
+                                      {ReferenceSpace2ParameterSpace(element.node(0),
+                                                                     element.node(1),
+                                                                     rule.coordinate(i, 0))}, {0}, {1})[0]));
+
+      element_integration_points[i] = elm::ElementIntegrationPoint(element_non_zero_basis_functions);
+    };
+    return element_integration_points;
   }
 
   double ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
