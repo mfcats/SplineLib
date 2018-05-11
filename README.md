@@ -21,26 +21,36 @@ http://www.gnu.org/licenses/.
 
 ## Installation
 
-Requirements : fortran compiler
-Prefered : all gnu compiler
+Requirements : fortran compiler, C++11
+Advise : Use gcc-Compiler
 
-git clone https://github.com/mfcats/SplineLib.git
-cd SplineLib
+Clone the repository to your local machine
 
-install spack (Do not forget about the .zshrc-file)
-spack bootstrap
-spack repo add path/to/SplineLib/scripts/spack-repo
-spack setup splinelib@github -> this requires a fortran compiler
-spack load cmake
+	 $ git clone https://github.com/mfcats/SplineLib.git
 
+Install spack, see https://spack.readthedocs.io/en/latest/
 
-# usefull commands for spack
-spack spec splinelib -> to see dependencies
-spack location -i cmake -> to see location
+Add the splinelib repository
 
-# build project
-mkdir build
-cd build
-$GTEST_ROOT = spack location -i googletest+gmock
-cmake -DGTEST_ROOT=$GTEST_ROOT ..
-make 
+	 $ spack repo add path/to/SplineLib/scripts/spack-repo
+
+Now you can install the splinelib
+
+	 $ spack install splinelib
+
+## Installation for developers
+Instead of using the install command use
+
+	 $ spack setup splinelib@github
+
+Now you can go to the SplineLib folder and create a build directory in which you can
+build the splinelib with cmake and make
+
+	 $ mkdir build
+	 $ cd build
+	 $ cmake -DGTEST_ROOT=path/to/googletest+gmock ..
+	 $ make
+
+Testing if required
+
+	 $ ./test/SplineLibTests
