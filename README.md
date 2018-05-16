@@ -38,6 +38,8 @@ Now you can install the splinelib
 
 	 $ spack install splinelib
 
+Spack does automatically install the dependencies.
+
 ## Installation for developers
 Instead of using the install command use
 
@@ -48,8 +50,7 @@ build the splinelib with cmake and make
 
 	 $ mkdir build
 	 $ cd build
-	 $ cmake -DGTEST_ROOT=path/to/googletest+gmock ..
-	 $ make
+	 $ ./setup.py
 
 Testing if required
 

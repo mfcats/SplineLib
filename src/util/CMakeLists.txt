@@ -16,3 +16,17 @@
 add_library(splinelibutil INTERFACE)
 target_include_directories(splinelibutil INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
+install(
+        TARGETS splinelibutil
+        EXPORT "${targets_export_name}"
+        LIBRARY DESTINATION "${library_install_dir}"
+        ARCHIVE DESTINATION "${library_install_dir}"
+        RUNTIME DESTINATION "${executable_install_dir}"
+        INCLUDES DESTINATION "${include_install_dir}"
+)
+
+file(GLOB_RECURSE SPLINELIB_UTIL_FILES "${CMAKE_CURRENT_BINARY_DIR}/*.h")
+install(
+        FILES ${SPLNELIB_UTIL_FILES}
+        DESTINATION "${include_install_dir}"
+)

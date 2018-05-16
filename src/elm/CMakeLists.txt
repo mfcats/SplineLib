@@ -21,3 +21,18 @@ set(SOURCES
 add_library(splinelibelm SHARED ${SOURCES})
 target_include_directories(splinelibelm PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_link_libraries(splinelibelm splinelibbaf)
+
+install(
+        TARGETS splinelibelm
+        EXPORT "${targets_export_name}"
+        LIBRARY DESTINATION "${library_install_dir}"
+        ARCHIVE DESTINATION "${library_install_dir}"
+        RUNTIME DESTINATION "${executable_install_dir}"
+        INCLUDES DESTINATION "${include_install_dir}"
+)
+
+file(GLOB_RECURSE SPLINELIB_ELM_FILES "${CMAKE_CURRENT_BINARY_DIR}/*.h")
+install(
+        FILES ${SPLNELIB_ELM_FILES}
+        DESTINATION "${include_install_dir}"
+)
