@@ -33,7 +33,31 @@ class NURBS : public Spline<DIM> {
       degree,
       control_points), weights_(std::move(weights)) {}
 
+  std::vector<double> EvaluateDerivative(std::array<double, DIM> param_coord,
+                                         const std::vector<int> &dimensions,
+                                         std::array<int, DIM> derivative) const override {
+    if (derivative[0] == 0) {
+      return this->Evaluate(param_coord, dimensions);
+    }
+    std::vector<double> evaluated_point(dimensions.size(), 0);
+    for (int i = 0; i < dimensions.size(); ++i) {
+      double sum = 0;
+      for (int j = 1; j <= derivative[0]; ++j) {
+        auto a = GetWeightDerivative(param_coord, i);
+        auto b = EvaluateDerivative(param_coord, dimensions, {derivative[0] - 1})[dimensions[j]];
+        sum += binomialCoefficient(derivative[0], j) * GetWeightDerivative(param_coord, i)
+            * EvaluateDerivative(param_coord, dimensions, {derivative[0] - 1})[dimensions[j]];
+      }
+      auto a = GetHomogenousDerivative(param_coord[0], i, derivative[0]);
+      auto b = GetWeightDerivative(param_coord, 0);
+      evaluated_point[i] =
+          (GetHomogenousDerivative(param_coord[0], i, derivative[0]) - sum) / GetWeightDerivative(param_coord, 0);
+    }
+    return evaluated_point;
+  }
+
  private:
+
   std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const override {
     auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
     util::MultiIndexHandler<DIM> multiIndexHandler(this->ArrayTotalLength());
@@ -59,22 +83,36 @@ class NURBS : public Spline<DIM> {
                              weights).Evaluate(param_coord, {0})[0];
   }
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<double, DIM> param_coord,
-                                                                 std::array<int, DIM> derivative) const {
-    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
-    auto total_length = this->ArrayTotalLength();
-    auto M = this->MultiIndexHandlerShort();
-
-    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
-
-    std::vector<double> vector(M, 1);
-    for (int i = 0; i < M; ++i) {
-      for (int j = 0; j < DIM; ++j) {
-        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->EvaluateDerivative(derivative[j], param_coord[j]);
-      }
-      multiIndexHandler++;
+  double GetWeightDerivative(std::array<double, DIM> param_coord, int derivative) const {
+    std::vector<baf::ControlPoint> weights;
+    for (int control_point = 0; control_point < weights_.size(); ++control_point) {
+      weights.emplace_back(baf::ControlPoint({weights_[control_point]}));
     }
-    return vector;
+    return BSpline<1>(std::array<baf::KnotVector, 1>{this->GetKnotVector(0)},
+                      std::array<int, 1>{this->GetDegree(0)},
+                      weights).EvaluateAllNonZeroBasisFunctionDerivatives({param_coord[0]},
+                                                                          std::array<int, 1>{derivative})[0];
+  }
+
+  double GetHomogenousDerivative(double param_coord, int dimension, int derivative) const {
+
+    std::vector<baf::ControlPoint> homogenousPoints;
+    for (int point = 0; point < this->control_points_.size(); ++point) {
+      std::vector<double> homogenousCoordinates;
+      for (int coordinate = 0; coordinate < this->dim; ++coordinate) {
+        homogenousCoordinates.emplace_back(this->control_points_[point * this->dim + coordinate] * weights_[point]);
+      }
+      homogenousPoints.emplace_back(baf::ControlPoint(homogenousCoordinates));
+    }
+    return BSpline<1>(std::array<baf::KnotVector, 1>{this->GetKnotVector(0)},
+                      std::array<int, 1>{this->GetDegree(0)},
+                      homogenousPoints).EvaluateDerivative({param_coord}, {dimension}, {derivative})[0];
+  }
+
+  int binomialCoefficient(int number, int subset) const {
+    if (subset == 0 || subset == number)
+      return 1;
+    return binomialCoefficient(number - 1, subset - 1) + binomialCoefficient(number - 1, subset);
   }
 
   std::vector<double> weights_;

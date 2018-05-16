@@ -55,17 +55,9 @@ class Spline {
     return evaluated_point;
   }
 
-  std::vector<double> EvaluateDerivative(std::array<double, DIM> param_coord,
-                                         const std::vector<int> &dimensions,
-                                         std::array<int, DIM> derivative) const {
-    auto basis_function_values = EvaluateAllNonZeroBasisFunctionDerivatives(param_coord, derivative);
-    std::vector<double> evaluated_point(dimensions.size(), 0);
-    for (int i = 0; i < dimensions.size(); ++i) {
-      evaluated_point[i] =
-          ComputeWeightedSum(basis_function_values, ExtractControlPointValues(param_coord, dimensions[i]));
-    }
-    return evaluated_point;
-  }
+  virtual std::vector<double> EvaluateDerivative(std::array<double, DIM> param_coord,
+                                                 const std::vector<int> &dimensions,
+                                                 std::array<int, DIM> derivative) const = 0;
 
   int GetDegree(int i) const {
     return parameter_space_[i].degree();
@@ -197,9 +189,6 @@ class Spline {
   }
 
   virtual std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const = 0;
-
-  virtual std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<double, DIM> param_coord,
-                                                                         std::array<int, DIM> derivative) const = 0;
 
   std::array<ParameterSpace, DIM> parameter_space_;
   std::vector<double> control_points_;
