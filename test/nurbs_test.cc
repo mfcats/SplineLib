@@ -12,12 +12,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <numeric_settings.h>
 #include "gmock/gmock.h"
 
 #include "nurbs.h"
 
 using testing::Test;
-using testing::DoubleEq;
+using testing::DoubleNear;
 
 class ARationalBSpline : public Test {
  public:
@@ -32,7 +33,7 @@ class ARationalBSpline : public Test {
         baf::ControlPoint(std::vector<double>({4.0, 1.0})),
         baf::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
-    nurbs = std::make_unique<spl::NURBS<1>>(knot_vector, degree, weights, control_points);
+    nurbs = std::make_unique<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
   }
 
  protected:
@@ -40,9 +41,8 @@ class ARationalBSpline : public Test {
 };
 
 TEST_F(ARationalBSpline, ReturnsCorrectValues) {
-  ASSERT_NEAR(nurbs->Evaluate({1.0}, {0})[0], 3.5, 0.00005);
-  ASSERT_NEAR(nurbs->Evaluate({1.0}, {1})[0], 3.0, 0.00005);
-  ASSERT_NEAR(nurbs->Evaluate({1.0}, {2})[0], 2.5, 0.00005);
+  ASSERT_THAT(nurbs->Evaluate({1.0}, {0})[0], DoubleNear(7.0 / 5.0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({1.0}, {1})[0], DoubleNear(6.0 / 5.0, util::NumericSettings<double>::kEpsilon()));
 }
 
 

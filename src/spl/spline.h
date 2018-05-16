@@ -103,7 +103,7 @@ class Spline {
     return dx_dxi * dxi_dtildexi;
   }
 
- private:
+ protected:
   std::vector<double> ExtractControlPointValues(std::array<double, DIM> param_coord, int dimension) const {
     std::array<int, DIM + 1> start;
     std::array<int, DIM + 1> last;
@@ -196,22 +196,7 @@ class Spline {
     return M;
   }
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const {
-    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
-    auto total_length = this->ArrayTotalLength();
-    auto M = MultiIndexHandlerShort();
-
-    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
-
-    std::vector<double> vector(M, 1);
-    for (int i = 0; i < M; ++i) {
-      for (int j = 0; j < DIM; ++j) {
-        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j]);
-      }
-      multiIndexHandler++;
-    }
-    return vector;
-  }
+  virtual std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const = 0;
 
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<double, DIM> param_coord,
                                                                  std::array<int, DIM> derivative) const {

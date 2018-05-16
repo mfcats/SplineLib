@@ -27,6 +27,24 @@ class BSpline : public Spline<DIM> {
   BSpline(const std::array<baf::KnotVector, DIM> &knot_vector,
           std::array<int, DIM> degree,
           const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree, control_points) {}
+
+ private:
+  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const override {
+    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
+    auto total_length = this->ArrayTotalLength();
+    auto M = this->MultiIndexHandlerShort();
+
+    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
+
+    std::vector<double> vector(M, 1);
+    for (int i = 0; i < M; ++i) {
+      for (int j = 0; j < DIM; ++j) {
+        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j]);
+      }
+      multiIndexHandler++;
+    }
+    return vector;
+  }
 };
 }
 
