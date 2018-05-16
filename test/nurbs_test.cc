@@ -14,30 +14,32 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
+#include "nurbs.h"
+
 using testing::Test;
 using testing::DoubleEq;
 
 class ARationalBSpline : public Test {
  public:
   ARationalBSpline() {
-    std::array<KnotVector, 1> knot_vector = {KnotVector({0, 0, 0, 1, 2, 3, 3, 3})};
+    std::array<baf::KnotVector, 1> knot_vector = {baf::KnotVector({0, 0, 0, 1, 2, 3, 3, 3})};
     std::array<int, 1> degree = {2};
     std::vector<double> weights = {1, 4, 1, 1, 1};
-    std::vector<ControlPoint> control_points = {
-        ControlPoint(std::vector<double>({0.0, 0.0})),
-        ControlPoint(std::vector<double>({1.0, 1.0})),
-        ControlPoint(std::vector<double>({3.0, 2.0})),
-        ControlPoint(std::vector<double>({4.0, 1.0})),
-        ControlPoint(std::vector<double>({5.0, -1.0}))
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({4.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
-    nurbs = std::make_unique<NURBS < 1>>(knot_vector, degree, weights, control_points);
+    nurbs = std::make_unique<spl::NURBS<1>>(knot_vector, degree, weights, control_points);
   }
 
  protected:
-  std::unique_ptr<NURBS < 1>> nurbs;
+  std::unique_ptr<spl::NURBS<1>> nurbs;
 };
 
-TEST_F(ARationalBSpline,) {
+TEST_F(ARationalBSpline, ReturnsCorrectValues) {
   ASSERT_NEAR(nurbs->Evaluate({1.0}, {0})[0], 3.5, 0.00005);
   ASSERT_NEAR(nurbs->Evaluate({1.0}, {1})[0], 3.0, 0.00005);
   ASSERT_NEAR(nurbs->Evaluate({1.0}, {2})[0], 2.5, 0.00005);

@@ -25,6 +25,7 @@ set(TEST_SOURCES
         element_test.cc
         integration_rule_test.cc
         integration_point_test.cc
+        nurbs_test.cc
         )
 
 find_package(GTest REQUIRED)
