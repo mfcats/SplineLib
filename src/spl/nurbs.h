@@ -27,43 +27,35 @@ class NURBS : public Spline<DIM> {
  public:
   NURBS(const std::array<baf::KnotVector, DIM> &knot_vector,
         std::array<int, DIM> degree,
-        const std::vector<baf::ControlPoint> &control_points, const std::vector<double> weights) : Spline<DIM>(
+        const std::vector<baf::ControlPoint> &control_points, const std::vector<double> &weights) : Spline<DIM>(
       knot_vector,
       degree,
       control_points), weights_(weights) {}
 
  private:
   std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const override {
+    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
+    util::MultiIndexHandler<DIM> multiIndexHandler(this->ArrayTotalLength());
+    std::vector<double> NonZeroBasisFunctions(this->MultiIndexHandlerShort(), 1);
+    for (double &basis_function : NonZeroBasisFunctions) {
+      for (int j = 0; j < DIM; ++j) {
+        basis_function *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j])
+            * weights_[this->GetKnotVector(0).GetKnotSpan(param_coord[0]) - this->GetDegree(0) + multiIndexHandler[j]];
+      }
+      basis_function /= GetSum(param_coord);
+      multiIndexHandler++;
+    }
+    return NonZeroBasisFunctions;
+  }
+
+  double GetSum(std::array<double, DIM> param_coord) const {
     std::vector<baf::ControlPoint> weights;
     for (int control_point = 0; control_point < weights_.size(); ++control_point) {
       weights.emplace_back(baf::ControlPoint({weights_[control_point]}));
     }
-
-    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
-    auto total_length = this->ArrayTotalLength();
-    auto M = this->MultiIndexHandlerShort();
-
-    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
-
-    std::vector<double> vector(M, 1);
-    for (int i = 0; i < M; ++i) {
-      for (int j = 0; j < DIM; ++j) {
-        auto a = (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j]);
-        std::cout << a << std::endl;
-        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j])
-            * weights_[this->GetKnotVector(0).GetKnotSpan(param_coord[0]) - this->GetDegree(0) + multiIndexHandler[j]];
-      }
-      auto b = vector[i];
-      std::cout << b << std::endl;
-      vector[i] /= spl::BSpline<DIM>(std::array<baf::KnotVector, DIM>{this->GetKnotVector(0)},
-                                     std::array<int, DIM>{this->GetDegree(0)},
-                                     weights).Evaluate(param_coord, {0})[0];
-      b = vector[i];
-      std::cout << b << std::endl;
-      multiIndexHandler++;
-    }
-
-    return vector;
+    return spl::BSpline<DIM>(std::array<baf::KnotVector, DIM>{this->GetKnotVector(0)},
+                             std::array<int, DIM>{this->GetDegree(0)},
+                             weights).Evaluate(param_coord, {0})[0];
   }
 
   std::vector<double> weights_;
