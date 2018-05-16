@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SPLINELIB_NURBS_H
 
 #include <array>
+#include <utility>
 #include <vector>
 
 #include "b_spline.h"
@@ -27,10 +28,10 @@ class NURBS : public Spline<DIM> {
  public:
   NURBS(const std::array<baf::KnotVector, DIM> &knot_vector,
         std::array<int, DIM> degree,
-        const std::vector<baf::ControlPoint> &control_points, const std::vector<double> &weights) : Spline<DIM>(
+        const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) : Spline<DIM>(
       knot_vector,
       degree,
-      control_points), weights_(weights) {}
+      control_points), weights_(std::move(weights)) {}
 
  private:
   std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const override {
@@ -56,6 +57,24 @@ class NURBS : public Spline<DIM> {
     return spl::BSpline<DIM>(std::array<baf::KnotVector, DIM>{this->GetKnotVector(0)},
                              std::array<int, DIM>{this->GetDegree(0)},
                              weights).Evaluate(param_coord, {0})[0];
+  }
+
+  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<double, DIM> param_coord,
+                                                                 std::array<int, DIM> derivative) const {
+    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
+    auto total_length = this->ArrayTotalLength();
+    auto M = this->MultiIndexHandlerShort();
+
+    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
+
+    std::vector<double> vector(M, 1);
+    for (int i = 0; i < M; ++i) {
+      for (int j = 0; j < DIM; ++j) {
+        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->EvaluateDerivative(derivative[j], param_coord[j]);
+      }
+      multiIndexHandler++;
+    }
+    return vector;
   }
 
   std::vector<double> weights_;

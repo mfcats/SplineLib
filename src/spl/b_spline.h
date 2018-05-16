@@ -45,7 +45,25 @@ class BSpline : public Spline<DIM> {
     }
     return vector;
   }
+
+  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<double, DIM> param_coord,
+                                                                 std::array<int, DIM> derivative) const override {
+    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
+    auto total_length = this->ArrayTotalLength();
+    auto M = this->MultiIndexHandlerShort();
+
+    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
+
+    std::vector<double> vector(M, 1);
+    for (int i = 0; i < M; ++i) {
+      for (int j = 0; j < DIM; ++j) {
+        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->EvaluateDerivative(derivative[j], param_coord[j]);
+      }
+      multiIndexHandler++;
+    }
+    return vector;
+  }
 };
-}
+} //namespace spl
 
 #endif  // SRC_B_SPLINE_H_

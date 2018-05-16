@@ -94,3 +94,37 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) {
   ASSERT_THAT(nurbs->Evaluate({1.0}, {1})[0], DoubleNear(4.5, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({1.0}, {2})[0], DoubleNear(0.0, util::NumericSettings<double>::kEpsilon()));
 }
+
+class NurbsDerivativeEx4_2 : public Test {
+ public:
+  NurbsDerivativeEx4_2() {
+
+    std::array<baf::KnotVector, 1> knot_vector = {baf::KnotVector({0, 0, 0, 1, 1, 1})};
+    std::array<int, 1> degree = {2};
+    std::vector<double> weights = {1, 1, 2};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 1.0}))
+    };
+    nurbs = std::make_unique<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+  }
+
+ protected:
+  std::unique_ptr<spl::NURBS<1>> nurbs;
+};
+
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtFirstKnot) {
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.0}, {0}, {1})[0], 0.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.0}, {1}, {1})[0], 2.0);
+}
+
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtLastKnot) {
+  ASSERT_THAT(nurbs->EvaluateDerivative({1.0}, {0}, {1})[0], -1.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({1.0}, {1}, {1})[0], 0.0);
+}
+
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtFirstKnot) {
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.0}, {0}, {2})[0], -4.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.0}, {1}, {2})[0], 0.0);
+}
