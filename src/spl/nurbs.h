@@ -57,11 +57,18 @@ class NURBS : public Spline<DIM> {
     auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
     util::MultiIndexHandler<DIM> multiIndexHandler(this->ArrayTotalLength());
     std::vector<double> NonZeroBasisFunctions(this->MultiIndexHandlerShort(), 1);
+    auto a = this->MultiIndexHandlerShort();
+    auto b = this->ArrayTotalLength();
     for (double &basis_function : NonZeroBasisFunctions) {
       for (int j = 0; j < DIM; ++j) {
-        basis_function *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j])
-            * weights_[this->GetKnotVector(0).GetKnotSpan(param_coord[0]) - this->GetDegree(0) + multiIndexHandler[j]];
+        basis_function *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j]);
       }
+      int index = 0;
+      for (int j = 0; j < DIM; ++j) {
+        index += this->GetKnotVector(j).GetKnotSpan(param_coord[j]) - this->GetDegree(j) + multiIndexHandler[j];
+      }
+      basis_function *= weights_[index];
+      auto t = GetSum(param_coord);
       basis_function /= GetSum(param_coord);
       multiIndexHandler++;
     }
@@ -73,9 +80,18 @@ class NURBS : public Spline<DIM> {
     for (int control_point = 0; control_point < weights_.size(); ++control_point) {
       weights.emplace_back(baf::ControlPoint({weights_[control_point]}));
     }
-    return spl::BSpline<DIM>(std::array<baf::KnotVector, DIM>{this->GetKnotVector(0)},
-                             std::array<int, DIM>{this->GetDegree(0)},
-                             weights).Evaluate(param_coord, {0})[0];
+    // knot vector array
+    std::array<baf::KnotVector, DIM> knot_vectors;
+    for (int vector = 0; vector < DIM; ++vector) {
+      knot_vectors[vector] = this->GetKnotVector(vector);
+    }
+    // degree array
+    std::array<int, DIM> degrees;
+    for (int degree = 0; degree < DIM; ++degree) {
+      degrees[degree] = this->GetDegree(degree);
+    }
+    auto a = spl::BSpline<DIM>(knot_vectors, degrees, weights).Evaluate(param_coord, {0})[0];
+    return a;
   }
 
   double GetWeightDerivative(std::array<double, DIM> param_coord, int derivative) const {
