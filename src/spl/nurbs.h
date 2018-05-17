@@ -43,21 +43,21 @@ class NURBS : public Spline<DIM> {
     for (int i = 0; i < dimensions.size(); ++i) {
       double sum = 0;
       for (int j = 1; j <= derivative[0]; ++j) {
-        auto a = GetWeightDerivative(param_coord, i);
+        auto a = GetWeightDerivative(param_coord, j);
         auto b = EvaluateDerivative(param_coord, dimensions, {derivative[0] - 1})[dimensions[j]];
-        sum += binomialCoefficient(derivative[0], j) * GetWeightDerivative(param_coord, i)
+        sum += binomialCoefficient(derivative[0], j) * GetWeightDerivative(param_coord, j)
             * EvaluateDerivative(param_coord, dimensions, {derivative[0] - 1})[dimensions[j]];
       }
-      auto a = GetHomogenousDerivative(param_coord[0], i, derivative[0]);
+      auto a = GetHomogenousDerivative(param_coord[0], dimensions[i], derivative[0]);
       auto b = GetWeightDerivative(param_coord, 0);
       evaluated_point[i] =
-          (GetHomogenousDerivative(param_coord[0], i, derivative[0]) - sum) / GetWeightDerivative(param_coord, 0);
+          (GetHomogenousDerivative(param_coord[0], dimensions[i], derivative[0]) - sum)
+              / GetWeightDerivative(param_coord, 0);
     }
     return evaluated_point;
   }
 
  private:
-
   std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const override {
     auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
     util::MultiIndexHandler<DIM> multiIndexHandler(this->ArrayTotalLength());
@@ -90,12 +90,10 @@ class NURBS : public Spline<DIM> {
     }
     return BSpline<1>(std::array<baf::KnotVector, 1>{this->GetKnotVector(0)},
                       std::array<int, 1>{this->GetDegree(0)},
-                      weights).EvaluateAllNonZeroBasisFunctionDerivatives({param_coord[0]},
-                                                                          std::array<int, 1>{derivative})[0];
+                      weights).EvaluateDerivative({param_coord[0]}, {0}, {derivative})[0];
   }
 
   double GetHomogenousDerivative(double param_coord, int dimension, int derivative) const {
-
     std::vector<baf::ControlPoint> homogenousPoints;
     for (int point = 0; point < this->control_points_.size(); ++point) {
       std::vector<double> homogenousCoordinates;
