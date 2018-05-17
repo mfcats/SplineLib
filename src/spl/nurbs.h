@@ -37,23 +37,17 @@ class NURBS : public Spline<DIM> {
                                          const std::vector<int> &dimensions,
                                          std::array<int, DIM> derivative) const override {
     if (derivative[0] == 0) {
-      auto test = this->Evaluate(param_coord, dimensions);
       return this->Evaluate(param_coord, dimensions);
     }
     std::vector<double> evaluated_point(dimensions.size(), 0);
     for (int i = 0; i < dimensions.size(); ++i) {
       double sum = 0;
       for (int j = 1; j <= derivative[0]; ++j) {
-        auto a = GetWeightDerivative(param_coord, j);
-        auto b = EvaluateDerivative(param_coord, {dimensions[i]}, {derivative[0] - j})[0];
         sum += binomialCoefficient(derivative[0], j) * GetWeightDerivative(param_coord, j)
             * EvaluateDerivative(param_coord, {dimensions[i]}, {derivative[0] - j})[0];
       }
-      auto a = GetHomogenousDerivative(param_coord[0], dimensions[i], derivative[0]);
-      auto b = GetWeightDerivative(param_coord, 0);
-      evaluated_point[i] =
-          (GetHomogenousDerivative(param_coord[0], dimensions[i], derivative[0]) - sum)
-              / GetWeightDerivative(param_coord, 0);
+      evaluated_point[i] = (GetHomogenousDerivative(param_coord[0], dimensions[i], derivative[0]) - sum)
+          / GetWeightDerivative(param_coord, 0);
     }
     return evaluated_point;
   }

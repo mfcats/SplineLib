@@ -119,6 +119,11 @@ TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtFirstKnot) 
   ASSERT_THAT(nurbs->EvaluateDerivative({0.0}, {1}, {1})[0], 2.0);
 }
 
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtValueBetweenKnots) {
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.5}, {0}, {1})[0], -1.28);
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.5}, {1}, {1})[0], 0.96);
+}
+
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtLastKnot) {
   ASSERT_THAT(nurbs->EvaluateDerivative({1.0}, {0}, {1})[0], -1.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({1.0}, {1}, {1})[0], 0.0);
@@ -129,7 +134,30 @@ TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtFirstKnot)
   ASSERT_THAT(nurbs->EvaluateDerivative({0.0}, {1}, {2})[0], 0.0);
 }
 
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtValueBetweenKnots) {
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.5}, {0}, {2})[0],
+              DoubleNear(-0.512, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.5}, {1}, {2})[0], -2.816);
+}
+
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtLastKnot) {
   ASSERT_THAT(nurbs->EvaluateDerivative({1.0}, {0}, {2})[0], 1.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({1.0}, {1}, {2})[0], -1.0);
+}
+
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtFirstKnot) {
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.0}, {0}, {3})[0], 0.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.0}, {1}, {3})[0], -12.0);
+}
+
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtValueBetweenKnots) {
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.5}, {0}, {3})[0],
+              DoubleNear(7.3728, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->EvaluateDerivative({0.5}, {1}, {3})[0],
+              DoubleNear(2.1504, util::NumericSettings<double>::kEpsilon()));
+}
+
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtLastKnot) {
+  ASSERT_THAT(nurbs->EvaluateDerivative({1.0}, {0}, {3})[0], 0.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({1.0}, {1}, {3})[0], 3.0);
 }
