@@ -107,3 +107,19 @@ TEST_F(A2DNurbs, Returns1_4For0_4And0_6ForDerivative0And1AndDim0) {
 TEST_F(A2DNurbs, Returns3_1For0_4And0_6ForDerivative0And1AndDim1) {
   ASSERT_THAT(nurbs_->EvaluateDerivative({0.4, 0.6}, {1}, {0, 1})[0], DoubleNear(3.13402, 0.00001));
 }
+
+TEST_F(A2DNurbs, ReturnsSameDerivativeAs2DBSpline) {
+  spl::BSpline<2> bSpline2D
+      ({baf::KnotVector({0.0, 0.0, 0.0, 1.0, 1.0, 1.0}), baf::KnotVector({0.0, 0.0, 0.0, 1.0, 1.0, 1.0})},
+       {2, 2},
+       {baf::ControlPoint({0.0, 0.0}), baf::ControlPoint({1.0, 0.0}), baf::ControlPoint({3.0, 0.0}),
+        baf::ControlPoint({-1.0, 0.5}), baf::ControlPoint({2.0, 2.0}), baf::ControlPoint({4.0, 1.0}),
+        baf::ControlPoint({0.0, 2.0}), baf::ControlPoint({2.5, 3.5}), baf::ControlPoint({5.0, 2.0})});
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.5, 0.5}, {0}, {1, 1})[0],
+              DoubleEq(bSpline2D.EvaluateDerivative({0.5, 0.5}, {0}, {1, 1})[0]));
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.0, 0.7}, {0}, {1, 1})[0],
+              DoubleEq(bSpline2D.EvaluateDerivative({0.0, 0.7}, {0}, {1, 1})[0]));
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.0, 0.7}, {0}, {2, 1})[0],
+              DoubleNear(bSpline2D.EvaluateDerivative({0.0, 0.7}, {0}, {2, 1})[0], 0.000001));
+}
+
