@@ -36,18 +36,34 @@ class NURBS : public Spline<DIM> {
   std::vector<double> EvaluateDerivative(std::array<double, DIM> param_coord,
                                          const std::vector<int> &dimensions,
                                          std::array<int, DIM> derivative) const override {
-    if (derivative[0] == 0) {
+    if (derivative == std::array<int, DIM>{0}) {
       return this->Evaluate(param_coord, dimensions);
     }
+    std::array<int, DIM> derivative_length;
+    for (int i = 0; i < DIM; ++i) {
+      derivative_length[i] = derivative[i] + 1;
+    }
+    util::MultiIndexHandler<DIM> multiIndexHandler(derivative_length);
     std::vector<double> evaluated_point(dimensions.size(), 0);
     for (int i = 0; i < dimensions.size(); ++i) {
       double sum = 0;
       for (int j = 1; j <= derivative[0]; ++j) {
-        sum += binomialCoefficient(derivative[0], j) * GetWeightDerivative(param_coord, j)
+        multiIndexHandler++;
+        sum += binomialCoefficient(derivative[0], j) * GetWeightDerivative(param_coord, multiIndexHandler.GetIndices())
             * EvaluateDerivative(param_coord, {dimensions[i]}, {derivative[0] - j})[0];
       }
-      evaluated_point[i] = (GetHomogenousDerivative(param_coord[0], dimensions[i], derivative[0]) - sum)
-          / GetWeightDerivative(param_coord, 0);
+      if (DIM > 1) {
+        std::array<int, DIM> test = {0};
+        multiIndexHandler.SetIndices(test);
+        for (int j = 1; j <= derivative[1]; ++j) {
+          multiIndexHandler++;
+          sum +=
+              binomialCoefficient(derivative[1], j) * GetWeightDerivative(param_coord, multiIndexHandler.GetIndices())
+                  * EvaluateDerivative(param_coord, {dimensions[i]}, {derivative[1] - j})[0];
+        }
+      }
+      evaluated_point[i] = (GetHomogenousDerivative(param_coord, dimensions[i], derivative) - sum)
+          / GetWeightDerivative(param_coord, std::array<int, DIM>{0});
     }
     return evaluated_point;
   }
@@ -57,7 +73,7 @@ class NURBS : public Spline<DIM> {
     auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
     util::MultiIndexHandler<DIM> multiIndexHandler(this->ArrayTotalLength());
     std::vector<double> NonZeroBasisFunctions(this->MultiIndexHandlerShort(), 1);
-    auto extractedWeights = GetWeightBSpline()->ExtractControlPointValues(param_coord, 0);
+    auto extractedWeights = GetBSpline(GetWeightsAsControlPoints())->ExtractControlPointValues(param_coord, 0);
     for (double &basis_function : NonZeroBasisFunctions) {
       for (int j = 0; j < DIM; ++j) {
         basis_function *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j]);
@@ -68,37 +84,31 @@ class NURBS : public Spline<DIM> {
     return NonZeroBasisFunctions;
   }
 
-  std::unique_ptr<spl::BSpline<DIM>> GetWeightBSpline() const {
-    std::vector<baf::ControlPoint> weights;
-    for (int control_point = 0; control_point < weights_.size(); ++control_point) {
-      weights.emplace_back(baf::ControlPoint({weights_[control_point]}));
-    }
+  std::array<baf::KnotVector, DIM> GetKnotVectors() const {
     std::array<baf::KnotVector, DIM> knot_vectors;
     for (int vector = 0; vector < DIM; ++vector) {
       knot_vectors[vector] = this->GetKnotVector(vector);
     }
+    return knot_vectors;
+  }
+
+  std::array<int, DIM> GetDegrees() const {
     std::array<int, DIM> degrees;
     for (int degree = 0; degree < DIM; ++degree) {
       degrees[degree] = this->GetDegree(degree);
     }
-    return std::make_unique<spl::BSpline<DIM>>(knot_vectors, degrees, weights);
+    return degrees;
   }
 
-  double GetSum(std::array<double, DIM> param_coord) const {
-    return GetWeightBSpline()->Evaluate(param_coord, {0})[0];
-  }
-
-  double GetWeightDerivative(std::array<double, DIM> param_coord, int derivative) const {
+  std::vector<baf::ControlPoint> GetWeightsAsControlPoints() const {
     std::vector<baf::ControlPoint> weights;
     for (int control_point = 0; control_point < weights_.size(); ++control_point) {
       weights.emplace_back(baf::ControlPoint({weights_[control_point]}));
     }
-    return BSpline<1>(std::array<baf::KnotVector, 1>{this->GetKnotVector(0)},
-                      std::array<int, 1>{this->GetDegree(0)},
-                      weights).EvaluateDerivative({param_coord[0]}, {0}, {derivative})[0];
+    return weights;
   }
 
-  double GetHomogenousDerivative(double param_coord, int dimension, int derivative) const {
+  std::vector<baf::ControlPoint> GetHomogenousControlPoints() const {
     std::vector<baf::ControlPoint> homogenousPoints;
     for (int point = 0; point < this->control_points_.size(); ++point) {
       std::vector<double> homogenousCoordinates;
@@ -107,9 +117,25 @@ class NURBS : public Spline<DIM> {
       }
       homogenousPoints.emplace_back(baf::ControlPoint(homogenousCoordinates));
     }
-    return BSpline<1>(std::array<baf::KnotVector, 1>{this->GetKnotVector(0)},
-                      std::array<int, 1>{this->GetDegree(0)},
-                      homogenousPoints).EvaluateDerivative({param_coord}, {dimension}, {derivative})[0];
+    return homogenousPoints;
+  }
+
+  std::unique_ptr<spl::BSpline<DIM>> GetBSpline(std::vector<baf::ControlPoint> controlPoints) const {
+    return std::make_unique<spl::BSpline<DIM>>(GetKnotVectors(), GetDegrees(), controlPoints);
+  }
+
+  double GetSum(std::array<double, DIM> param_coord) const {
+    return GetBSpline(GetWeightsAsControlPoints())->Evaluate(param_coord, {0})[0];
+  }
+
+  double GetWeightDerivative(std::array<double, DIM> param_coord, std::array<int, DIM> derivative) const {
+    return GetBSpline(GetWeightsAsControlPoints())->EvaluateDerivative(param_coord, {0}, derivative)[0];
+  }
+
+  double GetHomogenousDerivative(std::array<double, DIM> param_coord,
+                                 int dimension,
+                                 std::array<int, DIM> derivative) const {
+    return GetBSpline(GetHomogenousControlPoints())->EvaluateDerivative(param_coord, {dimension}, derivative)[0];
   }
 
   int binomialCoefficient(int number, int subset) const {
