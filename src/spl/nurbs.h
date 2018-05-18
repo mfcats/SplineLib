@@ -43,23 +43,37 @@ class NURBS : public Spline<DIM> {
     for (int i = 0; i < DIM; ++i) {
       derivative_length[i] = derivative[i] + 1;
     }
-    util::MultiIndexHandler<DIM> multiIndexHandler(derivative_length);
+    util::MultiIndexHandler<DIM> derivativeHandler(derivative_length);
     std::vector<double> evaluated_point(dimensions.size(), 0);
     for (int i = 0; i < dimensions.size(); ++i) {
       double sum = 0;
       for (int j = 1; j <= derivative[0]; ++j) {
-        multiIndexHandler++;
-        sum += binomialCoefficient(derivative[0], j) * GetWeightDerivative(param_coord, multiIndexHandler.GetIndices())
-            * EvaluateDerivative(param_coord, {dimensions[i]}, {derivative[0] - j})[0];
+        derivativeHandler++;
+        sum += binomialCoefficient(derivative[0], j) * GetWeightDerivative(param_coord, derivativeHandler.GetIndices())
+            * EvaluateDerivative(param_coord, {dimensions[i]}, derivativeHandler.GetDifferenceIndices())[0];
       }
       if (DIM > 1) {
-        std::array<int, DIM> test = {0};
-        multiIndexHandler.SetIndices(test);
+        std::array<int, DIM> zeros = {0};
+        derivativeHandler.SetIndices(zeros);
         for (int j = 1; j <= derivative[1]; ++j) {
-          multiIndexHandler++;
+          derivativeHandler + derivative[0] + 1;
           sum +=
-              binomialCoefficient(derivative[1], j) * GetWeightDerivative(param_coord, multiIndexHandler.GetIndices())
-                  * EvaluateDerivative(param_coord, {dimensions[i]}, {derivative[1] - j})[0];
+              binomialCoefficient(derivative[1], j) * GetWeightDerivative(param_coord, derivativeHandler.GetIndices())
+                  * EvaluateDerivative(param_coord, {dimensions[i]}, derivativeHandler.GetDifferenceIndices())[0];
+        }
+        derivativeHandler.SetIndices(zeros);
+        for (int k = 1; k <= derivative[0]; ++k) {
+          derivativeHandler++;
+          int sum2 = binomialCoefficient(derivative[0], k);
+          for (int l = 1; l <= derivative[1]; ++l) {
+            derivativeHandler + derivative[0] + 1;
+            sum2 *=
+                binomialCoefficient(derivative[1], l) * GetWeightDerivative(param_coord, derivativeHandler.GetIndices())
+                    * EvaluateDerivative(param_coord, {dimensions[i]}, derivativeHandler.GetDifferenceIndices())[0];
+          }
+          if (derivative[1] > 0) {
+            sum += sum2;
+          }
         }
       }
       evaluated_point[i] = (GetHomogenousDerivative(param_coord, dimensions[i], derivative) - sum)
