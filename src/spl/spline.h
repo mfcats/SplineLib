@@ -95,7 +95,6 @@ class Spline {
     return dx_dxi * dxi_dtildexi;
   }
 
- protected:
   std::vector<double> ExtractControlPointValues(std::array<double, DIM> param_coord, int dimension) const {
     std::array<int, DIM + 1> start;
     std::array<int, DIM + 1> last;
@@ -130,6 +129,7 @@ class Spline {
     return vector;
   }
 
+ protected:
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,
                             std::vector<double> control_point_values) const {
     std::transform(basis_function_values.begin(),

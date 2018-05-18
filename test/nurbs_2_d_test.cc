@@ -20,9 +20,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleNear;
 
-class NurbsEx4_3 : public Test {
+class Nurbs2DEx4_3 : public Test {
  public:
-  NurbsEx4_3() {
+  Nurbs2DEx4_3() {
 
     std::array<baf::KnotVector, 2> knot_vector = {baf::KnotVector({0, 0, 0, 1, 1, 1}),
                                                   baf::KnotVector({0, 0, 0, 1, 1, 1})};
@@ -46,10 +46,10 @@ class NurbsEx4_3 : public Test {
   std::unique_ptr<spl::NURBS<2>> nurbs_;
 };
 
-TEST_F(NurbsEx4_3, Returns2_0For2_5And1_0AndDim0) {
+TEST_F(Nurbs2DEx4_3, Returns2_0For2_5And1_0AndDim0) {
   ASSERT_THAT(nurbs_->Evaluate({0.5, 1.0}, {0})[0], DoubleNear(2.5, util::NumericSettings<double>::kEpsilon()));
 }
 
-TEST_F(NurbsEx4_3, Returns3_63For2_5And1_0AndDim1) {
+TEST_F(Nurbs2DEx4_3, Returns3_63For2_5And1_0AndDim1) {
   ASSERT_THAT(nurbs_->Evaluate({0.5, 1.0}, {1})[0], DoubleNear(3.0, util::NumericSettings<double>::kEpsilon()));
 }

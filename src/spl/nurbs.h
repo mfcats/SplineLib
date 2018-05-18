@@ -57,41 +57,35 @@ class NURBS : public Spline<DIM> {
     auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
     util::MultiIndexHandler<DIM> multiIndexHandler(this->ArrayTotalLength());
     std::vector<double> NonZeroBasisFunctions(this->MultiIndexHandlerShort(), 1);
-    auto a = this->MultiIndexHandlerShort();
-    auto b = this->ArrayTotalLength();
+    auto extractedWeights = GetWeightBSpline()->ExtractControlPointValues(param_coord, 0);
     for (double &basis_function : NonZeroBasisFunctions) {
       for (int j = 0; j < DIM; ++j) {
         basis_function *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j]);
       }
-      int index = 0;
-      for (int j = 0; j < DIM; ++j) {
-        index += this->GetKnotVector(j).GetKnotSpan(param_coord[j]) - this->GetDegree(j) + multiIndexHandler[j];
-      }
-      basis_function *= weights_[index];
-      auto t = GetSum(param_coord);
-      basis_function /= GetSum(param_coord);
+      basis_function *= extractedWeights[multiIndexHandler.Get1DIndex()] / GetSum(param_coord);
       multiIndexHandler++;
     }
     return NonZeroBasisFunctions;
   }
 
-  double GetSum(std::array<double, DIM> param_coord) const {
+  std::unique_ptr<spl::BSpline<DIM>> GetWeightBSpline() const {
     std::vector<baf::ControlPoint> weights;
     for (int control_point = 0; control_point < weights_.size(); ++control_point) {
       weights.emplace_back(baf::ControlPoint({weights_[control_point]}));
     }
-    // knot vector array
     std::array<baf::KnotVector, DIM> knot_vectors;
     for (int vector = 0; vector < DIM; ++vector) {
       knot_vectors[vector] = this->GetKnotVector(vector);
     }
-    // degree array
     std::array<int, DIM> degrees;
     for (int degree = 0; degree < DIM; ++degree) {
       degrees[degree] = this->GetDegree(degree);
     }
-    auto a = spl::BSpline<DIM>(knot_vectors, degrees, weights).Evaluate(param_coord, {0})[0];
-    return a;
+    return std::make_unique<spl::BSpline<DIM>>(knot_vectors, degrees, weights);
+  }
+
+  double GetSum(std::array<double, DIM> param_coord) const {
+    return GetWeightBSpline()->Evaluate(param_coord, {0})[0];
   }
 
   double GetWeightDerivative(std::array<double, DIM> param_coord, int derivative) const {
