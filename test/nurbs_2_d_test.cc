@@ -75,3 +75,35 @@ TEST_F(A2DNurbs, EvaluatesMultipleValues) {
   ASSERT_THAT(nurbs_->Evaluate({1.0, 0.0}, {0, 1})[0], DoubleEq(3.0));
   ASSERT_THAT(nurbs_->Evaluate({1.0, 0.0}, {0, 1})[1], DoubleEq(0.0));
 }
+
+TEST_F(A2DNurbs, Returns10_0For0_0And1_0ForDerivative1And0AndDim0) {
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.0, 1.0}, {0}, {1, 0})[0], DoubleEq(10.0));
+}
+
+TEST_F(A2DNurbs, Returns6_0For0_0And1_0ForDerivative1And0AndDim1) {
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.0, 1.0}, {1}, {1, 0})[0], DoubleEq(6.0));
+}
+
+TEST_F(A2DNurbs, Returns2_0For0_0And1_0ForDerivative0And1AndDim0) {
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.0, 1.0}, {0}, {0, 1})[0], DoubleEq(2.0));
+}
+
+TEST_F(A2DNurbs, Returns3_0For0_0And1_0ForDerivative0And1AndDim1) {
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.0, 1.0}, {1}, {0, 1})[0], DoubleEq(3.0));
+}
+
+TEST_F(A2DNurbs, Returns4_2For0_4And0_6ForDerivative1And0AndDim0) {
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.4, 0.6}, {0}, {1, 0})[0], DoubleNear(4.15298, 0.000001));
+}
+
+TEST_F(A2DNurbs, Returns0_8For0_4And0_6ForDerivative1And0AndDim1) {
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.4, 0.6}, {1}, {1, 0})[0], DoubleNear(0.792032, 0.000001));
+}
+
+TEST_F(A2DNurbs, Returns1_4For0_4And0_6ForDerivative0And1AndDim0) {
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.4, 0.6}, {0}, {0, 1})[0], DoubleNear(1.40046, 0.00001));
+}
+
+TEST_F(A2DNurbs, Returns3_1For0_4And0_6ForDerivative0And1AndDim1) {
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.4, 0.6}, {1}, {0, 1})[0], DoubleNear(3.13402, 0.00001));
+}
