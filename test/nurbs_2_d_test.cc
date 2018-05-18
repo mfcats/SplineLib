@@ -18,11 +18,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 
 using testing::Test;
+using testing::DoubleEq;
 using testing::DoubleNear;
 
-class Nurbs2DEx4_3 : public Test {
+class A2DNurbs : public Test {
  public:
-  Nurbs2DEx4_3() {
+  A2DNurbs() {
 
     std::array<baf::KnotVector, 2> knot_vector = {baf::KnotVector({0, 0, 0, 1, 1, 1}),
                                                   baf::KnotVector({0, 0, 0, 1, 1, 1})};
@@ -46,10 +47,31 @@ class Nurbs2DEx4_3 : public Test {
   std::unique_ptr<spl::NURBS<2>> nurbs_;
 };
 
-TEST_F(Nurbs2DEx4_3, Returns2_0For2_5And1_0AndDim0) {
+TEST_F(A2DNurbs, Returns1_6For0_4And0_6AndDim0) {
+  ASSERT_THAT(nurbs_->Evaluate({0.4, 0.6}, {0})[0], DoubleNear(1.62074, 0.00001));
+}
+
+TEST_F(A2DNurbs, Returns1_9For0_4And0_6AndDim1) {
+  ASSERT_THAT(nurbs_->Evaluate({0.4, 0.6}, {1})[0], DoubleNear(1.88267, 0.00001));
+}
+
+TEST_F(A2DNurbs, Returns2_5For0_5And1_0AndDim0) {
   ASSERT_THAT(nurbs_->Evaluate({0.5, 1.0}, {0})[0], DoubleNear(2.5, util::NumericSettings<double>::kEpsilon()));
 }
 
-TEST_F(Nurbs2DEx4_3, Returns3_63For2_5And1_0AndDim1) {
+TEST_F(A2DNurbs, Returns3_0For0_5And1_0AndDim1) {
   ASSERT_THAT(nurbs_->Evaluate({0.5, 1.0}, {1})[0], DoubleNear(3.0, util::NumericSettings<double>::kEpsilon()));
+}
+
+TEST_F(A2DNurbs, Returns4_2For0_9And1_0AndDim0) {
+  ASSERT_THAT(nurbs_->Evaluate({0.9, 1.0}, {0})[0], DoubleNear(4.19492, 0.00001));
+}
+
+TEST_F(A2DNurbs, Returns2_5For0_9And1_0AndDim1) {
+  ASSERT_THAT(nurbs_->Evaluate({0.9, 1.0}, {1})[0], DoubleNear(2.45763, 0.00001));
+}
+
+TEST_F(A2DNurbs, EvaluatesMultipleValues) {
+  ASSERT_THAT(nurbs_->Evaluate({1.0, 0.0}, {0, 1})[0], DoubleEq(3.0));
+  ASSERT_THAT(nurbs_->Evaluate({1.0, 0.0}, {0, 1})[1], DoubleEq(0.0));
 }
