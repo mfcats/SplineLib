@@ -22,17 +22,11 @@ using testing::Eq;
 class MultiHandlers : public Test {
  public:
   MultiHandlers() {
-    std::array<int, 1> lastKnotOffset1D;
-    lastKnotOffset1D[0] = 10;
+    std::array<int, 1> lastKnotOffset1D = {10};
     multiIndexHandler1D = std::make_unique<util::MultiIndexHandler<1>>(lastKnotOffset1D);
-    std::array<int, 2> lastKnotOffset2D;
-    lastKnotOffset2D[0] = 10;
-    lastKnotOffset2D[1] = 3;
+    std::array<int, 2> lastKnotOffset2D = {10, 3};
     multiIndexHandler2D = std::make_unique<util::MultiIndexHandler<2>>(lastKnotOffset2D);
-    std::array<int, 3> lastKnotOffset3D;
-    lastKnotOffset3D[0] = 4;
-    lastKnotOffset3D[1] = 3;
-    lastKnotOffset3D[2] = 5;
+    std::array<int, 3> lastKnotOffset3D = {4, 3, 5};
     multiIndexHandler3D = std::make_unique<util::MultiIndexHandler<3>>(lastKnotOffset3D);
   }
  protected:
@@ -46,8 +40,7 @@ TEST_F(MultiHandlers, 1D_multiIndex_ind0) {
 }
 
 TEST_F(MultiHandlers, 1D_multiIndex_ind5) {
-  std::array<int, 1> currentIndex;
-  currentIndex[0] = 5;
+  std::array<int, 1> currentIndex = {5};
   multiIndexHandler1D->SetIndices(currentIndex);
   ASSERT_THAT(multiIndexHandler1D->Get1DIndex(), Eq(5));
 }
@@ -57,9 +50,7 @@ TEST_F(MultiHandlers, 2D_multiIndex_ind0) {
 }
 
 TEST_F(MultiHandlers, 2D_multiIndex_ind3_2) {
-  std::array<int, 2> currentIndex;
-  currentIndex[0] = 3;
-  currentIndex[1] = 2;
+  std::array<int, 2> currentIndex = {3, 2};
   multiIndexHandler2D->SetIndices(currentIndex);
   ASSERT_THAT(multiIndexHandler2D->Get1DIndex(), Eq(23));
 }
@@ -69,10 +60,23 @@ TEST_F(MultiHandlers, 3D_multiIndex_ind0) {
 }
 
 TEST_F(MultiHandlers, 3D_multiIndex_ind2_1_2) {
-  std::array<int, 3> currentIndex;
-  currentIndex[0] = 2;
-  currentIndex[1] = 1;
-  currentIndex[2] = 2;
+  std::array<int, 3> currentIndex = {2, 1, 2};
   multiIndexHandler3D->SetIndices(currentIndex);
   ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(30));
+}
+
+TEST_F(MultiHandlers, 3D_multiIndex_plus7) {
+  *multiIndexHandler3D + 7;
+  ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(7));
+  ASSERT_THAT(multiIndexHandler3D->GetIndices()[0], Eq(3));
+  ASSERT_THAT(multiIndexHandler3D->GetIndices()[1], Eq(1));
+  ASSERT_THAT(multiIndexHandler3D->GetIndices()[2], Eq(0));
+}
+
+TEST_F(MultiHandlers, 3D_multiIndex_differenceTo7) {
+  *multiIndexHandler3D + 7;
+  ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(7));
+  ASSERT_THAT(multiIndexHandler3D->GetDifferenceIndices()[0], Eq(0));
+  ASSERT_THAT(multiIndexHandler3D->GetDifferenceIndices()[1], Eq(1));
+  ASSERT_THAT(multiIndexHandler3D->GetDifferenceIndices()[2], Eq(4));
 }
