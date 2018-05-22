@@ -54,7 +54,7 @@ class KnotVector {
 
   bool IsLastKnot(double param_coord) const;
 
-  uint64_t Size() const;
+  uint64_t NumberOfKnots() const;
 
  private:
   std::vector<double> knots_;

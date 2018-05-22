@@ -26,7 +26,7 @@ class BasisFunction {
  public:
   double Evaluate(double paramCoord) const;
 
-  double EvaluateDerivative(int derivative, double param_coord) const;
+  double EvaluateDerivative(double param_coord, int derivative) const;
 
  protected:
   BasisFunction(const KnotVector &knot_vector, int degree, uint64_t start);

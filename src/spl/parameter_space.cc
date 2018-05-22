@@ -20,8 +20,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 spl::ParameterSpace::ParameterSpace(const baf::KnotVector &knot_vector, int degree) : degree_(degree),
                                                                                       knot_vector_(knot_vector) {
   baf::BasisFunctionFactory factory;
-  basis_functions_.reserve(knot_vector_.Size() - degree_ - 1);
-  for (uint64_t i = 0; i < (knot_vector_.Size() - degree_ - 1); ++i) {
+  basis_functions_.reserve(knot_vector_.NumberOfKnots() - degree_ - 1);
+  for (uint64_t i = 0; i < (knot_vector_.NumberOfKnots() - degree_ - 1); ++i) {
     basis_functions_.emplace_back(factory.CreateDynamic(knot_vector_, i, degree_));
   }
 }
