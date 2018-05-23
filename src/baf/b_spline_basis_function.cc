@@ -26,11 +26,11 @@ double baf::BSplineBasisFunction::EvaluateOnSupport(double param_coord) const {
       + ComputeRightQuotient(param_coord) * right_lower_degree_->Evaluate(param_coord);
 }
 
-double baf::BSplineBasisFunction::EvaluateDerivativeOnSupport(int derivative, double param_coord) const {
+double baf::BSplineBasisFunction::EvaluateDerivativeOnSupport(double param_coord, int derivative) const {
   return GetDegree()
-      * (ComputeLeftQuotientDenominatorInverse() * left_lower_degree_->EvaluateDerivative(derivative - 1, param_coord)
+      * (ComputeLeftQuotientDenominatorInverse() * left_lower_degree_->EvaluateDerivative(param_coord, derivative - 1)
           - ComputeRightQuotientDenominatorInverse()
-              * right_lower_degree_->EvaluateDerivative(derivative - 1, param_coord));
+              * right_lower_degree_->EvaluateDerivative(param_coord, derivative - 1));
 }
 
 void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,

@@ -41,7 +41,7 @@ std::vector<double> spl::ParameterSpace::EvaluateAllNonZeroBasisFunctionDerivati
   auto first_non_zero = GetFirstNonZeroKnot(param_coord);
   std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_) + 1, 0.0);
   for (int i = 0; i < degree_ + 1; ++i) {
-    basis_function_values[i] = (*first_non_zero)->EvaluateDerivative(derivative, param_coord);
+    basis_function_values[i] = (*first_non_zero)->EvaluateDerivative(param_coord, derivative);
     ++first_non_zero;
   }
   return basis_function_values;
