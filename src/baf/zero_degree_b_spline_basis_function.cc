@@ -27,6 +27,6 @@ double baf::ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(double param_coord
                                                                                                                  : 1.0;
 }
 
-double baf::ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(int derivative, double param_coord) const {
+double baf::ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(double param_coord, int derivative) const {
   return 0.0;
 }

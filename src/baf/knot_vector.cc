@@ -27,7 +27,7 @@ baf::KnotVector::KnotVector(std::initializer_list<double> knots) : knots_(knots)
 baf::KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<double>(begin, end)) {}
 
 bool baf::KnotVector::operator==(const KnotVector &rhs) const {
-  if (this->Size() != rhs.Size()) return false;
+  if (this->NumberOfKnots() != rhs.NumberOfKnots()) return false;
   auto difference = this->knots_;
   std::transform(this->begin(), this->end(), rhs.begin(), difference.begin(), std::minus<double>());
   return !std::any_of(difference.begin(),
@@ -77,6 +77,6 @@ bool baf::KnotVector::IsLastKnot(double param_coord) const {
   return util::NumericSettings<double>::AreEqual(param_coord, knots_.back());
 }
 
-uint64_t baf::KnotVector::Size() const {
+uint64_t baf::KnotVector::NumberOfKnots() const {
   return knots_.size();
 }
