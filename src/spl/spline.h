@@ -71,16 +71,16 @@ class Spline {
     return parameter_space_[0].GetElementList();
   }
 
-  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctions(
+  std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctions(
       int element_number,
       const itg::IntegrationRule<1> &rule) const {
     return parameter_space_[0].EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
   }
 
-  std::vector<std::vector<double>> EvaluateAllElementNonZeroBasisFunctionDerivatives(
+  std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctionDerivatives(
       int element_number,
       const itg::IntegrationRule<1> &rule) const {
-    return TransformToPhysicalSpace(
+    return ParameterSpace2PhysicalSpace(
         parameter_space_[0].EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule),
         element_number,
         rule);
@@ -88,7 +88,7 @@ class Spline {
 
   double JacobianDeterminant(int element_number, int integration_point, const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
-    double dx_dxi = EvaluateDerivative({TransformToParameterSpace(element.node(0),
+    double dx_dxi = EvaluateDerivative({ReferenceSpace2ParameterSpace(element.node(0),
                                                                   element.node(1),
                                                                   rule.coordinate(integration_point, 0))}, {0}, {1})[0];
     double dxi_dtildexi = (element.node(1) - element.node(0)) / 2.0;
@@ -108,7 +108,7 @@ class Spline {
     for (int i = 0; i < DIM; ++i) {
       start[i + 1] = GetKnotVector(i).GetKnotSpan(param_coord[i]) - GetDegree(i);
       last[i + 1] = start[i + 1] + parameter_space_[i].degree() + 1;
-      total_length[i + 1] = parameter_space_[i].knot_vector().Size() - parameter_space_[i].degree() - 1;
+      total_length[i + 1] = parameter_space_[i].knot_vector().NumberOfKnots() - parameter_space_[i].degree() - 1;
       current[i + 1] = start[i + 1];
       M *= (last[i + 1] - start[i + 1]);
     }
@@ -140,26 +140,29 @@ class Spline {
     return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
   }
 
-  std::vector<std::vector<double>> TransformToPhysicalSpace(std::vector<std::vector<double>> values,
-                                                            int element_number,
-                                                            const itg::IntegrationRule<1> &rule) const {
+  std::vector<elm::ElementIntegrationPoint> ParameterSpace2PhysicalSpace(
+      std::vector<elm::ElementIntegrationPoint> element_integration_points,
+      int element_number,
+      const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
-    for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
-      std::transform(values[point].cbegin(),
-                     values[point].cend(),
-                     values[point].begin(),
+    for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
+      std::vector<double> element_non_zero_basis_functions = element_integration_points[i].non_zero_basis_functions();
+      std::transform(element_non_zero_basis_functions.cbegin(),
+                     element_non_zero_basis_functions.cend(),
+                     element_non_zero_basis_functions.begin(),
                      std::bind2nd(std::divides<double>(),
-                                  EvaluateDerivative({TransformToParameterSpace(element.node(0),
-                                                                                element.node(1),
-                                                                                rule.coordinate(point, 0))},
-                                                     {0},
-                                                     {1})[0]));
-    }
-    return values;
+                                  EvaluateDerivative(
+                                      {ReferenceSpace2ParameterSpace(element.node(0),
+                                                                     element.node(1),
+                                                                     rule.coordinate(i, 0))}, {0}, {1})[0]));
+
+      element_integration_points[i] = elm::ElementIntegrationPoint(element_non_zero_basis_functions);
+    };
+    return element_integration_points;
   }
 
-  double TransformToParameterSpace(double upper, double lower, double point) const {
-    return parameter_space_[0].TransformToParameterSpace(upper, lower, point);
+  double ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
+    return parameter_space_[0].ReferenceSpace2ParameterSpace(upper, lower, point);
   }
 
   std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM>
