@@ -16,7 +16,7 @@
 set(SOURCES
         element.cc
         element_generator.cc
-        )
+        element_integration_point.cc)
 
 add_library(splinelibelm SHARED ${SOURCES})
 target_include_directories(splinelibelm PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)

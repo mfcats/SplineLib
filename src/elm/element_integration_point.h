@@ -12,24 +12,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
-#define SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
+#ifndef SPLINELIB_ELEMENT_INTEGRATION_POINT_H
+#define SPLINELIB_ELEMENT_INTEGRATION_POINT_H
 
 #include <vector>
 
-#include "basis_function.h"
-#include "knot_vector.h"
-
-namespace baf {
-class ZeroDegreeBSplineBasisFunction : public baf::BasisFunction {
+namespace elm {
+class ElementIntegrationPoint {
  public:
-  ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, uint64_t start_of_support);
+  explicit ElementIntegrationPoint(const std::vector<double> &non_zero_basis_functions);
 
- protected:
-  double EvaluateOnSupport(double param_coord) const override;
+  std::vector<double> non_zero_basis_functions() const;
+  int NumberOfNonZeroBasisFunctions() const;
+  double GetBasisFunctionValue(int firstNonZeroOffset) const;
 
-  double EvaluateDerivativeOnSupport(double param_coord, int derivative) const override;
+ private:
+  std::vector<double> non_zero_basis_functions_;
 };
 }
 
-#endif  // SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
+#endif //SPLINELIB_ELEMENT_INTEGRATION_POINT_H

@@ -15,8 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_B_SPLINE_H_
 #define SRC_B_SPLINE_H_
 
-#include <array>
 #include <vector>
+#include <array>
 
 #include "spline.h"
 
@@ -77,6 +77,6 @@ class BSpline : public Spline<DIM> {
     return vector;
   }
 };
-} //namespace spl
+}
 
 #endif  // SRC_B_SPLINE_H_

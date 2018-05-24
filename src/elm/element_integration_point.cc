@@ -12,24 +12,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
-#define SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
+#include "element_integration_point.h"
 
 #include <vector>
 
-#include "basis_function.h"
-#include "knot_vector.h"
+elm::ElementIntegrationPoint::ElementIntegrationPoint(const std::vector<double> &non_zero_basis_functions)
+    : non_zero_basis_functions_(non_zero_basis_functions) {}
 
-namespace baf {
-class ZeroDegreeBSplineBasisFunction : public baf::BasisFunction {
- public:
-  ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, uint64_t start_of_support);
-
- protected:
-  double EvaluateOnSupport(double param_coord) const override;
-
-  double EvaluateDerivativeOnSupport(double param_coord, int derivative) const override;
-};
+std::vector<double> elm::ElementIntegrationPoint::non_zero_basis_functions() const {
+  return non_zero_basis_functions_;
 }
 
-#endif  // SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
+int elm::ElementIntegrationPoint::NumberOfNonZeroBasisFunctions() const {
+  return static_cast<int>(non_zero_basis_functions_.size());
+}
+
+double elm::ElementIntegrationPoint::GetBasisFunctionValue(int firstNonZeroOffset) const {
+#ifdef DEBUG
+  return non_zero_basis_functions_.at(firstNonZeroOffset);
+#else
+  return non_zero_basis_functions_[firstNonZeroOffset];
+#endif
+}
