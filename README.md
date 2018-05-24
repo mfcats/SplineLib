@@ -22,7 +22,7 @@ http://www.gnu.org/licenses/.
 ## Installation
 
 A compiler with C++11 support is required to build the SplineLib.
-The SplineLib was successfully tested with gcc version 7.3.0.
+The SplineLib was tested with gcc version 7.3.0.
 
 First you have to clone the github repository to your local machine.
 
@@ -35,7 +35,7 @@ After installing spack you need to add the SplineLib repository.
 
 	 $ spack repo add path/to/SplineLib/scripts/spack-repo
 
-Now you can install the SplineLib.
+After that you can install the SplineLib.
 
 	 $ spack install splinelib
 
