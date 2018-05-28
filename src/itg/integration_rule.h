@@ -48,7 +48,7 @@ class IntegrationRule {
     util::MultiIndexHandler<DIM> multiIndexHandler(max_dimension_points);
     for (int i = 0; i < GetNumberOfIntegrationPoints(); i++) {
       double weight = 1;
-      std::array<double, DIM> coordinates = {0};
+      std::array<double, DIM> coordinates;
       for (int j = 0; j < DIM; j++) {
         weight *= points_[multiIndexHandler[j]].GetWeight();
         coordinates[j] = points_[multiIndexHandler[j]].GetCoordinates()[j];
