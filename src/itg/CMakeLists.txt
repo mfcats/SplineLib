@@ -25,8 +25,9 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-file(GLOB_RECURSE SPLINELIB_ITG_FILES "${CMAKE_CURRENT_BINARY_DIR}/*.h")
 install(
-        FILES ${SPLNELIB_ITG_FILES}
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         DESTINATION "${include_install_dir}"
+				FILES_MATCHING PATTERN "*.h"
 )
+

@@ -31,8 +31,8 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-file(GLOB_RECURSE SPLINELIB_ELM_FILES "${CMAKE_CURRENT_BINARY_DIR}/*.h")
 install(
-        FILES ${SPLNELIB_ELM_FILES}
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         DESTINATION "${include_install_dir}"
+				FILES_MATCHING PATTERN "*.h"
 )

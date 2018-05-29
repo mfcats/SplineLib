@@ -35,8 +35,8 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-file(GLOB_RECURSE SPLINELIB_BAF_FILES "${CMAKE_CURRENT_BINARY_DIR}/*.h")
 install(
-        FILES ${SPLNELIB_BAF_FILES}
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         DESTINATION "${include_install_dir}"
+				FILES_MATCHING PATTERN "*.h"
 )
