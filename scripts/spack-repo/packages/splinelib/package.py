@@ -33,6 +33,7 @@ class Splinelib(CMakePackage):
     url = ""
 
     version('github', git='https://github.com/mfcats/SplineLib.git', branch='master')
+    version('install', git='https://github.com/mfcats/SplineLib.git', branch='issue23_installation')
 
     depends_on("googletest+gmock")
 
