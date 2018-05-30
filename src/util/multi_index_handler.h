@@ -85,6 +85,14 @@ class MultiIndexHandler {
     return index_1d;
   }
 
+  int Get1DLength() const {
+    int length = 1;
+    for (int i = 0; i < DIM; ++i) {
+      length *= multi_index_length_[i];
+    }
+    return length;
+  }
+
  private:
   std::array<int, DIM> multi_index_length_;
   std::array<int, DIM> current_multi_index_value_;

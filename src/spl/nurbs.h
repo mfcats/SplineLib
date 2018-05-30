@@ -63,10 +63,37 @@ class NURBS : public Spline<DIM> {
   double GetSum(const std::array<double, DIM> &param_coord,
                 const std::array<int, DIM> &derivative,
                 int dimension) const {
-    util::MultiIndexHandler<DIM> derivativeHandler = GetDerivativeHandler(derivative);
     double sum = GetSumOfDerivativesInFirstDirection(param_coord, derivative, dimension);
     if (DIM > 1) {
       sum += GetSumOfProductsOfDerivatives(param_coord, derivative, dimension);
+    }
+    return GetAllSums(param_coord, derivative, dimension); //sum;
+  }
+
+  double GetAllSums(const std::array<double, DIM> &param_coord,
+                    const std::array<int, DIM> &derivative,
+                    int dimension) const {
+    double sum = 0;
+    for (int i = 0; i < DIM; ++i) {
+      std::array<int, DIM> max = {0};
+      for (int j = 0; j <= i; ++j) {
+        max[j] = derivative[j];
+      }
+      util::MultiIndexHandler<DIM> derivativeHandler = GetDerivativeHandler(max);
+      std::array<int, DIM> zeros = {0};
+      zeros[i] = 1;
+      derivativeHandler.SetIndices(zeros);
+
+      for (int j = 0; j < derivativeHandler.Get1DLength() - max[i]; derivativeHandler++, j++) {
+        int a = binomialCoefficient(max, derivativeHandler.GetIndices());
+        double b = GetWeightDerivative(param_coord, derivativeHandler.GetIndices());
+        auto p = derivativeHandler.GetDifferenceIndices();
+        double c = EvaluateDerivative(param_coord, {dimension}, derivativeHandler.GetDifferenceIndices())[0];
+        int t = 9;
+        sum += a * b * c; // binomialCoefficient(max, derivativeHandler.GetIndices())
+        //* GetWeightDerivative(param_coord, derivativeHandler.GetIndices())
+        //* EvaluateDerivative(param_coord, {dimension}, derivativeHandler.GetDifferenceIndices())[0];
+      }
     }
     return sum;
   }
@@ -78,8 +105,12 @@ class NURBS : public Spline<DIM> {
     util::MultiIndexHandler<DIM> derivativeHandler = GetDerivativeHandler(derivative);
     for (int j = 1; j <= derivative[0]; ++j) {
       derivativeHandler++;
-      sum += binomialCoefficient(derivative[0], j) * GetWeightDerivative(param_coord, derivativeHandler.GetIndices())
-          * EvaluateDerivative(param_coord, {dimension}, derivativeHandler.GetDifferenceIndices())[0];
+      int a = binomialCoefficient(derivative[0], j);
+      double b = GetWeightDerivative(param_coord, derivativeHandler.GetIndices());
+      auto p = derivativeHandler.GetDifferenceIndices();
+      double c = EvaluateDerivative(param_coord, {dimension}, derivativeHandler.GetDifferenceIndices())[0];
+      sum += a * b * c; /* binomialCoefficient(derivative[0], j) * GetWeightDerivative(param_coord, derivativeHandler.GetIndices())
+          * EvaluateDerivative(param_coord, {dimension}, derivativeHandler.GetDifferenceIndices())[0]; */
     }
     return sum;
   }
@@ -175,6 +206,14 @@ class NURBS : public Spline<DIM> {
     if (subset == 0 || subset == number)
       return 1;
     return binomialCoefficient(number - 1, subset - 1) + binomialCoefficient(number - 1, subset);
+  }
+
+  int binomialCoefficient(std::array<int, DIM> numbers, std::array<int, DIM> subsets) const {
+    int bc = 1;
+    for (int i = 0; i < DIM; ++i) {
+      bc *= binomialCoefficient(numbers[i], subsets[i]);
+    }
+    return bc;
   }
 
   std::vector<double> weights_;

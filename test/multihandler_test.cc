@@ -96,3 +96,7 @@ TEST_F(MultiHandler3D, ReturnsDifferenceIndex0And1And4AfterAdding1DIndex7) {
   ASSERT_THAT(multiIndexHandler3D->GetDifferenceIndices()[1], Eq(1));
   ASSERT_THAT(multiIndexHandler3D->GetDifferenceIndices()[2], Eq(4));
 }
+
+TEST_F(MultiHandler3D, ReturnsCorrectLengthOf60) {
+  ASSERT_THAT(multiIndexHandler3D->Get1DLength(), Eq(60));
+}
