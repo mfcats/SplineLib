@@ -41,6 +41,13 @@ class MultiIndexHandler {
     return *this;
   }
 
+  MultiIndexHandler &operator+(int i) {
+    for (int j = 0; j < i; ++j) {
+      ++(*this);
+    }
+    return *this;
+  }
+
   const MultiIndexHandler operator++(int) {
     MultiIndexHandler result(*this);
     ++(*this);
@@ -51,6 +58,18 @@ class MultiIndexHandler {
     for (int i = 0; i < DIM; ++i) {
       current_multi_index_value_[i] = indices[i];
     }
+  }
+
+  std::array<int, DIM> GetIndices() const {
+    return current_multi_index_value_;
+  }
+
+  std::array<int, DIM> GetDifferenceIndices() const {
+    std::array<int, DIM> indices;
+    for (int i = 0; i < DIM; ++i) {
+      indices[i] = multi_index_length_[i] - current_multi_index_value_[i] - 1;
+    }
+    return indices;
   }
 
   int Get1DIndex() {
@@ -64,6 +83,14 @@ class MultiIndexHandler {
       index_1d += temp;
     }
     return index_1d;
+  }
+
+  int Get1DLength() const {
+    int length = 1;
+    for (int i = 0; i < DIM; ++i) {
+      length *= multi_index_length_[i];
+    }
+    return length;
   }
 
  private:
