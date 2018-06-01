@@ -21,9 +21,9 @@ using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
-class ABSpline : public Test {
+class ABSpline2 : public Test {
  public:
-  ABSpline() {
+  ABSpline2() {
     knot_vector = {baf::KnotVector({0, 0, 0, 0, 0.2, 0.4, 0.6, 0.8, 1, 1, 1, 1})};
     degree = {3};
     control_points = {
@@ -46,7 +46,7 @@ class ABSpline : public Test {
   std::vector<baf::ControlPoint> control_points;
 };
 
-TEST_F(ABSpline, ProjectionTest) {
+TEST_F(ABSpline2, ProjectionTest) {
     ASSERT_THAT(spl::Projection::OrthogonalProjectionOntoCurve({332, 200}, std::make_unique<spl::BSpline<1>>(knot_vector, degree, control_points)), DoubleEq(0.6223419238));
 }
 
