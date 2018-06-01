@@ -24,7 +24,6 @@ using testing::DoubleNear;
 class A2DNurbs : public Test {
  public:
   A2DNurbs() {
-
     std::array<baf::KnotVector, 2> knot_vector = {baf::KnotVector({0, 0, 0, 1, 1, 1}),
                                                   baf::KnotVector({0, 0, 0, 1, 1, 1})};
     std::array<int, 2> degree = {2, 2};
@@ -111,7 +110,6 @@ TEST_F(A2DNurbs, Returns3_1For0_4And0_6ForDerivative0And1AndDim1) {
 class A2DNurbsWithAllWeights1 : public Test {
  public:
   A2DNurbsWithAllWeights1() {
-
     std::array<baf::KnotVector, 2> knot_vector = {baf::KnotVector({0, 0, 0, 1, 1, 1}),
                                                   baf::KnotVector({0, 0, 0, 1, 1, 1})};
     std::array<int, 2> degree = {2, 2};

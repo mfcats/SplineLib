@@ -24,7 +24,6 @@ using testing::DoubleNear;
 class A3DNurbsWithAllWeights1 : public Test {
  public:
   A3DNurbsWithAllWeights1() {
-
     std::array<baf::KnotVector, 3> knot_vector = {baf::KnotVector({0, 0, 0, 1, 1, 1}),
                                                   baf::KnotVector({0, 0, 1, 1}),
                                                   baf::KnotVector({0, 0, 1, 1})};

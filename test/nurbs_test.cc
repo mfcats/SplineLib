@@ -98,7 +98,6 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) {
 class NurbsDerivativeEx4_2 : public Test {
  public:
   NurbsDerivativeEx4_2() {
-
     std::array<baf::KnotVector, 1> knot_vector = {baf::KnotVector({0, 0, 0, 1, 1, 1})};
     std::array<int, 1> degree = {2};
     std::vector<double> weights = {1, 1, 2};

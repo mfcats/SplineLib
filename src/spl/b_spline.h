@@ -59,7 +59,6 @@ class BSpline : public Spline<DIM> {
   }
 
  private:
-
   std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const override {
     auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
     auto total_length = this->ArrayTotalLength();
