@@ -18,65 +18,59 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "b_spline.h"
+#include "numeric_settings.h"
 
 namespace spl {
-template<int DIM>
 class Projection {
  public:
-  Projection() {}
-
-  std::vector<double> OrthogonalProjectionOntoCurve(std::vector<double> pointQ,
-                                                    spl::Spline spline,
-                                                    const std::vector<int> &dimensions) {
-    std::vector<double> t = GetInitialValue(pointQ, spline);
-    std::vector<double> dimensions;
-    std::vector<double> derivative;
-    std::vector<double> derivative2;
-    for (int i = 0; i < DIM; ++i) {
+  static double OrthogonalProjectionOntoCurve(std::vector<double> pointQ,
+                                              std::unique_ptr<spl::BSpline<1>> spline) {
+    double t = 0.5;//GetInitialValue(pointQ, spline);
+    std::vector<int> dimensions;
+    for (int i = 0; i < pointQ.size(); ++i) {
       dimensions.emplace_back(i);
-      derivative.emplace_back(1);
-      derivative.emplace_back(2);
     }
-    signDt = ComputeSignum(ComputeScalarProduct(spline.EvaluateDerivative(t, dimensions, derivative, pointQ),
-                                                ComputePiecewiseVectorDifference(pointQ,
-                                                                                 spline.Evaluate(t, dimensions))));
+    int signDt = Projection::ComputeSignum(Projection::ComputeScalarProduct(spline->EvaluateDerivative({t}, dimensions, {1}),
+                                                Projection::ComputePiecewiseVectorDifference(pointQ,
+                                                                                 spline->Evaluate({t}, dimensions))));
+    double dtEnd = util::NumericSettings<double>::kEpsilon();
+    double dt = dtEnd;
     while (dt >= dtEnd) {
-      double dt = sqrt(2 * ComputeArea(spline.EvaluateDerivative(t, dimensions, derivative),
-                                       ComputePiecewiseVectorDifference(pointQ, spline.Evaluate(t, dimensions)))
-                           / ComputeArea(spline.EvaluateDerivative(t, dimensions, derivative),
-                                         spline.EvaluateDerivative(t, dimensions, derivative2)));
+      dt = sqrt(2 * Projection::ComputeArea(spline->EvaluateDerivative({t}, dimensions, {1}),
+                                       Projection::ComputePiecewiseVectorDifference(pointQ, spline->Evaluate({t}, dimensions)))
+                           / Projection::ComputeArea(spline->EvaluateDerivative({t}, dimensions, {1}),
+                                         spline->EvaluateDerivative({t}, dimensions, {2})));
       t += signDt * dt;
     }
-    std::vector<double> pointP = spline.Evaluate(t, dimensions);
-    std::transform(pointQ.begin(), pointQ.end(), pointP.begin(), pointP.begin(), std::minus<double>());
-    std::transform(pointP.begin(), pointP.end(), pointP.begin(), pointP.begin(), std::multiplies<double>());
-    return sqrt(std::accumulate(pointP.begin(), pointP.end(), 0));
+    //std::vector<double> pointP = spline.Evaluate(t, dimensions);
+    //std::transform(pointQ.begin(), pointQ.end(), pointP.begin(), pointP.begin(), std::minus<double>());
+    //std::transform(pointP.begin(), pointP.end(), pointP.begin(), pointP.begin(), std::multiplies<double>());
+    //return sqrt(std::accumulate(pointP.begin(), pointP.end(), 0));
+    return t;
   }
 
-  int ComputeSignum(double x) {
+  static int ComputeSignum(double x) {
     return ((x > 0) ? 1 : ((x < 0) ? -1 : 0));
   }
 
-  std::vector<double> ComputePiecewiseVectorDifference(std::vector<double> vectorA, std::vector<double> vectorB) {
+  static std::vector<double> ComputePiecewiseVectorDifference(std::vector<double> vectorA, std::vector<double> vectorB) {
     std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::minus<double>());
     return vectorB;
   }
 
-  std::vector<double> ComputeArea(std::vector<double> vectorA, std::vector<double> vectorB) {
-    std::vector<double> area;
-    if (vectorA.Size() == 2) {
-      area.emplace_back(vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0]);
-    } else if (vectorA.Size() == 3) {
-      area.emplace_back(vectorA[1] * vectorB[2] - vectorA[2] * vectorB[1]);
-      area.emplace_back(vectorA[2] * vectorB[0] - vectorA[0] * vectorB[2]);
-      area.emplace_back(vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0]);
+  static double ComputeArea(std::vector<double> vectorA, std::vector<double> vectorB) {
+    double area;
+    if (vectorA.size() == 2) {
+      area = vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0];
+    } else if (vectorA.size() == 3) {
+      area = (vectorA[1] * vectorB[2] - vectorA[2] * vectorB[1]) + (vectorA[2] * vectorB[0] - vectorA[0] * vectorB[2]) + (vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0]);
     }
     return area;
   }
 
-  double ComputeScalarProduct(std::vector<double> vectorA, std::vector<double> vectorB) {
+  static double ComputeScalarProduct(std::vector<double> vectorA, std::vector<double> vectorB) {
     double sum = 0;
-    for (int i = 0; i < vectorA.Size(); ++i) {
+    for (int i = 0; i < vectorA.size(); ++i) {
       double product = 0;
       product = vectorA[i] * vectorB[i];
       sum += product;

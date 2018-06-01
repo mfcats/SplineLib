@@ -25,12 +25,12 @@ set(TEST_SOURCES
         element_test.cc
         integration_rule_test.cc
         integration_point_test.cc
+        projection_curve_test.cc
         nurbs_test.cc
-        nurbs_2_d_test.cc nurbs_3_d_test.cc)
+        nurbs_2_d_test.cc
+        nurbs_3_d_test.cc)
 
 find_package(GTest REQUIRED)
 
 add_executable(SplineLibTests ${TEST_SOURCES})
 target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil GTest::Main)
-
-target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
