@@ -23,7 +23,7 @@ baf::ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const KnotVe
     : BasisFunction(knot_vector, 0, start_of_support) {}
 
 double baf::ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(double param_coord) const {
-  return util::NumericSettings<double>::AreEqual(GetKnot(GetStartOfSupport()) + 1, GetKnot(GetStartOfSupport())) ? 0.0
+  return util::NumericSettings<double>::AreEqual(GetKnot(GetStartOfSupport() + 1), GetKnot(GetStartOfSupport())) ? 0.0
                                                                                                                  : 1.0;
 }
 
