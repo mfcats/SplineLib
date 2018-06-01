@@ -150,23 +150,6 @@ class BSpline {
     return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
   }
 
-  std::vector<std::vector<double>> ParameterSpace2PhysicalSpace(std::vector<std::vector<double>> values,
-                                                                int element_number,
-                                                                const itg::IntegrationRule<1> &rule) const {
-    elm::Element element = GetElementList()[element_number];
-    for (int point = 0; point < rule.GetNumberOfIntegrationPoints(); point++) {
-      std::transform(values[point].cbegin(),
-                     values[point].cend(),
-                     values[point].begin(),
-                     std::bind2nd(std::divides<double>(),
-                                  EvaluateDerivative(
-                                      {ReferenceSpace2ParameterSpace(element.node(0),
-                                                                     element.node(1),
-                                                                     rule.coordinate(point, 0))}, {0}, {1})[0]));
-    }
-    return values;
-  }
-
   std::vector<elm::ElementIntegrationPoint> ParameterSpace2PhysicalSpace(
       std::vector<elm::ElementIntegrationPoint> element_integration_points,
       int element_number,
