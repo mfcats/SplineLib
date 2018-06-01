@@ -22,3 +22,18 @@ add_library(splinelibspl SHARED ${SOURCES})
 target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_link_libraries(splinelibspl splinelibitg splinelibelm)
 
+install(
+        TARGETS splinelibspl
+        EXPORT "${targets_export_name}"
+        LIBRARY DESTINATION "${library_install_dir}"
+        ARCHIVE DESTINATION "${library_install_dir}"
+        RUNTIME DESTINATION "${executable_install_dir}"
+        INCLUDES DESTINATION "${include_install_dir}"
+)
+
+install(
+        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        DESTINATION "${include_install_dir}"
+				FILES_MATCHING PATTERN "*.h"
+)
+
