@@ -150,24 +150,3 @@ TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_0And0_7AndD
   ASSERT_THAT(nurbs_->EvaluateDerivative({0.0, 0.7}, {0}, {2, 1})[0],
               DoubleNear(bspline_->EvaluateDerivative({0.0, 0.7}, {0}, {2, 1})[0], 0.000001));
 }
-
-TEST(A3DNurbs, ThrowsWhenEvaluatingDerivative) {
-  std::array<baf::KnotVector, 3> knot_vector = {baf::KnotVector({0, 0, 0, 1, 1, 1}),
-                                                baf::KnotVector({0, 0, 0, 1, 1, 1}),
-                                                baf::KnotVector({0, 0, 0, 1, 1, 1})};
-  std::array<int, 3> degree = {2, 2, 2};
-  std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1, 1, 1};
-  std::vector<baf::ControlPoint> control_points = {
-      baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({3.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({-1.0, 0.5})),
-      baf::ControlPoint(std::vector<double>({2.0, 2.0})),
-      baf::ControlPoint(std::vector<double>({4.0, 1.0})),
-      baf::ControlPoint(std::vector<double>({0.0, 2.0})),
-      baf::ControlPoint(std::vector<double>({2.5, 3.5})),
-      baf::ControlPoint(std::vector<double>({5.0, 2.0}))
-  };
-  std::unique_ptr<spl::NURBS<3>> nurbs_ = std::make_unique<spl::NURBS<3>>(knot_vector, degree, control_points, weights);
-  ASSERT_THROW(nurbs_->EvaluateDerivative({0.2, 0.3, 0.4}, {0}, {1, 0, 0}), std::runtime_error);
-}

@@ -36,9 +36,6 @@ class NURBS : public Spline<DIM> {
   std::vector<double> EvaluateDerivative(std::array<double, DIM> param_coord,
                                          const std::vector<int> &dimensions,
                                          std::array<int, DIM> derivative) const override {
-    if (DIM > 2) {
-      throw std::runtime_error("Evaluation of NURBS derivatives only implemented for NURBS of dimensions 1 and 2");
-    }
     if (derivative == std::array<int, DIM>{0}) {
       return this->Evaluate(param_coord, dimensions);
     }
