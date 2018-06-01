@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SPLINELIB_PROJECTION_H
 
 #include <vector>
+#include <iostream>
 
 #include "b_spline.h"
 #include "numeric_settings.h"
@@ -24,7 +25,7 @@ namespace spl {
 class Projection {
  public:
   static double OrthogonalProjectionOntoCurve(std::vector<double> pointQ,
-                                              std::unique_ptr<spl::BSpline<1>> spline) {
+                                              spl::BSpline<1> *spline) {
     double t = 0.5;//GetInitialValue(pointQ, spline);
     std::vector<int> dimensions;
     for (int i = 0; i < pointQ.size(); ++i) {
@@ -36,10 +37,22 @@ class Projection {
     double dtEnd = util::NumericSettings<double>::kEpsilon();
     double dt = dtEnd;
     while (dt >= dtEnd) {
-      dt = sqrt(2 * Projection::ComputeArea(spline->EvaluateDerivative({t}, dimensions, {1}),
+      double zaehler = Projection::ComputeArea(spline->EvaluateDerivative({t}, dimensions, {1}),
+                                              Projection::ComputePiecewiseVectorDifference(pointQ, spline->Evaluate({t}, dimensions)));
+
+      double nenner = Projection::ComputeArea(spline->EvaluateDerivative({t}, dimensions, {1}),
+      spline->EvaluateDerivative({t}, dimensions, {2}));
+
+      double dt2 = 2 * zaehler / nenner;
+
+      double absdt2 = abs(dt2);
+
+      dt = sqrt(absdt2);
+
+      /*dt = sqrt(std::abs(2 * Projection::ComputeArea(spline->EvaluateDerivative({t}, dimensions, {1}),
                                        Projection::ComputePiecewiseVectorDifference(pointQ, spline->Evaluate({t}, dimensions)))
                            / Projection::ComputeArea(spline->EvaluateDerivative({t}, dimensions, {1}),
-                                         spline->EvaluateDerivative({t}, dimensions, {2})));
+                                         spline->EvaluateDerivative({t}, dimensions, {2}))));*/
       t += signDt * dt;
     }
     //std::vector<double> pointP = spline.Evaluate(t, dimensions);
@@ -63,7 +76,12 @@ class Projection {
     if (vectorA.size() == 2) {
       area = vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0];
     } else if (vectorA.size() == 3) {
-      area = (vectorA[1] * vectorB[2] - vectorA[2] * vectorB[1]) + (vectorA[2] * vectorB[0] - vectorA[0] * vectorB[2]) + (vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0]);
+      std::vector<double> crossProduct;
+      crossProduct.emplace_back(vectorA[1] * vectorB[2] - vectorA[2] * vectorB[1]);
+      crossProduct.emplace_back(vectorA[2] * vectorB[0] - vectorA[0] * vectorB[2]);
+      crossProduct.emplace_back(vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0]);
+      std::transform(crossProduct.begin(), crossProduct.end(), crossProduct.begin(), crossProduct.begin(), std::multiplies<double>());
+      area = sqrt(std::accumulate(crossProduct.begin(), crossProduct.end(), 0));
     }
     return area;
   }

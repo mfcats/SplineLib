@@ -47,7 +47,7 @@ class ABSpline2 : public Test {
 };
 
 TEST_F(ABSpline2, ProjectionTest) {
-    ASSERT_THAT(spl::Projection::OrthogonalProjectionOntoCurve({332, 200}, std::make_unique<spl::BSpline<1>>(knot_vector, degree, control_points)), DoubleEq(0.6223419238));
+    ASSERT_THAT(spl::Projection::OrthogonalProjectionOntoCurve({332, 200}, new spl::BSpline<1>(knot_vector, degree, control_points)), DoubleEq(0.6223419238));
 }
 
 
