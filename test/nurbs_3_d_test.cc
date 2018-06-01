@@ -12,6 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <numeric_settings.h>
 #include "gmock/gmock.h"
 
 #include "nurbs.h"
@@ -24,15 +25,19 @@ class A3DNurbsWithAllWeights1 : public Test {
  public:
   A3DNurbsWithAllWeights1() {
 
-    std::array<baf::KnotVector, 3> knot_vector = {baf::KnotVector({0, 0, 1, 1}),
+    std::array<baf::KnotVector, 3> knot_vector = {baf::KnotVector({0, 0, 0, 1, 1, 1}),
                                                   baf::KnotVector({0, 0, 1, 1}),
                                                   baf::KnotVector({0, 0, 1, 1})};
-    std::array<int, 3> degree = {1, 1, 1};
-    std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1, 1};
+    std::array<int, 3> degree = {2, 1, 1};
+    std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({1.0, 0.0})),
         baf::ControlPoint(std::vector<double>({3.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({-1.0, 0.5})),
+        baf::ControlPoint(std::vector<double>({2.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({4.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 2.0})),
         baf::ControlPoint(std::vector<double>({-1.0, 0.5})),
         baf::ControlPoint(std::vector<double>({2.0, 2.0})),
         baf::ControlPoint(std::vector<double>({4.0, 1.0})),
@@ -54,7 +59,13 @@ TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_5And0
               DoubleEq(bspline_->EvaluateDerivative({0.5, 0.5, 0.5}, {0}, {1, 1, 0})[0]));
 }
 
-TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And1) {
+TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And1And1) {
   ASSERT_THAT(nurbs_->EvaluateDerivative({0.5, 0.8, 0.1}, {0}, {1, 1, 1})[0],
               DoubleEq(bspline_->EvaluateDerivative({0.5, 0.8, 0.1}, {0}, {1, 1, 1})[0]));
+}
+
+TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And2And1) {
+  ASSERT_THAT(nurbs_->EvaluateDerivative({0.5, 0.8, 0.1}, {0}, {1, 2, 1})[0],
+              DoubleNear(bspline_->EvaluateDerivative({0.5, 0.8, 0.1}, {0}, {1, 2, 1})[0],
+                         util::NumericSettings<double>::kEpsilon()));
 }
