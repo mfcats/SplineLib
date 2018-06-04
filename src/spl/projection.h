@@ -32,23 +32,28 @@ class Projection {
     double distance;
     double delta;
     int signum;
-    std::array<double, 1> projectionPointParamCoords = {0.5};  //u  //array length DIM
     std::vector<int> dimensions;
     for (int i = 0; i < pointPhysicalCoords.size(); ++i) {
       dimensions.emplace_back(i);
     }
+    std::array<double, 1> projectionPointParamCoords = FindInitialValue(pointPhysicalCoords, spline, dimensions);  //u  //array length DIM
     bool converged = false;
 
     while (not converged) {
       if (true /*spline->parameter_space_.size() == 1*/) {   //spline dimension is one
         std::vector<double> firstDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {1});
         std::vector<double> secondDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {2});
+        //std::cout << std::endl << spline->Evaluate(projectionPointParamCoords, dimensions)[0] << "   " << spline->Evaluate(projectionPointParamCoords, dimensions)[1] << std::endl;
+        //std::cout << firstDer[0] << "   " << firstDer[1] << std::endl;
+        //std::cout << secondDer[0] << "   " << secondDer[1] << std::endl;
         kappa = ComputeArea(firstDer, secondDer) / pow(ComputeTwoNorm(firstDer), 3);
+        //std::cout << kappa << std::endl;
         std::vector<double> projectionVector = ComputePiecewiseVectorDifference(pointPhysicalCoords, spline->Evaluate(projectionPointParamCoords, dimensions));
 
         if (/*kappa >= 10e-8*/ false) {   //second order algorithm
           delta = sqrt(2 * ComputeArea(firstDer, projectionVector) / (kappa * pow(ComputeTwoNorm(firstDer), 3)));
           signum = ComputeScalarProduct(firstDer, projectionVector) / abs(ComputeScalarProduct(firstDer, projectionVector));
+          std::cout << delta << std::endl << signum << std::endl;
         } else {
           delta = ComputeScalarProduct(firstDer, projectionVector) / ComputeScalarProduct(firstDer, firstDer);
           signum = 1;
@@ -63,7 +68,7 @@ class Projection {
           converged = true;
         }
       }
-      std::cout << signum * delta << "   " << spline->Evaluate(projectionPointParamCoords, dimensions)[0] << "   " << spline->Evaluate(projectionPointParamCoords, dimensions)[1] << std::endl;
+      //std::cout << signum * delta << "   " << spline->Evaluate(projectionPointParamCoords, dimensions)[0] << "   " << spline->Evaluate(projectionPointParamCoords, dimensions)[1] << std::endl;
       ++iteration;
       if (iteration > 1000) {
         break;
@@ -72,8 +77,21 @@ class Projection {
     return projectionPointParamCoords;
   }
 
-  static int ComputeSignum(double x) {
-    return ((x > 0) ? 1 : ((x < 0) ? -1 : 0));
+  static std::array<double, 1> FindInitialValue(std::vector<double> pointPhysicalCoords,
+                                              spl::BSpline<1> *spline, const std::vector<int> &dimensions) {
+    std::vector<elm::Element> elements = spline->GetElementList();
+    std::array<double, 1> paramCoords;
+    std::vector<double> splinePhysicalCoords = spline->Evaluate({(0.5 * (elements[0].node(1) - elements[0].node(0)))}, dimensions);
+    double distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
+    paramCoords = {0.5 * (elements[0].node(1) - elements[0].node(0))};
+    for (int i = 1; i < elements.size(); ++i) {
+      splinePhysicalCoords = spline->Evaluate({0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)}, dimensions);
+      if (ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords)) < distance) {
+        distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
+        paramCoords = {0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)};
+      }
+    }
+    return paramCoords;
   }
 
   static double ComputeTwoNorm(std::vector<double> vectorA) {
@@ -92,13 +110,8 @@ class Projection {
   }
 
   static double ComputeScalarProduct(std::vector<double> vectorA, std::vector<double> vectorB) {
-    double sum = 0;
-    for (int i = 0; i < vectorA.size(); ++i) {
-      double product = 0;
-      product = vectorA[i] * vectorB[i];
-      sum += product;
-    }
-    return sum;
+    std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::multiplies<double>());
+    return std::accumulate(vectorB.begin(), vectorB.end(), 0);
   }
 };
 }
