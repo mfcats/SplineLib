@@ -21,16 +21,20 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 
+#include "named_type.h"
+
+using ParamCoord = util::NamedType<double, struct ParamCoordParameter>;
+
 namespace baf {
-typedef std::vector<double>::const_iterator ConstKnotIterator;
+typedef std::vector<ParamCoord>::const_iterator ConstKnotIterator;
 
 class KnotVector {
  public:
   KnotVector() = default;
 
-  explicit KnotVector(const std::vector<double> &knots);
+  explicit KnotVector(const std::vector<ParamCoord> &knots);
 
-  KnotVector(std::initializer_list<double> knots);
+  KnotVector(std::initializer_list<ParamCoord> knots);
 
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
 
@@ -38,26 +42,26 @@ class KnotVector {
   // NumericSettings.
   bool operator==(const KnotVector &rhs) const;
 
-  double &operator[](uint64_t index);
+  ParamCoord &operator[](uint64_t index);
 
-  double knot(uint64_t index) const;
+  ParamCoord knot(uint64_t index) const;
 
-  double GetLastKnot() const;
+  ParamCoord GetLastKnot() const;
 
-  int64_t GetKnotSpan(double param_coord) const;
+  int64_t GetKnotSpan(ParamCoord param_coord) const;
 
   ConstKnotIterator begin() const;
 
   ConstKnotIterator end() const;
 
-  bool IsInKnotVectorRange(double param_coord) const;
+  bool IsInKnotVectorRange(ParamCoord param_coord) const;
 
-  bool IsLastKnot(double param_coord) const;
+  bool IsLastKnot(ParamCoord param_coord) const;
 
   uint64_t NumberOfKnots() const;
 
  private:
-  std::vector<double> knots_;
+  std::vector<ParamCoord> knots_;
 };
 }
 

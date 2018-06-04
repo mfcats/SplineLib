@@ -28,7 +28,7 @@ class BSpline : public Spline<DIM> {
           std::array<int, DIM> degree,
           const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree, control_points) {}
 
-  std::vector<double> EvaluateDerivative(std::array<double, DIM> param_coord,
+  std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
                                          const std::vector<int> &dimensions,
                                          std::array<int, DIM> derivative) const override {
     auto basis_function_values = EvaluateAllNonZeroBasisFunctionDerivatives(param_coord, derivative);
@@ -40,7 +40,7 @@ class BSpline : public Spline<DIM> {
     return evaluated_point;
   }
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<double, DIM> param_coord,
+  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<ParamCoord, DIM> param_coord,
                                                                  std::array<int, DIM> derivative) const {
     auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
     auto total_length = this->ArrayTotalLength();
@@ -59,7 +59,7 @@ class BSpline : public Spline<DIM> {
   }
 
  private:
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const override {
+  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const override {
     auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
     auto total_length = this->ArrayTotalLength();
     auto M = this->MultiIndexHandlerShort();

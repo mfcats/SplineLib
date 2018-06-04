@@ -34,7 +34,7 @@ build/*
 *.app
 
 # IDE files
-cmake-build-debug
+cmake-build-*
 .idea
 
 # mac related files

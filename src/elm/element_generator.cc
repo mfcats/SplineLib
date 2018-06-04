@@ -28,11 +28,11 @@ std::vector<elm::Element> elm::ElementGenerator::GetElementList() {
 }
 
 double elm::ElementGenerator::GetLowerElementBound(uint64_t currentKnot) {
-  return knot_vector_[currentKnot];
+  return knot_vector_[currentKnot].get();
 }
 
 double elm::ElementGenerator::GetHigherElementBound(uint64_t currentKnot) {
-  return knot_vector_[currentKnot + 1];
+  return knot_vector_[currentKnot + 1].get();
 }
 
 std::vector<double> elm::ElementGenerator::GetElementNodes(uint64_t currentKnot) {

@@ -28,9 +28,9 @@ class BSplineBasisFunction : public BasisFunction {
   BSplineBasisFunction(const KnotVector &knot_vector, int deg, uint64_t start_of_support);
 
  protected:
-  double EvaluateOnSupport(double param_coord) const override;
+  double EvaluateOnSupport(ParamCoord param_coord) const override;
 
-  double EvaluateDerivativeOnSupport(double param_coord, int derivative) const override;
+  double EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const override;
 
   std::unique_ptr<BasisFunction> left_lower_degree_;
   std::unique_ptr<BasisFunction> right_lower_degree_;
@@ -42,9 +42,9 @@ class BSplineBasisFunction : public BasisFunction {
 
   double ComputeRightQuotientDenominatorInverse() const;
 
-  double ComputeLeftQuotient(double param_coord) const;
+  double ComputeLeftQuotient(ParamCoord param_coord) const;
 
-  double ComputeRightQuotient(double param_coord) const;
+  double ComputeRightQuotient(ParamCoord param_coord) const;
 
   double InverseWithPossiblyZeroDenominator(double denominator) const;
 };

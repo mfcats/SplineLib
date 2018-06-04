@@ -26,7 +26,7 @@ spl::ParameterSpace::ParameterSpace(const baf::KnotVector &knot_vector, int degr
   }
 }
 
-std::vector<double> spl::ParameterSpace::EvaluateAllNonZeroBasisFunctions(double param_coord) const {
+std::vector<double> spl::ParameterSpace::EvaluateAllNonZeroBasisFunctions(ParamCoord param_coord) const {
   auto first_non_zero = GetFirstNonZeroKnot(param_coord);
   std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_) + 1, 0.0);
   for (int i = 0; i < degree_ + 1; ++i) {
@@ -36,7 +36,7 @@ std::vector<double> spl::ParameterSpace::EvaluateAllNonZeroBasisFunctions(double
   return basis_function_values;
 }
 
-std::vector<double> spl::ParameterSpace::EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord,
+std::vector<double> spl::ParameterSpace::EvaluateAllNonZeroBasisFunctionDerivatives(ParamCoord param_coord,
                                                                                     int derivative) const {
   auto first_non_zero = GetFirstNonZeroKnot(param_coord);
   std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_) + 1, 0.0);
@@ -56,7 +56,7 @@ baf::KnotVector spl::ParameterSpace::knot_vector() const {
 }
 
 std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator spl::ParameterSpace::GetFirstNonZeroKnot(
-    double param_coord) const {
+    ParamCoord param_coord) const {
   return basis_functions_.begin() + knot_vector_.GetKnotSpan(param_coord) - degree_;
 }
 
@@ -68,7 +68,7 @@ spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number,
   std::vector<double> non_zero_basis_functions;
   for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
     double integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
-    non_zero_basis_functions = EvaluateAllNonZeroBasisFunctions(integration_point);
+    non_zero_basis_functions = EvaluateAllNonZeroBasisFunctions(ParamCoord{integration_point});
     element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_functions));
   }
   return element_integration_points;
@@ -82,7 +82,7 @@ spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctionDerivatives(int eleme
   std::vector<double> non_zero_basis_function_derivatives;
   for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
     double integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
-    non_zero_basis_function_derivatives = EvaluateAllNonZeroBasisFunctionDerivatives(integration_point, 1);
+    non_zero_basis_function_derivatives = EvaluateAllNonZeroBasisFunctionDerivatives(ParamCoord{integration_point}, 1);
     element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_function_derivatives));
   }
   return element_integration_points;

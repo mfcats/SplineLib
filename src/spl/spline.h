@@ -45,7 +45,7 @@ class Spline {
     }
   }
 
-  std::vector<double> Evaluate(std::array<double, DIM> param_coord, const std::vector<int> &dimensions) const {
+  std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord, const std::vector<int> &dimensions) const {
     auto basis_function_values = EvaluateAllNonZeroBasisFunctions(param_coord);
     std::vector<double> evaluated_point(dimensions.size(), 0);
     for (int i = 0; i < dimensions.size(); ++i) {
@@ -55,7 +55,7 @@ class Spline {
     return evaluated_point;
   }
 
-  virtual std::vector<double> EvaluateDerivative(std::array<double, DIM> param_coord,
+  virtual std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
                                                  const std::vector<int> &dimensions,
                                                  std::array<int, DIM> derivative) const = 0;
 
@@ -95,7 +95,7 @@ class Spline {
     return dx_dxi * dxi_dtildexi;
   }
 
-  std::vector<double> ExtractControlPointValues(std::array<double, DIM> param_coord, int dimension) const {
+  std::vector<double> ExtractControlPointValues(std::array<ParamCoord, DIM> param_coord, int dimension) const {
     std::array<int, DIM + 1> start;
     std::array<int, DIM + 1> last;
     std::array<int, DIM + 1> total_length;
@@ -166,7 +166,7 @@ class Spline {
   }
 
   std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM>
-  CreateArrayFirstNonZeroBasisFunction(std::array<double, DIM> param_coord) const {
+  CreateArrayFirstNonZeroBasisFunction(std::array<ParamCoord, DIM> param_coord) const {
     std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] = parameter_space_[i].GetFirstNonZeroKnot(param_coord[i]);
@@ -191,7 +191,7 @@ class Spline {
     return M;
   }
 
-  virtual std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const = 0;
+  virtual std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const = 0;
 
   std::array<ParameterSpace, DIM> parameter_space_;
   std::vector<double> control_points_;

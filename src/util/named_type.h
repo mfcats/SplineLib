@@ -12,30 +12,28 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_SQUARE_GENERATOR_H
-#define SPLINELIB_SQUARE_GENERATOR_H
+#ifndef SPLINELIB_NAMEDTYPE_H
+#define SPLINELIB_NAMEDTYPE_H
 
-#include <array>
-#include <vector>
-
-#include "b_spline.h"
-#include "knot_vector.h"
-
-namespace spl {
-class SquareGenerator {
+namespace util {
+template<typename T, typename Parameter>
+class NamedType {
  public:
-  SquareGenerator();
-  SquareGenerator(int degree, int number_of_knots);
-
-  std::unique_ptr<BSpline<2>> CreateSquare() const;
-
+  explicit NamedType(T const &value) : value_(value) {}
+  explicit NamedType(T &&value) : value_(std::move(value)) {}
+  T &get() { return value_; }
+  T const &get() const { return value_; }
+  NamedType<T, Parameter> operator- (const NamedType<T, Parameter> &rhs) const {
+    return NamedType<T, Parameter>{value_ - rhs.get()};
+  }
+  bool operator> (const NamedType<T, Parameter> &rhs) const {
+    return value_ > rhs.get();
+  }
+  bool operator< (const NamedType<T, Parameter> &rhs) const {
+    return value_ < rhs.get();
+  }
  private:
-  std::array<baf::KnotVector, 2> knot_vectors_;
-  std::array<int, 2> degrees_;
-  std::vector<baf::ControlPoint> control_points_;
-  ParamCoord one_{1};
-  ParamCoord zero_{0};
+  T value_;
 };
 }
-
-#endif //SPLINELIB_SQUARE_GENERATOR_H
+#endif // SPLINELIB_NAMEDTYPE_H

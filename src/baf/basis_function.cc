@@ -18,11 +18,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "numeric_settings.h"
 
-double baf::BasisFunction::Evaluate(double paramCoord) const {
+double baf::BasisFunction::Evaluate(ParamCoord paramCoord) const {
   return IsCoordinateInSupport(paramCoord) ? this->EvaluateOnSupport(paramCoord) : 0.0;
 }
 
-double baf::BasisFunction::EvaluateDerivative(double param_coord, int derivative) const {
+double baf::BasisFunction::EvaluateDerivative(ParamCoord param_coord, int derivative) const {
   return derivative == 0 ? Evaluate(param_coord) :
          IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0;
 }
@@ -30,7 +30,7 @@ double baf::BasisFunction::EvaluateDerivative(double param_coord, int derivative
 baf::BasisFunction::BasisFunction(const KnotVector &knot_vector, int degree, uint64_t start)
     : knotVector_(knot_vector), degree_(degree), start_of_support_(start) {}
 
-double baf::BasisFunction::GetKnot(uint64_t knot_position) const {
+ParamCoord baf::BasisFunction::GetKnot(uint64_t knot_position) const {
   return knotVector_.knot(knot_position);
 }
 
@@ -42,18 +42,18 @@ int baf::BasisFunction::GetDegree() const {
   return degree_;
 }
 
-bool baf::BasisFunction::IsCoordinateInSupport(double param_coord) const {
+bool baf::BasisFunction::IsCoordinateInSupport(ParamCoord param_coord) const {
   return knotVector_.IsInKnotVectorRange(param_coord)
       && (IsCoordinateInSupportSpan(param_coord) || IsCoordinateSpecialCaseWithLastKnot(param_coord));
 }
 
-bool baf::BasisFunction::IsCoordinateInSupportSpan(double param_coord) const {
+bool baf::BasisFunction::IsCoordinateInSupportSpan(ParamCoord param_coord) const {
   auto span = knotVector_.GetKnotSpan(param_coord);
   return !(span < start_of_support_ || span >= start_of_support_ + degree_ + 1);
 }
 
-bool baf::BasisFunction::IsCoordinateSpecialCaseWithLastKnot(double param_coord) const {
-  return util::NumericSettings<double>::AreEqual(param_coord, knotVector_.GetLastKnot()) &&
-      util::NumericSettings<double>::AreEqual(knotVector_.GetLastKnot(),
-                                              knotVector_.knot(start_of_support_ + degree_ + 1));
+bool baf::BasisFunction::IsCoordinateSpecialCaseWithLastKnot(ParamCoord param_coord) const {
+  return util::NumericSettings<double>::AreEqual(param_coord.get(), knotVector_.GetLastKnot().get()) &&
+      util::NumericSettings<double>::AreEqual(knotVector_.GetLastKnot().get(),
+                                              knotVector_.knot(start_of_support_ + degree_ + 1).get());
 }
