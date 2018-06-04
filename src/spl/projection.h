@@ -24,46 +24,61 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace spl {
 class Projection {
  public:
-  static double OrthogonalProjectionOntoCurve(std::vector<double> pointQ,
+  static std::array<double, 1> ProjectionOnSpline(std::vector<double> pointPhysicalCoords,
                                               spl::BSpline<1> *spline) {
-    double t = 0.5;//GetInitialValue(pointQ, spline);
+    double kappa;
+    double tolerance = 0.0001;
+    int iteration = 0;
+    double distance;
+    double delta;
+    int signum;
+    std::array<double, 1> projectionPointParamCoords = {0.5};  //u  //array length DIM
     std::vector<int> dimensions;
-    for (int i = 0; i < pointQ.size(); ++i) {
+    for (int i = 0; i < pointPhysicalCoords.size(); ++i) {
       dimensions.emplace_back(i);
     }
-    int signDt = Projection::ComputeSignum(Projection::ComputeScalarProduct(spline->EvaluateDerivative({t}, dimensions, {1}),
-                                                Projection::ComputePiecewiseVectorDifference(pointQ,
-                                                                                 spline->Evaluate({t}, dimensions))));
-    double dtEnd = util::NumericSettings<double>::kEpsilon();
-    double dt = dtEnd;
-    while (dt >= dtEnd) {
-      double zaehler = Projection::ComputeArea(spline->EvaluateDerivative({t}, dimensions, {1}),
-                                              Projection::ComputePiecewiseVectorDifference(pointQ, spline->Evaluate({t}, dimensions)));
+    bool converged = false;
 
-      double nenner = Projection::ComputeArea(spline->EvaluateDerivative({t}, dimensions, {1}),
-      spline->EvaluateDerivative({t}, dimensions, {2}));
+    while (not converged) {
+      if (true /*spline->parameter_space_.size() == 1*/) {   //spline dimension is one
+        std::vector<double> firstDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {1});
+        std::vector<double> secondDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {2});
+        kappa = ComputeArea(firstDer, secondDer) / pow(ComputeTwoNorm(firstDer), 3);
+        std::vector<double> projectionVector = ComputePiecewiseVectorDifference(pointPhysicalCoords, spline->Evaluate(projectionPointParamCoords, dimensions));
 
-      double dt2 = 2 * zaehler / nenner;
-
-      double absdt2 = abs(dt2);
-
-      dt = sqrt(absdt2);
-
-      /*dt = sqrt(std::abs(2 * Projection::ComputeArea(spline->EvaluateDerivative({t}, dimensions, {1}),
-                                       Projection::ComputePiecewiseVectorDifference(pointQ, spline->Evaluate({t}, dimensions)))
-                           / Projection::ComputeArea(spline->EvaluateDerivative({t}, dimensions, {1}),
-                                         spline->EvaluateDerivative({t}, dimensions, {2}))));*/
-      t += signDt * dt;
+        if (/*kappa >= 10e-8*/ false) {   //second order algorithm
+          delta = sqrt(2 * ComputeArea(firstDer, projectionVector) / (kappa * pow(ComputeTwoNorm(firstDer), 3)));
+          signum = ComputeScalarProduct(firstDer, projectionVector) / abs(ComputeScalarProduct(firstDer, projectionVector));
+        } else {
+          delta = ComputeScalarProduct(firstDer, projectionVector) / ComputeScalarProduct(firstDer, firstDer);
+          signum = 1;
+        }
+        projectionPointParamCoords[0] += signum * delta;
+        if (projectionPointParamCoords[0] < spline->GetKnotVector(0).knot(0)) {
+          projectionPointParamCoords[0] = spline->GetKnotVector(0).knot(0);
+        } else if (projectionPointParamCoords[0] > spline->GetKnotVector(0).GetLastKnot()) {
+          projectionPointParamCoords[0] = spline->GetKnotVector(0).GetLastKnot();
+        }
+        if (abs(delta) < tolerance) {
+          converged = true;
+        }
+      }
+      std::cout << signum * delta << "   " << spline->Evaluate(projectionPointParamCoords, dimensions)[0] << "   " << spline->Evaluate(projectionPointParamCoords, dimensions)[1] << std::endl;
+      ++iteration;
+      if (iteration > 1000) {
+        break;
+      }
     }
-    //std::vector<double> pointP = spline.Evaluate(t, dimensions);
-    //std::transform(pointQ.begin(), pointQ.end(), pointP.begin(), pointP.begin(), std::minus<double>());
-    //std::transform(pointP.begin(), pointP.end(), pointP.begin(), pointP.begin(), std::multiplies<double>());
-    //return sqrt(std::accumulate(pointP.begin(), pointP.end(), 0));
-    return t;
+    return projectionPointParamCoords;
   }
 
   static int ComputeSignum(double x) {
     return ((x > 0) ? 1 : ((x < 0) ? -1 : 0));
+  }
+
+  static double ComputeTwoNorm(std::vector<double> vectorA) {
+    std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(), vectorA.begin(), std::multiplies<double>());
+    return sqrt(std::accumulate(vectorA.begin(), vectorA.end(), 0));
   }
 
   static std::vector<double> ComputePiecewiseVectorDifference(std::vector<double> vectorA, std::vector<double> vectorB) {
@@ -72,18 +87,8 @@ class Projection {
   }
 
   static double ComputeArea(std::vector<double> vectorA, std::vector<double> vectorB) {
-    double area;
-    if (vectorA.size() == 2) {
-      area = vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0];
-    } else if (vectorA.size() == 3) {
-      std::vector<double> crossProduct;
-      crossProduct.emplace_back(vectorA[1] * vectorB[2] - vectorA[2] * vectorB[1]);
-      crossProduct.emplace_back(vectorA[2] * vectorB[0] - vectorA[0] * vectorB[2]);
-      crossProduct.emplace_back(vectorA[0] * vectorB[1] - vectorA[1] * vectorB[0]);
-      std::transform(crossProduct.begin(), crossProduct.end(), crossProduct.begin(), crossProduct.begin(), std::multiplies<double>());
-      area = sqrt(std::accumulate(crossProduct.begin(), crossProduct.end(), 0));
-    }
-    return area;
+    return sqrt(abs(ComputeScalarProduct(vectorA, vectorA) *
+        ComputeScalarProduct(vectorB, vectorB) - pow(ComputeScalarProduct(vectorA, vectorB), 2)));
   }
 
   static double ComputeScalarProduct(std::vector<double> vectorA, std::vector<double> vectorB) {
