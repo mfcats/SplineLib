@@ -47,7 +47,7 @@ class ABSpline2 : public Test {
 };
 
 TEST_F(ABSpline2, ProjectionTest) {
-    ASSERT_THAT(spl::Projection::ProjectionOnSpline({332, 200}, new spl::BSpline<1>(knot_vector, degree, control_points))[0], DoubleNear(0.6223419238, 0.0001));
+    ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({332, 200}, new spl::BSpline<1>(knot_vector, degree, control_points))[0], DoubleNear(0.6223419238, 0.0001));
 }
 
 

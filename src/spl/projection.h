@@ -22,10 +22,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "numeric_settings.h"
 
 namespace spl {
+template<int DIM>
 class Projection {
  public:
-  static std::array<double, 1> ProjectionOnSpline(std::vector<double> pointPhysicalCoords,
-                                              spl::BSpline<1> *spline) {
+  static std::array<double, DIM> ProjectionOnSpline(std::vector<double> pointPhysicalCoords,
+                                              spl::BSpline<DIM> *spline) {
     double kappa;
     double tolerance = 0.0001;
     int iteration = 0;
@@ -36,24 +37,19 @@ class Projection {
     for (int i = 0; i < pointPhysicalCoords.size(); ++i) {
       dimensions.emplace_back(i);
     }
-    std::array<double, 1> projectionPointParamCoords = FindInitialValue(pointPhysicalCoords, spline, dimensions);  //u  //array length DIM
+    std::array<double, DIM> projectionPointParamCoords = FindInitialValue(pointPhysicalCoords, spline, dimensions);  //u  //array length DIM
     bool converged = false;
 
     while (not converged) {
-      if (true /*spline->parameter_space_.size() == 1*/) {   //spline dimension is one
+      if (DIM == 1) {
         std::vector<double> firstDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {1});
         std::vector<double> secondDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {2});
-        //std::cout << std::endl << spline->Evaluate(projectionPointParamCoords, dimensions)[0] << "   " << spline->Evaluate(projectionPointParamCoords, dimensions)[1] << std::endl;
-        //std::cout << firstDer[0] << "   " << firstDer[1] << std::endl;
-        //std::cout << secondDer[0] << "   " << secondDer[1] << std::endl;
         kappa = ComputeArea(firstDer, secondDer) / pow(ComputeTwoNorm(firstDer), 3);
-        //std::cout << kappa << std::endl;
         std::vector<double> projectionVector = ComputePiecewiseVectorDifference(pointPhysicalCoords, spline->Evaluate(projectionPointParamCoords, dimensions));
 
-        if (/*kappa >= 10e-8*/ false) {   //second order algorithm
+        if (kappa >= 10e-8) {
           delta = sqrt(2 * ComputeArea(firstDer, projectionVector) / (kappa * pow(ComputeTwoNorm(firstDer), 3)));
           signum = ComputeScalarProduct(firstDer, projectionVector) / abs(ComputeScalarProduct(firstDer, projectionVector));
-          std::cout << delta << std::endl << signum << std::endl;
         } else {
           delta = ComputeScalarProduct(firstDer, projectionVector) / ComputeScalarProduct(firstDer, firstDer);
           signum = 1;
@@ -68,7 +64,6 @@ class Projection {
           converged = true;
         }
       }
-      //std::cout << signum * delta << "   " << spline->Evaluate(projectionPointParamCoords, dimensions)[0] << "   " << spline->Evaluate(projectionPointParamCoords, dimensions)[1] << std::endl;
       ++iteration;
       if (iteration > 1000) {
         break;
@@ -77,10 +72,10 @@ class Projection {
     return projectionPointParamCoords;
   }
 
-  static std::array<double, 1> FindInitialValue(std::vector<double> pointPhysicalCoords,
-                                              spl::BSpline<1> *spline, const std::vector<int> &dimensions) {
+  static std::array<double, DIM> FindInitialValue(std::vector<double> pointPhysicalCoords,
+                                              spl::BSpline<DIM> *spline, const std::vector<int> &dimensions) {
     std::vector<elm::Element> elements = spline->GetElementList();
-    std::array<double, 1> paramCoords;
+    std::array<double, DIM> paramCoords;
     std::vector<double> splinePhysicalCoords = spline->Evaluate({(0.5 * (elements[0].node(1) - elements[0].node(0)))}, dimensions);
     double distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
     paramCoords = {0.5 * (elements[0].node(1) - elements[0].node(0))};
