@@ -37,7 +37,7 @@ class Projection {
     for (int i = 0; i < pointPhysicalCoords.size(); ++i) {
       dimensions.emplace_back(i);
     }
-    std::array<double, DIM> projectionPointParamCoords = FindInitialValue(pointPhysicalCoords, spline, dimensions);  //u  //array length DIM
+    std::array<double, DIM> projectionPointParamCoords = FindInitialValue(pointPhysicalCoords, spline, dimensions);
     bool converged = false;
 
     while (not converged) {
@@ -47,13 +47,11 @@ class Projection {
         kappa = ComputeArea(firstDer, secondDer) / pow(ComputeTwoNorm(firstDer), 3);
         std::vector<double> projectionVector = ComputePiecewiseVectorDifference(pointPhysicalCoords, spline->Evaluate(projectionPointParamCoords, dimensions));
 
-        if (kappa >= 10e-8) {
-          delta = sqrt(2 * ComputeArea(firstDer, projectionVector) / (kappa * pow(ComputeTwoNorm(firstDer), 3)));
-          signum = ComputeScalarProduct(firstDer, projectionVector) / abs(ComputeScalarProduct(firstDer, projectionVector));
-        } else {
-          delta = ComputeScalarProduct(firstDer, projectionVector) / ComputeScalarProduct(firstDer, firstDer);
-          signum = 1;
-        }
+        //This is only the first order algorithm.
+        //An implemented but non-working version of the second order algorithm can be found in commit 2ed993e6dcef3d184b70640f6b9498efae52747a.
+        delta = ComputeScalarProduct(firstDer, projectionVector) / ComputeScalarProduct(firstDer, firstDer);
+        signum = 1;
+
         projectionPointParamCoords[0] += signum * delta;
         if (projectionPointParamCoords[0] < spline->GetKnotVector(0).knot(0)) {
           projectionPointParamCoords[0] = spline->GetKnotVector(0).knot(0);
