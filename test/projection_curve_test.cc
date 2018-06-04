@@ -36,16 +36,28 @@ class ABSpline2 : public Test {
         baf::ControlPoint(std::vector<double>({460, 196})),
         baf::ControlPoint(std::vector<double>({500, 100}))
     };
-    b_spline = std::make_unique<spl::BSpline<1>>(knot_vector, degree, control_points);
   }
 
  protected:
-  std::unique_ptr<spl::BSpline<1>> b_spline;
   std::array<baf::KnotVector, 1> knot_vector;
   std::array<int, 1> degree;
   std::vector<baf::ControlPoint> control_points;
 };
 
-TEST_F(ABSpline2, ProjectionTest) {
-    ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({332, 200}, new spl::BSpline<1>(knot_vector, degree, control_points))[0], DoubleNear(0.6223419238, 0.0001));
+TEST_F(ABSpline2, CloseToCenter) {
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({332, 200},
+                                                     new spl::BSpline<1>(knot_vector, degree, control_points))[0],
+              DoubleNear(0.6223419238, 0.0001));
+}
+
+TEST_F(ABSpline2, RightOfLastKnot) {
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({800, 200},
+                                                     new spl::BSpline<1>(knot_vector, degree, control_points))[0],
+              DoubleEq(1));
+}
+
+TEST_F(ABSpline2, LeftOfFirstKnot) {
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({0, 0},
+                                                     new spl::BSpline<1>(knot_vector, degree, control_points))[0],
+              DoubleEq(0));
 }
