@@ -44,7 +44,7 @@ TEST_F(ASquare, ReturnsCorrectKnotVectorSizes) {
 }
 
 TEST_F(ASquare, ReturnsCorrectLeftLowerCorner) {
-  ASSERT_THAT(square_->Evaluate({0, 0}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{0}}, {0})[0], DoubleEq(-1));
   ASSERT_THAT(square_->Evaluate({0, 0}, {1})[0], DoubleEq(-1));
 }
 

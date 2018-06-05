@@ -22,8 +22,8 @@ using testing::DoubleEq;
 class A2DBSpline : public Test {
  public:
   A2DBSpline() {
-    std::array<baf::KnotVector, 2> knot_vector = {baf::KnotVector({0, 0, 0, 1, 1, 1}),
-                                                  baf::KnotVector({0, 0, 0, 1, 1, 1})};
+    std::array<baf::KnotVector, 2> knot_vector = {baf::KnotVector({std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})}),
+                                                  baf::KnotVector({std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})})};
     std::array<int, 2> degree = {2, 2};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({-1.0, -1.0, 0.0})),
