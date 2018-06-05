@@ -33,7 +33,7 @@ class NURBS : public Spline<DIM> {
       degree,
       control_points), weights_(std::move(weights)) {}
 
-  std::vector<double> EvaluateDerivative(std::array<double, DIM> param_coord,
+  std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
                                          const std::vector<int> &dimensions,
                                          std::array<int, DIM> derivative) const override {
     if (derivative == std::array<int, DIM>{0}) {
@@ -71,7 +71,7 @@ class NURBS : public Spline<DIM> {
     return sum;
   }
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<double, DIM> param_coord) const override {
+  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const override {
     auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
     util::MultiIndexHandler<DIM> multiIndexHandler(this->ArrayTotalLength());
     std::vector<double> NonZeroBasisFunctions(this->MultiIndexHandlerShort(), 1);
