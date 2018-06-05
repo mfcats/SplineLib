@@ -32,7 +32,7 @@ using testing::DoubleNear;
 class ABSpline : public Test {
  public:
   ABSpline() {
-    baf::KnotVector knot_vector = baf::KnotVector(std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}));
+    baf::KnotVector knot_vector = baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}});
     std::array<int, 1> degree = {2};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
@@ -52,39 +52,39 @@ class ABSpline : public Test {
 };
 
 TEST_F(ABSpline, Returns0_0For0AndDim0) {
-  ASSERT_THAT(b_spline->Evaluate({0.0}, {0})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns0_0For0AndDim1) {
-  ASSERT_THAT(b_spline->Evaluate({0.0}, {1})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{0.0}}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns4_0For5AndDim0) {
-  ASSERT_THAT(b_spline->Evaluate({5.0}, {0})[0], DoubleEq(4.0));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{5.0}}, {0})[0], DoubleEq(4.0));
 }
 
 TEST_F(ABSpline, Returns0_0For5AndDim1) {
-  ASSERT_THAT(b_spline->Evaluate({5.0}, {1})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{5.0}}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns1_5For2_5AndDim0) {
-  ASSERT_THAT(b_spline->Evaluate({2.5}, {0})[0], DoubleEq(1.5));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{2.5}}, {0})[0], DoubleEq(1.5));
 }
 
 TEST_F(ABSpline, Returns0_0For0_0Dim0AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({0.0}, {0}, {1})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{0.0}}, {0}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns1_0For0_0Dim1AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({0.0}, {1}, {1})[0], DoubleEq(2.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{0.0}}, {1}, {1})[0], DoubleEq(2.0));
 }
 
 TEST_F(ABSpline, Returns12_0For5_0Dim0AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({5.0}, {0}, {1})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{5.0}}, {0}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({2.25}, {1}, {1})[0], DoubleEq(0.325));
+  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{2.25}}, {1}, {1})[0], DoubleEq(0.325));
 }
 
 TEST_F(ABSpline, ReturnsCorrectNumberOfElements) {
