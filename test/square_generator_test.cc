@@ -45,17 +45,17 @@ TEST_F(ASquare, ReturnsCorrectKnotVectorSizes) {
 
 TEST_F(ASquare, ReturnsCorrectLeftLowerCorner) {
   ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{0}}, {0})[0], DoubleEq(-1));
-  ASSERT_THAT(square_->Evaluate({0, 0}, {1})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{0}}, {1})[0], DoubleEq(-1));
 }
 
 TEST_F(ASquare, ReturnsCorrectLeftUpperCorner) {
-  ASSERT_THAT(square_->Evaluate({0, 1}, {0})[0], DoubleEq(-1));
-  ASSERT_THAT(square_->Evaluate({0, 1}, {1})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{1}}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{1}}, {1})[0], DoubleEq(1));
 }
 
 TEST_F(ASquare, ReturnsCorrectMiddle) {
-  ASSERT_THAT(square_->Evaluate({0.5, 0.5}, {0})[0], DoubleEq(0));
-  ASSERT_THAT(square_->Evaluate({0.5, 0.5}, {1})[0], DoubleEq(0));
+  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {0})[0], DoubleEq(0));
+  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {1})[0], DoubleEq(0));
 }
 
 TEST_F(ASquare, ReturnsCorrectCoordinatesOfRandomPoint) {

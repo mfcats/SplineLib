@@ -32,7 +32,7 @@ using testing::DoubleNear;
 class ABSpline : public Test {
  public:
   ABSpline() {
-    std::array<baf::KnotVector, 1> knot_vector = knot_vector_(std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}));
+    baf::KnotVector knot_vector = baf::KnotVector(std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}));
     std::array<int, 1> degree = {2};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
