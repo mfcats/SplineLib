@@ -23,6 +23,9 @@ class NamedType {
   explicit NamedType(T &&value) : value_(std::move(value)) {}
   T &get() { return value_; }
   T const &get() const { return value_; }
+  NamedType<T, Parameter> operator+ (const NamedType<T, Parameter> &rhs) const {
+    return NamedType<T, Parameter>{value_ + rhs.get()};
+  }
   NamedType<T, Parameter> operator- (const NamedType<T, Parameter> &rhs) const {
     return NamedType<T, Parameter>{value_ - rhs.get()};
   }
