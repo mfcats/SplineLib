@@ -76,8 +76,8 @@ class ABSplineWithMockKnotVector : public Test {
 };
 
 TEST_F(ABSplineWithMockKnotVector, Returns0_0For0AndDim0) {
-  MockKnotVector knotVector;
-  EXPECT_CALL(knotVector, GetKnotSpan(ParamCoord{0.0}))
+  MockKnotVector mnv;
+  EXPECT_CALL(mnv, GetKnotSpan(ParamCoord{0.0}))
       .Times(1).WillOnce(Return(2));
   EXPECT_EQ(b_spline->Evaluate({ParamCoord{0.0}}, {0})[0], 0.0);
 }
