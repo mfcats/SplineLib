@@ -22,6 +22,7 @@ set(TEST_SOURCES
         2d_b_spline_test.cc
         square_generator_test.cc
         multihandler_test.cc
+        mock_knot_vector.cc
         element_test.cc
         integration_rule_test.cc
         integration_point_test.cc
