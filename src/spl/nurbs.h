@@ -126,7 +126,7 @@ class NURBS : public Spline<DIM> {
     return std::make_unique<spl::BSpline<DIM>>(GetKnotVectors(), GetDegrees(), controlPoints);
   }
 
-  double GetSum(std::array<double, DIM> param_coord) const {
+  double GetSum(std::array<ParamCoord, DIM> param_coord) const {
     return GetBSpline(GetWeightsAsControlPoints())->Evaluate(param_coord, {0})[0];
   }
 

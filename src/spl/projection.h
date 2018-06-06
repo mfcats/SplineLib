@@ -26,8 +26,8 @@ namespace spl {
 template<int DIM>
 class Projection {
  public:
-  static std::array<ParamCoord, DIM> ProjectionOnSpline(std::vector<double> pointPhysicalCoords,
-                                                        spl::Spline<DIM> *spline) {
+  static std::array<double, DIM> ProjectionOnSpline(std::vector<double> pointPhysicalCoords,
+                                                    spl::Spline<DIM> *spline) {
     double kappa;
     double tolerance = 0.0001;
     int iteration = 0;
@@ -68,7 +68,7 @@ class Projection {
         break;
       }
     }
-    return projectionPointParamCoords;
+    return {projectionPointParamCoords[0].get()};
   }
 
   static std::array<ParamCoord, DIM> FindInitialValue(std::vector<double> pointPhysicalCoords,
