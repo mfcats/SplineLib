@@ -161,7 +161,7 @@ class Spline {
     return element_integration_points;
   }
 
-  double ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
+  ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
     return parameter_space_[0].ReferenceSpace2ParameterSpace(upper, lower, point);
   }
 

@@ -57,9 +57,9 @@ class NURBS : public Spline<DIM> {
     return util::MultiIndexHandler<DIM>(derivative_length);
   }
 
-  double GetSum(const std::array<double, DIM> &param_coord,
-                    const std::array<int, DIM> &derivative,
-                    int dimension) const {
+  double GetSum(const std::array<ParamCoord, DIM> &param_coord,
+                const std::array<int, DIM> &derivative,
+                int dimension) const {
     double sum = 0;
     util::MultiIndexHandler<DIM> derivativeHandler = GetDerivativeHandler(derivative);
     derivativeHandler++;
@@ -130,11 +130,11 @@ class NURBS : public Spline<DIM> {
     return GetBSpline(GetWeightsAsControlPoints())->Evaluate(param_coord, {0})[0];
   }
 
-  double GetWeightDerivative(std::array<double, DIM> param_coord, std::array<int, DIM> derivative) const {
+  double GetWeightDerivative(std::array<ParamCoord, DIM> param_coord, std::array<int, DIM> derivative) const {
     return GetBSpline(GetWeightsAsControlPoints())->EvaluateDerivative(param_coord, {0}, derivative)[0];
   }
 
-  double GetHomogenousDerivative(std::array<double, DIM> param_coord,
+  double GetHomogenousDerivative(std::array<ParamCoord, DIM> param_coord,
                                  int dimension,
                                  std::array<int, DIM> derivative) const {
     return GetBSpline(GetHomogenousControlPoints())->EvaluateDerivative(param_coord, {dimension}, derivative)[0];

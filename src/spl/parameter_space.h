@@ -45,7 +45,7 @@ class ParameterSpace {
   EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const itg::IntegrationRule<1> &rule) const;
 
   std::vector<elm::Element> GetElementList() const;
-  double ReferenceSpace2ParameterSpace(double upper, double lower, double point) const;
+  ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const;
 
  private:
   baf::KnotVector knot_vector_;

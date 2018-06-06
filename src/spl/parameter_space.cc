@@ -67,7 +67,8 @@ spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctions(int element_number,
   std::vector<elm::ElementIntegrationPoint> element_integration_points;
   std::vector<double> non_zero_basis_functions;
   for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-    double integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
+    ParamCoord
+        integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
     non_zero_basis_functions = EvaluateAllNonZeroBasisFunctions(ParamCoord{integration_point});
     element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_functions));
   }
@@ -81,7 +82,8 @@ spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctionDerivatives(int eleme
   std::vector<elm::ElementIntegrationPoint> element_integration_points;
   std::vector<double> non_zero_basis_function_derivatives;
   for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-    double integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
+    ParamCoord
+        integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
     non_zero_basis_function_derivatives = EvaluateAllNonZeroBasisFunctionDerivatives(ParamCoord{integration_point}, 1);
     element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_function_derivatives));
   }
@@ -92,6 +94,6 @@ std::vector<elm::Element> spl::ParameterSpace::GetElementList() const {
   return elm::ElementGenerator(degree_, knot_vector_).GetElementList();
 }
 
-double spl::ParameterSpace::ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
-  return ((upper - lower) * point + (upper + lower)) / 2.0;
+ParamCoord spl::ParameterSpace::ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
+  return ParamCoord{((upper - lower) * point + (upper + lower)) / 2.0};
 }

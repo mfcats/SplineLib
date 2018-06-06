@@ -26,8 +26,8 @@ namespace spl {
 template<int DIM>
 class Projection {
  public:
-  static std::array<double, DIM> ProjectionOnSpline(std::vector<double> pointPhysicalCoords,
-                                              spl::Spline<DIM> *spline) {
+  static std::array<ParamCoord, DIM> ProjectionOnSpline(std::vector<double> pointPhysicalCoords,
+                                                        spl::Spline<DIM> *spline) {
     double kappa;
     double tolerance = 0.0001;
     int iteration = 0;
@@ -74,15 +74,18 @@ class Projection {
   static std::array<ParamCoord, DIM> FindInitialValue(std::vector<double> pointPhysicalCoords,
                                               spl::Spline<DIM> *spline, const std::vector<int> &dimensions) {
     std::vector<elm::Element> elements = spline->GetElementList();
-    std::array<ParamCoord, DIM> paramCoords;
-    std::vector<double> splinePhysicalCoords = spline->Evaluate({(0.5 * (elements[0].node(1) - elements[0].node(0)))}, dimensions);
+    std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
+    std::vector<double> splinePhysicalCoords =
+        spline->Evaluate({ParamCoord{(0.5 * (elements[0].node(1) - elements[0].node(0)))}}, dimensions);
     double distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
-    paramCoords = {0.5 * (elements[0].node(1) - elements[0].node(0))};
+    paramCoords[0] = ParamCoord{{0.5 * (elements[0].node(1) - elements[0].node(0))}};
     for (int i = 1; i < elements.size(); ++i) {
-      splinePhysicalCoords = spline->Evaluate({0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)}, dimensions);
+      splinePhysicalCoords =
+          spline->Evaluate({ParamCoord{0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)}},
+                           dimensions);
       if (ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords)) < distance) {
         distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
-        paramCoords = {0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)};
+        paramCoords[0] = ParamCoord{0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)};
       }
     }
     return paramCoords;
