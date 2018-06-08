@@ -24,7 +24,7 @@ using testing::DoubleNear;
 class ABSpline2 : public Test {
  public:
   ABSpline2() {
-    knot_vector = {baf::KnotVector({0, 0, 0, 0, 0.2, 0.4, 0.6, 0.8, 1, 1, 1, 1})};
+    knot_vector = {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.2}, ParamCoord{0.4}, ParamCoord{0.6}, ParamCoord{0.8}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
     degree = {3};
     control_points = {
         baf::ControlPoint(std::vector<double>({100, 100})),

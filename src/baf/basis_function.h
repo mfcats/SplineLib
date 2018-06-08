@@ -24,29 +24,29 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace baf {
 class BasisFunction {
  public:
-  double Evaluate(double paramCoord) const;
+  double Evaluate(ParamCoord paramCoord) const;
 
-  double EvaluateDerivative(double param_coord, int derivative) const;
+  double EvaluateDerivative(ParamCoord param_coord, int derivative) const;
 
  protected:
   BasisFunction(const KnotVector &knot_vector, int degree, uint64_t start);
 
-  double GetKnot(uint64_t knot_position) const;
+  ParamCoord GetKnot(uint64_t knot_position) const;
 
   uint64_t GetStartOfSupport() const;
 
   int GetDegree() const;
 
-  virtual double EvaluateOnSupport(double param_coord) const = 0;
+  virtual double EvaluateOnSupport(ParamCoord param_coord) const = 0;
 
-  virtual double EvaluateDerivativeOnSupport(double param_coord, int derivative) const = 0;
+  virtual double EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const = 0;
 
  private:
-  bool IsCoordinateInSupport(double param_coord) const;
+  bool IsCoordinateInSupport(ParamCoord param_coord) const;
 
-  bool IsCoordinateInSupportSpan(double param_coord) const;
+  bool IsCoordinateInSupportSpan(ParamCoord param_coord) const;
 
-  bool IsCoordinateSpecialCaseWithLastKnot(double param_coord) const;
+  bool IsCoordinateSpecialCaseWithLastKnot(ParamCoord param_coord) const;
 
   KnotVector knotVector_;
   int degree_;

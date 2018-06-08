@@ -33,6 +33,8 @@ class SquareGenerator {
   std::array<baf::KnotVector, 2> knot_vectors_;
   std::array<int, 2> degrees_;
   std::vector<baf::ControlPoint> control_points_;
+  ParamCoord one_{1};
+  ParamCoord zero_{0};
 };
 }
 

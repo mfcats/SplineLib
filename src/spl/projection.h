@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <iostream>
 
 #include "b_spline.h"
+#include "knot_vector.h"
 #include "numeric_settings.h"
 
 namespace spl {
@@ -26,7 +27,7 @@ template<int DIM>
 class Projection {
  public:
   static std::array<double, DIM> ProjectionOnSpline(std::vector<double> pointPhysicalCoords,
-                                              spl::Spline<DIM> *spline) {
+                                                    spl::Spline<DIM> *spline) {
     double kappa;
     double tolerance = 0.0001;
     int iteration = 0;
@@ -37,7 +38,7 @@ class Projection {
     for (int i = 0; i < pointPhysicalCoords.size(); ++i) {
       dimensions.emplace_back(i);
     }
-    std::array<double, DIM> projectionPointParamCoords = FindInitialValue(pointPhysicalCoords, spline, dimensions);
+    std::array<ParamCoord, DIM> projectionPointParamCoords = FindInitialValue(pointPhysicalCoords, spline, dimensions);
     bool converged = false;
 
     while (not converged) {
@@ -52,7 +53,7 @@ class Projection {
         delta = ComputeScalarProduct(firstDer, projectionVector) / ComputeScalarProduct(firstDer, firstDer);
         signum = 1;
 
-        projectionPointParamCoords[0] += signum * delta;
+        projectionPointParamCoords[0] = projectionPointParamCoords[0] + ParamCoord{signum * delta};
         if (projectionPointParamCoords[0] < spline->GetKnotVector(0).knot(0)) {
           projectionPointParamCoords[0] = spline->GetKnotVector(0).knot(0);
         } else if (projectionPointParamCoords[0] > spline->GetKnotVector(0).GetLastKnot()) {
@@ -67,21 +68,24 @@ class Projection {
         break;
       }
     }
-    return projectionPointParamCoords;
+    return {projectionPointParamCoords[0].get()};
   }
 
-  static std::array<double, DIM> FindInitialValue(std::vector<double> pointPhysicalCoords,
+  static std::array<ParamCoord, DIM> FindInitialValue(std::vector<double> pointPhysicalCoords,
                                               spl::Spline<DIM> *spline, const std::vector<int> &dimensions) {
     std::vector<elm::Element> elements = spline->GetElementList();
-    std::array<double, DIM> paramCoords;
-    std::vector<double> splinePhysicalCoords = spline->Evaluate({(0.5 * (elements[0].node(1) - elements[0].node(0)))}, dimensions);
+    std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
+    std::vector<double> splinePhysicalCoords =
+        spline->Evaluate({ParamCoord{(0.5 * (elements[0].node(1) - elements[0].node(0)))}}, dimensions);
     double distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
-    paramCoords = {0.5 * (elements[0].node(1) - elements[0].node(0))};
+    paramCoords[0] = ParamCoord{{0.5 * (elements[0].node(1) - elements[0].node(0))}};
     for (int i = 1; i < elements.size(); ++i) {
-      splinePhysicalCoords = spline->Evaluate({0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)}, dimensions);
+      splinePhysicalCoords =
+          spline->Evaluate({ParamCoord{0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)}},
+                           dimensions);
       if (ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords)) < distance) {
         distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
-        paramCoords = {0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)};
+        paramCoords[0] = ParamCoord{0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)};
       }
     }
     return paramCoords;

@@ -31,10 +31,10 @@ class ParameterSpace {
 
   ParameterSpace(const baf::KnotVector &knot_vector, int degree);
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(double param_coord) const;
-  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(double param_coord, int derivative) const;
+  std::vector<double> EvaluateAllNonZeroBasisFunctions(ParamCoord param_coord) const;
+  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(ParamCoord param_coord, int derivative) const;
 
-  std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator GetFirstNonZeroKnot(double param_coord) const;
+  std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator GetFirstNonZeroKnot(ParamCoord param_coord) const;
   int degree() const;
 
   baf::KnotVector knot_vector() const;
@@ -45,7 +45,7 @@ class ParameterSpace {
   EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const itg::IntegrationRule<1> &rule) const;
 
   std::vector<elm::Element> GetElementList() const;
-  double ReferenceSpace2ParameterSpace(double upper, double lower, double point) const;
+  ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const;
 
  private:
   baf::KnotVector knot_vector_;
