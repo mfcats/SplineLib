@@ -24,6 +24,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace baf {
 class BasisFunction {
  public:
+  // The evaluation of the i-th basis function of degree p > 0 N_{i,p} is a linear combination of the basis functions
+  // N_{i,p-1} and N_{i+1,p-1} (see NURBS book equation 2.5). Therefore, for each basis function of degree > 0 a pointer
+  // to these two basis functions is set in constructor, so that a basis function can be evaluated recursively.
   double Evaluate(ParamCoord paramCoord) const;
 
   double EvaluateDerivative(ParamCoord param_coord, int derivative) const;
