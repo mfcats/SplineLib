@@ -13,7 +13,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #ifndef SRC_SPL_SQUARE_GENERATOR_H
-#define SRC_SQUARE_GENERATOR_H
+#define SRC_SPL_SQUARE_GENERATOR_H
 
 #include <array>
 #include <vector>
@@ -38,4 +38,4 @@ class SquareGenerator {
 };
 }
 
-#endif // SRC_SPL_SQUARE_GENERATOR_H
+#endif  // SRC_SPL_SQUARE_GENERATOR_H

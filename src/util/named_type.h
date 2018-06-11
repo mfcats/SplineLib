@@ -39,4 +39,4 @@ class NamedType {
   T value_;
 };
 }
-#endif // SRC_UTIL_NAMEDTYPE_H
+#endif  // SRC_UTIL_NAMEDTYPE_H

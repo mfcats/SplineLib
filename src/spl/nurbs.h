@@ -156,6 +156,6 @@ class NURBS : public Spline<DIM> {
 
   std::vector<double> weights_;
 };
-} // namespace spl
+}  // namespace spl
 
-#endif // SRC_SPL__NURBS_H
+#endif  // SRC_SPL__NURBS_H

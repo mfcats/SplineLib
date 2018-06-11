@@ -31,4 +31,4 @@ class ElementIntegrationPoint {
 };
 }
 
-#endif // SRC_ELM_ELEMENT_INTEGRATION_POINT_H
+#endif  // SRC_ELM_ELEMENT_INTEGRATION_POINT_H

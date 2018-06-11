@@ -99,4 +99,4 @@ class MultiIndexHandler {
 };
 }
 
-#endif // SRC_UTIL_MULTI_INDEX_HANDLER_H
+#endif  // SRC_UTIL_MULTI_INDEX_HANDLER_H
