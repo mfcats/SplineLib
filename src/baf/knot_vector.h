@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_KNOT_VECTOR_H_
-#define SRC_KNOT_VECTOR_H_
+#ifndef SRC_BAF_KNOT_VECTOR_H_
+#define SRC_BAF_KNOT_VECTOR_H_
 
 #include <initializer_list>
 #include <limits>
@@ -65,4 +65,4 @@ class KnotVector {
 };
 }
 
-#endif  // SRC_KNOT_VECTOR_H_
+#endif  // SRC_BAF_KNOT_VECTOR_H_

@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPLINE_H_
-#define SRC_SPLINE_H_
+#ifndef SRC_SPL_SPLINE_H_
+#define SRC_SPL_SPLINE_H_
 
 #include <algorithm>
 #include <functional>
@@ -199,4 +199,4 @@ class Spline {
 };
 }
 
-#endif  // SRC_B_SPLINE_H_
+#endif  // SRC_SPL_SPLINE_H_

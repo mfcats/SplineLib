@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_TWO_POINT_GAUSS_LEGENDRE_H_
-#define SRC_TWO_POINT_GAUSS_LEGENDRE_H_
+#ifndef SRC_ITG_TWO_POINT_GAUSS_LEGENDRE_H_
+#define SRC_ITG_TWO_POINT_GAUSS_LEGENDRE_H_
 
 #include <cmath>
 #include <array>
@@ -30,4 +30,4 @@ class TwoPointGaussLegendre : public IntegrationRule<DIM> {
 };
 }
 
-#endif  // SRC_TWO_POINT_GAUSS_LEGENDRE_H_
+#endif  // SRC_ITG_TWO_POINT_GAUSS_LEGENDRE_H_

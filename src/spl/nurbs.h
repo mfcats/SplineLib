@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_NURBS_H
-#define SPLINELIB_NURBS_H
+#ifndef SRC_SPL_NURBS_H
+#define SRC_SPL_NURBS_H
 
 #include <array>
 #include <utility>
@@ -156,6 +156,6 @@ class NURBS : public Spline<DIM> {
 
   std::vector<double> weights_;
 };
-} //namespace spl
+} // namespace spl
 
-#endif //SPLINELIB_NURBS_H
+#endif // SRC_SPL__NURBS_H

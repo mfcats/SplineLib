@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_PARAMETER_SPACE_H_
-#define SRC_PARAMETER_SPACE_H_
+#ifndef SRC_SPL_PARAMETER_SPACE_H_
+#define SRC_SPL_PARAMETER_SPACE_H_
 
 #include <vector>
 #include <element_integration_point.h>
@@ -54,4 +54,4 @@ class ParameterSpace {
 };
 }
 
-#endif  // SRC_PARAMETER_SPACE_H_
+#endif  // SRC_SPL_PARAMETER_SPACE_H_

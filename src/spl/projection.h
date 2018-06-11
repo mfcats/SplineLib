@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_PROJECTION_H
-#define SPLINELIB_PROJECTION_H
+#ifndef SRC_SPL_PROJECTION_H
+#define SRC_SPL_PROJECTION_H
 
 #include <vector>
 #include <iostream>
@@ -117,4 +117,4 @@ class Projection {
 };
 }
 
-#endif //SPLINELIB_PROJECTION_H
+#endif // SRC_SPL_PROJECTION_H

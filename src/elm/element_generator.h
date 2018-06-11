@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_ELEMENT_GENERATOR_H_
-#define SRC_ELEMENT_GENERATOR_H_
+#ifndef SRC_ELM_ELEMENT_GENERATOR_H_
+#define SRC_ELM_ELEMENT_GENERATOR_H_
 
 #include <vector>
 
@@ -39,4 +39,4 @@ class ElementGenerator {
 };
 }
 
-#endif  // SRC_ELEMENT_GENERATOR_H_
+#endif  // SRC_ELM_ELEMENT_GENERATOR_H_

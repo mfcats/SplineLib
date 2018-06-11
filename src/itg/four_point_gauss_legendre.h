@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_FOUR_POINT_GAUSS_LEGENDRE_H_
-#define SRC_FOUR_POINT_GAUSS_LEGENDRE_H_
+#ifndef SRC_ITG_FOUR_POINT_GAUSS_LEGENDRE_H_
+#define SRC_ITG_FOUR_POINT_GAUSS_LEGENDRE_H_
 
 #include <cmath>
 #include <array>
@@ -38,4 +38,4 @@ class FourPointGaussLegendre : public IntegrationRule<DIM> {
 };
 }
 
-#endif  // SRC_FOUR_POINT_GAUSS_LEGENDRE_H_
+#endif  // SRC_ITG_FOUR_POINT_GAUSS_LEGENDRE_H_

@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_NUMERIC_SETTINGS_H_
-#define SRC_NUMERIC_SETTINGS_H_
+#ifndef SRC_UTIL_NUMERIC_SETTINGS_H_
+#define SRC_UTIL_NUMERIC_SETTINGS_H_
 
 #include <cmath>
 #include <limits>
@@ -40,4 +40,4 @@ class NumericSettings {
 };
 }
 
-#endif  // SRC_NUMERIC_SETTINGS_H_
+#endif  // SRC_UTIL_NUMERIC_SETTINGS_H_

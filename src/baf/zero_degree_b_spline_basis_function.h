@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
-#define SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
+#ifndef SRC_BAF_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
+#define SRC_BAF_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
 
 #include <vector>
 
@@ -32,4 +32,4 @@ class ZeroDegreeBSplineBasisFunction : public baf::BasisFunction {
 };
 }
 
-#endif  // SRC_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
+#endif  // SRC_BAF_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
