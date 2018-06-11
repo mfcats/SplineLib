@@ -38,5 +38,6 @@ class NamedType {
  private:
   T value_;
 };
-}
+}  // namespace util
+
 #endif  // SRC_UTIL_NAMEDTYPE_H

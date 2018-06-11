@@ -36,6 +36,6 @@ class SquareGenerator {
   ParamCoord one_{1};
   ParamCoord zero_{0};
 };
-}
+}  // namespace spl
 
 #endif  // SRC_SPL_SQUARE_GENERATOR_H

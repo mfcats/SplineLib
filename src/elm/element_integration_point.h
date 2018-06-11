@@ -29,6 +29,6 @@ class ElementIntegrationPoint {
  private:
   std::vector<double> non_zero_basis_functions_;
 };
-}
+}  // namespace elm
 
 #endif  // SRC_ELM_ELEMENT_INTEGRATION_POINT_H

@@ -40,6 +40,6 @@ class IntegrationPoint {
   std::array<double, DIM> coordinates_;
   double weight_;
 };
-}
+}  // namespace itg
 
 #endif  // SRC_ITG_INTEGRATION_POINT_H_

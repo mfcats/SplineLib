@@ -52,6 +52,6 @@ class ParameterSpace {
   int degree_;
   std::vector<std::unique_ptr<baf::BasisFunction>> basis_functions_;
 };
-}
+}  // namespace spl
 
 #endif  // SRC_SPL_PARAMETER_SPACE_H_

@@ -197,6 +197,6 @@ class Spline {
   std::vector<double> control_points_;
   int dim;
 };
-}
+}  // namespace spl
 
 #endif  // SRC_SPL_SPLINE_H_

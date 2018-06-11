@@ -38,6 +38,6 @@ class NumericSettings {
 
   constexpr static T kEpsilonFactor_ = 10;
 };
-}
+}  // namespace util
 
 #endif  // SRC_UTIL_NUMERIC_SETTINGS_H_

@@ -63,6 +63,6 @@ class KnotVector {
  private:
   std::vector<ParamCoord> knots_;
 };
-}
+}  // namespace baf
 
 #endif  // SRC_BAF_KNOT_VECTOR_H_

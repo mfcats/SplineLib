@@ -23,6 +23,6 @@ class OnePointGaussLegendre : public IntegrationRule<DIM> {
  public:
   OnePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{0}, 2)}) {}
 };
-}
+}  // namespace itg
 
 #endif  // SRC_ITG_ONE_POINT_GAUSS_LEGENDRE_H_

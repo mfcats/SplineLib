@@ -48,6 +48,6 @@ class BSplineBasisFunction : public BasisFunction {
 
   double InverseWithPossiblyZeroDenominator(double denominator) const;
 };
-}
+}  // namespace baf
 
 #endif  // SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_

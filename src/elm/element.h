@@ -36,6 +36,6 @@ class Element {
   int number_of_nodes_;
   std::vector<double> nodes_;
 };
-}
+}  // namespace elm
 
 #endif  // SRC_ELM_ELEMENT_H_
