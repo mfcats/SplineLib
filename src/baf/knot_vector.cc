@@ -24,7 +24,8 @@ baf::KnotVector::KnotVector(const std::vector<ParamCoord> &knots) : knots_(knots
 
 baf::KnotVector::KnotVector(std::initializer_list<ParamCoord> knots) : knots_(knots) {}
 
-baf::KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<ParamCoord>(begin, end)) {}
+baf::KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<ParamCoord>(begin,
+                                                                                                             end)) {}
 
 bool baf::KnotVector::operator==(const KnotVector &rhs) const {
   if (this->NumberOfKnots() != rhs.NumberOfKnots()) return false;

@@ -23,7 +23,8 @@ using testing::DoubleEq;
 // A knot vector is defined as a sequence of non-decreasing real numbers (knots).
 class AKnotVector : public Test {
  public:
-  AKnotVector() : knot_vector_({ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.75}, ParamCoord{1.0}, ParamCoord{1.0}, ParamCoord{1.0}}) {}
+  AKnotVector() : knot_vector_({ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.5}, ParamCoord{0.5},
+                                ParamCoord{0.75}, ParamCoord{1.0}, ParamCoord{1.0}, ParamCoord{1.0}}) {}
 
  protected:
   baf::KnotVector knot_vector_;

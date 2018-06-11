@@ -24,8 +24,9 @@ using testing::DoubleNear;
 class A2DNurbs : public Test {
  public:
   A2DNurbs() {
-    std::array<baf::KnotVector, 2> knot_vector = {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-                                                  baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
+    std::array<baf::KnotVector, 2> knot_vector =
+        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
+         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
     std::array<int, 2> degree = {2, 2};
     std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1, 2, 1};
     std::vector<baf::ControlPoint> control_points = {
@@ -55,11 +56,13 @@ TEST_F(A2DNurbs, Returns1_9For0_4And0_6AndDim1) {
 }
 
 TEST_F(A2DNurbs, Returns2_5For0_5And1_0AndDim0) {
-  ASSERT_THAT(nurbs_->Evaluate({ParamCoord{0.5}, ParamCoord{1.0}}, {0})[0], DoubleNear(2.5, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs_->Evaluate({ParamCoord{0.5}, ParamCoord{1.0}}, {0})[0],
+              DoubleNear(2.5, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(A2DNurbs, Returns3_0For0_5And1_0AndDim1) {
-  ASSERT_THAT(nurbs_->Evaluate({ParamCoord{0.5}, ParamCoord{1.0}}, {1})[0], DoubleNear(3.0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs_->Evaluate({ParamCoord{0.5}, ParamCoord{1.0}}, {1})[0],
+              DoubleNear(3.0, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(A2DNurbs, Returns4_2For0_9And1_0AndDim0) {
@@ -92,26 +95,31 @@ TEST_F(A2DNurbs, Returns3_0For0_0And1_0ForDerivative0And1AndDim1) {
 }
 
 TEST_F(A2DNurbs, Returns4_2For0_4And0_6ForDerivative1And0AndDim0) {
-  ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.4}, ParamCoord{0.6}}, {0}, {1, 0})[0], DoubleNear(4.15298, 0.000001));
+  ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.4}, ParamCoord{0.6}}, {0}, {1, 0})[0],
+              DoubleNear(4.15298, 0.000001));
 }
 
 TEST_F(A2DNurbs, Returns0_8For0_4And0_6ForDerivative1And0AndDim1) {
-  ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.4}, ParamCoord{0.6}}, {1}, {1, 0})[0], DoubleNear(0.792032, 0.000001));
+  ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.4}, ParamCoord{0.6}}, {1}, {1, 0})[0],
+              DoubleNear(0.792032, 0.000001));
 }
 
 TEST_F(A2DNurbs, Returns1_4For0_4And0_6ForDerivative0And1AndDim0) {
-  ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.4}, ParamCoord{0.6}}, {0}, {0, 1})[0], DoubleNear(1.40046, 0.00001));
+  ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.4}, ParamCoord{0.6}}, {0}, {0, 1})[0],
+              DoubleNear(1.40046, 0.00001));
 }
 
 TEST_F(A2DNurbs, Returns3_1For0_4And0_6ForDerivative0And1AndDim1) {
-  ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.4}, ParamCoord{0.6}}, {1}, {0, 1})[0], DoubleNear(3.13402, 0.00001));
+  ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.4}, ParamCoord{0.6}}, {1}, {0, 1})[0],
+              DoubleNear(3.13402, 0.00001));
 }
 
 class A2DNurbsWithAllWeights1 : public Test {
  public:
   A2DNurbsWithAllWeights1() {
-    std::array<baf::KnotVector, 2> knot_vector = {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-                                                  baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
+    std::array<baf::KnotVector, 2> knot_vector =
+        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
+         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
     std::array<int, 2> degree = {2, 2};
     std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1, 1, 1};
     std::vector<baf::ControlPoint> control_points = {

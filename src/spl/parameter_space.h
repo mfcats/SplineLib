@@ -39,8 +39,8 @@ class ParameterSpace {
 
   baf::KnotVector knot_vector() const;
 
-  std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctions(int element_number,
-                                                                                    const itg::IntegrationRule<1> &rule) const;
+  std::vector<elm::ElementIntegrationPoint>
+  EvaluateAllElementNonZeroBasisFunctions(int element_number, const itg::IntegrationRule<1> &rule) const;
   std::vector<elm::ElementIntegrationPoint>
   EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const itg::IntegrationRule<1> &rule) const;
 

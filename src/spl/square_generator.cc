@@ -16,8 +16,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 spl::SquareGenerator::SquareGenerator() : knot_vectors_(
     //zero_ and one_ should be used here
-    {baf::KnotVector{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}, baf::KnotVector{
-        {ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}}}),
+    {baf::KnotVector{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}},
+     baf::KnotVector{{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}}}),
                                           degrees_({2, 2}),
                                           control_points_({baf::ControlPoint(std::vector<double>({-1.0, -1.0})),
                                                            baf::ControlPoint(std::vector<double>({0.0, -1.0})),
@@ -30,12 +30,12 @@ spl::SquareGenerator::SquareGenerator() : knot_vectors_(
                                                            baf::ControlPoint(std::vector<double>({1.0, 1.0}))}) {}
 
 spl::SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({degree, degree}) {
-  std::vector<ParamCoord > knots;
+  std::vector<ParamCoord> knots;
   for (int i = 0; i <= degree; i++) {
     knots.push_back(zero_);
   }
   for (double i = 1; i <= number_of_knots - 2 * degree - 2; i++) {
-    knots.push_back(ParamCoord{i / (number_of_knots - 2 * degree - 1)});
+    knots.emplace_back(i / (number_of_knots - 2 * degree - 1));
   }
   for (int i = 0; i <= degree; i++) {
     knots.push_back(one_);
