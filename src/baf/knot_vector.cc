@@ -33,7 +33,10 @@ bool baf::KnotVector::operator==(const KnotVector &rhs) const {
   std::transform(this->begin(), this->end(), rhs.begin(), difference.begin(), std::minus<ParamCoord>());
   return !std::any_of(difference.begin(),
                       difference.end(),
-                      [](ParamCoord knt) { return std::fabs(knt.get()) > util::NumericSettings<double>::kEpsilon(); });
+                      [](ParamCoord knt) {
+                        return !util::NumericSettings<double>::AreEqual(std::fabs(knt.get()),
+                                                                        0.0);
+                      });
 }
 
 ParamCoord &baf::KnotVector::operator[](uint64_t index) {
