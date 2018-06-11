@@ -29,14 +29,10 @@ baf::KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : kn
 
 bool baf::KnotVector::operator==(const KnotVector &rhs) const {
   if (this->NumberOfKnots() != rhs.NumberOfKnots()) return false;
-  auto difference = this->knots_;
-  std::transform(this->begin(), this->end(), rhs.begin(), difference.begin(), std::minus<ParamCoord>());
-  return !std::any_of(difference.begin(),
-                      difference.end(),
-                      [](ParamCoord knt) {
-                        return !util::NumericSettings<double>::AreEqual(std::fabs(knt.get()),
-                                                                        0.0);
-                      });
+  return std::equal(this->begin(), this->end(), rhs.begin(),
+                    [](ParamCoord knt1, ParamCoord knt2) {
+                      return util::NumericSettings<double>::AreEqual(knt1.get(), knt2.get());
+                    });
 }
 
 ParamCoord &baf::KnotVector::operator[](uint64_t index) {
