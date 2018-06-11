@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "square_generator.h"
 
 spl::SquareGenerator::SquareGenerator() : knot_vectors_(
-    //zero_ and one_ should be used here
+    // zero_ and one_ should be used here
     {baf::KnotVector{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}},
      baf::KnotVector{{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}}}),
                                           degrees_({2, 2}),
@@ -34,8 +34,8 @@ spl::SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees
   for (int i = 0; i <= degree; i++) {
     knots.push_back(zero_);
   }
-  for (double i = 1; i <= number_of_knots - 2 * degree - 2; i++) {
-    knots.emplace_back(i / (number_of_knots - 2 * degree - 1));
+  for (int i = 1; i <= number_of_knots - 2 * degree - 2; i++) {
+    knots.emplace_back(static_cast<double>(i) / (number_of_knots - 2 * degree - 1));
   }
   for (int i = 0; i <= degree; i++) {
     knots.push_back(one_);

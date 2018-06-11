@@ -24,7 +24,7 @@ int baf::ControlPoint::GetDimension() const {
 
 double baf::ControlPoint::GetValue(int dimension) const {
 #ifdef DEBUG
-  return coordinates_.at(static_cast<unsigned long>(dimension));
+  return coordinates_.at(dimension);
 #else
   return coordinates_[dimension];
 #endif

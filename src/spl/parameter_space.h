@@ -16,7 +16,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_SPL_PARAMETER_SPACE_H_
 
 #include <vector>
-#include <element_integration_point.h>
 
 #include "basis_function.h"
 #include "element.h"
@@ -27,7 +26,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace spl {
 class ParameterSpace {
  public:
-  ParameterSpace() {};
+  ParameterSpace() {}
 
   ParameterSpace(const baf::KnotVector &knot_vector, int degree);
 

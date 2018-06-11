@@ -157,7 +157,7 @@ class Spline {
                                                                      rule.coordinate(i, 0))}, {0}, {1})[0]));
 
       element_integration_points[i] = elm::ElementIntegrationPoint(element_non_zero_basis_functions);
-    };
+    }
     return element_integration_points;
   }
 
