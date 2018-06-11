@@ -22,6 +22,6 @@ class BasisFunctionFactory {
  public:
   BasisFunction *CreateDynamic(KnotVector knot_vector, uint64_t start_of_support, int degree) const;
 };
-}
+}  // namespace baf
 
 #endif  // SRC_BAF_BASIS_FUNCTION_FACTORY_H_

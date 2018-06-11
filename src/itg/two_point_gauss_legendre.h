@@ -28,6 +28,6 @@ class TwoPointGaussLegendre : public IntegrationRule<DIM> {
                                                   IntegrationPoint<1>(std::array<double, 1>{sqrt(1.0 / 3)},
                                                                       1)}) {}
 };
-}
+}  // namespace itg
 
 #endif  // SRC_ITG_TWO_POINT_GAUSS_LEGENDRE_H_

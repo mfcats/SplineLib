@@ -32,6 +32,6 @@ class ControlPoint {
  protected:
   std::vector<double> coordinates_;
 };
-}
+}  // namespace baf
 
 #endif  // SRC_BAF_CONTROL_POINT_H_

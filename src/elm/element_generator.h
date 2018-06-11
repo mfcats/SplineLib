@@ -37,6 +37,6 @@ class ElementGenerator {
   int degree_;
   baf::KnotVector knot_vector_;
 };
-}
+}  // namespace elm
 
 #endif  // SRC_ELM_ELEMENT_GENERATOR_H_

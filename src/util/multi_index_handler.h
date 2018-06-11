@@ -97,6 +97,6 @@ class MultiIndexHandler {
   std::array<int, DIM> multi_index_length_;
   std::array<int, DIM> current_multi_index_value_;
 };
-}
+}  // namespace util
 
 #endif  // SRC_UTIL_MULTI_INDEX_HANDLER_H

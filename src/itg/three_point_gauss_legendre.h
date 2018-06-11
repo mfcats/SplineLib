@@ -30,6 +30,6 @@ class ThreePointGaussLegendre : public IntegrationRule<DIM> {
        IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0 / 5)},
                            5.0 / 9.0)}) {}
 };
-}
+}  // namespace itg
 
 #endif  // SRC_ITG_THREE_POINT_GAUSS_LEGENDRE_H_

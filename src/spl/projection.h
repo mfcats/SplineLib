@@ -114,6 +114,6 @@ class Projection {
     return std::accumulate(vectorB.begin(), vectorB.end(), 0);
   }
 };
-}
+}  // namespace spl
 
 #endif  // SRC_SPL_PROJECTION_H

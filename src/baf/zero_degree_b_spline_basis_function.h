@@ -30,6 +30,6 @@ class ZeroDegreeBSplineBasisFunction : public baf::BasisFunction {
 
   double EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const override;
 };
-}
+}  // namespace baf
 
 #endif  // SRC_BAF_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_

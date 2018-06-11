@@ -62,6 +62,6 @@ class IntegrationRule {
  private:
   std::vector<IntegrationPoint<1>> points_;
 };
-}
+}  // namespace itg
 
 #endif  // SRC_ITG_INTEGRATION_RULE_H_

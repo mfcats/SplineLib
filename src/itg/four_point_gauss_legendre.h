@@ -36,6 +36,6 @@ class FourPointGaussLegendre : public IntegrationRule<DIM> {
                                                                            sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))},
                                                                        (18.0 - sqrt(30)) / 36)}) {}
 };
-}
+}  // namespace itg
 
 #endif  // SRC_ITG_FOUR_POINT_GAUSS_LEGENDRE_H_

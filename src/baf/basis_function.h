@@ -59,6 +59,6 @@ class BasisFunction {
   int degree_;
   uint64_t start_of_support_;
 };
-}
+}  // namespace baf
 
 #endif  // SRC_BAF_BASIS_FUNCTION_H_
