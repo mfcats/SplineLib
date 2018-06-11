@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_INTEGRATION_RULE_H_
-#define SRC_INTEGRATION_RULE_H_
+#ifndef SRC_ITG_INTEGRATION_RULE_H_
+#define SRC_ITG_INTEGRATION_RULE_H_
 
 #include <cmath>
 #include <vector>
@@ -48,7 +48,7 @@ class IntegrationRule {
     util::MultiIndexHandler<DIM> multiIndexHandler(max_dimension_points);
     for (int i = 0; i < GetNumberOfIntegrationPoints(); i++) {
       double weight = 1;
-      std::array<double, DIM> coordinates;
+      std::array<double, DIM> coordinates = {0};
       for (int j = 0; j < DIM; j++) {
         weight *= points_[multiIndexHandler[j]].GetWeight();
         coordinates[j] = points_[multiIndexHandler[j]].GetCoordinates()[j];
@@ -62,6 +62,6 @@ class IntegrationRule {
  private:
   std::vector<IntegrationPoint<1>> points_;
 };
-}
+}  // namespace itg
 
-#endif  // SRC_INTEGRATION_RULE_H_
+#endif  // SRC_ITG_INTEGRATION_RULE_H_

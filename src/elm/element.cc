@@ -27,7 +27,7 @@ int elm::Element::numberOfNodes() const {
 
 double elm::Element::node(int number) const {
 #ifdef DEBUG
-  return nodes_.at(static_cast<unsigned long>(number));
+  return nodes_.at(number);
 #else
   return nodes_[number];
 #endif

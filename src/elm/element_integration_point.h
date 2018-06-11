@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_ELEMENT_INTEGRATION_POINT_H
-#define SPLINELIB_ELEMENT_INTEGRATION_POINT_H
+#ifndef SRC_ELM_ELEMENT_INTEGRATION_POINT_H
+#define SRC_ELM_ELEMENT_INTEGRATION_POINT_H
 
 #include <vector>
 
@@ -29,6 +29,6 @@ class ElementIntegrationPoint {
  private:
   std::vector<double> non_zero_basis_functions_;
 };
-}
+}  // namespace elm
 
-#endif //SPLINELIB_ELEMENT_INTEGRATION_POINT_H
+#endif  // SRC_ELM_ELEMENT_INTEGRATION_POINT_H

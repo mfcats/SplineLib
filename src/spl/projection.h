@@ -12,11 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_PROJECTION_H
-#define SPLINELIB_PROJECTION_H
+#ifndef SRC_SPL_PROJECTION_H
+#define SRC_SPL_PROJECTION_H
 
+#include <algorithm>
+#include <functional>
 #include <vector>
-#include <iostream>
 
 #include "b_spline.h"
 #include "knot_vector.h"
@@ -41,15 +42,18 @@ class Projection {
     std::array<ParamCoord, DIM> projectionPointParamCoords = FindInitialValue(pointPhysicalCoords, spline, dimensions);
     bool converged = false;
 
-    while (not converged) {
+    while (!converged) {
       if (DIM == 1) {
         std::vector<double> firstDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {1});
         std::vector<double> secondDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {2});
         kappa = ComputeArea(firstDer, secondDer) / pow(ComputeTwoNorm(firstDer), 3);
-        std::vector<double> projectionVector = ComputePiecewiseVectorDifference(pointPhysicalCoords, spline->Evaluate(projectionPointParamCoords, dimensions));
+        std::vector<double> projectionVector = ComputePiecewiseVectorDifference(pointPhysicalCoords,
+                                                                                spline->Evaluate(
+                                                                                    projectionPointParamCoords,
+                                                                                    dimensions));
 
-        //This is only the first order algorithm.
-        //An implemented but non-working version of the second order algorithm can be found in commit 2ed993e6dcef3d184b70640f6b9498efae52747a.
+        // This is only the first order algorithm. An implemented but non-working version of the second order algorithm
+        // can be found in commit 2ed993e6dcef3d184b70640f6b9498efae52747a.
         delta = ComputeScalarProduct(firstDer, projectionVector) / ComputeScalarProduct(firstDer, firstDer);
         signum = 1;
 
@@ -72,7 +76,7 @@ class Projection {
   }
 
   static std::array<ParamCoord, DIM> FindInitialValue(std::vector<double> pointPhysicalCoords,
-                                              spl::Spline<DIM> *spline, const std::vector<int> &dimensions) {
+                                                      spl::Spline<DIM> *spline, const std::vector<int> &dimensions) {
     std::vector<elm::Element> elements = spline->GetElementList();
     std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
     std::vector<double> splinePhysicalCoords =
@@ -96,7 +100,8 @@ class Projection {
     return sqrt(std::accumulate(vectorA.begin(), vectorA.end(), 0));
   }
 
-  static std::vector<double> ComputePiecewiseVectorDifference(std::vector<double> vectorA, std::vector<double> vectorB) {
+  static std::vector<double> ComputePiecewiseVectorDifference(std::vector<double> vectorA,
+                                                              std::vector<double> vectorB) {
     std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::minus<double>());
     return vectorB;
   }
@@ -111,6 +116,6 @@ class Projection {
     return std::accumulate(vectorB.begin(), vectorB.end(), 0);
   }
 };
-}
+}  // namespace spl
 
-#endif //SPLINELIB_PROJECTION_H
+#endif  // SRC_SPL_PROJECTION_H

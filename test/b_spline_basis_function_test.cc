@@ -24,7 +24,8 @@ using testing::Test;
 class BasisFunctionEx21N01 : public Test {
  public:
   BasisFunctionEx21N01() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}}))),
       basis_function_(knot_vector_, 1, 0) {}
 
  protected:
@@ -56,7 +57,8 @@ TEST_F(BasisFunctionEx21N01, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N11 : public Test {
  public:
   BasisFunctionEx21N11() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}}))),
       basis_function_(knot_vector_, 1, 1) {}
 
  protected:
@@ -88,7 +90,8 @@ TEST_F(BasisFunctionEx21N11, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N21 : public Test {
  public:
   BasisFunctionEx21N21() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}}))),
       basis_function_(knot_vector_, 1, 2) {}
 
  protected:
@@ -120,7 +123,8 @@ TEST_F(BasisFunctionEx21N21, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N31 : public Test {
  public:
   BasisFunctionEx21N31() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}}))),
       basis_function_(knot_vector_, 1, 3) {}
 
  protected:
@@ -152,7 +156,8 @@ TEST_F(BasisFunctionEx21N31, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N02 : public Test {
  public:
   BasisFunctionEx21N02() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}}))),
       basis_function_(knot_vector_, 2, 0) {}
 
  protected:
@@ -184,7 +189,8 @@ TEST_F(BasisFunctionEx21N02, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N12 : public Test {
  public:
   BasisFunctionEx21N12() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}}))),
       basis_function_(knot_vector_, 2, 1) {}
 
  protected:
@@ -216,7 +222,8 @@ TEST_F(BasisFunctionEx21N12, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N22 : public Test {
  public:
   BasisFunctionEx21N22() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}}))),
       basis_function_(knot_vector_, 2, 2) {}
 
  protected:
@@ -247,7 +254,10 @@ TEST_F(BasisFunctionEx21N22, IsZeroAtMinus1_5) {
 // Test basis function N_{0,1} from NURBS book example 2.2
 class BasisFunctionEx22N01 : public Test {
  public:
-  BasisFunctionEx22N01() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))),
+  BasisFunctionEx22N01() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                                            ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
+                                                                            ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
+                                                                            ParamCoord{5}, ParamCoord{5}}))),
                            basis_function_(knot_vector_, 1, 0) {}
 
  protected:
@@ -256,27 +266,33 @@ class BasisFunctionEx22N01 : public Test {
 };
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt0_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 0), DoubleEq(basis_function_.Evaluate(ParamCoord{0.0})));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 0),
+              DoubleEq(basis_function_.Evaluate(ParamCoord{0.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt1_5) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1.5}, 0), DoubleEq(basis_function_.Evaluate(ParamCoord{1.5})));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1.5}, 0),
+              DoubleEq(basis_function_.Evaluate(ParamCoord{1.5})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt2_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{2.0}, 0), DoubleEq(basis_function_.Evaluate(ParamCoord{2.0})));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{2.0}, 0),
+              DoubleEq(basis_function_.Evaluate(ParamCoord{2.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt4_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.0}, 0), DoubleEq(basis_function_.Evaluate(ParamCoord{4.0})));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.0}, 0),
+              DoubleEq(basis_function_.Evaluate(ParamCoord{4.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt5_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{5.0}, 0), DoubleEq(basis_function_.Evaluate(ParamCoord{5.0})));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{5.0}, 0),
+              DoubleEq(basis_function_.Evaluate(ParamCoord{5.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt6_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{6.0}, 0), DoubleEq(basis_function_.Evaluate(ParamCoord{6.0})));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{6.0}, 0),
+              DoubleEq(basis_function_.Evaluate(ParamCoord{6.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAtMinus0_5) {
@@ -315,7 +331,10 @@ TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAtMinus0_5) {
 // Test basis function derivative N_{3,1} from NURBS book example 2.2
 class BasisFunctionEx22N13 : public Test {
  public:
-  BasisFunctionEx22N13() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))),
+  BasisFunctionEx22N13() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                                            ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
+                                                                            ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
+                                                                            ParamCoord{5}, ParamCoord{5}}))),
                            basis_function_(knot_vector_, 1, 3) {}
 
  protected:
@@ -358,7 +377,10 @@ TEST_F(BasisFunctionEx22N13, FourthDerevitveIsEqual0At1_5) {
 // Test basis function derivative N_{6,1} from NURBS book example 2.2
 class BasisFunctionEx22N61 : public Test {
  public:
-  BasisFunctionEx22N61() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))),
+  BasisFunctionEx22N61() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                                            ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
+                                                                            ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
+                                                                            ParamCoord{5}, ParamCoord{5}}))),
                            basis_function_(knot_vector_, 1, 6) {}
 
  protected:
@@ -377,7 +399,10 @@ TEST_F(BasisFunctionEx22N61, SecondDerevitveIsEqual0At4_5) {
 // Test basis function derivative N_{7,2} from NURBS book example 2.2
 class BasisFunctionEx22N72 : public Test {
  public:
-  BasisFunctionEx22N72() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))),
+  BasisFunctionEx22N72() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                                            ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
+                                                                            ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
+                                                                            ParamCoord{5}, ParamCoord{5}}))),
                            basis_function_(knot_vector_, 2, 7) {}
 
  protected:

@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_NAMEDTYPE_H
-#define SPLINELIB_NAMEDTYPE_H
+#ifndef SRC_UTIL_NAMEDTYPE_H
+#define SRC_UTIL_NAMEDTYPE_H
 
 namespace util {
 template<typename T, typename Parameter>
@@ -38,5 +38,6 @@ class NamedType {
  private:
   T value_;
 };
-}
-#endif // SPLINELIB_NAMEDTYPE_H
+}  // namespace util
+
+#endif  // SRC_UTIL_NAMEDTYPE_H

@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_B_SPLINE_BASIS_FUNCTION_H_
-#define SRC_B_SPLINE_BASIS_FUNCTION_H_
+#ifndef SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_
+#define SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_
 
 #include <cmath>
 #include <limits>
@@ -48,6 +48,6 @@ class BSplineBasisFunction : public BasisFunction {
 
   double InverseWithPossiblyZeroDenominator(double denominator) const;
 };
-}
+}  // namespace baf
 
-#endif  // SRC_B_SPLINE_BASIS_FUNCTION_H_
+#endif  // SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_
