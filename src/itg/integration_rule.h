@@ -50,13 +50,8 @@ class IntegrationRule {
       double weight = 1;
       std::array<double, DIM> coordinates = {0};
       for (int j = 0; j < DIM; j++) {
-        auto a = multiIndexHandler[j];
-        auto b = points_[a];
-        auto c = b.GetWeight();
-        auto d = b.GetCoordinates();
-        auto e = d[j];
-        weight *= c;
-        coordinates[j] = e;
+        weight *= points_[multiIndexHandler[j]].GetWeight();
+        coordinates[j] = points_[multiIndexHandler[j]].GetCoordinates()[j];
       }
       ++multiIndexHandler;
       integration_points.push_back(IntegrationPoint<DIM>(coordinates, weight));
