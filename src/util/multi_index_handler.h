@@ -26,7 +26,11 @@ class MultiIndexHandler {
       multi_index_length), current_multi_index_value_({0}) {}
 
   int operator[](int i) {
+#ifdef DEBUG
+    return current_multi_index_value_.at(i);
+#else
     return current_multi_index_value_[i];
+#endif
   }
 
   MultiIndexHandler &operator++() {
