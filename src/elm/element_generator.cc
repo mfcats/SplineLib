@@ -19,7 +19,7 @@ elm::ElementGenerator::ElementGenerator(int degree, const baf::KnotVector &knot_
 
 std::vector<elm::Element> elm::ElementGenerator::GetElementList() {
   std::vector<Element> elements;
-  for (uint64_t currentKnot = 0; currentKnot < knot_vector_.NumberOfKnots() - degree_ - 1; currentKnot++) {
+  for (uint64_t currentKnot = 0; currentKnot < knot_vector_.GetNumberOfKnots() - degree_ - 1; currentKnot++) {
     if ((GetLowerElementBound(currentKnot) - GetHigherElementBound(currentKnot)) != 0) {
       elements.emplace_back(Element(1, GetElementNodes(currentKnot)));
     }

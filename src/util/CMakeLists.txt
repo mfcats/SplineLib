@@ -15,7 +15,7 @@
 
 add_library(splinelibutil INTERFACE)
 target_include_directories(splinelibutil INTERFACE
-				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 install(
         TARGETS splinelibutil
@@ -29,6 +29,6 @@ install(
 install(
         DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         DESTINATION "${include_install_dir}"
-				FILES_MATCHING PATTERN "*.h"
+        FILES_MATCHING PATTERN "*.h"
 )
 

@@ -14,8 +14,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function.h"
 
-#include <cmath>
-
 #include "numeric_settings.h"
 
 double baf::BasisFunction::Evaluate(ParamCoord paramCoord) const {
@@ -31,7 +29,7 @@ baf::BasisFunction::BasisFunction(const KnotVector &knot_vector, int degree, uin
     : knotVector_(knot_vector), degree_(degree), start_of_support_(start) {}
 
 ParamCoord baf::BasisFunction::GetKnot(uint64_t knot_position) const {
-  return knotVector_.knot(knot_position);
+  return knotVector_.GetKnot(knot_position);
 }
 
 uint64_t baf::BasisFunction::GetStartOfSupport() const {
@@ -55,5 +53,5 @@ bool baf::BasisFunction::IsCoordinateInSupportSpan(ParamCoord param_coord) const
 bool baf::BasisFunction::IsCoordinateSpecialCaseWithLastKnot(ParamCoord param_coord) const {
   return util::NumericSettings<double>::AreEqual(param_coord.get(), knotVector_.GetLastKnot().get()) &&
       util::NumericSettings<double>::AreEqual(knotVector_.GetLastKnot().get(),
-                                              knotVector_.knot(start_of_support_ + degree_ + 1).get());
+                                              knotVector_.GetKnot(start_of_support_ + degree_ + 1).get());
 }
