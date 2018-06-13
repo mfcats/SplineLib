@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPLINE_H_
-#define SRC_SPLINE_H_
+#ifndef SRC_SPL_SPLINE_H_
+#define SRC_SPL_SPLINE_H_
 
 #include <algorithm>
 #include <functional>
@@ -157,7 +157,7 @@ class Spline {
                                                                      rule.coordinate(i, 0))}, {0}, {1})[0]));
 
       element_integration_points[i] = elm::ElementIntegrationPoint(element_non_zero_basis_functions);
-    };
+    }
     return element_integration_points;
   }
 
@@ -197,6 +197,6 @@ class Spline {
   std::vector<double> control_points_;
   int dim;
 };
-}
+}  // namespace spl
 
-#endif  // SRC_B_SPLINE_H_
+#endif  // SRC_SPL_SPLINE_H_

@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_SQUARE_GENERATOR_H
-#define SPLINELIB_SQUARE_GENERATOR_H
+#ifndef SRC_SPL_SQUARE_GENERATOR_H
+#define SRC_SPL_SQUARE_GENERATOR_H
 
 #include <array>
 #include <vector>
@@ -36,6 +36,6 @@ class SquareGenerator {
   ParamCoord one_{1};
   ParamCoord zero_{0};
 };
-}
+}  // namespace spl
 
-#endif //SPLINELIB_SQUARE_GENERATOR_H
+#endif  // SRC_SPL_SQUARE_GENERATOR_H

@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_ELEMENT_H_
-#define SRC_ELEMENT_H_
+#ifndef SRC_ELM_ELEMENT_H_
+#define SRC_ELM_ELEMENT_H_
 
 #include <memory>
 #include <vector>
@@ -36,6 +36,6 @@ class Element {
   int number_of_nodes_;
   std::vector<double> nodes_;
 };
-}
+}  // namespace elm
 
-#endif  // SRC_ELEMENT_H_
+#endif  // SRC_ELM_ELEMENT_H_

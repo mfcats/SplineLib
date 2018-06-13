@@ -105,8 +105,10 @@ TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectLeftUpperCorner) {
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectMiddle) {
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {0})[0], DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {1})[0], DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {0})[0],
+              DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {1})[0],
+              DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectCoordinatesOfRandomPoint) {
@@ -156,12 +158,15 @@ TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectLeftUpperCorner) {
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectMiddle) {
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {0})[0], DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {1})[0], DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {0})[0],
+              DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {1})[0],
+              DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectCoordinatesOfRandomPoint) {
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.2}, ParamCoord{0.75}}, {0})[0], DoubleNear(-0.46, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(square_->Evaluate({ParamCoord{0.2}, ParamCoord{0.75}}, {0})[0],
+              DoubleNear(-0.46, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(square_->Evaluate({ParamCoord{0.2}, ParamCoord{0.7}}, {1})[0], DoubleEq(0.2845));
 }
 

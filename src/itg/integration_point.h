@@ -14,8 +14,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <array>
 
-#ifndef SRC_INTEGRATION_POINT_H_
-#define SRC_INTEGRATION_POINT_H_
+#ifndef SRC_ITG_INTEGRATION_POINT_H_
+#define SRC_ITG_INTEGRATION_POINT_H_
 
 namespace itg {
 template<int DIM>
@@ -40,6 +40,6 @@ class IntegrationPoint {
   std::array<double, DIM> coordinates_;
   double weight_;
 };
-}
+}  // namespace itg
 
-#endif  // SRC_INTEGRATION_POINT_H_
+#endif  // SRC_ITG_INTEGRATION_POINT_H_

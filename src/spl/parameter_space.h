@@ -12,11 +12,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_PARAMETER_SPACE_H_
-#define SRC_PARAMETER_SPACE_H_
+#ifndef SRC_SPL_PARAMETER_SPACE_H_
+#define SRC_SPL_PARAMETER_SPACE_H_
 
 #include <vector>
-#include <element_integration_point.h>
 
 #include "basis_function.h"
 #include "element.h"
@@ -27,7 +26,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace spl {
 class ParameterSpace {
  public:
-  ParameterSpace() {};
+  ParameterSpace() {}
 
   ParameterSpace(const baf::KnotVector &knot_vector, int degree);
 
@@ -39,8 +38,8 @@ class ParameterSpace {
 
   baf::KnotVector knot_vector() const;
 
-  std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctions(int element_number,
-                                                                                    const itg::IntegrationRule<1> &rule) const;
+  std::vector<elm::ElementIntegrationPoint>
+  EvaluateAllElementNonZeroBasisFunctions(int element_number, const itg::IntegrationRule<1> &rule) const;
   std::vector<elm::ElementIntegrationPoint>
   EvaluateAllElementNonZeroBasisFunctionDerivatives(int element_number, const itg::IntegrationRule<1> &rule) const;
 
@@ -52,6 +51,6 @@ class ParameterSpace {
   int degree_;
   std::vector<std::unique_ptr<baf::BasisFunction>> basis_functions_;
 };
-}
+}  // namespace spl
 
-#endif  // SRC_PARAMETER_SPACE_H_
+#endif  // SRC_SPL_PARAMETER_SPACE_H_

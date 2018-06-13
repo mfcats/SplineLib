@@ -57,7 +57,8 @@ double baf::BSplineBasisFunction::ComputeLeftQuotient(ParamCoord param_coord) co
 }
 
 double baf::BSplineBasisFunction::ComputeRightQuotient(ParamCoord param_coord) const {
-  return (GetKnot(GetStartOfSupport() + GetDegree() + 1) - param_coord).get() * ComputeRightQuotientDenominatorInverse();
+  return (GetKnot(GetStartOfSupport() + GetDegree() + 1) - param_coord).get()
+      * ComputeRightQuotientDenominatorInverse();
 }
 
 double baf::BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {

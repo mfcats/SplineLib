@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_BASIS_FUNCTION_FACTORY_H_
-#define SRC_BASIS_FUNCTION_FACTORY_H_
+#ifndef SRC_BAF_BASIS_FUNCTION_FACTORY_H_
+#define SRC_BAF_BASIS_FUNCTION_FACTORY_H_
 
 #include "basis_function.h"
 
@@ -22,6 +22,6 @@ class BasisFunctionFactory {
  public:
   BasisFunction *CreateDynamic(const KnotVector &knot_vector, uint64_t start_of_support, int degree) const;
 };
-}
+}  // namespace baf
 
-#endif  // SRC_BASIS_FUNCTION_FACTORY_H_
+#endif  // SRC_BAF_BASIS_FUNCTION_FACTORY_H_

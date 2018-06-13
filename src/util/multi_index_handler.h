@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_MULTI_INDEX_HANDLER_H
-#define SPLINELIB_MULTI_INDEX_HANDLER_H
+#ifndef SRC_UTIL_MULTI_INDEX_HANDLER_H
+#define SRC_UTIL_MULTI_INDEX_HANDLER_H
 
 #include "multi_index_handler.h"
 #include <array>
@@ -26,7 +26,11 @@ class MultiIndexHandler {
       multi_index_length), current_multi_index_value_({0}) {}
 
   int operator[](int i) {
+#ifdef DEBUG
+    return current_multi_index_value_.at(i);
+#else
     return current_multi_index_value_[i];
+#endif
   }
 
   MultiIndexHandler &operator++() {
@@ -97,6 +101,6 @@ class MultiIndexHandler {
   std::array<int, DIM> multi_index_length_;
   std::array<int, DIM> current_multi_index_value_;
 };
-}
+}  // namespace util
 
-#endif //SPLINELIB_MULTI_INDEX_HANDLER_H
+#endif  // SRC_UTIL_MULTI_INDEX_HANDLER_H

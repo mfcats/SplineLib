@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_THREE_POINT_GAUSS_LEGENDRE_H_
-#define SRC_THREE_POINT_GAUSS_LEGENDRE_H_
+#ifndef SRC_ITG_THREE_POINT_GAUSS_LEGENDRE_H_
+#define SRC_ITG_THREE_POINT_GAUSS_LEGENDRE_H_
 
 #include <cmath>
 #include <array>
@@ -30,6 +30,6 @@ class ThreePointGaussLegendre : public IntegrationRule<DIM> {
        IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0 / 5)},
                            5.0 / 9.0)}) {}
 };
-}
+}  // namespace itg
 
-#endif  // SRC_THREE_POINT_GAUSS_LEGENDRE_H_
+#endif  // SRC_ITG_THREE_POINT_GAUSS_LEGENDRE_H_

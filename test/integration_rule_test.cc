@@ -34,7 +34,7 @@ class A1DIntegrationRule : public Test {
     rules_.emplace_back(itg::ThreePointGaussLegendre<1>());
     rules_.emplace_back(itg::FourPointGaussLegendre<1>());
     rules_.emplace_back(itg::FivePointGaussLegendre<1>());
-  };
+  }
 
  protected:
   std::vector<itg::IntegrationRule<1>> rules_;
