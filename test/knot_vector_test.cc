@@ -71,12 +71,19 @@ TEST_F(AKnotVector, CanCheckIfCoordinateIsNotEqualLastKnot) {
 }
 
 TEST_F(AKnotVector, ReturnsCorrectKnot) {
-  ASSERT_THAT(knot_vector_.knot(5).get(), DoubleEq(0.75));
+  ASSERT_THAT(knot_vector_.GetKnot(5).get(), DoubleEq(0.75));
 }
 
 TEST_F(AKnotVector, CanBeChangedWithAccessOperator) {
   knot_vector_[0] = ParamCoord{7.0};
   ASSERT_THAT(knot_vector_[0].get(), DoubleEq(7.0));
+}
+
+TEST_F(AKnotVector, CanBeCreatedWithMoveConstructor) {
+  baf::KnotVector knot_vector_
+      (baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.5}, ParamCoord{0.5},
+                           ParamCoord{0.75}, ParamCoord{1.0}, ParamCoord{1.0}, ParamCoord{1.0}}));
+  ASSERT_THAT(knot_vector_[0].get(), DoubleEq(0.0));
 }
 
 TEST_F(AKnotVector, FindsParametricCoordinateInKnotVectorRange) {
