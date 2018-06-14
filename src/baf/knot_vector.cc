@@ -30,6 +30,15 @@ baf::KnotVector::KnotVector(std::initializer_list<ParamCoord> knots) : knots_(kn
 
 baf::KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<ParamCoord>(begin,
                                                                                                              end)) {}
+
+baf::KnotVector baf::KnotVector::operator-(const baf::KnotVector &rhs) const {
+  std::vector<ParamCoord> differences;
+  for(int knot = 0; knot < this->GetNumberOfKnots(); knot++) {
+    differences.push_back(ParamCoord{knots_[knot] - rhs.knots_[knot]});
+  }
+  return baf::KnotVector(differences);
+}
+
 baf::KnotVector &baf::KnotVector::operator=(const baf::KnotVector &other) {
   knots_ = other.knots_;
   return *this;
