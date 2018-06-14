@@ -1,67 +1,77 @@
 language: cpp
-sudo: required
-dist: trusty
+
+os:
+  - linux
+    dist: trusty
+    sudo: required
+    compiler: gcc
+  - osx
+    osx_image: xcode9.3
 
 cache:
-  apt: true
   directories:
     - $HOME/.cache
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-7
-      - gfortran-7
-      - environment-modules
-      - lcov
-
 env:
   global:
-    - SPACK_ROOT: $HOME/.cache/spack
-    - PATH: $PATH:$HOME/.cache/spack/bin
+    - SPACK_ROOT=$HOME/.cache/spack
+    - PATH=$PATH:$HOME/.cache/spack/bin
+  matrix:
+    - COMPILER=gcc@8.1.0
+    #- COMPILER=gcc@8.1.0
+    #- COMPILER=llvm@6.0.0
+    - COMPILER=llvm@6.0.0
 
 before_install:
-  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-7 100
-  - export CXX=g++-7
-  - export CC=gcc-7
-  - export FC=gfortran-7
-  - export F77=gfortran-7
-  - export CXXFLAGS="-coverage"
+  - ./scripts/build/install_spack.sh
 
 install:
-  - if ! which spack >/dev/null; then
-      mkdir -p $SPACK_ROOT &&
-      git clone --depth 50 https://github.com/spack/spack.git $SPACK_ROOT &&
-      echo -e "config:""\n  build_jobs:"" 2" > $SPACK_ROOT/etc/spack/config.yaml;
-    fi
-  - spack repo add $(echo ${TRAVIS_BUILD_DIR})/scripts/spack-repo
-  - spack compiler find
-  - spack clean -a
-  - source /etc/profile &&
-    source $SPACK_ROOT/share/spack/setup-env.sh
-  - spack load cmake googletest
-
-before_script:
-  - mkdir -p ${TRAVIS_BUILD_DIR}/build
-  - cd ${TRAVIS_BUILD_DIR}/build
-  - lcov --directory . --zerocounters
+  - spack install $COMPILER
+  - spack install valgrind%$COMPILER
 
 script:
-  - cd ${TRAVIS_BUILD_DIR}/build
-  - spack setup -v splinelib@github
-  - ./spconfig.py $TRAVIS_BUILD_DIR
-  - make VERBOSE=on -j 2
-  - ./test/SplineLibTests
+  echo $COMPILER
 
-after_success:
-  - cd ${TRAVIS_BUILD_DIR}/build
-  - lcov --directory . --capture --output-file coverage.info
-  - lcov --remove coverage.info '/usr/*' --output-file coverage.info
-  - lcov --remove coverage.info '*/.cache/*' --output-file coverage.info
-  - lcov --remove coverage.info '*/CMakeFiles/*' --output-file coverage.info
-  - lcov --list coverage.info
-  - find . -name "*.gcov" -type f -delete
-  - find . -name "*.gcda" -type f -delete
-  - bash <(curl -s https://codecov.io/bash) -X gcov || echo "Codecov did not collect coverage reports"
+#before_install:
+#  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-7 100
+#  - export CXX=g++-7
+#  - export CC=gcc-7
+#  - export FC=gfortran-7
+#  - export F77=gfortran-7
+#  - export CXXFLAGS="-coverage"
+#
+#install:
+#  - if ! which spack >/dev/null; then
+#      mkdir -p $SPACK_ROOT &&
+#      git clone --depth 50 https://github.com/spack/spack.git $SPACK_ROOT &&
+#      echo -e "config:""\n  build_jobs:"" 2" > $SPACK_ROOT/etc/spack/config.yaml;
+#    fi
+#  - spack repo add $(echo ${TRAVIS_BUILD_DIR})/scripts/spack-repo
+#  - spack compiler find
+#  - spack clean -a
+#  - source /etc/profile &&
+#    source $SPACK_ROOT/share/spack/setup-env.sh
+#  - spack load cmake googletest
+#
+#before_script:
+#  - mkdir -p ${TRAVIS_BUILD_DIR}/build
+#  - cd ${TRAVIS_BUILD_DIR}/build
+#  - lcov --directory . --zerocounters
+#
+#script:
+#  - cd ${TRAVIS_BUILD_DIR}/build
+#  - spack setup -v splinelib@github
+#  - ./spconfig.py $TRAVIS_BUILD_DIR
+#  - make VERBOSE=on -j 2
+#  - ./test/SplineLibTests
+#
+#after_success:
+#  - cd ${TRAVIS_BUILD_DIR}/build
+#  - lcov --directory . --capture --output-file coverage.info
+#  - lcov --remove coverage.info '/usr/*' --output-file coverage.info
+#  - lcov --remove coverage.info '*/.cache/*' --output-file coverage.info
+#  - lcov --remove coverage.info '*/CMakeFiles/*' --output-file coverage.info
+#  - lcov --list coverage.info
+#  - find . -name "*.gcov" -type f -delete
+#  - find . -name "*.gcda" -type f -delete
+#  - bash <(curl -s https://codecov.io/bash) -X gcov || echo "Codecov did not collect coverage reports"
