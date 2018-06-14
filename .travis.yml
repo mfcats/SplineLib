@@ -17,11 +17,26 @@ matrix:
         - BEFORE_INSTALL_CMD=""
         - COMPILER="gcc@8"
         - BUILDTYPE=Debug
+    - os: linux
+      dist: trusty
+      sudo: required
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+            - gcc-8
+            - gfortran-8
+      env:
+        - BEFORE_INSTALL_CMD=""
+        - COMPILER="gcc@8"
+        - BUILDTYPE=Release
     - os: osx
       osx_image: xcode9.3
       env:
         - BEFORE_INSTALL_CMD="./scripts/build/before_install_osx.sh"
-        - COMPILER="clang%6.0.0"
+        - COMPILER="clang@6.0.0"
         - BUILDTYPE=Debug
 
 cache:
