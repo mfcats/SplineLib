@@ -46,6 +46,7 @@ class Spline {
   }
 
   std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord, const std::vector<int> &dimensions) const {
+    ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
     auto basis_function_values = EvaluateAllNonZeroBasisFunctions(param_coord);
     std::vector<double> evaluated_point(dimensions.size(), 0);
     for (int i = 0; i < dimensions.size(); ++i) {
@@ -130,6 +131,15 @@ class Spline {
   }
 
  protected:
+  void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
+    for (int dim = 0; dim < DIM; dim++) {
+      if (!this->GetKnotVector(dim).IsInKnotVectorRange(param_coord[dim])) {
+        throw std::runtime_error("The parametric coordinate is outside the knot vector range.");
+      }
+    }
+
+  }
+
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,
                             std::vector<double> control_point_values) const {
     std::transform(basis_function_values.begin(),

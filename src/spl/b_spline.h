@@ -31,6 +31,7 @@ class BSpline : public Spline<DIM> {
   std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
                                          const std::vector<int> &dimensions,
                                          std::array<int, DIM> derivative) const override {
+    this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
     auto basis_function_values = EvaluateAllNonZeroBasisFunctionDerivatives(param_coord, derivative);
     std::vector<double> evaluated_point(dimensions.size(), 0);
     for (int i = 0; i < dimensions.size(); ++i) {

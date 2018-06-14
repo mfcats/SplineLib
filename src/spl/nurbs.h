@@ -36,6 +36,7 @@ class NURBS : public Spline<DIM> {
   std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
                                          const std::vector<int> &dimensions,
                                          std::array<int, DIM> derivative) const override {
+    this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
     if (derivative == std::array<int, DIM>{0}) {
       return this->Evaluate(param_coord, dimensions);
     }
