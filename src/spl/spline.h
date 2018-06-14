@@ -150,8 +150,8 @@ class Spline {
       std::transform(element_non_zero_basis_functions.cbegin(),
                      element_non_zero_basis_functions.cend(),
                      element_non_zero_basis_functions.begin(),
-                     std::bind2nd(std::divides<double>(),
-                                  EvaluateDerivative(
+                     std::bind(std::divides<double>(), std::placeholders::_1,
+                               EvaluateDerivative(
                                       {ReferenceSpace2ParameterSpace(element.node(0),
                                                                      element.node(1),
                                                                      rule.coordinate(i, 0))}, {0}, {1})[0]));
