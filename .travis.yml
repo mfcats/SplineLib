@@ -12,11 +12,13 @@ matrix:
           packages:
             - g++-8
       env:
-        BEFORE_INSTALL_CMD="" COMPILER="gcc@8.1.0" BUILDTYPE=Debug
+        - BEFORE_INSTALL_CMD="CXX=g++-8 && CC=g++-8" COMPILER="gcc@8.1.0"
+        - BUILDTYPE=Debug
     - os: osx
       osx_image: xcode9.3
       env:
-        BEFORE_INSTALL_CMD="brew install gcc" COMPILER="gcc@8.1.0" BUILDTYPE=Debug
+        - BEFORE_INSTALL_CMD="brew cask uninstall oclint && brew tap oclint/formulae && brew install oclint && brew install gcc"
+        - COMPILER="gcc@8.1.0" BUILDTYPE=Debug
 
 cache:
   directories:
