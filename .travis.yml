@@ -79,11 +79,12 @@ env:
     - PATH=$PATH:$HOME/.cache/spack/bin
 
 before_install:
+  - touch ~/.bash_profile
   - eval "${BEFORE_INSTALL_CMD}"
 
 install:
   - ./scripts/build/install_spack.sh
-  - source /etc/profile && source ~/.bashrc_profile && source $SPACK_ROOT/share/spack/setup-env.sh
+  - source /etc/profile && source ~/.bash_profile && source $SPACK_ROOT/share/spack/setup-env.sh
   - spack compiler find
 
 before_script:
