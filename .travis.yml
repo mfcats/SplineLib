@@ -46,7 +46,7 @@ before_script:
 
 script:
   - cd ${TRAVIS_BUILD_DIR}/build
-  - spack setup splinelib@github%$COMPILER build_type=$BUILDTYPE
+  - spack setup splinelib@github build_type=$BUILDTYPE %$COMPILER
   - ./spconfig.py ..
   - make -j2
   - ./test/SplineLibTests
