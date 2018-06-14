@@ -24,7 +24,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace baf {
 class BasisFunction {
  public:
-
   virtual ~BasisFunction() = default;
 
   // The evaluation of the i-th basis function of degree p > 0 N_{i,p} is a linear combination of the basis functions
