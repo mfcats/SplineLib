@@ -136,7 +136,7 @@ TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt0_0) {
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt1_5) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 1.5),
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 1),
               DoubleEq(basis_function_.Evaluate(ParamCoord{1.5})));
 }
 
@@ -161,7 +161,7 @@ TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt6_0) {
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAtMinus0_5) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, -0.5),
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 0),
               DoubleEq(basis_function_.Evaluate(ParamCoord{-0.5})));
 }
 
@@ -170,7 +170,7 @@ TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt0_0) {
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt1_5) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 1.5), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 1), DoubleEq(0.0));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt2_0) {
@@ -190,7 +190,7 @@ TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt6_0) {
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAtMinus0_5) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, -0.5), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 0), DoubleEq(0.0));
 }
 
 // Test basis function N_{4,0} from NURBS book example 2.2
@@ -211,59 +211,59 @@ TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt0_0) {
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt1_5) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 1.5),
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 1),
               DoubleEq(basis_function_.Evaluate(ParamCoord{1.5})));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt2_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 2.0),
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 2),
               DoubleEq(basis_function_.Evaluate(ParamCoord{2.0})));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt4_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 4.0),
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 4),
               DoubleEq(basis_function_.Evaluate(ParamCoord{4.0})));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt5_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 5.0),
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 5),
               DoubleEq(basis_function_.Evaluate(ParamCoord{5.0})));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt6_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 6.0),
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 6),
               DoubleEq(basis_function_.Evaluate(ParamCoord{6.0})));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAtMinus0_5) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, -0.5),
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 0),
               DoubleEq(basis_function_.Evaluate(ParamCoord{-0.5})));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt0_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 0.0), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 0), DoubleEq(0.0));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt1_5) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 1.5), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 1), DoubleEq(0.0));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt2_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 2.0), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 2), DoubleEq(0.0));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt4_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 4.0), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 4), DoubleEq(0.0));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt5_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 5.0), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 5), DoubleEq(0.0));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt6_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 6.0), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 6), DoubleEq(0.0));
 }
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAtMinus0_5) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, -0.5), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1}, 0), DoubleEq(0.0));
 }
