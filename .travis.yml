@@ -1,8 +1,22 @@
 language: cpp
 
-os:
-  - linux
-  - osx
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: required
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+      env:
+        BEFORE_INSTALL_CMD="" COMPILER="gcc@8.1.0" BUILDTYPE=Debug
+    - os: osx
+      osx_image: xcode9.3
+      env:
+        BEFORE_INSTALL_CMD="brew install gcc" COMPILER="gcc@8.1.0" BUILDTYPE=Debug
 
 cache:
   directories:
@@ -12,31 +26,25 @@ env:
   global:
     - SPACK_ROOT=$HOME/.cache/spack
     - PATH=$PATH:$HOME/.cache/spack/bin
-  matrix:
-    - COMPILER=gcc@8.1.0 BUILDTYPE=Release VALGRIND=OFF TIMING=ON COVERAGE=OFF
-    - COMPILER=gcc@8.1.0 BUILDTYPE=Debug VALGRIND=ON TIMING=OFF COVERAGE=ON
-    - COMPILER=llvm@6.0.0 BUILDTYPE=Release VALGRIND=OFF TIMING=ON COVERAGE=ON
-    - COMPILER=llvm@6.0.0 BUILDTYPE=Debug VALGRIND=ON TIMING=OFF COVERAGE=ON
 
 before_install:
+  - eval "${BEFORE_INSTALL_CMD}"
+
+install:
   - ./scripts/build/install_spack.sh
   - source /etc/profile && source $SPACK_ROOT/share/spack/setup-env.sh
 
-install:
-  - spack spec $COMPILER
-##  - travis wait 30 spack install valgrind%$COMPILER
-#
-#before_script:
-#  - mkdir -p ${TRAVIS_BUILD_DIR}/build
-#  - cd ${TRAVIS_BUILD_DIR}/build
-#  - spack repo add ${TRAVIS_BUILD_DIR}/scripts/spack-repo
-#
-#script:
-#  - cd ${TRAVIS_BUILD_DIR}/build
-#  - spack setup splinelib@github%$COMPILER build_type=$BUILDTYPE
-#  - ./spconfig.py ..
-#  - make -j2
-#  - ./test/SplineLibTests
+before_script:
+  - mkdir -p ${TRAVIS_BUILD_DIR}/build
+  - cd ${TRAVIS_BUILD_DIR}/build
+  - spack repo add ${TRAVIS_BUILD_DIR}/scripts/spack-repo
+
+script:
+  - cd ${TRAVIS_BUILD_DIR}/build
+  - spack setup splinelib@github%$COMPILER build_type=$BUILDTYPE
+  - ./spconfig.py ..
+  - make -j2
+  - ./test/SplineLibTests
 
 #before_install:
 #  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-7 100
