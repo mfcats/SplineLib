@@ -80,10 +80,9 @@ TEST_F(AKnotVector, CanBeChangedWithAccessOperator) {
 }
 
 TEST_F(AKnotVector, CanBeCreatedWithMoveConstructor) {
-  baf::KnotVector knot_vector_
-      (baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.5}, ParamCoord{0.5},
-                           ParamCoord{0.75}, ParamCoord{1.0}, ParamCoord{1.0}, ParamCoord{1.0}}));
-  ASSERT_THAT(knot_vector_[0].get(), DoubleEq(0.0));
+  baf::KnotVector knot_vector
+      (std::move(knot_vector_));
+  ASSERT_THAT(knot_vector[0].get(), DoubleEq(0.0));
 }
 
 TEST_F(AKnotVector, FindsParametricCoordinateInKnotVectorRange) {
