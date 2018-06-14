@@ -89,6 +89,22 @@ TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) {
   ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{2.25}}, {1}, {1})[0], DoubleEq(0.325));
 }
 
+TEST_F(ABSpline, ThrowsExceptionForEvaluationAt6_0) {
+  ASSERT_THROW(b_spline->Evaluate({ParamCoord{6.0}}, {0}), std::runtime_error);
+}
+
+TEST_F(ABSpline, ThrowsExceptionForEvaluationAtMinus1_0) {
+  ASSERT_THROW(b_spline->Evaluate({ParamCoord{-1.0}}, {0}), std::runtime_error);
+}
+
+TEST_F(ABSpline, ThrowsExceptionForDerivativeEvaluationAt6_0) {
+  ASSERT_THROW(b_spline->EvaluateDerivative({ParamCoord{6.0}}, {0}, {1}), std::runtime_error);
+}
+
+TEST_F(ABSpline, ThrowsExceptionForDerivativeEvaluationAtMinus1_0) {
+  ASSERT_THROW(b_spline->EvaluateDerivative({ParamCoord{-1.0}}, {0}, {1}), std::runtime_error);
+}
+
 TEST_F(ABSpline, ReturnsCorrectNumberOfElements) {
   ASSERT_THAT(b_spline->GetElementList().size(), 5);
 }

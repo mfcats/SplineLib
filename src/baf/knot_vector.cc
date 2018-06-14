@@ -81,6 +81,9 @@ ParamCoord baf::KnotVector::GetLastKnot() const {
 }
 
 int64_t baf::KnotVector::GetKnotSpan(ParamCoord param_coord) const {
+  if (!IsInKnotVectorRange(param_coord)) {
+    throw std::runtime_error("The parametric coordinate is outside the knot vector range.");
+  }
   return util::NumericSettings<double>::AreEqual(param_coord.get(), knots_.back().get()) ?
       std::lower_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1 :
       std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1;
