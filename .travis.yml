@@ -13,18 +13,27 @@ env:
     - SPACK_ROOT=$HOME/.cache/spack
     - PATH=$PATH:$HOME/.cache/spack/bin
   matrix:
-    - COMPILER=gcc@8.1.0
-    - COMPILER=llvm@6.0.0
+    - COMPILER=gcc@8.1.0 BUILDTYPE=Release
+    - COMPILER=gcc@8.1.0 BUILDTYPE=Debug
+    - COMPILER=llvm@6.0.0 BUILDTYPE=Release
+    - COMPILER=llvm@6.0.0 BUILDTYPE=Debug
 
 before_install:
   - ./scripts/build/install_spack.sh
+  - source /etc/profile && source $SPACK_ROOT/share/spack/setup-env.sh
 
 install:
-  - spack install $COMPILER
-  - spack install valgrind%$COMPILER
+  - spack install -v $COMPILER
+  - spack install -v valgrind%$COMPILER
 
 script:
-  echo $COMPILER
+  - mkdir -p ${TRAVIS_BUILD_DIR}/build
+  - cd ${TRAVIS_BUILD_DIR}/build
+  - spack repo add ${TRAVIS_BUILD_DIR}/scripts/spack-repo
+  - spack setup splinelib@github%$COMPILER build_type=$BUILDTYPE
+  - ./spconfig.py ..
+  - make
+  - ./test/SplineLibTests
 
 #before_install:
 #  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-7 100
