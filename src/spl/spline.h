@@ -143,7 +143,6 @@ class Spline {
         throw std::range_error(message.str());
       }
     }
-
   }
 
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,
