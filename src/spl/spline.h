@@ -31,6 +31,8 @@ namespace spl {
 template<int DIM>
 class Spline {
  public:
+  virtual ~Spline() = default;
+
   Spline(const std::array<baf::KnotVector, DIM> &knot_vector,
          std::array<int, DIM> degree,
          const std::vector<baf::ControlPoint> &control_points)

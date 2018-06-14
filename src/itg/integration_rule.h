@@ -25,6 +25,8 @@ namespace itg {
 template<int DIM>
 class IntegrationRule {
  public:
+  virtual ~IntegrationRule() = default;
+
   explicit IntegrationRule(const std::vector<IntegrationPoint<1>> &points) : points_(points) {}
 
   int GetNumberOfIntegrationPoints() const {
