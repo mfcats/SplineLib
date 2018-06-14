@@ -27,7 +27,7 @@ class NumericSettings {
   }
 
   constexpr static bool AreEqual(const T &a, const T &b) {
-    return std::fabs(a - b) < kEpsilon();
+    return std::abs(a - b) < kEpsilon();
   }
 
  private:

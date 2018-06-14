@@ -108,7 +108,7 @@ class Spline {
     for (int i = 0; i < DIM; ++i) {
       start[i + 1] = GetKnotVector(i).GetKnotSpan(param_coord[i]) - GetDegree(i);
       last[i + 1] = start[i + 1] + parameter_space_[i].degree() + 1;
-      total_length[i + 1] = parameter_space_[i].knot_vector().NumberOfKnots() - parameter_space_[i].degree() - 1;
+      total_length[i + 1] = parameter_space_[i].knot_vector().GetNumberOfKnots() - parameter_space_[i].degree() - 1;
       current[i + 1] = start[i + 1];
       M *= (last[i + 1] - start[i + 1]);
     }

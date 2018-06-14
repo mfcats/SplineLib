@@ -39,8 +39,8 @@ TEST_F(ASquare, ReturnsCorrectDegree) {
 }
 
 TEST_F(ASquare, ReturnsCorrectKnotVectorSizes) {
-  ASSERT_THAT(square_->GetKnotVector(0).NumberOfKnots(), 6);
-  ASSERT_THAT(square_->GetKnotVector(1).NumberOfKnots(), 6);
+  ASSERT_THAT(square_->GetKnotVector(0).GetNumberOfKnots(), 6);
+  ASSERT_THAT(square_->GetKnotVector(1).GetNumberOfKnots(), 6);
 }
 
 TEST_F(ASquare, ReturnsCorrectLeftLowerCorner) {
@@ -90,8 +90,8 @@ TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectDegree) {
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectKnotVectorSizes) {
-  ASSERT_THAT(square_->GetKnotVector(0).NumberOfKnots(), 8);
-  ASSERT_THAT(square_->GetKnotVector(1).NumberOfKnots(), 8);
+  ASSERT_THAT(square_->GetKnotVector(0).GetNumberOfKnots(), 8);
+  ASSERT_THAT(square_->GetKnotVector(1).GetNumberOfKnots(), 8);
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectLeftLowerCorner) {
@@ -143,8 +143,8 @@ TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectDegree) {
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectKnotVectorSizes) {
-  ASSERT_THAT(square_->GetKnotVector(0).NumberOfKnots(), 10);
-  ASSERT_THAT(square_->GetKnotVector(1).NumberOfKnots(), 10);
+  ASSERT_THAT(square_->GetKnotVector(0).GetNumberOfKnots(), 10);
+  ASSERT_THAT(square_->GetKnotVector(1).GetNumberOfKnots(), 10);
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectLeftLowerCorner) {

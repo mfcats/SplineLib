@@ -58,8 +58,8 @@ class Projection {
         signum = 1;
 
         projectionPointParamCoords[0] = projectionPointParamCoords[0] + ParamCoord{signum * delta};
-        if (projectionPointParamCoords[0] < spline->GetKnotVector(0).knot(0)) {
-          projectionPointParamCoords[0] = spline->GetKnotVector(0).knot(0);
+        if (projectionPointParamCoords[0] < spline->GetKnotVector(0).GetKnot(0)) {
+          projectionPointParamCoords[0] = spline->GetKnotVector(0).GetKnot(0);
         } else if (projectionPointParamCoords[0] > spline->GetKnotVector(0).GetLastKnot()) {
           projectionPointParamCoords[0] = spline->GetKnotVector(0).GetLastKnot();
         }
