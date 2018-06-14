@@ -123,12 +123,23 @@ TEST_F(AKnotVector, CanBeSubtracted) {
   ASSERT_THAT(this->knot_vector_, Eq(knotVectorOfZeros));
 }
 
-TEST_F(AKnotVector, CanBeUsedWithRangeBasedForLoop) {
+TEST_F(AKnotVector, CanBeUsedWithConstRangeBasedForLoop) {
   double sum = 0;
-  for (auto &knot : knot_vector_) {
+  for (const auto &knot : knot_vector_) {
     sum += knot.get();
   }
   ASSERT_THAT(sum, DoubleEq(4.75));
+}
+
+TEST_F(AKnotVector, CanBeUsedWithNonConstRangeBasedForLoop) {
+  double sum = 0;
+  for (auto &knot : knot_vector_) {
+    knot = ParamCoord{4.0};
+  }
+  for (const auto &knot : knot_vector_) {
+    sum += knot.get();
+  }
+  ASSERT_THAT(sum, DoubleEq(36));
 }
 
 TEST_F(AKnotVector, CanBeMovedInAssignment) {

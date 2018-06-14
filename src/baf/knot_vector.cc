@@ -94,6 +94,14 @@ baf::KnotVector::ConstKnotIterator baf::KnotVector::end() const {
   return knots_.end();
 }
 
+baf::KnotVector::KnotIterator baf::KnotVector::begin() {
+  return knots_.begin();
+}
+
+baf::KnotVector::KnotIterator baf::KnotVector::end() {
+  return knots_.end();
+}
+
 bool baf::KnotVector::IsInKnotVectorRange(ParamCoord param_coord) const {
   return param_coord.get() >= knots_.front().get() && param_coord.get() <= knots_.back().get();
 }

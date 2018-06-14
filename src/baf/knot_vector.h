@@ -30,6 +30,7 @@ namespace baf {
 class KnotVector {
  public:
   using ConstKnotIterator = std::vector<ParamCoord>::const_iterator;
+  using KnotIterator = std::vector<ParamCoord>::iterator;
 
   KnotVector() = default;
   KnotVector(const KnotVector &knotVector);
@@ -55,6 +56,9 @@ class KnotVector {
 
   ConstKnotIterator begin() const;
   ConstKnotIterator end() const;
+
+  KnotIterator begin();
+  KnotIterator end();
 
   bool IsInKnotVectorRange(ParamCoord param_coord) const;
   bool IsLastKnot(ParamCoord param_coord) const;
