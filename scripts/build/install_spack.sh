@@ -5,6 +5,6 @@ if ! which spack >/dev/null; then
     git clone --depth 50 https://github.com/spack/spack.git $SPACK_ROOT
     echo -e "config:""\n  build_jobs:"" 2" > $SPACK_ROOT/etc/spack/config.yaml;
     spack bootstrap
-    spack compiler find
+    CC=$CCOMPILER CXX=$CXXCOMPILER spack compiler find
     spack clean -a
 fi
