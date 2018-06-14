@@ -2,11 +2,7 @@ language: cpp
 
 os:
   - linux
-    dist: trusty
-    sudo: required
-    compiler: gcc
   - osx
-    osx_image: xcode9.3
 
 cache:
   directories:
@@ -18,8 +14,6 @@ env:
     - PATH=$PATH:$HOME/.cache/spack/bin
   matrix:
     - COMPILER=gcc@8.1.0
-    #- COMPILER=gcc@8.1.0
-    #- COMPILER=llvm@6.0.0
     - COMPILER=llvm@6.0.0
 
 before_install:
