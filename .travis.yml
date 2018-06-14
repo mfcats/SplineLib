@@ -13,26 +13,29 @@ env:
     - SPACK_ROOT=$HOME/.cache/spack
     - PATH=$PATH:$HOME/.cache/spack/bin
   matrix:
-    - COMPILER=gcc@8.1.0 BUILDTYPE=Release
-    - COMPILER=gcc@8.1.0 BUILDTYPE=Debug
-    - COMPILER=llvm@6.0.0 BUILDTYPE=Release
-    - COMPILER=llvm@6.0.0 BUILDTYPE=Debug
+    - COMPILER=gcc@8.1.0 BUILDTYPE=Release VALGRIND=OFF TIMING=ON COVERAGE=OFF
+    - COMPILER=gcc@8.1.0 BUILDTYPE=Debug VALGRIND=ON TIMING=OFF COVERAGE=ON
+    - COMPILER=llvm@6.0.0 BUILDTYPE=Release VALGRIND=OFF TIMING=ON COVERAGE=ON
+    - COMPILER=llvm@6.0.0 BUILDTYPE=Debug VALGRIND=ON TIMING=OFF COVERAGE=ON
 
 before_install:
   - ./scripts/build/install_spack.sh
   - source /etc/profile && source $SPACK_ROOT/share/spack/setup-env.sh
 
 install:
-  - spack install -v $COMPILER
-  - spack install -v valgrind%$COMPILER
+  - travis_wait 300 spack install $COMPILER
+  - travis wait 30 spack install valgrind%$COMPILER
 
-script:
+before_script:
   - mkdir -p ${TRAVIS_BUILD_DIR}/build
   - cd ${TRAVIS_BUILD_DIR}/build
   - spack repo add ${TRAVIS_BUILD_DIR}/scripts/spack-repo
+
+script:
+  - cd ${TRAVIS_BUILD_DIR}/build
   - spack setup splinelib@github%$COMPILER build_type=$BUILDTYPE
   - ./spconfig.py ..
-  - make
+  - make -j2
   - ./test/SplineLibTests
 
 #before_install:
