@@ -12,16 +12,15 @@ matrix:
           packages:
             - g++-8
             - gcc-8
+            - gfortran-8
       env:
         - BEFORE_INSTALL_CMD=""
         - COMPILER="gcc@8"
-        - BUILDTYPE=Debug
     - os: osx
       osx_image: xcode9.3
       env:
-        - BEFORE_INSTALL_CMD="brew cask uninstall oclint && brew tap oclint/formulae && brew install oclint && brew install gcc"
-        - COMPILER="gcc@8.1.0^cmake%clang"
-        - BUILDTYPE=Debug
+        - BEFORE_INSTALL_CMD="./scripts/build/before_install_osx.sh"
+        - COMPILER="clang%6.0.0"
 
 cache:
   directories:
@@ -31,6 +30,9 @@ env:
   global:
     - SPACK_ROOT=$HOME/.cache/spack
     - PATH=$PATH:$HOME/.cache/spack/bin
+  matrix:
+    - BUILDTYPE=Debug
+    - BUILDTYPE=Release
 
 before_install:
   - eval "${BEFORE_INSTALL_CMD}"
