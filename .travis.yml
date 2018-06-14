@@ -14,7 +14,7 @@ matrix:
             - gcc-8
       env:
         - BEFORE_INSTALL_CMD=""
-        - COMPILER="g++%8"
+        - COMPILER="gcc@8"
         - BUILDTYPE=Debug
     - os: osx
       osx_image: xcode9.3
