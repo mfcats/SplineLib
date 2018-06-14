@@ -16,11 +16,13 @@ matrix:
       env:
         - BEFORE_INSTALL_CMD=""
         - COMPILER="gcc@8"
+        - BUILDTYPE=Debug
     - os: osx
       osx_image: xcode9.3
       env:
         - BEFORE_INSTALL_CMD="./scripts/build/before_install_osx.sh"
         - COMPILER="clang%6.0.0"
+        - BUILDTYPE=Debug
 
 cache:
   directories:
@@ -30,9 +32,6 @@ env:
   global:
     - SPACK_ROOT=$HOME/.cache/spack
     - PATH=$PATH:$HOME/.cache/spack/bin
-  matrix:
-    - BUILDTYPE=Debug
-    - BUILDTYPE=Release
 
 before_install:
   - eval "${BEFORE_INSTALL_CMD}"
