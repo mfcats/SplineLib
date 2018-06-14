@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 if ! which spack >/dev/null; then
     mkdir -p $SPACK_ROOT

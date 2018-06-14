@@ -1,4 +1,4 @@
-#! /usr/bin/env zsh
+#! /usr/bin/env bash
 
 # Check command line arguments
 if [ "$#" -ne 1 ]; then
