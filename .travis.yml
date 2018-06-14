@@ -24,19 +24,19 @@ before_install:
 
 install:
   - spack spec $COMPILER
-#  - travis wait 30 spack install valgrind%$COMPILER
-
-before_script:
-  - mkdir -p ${TRAVIS_BUILD_DIR}/build
-  - cd ${TRAVIS_BUILD_DIR}/build
-  - spack repo add ${TRAVIS_BUILD_DIR}/scripts/spack-repo
-
-script:
-  - cd ${TRAVIS_BUILD_DIR}/build
-  - spack setup splinelib@github%$COMPILER build_type=$BUILDTYPE
-  - ./spconfig.py ..
-  - make -j2
-  - ./test/SplineLibTests
+##  - travis wait 30 spack install valgrind%$COMPILER
+#
+#before_script:
+#  - mkdir -p ${TRAVIS_BUILD_DIR}/build
+#  - cd ${TRAVIS_BUILD_DIR}/build
+#  - spack repo add ${TRAVIS_BUILD_DIR}/scripts/spack-repo
+#
+#script:
+#  - cd ${TRAVIS_BUILD_DIR}/build
+#  - spack setup splinelib@github%$COMPILER build_type=$BUILDTYPE
+#  - ./spconfig.py ..
+#  - make -j2
+#  - ./test/SplineLibTests
 
 #before_install:
 #  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-7 100
