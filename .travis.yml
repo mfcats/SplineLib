@@ -23,8 +23,8 @@ before_install:
   - source /etc/profile && source $SPACK_ROOT/share/spack/setup-env.sh
 
 install:
-  - travis_wait 300 spack install $COMPILER
-  - travis wait 30 spack install valgrind%$COMPILER
+  - spack spec $COMPILER
+#  - travis wait 30 spack install valgrind%$COMPILER
 
 before_script:
   - mkdir -p ${TRAVIS_BUILD_DIR}/build
