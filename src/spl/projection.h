@@ -63,7 +63,7 @@ class Projection {
         } else if (projectionPointParamCoords[0] > spline->GetKnotVector(0).GetLastKnot()) {
           projectionPointParamCoords[0] = spline->GetKnotVector(0).GetLastKnot();
         }
-        if (abs(delta) < tolerance) {
+        if (std::abs(delta) < tolerance) {
           converged = true;
         }
       }
