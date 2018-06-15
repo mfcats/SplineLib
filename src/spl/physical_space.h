@@ -15,17 +15,32 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_PHYSICAL_SPACE_H
 #define SRC_SPL_PHYSICAL_SPACE_H
 
+#include <stdexcept>
 #include <vector>
+
+#include "control_point.h"
 
 namespace spl {
 template<int DIM>
 class PhysicalSpace {
  public:
+  explicit PhysicalSpace(const std::vector<baf::ControlPoint> &control_points)
+      : dimension_(control_points[0].GetDimension()) {
+    for (auto &&cp : control_points) {
+      if (cp.GetDimension() != dimension_) {
+        throw std::runtime_error("The dimension has to be the same for all control points.");
+      }
+      for (int i = 0; i < dimension_; ++i) {
+        control_points_.emplace_back(cp.GetValue(i));
+      }
+    }
+  }
 
  private:
   std::vector<double> control_points_;
   int dimension_;
 };
+
 }  // namespace spl
 
 #endif  // SRC_SPL_PHYSICAL_SPACE_H
