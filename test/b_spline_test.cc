@@ -12,12 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <array>
 #include <numeric>
 
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
-#include "knot_vector.h"
 #include "one_point_gauss_legendre.h"
 #include "two_point_gauss_legendre.h"
 #include "three_point_gauss_legendre.h"
@@ -35,8 +35,8 @@ class ABSpline : public Test {
     std::array<baf::KnotVector, 1> knot_vector =
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                           ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}})};
-    std::array<int, 1> degree = {2};
-    std::vector<baf::ControlPoint> control_points = {
+    degree_ = {2};
+    control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0})),
         baf::ControlPoint(std::vector<double>({1.0, 1.0})),
@@ -46,13 +46,15 @@ class ABSpline : public Test {
         baf::ControlPoint(std::vector<double>({4.0, 1.5})),
         baf::ControlPoint(std::vector<double>({4.0, 0.0}))
     };
-    knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
-    b_spline = std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
+    knot_vector_ = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    b_spline = std::make_unique<spl::BSpline<1>>(knot_vector_, degree_, control_points_);
   }
 
  protected:
   std::unique_ptr<spl::BSpline<1>> b_spline;
-  std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_ptr;
+  std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_;
+  std::array<int, 1> degree_;
+  std::vector<baf::ControlPoint> control_points_;
 };
 
 TEST_F(ABSpline, Returns0_0For0AndDim0) {
@@ -89,6 +91,17 @@ TEST_F(ABSpline, Returns12_0For5_0Dim0AndDer1) {
 
 TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) {
   ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{2.25}}, {1}, {1})[0], DoubleEq(0.325));
+}
+
+TEST_F(ABSpline, CanBeConstructedWithAPhysicalAndAParameterSpace) {
+  std::array<spl::ParameterSpace, 1> space = {spl::ParameterSpace((*knot_vector_)[0], degree_[0])};
+  b_spline = std::make_unique<spl::BSpline<1>>(space, spl::PhysicalSpace<1>(control_points_));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{5.0}}, {0})[0], DoubleEq(4.0));
+}
+
+TEST_F(ABSpline, ThrowsExceptionForDifferentControlPointDimensions) {
+  control_points_.emplace_back(std::vector<double>({0.0}));
+  ASSERT_THROW(std::make_unique<spl::BSpline<1>>(knot_vector_, degree_, control_points_), std::runtime_error);
 }
 
 TEST_F(ABSpline, ThrowsExceptionForEvaluationAt6_0) {
