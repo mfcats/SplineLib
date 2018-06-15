@@ -45,7 +45,7 @@ matrix:
             - gfortran-8
       env:
         - BEFORE_INSTALL_CMD=""
-        - COMPILER="clang@6.0"
+        - COMPILER="clang@6.0.0"
         - BUILDTYPE=Debug
     - os: linux
       dist: trusty
@@ -60,7 +60,7 @@ matrix:
             - gfortran-8
       env:
         - BEFORE_INSTALL_CMD=""
-        - COMPILER="clang@6.0"
+        - COMPILER="clang@6.0.0"
         - BUILDTYPE=Release
     - os: osx
       osx_image: xcode9.3
@@ -86,6 +86,7 @@ install:
   - ./scripts/build/install_spack.sh
   - source /etc/profile && source ~/.bash_profile && source $SPACK_ROOT/share/spack/setup-env.sh
   - spack compiler find
+  - spack compiler list
 
 before_script:
   - mkdir -p ${TRAVIS_BUILD_DIR}/build
@@ -94,7 +95,7 @@ before_script:
 
 script:
   - cd ${TRAVIS_BUILD_DIR}/build
-  - spack setup splinelib@github build_type=$BUILDTYPE %$COMPILER
+  - spack setup -v splinelib@github build_type=$BUILDTYPE %$COMPILER
   - ./spconfig.py ..
   - make -j2
   - ./test/SplineLibTests
