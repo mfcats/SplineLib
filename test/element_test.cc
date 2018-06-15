@@ -69,7 +69,7 @@ TEST_F(A1DElementGenerator, ReturnsElementsWith2Nodes) {
 
 TEST_F(A1DElementGenerator, ReturnsElementsWithCorrectNodes) {
   auto element_list = element_generator.GetElementList();
-  for (int element = 0; element < element_list.size(); element++) {
+  for (auto element = 0u; element < element_list.size(); element++) {
     ASSERT_THAT(element_list[element].node(0), element);
     ASSERT_THAT(element_list[element].node(1), element + 1);
   }

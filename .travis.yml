@@ -40,11 +40,16 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-6.0
+            - llvm-toolchain-trusty-5.0
           packages:
-            - clang-6.0
+            - clang-5.0
             - gfortran-8
+            - libstdc++6
+            - g++-6
+            - gcc-6
             - valgrind
+            - lldb-5.0
+            - lld-5.0
       env:
         - BEFORE_INSTALL_CMD=""
         - COMPILER="clang@5.0.0"
@@ -56,10 +61,15 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-6.0
+            - llvm-toolchain-trusty-5.0
           packages:
-            - clang-6.0
+            - clang-5.0
             - gfortran-8
+            - libstdc++6
+            - g++-6
+            - gcc-6
+            - lldb-5.0
+            - lld-5.0
       env:
         - BEFORE_INSTALL_CMD=""
         - COMPILER="clang@5.0.0"

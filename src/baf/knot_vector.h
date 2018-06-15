@@ -51,7 +51,7 @@ class KnotVector {
 
   ParamCoord GetKnot(size_t index) const;
   ParamCoord GetLastKnot() const;
-  int64_t GetKnotSpan(ParamCoord param_coord) const;
+  u_int64_t GetKnotSpan(ParamCoord param_coord) const;
   size_t GetNumberOfKnots() const;
 
   ConstKnotIterator begin() const;

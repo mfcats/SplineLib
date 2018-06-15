@@ -32,11 +32,10 @@ class Projection {
     double kappa;
     double tolerance = 0.0001;
     int iteration = 0;
-    double distance;
     double delta;
     int signum;
     std::vector<int> dimensions;
-    for (int i = 0; i < pointPhysicalCoords.size(); ++i) {
+    for (auto i = 0u; i < pointPhysicalCoords.size(); ++i) {
       dimensions.emplace_back(i);
     }
     std::array<ParamCoord, DIM> projectionPointParamCoords = FindInitialValue(pointPhysicalCoords, spline, dimensions);
@@ -83,7 +82,7 @@ class Projection {
         spline->Evaluate({ParamCoord{(0.5 * (elements[0].node(1) - elements[0].node(0)))}}, dimensions);
     double distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
     paramCoords[0] = ParamCoord{{0.5 * (elements[0].node(1) - elements[0].node(0))}};
-    for (int i = 1; i < elements.size(); ++i) {
+    for (auto i = 1u; i < elements.size(); ++i) {
       splinePhysicalCoords =
           spline->Evaluate({ParamCoord{0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)}},
                            dimensions);

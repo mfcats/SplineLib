@@ -80,10 +80,10 @@ ParamCoord baf::KnotVector::GetLastKnot() const {
   return knots_.back();
 }
 
-int64_t baf::KnotVector::GetKnotSpan(ParamCoord param_coord) const {
-  return util::NumericSettings<double>::AreEqual(param_coord.get(), knots_.back().get()) ?
+u_int64_t baf::KnotVector::GetKnotSpan(ParamCoord param_coord) const {
+  return static_cast<u_int64_t>(util::NumericSettings<double>::AreEqual(param_coord.get(), knots_.back().get()) ?
       std::lower_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1 :
-      std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1;
+      std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1);
 }
 
 baf::KnotVector::ConstKnotIterator baf::KnotVector::begin() const {

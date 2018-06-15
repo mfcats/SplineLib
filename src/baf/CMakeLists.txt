@@ -25,6 +25,11 @@ set(SOURCES
 add_library(splinelibbaf SHARED ${SOURCES})
 target_include_directories(splinelibbaf PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_link_libraries(splinelibbaf splinelibutil)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+	target_compile_options(splinelibbaf PUBLIC ${RUNTIME_CHECKS_DEBUG} ${WARNING_FLAGS})
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+	target_compile_options(splinelibbaf PUBLIC ${OPTIMIZATION_FLAGS} ${WARNING_FLAGS} ${PARALLELIZATION_FLAGS})
+endif ()
 
 install(
         TARGETS splinelibbaf

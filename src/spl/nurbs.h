@@ -40,6 +40,8 @@ class NURBS : public Spline<DIM> {
     physical_space_ = WeightedPhysicalSpace<DIM>(control_points, weights, number_of_points);
   }
 
+  virtual ~NURBS() = default;
+
   NURBS(ParameterSpace<DIM> parameter_space, WeightedPhysicalSpace<DIM> physical_space) : Spline<DIM>(std::move(
       parameter_space)), physical_space_(physical_space) {}
 
