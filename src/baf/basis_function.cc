@@ -41,17 +41,10 @@ int baf::BasisFunction::GetDegree() const {
 }
 
 bool baf::BasisFunction::IsCoordinateInSupport(ParamCoord param_coord) const {
-  return knotVector_.IsInKnotVectorRange(param_coord)
-      && (IsCoordinateInSupportSpan(param_coord) || IsCoordinateSpecialCaseWithLastKnot(param_coord));
+  return knotVector_.IsInKnotVectorRange(param_coord) && IsCoordinateInSupportSpan(param_coord);
 }
 
 bool baf::BasisFunction::IsCoordinateInSupportSpan(ParamCoord param_coord) const {
   auto span = knotVector_.GetKnotSpan(param_coord);
   return !(span < start_of_support_ || span >= start_of_support_ + degree_ + 1);
-}
-
-bool baf::BasisFunction::IsCoordinateSpecialCaseWithLastKnot(ParamCoord param_coord) const {
-  return util::NumericSettings<double>::AreEqual(param_coord.get(), knotVector_.GetLastKnot().get()) &&
-      util::NumericSettings<double>::AreEqual(knotVector_.GetLastKnot().get(),
-                                              knotVector_.GetKnot(start_of_support_ + degree_ + 1).get());
 }
