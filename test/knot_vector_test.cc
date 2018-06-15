@@ -24,7 +24,7 @@ using testing::DoubleEq;
 class AKnotVector : public Test {
  public:
   AKnotVector() : knot_vector_({ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.5}, ParamCoord{0.5},
-                                   ParamCoord{0.75}, ParamCoord{1.0}, ParamCoord{1.0}, ParamCoord{1.0}}) {}
+                                ParamCoord{0.75}, ParamCoord{1.0}, ParamCoord{1.0}, ParamCoord{1.0}}) {}
 
  protected:
   baf::KnotVector knot_vector_;
@@ -114,6 +114,32 @@ TEST_F(AKnotVector, CanBeAssigned) {
   baf::KnotVector knotVector;
   knotVector = this->knot_vector_;
   ASSERT_THAT(knotVector, Eq(this->knot_vector_));
+}
+
+TEST_F(AKnotVector, CanBeSubtracted) {
+  ParamCoord zero = ParamCoord{0.0};
+  baf::KnotVector knotVectorOfZeros = baf::KnotVector({zero, zero, zero, zero, zero, zero, zero, zero, zero});
+  this->knot_vector_ = this->knot_vector_ - this->knot_vector_;
+  ASSERT_THAT(this->knot_vector_, Eq(knotVectorOfZeros));
+}
+
+TEST_F(AKnotVector, CanBeUsedWithConstRangeBasedForLoop) {
+  double sum = 0;
+  for (const auto &knot : knot_vector_) {
+    sum += knot.get();
+  }
+  ASSERT_THAT(sum, DoubleEq(4.75));
+}
+
+TEST_F(AKnotVector, CanBeUsedWithNonConstRangeBasedForLoop) {
+  double sum = 0;
+  for (auto &knot : knot_vector_) {
+    knot = ParamCoord{4.0};
+  }
+  for (const auto &knot : knot_vector_) {
+    sum += knot.get();
+  }
+  ASSERT_THAT(sum, DoubleEq(36));
 }
 
 TEST_F(AKnotVector, CanBeMovedInAssignment) {

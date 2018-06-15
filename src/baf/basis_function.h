@@ -54,9 +54,6 @@ class BasisFunction {
   // Check if parametric coordinate is in the range of knot spans where the basis function is defined to be non-zero.
   bool IsCoordinateInSupportSpan(ParamCoord param_coord) const;
 
-  // Check if parametric coordinate is last knot of knot vector and last knot of basis function support range.
-  bool IsCoordinateSpecialCaseWithLastKnot(ParamCoord param_coord) const;
-
   KnotVector knotVector_;
   int degree_;
   uint64_t start_of_support_;

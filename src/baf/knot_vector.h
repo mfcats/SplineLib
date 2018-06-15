@@ -30,6 +30,7 @@ namespace baf {
 class KnotVector {
  public:
   using ConstKnotIterator = std::vector<ParamCoord>::const_iterator;
+  using KnotIterator = std::vector<ParamCoord>::iterator;
 
   KnotVector() = default;
   KnotVector(const KnotVector &knotVector);
@@ -40,6 +41,7 @@ class KnotVector {
 
   virtual ~KnotVector() = default;
 
+  KnotVector operator -(const KnotVector& rhs) const;
   KnotVector &operator=(const KnotVector &other);
   KnotVector &operator=(const KnotVector &&other);
   // Check if absolute distance between all knots is smaller than the epsilon defined in
@@ -54,6 +56,9 @@ class KnotVector {
 
   ConstKnotIterator begin() const;
   ConstKnotIterator end() const;
+
+  KnotIterator begin();
+  KnotIterator end();
 
   bool IsInKnotVectorRange(ParamCoord param_coord) const;
   bool IsLastKnot(ParamCoord param_coord) const;

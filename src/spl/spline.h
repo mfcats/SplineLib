@@ -16,16 +16,17 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_SPL_SPLINE_H_
 
 #include <algorithm>
+#include <array>
 #include <functional>
 #include <numeric>
+#include <sstream>
 #include <vector>
-#include <array>
 
 #include "control_point.h"
 #include "integration_rule.h"
 #include "knot_vector.h"
-#include "parameter_space.h"
 #include "multi_index_handler.h"
+#include "parameter_space.h"
 
 namespace spl {
 template<int DIM>
@@ -48,6 +49,7 @@ class Spline {
   }
 
   std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord, const std::vector<int> &dimensions) const {
+    ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
     auto basis_function_values = EvaluateAllNonZeroBasisFunctions(param_coord);
     std::vector<double> evaluated_point(dimensions.size(), 0);
     for (int i = 0; i < dimensions.size(); ++i) {
@@ -91,8 +93,10 @@ class Spline {
   double JacobianDeterminant(int element_number, int integration_point, const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
     double dx_dxi = EvaluateDerivative({ReferenceSpace2ParameterSpace(element.node(0),
-                                                                  element.node(1),
-                                                                  rule.coordinate(integration_point, 0))}, {0}, {1})[0];
+                                                                      element.node(1),
+                                                                      rule.coordinate(integration_point, 0))},
+                                       {0},
+                                       {1})[0];
     double dxi_dtildexi = (element.node(1) - element.node(0)) / 2.0;
     return dx_dxi * dxi_dtildexi;
   }
@@ -132,6 +136,17 @@ class Spline {
   }
 
  protected:
+  void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
+    for (int dim = 0; dim < DIM; dim++) {
+      if (!this->GetKnotVector(dim).IsInKnotVectorRange(param_coord[dim])) {
+        std::stringstream message;
+        message << "The parametric coordinate " << param_coord[dim].get() << " is outside the knot vector range from "
+                << GetKnotVector(dim).GetKnot(0).get() << " to " << GetKnotVector(dim).GetLastKnot().get() << ".";
+        throw std::range_error(message.str());
+      }
+    }
+  }
+
   double ComputeWeightedSum(const std::vector<double> &basis_function_values,
                             std::vector<double> control_point_values) const {
     std::transform(basis_function_values.begin(),
@@ -154,9 +169,9 @@ class Spline {
                      element_non_zero_basis_functions.begin(),
                      std::bind(std::divides<double>(), std::placeholders::_1,
                                EvaluateDerivative(
-                                      {ReferenceSpace2ParameterSpace(element.node(0),
-                                                                     element.node(1),
-                                                                     rule.coordinate(i, 0))}, {0}, {1})[0]));
+                                   {ReferenceSpace2ParameterSpace(element.node(0),
+                                                                  element.node(1),
+                                                                  rule.coordinate(i, 0))}, {0}, {1})[0]));
 
       element_integration_points[i] = elm::ElementIntegrationPoint(element_non_zero_basis_functions);
     }
