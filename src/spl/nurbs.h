@@ -113,10 +113,12 @@ class NURBS : public Spline<DIM> {
 
   std::vector<baf::ControlPoint> GetHomogenousControlPoints() const {
     std::vector<baf::ControlPoint> homogenousPoints;
-    for (int point = 0; point < this->control_points_.size(); ++point) {
+    for (int point = 0; point < this->physical_space_.GetNumberOfControlPoints(); ++point) {
       std::vector<double> homogenousCoordinates;
-      for (int coordinate = 0; coordinate < this->dim; ++coordinate) {
-        homogenousCoordinates.emplace_back(this->control_points_[point * this->dim + coordinate] * weights_[point]);
+      for (int coordinate = 0; coordinate < this->physical_space_.GetDimension(); ++coordinate) {
+        homogenousCoordinates.emplace_back(
+            this->physical_space_.GetPoint(point * this->physical_space_.GetDimension() + coordinate)
+                * weights_[point]);
       }
       homogenousPoints.emplace_back(baf::ControlPoint(homogenousCoordinates));
     }

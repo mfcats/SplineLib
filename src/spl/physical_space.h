@@ -36,6 +36,18 @@ class PhysicalSpace {
     }
   }
 
+  int GetDimension() const {
+    return dimension_;
+  }
+
+  double GetPoint(int point) const {
+    return control_points_[point];
+  }
+
+  int GetNumberOfControlPoints() const {
+    return static_cast<int>(control_points_.size());
+  }
+
  private:
   std::vector<double> control_points_;
   int dimension_;
