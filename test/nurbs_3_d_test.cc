@@ -42,7 +42,6 @@ class A3DNurbsWithAllWeights1 : public Test {
         baf::ControlPoint(std::vector<double>({2.0, 2.0})),
         baf::ControlPoint(std::vector<double>({4.0, 1.0})),
         baf::ControlPoint(std::vector<double>({0.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.5, 3.5})),
         baf::ControlPoint(std::vector<double>({5.0, 2.0}))
     };
     nurbs_ = std::make_unique<spl::NURBS<3>>(knot_vector, degree, control_points, weights);

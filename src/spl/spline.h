@@ -37,11 +37,13 @@ class Spline {
 
   Spline(const std::array<baf::KnotVector, DIM> &knot_vector,
          std::array<int, DIM> degree,
-         const std::vector<baf::ControlPoint> &control_points)
-      : physical_space_(PhysicalSpace<DIM>(control_points)) {
+         const std::vector<baf::ControlPoint> &control_points) {
+    std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
       parameter_space_[i] = ParameterSpace(knot_vector[i], degree[i]);
+      number_of_points[i] = knot_vector[i].GetNumberOfKnots() - degree[i] - 1;
     }
+    physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
   }
 
   Spline(std::array<ParameterSpace, DIM> &parameter_space, PhysicalSpace<DIM> physical_space) : parameter_space_(

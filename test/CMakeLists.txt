@@ -28,7 +28,7 @@ set(TEST_SOURCES
         projection_curve_test.cc
         nurbs_test.cc
         nurbs_2_d_test.cc
-        nurbs_3_d_test.cc)
+        nurbs_3_d_test.cc physical_space_test.cc)
 
 find_package(GTest REQUIRED)
 

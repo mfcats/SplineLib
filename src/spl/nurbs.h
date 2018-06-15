@@ -33,6 +33,10 @@ class NURBS : public Spline<DIM> {
       degree,
       control_points), weights_(std::move(weights)) {}
 
+  NURBS(std::array<ParameterSpace, DIM> &parameter_spaces, PhysicalSpace<DIM> physical_space) : Spline<DIM>(
+      parameter_spaces,
+      physical_space) {}
+
   std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
                                          const std::vector<int> &dimensions,
                                          std::array<int, DIM> derivative) const override {
