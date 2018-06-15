@@ -27,6 +27,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "knot_vector.h"
 #include "multi_index_handler.h"
 #include "parameter_space.h"
+#include "physical_space.h"
 
 namespace spl {
 template<int DIM>
@@ -37,14 +38,9 @@ class Spline {
   Spline(const std::array<baf::KnotVector, DIM> &knot_vector,
          std::array<int, DIM> degree,
          const std::vector<baf::ControlPoint> &control_points)
-      : dim(control_points[0].GetDimension()) {
+      : physical_space_(PhysicalSpace<DIM>(control_points)) {
     for (int i = 0; i < DIM; ++i) {
       parameter_space_[i] = ParameterSpace(knot_vector[i], degree[i]);
-    }
-    for (auto &&cp : control_points) {
-      for (int i = 0; i < dim; ++i) {
-        control_points_.emplace_back(cp.GetValue(i));
-      }
     }
   }
 
@@ -109,7 +105,7 @@ class Spline {
     start[0] = dimension;
     last[0] = dimension;
     current[0] = dimension;
-    total_length[0] = dim;
+    total_length[0] = physical_space_.GetDimension();
     int M = 1;
     for (int i = 0; i < DIM; ++i) {
       start[i + 1] = GetKnotVector(i).GetKnotSpan(param_coord[i]) - GetDegree(i);
@@ -122,7 +118,7 @@ class Spline {
     std::vector<double> vector;
     for (int i = 0; i < M; ++i) {
       multiIndexHandler.SetIndices(current);
-      vector.push_back(control_points_[multiIndexHandler.Get1DIndex()]);
+      vector.push_back(physical_space_.GetPoint(multiIndexHandler.Get1DIndex()));
       for (int i = 0; i < DIM; ++i) {
         if (current[i + 1] == last[i + 1] - 1) {
           current[i + 1] = start[i + 1];
@@ -211,8 +207,7 @@ class Spline {
   virtual std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const = 0;
 
   std::array<ParameterSpace, DIM> parameter_space_;
-  std::vector<double> control_points_;
-  int dim;
+  PhysicalSpace<DIM> physical_space_;
 };
 }  // namespace spl
 
