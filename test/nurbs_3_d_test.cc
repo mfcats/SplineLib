@@ -42,7 +42,6 @@ class A3DNurbsWithAllWeights1 : public Test {
         baf::ControlPoint(std::vector<double>({2.0, 2.0})),
         baf::ControlPoint(std::vector<double>({4.0, 1.0})),
         baf::ControlPoint(std::vector<double>({0.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.5, 3.5})),
         baf::ControlPoint(std::vector<double>({5.0, 2.0}))
     };
     std::shared_ptr<std::array<baf::KnotVector, 3>> knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 3>>(knot_vector);
