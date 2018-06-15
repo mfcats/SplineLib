@@ -23,7 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace baf {
 class ZeroDegreeBSplineBasisFunction : public baf::BasisFunction {
  public:
-  ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, uint64_t start_of_support);
+  ZeroDegreeBSplineBasisFunction(const baf::KnotVector &knot_vector, uint64_t start_of_support);
 
  protected:
   double EvaluateOnSupport(ParamCoord param_coord) const override;

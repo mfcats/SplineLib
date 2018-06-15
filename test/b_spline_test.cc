@@ -46,11 +46,13 @@ class ABSpline : public Test {
         baf::ControlPoint(std::vector<double>({4.0, 1.5})),
         baf::ControlPoint(std::vector<double>({4.0, 0.0}))
     };
-    b_spline = std::make_unique<spl::BSpline<1>>(knot_vector, degree, control_points);
+    knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    b_spline = std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
   }
 
  protected:
   std::unique_ptr<spl::BSpline<1>> b_spline;
+  std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_ptr;
 };
 
 TEST_F(ABSpline, Returns0_0For0AndDim0) {

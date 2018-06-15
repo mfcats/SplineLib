@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "numeric_settings.h"
 
-baf::ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
+baf::ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const baf::KnotVector &knot_vector,
                                                                     uint64_t start_of_support)
     : BasisFunction(knot_vector, 0, start_of_support) {}
 

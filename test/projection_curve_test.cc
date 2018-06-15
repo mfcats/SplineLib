@@ -24,12 +24,12 @@ using testing::DoubleNear;
 class ABSpline2 : public Test {
  public:
   ABSpline2() {
-    knot_vector =
+    std::array<baf::KnotVector, 1> knot_vector =
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.2}, ParamCoord{0.4},
                           ParamCoord{0.6}, ParamCoord{0.8}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1},
                           ParamCoord{1}})};
-    degree = {3};
-    control_points = {
+    std::array<int, 1> degree = {3};
+    std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({100, 100})),
         baf::ControlPoint(std::vector<double>({140, 196})),
         baf::ControlPoint(std::vector<double>({200, 240})),
@@ -39,28 +39,26 @@ class ABSpline2 : public Test {
         baf::ControlPoint(std::vector<double>({460, 196})),
         baf::ControlPoint(std::vector<double>({500, 100}))
     };
+    knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    b_spline = new spl::BSpline<1>(knot_vector_ptr, degree, control_points);
   }
 
  protected:
-  std::array<baf::KnotVector, 1> knot_vector;
-  std::array<int, 1> degree;
-  std::vector<baf::ControlPoint> control_points;
+  spl::BSpline<1> *b_spline;
+  std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_ptr;
 };
 
 TEST_F(ABSpline2, CloseToCenter) {
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({332, 200},
-                                                     new spl::BSpline<1>(knot_vector, degree, control_points))[0],
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({332, 200}, b_spline)[0],
               DoubleNear(0.6223419238, 0.0001));
 }
 
 TEST_F(ABSpline2, RightOfLastKnot) {
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({800, 200},
-                                                     new spl::BSpline<1>(knot_vector, degree, control_points))[0],
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({800, 200}, b_spline)[0],
               DoubleEq(1));
 }
 
 TEST_F(ABSpline2, LeftOfFirstKnot) {
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({0, 0},
-                                                     new spl::BSpline<1>(knot_vector, degree, control_points))[0],
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({0, 0}, b_spline)[0],
               DoubleEq(0));
 }

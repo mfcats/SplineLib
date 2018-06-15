@@ -35,7 +35,8 @@ class NurbsEx4_1 : public Test {
         baf::ControlPoint(std::vector<double>({4.0, 1.0})),
         baf::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
-    nurbs = std::make_unique<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+    std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    nurbs = std::make_unique<spl::NURBS<1>>(knot_vector_ptr, degree, control_points, weights);
   }
 
  protected:
@@ -68,7 +69,8 @@ class ANurbs : public Test {
         baf::ControlPoint(std::vector<double>({6.0, 4.0, 5.3})),
         baf::ControlPoint(std::vector<double>({8.5, 4.5, 0.0}))
     };
-    nurbs = std::make_unique<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+    std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    nurbs = std::make_unique<spl::NURBS<1>>(knot_vector_ptr, degree, control_points, weights);
   }
 
  protected:
@@ -114,7 +116,8 @@ class NurbsDerivativeEx4_2 : public Test {
         baf::ControlPoint(std::vector<double>({1.0, 1.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0}))
     };
-    nurbs = std::make_unique<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+    std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    nurbs = std::make_unique<spl::NURBS<1>>(knot_vector_ptr, degree, control_points, weights);
   }
 
  protected:
