@@ -13,6 +13,7 @@ matrix:
             - g++-8
             - gcc-8
             - gfortran-8
+            - valgrind
       env:
         - BEFORE_INSTALL_CMD=""
         - COMPILER="gcc@8"
@@ -43,9 +44,10 @@ matrix:
           packages:
             - clang-6.0
             - gfortran-8
+            - valgrind
       env:
         - BEFORE_INSTALL_CMD=""
-        - COMPILER="clang@6.0.1"
+        - COMPILER="clang@5.0.0"
         - BUILDTYPE=Debug
     - os: linux
       dist: trusty
@@ -60,7 +62,7 @@ matrix:
             - gfortran-8
       env:
         - BEFORE_INSTALL_CMD=""
-        - COMPILER="clang@6.0.1"
+        - COMPILER="clang@5.0.0"
         - BUILDTYPE=Release
     - os: osx
       osx_image: xcode9.3
@@ -98,7 +100,6 @@ before_script:
   - mkdir -p ${TRAVIS_BUILD_DIR}/build
   - cd ${TRAVIS_BUILD_DIR}/build
   - spack repo add ${TRAVIS_BUILD_DIR}/scripts/spack-repo
-  - travis_wait 60 spack install valgrind%$COMPILER
 
 script:
   - cd ${TRAVIS_BUILD_DIR}/build
