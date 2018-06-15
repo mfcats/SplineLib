@@ -28,7 +28,7 @@ class BSpline : public Spline<DIM> {
           std::array<int, DIM> degree,
           const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree, control_points) {}
 
-  BSpline(std::array<ParameterSpace, DIM> &parameter_spaces, PhysicalSpace<DIM> physical_space)
+  BSpline(ParameterSpace<DIM> &parameter_spaces, PhysicalSpace<DIM> physical_space)
       : Spline<DIM>(parameter_spaces, physical_space) {
   }
 

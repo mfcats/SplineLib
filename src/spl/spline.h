@@ -37,17 +37,16 @@ class Spline {
 
   Spline(const std::array<baf::KnotVector, DIM> &knot_vector,
          std::array<int, DIM> degree,
-         const std::vector<baf::ControlPoint> &control_points) {
+         const std::vector<baf::ControlPoint> &control_points) : parameter_space_(knot_vector, degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
-      parameter_space_[i] = ParameterSpace(knot_vector[i], degree[i]);
       number_of_points[i] = knot_vector[i].GetNumberOfKnots() - degree[i] - 1;
     }
     physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
   }
 
-  Spline(std::array<ParameterSpace, DIM> &parameter_space, PhysicalSpace<DIM> physical_space) : parameter_space_(
-      std::move(parameter_space)), physical_space_(physical_space) {}
+  Spline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space) : parameter_space_(
+      parameter_space), physical_space_(physical_space) {}
 
   std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord, const std::vector<int> &dimensions) const {
     ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
@@ -65,28 +64,28 @@ class Spline {
                                                  std::array<int, DIM> derivative) const = 0;
 
   int GetDegree(int i) const {
-    return parameter_space_[i].degree();
+    return parameter_space_.degree(i);
   }
 
   baf::KnotVector GetKnotVector(int i) const {
-    return parameter_space_[i].knot_vector();
+    return parameter_space_.knot_vector(i);
   }
 
   std::vector<elm::Element> GetElementList() const {
-    return parameter_space_[0].GetElementList();
+    return parameter_space_.GetElementList(0);
   }
 
   std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctions(
       int element_number,
       const itg::IntegrationRule<1> &rule) const {
-    return parameter_space_[0].EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
+    return parameter_space_.EvaluateAllElementNonZeroBasisFunctions(0, element_number, rule);
   }
 
   std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctionDerivatives(
       int element_number,
       const itg::IntegrationRule<1> &rule) const {
     return ParameterSpace2PhysicalSpace(
-        parameter_space_[0].EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule),
+        parameter_space_.EvaluateAllElementNonZeroBasisFunctionDerivatives(0, element_number, rule),
         element_number,
         rule);
   }
@@ -114,8 +113,8 @@ class Spline {
     int M = 1;
     for (int i = 0; i < DIM; ++i) {
       start[i + 1] = GetKnotVector(i).GetKnotSpan(param_coord[i]) - GetDegree(i);
-      last[i + 1] = start[i + 1] + parameter_space_[i].degree() + 1;
-      total_length[i + 1] = parameter_space_[i].knot_vector().GetNumberOfKnots() - parameter_space_[i].degree() - 1;
+      last[i + 1] = start[i + 1] + parameter_space_.degree(i) + 1;
+      total_length[i + 1] = parameter_space_.knot_vector(i).GetNumberOfKnots() - parameter_space_.degree(i) - 1;
       current[i + 1] = start[i + 1];
       M *= (last[i + 1] - start[i + 1]);
     }
@@ -180,14 +179,14 @@ class Spline {
   }
 
   ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
-    return parameter_space_[0].ReferenceSpace2ParameterSpace(upper, lower, point);
+    return parameter_space_.ReferenceSpace2ParameterSpace(upper, lower, point);
   }
 
   std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM>
   CreateArrayFirstNonZeroBasisFunction(std::array<ParamCoord, DIM> param_coord) const {
     std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
-      first_non_zero[i] = parameter_space_[i].GetFirstNonZeroKnot(param_coord[i]);
+      first_non_zero[i] = parameter_space_.GetFirstNonZeroKnot(i, param_coord[i]);
     }
     return first_non_zero;
   }
@@ -195,7 +194,7 @@ class Spline {
   std::array<int, DIM> ArrayTotalLength() const {
     std::array<int, DIM> total_length;
     for (int i = 0; i < DIM; ++i) {
-      total_length[i] = parameter_space_[i].degree() + 1;
+      total_length[i] = parameter_space_.degree(i) + 1;
     }
     return total_length;
   }
@@ -211,7 +210,7 @@ class Spline {
 
   virtual std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const = 0;
 
-  std::array<ParameterSpace, DIM> parameter_space_;
+  ParameterSpace<DIM> parameter_space_;
   PhysicalSpace<DIM> physical_space_;
 };
 }  // namespace spl
