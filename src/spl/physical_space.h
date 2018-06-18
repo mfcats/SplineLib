@@ -27,7 +27,7 @@ class PhysicalSpace {
  public:
   PhysicalSpace() = default;
   explicit PhysicalSpace(const std::vector<baf::ControlPoint> &control_points, std::array<int, DIM> number_of_points)
-      : dimension_(control_points[0].GetDimension()), point_handler_(number_of_points) {
+      : dimension_(control_points[0].GetDimension()), number_of_points_(number_of_points) {
     int total_number_of_points = 1;
     for (int dim = 0; dim < DIM; dim++) {
       total_number_of_points *= number_of_points[dim];
@@ -51,10 +51,11 @@ class PhysicalSpace {
     return dimension_;
   }
 
-  baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) {
+  baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const {
     std::vector<double> coordinates;
-    point_handler_.SetIndices(indices);
-    int first = dimension_ * point_handler_.Get1DIndex();
+    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
+    point_handler.SetIndices(indices);
+    int first = dimension_ * point_handler.Get1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
       coordinates.push_back(control_points_[first + coordinate]);
     }
@@ -71,7 +72,7 @@ class PhysicalSpace {
 
  private:
   std::vector<double> control_points_;
-  util::MultiIndexHandler<DIM> point_handler_;
+  std::array<int, DIM> number_of_points_;
   int dimension_;
 };
 

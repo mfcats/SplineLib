@@ -78,10 +78,10 @@ class ParameterSpace {
     return knot_vector_[direction];
   }
 
-  double GetBasisFunctions(std::array<int, DIM> indices, ParamCoord param_coord) const {
+  double GetBasisFunctions(std::array<int, DIM> indices, std::array<ParamCoord, DIM> param_coord) const {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
-      value *= basis_functions_[i][indices[i]]->Evaluate(param_coord);
+      value *= basis_functions_[i][indices[i]]->Evaluate(param_coord[i]);
     }
     return value;
   }

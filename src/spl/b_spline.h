@@ -15,8 +15,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_B_SPLINE_H_
 #define SRC_SPL_B_SPLINE_H_
 
-#include <vector>
+#include <algorithm>
 #include <array>
+#include <functional>
+#include <vector>
 
 #include "spline.h"
 
@@ -30,6 +32,33 @@ class BSpline : public Spline<DIM> {
 
   BSpline(ParameterSpace<DIM> parameter_spaces, PhysicalSpace<DIM> physical_space)
       : Spline<DIM>(std::move(parameter_spaces), physical_space) {
+  }
+
+  std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord,
+                               const std::vector<int> &dimensions) const override {
+    this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
+
+    std::array<int, DIM> first_non_zero;
+    for (int i = 0; i < DIM; ++i) {
+      first_non_zero[i] =
+          this->parameter_space_.knot_vector(i).GetKnotSpan(param_coord[i]) - this->parameter_space_.degree(i);
+    }
+
+    auto total_length = this->ArrayTotalLength();
+    auto M = this->MultiIndexHandlerShort();
+
+    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
+    std::vector<double> vector(dimensions.size(), 0);
+    for (int i = 0; i < M; ++i) {
+      for (int j = 0; j < dimensions.size(); ++j) {
+        auto a = multiIndexHandler.GetIndices();
+        std::transform(a.begin(), a.end(), first_non_zero.begin(), a.begin(), std::plus<double>());
+        vector[j] += this->parameter_space_.GetBasisFunctions(a, param_coord)
+            * this->physical_space_.GetControlPoint(a).GetValue(dimensions[j]);
+      }
+      multiIndexHandler++;
+    }
+    return vector;
   }
 
   std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
