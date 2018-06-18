@@ -80,10 +80,10 @@ class ParameterSpace {
 
   double GetBasisFunctions(std::array<int, DIM> indices, ParamCoord param_coord) const {
     double value = 1;
-    for (auto &index : indices) {
-      value *= 1;
+    for (int i = 0; i < DIM; ++i) {
+      value *= basis_functions_[i][indices[i]]->Evaluate(param_coord);
     }
-    return 0;
+    return value;
   }
 
   std::vector<elm::ElementIntegrationPoint>
