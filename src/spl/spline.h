@@ -35,6 +35,7 @@ class Spline {
  public:
   virtual ~Spline() = default;
 
+  Spline() = default;
   Spline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector,
          std::array<int, DIM> degree,
          const std::vector<baf::ControlPoint> &control_points) : parameter_space_(*knot_vector, degree) {
@@ -42,11 +43,11 @@ class Spline {
     for (int i = 0; i < DIM; ++i) {
       number_of_points[i] = (*knot_vector)[i].GetNumberOfKnots() - degree[i] - 1;
     }
-    physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
+    physical_space_ = std::make_unique<PhysicalSpace<DIM>>(PhysicalSpace<DIM>(control_points, number_of_points));
   }
 
   Spline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space) : parameter_space_(
-      std::move(parameter_space)), physical_space_(physical_space) {}
+      std::move(parameter_space)), physical_space_(std::make_unique<PhysicalSpace<DIM>>(physical_space)) {}
 
   virtual std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord,
                                        const std::vector<int> &dimensions) const {
@@ -110,7 +111,7 @@ class Spline {
     start[0] = dimension;
     last[0] = dimension;
     current[0] = dimension;
-    total_length[0] = physical_space_.GetDimension();
+    total_length[0] = physical_space_->GetDimension();
     int M = 1;
     for (int i = 0; i < DIM; ++i) {
       start[i + 1] = GetKnotVector(i).GetKnotSpan(param_coord[i]) - GetDegree(i);
@@ -123,7 +124,7 @@ class Spline {
     std::vector<double> vector;
     for (int i = 0; i < M; ++i) {
       multiIndexHandler.SetIndices(current);
-      vector.push_back(physical_space_.GetPoint(multiIndexHandler.Get1DIndex()));
+      vector.push_back(physical_space_->GetPoint(multiIndexHandler.Get1DIndex()));
       for (int i = 0; i < DIM; ++i) {
         if (current[i + 1] == last[i + 1] - 1) {
           current[i + 1] = start[i + 1];
@@ -212,7 +213,7 @@ class Spline {
   virtual std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const = 0;
 
   ParameterSpace<DIM> parameter_space_;
-  PhysicalSpace<DIM> physical_space_;
+  std::unique_ptr<PhysicalSpace<DIM>> physical_space_;
 };
 }  // namespace spl
 

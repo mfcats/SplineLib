@@ -15,16 +15,19 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H
 #define SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H
 
+#include <vector>
+
 #include "physical_space.h"
 
 namespace spl {
 template<int DIM>
-class WeightedPhysicalSpace : public PhysicalSpace {
+class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
  public:
+  WeightedPhysicalSpace() = default;
   explicit WeightedPhysicalSpace(const std::vector<baf::ControlPoint> &control_points,
                                  const std::vector<double> &weights,
-                                 std::array<int, DIM> number_of_points) : PhysicalSpace(control_points,
-                                                                                        number_of_points),
+                                 std::array<int, DIM> number_of_points) : PhysicalSpace<DIM>(control_points,
+                                                                                             number_of_points),
                                                                           weights_(weights) {
     if (control_points.size() != weights_.size()) {
       throw std::runtime_error("The number of control points and weights has to be the same.");
@@ -33,17 +36,21 @@ class WeightedPhysicalSpace : public PhysicalSpace {
 
   baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const override {
     std::vector<double> coordinates;
-    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
+    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);
     point_handler.SetIndices(indices);
-    int first = dimension_ * point_handler.Get1DIndex();
-    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      coordinates.push_back(control_points_[first + coordinate] * weights_[first + coordinate]);
+    int first = this->dimension_ * point_handler.Get1DIndex();
+    for (int coordinate = 0; coordinate < this->dimension_; coordinate++) {
+      coordinates.push_back(this->control_points_[first + coordinate] * this->weights_[first + coordinate]);
     }
     return baf::ControlPoint(coordinates);
+  }
+
+  double GetWeight(int point) const {
+    return weights_[point];
   }
 
  private:
   std::vector<double> weights_;
 };
 }  // namespace spl
-#endif  //SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H
+#endif  // SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H

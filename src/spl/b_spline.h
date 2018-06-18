@@ -54,7 +54,7 @@ class BSpline : public Spline<DIM> {
         auto a = multiIndexHandler.GetIndices();
         std::transform(a.begin(), a.end(), first_non_zero.begin(), a.begin(), std::plus<double>());
         vector[j] += this->parameter_space_.GetBasisFunctions(a, param_coord)
-            * this->physical_space_.GetControlPoint(a).GetValue(dimensions[j]);
+            * this->physical_space_->GetControlPoint(a).GetValue(dimensions[j]);
       }
       multiIndexHandler++;
     }
