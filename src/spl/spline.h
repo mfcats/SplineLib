@@ -37,7 +37,7 @@ class Spline {
 
   Spline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector,
          std::array<int, DIM> degree,
-         const std::vector<baf::ControlPoint> &control_points) : parameter_space_(knot_vector, degree) {
+         const std::vector<baf::ControlPoint> &control_points) : parameter_space_(*knot_vector, degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
       number_of_points[i] = (*knot_vector)[i].GetNumberOfKnots() - degree[i] - 1;
@@ -46,7 +46,7 @@ class Spline {
   }
 
   Spline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space) : parameter_space_(
-      parameter_space), physical_space_(physical_space) {}
+      std::move(parameter_space)), physical_space_(physical_space) {}
 
   std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord, const std::vector<int> &dimensions) const {
     ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
@@ -182,9 +182,9 @@ class Spline {
     return parameter_space_.ReferenceSpace2ParameterSpace(upper, lower, point);
   }
 
-  std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM>
+  std::array<std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator, DIM>
   CreateArrayFirstNonZeroBasisFunction(std::array<ParamCoord, DIM> param_coord) const {
-    std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM> first_non_zero;
+    std::array<std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] = parameter_space_.GetFirstNonZeroKnot(i, param_coord[i]);
     }

@@ -94,8 +94,9 @@ TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) {
 }
 
 TEST_F(ABSpline, CanBeConstructedWithAPhysicalAndAParameterSpace) {
-  std::array<spl::ParameterSpace, 1> space = {spl::ParameterSpace((*knot_vector_)[0], degree_[0])};
-  b_spline = std::make_unique<spl::BSpline<1>>(space, spl::PhysicalSpace<1>(control_points_));
+  spl::ParameterSpace<1> space = spl::ParameterSpace<1>({(*knot_vector_)[0]}, {degree_[0]});
+  spl::PhysicalSpace<1> space2 = spl::PhysicalSpace<1>(control_points_, {8});
+  b_spline = std::make_unique<spl::BSpline<1>>(space, space2);
   ASSERT_THAT(b_spline->Evaluate({ParamCoord{5.0}}, {0})[0], DoubleEq(4.0));
 }
 
