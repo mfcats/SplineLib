@@ -48,7 +48,8 @@ class Spline {
   Spline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space) : parameter_space_(
       std::move(parameter_space)), physical_space_(physical_space) {}
 
-  std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord, const std::vector<int> &dimensions) const {
+  virtual std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord,
+                                       const std::vector<int> &dimensions) const {
     ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
     auto basis_function_values = EvaluateAllNonZeroBasisFunctions(param_coord);
     std::vector<double> evaluated_point(dimensions.size(), 0);
