@@ -24,7 +24,7 @@ namespace spl {
 template<int DIM>
 class BSpline : public Spline<DIM> {
  public:
-  BSpline(const std::array<baf::KnotVector, DIM> &knot_vector,
+  BSpline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector,
           std::array<int, DIM> degree,
           const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree, control_points) {}
 

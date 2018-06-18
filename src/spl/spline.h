@@ -34,12 +34,12 @@ class Spline {
  public:
   virtual ~Spline() = default;
 
-  Spline(const std::array<baf::KnotVector, DIM> &knot_vector,
+  Spline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector,
          std::array<int, DIM> degree,
          const std::vector<baf::ControlPoint> &control_points)
       : dim(control_points[0].GetDimension()) {
     for (int i = 0; i < DIM; ++i) {
-      parameter_space_[i] = ParameterSpace(knot_vector[i], degree[i]);
+      parameter_space_[i] = ParameterSpace(knot_vector->at(i), degree[i]);
     }
     for (auto &&cp : control_points) {
       for (int i = 0; i < dim; ++i) {

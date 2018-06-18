@@ -26,7 +26,7 @@ namespace spl {
 template<int DIM>
 class NURBS : public Spline<DIM> {
  public:
-  NURBS(const std::array<baf::KnotVector, DIM> &knot_vector,
+  NURBS(std::shared_ptr<std::array<baf::KnotVector, DIM >> knot_vector,
         std::array<int, DIM> degree,
         const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) : Spline<DIM>(
       knot_vector,
@@ -124,7 +124,8 @@ class NURBS : public Spline<DIM> {
   }
 
   std::unique_ptr<spl::BSpline<DIM>> GetBSpline(std::vector<baf::ControlPoint> controlPoints) const {
-    return std::make_unique<spl::BSpline<DIM>>(GetKnotVectors(), GetDegrees(), controlPoints);
+    std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, DIM>>(GetKnotVectors());
+    return std::make_unique<spl::BSpline<DIM>>(knot_vector_ptr, GetDegrees(), controlPoints);
   }
 
   double GetSum(std::array<ParamCoord, DIM> param_coord) const {
