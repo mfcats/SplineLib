@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline_basis_function.h"
 #include "zero_degree_b_spline_basis_function.h"
 
-baf::BasisFunction *baf::BasisFunctionFactory::CreateDynamic(const KnotVector &knot_vector,
+baf::BasisFunction *baf::BasisFunctionFactory::CreateDynamic(const std::shared_ptr<KnotVector> knot_vector,
                                                              uint64_t start_of_support,
                                                              int degree) const {
   if (degree < 0) throw std::runtime_error("Basis function degree must be positive.");

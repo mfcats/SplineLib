@@ -9,32 +9,65 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include <memory>
+#include <cstdint>
 
 #include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
 #include "b_spline_basis_function.h"
+#include "named_type.h"
+
+using ParamCoord = util::NamedType<double, struct ParamCoordParameter>;
 
 using std::make_shared;
 using std::vector;
 
 using testing::DoubleEq;
 using testing::Test;
+using ::testing::AtLeast;
+using ::testing::Return;
+
+
+
+class MockKnotVector : public baf::KnotVector {
+  public:
+   MOCK_CONST_METHOD0(GetNumberOfKnots, size_t());
+   MOCK_CONST_METHOD1(IsInKnotVectorRange, bool(ParamCoord));
+   MOCK_CONST_METHOD1(GetKnotSpan, int64_t(ParamCoord));
+  };
 
 // Test basis function N_{0,1} from NURBS book example 2.1
 class BasisFunctionEx21N01 : public Test {
  public:
   BasisFunctionEx21N01() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                       ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}})))),
       basis_function_(knot_vector_, 1, 0) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  std::shared_ptr<baf::KnotVector> knot_vector_;
   baf::BSplineBasisFunction basis_function_;
 };
 
+TEST_F(BasisFunctionEx21N01, Mocking) {
+  std::shared_ptr<MockKnotVector> knot_vector_ptr = std::make_shared<MockKnotVector>();
+  //std::cout << knot_vector_ptr << std::endl;
+  baf::BSplineBasisFunction b_function = baf::BSplineBasisFunction(knot_vector_ptr, 1, 0);
+  EXPECT_CALL(*knot_vector_ptr, GetNumberOfKnots())
+              .WillOnce(Return(3));
+  ASSERT_EQ(b_function.testMock(), 3);
+}
+
 TEST_F(BasisFunctionEx21N01, IsZeroAt0_0) {
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(0.0));
+  std::shared_ptr<MockKnotVector> knot_vector_ptr = std::make_shared<MockKnotVector>();
+  baf::BSplineBasisFunction b_function = baf::BSplineBasisFunction(knot_vector_ptr, 1, 0);
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.0}))
+              .WillRepeatedly(Return(false));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.0}))
+              .WillRepeatedly(Return(int64_t(0)));
+  std::cout << "\nRESULT " << b_function.Evaluate(ParamCoord{0.0}) << std::endl;
+  std::cout << "VERIFY : " << basis_function_.Evaluate(ParamCoord{0.0}) << std::endl;
+  ASSERT_THAT(b_function.Evaluate(ParamCoord{0.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N01, IsZeroAt0_5) {
@@ -57,12 +90,12 @@ TEST_F(BasisFunctionEx21N01, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N11 : public Test {
  public:
   BasisFunctionEx21N11() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                       ParamCoord{1}}))),
+      knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}})))),
       basis_function_(knot_vector_, 1, 1) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  std::shared_ptr<baf::KnotVector> knot_vector_;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -90,12 +123,12 @@ TEST_F(BasisFunctionEx21N11, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N21 : public Test {
  public:
   BasisFunctionEx21N21() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                       ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}})))),
       basis_function_(knot_vector_, 1, 2) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  std::shared_ptr<baf::KnotVector> knot_vector_;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -123,12 +156,12 @@ TEST_F(BasisFunctionEx21N21, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N31 : public Test {
  public:
   BasisFunctionEx21N31() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                       ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}})))),
       basis_function_(knot_vector_, 1, 3) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  std::shared_ptr<baf::KnotVector> knot_vector_;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -156,12 +189,12 @@ TEST_F(BasisFunctionEx21N31, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N02 : public Test {
  public:
   BasisFunctionEx21N02() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                       ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}})))),
       basis_function_(knot_vector_, 2, 0) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  std::shared_ptr<baf::KnotVector> knot_vector_;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -189,12 +222,12 @@ TEST_F(BasisFunctionEx21N02, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N12 : public Test {
  public:
   BasisFunctionEx21N12() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                       ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}})))),
       basis_function_(knot_vector_, 2, 1) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  std::shared_ptr<baf::KnotVector> knot_vector_;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -222,12 +255,12 @@ TEST_F(BasisFunctionEx21N12, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N22 : public Test {
  public:
   BasisFunctionEx21N22() :
-      knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                       ParamCoord{1}, ParamCoord{1}}))),
+      knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                       ParamCoord{1}, ParamCoord{1}})))),
       basis_function_(knot_vector_, 2, 2) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  std::shared_ptr<baf::KnotVector> knot_vector_;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -254,14 +287,14 @@ TEST_F(BasisFunctionEx21N22, IsZeroAtMinus1_5) {
 // Test basis function N_{0,1} from NURBS book example 2.2
 class BasisFunctionEx22N01 : public Test {
  public:
-  BasisFunctionEx22N01() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+  BasisFunctionEx22N01() : knot_vector_(std::make_shared<baf::KnotVector>((baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                                             ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                                                                             ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
-                                                                            ParamCoord{5}, ParamCoord{5}}))),
+                                                                            ParamCoord{5}, ParamCoord{5}}))))),
                            basis_function_(knot_vector_, 1, 0) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  std::shared_ptr<baf::KnotVector> knot_vector_;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -331,14 +364,14 @@ TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAtMinus0_5) {
 // Test basis function derivative N_{3,1} from NURBS book example 2.2
 class BasisFunctionEx22N13 : public Test {
  public:
-  BasisFunctionEx22N13() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+  BasisFunctionEx22N13() : knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                                             ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                                                                             ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
-                                                                            ParamCoord{5}, ParamCoord{5}}))),
+                                                                            ParamCoord{5}, ParamCoord{5}})))),
                            basis_function_(knot_vector_, 1, 3) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  std::shared_ptr<baf::KnotVector> knot_vector_;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -377,14 +410,14 @@ TEST_F(BasisFunctionEx22N13, FourthDerevitveIsEqual0At1_5) {
 // Test basis function derivative N_{6,1} from NURBS book example 2.2
 class BasisFunctionEx22N61 : public Test {
  public:
-  BasisFunctionEx22N61() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+  BasisFunctionEx22N61() : knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                                             ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                                                                             ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
-                                                                            ParamCoord{5}, ParamCoord{5}}))),
+                                                                            ParamCoord{5}, ParamCoord{5}})))),
                            basis_function_(knot_vector_, 1, 6) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  std::shared_ptr<baf::KnotVector> knot_vector_;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -399,14 +432,14 @@ TEST_F(BasisFunctionEx22N61, SecondDerevitveIsEqual0At4_5) {
 // Test basis function derivative N_{7,2} from NURBS book example 2.2
 class BasisFunctionEx22N72 : public Test {
  public:
-  BasisFunctionEx22N72() : knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+  BasisFunctionEx22N72() : knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                                             ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                                                                             ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
-                                                                            ParamCoord{5}, ParamCoord{5}}))),
+                                                                            ParamCoord{5}, ParamCoord{5}})))),
                            basis_function_(knot_vector_, 2, 7) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  std::shared_ptr<baf::KnotVector> knot_vector_;
   baf::BSplineBasisFunction basis_function_;
 };
 

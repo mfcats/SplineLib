@@ -31,8 +31,9 @@ set(TEST_SOURCES
         nurbs_3_d_test.cc)
 
 find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
 
 add_executable(SplineLibTests ${TEST_SOURCES})
-target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil GTest::Main)
+target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil ${GTEST_LIBRARIES} ${GTEST_ROOT}/lib/libgmock_main.a pthread)
 
-target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
+#target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)

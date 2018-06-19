@@ -20,6 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include<stdexcept>
 #include <utility>
 #include <vector>
+#include <memory>
 
 #include "named_type.h"
 
@@ -35,6 +36,7 @@ class KnotVector {
   KnotVector() = default;
   KnotVector(const KnotVector &knotVector);
   KnotVector(const KnotVector &&knotVector);
+  //KnotVector(std::shared_ptr<KnotVector> knotVector);
   explicit KnotVector(const std::vector<ParamCoord> &knots);
   explicit KnotVector(std::initializer_list<ParamCoord> knots);
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
@@ -51,8 +53,8 @@ class KnotVector {
 
   ParamCoord GetKnot(size_t index) const;
   ParamCoord GetLastKnot() const;
-  int64_t GetKnotSpan(ParamCoord param_coord) const;
-  size_t GetNumberOfKnots() const;
+  virtual int64_t GetKnotSpan(ParamCoord param_coord) const;
+  virtual size_t GetNumberOfKnots() const;
 
   ConstKnotIterator begin() const;
   ConstKnotIterator end() const;
@@ -60,7 +62,7 @@ class KnotVector {
   KnotIterator begin();
   KnotIterator end();
 
-  bool IsInKnotVectorRange(ParamCoord param_coord) const;
+  virtual bool IsInKnotVectorRange(ParamCoord param_coord) const;
   bool IsLastKnot(ParamCoord param_coord) const;
 
  private:

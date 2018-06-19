@@ -38,8 +38,10 @@ class Spline {
          std::array<int, DIM> degree,
          const std::vector<baf::ControlPoint> &control_points)
       : dim(control_points[0].GetDimension()) {
+    std::shared_ptr<baf::KnotVector> knot_vector_dim;
     for (int i = 0; i < DIM; ++i) {
-      parameter_space_[i] = ParameterSpace(knot_vector->at(i), degree[i]);
+      knot_vector_dim = std::make_shared<baf::KnotVector>(knot_vector->at(i));
+      parameter_space_[i] = ParameterSpace(knot_vector_dim, degree[i]);
     }
     for (auto &&cp : control_points) {
       for (int i = 0; i < dim; ++i) {
@@ -67,7 +69,7 @@ class Spline {
     return parameter_space_[i].degree();
   }
 
-  baf::KnotVector GetKnotVector(int i) const {
+  std::shared_ptr<baf::KnotVector> GetKnotVector(int i) const {
     return parameter_space_[i].knot_vector();
   }
 
@@ -112,9 +114,9 @@ class Spline {
     total_length[0] = dim;
     int M = 1;
     for (int i = 0; i < DIM; ++i) {
-      start[i + 1] = GetKnotVector(i).GetKnotSpan(param_coord[i]) - GetDegree(i);
+      start[i + 1] = GetKnotVector(i)->GetKnotSpan(param_coord[i]) - GetDegree(i);
       last[i + 1] = start[i + 1] + parameter_space_[i].degree() + 1;
-      total_length[i + 1] = parameter_space_[i].knot_vector().GetNumberOfKnots() - parameter_space_[i].degree() - 1;
+      total_length[i + 1] = parameter_space_[i].knot_vector()->GetNumberOfKnots() - parameter_space_[i].degree() - 1;
       current[i + 1] = start[i + 1];
       M *= (last[i + 1] - start[i + 1]);
     }
@@ -138,10 +140,10 @@ class Spline {
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
     for (int dim = 0; dim < DIM; dim++) {
-      if (!this->GetKnotVector(dim).IsInKnotVectorRange(param_coord[dim])) {
+      if (!this->GetKnotVector(dim)->IsInKnotVectorRange(param_coord[dim])) {
         std::stringstream message;
         message << "The parametric coordinate " << param_coord[dim].get() << " is outside the knot vector range from "
-                << GetKnotVector(dim).GetKnot(0).get() << " to " << GetKnotVector(dim).GetLastKnot().get() << ".";
+                << GetKnotVector(dim)->GetKnot(0).get() << " to " << GetKnotVector(dim)->GetLastKnot().get() << ".";
         throw std::range_error(message.str());
       }
     }

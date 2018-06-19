@@ -90,7 +90,7 @@ class NURBS : public Spline<DIM> {
   std::array<baf::KnotVector, DIM> GetKnotVectors() const {
     std::array<baf::KnotVector, DIM> knot_vectors;
     for (int vector = 0; vector < DIM; ++vector) {
-      knot_vectors[vector] = this->GetKnotVector(vector);
+      knot_vectors[vector] = *(this->GetKnotVector(vector));
     }
     return knot_vectors;
   }

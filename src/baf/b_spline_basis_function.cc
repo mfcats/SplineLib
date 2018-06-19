@@ -16,7 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function_factory.h"
 
-baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector, int deg, uint64_t start_of_support)
+baf::BSplineBasisFunction::BSplineBasisFunction(const std::shared_ptr<baf::KnotVector> knot_vector, int deg, uint64_t start_of_support)
     : BasisFunction(knot_vector, deg, start_of_support) {
   SetLowerDegreeBasisFunctions(knot_vector, start_of_support, deg);
 }
@@ -33,7 +33,7 @@ double baf::BSplineBasisFunction::EvaluateDerivativeOnSupport(ParamCoord param_c
               * right_lower_degree_->EvaluateDerivative(param_coord, derivative - 1));
 }
 
-void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
+void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const std::shared_ptr<KnotVector> knot_vector,
                                                              uint64_t start_of_support,
                                                              int deg) {
   BasisFunctionFactory basis_function_factory;
@@ -64,4 +64,5 @@ double baf::BSplineBasisFunction::ComputeRightQuotient(ParamCoord param_coord) c
 double baf::BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {
   return std::fabs(denominator) < util::NumericSettings<double>::kEpsilon() ? 0.0 : 1.0 / denominator;
 }
+
 

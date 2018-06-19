@@ -17,11 +17,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "basis_function_factory.h"
 #include "element_generator.h"
 
-spl::ParameterSpace::ParameterSpace(const baf::KnotVector &knot_vector, int degree) : degree_(degree),
+spl::ParameterSpace::ParameterSpace(const std::shared_ptr<baf::KnotVector> knot_vector, int degree) : degree_(degree),
                                                                                       knot_vector_(knot_vector) {
   baf::BasisFunctionFactory factory;
-  basis_functions_.reserve(knot_vector_.GetNumberOfKnots() - degree_ - 1);
-  for (uint64_t i = 0; i < (knot_vector_.GetNumberOfKnots() - degree_ - 1); ++i) {
+  basis_functions_.reserve(knot_vector_->GetNumberOfKnots() - degree_ - 1);
+  for (uint64_t i = 0; i < (knot_vector_->GetNumberOfKnots() - degree_ - 1); ++i) {
     basis_functions_.emplace_back(factory.CreateDynamic(knot_vector_, i, degree_));
   }
 }
@@ -51,13 +51,13 @@ int spl::ParameterSpace::degree() const {
   return degree_;
 }
 
-baf::KnotVector spl::ParameterSpace::knot_vector() const {
+std::shared_ptr<baf::KnotVector> spl::ParameterSpace::knot_vector() const {
   return knot_vector_;
 }
 
 std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator spl::ParameterSpace::GetFirstNonZeroKnot(
     ParamCoord param_coord) const {
-  return basis_functions_.begin() + knot_vector_.GetKnotSpan(param_coord) - degree_;
+  return basis_functions_.begin() + knot_vector_->GetKnotSpan(param_coord) - degree_;
 }
 
 std::vector<elm::ElementIntegrationPoint>
@@ -91,7 +91,7 @@ spl::ParameterSpace::EvaluateAllElementNonZeroBasisFunctionDerivatives(int eleme
 }
 
 std::vector<elm::Element> spl::ParameterSpace::GetElementList() const {
-  return elm::ElementGenerator(degree_, knot_vector_).GetElementList();
+  return elm::ElementGenerator(degree_, *knot_vector_).GetElementList();
 }
 
 ParamCoord spl::ParameterSpace::ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {

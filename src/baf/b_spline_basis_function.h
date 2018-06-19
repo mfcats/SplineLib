@@ -25,7 +25,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace baf {
 class BSplineBasisFunction : public BasisFunction {
  public:
-  BSplineBasisFunction(const KnotVector &knot_vector, int deg, uint64_t start_of_support);
+  BSplineBasisFunction(const std::shared_ptr<KnotVector> knot_vector, int deg, uint64_t start_of_support);
 
  protected:
   double EvaluateOnSupport(ParamCoord param_coord) const override;
@@ -36,7 +36,7 @@ class BSplineBasisFunction : public BasisFunction {
   std::unique_ptr<BasisFunction> right_lower_degree_;
 
  private:
-  void SetLowerDegreeBasisFunctions(const KnotVector &knot_vector, uint64_t start_of_support, int deg);
+  void SetLowerDegreeBasisFunctions(const std::shared_ptr<KnotVector> knot_vector, uint64_t start_of_support, int deg);
 
   double ComputeLeftQuotientDenominatorInverse() const;
 
