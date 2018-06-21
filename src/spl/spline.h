@@ -41,7 +41,7 @@ class Spline {
 
   virtual std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord,
                                        const std::vector<int> &dimensions) const {
-    this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
+    ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
 
     auto first_non_zero = GetArrayOfFirstNonZeroBasisFunctions(param_coord);
     util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
@@ -64,11 +64,11 @@ class Spline {
                                                  std::array<int, DIM> derivative) const = 0;
 
   int GetDegree(int i) const {
-    return parameter_space_.degree(i);
+    return parameter_space_.GetDegree(i);
   }
 
   baf::KnotVector GetKnotVector(int i) const {
-    return parameter_space_.knot_vector(i);
+    return parameter_space_.GetKnotVector(i);
   }
 
   std::vector<elm::Element> GetElementList() const {
@@ -147,7 +147,7 @@ class Spline {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] =
-          this->parameter_space_.knot_vector(i).GetKnotSpan(param_coord[i]) - this->parameter_space_.degree(i);
+          this->parameter_space_.GetKnotVector(i).GetKnotSpan(param_coord[i]) - this->parameter_space_.GetDegree(i);
     }
     return first_non_zero;
   }
@@ -155,7 +155,7 @@ class Spline {
   std::array<int, DIM> GetNumberOfBasisFunctionsToEvaluate() const {
     std::array<int, DIM> total_length;
     for (int i = 0; i < DIM; ++i) {
-      total_length[i] = parameter_space_.degree(i) + 1;
+      total_length[i] = parameter_space_.GetDegree(i) + 1;
     }
     return total_length;
   }

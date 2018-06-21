@@ -70,11 +70,11 @@ class ParameterSpace {
     return basis_functions_[direction].begin() + knot_vector_[direction].GetKnotSpan(param_coord) - degree_[direction];
   }
 
-  int degree(int direction) const {
+  int GetDegree(int direction) const {
     return degree_[direction];
   }
 
-  baf::KnotVector knot_vector(int direction) const {
+  baf::KnotVector GetKnotVector(int direction) const {
     return knot_vector_[direction];
   }
 
@@ -82,6 +82,16 @@ class ParameterSpace {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
       value *= basis_functions_[i][indices[i]]->Evaluate(param_coord[i]);
+    }
+    return value;
+  }
+
+  double GetBasisFunctionDerivatives(std::array<int, DIM> indices,
+                                     std::array<ParamCoord, DIM> param_coord,
+                                     std::array<int, DIM> derivative) const {
+    double value = 1;
+    for (int i = 0; i < DIM; ++i) {
+      value *= basis_functions_[i][indices[i]]->EvaluateDerivative(param_coord[i], derivative[i]);
     }
     return value;
   }
