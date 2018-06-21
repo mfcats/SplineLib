@@ -38,13 +38,8 @@ class NURBS : public Spline<DIM> {
     physical_space_ = WeightedPhysicalSpace<DIM>(control_points, weights, number_of_points);
   }
 
-  NURBS(ParameterSpace<DIM> &parameter_space, WeightedPhysicalSpace<DIM> physical_space) : Spline<DIM>(
-      parameter_space), physical_space_(physical_space) {}
-
-  double GetEvaluate(std::array<ParamCoord, DIM> param_coord, std::array<int, DIM> indices, int dimension) const {
-    return this->parameter_space_.GetBasisFunctions(indices, param_coord)
-        * physical_space_.GetControlPoint(indices).GetValue(dimension) / GetSum(param_coord);
-  }
+  NURBS(ParameterSpace<DIM> parameter_space, WeightedPhysicalSpace<DIM> physical_space) : Spline<DIM>(std::move(
+      parameter_space)), physical_space_(physical_space) {}
 
   std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
                                          const std::vector<int> &dimensions,
@@ -63,6 +58,13 @@ class NURBS : public Spline<DIM> {
   }
 
  private:
+  double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
+                                  std::array<int, DIM> indices,
+                                  int dimension) const {
+    return this->parameter_space_.GetBasisFunctions(indices, param_coord)
+        * physical_space_.GetControlPoint(indices).GetValue(dimension) / GetSum(param_coord);
+  }
+
   util::MultiIndexHandler<DIM> GetDerivativeHandler(const std::array<int, DIM> &derivative) const {
     std::array<int, DIM> derivative_length;
     for (int i = 0; i < DIM; ++i) {
@@ -83,21 +85,6 @@ class NURBS : public Spline<DIM> {
           * EvaluateDerivative(param_coord, {dimension}, derivativeHandler.GetDifferenceIndices())[0];
     }
     return sum;
-  }
-
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const override {
-    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
-    util::MultiIndexHandler<DIM> multiIndexHandler(this->ArrayTotalLength());
-    std::vector<double> NonZeroBasisFunctions(this->MultiIndexHandlerShort(), 1);
-    auto extractedWeights = GetBSpline(GetWeightsAsControlPoints())->ExtractControlPointValues(param_coord, 0);
-    for (double &basis_function : NonZeroBasisFunctions) {
-      for (int j = 0; j < DIM; ++j) {
-        basis_function *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j]);
-      }
-      basis_function *= extractedWeights[multiIndexHandler.Get1DIndex()] / GetSum(param_coord);
-      multiIndexHandler++;
-    }
-    return NonZeroBasisFunctions;
   }
 
   std::array<baf::KnotVector, DIM> GetKnotVectors() const {

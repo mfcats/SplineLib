@@ -36,13 +36,8 @@ class BSpline : public Spline<DIM> {
     physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
   }
 
-  BSpline(ParameterSpace<DIM> parameter_spaces, PhysicalSpace<DIM> physical_space)
-      : Spline<DIM>(std::move(parameter_spaces)), physical_space_(physical_space) {
-  }
-
-  double GetEvaluate(std::array<ParamCoord, DIM> param_coord, std::array<int, DIM> indices, int dimension) const {
-    return this->parameter_space_.GetBasisFunctions(indices, param_coord)
-        * physical_space_.GetControlPoint(indices).GetValue(dimension);
+  BSpline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space)
+      : Spline<DIM>(std::move(parameter_space)), physical_space_(physical_space) {
   }
 
   std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
@@ -96,10 +91,10 @@ class BSpline : public Spline<DIM> {
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<ParamCoord, DIM> param_coord,
                                                                  std::array<int, DIM> derivative) const {
     auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
-    auto total_length = this->ArrayTotalLength();
-    auto M = this->MultiIndexHandlerShort();
+    auto total_length = this->GetNumberOfBasisFunctionsToEvaluate();
 
     util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
+    auto M = multiIndexHandler.Get1DLength();
 
     std::vector<double> vector(M, 1);
     for (int i = 0; i < M; ++i) {
@@ -112,21 +107,30 @@ class BSpline : public Spline<DIM> {
   }
 
  private:
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const override {
-    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
-    auto total_length = this->ArrayTotalLength();
-    auto M = this->MultiIndexHandlerShort();
+  double ComputeWeightedSum(const std::vector<double> &basis_function_values,
+                            std::vector<double> control_point_values) const {
+    std::transform(basis_function_values.begin(),
+                   basis_function_values.end(),
+                   control_point_values.begin(),
+                   control_point_values.begin(),
+                   std::multiplies<double>());
+    return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
+  }
 
-    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
-
-    std::vector<double> vector(M, 1);
-    for (int i = 0; i < M; ++i) {
-      for (int j = 0; j < DIM; ++j) {
-        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j]);
-      }
-      multiIndexHandler++;
+  std::array<std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator, DIM>
+  CreateArrayFirstNonZeroBasisFunction(std::array<ParamCoord, DIM> param_coord) const {
+    std::array<std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator, DIM> first_non_zero;
+    for (int i = 0; i < DIM; ++i) {
+      first_non_zero[i] = this->parameter_space_.GetFirstNonZeroKnot(i, param_coord[i]);
     }
-    return vector;
+    return first_non_zero;
+  }
+
+  double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
+                                  std::array<int, DIM> indices,
+                                  int dimension) const {
+    return this->parameter_space_.GetBasisFunctions(indices, param_coord)
+        * physical_space_.GetControlPoint(indices).GetValue(dimension);
   }
 
   PhysicalSpace<DIM> physical_space_;
