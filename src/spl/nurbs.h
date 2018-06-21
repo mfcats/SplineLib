@@ -29,19 +29,22 @@ class NURBS : public Spline<DIM> {
  public:
   NURBS(std::shared_ptr<std::array<baf::KnotVector, DIM >> knot_vector,
         std::array<int, DIM> degree,
-        const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) {
-    this->parameter_space_ = ParameterSpace<DIM>(*knot_vector, degree);
+        const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) : Spline<DIM>(knot_vector,
+                                                                                                         degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
       number_of_points[i] = (*knot_vector)[i].GetNumberOfKnots() - degree[i] - 1;
     }
-    this->physical_space_ =
-        std::make_unique<PhysicalSpace<DIM>>(WeightedPhysicalSpace<DIM>(control_points, weights, number_of_points));
+    physical_space_ = WeightedPhysicalSpace<DIM>(control_points, weights, number_of_points);
   }
 
   NURBS(ParameterSpace<DIM> &parameter_space, WeightedPhysicalSpace<DIM> physical_space) : Spline<DIM>(
-      parameter_space,
-      physical_space) {}
+      parameter_space), physical_space_(physical_space) {}
+
+  double GetEvaluate(std::array<ParamCoord, DIM> param_coord, std::array<int, DIM> indices, int dimension) const {
+    return this->parameter_space_.GetBasisFunctions(indices, param_coord)
+        * physical_space_.GetControlPoint(indices).GetValue(dimension) / GetSum(param_coord);
+  }
 
   std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
                                          const std::vector<int> &dimensions,
@@ -115,21 +118,21 @@ class NURBS : public Spline<DIM> {
 
   std::vector<baf::ControlPoint> GetWeightsAsControlPoints() const {
     std::vector<baf::ControlPoint> weights;
-    for (int control_point = 0; control_point < this->physical_space_->GetNumberOfControlPoints(); ++control_point) {
-      auto a = this->physical_space_->GetWeight(control_point);
-      weights.emplace_back(baf::ControlPoint({this->physical_space_->GetWeight(control_point)}));
+    for (int control_point = 0; control_point < physical_space_.GetNumberOfControlPoints(); ++control_point) {
+      auto a = physical_space_.GetWeight(control_point);
+      weights.emplace_back(baf::ControlPoint({physical_space_.GetWeight(control_point)}));
     }
     return weights;
   }
 
   std::vector<baf::ControlPoint> GetHomogenousControlPoints() const {
     std::vector<baf::ControlPoint> homogenousPoints;
-    for (int point = 0; point < this->physical_space_->GetNumberOfControlPoints(); ++point) {
+    for (int point = 0; point < physical_space_.GetNumberOfControlPoints(); ++point) {
       std::vector<double> homogenousCoordinates;
-      for (int coordinate = 0; coordinate < this->physical_space_->GetDimension(); ++coordinate) {
+      for (int coordinate = 0; coordinate < physical_space_.GetDimension(); ++coordinate) {
         homogenousCoordinates.emplace_back(
-            this->physical_space_->GetPoint(point * this->physical_space_->GetDimension() + coordinate)
-                * this->physical_space_->GetWeight(point));
+            physical_space_.GetPoint(point * physical_space_.GetDimension() + coordinate)
+                * physical_space_.GetWeight(point));
       }
       homogenousPoints.emplace_back(baf::ControlPoint(homogenousCoordinates));
     }
@@ -137,7 +140,8 @@ class NURBS : public Spline<DIM> {
   }
 
   std::unique_ptr<spl::BSpline<DIM>> GetBSpline(std::vector<baf::ControlPoint> controlPoints) const {
-    std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, DIM>>(GetKnotVectors());
+    std::shared_ptr<std::array<baf::KnotVector, DIM>>
+        knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, DIM>>(GetKnotVectors());
     return std::make_unique<spl::BSpline<DIM>>(knot_vector_ptr, GetDegrees(), controlPoints);
   }
 
@@ -169,6 +173,7 @@ class NURBS : public Spline<DIM> {
     return bc;
   }
 
+  WeightedPhysicalSpace<DIM> physical_space_;
 };
 }  // namespace spl
 

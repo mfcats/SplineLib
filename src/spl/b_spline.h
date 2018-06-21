@@ -28,37 +28,21 @@ class BSpline : public Spline<DIM> {
  public:
   BSpline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector,
           std::array<int, DIM> degree,
-          const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree, control_points) {}
-
-  BSpline(ParameterSpace<DIM> parameter_spaces, PhysicalSpace<DIM> physical_space)
-      : Spline<DIM>(std::move(parameter_spaces), physical_space) {
+          const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree) {
+    std::array<int, DIM> number_of_points;
+    for (int i = 0; i < DIM; ++i) {
+      number_of_points[i] = (*knot_vector)[i].GetNumberOfKnots() - degree[i] - 1;
+    }
+    physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
   }
 
-  std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord,
-                               const std::vector<int> &dimensions) const override {
-    this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
+  BSpline(ParameterSpace<DIM> parameter_spaces, PhysicalSpace<DIM> physical_space)
+      : Spline<DIM>(std::move(parameter_spaces)), physical_space_(physical_space) {
+  }
 
-    std::array<int, DIM> first_non_zero;
-    for (int i = 0; i < DIM; ++i) {
-      first_non_zero[i] =
-          this->parameter_space_.knot_vector(i).GetKnotSpan(param_coord[i]) - this->parameter_space_.degree(i);
-    }
-
-    auto total_length = this->ArrayTotalLength();
-    auto M = this->MultiIndexHandlerShort();
-
-    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
-    std::vector<double> vector(dimensions.size(), 0);
-    for (int i = 0; i < M; ++i) {
-      for (int j = 0; j < dimensions.size(); ++j) {
-        auto a = multiIndexHandler.GetIndices();
-        std::transform(a.begin(), a.end(), first_non_zero.begin(), a.begin(), std::plus<double>());
-        vector[j] += this->parameter_space_.GetBasisFunctions(a, param_coord)
-            * this->physical_space_->GetControlPoint(a).GetValue(dimensions[j]);
-      }
-      multiIndexHandler++;
-    }
-    return vector;
+  double GetEvaluate(std::array<ParamCoord, DIM> param_coord, std::array<int, DIM> indices, int dimension) const {
+    return this->parameter_space_.GetBasisFunctions(indices, param_coord)
+        * physical_space_.GetControlPoint(indices).GetValue(dimension);
   }
 
   std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
@@ -72,6 +56,41 @@ class BSpline : public Spline<DIM> {
           this->ComputeWeightedSum(basis_function_values, this->ExtractControlPointValues(param_coord, dimensions[i]));
     }
     return evaluated_point;
+  }
+
+  std::vector<double> ExtractControlPointValues(std::array<ParamCoord, DIM> param_coord, int dimension) const {
+    std::array<int, DIM + 1> start;
+    std::array<int, DIM + 1> last;
+    std::array<int, DIM + 1> total_length;
+    std::array<int, DIM + 1> current;
+    start[0] = dimension;
+    last[0] = dimension;
+    current[0] = dimension;
+    total_length[0] = physical_space_.GetDimension();
+    int M = 1;
+    for (int i = 0; i < DIM; ++i) {
+      start[i + 1] = this->GetKnotVector(i).GetKnotSpan(param_coord[i]) - this->GetDegree(i);
+      last[i + 1] = start[i + 1] + this->parameter_space_.degree(i) + 1;
+      total_length[i + 1] =
+          this->parameter_space_.knot_vector(i).GetNumberOfKnots() - this->parameter_space_.degree(i) - 1;
+      current[i + 1] = start[i + 1];
+      M *= (last[i + 1] - start[i + 1]);
+    }
+    util::MultiIndexHandler<DIM + 1> multiIndexHandler(total_length);
+    std::vector<double> vector;
+    for (int i = 0; i < M; ++i) {
+      multiIndexHandler.SetIndices(current);
+      vector.push_back(physical_space_.GetPoint(multiIndexHandler.Get1DIndex()));
+      for (int i = 0; i < DIM; ++i) {
+        if (current[i + 1] == last[i + 1] - 1) {
+          current[i + 1] = start[i + 1];
+        } else {
+          current[i + 1]++;
+          break;
+        }
+      }
+    }
+    return vector;
   }
 
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<ParamCoord, DIM> param_coord,
@@ -109,6 +128,8 @@ class BSpline : public Spline<DIM> {
     }
     return vector;
   }
+
+  PhysicalSpace<DIM> physical_space_;
 };
 }  // namespace spl
 

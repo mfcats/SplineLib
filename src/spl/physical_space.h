@@ -70,10 +70,6 @@ class PhysicalSpace {
     return static_cast<int>(control_points_.size()) / dimension_;
   }
 
-  virtual double GetWeight(int point) const {
-    return 1.0;
-  }
-
  protected:
   std::vector<double> control_points_;
   std::array<int, DIM> number_of_points_;
