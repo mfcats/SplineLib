@@ -142,8 +142,7 @@ class Spline {
     return parameter_space_.ReferenceSpace2ParameterSpace(upper, lower, point);
   }
 
-  std::array<int, DIM>
-  GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
+  std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] =

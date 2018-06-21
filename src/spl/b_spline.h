@@ -64,7 +64,7 @@ class BSpline : public Spline<DIM> {
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,
-                                  int dimension) const {
+                                  int dimension) const override {
     return this->parameter_space_.GetBasisFunctions(indices, param_coord)
         * physical_space_.GetControlPoint(indices).GetValue(dimension);
   }
