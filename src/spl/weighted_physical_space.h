@@ -34,7 +34,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     }
   }
 
-  baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const override {
+  baf::ControlPoint GetHomogenousControlPoint(std::array<int, DIM> indices) const {
     std::vector<double> coordinates;
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);
     point_handler.SetIndices(indices);

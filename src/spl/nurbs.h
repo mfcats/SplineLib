@@ -62,14 +62,33 @@ class NURBS : public Spline<DIM> {
                                   std::array<int, DIM> indices,
                                   int dimension) const override {
     return this->parameter_space_.GetBasisFunctions(indices, param_coord)
-        * physical_space_.GetControlPoint(indices).GetValue(dimension) / GetSum(param_coord);
+        * physical_space_.GetHomogenousControlPoint(indices).GetValue(dimension) / GetSum(param_coord);
   }
 
   double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,
                                             std::array<int, DIM> derivative,
                                             std::array<int, DIM> indices,
                                             int dimension) const {
-    return 0.0;
+    double x = GetRationalBasisFunctionDerivative(param_coord, derivative, indices, dimension);
+    return x * physical_space_.GetControlPoint(indices).GetValue(dimension);
+  }
+
+  double GetRationalBasisFunctionDerivative(std::array<ParamCoord, DIM> param_coord,
+                                            std::array<int, DIM> derivative,
+                                            std::array<int, DIM> indices,
+                                            int dimension) const {
+    if (derivative == std::array<int, DIM>{0}) {
+      return GetEvaluatedControlPoint(param_coord, indices, dimension);
+    }
+    double a = GetEvaluatedDerivativeWeight(param_coord, derivative, indices);
+    return 1.0;
+  }
+
+  double GetEvaluatedDerivativeWeight(std::array<ParamCoord, DIM> param_coord,
+                                      std::array<int, DIM> derivative,
+                                      std::array<int, DIM> indices) const {
+    return this->parameter_space_.GetBasisFunctionDerivatives(indices, param_coord, derivative)
+        * physical_space_.GetWeight(indices);
   }
 
   util::MultiIndexHandler<DIM> GetDerivativeHandler(const std::array<int, DIM> &derivative) const {
