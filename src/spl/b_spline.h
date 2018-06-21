@@ -40,27 +40,6 @@ class BSpline : public Spline<DIM> {
       : Spline<DIM>(std::move(parameter_space)), physical_space_(physical_space) {
   }
 
-  std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
-                                         const std::vector<int> &dimensions,
-                                         std::array<int, DIM> derivative) const override {
-    this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
-
-    auto first_non_zero = this->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
-    util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
-    auto numberOfSummands = basisFunctionHandler.Get1DLength();
-    std::vector<double> vector(dimensions.size(), 0);
-
-    for (int i = 0; i < numberOfSummands; ++i) {
-      auto indices = basisFunctionHandler.GetIndices();
-      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
-      for (int j = 0; j < dimensions.size(); ++j) {
-        vector[j] += GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
-      }
-      basisFunctionHandler++;
-    }
-    return vector;
-  }
-
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,
@@ -72,7 +51,7 @@ class BSpline : public Spline<DIM> {
   double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,
                                             std::array<int, DIM> derivative,
                                             std::array<int, DIM> indices,
-                                            int dimension) const {
+                                            int dimension) const override {
     return this->parameter_space_.GetBasisFunctionDerivatives(indices, param_coord, derivative)
         * physical_space_.GetControlPoint(indices).GetValue(dimension);
   }

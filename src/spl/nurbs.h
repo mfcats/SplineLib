@@ -65,6 +65,13 @@ class NURBS : public Spline<DIM> {
         * physical_space_.GetControlPoint(indices).GetValue(dimension) / GetSum(param_coord);
   }
 
+  double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,
+                                            std::array<int, DIM> derivative,
+                                            std::array<int, DIM> indices,
+                                            int dimension) const {
+    return 0.0;
+  }
+
   util::MultiIndexHandler<DIM> GetDerivativeHandler(const std::array<int, DIM> &derivative) const {
     std::array<int, DIM> derivative_length;
     for (int i = 0; i < DIM; ++i) {

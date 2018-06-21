@@ -61,7 +61,24 @@ class Spline {
 
   virtual std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
                                                  const std::vector<int> &dimensions,
-                                                 std::array<int, DIM> derivative) const = 0;
+                                                 std::array<int, DIM> derivative) const {
+    this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
+
+    auto first_non_zero = this->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
+    util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
+    auto numberOfSummands = basisFunctionHandler.Get1DLength();
+    std::vector<double> vector(dimensions.size(), 0);
+
+    for (int i = 0; i < numberOfSummands; ++i) {
+      auto indices = basisFunctionHandler.GetIndices();
+      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
+      for (int j = 0; j < dimensions.size(); ++j) {
+        vector[j] += GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
+      }
+      basisFunctionHandler++;
+    }
+    return vector;
+  }
 
   int GetDegree(int i) const {
     return parameter_space_.GetDegree(i);
@@ -116,6 +133,11 @@ class Spline {
   virtual double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                           std::array<int, DIM> indices,
                                           int dimension) const = 0;
+
+  virtual double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,
+                                                    std::array<int, DIM> derivative,
+                                                    std::array<int, DIM> indices,
+                                                    int dimension) const = 0;
 
   std::vector<elm::ElementIntegrationPoint> ParameterSpace2PhysicalSpace(
       std::vector<elm::ElementIntegrationPoint> element_integration_points,
