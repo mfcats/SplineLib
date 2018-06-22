@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "physical_space.h"
+#include "weighted_physical_space.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -46,14 +47,6 @@ TEST_F(A1DPhysicalSpace, ThrowsForDifferingDimensionsOfControlPoints) {
   ASSERT_THROW(spl::PhysicalSpace<1>(control_points, {6}), std::runtime_error);
 }
 
-TEST_F(A1DPhysicalSpace, ReturnsCorrectControlPointDimension) {
-  ASSERT_THAT(physical_space.GetDimension(), 2);
-}
-
-TEST_F(A1DPhysicalSpace, ReturnsCorrectNumberOfControlPoints) {
-  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 5);
-}
-
 TEST_F(A1DPhysicalSpace, ReturnsCorrectFirstControlPoint) {
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{0}).GetValue(0), DoubleEq(0.0));
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{0}).GetValue(1), DoubleEq(0.0));
@@ -67,6 +60,42 @@ TEST_F(A1DPhysicalSpace, ReturnsCorrectInnerControlPoint) {
 TEST_F(A1DPhysicalSpace, ReturnsCorrectLastControlPoint) {
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{4}).GetValue(0), DoubleEq(5.0));
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{4}).GetValue(1), DoubleEq(-1.0));
+}
+
+class A1DWeightedPhysicalSpace : public A1DPhysicalSpace {
+ public:
+  A1DWeightedPhysicalSpace() {
+    weights_ = {0.5, 0.75, 0.8, 1.0, 1.2};
+    weighted_physical_space = spl::WeightedPhysicalSpace<1>(control_points, weights_, {5});
+  }
+
+ protected:
+  spl::WeightedPhysicalSpace<1> weighted_physical_space;
+  std::vector<double> weights_;
+};
+
+TEST_F(A1DWeightedPhysicalSpace, ThrowsForDifferingNumberOfControlPointsAndWeights) {
+  control_points.emplace_back(std::vector<double>({0.0}));
+  ASSERT_THROW(spl::WeightedPhysicalSpace<1>(control_points, weights_, {6}), std::runtime_error);
+}
+
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectWeight) {
+  ASSERT_THAT(weighted_physical_space.GetWeight({2}), DoubleEq(0.8));
+}
+
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPoint) {
+  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{0}).GetValue(0), DoubleEq(0.0));
+  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{0}).GetValue(1), DoubleEq(0.0));
+}
+
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectInnerHomogenousControlPoint) {
+  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{2}).GetValue(0), DoubleEq(2.4));
+  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{2}).GetValue(1), DoubleEq(1.6));
+}
+
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPoint) {
+  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{4}).GetValue(0), DoubleEq(6.0));
+  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{4}).GetValue(1), DoubleEq(-1.2));
 }
 
 class A2DPhysicalSpace : public Test {
@@ -95,14 +124,6 @@ TEST_F(A2DPhysicalSpace, ThrowsForDifferingGivenNumberOfControlPointsAndLengthOf
 TEST_F(A2DPhysicalSpace, ThrowsForDifferingDimensionsOfControlPoints) {
   control_points.emplace_back(std::vector<double>({0.0}));
   ASSERT_THROW(spl::PhysicalSpace<2>(control_points, {1, 7}), std::runtime_error);
-}
-
-TEST_F(A2DPhysicalSpace, ReturnsCorrectControlPointDimension) {
-  ASSERT_THAT(physical_space.GetDimension(), 2);
-}
-
-TEST_F(A2DPhysicalSpace, ReturnsCorrectNumberOfControlPoints) {
-  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 6);
 }
 
 TEST_F(A2DPhysicalSpace, ReturnsCorrectFirstControlPoint) {

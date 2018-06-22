@@ -24,11 +24,11 @@ template<int DIM>
 class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
  public:
   WeightedPhysicalSpace() = default;
-  explicit WeightedPhysicalSpace(const std::vector<baf::ControlPoint> &control_points,
-                                 const std::vector<double> &weights,
-                                 std::array<int, DIM> number_of_points) : PhysicalSpace<DIM>(control_points,
-                                                                                             number_of_points),
-                                                                          weights_(weights) {
+  WeightedPhysicalSpace(const std::vector<baf::ControlPoint> &control_points,
+                        const std::vector<double> &weights,
+                        std::array<int, DIM> number_of_points) : PhysicalSpace<DIM>(control_points,
+                                                                                    number_of_points),
+                                                                 weights_(weights) {
     if (control_points.size() != weights_.size()) {
       throw std::runtime_error("The number of control points and weights has to be the same.");
     }
@@ -43,10 +43,6 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
       coordinates.push_back(this->control_points_[first + coordinate] * weights_[first / this->dimension_]);
     }
     return baf::ControlPoint(coordinates);
-  }
-
-  double GetWeight(int point) const {
-    return weights_[point];
   }
 
   double GetWeight(std::array<int, DIM> indices) const {
