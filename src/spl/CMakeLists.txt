@@ -14,13 +14,7 @@
 #
 
 set(SOURCES
-        square_generator.cc
-		physical_space.h
-		spline.h
-		b_spline.h
-		nurbs.h
-		parameter_space.h
-		physical_space.h weighted_physical_space.h)
+		square_generator.cc)
 
 add_library(splinelibspl SHARED ${SOURCES})
 target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
