@@ -63,7 +63,8 @@ class NURBS : public Spline<DIM> {
                                             std::array<int, DIM> indices,
                                             int dimension) const {
     if (derivative == std::array<int, DIM>{0}) {
-      return GetEvaluatedControlPoint(param_coord, indices, dimension);
+      return this->parameter_space_.GetBasisFunctions(indices, param_coord)
+          * physical_space_.GetWeight(indices) / GetEvaluatedWeightSum(param_coord);
     }
     double a = GetEvaluatedDerivativeWeight(param_coord, derivative, indices);
     double b = GetDerivativesSum(param_coord, derivative, indices, dimension);
@@ -134,8 +135,7 @@ class NURBS : public Spline<DIM> {
   double GetEvaluatedWeight(std::array<ParamCoord, DIM> param_coord,
                             std::array<int, DIM> indices) const {
     auto a = this->parameter_space_.GetBasisFunctions(indices, param_coord);
-    return this->parameter_space_.GetBasisFunctions(indices, param_coord)
-        * physical_space_.GetWeight(indices);
+    return this->parameter_space_.GetBasisFunctions(indices, param_coord) * physical_space_.GetWeight(indices);
   }
 
   util::MultiIndexHandler<DIM> GetDerivativeHandler(const std::array<int, DIM> &derivative) const {
