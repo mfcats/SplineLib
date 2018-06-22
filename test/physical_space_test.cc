@@ -75,7 +75,7 @@ class A1DWeightedPhysicalSpace : public A1DPhysicalSpace {
 };
 
 TEST_F(A1DWeightedPhysicalSpace, ThrowsForDifferingNumberOfControlPointsAndWeights) {
-  control_points.emplace_back(std::vector<double>({0.0}));
+  control_points.emplace_back(std::vector<double>({0.0, 0.0}));
   ASSERT_THROW(spl::WeightedPhysicalSpace<1>(control_points, weights_, {6}), std::runtime_error);
 }
 
