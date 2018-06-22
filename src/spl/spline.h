@@ -66,19 +66,17 @@ class Spline {
 
     auto first_non_zero = this->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
     util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
-    auto numberOfSummands = basisFunctionHandler.Get1DLength();
-    std::vector<double> vector(dimensions.size(), 0);
+    std::vector<double> evaluated_point(dimensions.size(), 0);
 
-    for (int i = 0; i < numberOfSummands; ++i) {
+    for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();
       std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
       for (int j = 0; j < dimensions.size(); ++j) {
         auto a = GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
-        vector[j] += GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
+        evaluated_point[j] += GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
       }
-      basisFunctionHandler++;
     }
-    return vector;
+    return evaluated_point;
   }
 
   int GetDegree(int i) const {
