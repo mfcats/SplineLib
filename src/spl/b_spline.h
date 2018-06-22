@@ -15,8 +15,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_B_SPLINE_H_
 #define SRC_SPL_B_SPLINE_H_
 
-#include <vector>
+#include <algorithm>
 #include <array>
+#include <functional>
+#include <vector>
 
 #include "spline.h"
 
@@ -26,56 +28,35 @@ class BSpline : public Spline<DIM> {
  public:
   BSpline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector,
           std::array<int, DIM> degree,
-          const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree, control_points) {}
-
-  std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
-                                         const std::vector<int> &dimensions,
-                                         std::array<int, DIM> derivative) const override {
-    this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
-    auto basis_function_values = EvaluateAllNonZeroBasisFunctionDerivatives(param_coord, derivative);
-    std::vector<double> evaluated_point(dimensions.size(), 0);
-    for (int i = 0; i < dimensions.size(); ++i) {
-      evaluated_point[i] =
-          this->ComputeWeightedSum(basis_function_values, this->ExtractControlPointValues(param_coord, dimensions[i]));
+          const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree) {
+    std::array<int, DIM> number_of_points;
+    for (int i = 0; i < DIM; ++i) {
+      number_of_points[i] = (*knot_vector)[i].GetNumberOfKnots() - degree[i] - 1;
     }
-    return evaluated_point;
+    physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
   }
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(std::array<ParamCoord, DIM> param_coord,
-                                                                 std::array<int, DIM> derivative) const {
-    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
-    auto total_length = this->ArrayTotalLength();
-    auto M = this->MultiIndexHandlerShort();
-
-    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
-
-    std::vector<double> vector(M, 1);
-    for (int i = 0; i < M; ++i) {
-      for (int j = 0; j < DIM; ++j) {
-        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->EvaluateDerivative(param_coord[j], derivative[j]);
-      }
-      multiIndexHandler++;
-    }
-    return vector;
+  BSpline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space)
+      : Spline<DIM>(std::move(parameter_space)), physical_space_(physical_space) {
   }
 
  private:
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const override {
-    auto first_non_zero = this->CreateArrayFirstNonZeroBasisFunction(param_coord);
-    auto total_length = this->ArrayTotalLength();
-    auto M = this->MultiIndexHandlerShort();
-
-    util::MultiIndexHandler<DIM> multiIndexHandler(total_length);
-
-    std::vector<double> vector(M, 1);
-    for (int i = 0; i < M; ++i) {
-      for (int j = 0; j < DIM; ++j) {
-        vector[i] *= (*(first_non_zero[j] + multiIndexHandler[j]))->Evaluate(param_coord[j]);
-      }
-      multiIndexHandler++;
-    }
-    return vector;
+  double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
+                                  std::array<int, DIM> indices,
+                                  int dimension) const override {
+    return this->parameter_space_.GetBasisFunctions(indices, param_coord)
+        * physical_space_.GetControlPoint(indices).GetValue(dimension);
   }
+
+  double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,
+                                            std::array<int, DIM> derivative,
+                                            std::array<int, DIM> indices,
+                                            int dimension) const override {
+    return this->parameter_space_.GetBasisFunctionDerivatives(indices, param_coord, derivative)
+        * physical_space_.GetControlPoint(indices).GetValue(dimension);
+  }
+
+  PhysicalSpace<DIM> physical_space_;
 };
 }  // namespace spl
 

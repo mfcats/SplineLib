@@ -27,65 +27,78 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "knot_vector.h"
 #include "multi_index_handler.h"
 #include "parameter_space.h"
+#include "physical_space.h"
 
 namespace spl {
 template<int DIM>
 class Spline {
  public:
   virtual ~Spline() = default;
+  Spline() = default;
+  Spline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector, std::array<int, DIM> degree) :
+      parameter_space_(*knot_vector, degree) {}
+  explicit Spline(ParameterSpace<DIM> parameter_space) : parameter_space_(std::move(parameter_space)) {}
 
-  Spline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector,
-         std::array<int, DIM> degree,
-         const std::vector<baf::ControlPoint> &control_points)
-      : dim(control_points[0].GetDimension()) {
-    for (int i = 0; i < DIM; ++i) {
-      parameter_space_[i] = ParameterSpace(knot_vector->at(i), degree[i]);
-    }
-    for (auto &&cp : control_points) {
-      for (int i = 0; i < dim; ++i) {
-        control_points_.emplace_back(cp.GetValue(i));
-      }
-    }
-  }
-
-  std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord, const std::vector<int> &dimensions) const {
+  virtual std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord,
+                                       const std::vector<int> &dimensions) const {
     ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
-    auto basis_function_values = EvaluateAllNonZeroBasisFunctions(param_coord);
+
+    auto first_non_zero = GetArrayOfFirstNonZeroBasisFunctions(param_coord);
+    util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
     std::vector<double> evaluated_point(dimensions.size(), 0);
-    for (int i = 0; i < dimensions.size(); ++i) {
-      evaluated_point[i] =
-          ComputeWeightedSum(basis_function_values, ExtractControlPointValues(param_coord, dimensions[i]));
+
+    for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
+      auto indices = basisFunctionHandler.GetIndices();
+      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
+      for (int j = 0; j < dimensions.size(); ++j) {
+        evaluated_point[j] += GetEvaluatedControlPoint(param_coord, indices, dimensions[j]);
+      }
     }
     return evaluated_point;
   }
 
   virtual std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
                                                  const std::vector<int> &dimensions,
-                                                 std::array<int, DIM> derivative) const = 0;
+                                                 std::array<int, DIM> derivative) const {
+    this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
+
+    auto first_non_zero = this->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
+    util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
+    std::vector<double> evaluated_point(dimensions.size(), 0);
+
+    for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
+      auto indices = basisFunctionHandler.GetIndices();
+      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
+      for (int j = 0; j < dimensions.size(); ++j) {
+        evaluated_point[j] += GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
+      }
+    }
+    return evaluated_point;
+  }
 
   int GetDegree(int i) const {
-    return parameter_space_[i].degree();
+    return parameter_space_.GetDegree(i);
   }
 
   baf::KnotVector GetKnotVector(int i) const {
-    return parameter_space_[i].knot_vector();
+    return parameter_space_.GetKnotVector(i);
   }
 
   std::vector<elm::Element> GetElementList() const {
-    return parameter_space_[0].GetElementList();
+    return parameter_space_.GetElementList(0);
   }
 
   std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctions(
       int element_number,
       const itg::IntegrationRule<1> &rule) const {
-    return parameter_space_[0].EvaluateAllElementNonZeroBasisFunctions(element_number, rule);
+    return parameter_space_.EvaluateAllElementNonZeroBasisFunctions(0, element_number, rule);
   }
 
   std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctionDerivatives(
       int element_number,
       const itg::IntegrationRule<1> &rule) const {
     return ParameterSpace2PhysicalSpace(
-        parameter_space_[0].EvaluateAllElementNonZeroBasisFunctionDerivatives(element_number, rule),
+        parameter_space_.EvaluateAllElementNonZeroBasisFunctionDerivatives(0, element_number, rule),
         element_number,
         rule);
   }
@@ -101,40 +114,6 @@ class Spline {
     return dx_dxi * dxi_dtildexi;
   }
 
-  std::vector<double> ExtractControlPointValues(std::array<ParamCoord, DIM> param_coord, int dimension) const {
-    std::array<int, DIM + 1> start;
-    std::array<int, DIM + 1> last;
-    std::array<int, DIM + 1> total_length;
-    std::array<int, DIM + 1> current;
-    start[0] = dimension;
-    last[0] = dimension;
-    current[0] = dimension;
-    total_length[0] = dim;
-    int M = 1;
-    for (int i = 0; i < DIM; ++i) {
-      start[i + 1] = GetKnotVector(i).GetKnotSpan(param_coord[i]) - GetDegree(i);
-      last[i + 1] = start[i + 1] + parameter_space_[i].degree() + 1;
-      total_length[i + 1] = parameter_space_[i].knot_vector().GetNumberOfKnots() - parameter_space_[i].degree() - 1;
-      current[i + 1] = start[i + 1];
-      M *= (last[i + 1] - start[i + 1]);
-    }
-    util::MultiIndexHandler<DIM + 1> multiIndexHandler(total_length);
-    std::vector<double> vector;
-    for (int i = 0; i < M; ++i) {
-      multiIndexHandler.SetIndices(current);
-      vector.push_back(control_points_[multiIndexHandler.Get1DIndex()]);
-      for (int i = 0; i < DIM; ++i) {
-        if (current[i + 1] == last[i + 1] - 1) {
-          current[i + 1] = start[i + 1];
-        } else {
-          current[i + 1]++;
-          break;
-        }
-      }
-    }
-    return vector;
-  }
-
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
     for (int dim = 0; dim < DIM; dim++) {
@@ -147,15 +126,14 @@ class Spline {
     }
   }
 
-  double ComputeWeightedSum(const std::vector<double> &basis_function_values,
-                            std::vector<double> control_point_values) const {
-    std::transform(basis_function_values.begin(),
-                   basis_function_values.end(),
-                   control_point_values.begin(),
-                   control_point_values.begin(),
-                   std::multiplies<double>());
-    return std::accumulate(control_point_values.begin(), control_point_values.end(), 0.0, std::plus<double>());
-  }
+  virtual double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
+                                          std::array<int, DIM> indices,
+                                          int dimension) const = 0;
+
+  virtual double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,
+                                                    std::array<int, DIM> derivative,
+                                                    std::array<int, DIM> indices,
+                                                    int dimension) const = 0;
 
   std::vector<elm::ElementIntegrationPoint> ParameterSpace2PhysicalSpace(
       std::vector<elm::ElementIntegrationPoint> element_integration_points,
@@ -179,40 +157,27 @@ class Spline {
   }
 
   ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
-    return parameter_space_[0].ReferenceSpace2ParameterSpace(upper, lower, point);
+    return parameter_space_.ReferenceSpace2ParameterSpace(upper, lower, point);
   }
 
-  std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM>
-  CreateArrayFirstNonZeroBasisFunction(std::array<ParamCoord, DIM> param_coord) const {
-    std::array<std::vector<std::unique_ptr<baf::BasisFunction>>::const_iterator, DIM> first_non_zero;
+  std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
+    std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
-      first_non_zero[i] = parameter_space_[i].GetFirstNonZeroKnot(param_coord[i]);
+      first_non_zero[i] =
+          this->parameter_space_.GetKnotVector(i).GetKnotSpan(param_coord[i]) - this->parameter_space_.GetDegree(i);
     }
     return first_non_zero;
   }
 
-  std::array<int, DIM> ArrayTotalLength() const {
+  std::array<int, DIM> GetNumberOfBasisFunctionsToEvaluate() const {
     std::array<int, DIM> total_length;
     for (int i = 0; i < DIM; ++i) {
-      total_length[i] = parameter_space_[i].degree() + 1;
+      total_length[i] = parameter_space_.GetDegree(i) + 1;
     }
     return total_length;
   }
 
-  int MultiIndexHandlerShort() const {
-    int M = 1;
-    std::array<int, DIM> total_length = ArrayTotalLength();
-    for (int i = 0; i < DIM; ++i) {
-      M *= total_length[i];
-    }
-    return M;
-  }
-
-  virtual std::vector<double> EvaluateAllNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const = 0;
-
-  std::array<ParameterSpace, DIM> parameter_space_;
-  std::vector<double> control_points_;
-  int dim;
+  ParameterSpace<DIM> parameter_space_;
 };
 }  // namespace spl
 
