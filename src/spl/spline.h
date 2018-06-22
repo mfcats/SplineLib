@@ -73,6 +73,7 @@ class Spline {
       auto indices = basisFunctionHandler.GetIndices();
       std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
       for (int j = 0; j < dimensions.size(); ++j) {
+        auto a = GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
         vector[j] += GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
       }
       basisFunctionHandler++;

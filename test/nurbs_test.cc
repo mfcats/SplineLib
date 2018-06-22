@@ -182,7 +182,8 @@ TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtFirstKnot)
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtValueBetweenKnots) {
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.5}}, {0}, {2})[0],
               DoubleNear(-0.512, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.5}}, {1}, {2})[0], -2.816);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.5}}, {1}, {2})[0],
+              DoubleNear(-2.816, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtLastKnot) {

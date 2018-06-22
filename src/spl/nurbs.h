@@ -41,22 +41,6 @@ class NURBS : public Spline<DIM> {
   NURBS(ParameterSpace<DIM> parameter_space, WeightedPhysicalSpace<DIM> physical_space) : Spline<DIM>(std::move(
       parameter_space)), physical_space_(physical_space) {}
 
-  std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
-                                         const std::vector<int> &dimensions,
-                                         std::array<int, DIM> derivative) const override {
-    this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
-    if (derivative == std::array<int, DIM>{0}) {
-      return this->Evaluate(param_coord, dimensions);
-    }
-    std::vector<double> evaluated_point(dimensions.size(), 0);
-    for (int i = 0; i < dimensions.size(); ++i) {
-      evaluated_point[i] = (GetHomogenousDerivative(param_coord, dimensions[i], derivative)
-          - GetSum(param_coord, derivative, dimensions[i]))
-          / GetWeightDerivative(param_coord, std::array<int, DIM>{0});
-    }
-    return evaluated_point;
-  }
-
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,
@@ -70,6 +54,7 @@ class NURBS : public Spline<DIM> {
                                             std::array<int, DIM> indices,
                                             int dimension) const {
     double x = GetRationalBasisFunctionDerivative(param_coord, derivative, indices, dimension);
+    double y = physical_space_.GetControlPoint(indices).GetValue(dimension);
     return x * physical_space_.GetControlPoint(indices).GetValue(dimension);
   }
 
@@ -81,13 +66,75 @@ class NURBS : public Spline<DIM> {
       return GetEvaluatedControlPoint(param_coord, indices, dimension);
     }
     double a = GetEvaluatedDerivativeWeight(param_coord, derivative, indices);
-    return 1.0;
+    double b = GetDerivativesSum(param_coord, derivative, indices, dimension);
+    double c = GetEvaluatedWeightSum(param_coord);
+    return (c != 0) ? (a - b) / c : 0;
+  }
+
+  double GetDerivativesSum(std::array<ParamCoord, DIM> param_coord,
+                           std::array<int, DIM> derivative,
+                           std::array<int, DIM> indices,
+                           int dimension) const {
+    util::MultiIndexHandler<DIM> derivativeHandler(GetDerivativeHandler(derivative));
+    derivativeHandler++;
+    double sum = 0;
+    for (int i = 1; i < derivativeHandler.Get1DLength(); i++, derivativeHandler++) {
+      auto a = binomialCoefficient(derivative, derivativeHandler.GetIndices());
+      auto b = GetRationalBasisFunctionDerivative(param_coord,
+                                                  derivativeHandler.GetDifferenceIndices(),
+                                                  indices,
+                                                  dimension);
+      auto c = GetEvaluatedDerivativeWeightSum(param_coord, derivativeHandler.GetIndices());
+      sum += binomialCoefficient(derivative, derivativeHandler.GetIndices())
+          * GetRationalBasisFunctionDerivative(param_coord,
+                                               derivativeHandler.GetDifferenceIndices(),
+                                               indices,
+                                               dimension)
+          * GetEvaluatedDerivativeWeightSum(param_coord, derivativeHandler.GetIndices());
+    }
+    return sum;
+  }
+
+  double GetEvaluatedDerivativeWeightSum(std::array<ParamCoord, DIM> param_coord,
+                                         std::array<int, DIM> derivative) const {
+    double sum = 0;
+    util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctions());
+    for (int i = 0; i < basisFunctionHandler.Get1DLength(); i++, basisFunctionHandler++) {
+      sum += GetEvaluatedDerivativeWeight(param_coord, derivative, basisFunctionHandler.GetIndices());
+    }
+    return sum;
+  }
+
+  double GetEvaluatedWeightSum(std::array<ParamCoord, DIM> param_coord) const {
+    double sum = 0;
+    util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctions());
+    for (int i = 0; i < basisFunctionHandler.Get1DLength(); i++, basisFunctionHandler++) {
+      sum += GetEvaluatedWeight(param_coord, basisFunctionHandler.GetIndices());
+    }
+    return sum;
+  }
+
+  std::array<int, DIM> GetNumberOfBasisFunctions() const {
+    std::array<int, DIM> total_length;
+    for (int i = 0; i < DIM; ++i) {
+      total_length[i] =
+          this->parameter_space_.GetKnotVector(i).GetNumberOfKnots() - this->parameter_space_.GetDegree(i) - 1;
+    }
+    return total_length;
   }
 
   double GetEvaluatedDerivativeWeight(std::array<ParamCoord, DIM> param_coord,
                                       std::array<int, DIM> derivative,
                                       std::array<int, DIM> indices) const {
+    auto a = this->parameter_space_.GetBasisFunctionDerivatives(indices, param_coord, derivative);
     return this->parameter_space_.GetBasisFunctionDerivatives(indices, param_coord, derivative)
+        * physical_space_.GetWeight(indices);
+  }
+
+  double GetEvaluatedWeight(std::array<ParamCoord, DIM> param_coord,
+                            std::array<int, DIM> indices) const {
+    auto a = this->parameter_space_.GetBasisFunctions(indices, param_coord);
+    return this->parameter_space_.GetBasisFunctions(indices, param_coord)
         * physical_space_.GetWeight(indices);
   }
 
