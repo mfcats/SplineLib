@@ -30,7 +30,7 @@ class SquareGenerator {
   std::unique_ptr<BSpline<2>> CreateSquare() const;
 
  private:
-  std::array<baf::KnotVector, 2 > knot_vectors_;
+  std::array<baf::KnotVector, 2> knot_vectors_;
   std::array<int, 2> degrees_;
   std::vector<baf::ControlPoint> control_points_;
   ParamCoord one_{1};
