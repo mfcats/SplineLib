@@ -105,6 +105,11 @@ TEST_F(ABSpline, ThrowsExceptionForDifferentControlPointDimensions) {
   ASSERT_THROW(std::make_unique<spl::BSpline<1>>(knot_vector_, degree_, control_points_), std::runtime_error);
 }
 
+TEST_F(ABSpline, ThrowsExceptionForNotFittingKnotVectorAndControlPoints) {
+  control_points_.emplace_back(std::vector<double>({0.0, 1.0}));
+  ASSERT_THROW(std::make_unique<spl::BSpline<1>>(knot_vector_, degree_, control_points_), std::runtime_error);
+}
+
 TEST_F(ABSpline, ThrowsExceptionForEvaluationAt6_0) {
   ASSERT_THROW(b_spline->Evaluate({ParamCoord{6.0}}, {0}), std::runtime_error);
 }
