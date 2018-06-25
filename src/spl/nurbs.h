@@ -55,7 +55,7 @@ class NURBS : public Spline<DIM> {
   double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,
                                             std::array<int, DIM> derivative,
                                             std::array<int, DIM> indices,
-                                            int dimension) const {
+                                            int dimension) const override {
     return GetRationalBasisFunctionDerivative(param_coord, derivative, indices, dimension)
         * physical_space_.GetControlPoint(indices).GetValue(dimension);
   }
