@@ -51,7 +51,7 @@ class KnotVector {
   bool operator==(const KnotVector &rhs) const;
   ParamCoord &operator[](size_t index);
 
-  ParamCoord GetKnot(size_t index) const;
+  virtual ParamCoord GetKnot(size_t index) const;
   ParamCoord GetLastKnot() const;
   virtual int64_t GetKnotSpan(ParamCoord param_coord) const;
   virtual size_t GetNumberOfKnots() const;
