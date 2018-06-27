@@ -268,32 +268,55 @@ TEST_F(BasisFunctionEx21N21, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N31 : public Test {
  public:
   BasisFunctionEx21N31() :
-      knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                       ParamCoord{1}, ParamCoord{1}})))),
-      basis_function_(knot_vector_, 1, 3) {}
+      knot_vector_ptr(std::make_shared<MockKnotVector>()),
+      basis_function_(knot_vector_ptr, 1, 3) {}
 
  protected:
-  std::shared_ptr<baf::KnotVector> knot_vector_;
+  std::shared_ptr<MockKnotVector> knot_vector_ptr;
   baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N31, IsZeroAt0_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.0}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.0}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N31, IsZeroAt0_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.5}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.5}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N31, IsZeroAt1_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.0}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{1.0}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N31, IsZeroAt1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N31, IsZeroAtMinus1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{-1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}), DoubleEq(0.0));
 }
 
@@ -301,32 +324,91 @@ TEST_F(BasisFunctionEx21N31, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N02 : public Test {
  public:
   BasisFunctionEx21N02() :
-      knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                       ParamCoord{1}, ParamCoord{1}})))),
-      basis_function_(knot_vector_, 2, 0) {}
+      knot_vector_ptr(std::make_shared<MockKnotVector>()),
+      basis_function_(knot_vector_ptr, 2, 0) {}
 
  protected:
-  std::shared_ptr<baf::KnotVector> knot_vector_;
+  std::shared_ptr<MockKnotVector> knot_vector_ptr;
   baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N02, IsZeroAt0_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.0}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.0}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(2)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(0))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(1))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(2))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(5)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(1.0));
 }
 
-TEST_F(BasisFunctionEx21N02, IsZeroAt0_5) {
+TEST_F(BasisFunctionEx21N02, Is0_25At0_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.5}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.5}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(2)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(0))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(1))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(2))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(5)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}), DoubleEq(0.25));
 }
 
 TEST_F(BasisFunctionEx21N02, IsZeroAt1_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.0}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{1.0}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(2)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(0))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(1))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(2))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(5)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N02, IsZeroAt1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N02, IsZeroAtMinus1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{-1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}), DoubleEq(0.0));
 }
 
@@ -334,32 +416,91 @@ TEST_F(BasisFunctionEx21N02, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N12 : public Test {
  public:
   BasisFunctionEx21N12() :
-      knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                       ParamCoord{1}, ParamCoord{1}})))),
-      basis_function_(knot_vector_, 2, 1) {}
+      knot_vector_ptr(std::make_shared<MockKnotVector>()),
+      basis_function_(knot_vector_ptr, 2, 1) {}
 
  protected:
-  std::shared_ptr<baf::KnotVector> knot_vector_;
+  std::shared_ptr<MockKnotVector> knot_vector_ptr;
   baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N12, IsZeroAt0_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.0}))
+      .Times(7)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.0}))
+      .Times(7)
+      .WillRepeatedly(Return(int64_t(2)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(1))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(2))
+      .Times(7)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(7)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(4))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(0.0));
 }
 
-TEST_F(BasisFunctionEx21N12, IsZeroAt0_5) {
+TEST_F(BasisFunctionEx21N12, Is0_5At0_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.5}))
+      .Times(7)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.5}))
+      .Times(7)
+      .WillRepeatedly(Return(int64_t(2)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(1))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(2))
+      .Times(7)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(7)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(4))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}), DoubleEq(0.5));
 }
 
 TEST_F(BasisFunctionEx21N12, IsZeroAt1_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.0}))
+      .Times(7)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{1.0}))
+      .Times(7)
+      .WillRepeatedly(Return(int64_t(2)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(1))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(2))
+      .Times(7)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(7)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(4))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N12, IsZeroAt1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N12, IsZeroAtMinus1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{-1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}), DoubleEq(0.0));
 }
 
@@ -367,109 +508,243 @@ TEST_F(BasisFunctionEx21N12, IsZeroAtMinus1_5) {
 class BasisFunctionEx21N22 : public Test {
  public:
   BasisFunctionEx21N22() :
-      knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                       ParamCoord{1}, ParamCoord{1}})))),
-      basis_function_(knot_vector_, 2, 2) {}
+      knot_vector_ptr(std::make_shared<MockKnotVector>()),
+      basis_function_(knot_vector_ptr, 2, 2) {}
 
  protected:
-  std::shared_ptr<baf::KnotVector> knot_vector_;
+  std::shared_ptr<MockKnotVector> knot_vector_ptr;
   baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N22, IsZeroAt0_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.0}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.0}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(2)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(2))
+      .Times(5)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(4))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(5))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(0.0));
 }
 
-TEST_F(BasisFunctionEx21N22, IsZeroAt0_5) {
+TEST_F(BasisFunctionEx21N22, Is0_25At0_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.5}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.5}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(2)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(2))
+      .Times(5)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(4))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(5))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}), DoubleEq(0.25));
 }
 
 TEST_F(BasisFunctionEx21N22, IsOneAt1_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.0}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{1.0}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(2)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(2))
+      .Times(5)
+      .WillRepeatedly(Return(ParamCoord{0.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(4))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(5))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{1.0}));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}), DoubleEq(1.0));
 }
 
 TEST_F(BasisFunctionEx21N22, IsZeroAt1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N22, IsZeroAtMinus1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{-1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}), DoubleEq(0.0));
 }
 
 // Test basis function N_{0,1} from NURBS book example 2.2
 class BasisFunctionEx22N01 : public Test {
  public:
-  BasisFunctionEx22N01() : knot_vector_(std::make_shared<baf::KnotVector>((baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                                            ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
-                                                                            ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
-                                                                            ParamCoord{5}, ParamCoord{5}}))))),
-                           basis_function_(knot_vector_, 1, 0) {}
+  BasisFunctionEx22N01() : knot_vector_ptr(std::make_shared<MockKnotVector>()),
+                           basis_function_(knot_vector_ptr, 1, 0) {}
 
  protected:
-  std::shared_ptr<baf::KnotVector> knot_vector_;
+  std::shared_ptr<MockKnotVector> knot_vector_ptr;
   baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt0_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.0}))
+      .Times(2)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.0}))
+      .Times(2)
+      .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 0),
               DoubleEq(basis_function_.Evaluate(ParamCoord{0.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.5}))
+      .Times(2)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{1.5}))
+      .Times(2)
+      .WillRepeatedly(Return(int64_t(3)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1.5}, 0),
               DoubleEq(basis_function_.Evaluate(ParamCoord{1.5})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt2_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{2.0}))
+      .Times(2)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{2.0}))
+      .Times(2)
+      .WillRepeatedly(Return(int64_t(3)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{2.0}, 0),
               DoubleEq(basis_function_.Evaluate(ParamCoord{2.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt4_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{4.0}))
+      .Times(2)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{4.0}))
+      .Times(2)
+      .WillRepeatedly(Return(int64_t(3)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.0}, 0),
               DoubleEq(basis_function_.Evaluate(ParamCoord{4.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt5_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{5}))
+      .Times(2)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{5}))
+      .Times(2)
+      .WillRepeatedly(Return(int64_t(3)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{5.0}, 0),
               DoubleEq(basis_function_.Evaluate(ParamCoord{5.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt6_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{6}))
+      .Times(2)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{6}))
+      .Times(2)
+      .WillRepeatedly(Return(int64_t(3)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{6.0}, 0),
               DoubleEq(basis_function_.Evaluate(ParamCoord{6.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAtMinus0_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{-0.5}))
+      .Times(2)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{-0.5}, 0),
               DoubleEq(basis_function_.Evaluate(ParamCoord{-0.5})));
 }
 
 TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt0_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.0}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.0}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0.0}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1.5}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt2_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{2.0}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{2.0}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{2.0}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt4_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{4.0}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{4.0}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.0}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt5_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{5}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{5}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{5.0}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt6_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{6}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{6}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{6.0}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAtMinus0_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{-0.5}))
+      .Times(1)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{-0.5}, 1), DoubleEq(0.0));
 }
 
