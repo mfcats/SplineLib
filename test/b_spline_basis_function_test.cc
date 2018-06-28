@@ -697,7 +697,7 @@ TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt1_5) {
       .WillRepeatedly(Return(true));
   EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{1.5}))
       .Times(1)
-      .WillRepeatedly(Return(int64_t(2)));
+      .WillRepeatedly(Return(int64_t(3)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1.5}, 1), DoubleEq(0.0));
 }
 
@@ -707,7 +707,7 @@ TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt2_0) {
       .WillRepeatedly(Return(true));
   EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{2.0}))
       .Times(1)
-      .WillRepeatedly(Return(int64_t(2)));
+      .WillRepeatedly(Return(int64_t(4)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{2.0}, 1), DoubleEq(0.0));
 }
 
@@ -717,7 +717,7 @@ TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt4_0) {
       .WillRepeatedly(Return(true));
   EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{4.0}))
       .Times(1)
-      .WillRepeatedly(Return(int64_t(2)));
+      .WillRepeatedly(Return(int64_t(7)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.0}, 1), DoubleEq(0.0));
 }
 
@@ -727,17 +727,14 @@ TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt5_0) {
       .WillRepeatedly(Return(true));
   EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{5}))
       .Times(1)
-      .WillRepeatedly(Return(int64_t(2)));
+      .WillRepeatedly(Return(int64_t(9)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{5.0}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt6_0) {
   EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{6}))
       .Times(1)
-      .WillRepeatedly(Return(true));
-  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{6}))
-      .Times(1)
-      .WillRepeatedly(Return(int64_t(2)));
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{6.0}, 1), DoubleEq(0.0));
 }
 
@@ -751,121 +748,361 @@ TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAtMinus0_5) {
 // Test basis function derivative N_{3,1} from NURBS book example 2.2
 class BasisFunctionEx22N13 : public Test {
  public:
-  BasisFunctionEx22N13() : knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                                            ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
-                                                                            ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
-                                                                            ParamCoord{5}, ParamCoord{5}})))),
-                           basis_function_(knot_vector_, 1, 3) {}
+  BasisFunctionEx22N13() : knot_vector_ptr(std::make_shared<MockKnotVector>()),
+                           basis_function_(knot_vector_ptr, 1, 3) {}
 
  protected:
-  std::shared_ptr<baf::KnotVector> knot_vector_;
+  std::shared_ptr<MockKnotVector> knot_vector_ptr;
   baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N13, FirstDerevitveIsEqualZeroAt0_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.0}))
+       .Times(1)
+       .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.0}))
+       .Times(1)
+       .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0.0}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N13, FirstDerevitveIsEqualZeroAt0_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{0.5}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{0.5}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(2)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0.5}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N13, FirstDerevitveIsEqual1At1_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.0}))
+      .Times(3)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{1.0}))
+      .Times(3)
+      .WillRepeatedly(Return(int64_t(3)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{1}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(4))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{2.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(5))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{3.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1.0}, 1), DoubleEq(1.0));
 }
 
 TEST_F(BasisFunctionEx22N13, FirstDerevitveIsEqual1At1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.5}))
+      .Times(3)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{1.5}))
+      .Times(3)
+      .WillRepeatedly(Return(int64_t(3)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{1}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(4))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{2.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(5))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{3.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1.5}, 1), DoubleEq(1.0));
 }
 
 TEST_F(BasisFunctionEx22N13, FirstDerevitveIsEqualMinus1At2_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{2}))
+      .Times(3)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{2}))
+      .Times(3)
+      .WillRepeatedly(Return(int64_t(4)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{1}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(4))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{2.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(5))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{3.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{2.0}, 1), DoubleEq(-1.0));
 }
 
 TEST_F(BasisFunctionEx22N13, FirstDerevitveIsEqualMinus1At2_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{2.5}))
+      .Times(3)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{2.5}))
+      .Times(3)
+      .WillRepeatedly(Return(int64_t(4)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{1}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(4))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{2.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(5))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{3.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{2.5}, 1), DoubleEq(-1.0));
 }
 
 TEST_F(BasisFunctionEx22N13, FirstDerevitveIsEqual0At3_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{3}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{3}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(5)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{3.0}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N13, FourthDerevitveIsEqual0At1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.5}))
+      .Times(3)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{1.5}))
+      .Times(3)
+      .WillRepeatedly(Return(int64_t(3)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(3))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{1}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(4))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{2.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(5))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{3.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1.5}, 4), DoubleEq(0.0));
 }
 
 // Test basis function derivative N_{6,1} from NURBS book example 2.2
 class BasisFunctionEx22N61 : public Test {
  public:
-  BasisFunctionEx22N61() : knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                                            ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
-                                                                            ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
-                                                                            ParamCoord{5}, ParamCoord{5}})))),
-                           basis_function_(knot_vector_, 1, 6) {}
+  BasisFunctionEx22N61() : knot_vector_ptr(std::make_shared<MockKnotVector>()),
+                           basis_function_(knot_vector_ptr, 1, 6) {}
 
  protected:
-  std::shared_ptr<baf::KnotVector> knot_vector_;
+  std::shared_ptr<MockKnotVector> knot_vector_ptr;
   baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N61, FirstDerevitveIsEqualMinus1At4_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{4.0}))
+      .Times(3)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{4.0}))
+      .Times(3)
+      .WillRepeatedly(Return(int64_t(7)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(6))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{1}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(7))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{2.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(8))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{3.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.0}, 1), DoubleEq(-1.0));
 }
 
 TEST_F(BasisFunctionEx22N61, SecondDerevitveIsEqual0At4_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{4.5}))
+      .Times(3)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{4.5}))
+      .Times(3)
+      .WillRepeatedly(Return(int64_t(7)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(6))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{1}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(7))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{2.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(8))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{3.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.5}, 2), DoubleEq(0.0));
 }
 
 // Test basis function derivative N_{7,2} from NURBS book example 2.2
 class BasisFunctionEx22N72 : public Test {
  public:
-  BasisFunctionEx22N72() : knot_vector_(std::make_shared<baf::KnotVector>(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                                            ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
-                                                                            ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
-                                                                            ParamCoord{5}, ParamCoord{5}})))),
-                           basis_function_(knot_vector_, 2, 7) {}
+  BasisFunctionEx22N72() : knot_vector_ptr(std::make_shared<MockKnotVector>()),
+                           basis_function_(knot_vector_ptr, 2, 7) {}
 
  protected:
-  std::shared_ptr<baf::KnotVector> knot_vector_;
+  std::shared_ptr<MockKnotVector> knot_vector_ptr;
   baf::BSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N72, FirstDerevitveIsEqual0At4_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{4}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{4}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(7)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(7))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{4}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(8))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(9))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(10))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.0}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N72, SecondDerevitveIsEqual2At4_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{4}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{4}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(7)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(7))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{4}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(8))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(9))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(10))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.0}, 2), DoubleEq(2.0));
 }
 
 TEST_F(BasisFunctionEx22N72, ThirdDerevitveIsEqual0At4_0) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{4}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{4}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(7)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(7))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{4}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(8))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(9))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(10))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.0}, 3), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N72, FirstDerevitveIsEqual1At4_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{4.5}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{4.5}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(7)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(7))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{4}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(8))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(9))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(10))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.5}, 1), DoubleEq(1.0));
 }
 
 TEST_F(BasisFunctionEx22N72, SecondDerevitveIsEqual2At4_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{4.5}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{4.5}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(7)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(7))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{4}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(8))
+      .Times(4)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(9))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(10))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.5}, 2), DoubleEq(2.0));
 }
 
 TEST_F(BasisFunctionEx22N72, ThirdDerevitveIsEqual0At4_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{4.5}))
+      .Times(5)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{4.5}))
+      .Times(5)
+      .WillRepeatedly(Return(int64_t(7)));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(7))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{4}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(8))
+      .Times(3)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(9))
+      .Times(2)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
+  EXPECT_CALL(*knot_vector_ptr, GetKnot(10))
+      .Times(1)
+      .WillRepeatedly(Return(ParamCoord{5.0}));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.5}, 3), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N72, FirstDerevitveIsEqual2At5_0) {
-  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{5.0}, 1), DoubleEq(2.0));
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{5}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{5}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(10)));
+  ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{5.0}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N72, FirstDerevitveIsEqual0At5_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{5.5}))
+      .Times(1)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{5.5}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N72, FirstDerevitveIsEqual0At1_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(true));
+  EXPECT_CALL(*knot_vector_ptr, GetKnotSpan(ParamCoord{1.5}))
+      .Times(1)
+      .WillRepeatedly(Return(int64_t(3)));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1.5}, 1), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx22N72, FirstDerevitveIsEqual0AtMinus5_5) {
+  EXPECT_CALL(*knot_vector_ptr, IsInKnotVectorRange(ParamCoord{-5.5}))
+      .Times(1)
+      .WillRepeatedly(Return(false));
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{-5.5}, 1), DoubleEq(0.0));
 }
