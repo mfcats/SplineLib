@@ -138,8 +138,8 @@ class ParameterSpace {
   }
 
  private:
-  std::array<baf::KnotVector, DIM> knot_vector_;
   std::array<int, DIM> degree_;
+  std::array<baf::KnotVector, DIM> knot_vector_;
   std::array<std::vector<std::shared_ptr<baf::BasisFunction>>, DIM> basis_functions_;
 };
 }  // namespace spl

@@ -33,7 +33,7 @@ baf::KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : kn
 
 baf::KnotVector baf::KnotVector::operator-(const baf::KnotVector &rhs) const {
   std::vector<ParamCoord> differences;
-  for(int knot = 0; knot < this->GetNumberOfKnots(); knot++) {
+  for (auto knot = 0u; knot < this->GetNumberOfKnots(); knot++) {
     differences.push_back(ParamCoord{knots_[knot] - rhs.knots_[knot]});
   }
   return baf::KnotVector(differences);

@@ -28,7 +28,7 @@ class PhysicalSpace {
   PhysicalSpace() = default;
   explicit PhysicalSpace(const std::vector<baf::ControlPoint> &control_points, std::array<int, DIM> number_of_points)
       : dimension_(control_points[0].GetDimension()), number_of_points_(number_of_points) {
-    int total_number_of_points = 1;
+    long unsigned int total_number_of_points = 1;
     for (int dim = 0; dim < DIM; dim++) {
       total_number_of_points *= number_of_points[dim];
     }
@@ -58,9 +58,9 @@ class PhysicalSpace {
   }
 
  protected:
-  std::vector<double> control_points_;
-  std::array<int, DIM> number_of_points_;
   int dimension_;
+  std::array<int, DIM> number_of_points_;
+  std::vector<double> control_points_;
 };
 
 }  // namespace spl

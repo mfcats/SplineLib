@@ -29,7 +29,6 @@ class Projection {
  public:
   static std::array<double, DIM> ProjectionOnSpline(std::vector<double> pointPhysicalCoords,
                                                     spl::Spline<DIM> *spline) {
-    double kappa;
     double tolerance = 0.0001;
     int iteration = 0;
     double delta;
@@ -45,7 +44,6 @@ class Projection {
       if (DIM == 1) {
         std::vector<double> firstDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {1});
         std::vector<double> secondDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {2});
-        kappa = ComputeArea(firstDer, secondDer) / pow(ComputeTwoNorm(firstDer), 3);
         std::vector<double> projectionVector = ComputePiecewiseVectorDifference(pointPhysicalCoords,
                                                                                 spline->Evaluate(
                                                                                     projectionPointParamCoords,

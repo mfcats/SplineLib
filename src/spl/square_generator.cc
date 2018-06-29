@@ -30,7 +30,7 @@ spl::SquareGenerator::SquareGenerator() {
                        baf::ControlPoint(std::vector<double>({0.0, 1.0})),
                        baf::ControlPoint(std::vector<double>({1.0, 1.0}))};
     knot_vector_ptr_ = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vectors_);
-};
+}
 
 spl::SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({degree, degree}) {
   std::vector<ParamCoord> knots;
