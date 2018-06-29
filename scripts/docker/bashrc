@@ -1,5 +1,5 @@
-export SPACK_ROOT=/code/.cache/spack
-export PATH=/code/.cache/spack/bin:$PATH
+export SPACK_ROOT=/spack/.cache/spack
+export PATH=/spack/.cache/spack/bin:$PATH
 . $SPACK_ROOT/share/spack/setup-env.sh
 export FORCE_UNSAFE_CONFIGURE=1
 
