@@ -1,1 +1,9 @@
+language: cpp
+sudo: required
+dist: trusty
 
+install:
+  - docker pull cm314/splinelib:splinelibtests_gcc8
+
+script:
+  - docker run cm314/splinelib:splinelibtests_gcc8
