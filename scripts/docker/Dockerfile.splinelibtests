@@ -7,7 +7,4 @@ WORKDIR /code
 ADD . /code
 SHELL ["bash"]
 
-RUN prepare_splinelibtests.sh
-
-WORKDIR /code/SplineLib/build
-CMD ["/bin/bash", "-c", "./test/SplineLibTests"]
+CMD ["/bin/bash", "-c", "./prepare_splinelibtests.sh"]
