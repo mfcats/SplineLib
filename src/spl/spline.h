@@ -35,7 +35,7 @@ class Spline {
  public:
   virtual ~Spline() = default;
   Spline() = default;
-  Spline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector, std::array<int, DIM> degree) :
+  Spline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector, std::array<int, DIM> degree) :
       parameter_space_(knot_vector, degree) {}
   explicit Spline(ParameterSpace<DIM> parameter_space) : parameter_space_(std::move(parameter_space)) {}
 
@@ -81,7 +81,7 @@ class Spline {
   }
 
   std::shared_ptr<baf::KnotVector> GetKnotVector(int i) const {
-    return parameter_space_[i].knot_vector();
+    return parameter_space_.GetKnotVector(i);
   }
 
   std::vector<elm::Element> GetElementList() const {
@@ -164,7 +164,7 @@ class Spline {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] =
-          this->parameter_space_.GetKnotVector(i).GetKnotSpan(param_coord[i]) - this->parameter_space_.GetDegree(i);
+          this->parameter_space_.GetKnotVector(i)->GetKnotSpan(param_coord[i]) - this->parameter_space_.GetDegree(i);
     }
     return first_non_zero;
   }

@@ -40,8 +40,8 @@ class A2DNurbs : public Test {
         baf::ControlPoint(std::vector<double>({2.5, 3.5})),
         baf::ControlPoint(std::vector<double>({5.0, 2.0}))
     };
-    std::shared_ptr<std::array<baf::KnotVector, 2>>
-        knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vector);
+    std::array<std::shared_ptr<baf::KnotVector>, 2>
+        knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0]), std::make_shared<baf::KnotVector>(knot_vector[1])};
     nurbs_ = std::make_unique<spl::NURBS<2>>(knot_vector_ptr, degree, control_points, weights);
   }
 
@@ -135,8 +135,8 @@ class A2DNurbsWithAllWeights1 : public Test {
         baf::ControlPoint(std::vector<double>({2.5, 3.5})),
         baf::ControlPoint(std::vector<double>({5.0, 2.0}))
     };
-    std::shared_ptr<std::array<baf::KnotVector, 2>>
-        knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vector);
+    std::array<std::shared_ptr<baf::KnotVector>, 2>
+        knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0]), std::make_shared<baf::KnotVector>(knot_vector[1])};
     nurbs_ = std::make_unique<spl::NURBS<2>>(knot_vector_ptr, degree, control_points, weights);
     bspline_ = std::make_unique<spl::BSpline<2>>(knot_vector_ptr, degree, control_points);
   }
