@@ -19,7 +19,7 @@ spl::SquareGenerator::SquareGenerator() {
     knot_vectors_ =
         {baf::KnotVector{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}},
          {baf::KnotVector{{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}}}};
-    degrees_ = {2,2};
+  degrees_ = {2, 2};
     control_points_ = {baf::ControlPoint(std::vector<double>({-1.0, -1.0})),
                        baf::ControlPoint(std::vector<double>({0.0, -1.0})),
                        baf::ControlPoint(std::vector<double>({1.0, -1.0})),
