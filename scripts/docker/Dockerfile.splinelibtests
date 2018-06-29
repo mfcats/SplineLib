@@ -1,0 +1,13 @@
+FROM mfcats/splinelib:gcc8_dependencies
+
+# Work in /code
+WORKDIR /code
+
+# Add current directory as working directory to docker
+ADD . /code
+SHELL ["bash"]
+
+RUN prepare_splinelibtests.sh
+
+WORKDIR /code/SplineLib/build
+CMD ["/bin/bash", "-c", "./test/SplineLibTests"]

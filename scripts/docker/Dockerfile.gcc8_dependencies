@@ -1,0 +1,10 @@
+FROM mfcats/splinelib:gcc8
+
+# Work in /code
+WORKDIR /code
+
+# Add current directory as working directory to docker
+ADD . /code
+
+SHELL ["bash"]
+RUN ./prepare_googletest.sh

@@ -1,0 +1,21 @@
+# Build on top of ubuntu
+FROM ubuntu:18.04
+
+# Work in /code
+WORKDIR /code
+
+# Add current directory as working directory to docker
+ADD . /code
+
+# Install all requirements
+RUN ./prepare_environment.sh
+RUN git clone https://github.com/spack/spack.git /code/.cache/spack
+RUN cat /code/bashrc >> /root/.bashrc
+RUN cat /code/bashrc >> /root/.bash_profile
+RUN ./prepare_spack.sh
+
+# Set some common environment variables
+ENV SPACK_ROOT /code/.cache/spack
+ENV PATH "/code/.cache/spack/bin/:${PATH}"
+
+CMD /bin/bash
