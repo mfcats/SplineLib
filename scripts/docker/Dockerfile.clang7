@@ -8,8 +8,9 @@ WORKDIR /spack
 SHELL ["bash", "-c"]
 ENV BASH_ENV /spack/bashrc
 
-# Install linter
-RUN spack install -v cppcheck
-RUN pip install cpplint
+# Install llvm@7.0.0
+RUN spack install -v llvm@7.0.0
+RUN spack load llvm@7.0.0
+RUN spack compiler find
 
 CMD /bin/bash

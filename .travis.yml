@@ -5,7 +5,7 @@ services:
   - docker
 
 install:
-  - docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.splinelibtests
+  - docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test
 
 script:
   - docker run splinelibtests:gcc8

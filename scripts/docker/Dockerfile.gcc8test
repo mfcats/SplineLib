@@ -1,0 +1,16 @@
+FROM mfcats/splinelib:gcc8
+
+# Add current directory as working directory to docker
+ADD . /code
+
+# Set-up shell
+SHELL ["bash", "-c"]
+ENV BASH_ENV /spack/bashrc
+
+# Prepare build
+RUN mkdir /code/build
+WORKDIR /code/build
+RUN spack setup -v splinelib@github
+
+# Build and execute tests
+CMD make && ./test/SplineLibTests
