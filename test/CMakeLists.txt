@@ -29,6 +29,7 @@ set(TEST_SOURCES
         nurbs_test.cc
         nurbs_2_d_test.cc
         nurbs_3_d_test.cc
+        parameter_space_test.cc
         physical_space_test.cc
         weighted_physical_space_test.cc)
 
