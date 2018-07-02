@@ -5,7 +5,7 @@ ADD . /code
 
 # Set-up shell
 SHELL ["bash", "-c"]
-ENV BASH_ENV /spack/bashrc
+ENV BASH_ENV /code/bashrc2
 
 # Prepare build
 RUN echo $SPACK_ROOT
