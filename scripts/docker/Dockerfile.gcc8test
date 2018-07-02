@@ -2,6 +2,7 @@ FROM mfcats/splinelib:gcc8
 
 # Add current directory as working directory to docker
 ADD . /code
+WORKDIR /code
 
 # Set-up shell
 SHELL ["bash", "-c"]
@@ -10,6 +11,7 @@ ENV BASH_ENV /code/bashrc2
 # Prepare build
 RUN echo $SPACK_ROOT
 RUN spack --version
+RUN spack repo add /code/SplineLib/scripts/spack-repo
 RUN mkdir /code/build
 WORKDIR /code/build
 RUN spack setup -v splinelib@github
