@@ -1,4 +1,4 @@
-FROM mfcats/splinelib:gcc8
+FROM cm314/splinelib:googletest_gcc8
 
 # Add current directory as working directory to docker
 ADD . /code
