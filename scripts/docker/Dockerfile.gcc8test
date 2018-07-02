@@ -9,12 +9,10 @@ SHELL ["bash", "-c"]
 ENV BASH_ENV /code/bashrc2
 
 # Prepare build
-RUN /code/.cache/spack/bin/spack --version
-RUN ls
 RUN /code/.cache/spack/bin/spack repo add /code/scripts/spack-repo
+RUN /code/.cache/spack/bin/spack setup -v splinelib@github
 RUN mkdir /code/build
 WORKDIR /code/build
-RUN /code/.cache/spack/bin/spack setup -v splinelib@github
 RUN ./../spconfig.py ..
 
 # Build and execute tests
