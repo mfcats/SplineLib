@@ -9,6 +9,7 @@ SHELL ["bash", "-c"]
 ENV BASH_ENV /code/bashrc2
 
 # Prepare build
+RUN /code/.cache/spack/bin/spack --version
 RUN echo $SPACK_ROOT
 RUN spack --version
 RUN /code/.cache/spack/bin/spack --version
