@@ -5,6 +5,9 @@ services:
   - docker
 
 install:
+  - docker pull mfcats/splinelib:gcc8
+  - ls
+  - pwd
   - docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
 
 script:
