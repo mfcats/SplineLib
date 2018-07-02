@@ -8,9 +8,11 @@ SHELL ["bash", "-c"]
 ENV BASH_ENV /spack/bashrc
 
 # Prepare build
+RUN spack --version
 RUN mkdir /code/build
 WORKDIR /code/build
 RUN spack setup -v splinelib@github
+RUN ./../spconfig.py ..
 
 # Build and execute tests
 CMD make && ./test/SplineLibTests
