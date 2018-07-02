@@ -2,6 +2,7 @@ FROM mfcats/splinelib:gcc8
 
 # Add current directory as working directory to docker
 ADD . /code
+WORKDIR /code
 
 # Set-up shell
 SHELL ["bash", "-c"]
