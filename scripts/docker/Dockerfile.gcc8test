@@ -2,13 +2,13 @@ FROM mfcats/splinelib:gcc8
 
 # Add current directory as working directory to docker
 ADD . /code
-WORKDIR /code
 
 # Set-up shell
 SHELL ["bash", "-c"]
 ENV BASH_ENV /spack/bashrc
 
 # Prepare build
+RUN echo $SPACK_ROOT
 RUN spack --version
 RUN mkdir /code/build
 WORKDIR /code/build
