@@ -35,7 +35,7 @@ class SquareGenerator {
   std::vector<baf::ControlPoint> control_points_;
   ParamCoord one_{1};
   ParamCoord zero_{0};
-  std::shared_ptr<std::array<baf::KnotVector, 2>> knot_vector_ptr_;
+  std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector_ptr_;
 };
 }  // namespace spl
 

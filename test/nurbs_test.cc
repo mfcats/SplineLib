@@ -36,8 +36,8 @@ class NurbsEx4_1 : public Test {
         baf::ControlPoint(std::vector<double>({4.0, 1.0})),
         baf::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
-    std::shared_ptr<std::array<baf::KnotVector, 1>>
-        knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    std::array<std::shared_ptr<baf::KnotVector>, 1>
+    knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
     nurbs = std::make_unique<spl::NURBS<1>>(knot_vector_ptr, degree, control_points, weights);
   }
 
@@ -71,13 +71,13 @@ class ANurbs : public Test {
         baf::ControlPoint(std::vector<double>({6.0, 4.0, 5.3})),
         baf::ControlPoint(std::vector<double>({8.5, 4.5, 0.0}))
     };
-    knot_vector_ = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    knot_vector_[0] = std::make_shared<baf::KnotVector>(knot_vector[0]);
     nurbs = std::make_unique<spl::NURBS<1>>(knot_vector_, degree_, control_points_, weights_);
   }
 
  protected:
   std::unique_ptr<spl::NURBS<1>> nurbs;
-  std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_;
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_;
   std::array<int, 1> degree_;
   std::vector<double> weights_;
   std::vector<baf::ControlPoint> control_points_;
@@ -111,7 +111,7 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) {
 }
 
 TEST_F(ANurbs, CanBeConstructedWithAPhysicalAndAParameterSpace) {
-  spl::ParameterSpace<1> parameter_space = spl::ParameterSpace<1>({(*knot_vector_)[0]}, {degree_[0]});
+  spl::ParameterSpace<1> parameter_space = spl::ParameterSpace<1>(knot_vector_, {degree_[0]});
   spl::WeightedPhysicalSpace<1> physicalSpace = spl::WeightedPhysicalSpace<1>(control_points_, weights_, {7});
   nurbs = std::make_unique<spl::NURBS<1>>(parameter_space, physicalSpace);
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(0.5));
@@ -150,8 +150,8 @@ class NurbsDerivativeEx4_2 : public Test {
         baf::ControlPoint(std::vector<double>({1.0, 1.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0}))
     };
-    std::shared_ptr<std::array<baf::KnotVector, 1>>
-        knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    std::array<std::shared_ptr<baf::KnotVector>, 1>
+        knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
     nurbs = std::make_unique<spl::NURBS<1>>(knot_vector_ptr, degree, control_points, weights);
   }
 

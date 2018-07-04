@@ -35,8 +35,8 @@ class Spline {
  public:
   virtual ~Spline() = default;
   Spline() = default;
-  Spline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector, std::array<int, DIM> degree) :
-      parameter_space_(*knot_vector, degree) {}
+  Spline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector, std::array<int, DIM> degree) :
+      parameter_space_(knot_vector, degree) {}
   explicit Spline(ParameterSpace<DIM> parameter_space) : parameter_space_(std::move(parameter_space)) {}
 
   virtual std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord,
@@ -80,7 +80,7 @@ class Spline {
     return parameter_space_.GetDegree(i);
   }
 
-  baf::KnotVector GetKnotVector(int i) const {
+  std::shared_ptr<baf::KnotVector> GetKnotVector(int i) const {
     return parameter_space_.GetKnotVector(i);
   }
 
@@ -117,10 +117,10 @@ class Spline {
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
     for (int dim = 0; dim < DIM; dim++) {
-      if (!this->GetKnotVector(dim).IsInKnotVectorRange(param_coord[dim])) {
+      if (!this->GetKnotVector(dim)->IsInKnotVectorRange(param_coord[dim])) {
         std::stringstream message;
         message << "The parametric coordinate " << param_coord[dim].get() << " is outside the knot vector range from "
-                << GetKnotVector(dim).GetKnot(0).get() << " to " << GetKnotVector(dim).GetLastKnot().get() << ".";
+                << GetKnotVector(dim)->GetKnot(0).get() << " to " << GetKnotVector(dim)->GetLastKnot().get() << ".";
         throw std::range_error(message.str());
       }
     }
@@ -164,7 +164,7 @@ class Spline {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] =
-          this->parameter_space_.GetKnotVector(i).GetKnotSpan(param_coord[i]) - this->parameter_space_.GetDegree(i);
+          this->parameter_space_.GetKnotVector(i)->GetKnotSpan(param_coord[i]) - this->parameter_space_.GetDegree(i);
     }
     return first_non_zero;
   }

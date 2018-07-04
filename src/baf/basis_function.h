@@ -33,8 +33,10 @@ class BasisFunction {
 
   double EvaluateDerivative(ParamCoord param_coord, int derivative) const;
 
+  int testMock() const ;
+
  protected:
-  BasisFunction(const KnotVector &knot_vector, int degree, uint64_t start);
+  BasisFunction(const std::shared_ptr<KnotVector> knot_Vector, int degree, uint64_t start);
 
   ParamCoord GetKnot(uint64_t knot_position) const;
 
@@ -54,7 +56,7 @@ class BasisFunction {
   // Check if parametric coordinate is in the range of knot spans where the basis function is defined to be non-zero.
   bool IsCoordinateInSupportSpan(ParamCoord param_coord) const;
 
-  KnotVector knotVector_;
+  std::shared_ptr<KnotVector> knotVector_;
   int degree_;
   uint64_t start_of_support_;
 };

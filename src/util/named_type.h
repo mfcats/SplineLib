@@ -35,6 +35,9 @@ class NamedType {
   bool operator< (const NamedType<T, Parameter> &rhs) const {
     return value_ < rhs.get();
   }
+  bool operator==(const NamedType<T, Parameter> &rhs) const {
+    return value_ == rhs.get();
+  }
  private:
   T value_;
 };

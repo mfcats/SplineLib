@@ -30,14 +30,13 @@ template<int DIM>
 class ParameterSpace {
  public:
   ParameterSpace() = default;
-
-  ParameterSpace(const std::array<baf::KnotVector, DIM> &knot_vector, std::array<int, DIM> degree) : degree_(degree),
+  ParameterSpace(const std::array<std::shared_ptr<baf::KnotVector>, DIM> &knot_vector, std::array<int, DIM> degree) : degree_(degree),
                                                                                                      knot_vector_(
                                                                                                          knot_vector) {
     baf::BasisFunctionFactory factory;
     for (int i = 0; i < DIM; i++) {
-      basis_functions_[i].reserve(knot_vector_[i].GetNumberOfKnots() - degree_[i] - 1);
-      for (uint64_t j = 0; j < (knot_vector_[i].GetNumberOfKnots() - degree_[i] - 1); ++j) {
+      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i] - 1);
+      for (uint64_t j = 0; j < (knot_vector_[i]->GetNumberOfKnots() - degree_[i] - 1); ++j) {
         basis_functions_[i].emplace_back(factory.CreateDynamic(knot_vector_[i], j, degree_[i]));
       }
     }
@@ -67,14 +66,14 @@ class ParameterSpace {
 
   std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator GetFirstNonZeroKnot(int direction,
                                                                                        ParamCoord param_coord) const {
-    return basis_functions_[direction].begin() + knot_vector_[direction].GetKnotSpan(param_coord) - degree_[direction];
+    return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord) - degree_[direction];
   }
 
   int GetDegree(int direction) const {
     return degree_[direction];
   }
 
-  baf::KnotVector GetKnotVector(int direction) const {
+  std::shared_ptr<baf::KnotVector> GetKnotVector(int direction) const {
     return knot_vector_[direction];
   }
 
@@ -130,7 +129,7 @@ class ParameterSpace {
   }
 
   std::vector<elm::Element> GetElementList(int direction) const {
-    return elm::ElementGenerator(degree_[direction], knot_vector_[direction]).GetElementList();
+    return elm::ElementGenerator(degree_[direction], *(knot_vector_[direction])).GetElementList();
   }
 
   ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
@@ -138,7 +137,7 @@ class ParameterSpace {
   }
 
  private:
-  std::array<baf::KnotVector, DIM> knot_vector_;
+  std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector_;
   std::array<int, DIM> degree_;
   std::array<std::vector<std::shared_ptr<baf::BasisFunction>>, DIM> basis_functions_;
 };
