@@ -23,13 +23,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "spline.h"
+#include "nurbs_generator.h"
 #include "weighted_physical_space.h"
 
 namespace spl {
 template<int DIM>
 class NURBS : public Spline<DIM> {
  public:
-  NURBS(std::array<std::shared_ptr<baf::KnotVector>, DIM > knot_vector,
+  NURBS(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
         std::array<int, DIM> degree,
         const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) : Spline<DIM>(knot_vector,
                                                                                                          degree) {
@@ -42,6 +43,11 @@ class NURBS : public Spline<DIM> {
 
   NURBS(ParameterSpace<DIM> parameter_space, WeightedPhysicalSpace<DIM> physical_space) : Spline<DIM>(std::move(
       parameter_space)), physical_space_(physical_space) {}
+
+ NURBS(NURBSGenerator<DIM> nurbs_generator) {
+    physical_space_ = nurbs_generator.GetPhysicalSpace();
+    this->parameter_space_ = nurbs_generator.GetParameterSpace();
+  }
 
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,

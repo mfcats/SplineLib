@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "parameter_space.h"
 #include "physical_space.h"
+#include "weighted_physical_space.h"
 
 namespace spl {
 template<int DIM>
@@ -25,8 +26,15 @@ class SplineGenerator {
   SplineGenerator() = default;
   virtual ~SplineGenerator() = default;
 
-  virtual ParameterSpace<DIM> GetParameterSpace() = 0;
-  virtual PhysicalSpace<DIM> GetPhysicalSpace() = 0;
+  SplineGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector, std::array<int, DIM> degree) :
+      parameter_space_(knot_vector, degree) {};
+
+  ParameterSpace<DIM> GetParameterSpace() {
+    return parameter_space_;
+  }
+
+ private:
+  ParameterSpace<DIM> parameter_space_;
 };
 }
 

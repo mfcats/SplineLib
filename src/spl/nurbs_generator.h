@@ -19,9 +19,24 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace spl {
 template<int DIM>
-class NURBSSplineGenerator : public SplineGenerator<DIM> {
+class NURBSGenerator : public SplineGenerator<DIM> {
  public:
+  NURBSGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
+                 std::array<int, DIM> degree,
+                 const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) : SplineGenerator<DIM>(knot_vector, degree) {
+    std::array<int, DIM> number_of_points;
+    for (int i = 0; i < DIM; ++i) {
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
+    }
+    physical_space_ = WeightedPhysicalSpace<DIM>(control_points, weights, number_of_points);
+  }
 
+  WeightedPhysicalSpace<DIM> GetPhysicalSpace() {
+    return physical_space_;
+  }
+
+ private:
+  WeightedPhysicalSpace<DIM> physical_space_;
 };
 }
 

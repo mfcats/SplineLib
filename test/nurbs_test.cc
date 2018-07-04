@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "nurbs.h"
+#include "nurbs_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -206,4 +207,34 @@ TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtValueBetwee
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtLastKnot) {
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{1.0}}, {0}, {3})[0], 0.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{1.0}}, {1}, {3})[0], 3.0);
+}
+
+class ANURBSWithSplineGenerator : public Test {
+ public:
+  ANURBSWithSplineGenerator() {
+    std::array<baf::KnotVector, 1> knot_vector =
+        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
+                          ParamCoord{3}, ParamCoord{3}})};
+    std::array<int, 1> degree = {2};
+    std::vector<double> weights = {1, 4, 1, 1, 1};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({4.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({5.0, -1.0}))
+    };
+    std::array<std::shared_ptr<baf::KnotVector>, 1>
+        knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
+    spl::NURBSGenerator<1> nurbs_generator(knot_vector_ptr, degree, control_points, weights);
+    nurbs = std::make_unique<spl::NURBS<1>>(nurbs_generator);
+
+  }
+
+ protected:
+  std::unique_ptr<spl::NURBS<1>> nurbs;
+};
+
+TEST_F(ANURBSWithSplineGenerator, Returns1_4For1AndDim0) {
+  ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {0})[0], DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
 }
