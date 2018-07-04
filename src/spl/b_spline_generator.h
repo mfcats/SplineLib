@@ -31,6 +31,11 @@ class BSplineGenerator : public SplineGenerator<DIM> {
     physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
   }
 
+  BSplineGenerator(PhysicalSpace<DIM> physical_space, ParameterSpace<DIM> parameter_space) {
+    parameter_space_ = parameter_space;
+    physical_space_ = physical_space;
+  }
+
   PhysicalSpace<DIM> GetPhysicalSpace() {
     return physical_space_;
   }
