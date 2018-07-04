@@ -23,6 +23,7 @@ set(TEST_SOURCES
         square_generator_test.cc
         multihandler_test.cc
         element_test.cc
+        iges_reader_test.cc
         integration_rule_test.cc
         integration_point_test.cc
         projection_curve_test.cc
