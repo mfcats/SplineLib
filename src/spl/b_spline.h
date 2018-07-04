@@ -21,6 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "spline.h"
+#include "b_spline_generator.h"
 
 namespace spl {
 template<int DIM>
@@ -38,6 +39,11 @@ class BSpline : public Spline<DIM> {
 
   BSpline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space)
       : Spline<DIM>(std::move(parameter_space)), physical_space_(physical_space) {
+  }
+
+  BSpline(BSplineGenerator<DIM> b_spline_generator) {
+    physical_space_ = b_spline_generator.GetPhysicalSpace();
+    this->parameter_space_ = b_spline_generator.GetParameterSpace();
   }
 
  private:

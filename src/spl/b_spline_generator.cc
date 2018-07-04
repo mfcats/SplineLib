@@ -12,22 +12,4 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_SPLINE_GENERATOR_H
-#define SPLINELIB_SPLINE_GENERATOR_H
-
-#include "parameter_space.h"
-#include "physical_space.h"
-
-namespace spl {
-template<int DIM>
-class SplineGenerator {
- public:
-  SplineGenerator() = default;
-  virtual ~SplineGenerator() = default;
-
-  virtual ParameterSpace<DIM> GetParameterSpace() = 0;
-  virtual PhysicalSpace<DIM> GetPhysicalSpace() = 0;
-};
-}
-
-#endif //SPLINELIB_SPLINE_GENERATOR_H
+#include "b_spline_generator.h"
