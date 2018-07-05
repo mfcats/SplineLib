@@ -1,4 +1,4 @@
-FROM cm314/splinelib:googletest_gcc8
+FROM cm314/splinelib:googletest_gcc8_new
 
 # Add current directory as working directory to docker
 ADD . /code
@@ -9,6 +9,7 @@ SHELL ["bash", "-c"]
 ENV BASH_ENV /code/bashrc2
 
 # Prepare build
+RUN ls
 RUN /code/.cache/spack/bin/spack repo add /code/scripts/spack-repo
 RUN /code/.cache/spack/bin/spack setup -v splinelib@github
 RUN mkdir /code/build
