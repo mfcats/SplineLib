@@ -39,3 +39,21 @@ TEST_F(A1DParameterSpace, returnsCorrectDegree) {
   ASSERT_THAT(parameter_space.GetDegree(0), 2);
 }
 
+TEST_F(A1DParameterSpace, returns3_0ForFifthKnot) {
+  ASSERT_THAT(parameter_space.GetKnotVector(0)[5].get(), DoubleEq(3.0));
+}
+
+TEST_F(A1DParameterSpace, returnsCorrectBasisFunctionValuesForParamCoord0_5) {
+  std::vector<double> values = {0.25, 0.625, 0.125, 0, 0, 0, 0, 0};
+  for (int i = 0; i < 8; ++i) {
+    ASSERT_THAT(parameter_space.GetBasisFunctions({i}, {ParamCoord(0.5)}), DoubleEq(values[i]));
+  }
+}
+
+TEST_F(A1DParameterSpace, returnsCorrectBasisFunctionDerivativeValuesForParamCoord0_5) {
+  std::vector<double> values = {-1, 0.5, 0.5, 0, 0, 0, 0, 0};
+  for (int i = 0; i < 8; ++i) {
+    ASSERT_THAT(parameter_space.GetBasisFunctionDerivatives({i}, {ParamCoord(0.5)}, {1}), DoubleEq(values[i]));
+  }
+}
+
