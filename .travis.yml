@@ -10,8 +10,8 @@ install:
 
 script:
   - docker run --name tests_gcc8 splinelibtests:gcc8
-  - docker cp test_gcc8:/build build/
-  - docker rm test_gcc8
+  - docker cp tests_gcc8:/build build/
+  - docker rm tests_gcc8
 
 after_success:
   - cd ${TRAVIS_BUILD_DIR}/build
