@@ -11,6 +11,7 @@ install:
 
 script:
   - docker run --name tests_gcc8 splinelibtests:gcc8
+  - docker cp tests_gcc8:Dockerfile.gcc8test .
   - docker cp tests_gcc8:/build build/
   - docker rm tests_gcc8
 
