@@ -11,6 +11,7 @@ ENV BASH_ENV /code/bashrc2
 # Prepare build
 RUN /code/.cache/spack/bin/spack find
 RUN /code/.cache/spack/bin/spack repo add /code/scripts/spack-repo
+RUN /code/.cache/spack/bin/spack spec -L splinelib@github%gcc@8.1.0
 RUN /code/.cache/spack/bin/spack setup -v splinelib@github%gcc@8.1.0
 RUN mkdir /code/build
 WORKDIR /code/build
