@@ -7,7 +7,6 @@ services:
 install:
   - docker pull cm314/splinelib:googletest_gcc8_new2
   - docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
-  - pip install cpplint
 
 script:
   - docker run --name tests_gcc8 splinelibtests:gcc8
@@ -16,7 +15,7 @@ script:
   - docker rm tests_gcc8
 
 after_success:
-  - cpplint build/src/*
+  - cpplint ${TRAVIS_BUILD_DIR}/src/*
   - cd ${TRAVIS_BUILD_DIR}/build
   - lcov --directory . --capture --output-file coverage.info
   - lcov --remove coverage.info '/usr/*' --output-file coverage.info
