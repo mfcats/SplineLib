@@ -50,7 +50,7 @@ TEST_F(A1DParameterSpace, returnsCorrectBasisFunctionValuesForParamCoord0_5) {
   }
 }
 
-TEST_F(A1DParameterSpace, returnsCorrectBasisFunctionDerivativeValuesForParamCoord0_5) {
+TEST_F(A1DParameterSpace, returnsCorrectBasisFunctionDerivativeValuesForParamCoord0_5AndDerivative1) {
   std::vector<double> values = {-1, 0.5, 0.5, 0, 0, 0, 0, 0};
   for (int i = 0; i < 8; ++i) {
     ASSERT_THAT(parameter_space.GetBasisFunctionDerivatives({i}, {ParamCoord(0.5)}, {1}), DoubleEq(values[i]));
@@ -63,9 +63,9 @@ class A2DParameterSpace : public Test {
     knot_vector_ =
         {baf::KnotVector({std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                    ParamCoord{1}, ParamCoord{1}})}),
-         baf::KnotVector({std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                   ParamCoord{1}, ParamCoord{1}})})};
-    degree_ = {2, 2};
+         baf::KnotVector({std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2},
+                                                   ParamCoord{3}, ParamCoord{3}})})};
+    degree_ = {2, 1};
     parameter_space = spl::ParameterSpace<2>(knot_vector_, degree_);
   }
 
@@ -75,28 +75,82 @@ class A2DParameterSpace : public Test {
   std::array<int, 2> degree_;
 };
 
-TEST_F(A2DParameterSpace, returnsCorrectDegreeForFirstDimension) {
+TEST_F(A2DParameterSpace, returnsDegree2ForFirstDimension) {
   ASSERT_THAT(parameter_space.GetDegree(0), 2);
 }
 
-TEST_F(A2DParameterSpace, returnsCorrectDegreeForSecondDimension) {
-  ASSERT_THAT(parameter_space.GetDegree(1), 2);
+TEST_F(A2DParameterSpace, returnsDegree1ForSecondDimension) {
+  ASSERT_THAT(parameter_space.GetDegree(1), 1);
 }
 
-TEST_F(A2DParameterSpace, returns3_0ForThirdKnotOfFirstKnotVector) {
+TEST_F(A2DParameterSpace, returns1_0ForFourthKnotOfFirstKnotVector) {
   ASSERT_THAT(parameter_space.GetKnotVector(0)[3].get(), DoubleEq(1.0));
 }
 
-TEST_F(A2DParameterSpace, returns3_0ForSecondKnotOfSecondKnotVector) {
-  ASSERT_THAT(parameter_space.GetKnotVector(0)[2].get(), DoubleEq(0.0));
+TEST_F(A2DParameterSpace, returns2_0ForFourthKnotOfSecondKnotVector) {
+  ASSERT_THAT(parameter_space.GetKnotVector(1)[3].get(), DoubleEq(2.0));
 }
 
-TEST_F(A2DParameterSpace, returnsCorrectBasisFunctionValuesForParamCoord0_5) {
-  ASSERT_THAT(parameter_space.GetBasisFunctions({1, 1}, {ParamCoord(0.5), ParamCoord(0.25)}), DoubleEq(0.1875));
+TEST_F(A2DParameterSpace, returnsCorrectBasisFunctionValue) {
+  ASSERT_THAT(parameter_space.GetBasisFunctions({1, 1}, {ParamCoord(0.5), ParamCoord(0.25)}), DoubleEq(0.125));
 }
 
-TEST_F(A2DParameterSpace, returnsCorrectBasisFunctionDerivativeValuesForParamCoord0_5) {
+TEST_F(A2DParameterSpace, returnsCorrectBasisFunctionDerivativeValue) {
   ASSERT_THAT(parameter_space.GetBasisFunctionDerivatives({1, 1}, {ParamCoord(0.5), ParamCoord(0.25)}, {0, 1}),
               DoubleEq(0.5));
+}
+
+class A3DParameterSpace : public Test {
+ public:
+  A3DParameterSpace() {
+    knot_vector_ =
+        {baf::KnotVector({std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                   ParamCoord{1}, ParamCoord{1}})}),
+         baf::KnotVector({std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{0.9}})}),
+         baf::KnotVector({std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2},
+                                                   ParamCoord{3}, ParamCoord{3}})})};
+    degree_ = {2, 0, 1};
+    parameter_space = spl::ParameterSpace<3>(knot_vector_, degree_);
+  }
+
+ protected:
+  spl::ParameterSpace<3> parameter_space;
+  std::array<baf::KnotVector, 3> knot_vector_;
+  std::array<int, 3> degree_;
+};
+
+TEST_F(A3DParameterSpace, returnsDegree2ForFirstDimension) {
+  ASSERT_THAT(parameter_space.GetDegree(0), 2);
+}
+
+TEST_F(A3DParameterSpace, returnsDegree0ForSecondDimension) {
+  ASSERT_THAT(parameter_space.GetDegree(1), 0);
+}
+
+TEST_F(A3DParameterSpace, returnsDegree1ForThirdDimension) {
+  ASSERT_THAT(parameter_space.GetDegree(2), 1);
+}
+
+TEST_F(A3DParameterSpace, returns1_0ForFourthKnotOfFirstKnotVector) {
+  ASSERT_THAT(parameter_space.GetKnotVector(0)[3].get(), DoubleEq(1.0));
+}
+
+TEST_F(A3DParameterSpace, returns0_3ForSecondKnotOfSecondKnotVector) {
+  ASSERT_THAT(parameter_space.GetKnotVector(1)[1].get(), DoubleEq(0.3));
+}
+
+TEST_F(A3DParameterSpace, returns2_0ForFourthKnotOfThirdKnotVector) {
+  ASSERT_THAT(parameter_space.GetKnotVector(2)[3].get(), DoubleEq(2.0));
+}
+
+TEST_F(A3DParameterSpace, returnsCorrectBasisFunctionValue) {
+  ASSERT_THAT(parameter_space.GetBasisFunctions({1, 1, 1}, {ParamCoord(0.5), ParamCoord(0.5), ParamCoord(0.25)}),
+              DoubleEq(0.125));
+}
+
+TEST_F(A3DParameterSpace, returnsCorrectBasisFunctionDerivativeValue) {
+  ASSERT_THAT(parameter_space.GetBasisFunctionDerivatives({1, 1, 1},
+                                                          {ParamCoord(0.5), ParamCoord(0.5), ParamCoord(0.25)},
+                                                          {0, 0, 1}), DoubleEq(0.5));
 }
 
