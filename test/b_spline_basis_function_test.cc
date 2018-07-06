@@ -34,7 +34,7 @@ class BasisFunctionEx21N01 : public Test {
 };
 
 TEST_F(BasisFunctionEx21N01, IsZeroAt0_0) {
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(1.0));
 }
 
 TEST_F(BasisFunctionEx21N01, IsZeroAt0_5) {

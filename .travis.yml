@@ -10,19 +10,8 @@ install:
 
 script:
   - docker run --name tests_gcc8 splinelibtests:gcc8
-  - docker cp tests_gcc8:Dockerfile.gcc8test .
-  - docker cp tests_gcc8:/build build/
   - docker rm tests_gcc8
 
 after_success:
   - cpplint ${TRAVIS_BUILD_DIR}/src/*
-  - cd ${TRAVIS_BUILD_DIR}/build
-  - lcov --directory . --capture --output-file coverage.info
-  - lcov --remove coverage.info '/usr/*' --output-file coverage.info
-  - lcov --remove coverage.info '*/.cache/*' --output-file coverage.info
-  - lcov --remove coverage.info '*/CMakeFiles/*' --output-file coverage.info
-  - lcov --list coverage.info
-  - find . -name "*.gcov" -type f -delete
-  - find . -name "*.gcda" -type f -delete
-  - bash <(curl -s https://codecov.io/bash) -X gcov || echo "Codecov did not collect coverage reports"
 
