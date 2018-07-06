@@ -6,13 +6,13 @@ services:
   - docker
 
 install:
-  - docker pull cm314/splinelib:googletest_gcc8_new2
   - docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
 
 script:
   - docker run --name tests_gcc8 splinelibtests:gcc8
-  - sudo docker ps -aqf "name=tests_gcc8"
-  - docker ps -qf "name=tests_gcc8"
-  - docker cp $(sudo docker ps -aqf "name=tests_gcc8"):/code/bashrc .
+  - docker cp $(sudo docker ps -aqf "name=tests_gcc8"):/code/build ${TRAVIS_BUILD_DIR}
   - docker rm tests_gcc8
+
+after_success:
+  - cd ${TRAVIS_BUILD_DIR}/build
 
