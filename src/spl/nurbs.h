@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_NURBS_H
-#define SRC_SPL_NURBS_H
+#ifndef SRC_SPL_NURBS_H_
+#define SRC_SPL_NURBS_H_
 
 #include <algorithm>
 #include <array>
@@ -139,4 +139,4 @@ class NURBS : public Spline<DIM> {
 };
 }  // namespace spl
 
-#endif  // SRC_SPL__NURBS_H
+#endif  // SRC_SPL__NURBS_H_

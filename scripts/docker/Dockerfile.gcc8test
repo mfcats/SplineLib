@@ -10,7 +10,7 @@ ENV BASH_ENV /code/bashrc2
 
 # Prepare build
 RUN pip install cpplint
-RUN cpplint --recursive /code/src/*
+# RUN cpplint --recursive /code/src/*
 RUN /code/.cache/spack/bin/spack repo add /code/scripts/spack-repo
 RUN /code/.cache/spack/bin/spack setup -v splinelib@github%gcc@8.1.0
 RUN mkdir /code/build

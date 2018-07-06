@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_UTIL_MULTI_INDEX_HANDLER_H
-#define SRC_UTIL_MULTI_INDEX_HANDLER_H
+#ifndef SRC_UTIL_MULTI_INDEX_HANDLER_H_
+#define SRC_UTIL_MULTI_INDEX_HANDLER_H_
 
 #include "multi_index_handler.h"
 #include <array>
@@ -104,4 +104,4 @@ class MultiIndexHandler {
 };
 }  // namespace util
 
-#endif  // SRC_UTIL_MULTI_INDEX_HANDLER_H
+#endif  // SRC_UTIL_MULTI_INDEX_HANDLER_H_

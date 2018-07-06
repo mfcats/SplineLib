@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_PROJECTION_H
-#define SRC_SPL_PROJECTION_H
+#ifndef SRC_SPL_PROJECTION_H_
+#define SRC_SPL_PROJECTION_H_
 
 #include <algorithm>
 #include <functional>
@@ -115,4 +115,4 @@ class Projection {
 };
 }  // namespace spl
 
-#endif  // SRC_SPL_PROJECTION_H
+#endif  // SRC_SPL_PROJECTION_H_
