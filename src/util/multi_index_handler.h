@@ -15,7 +15,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_UTIL_MULTI_INDEX_HANDLER_H_
 #define SRC_UTIL_MULTI_INDEX_HANDLER_H_
 
-#include "multi_index_handler.h"
 #include <array>
 
 namespace util {
