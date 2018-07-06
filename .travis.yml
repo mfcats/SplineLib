@@ -4,15 +4,12 @@ sudo: required
 services:
   - docker
 
-before_install:
-  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-7 100
-
 install:
   - docker pull cm314/splinelib:googletest_gcc8_new2
   - docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
 
 script:
   - docker run --name tests_gcc8 splinelibtests:gcc8
-  - docker cp $(sudo docker ps -aqf "name=tests_gcc8"):/code/build ${TRAVIS_BUILD_DIR}
+  - docker cp $(docker ps -qf "name=tests_gcc8"):/code/build ${TRAVIS_BUILD_DIR}
   - docker rm tests_gcc8
 
