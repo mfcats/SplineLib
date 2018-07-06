@@ -1,5 +1,6 @@
 language: cpp
 sudo: required
+dist: trusty
 
 services:
   - docker
@@ -10,6 +11,6 @@ install:
 
 script:
   - docker run --name tests_gcc8 splinelibtests:gcc8
-  - docker cp $(docker ps -qf "name=tests_gcc8"):/code/build ${TRAVIS_BUILD_DIR}
+  - docker cp $(docker ps -qf "name=tests_gcc8"):/code/build .
   - docker rm tests_gcc8
 
