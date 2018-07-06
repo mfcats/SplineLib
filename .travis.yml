@@ -5,6 +5,10 @@ dist: trusty
 services:
   - docker
 
+stages:
+  - test
+  - check
+
 install:
   - docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
 

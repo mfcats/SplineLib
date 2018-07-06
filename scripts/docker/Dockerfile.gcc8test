@@ -7,14 +7,21 @@ WORKDIR /code
 # Set-up shell
 SHELL ["bash", "-c"]
 ENV BASH_ENV /code/bashrc2
+ENV CXXFLAGS="-coverage"
 
 # Prepare build
 RUN pip install cpplint
 # RUN cpplint --recursive /code/src/*
+RUN git clone https://github.com/linux-test-project/lcov.git
+RUN cd lcov
+RUN make install
+
+WORKDIR /code
 RUN /code/.cache/spack/bin/spack repo add /code/scripts/spack-repo
 RUN /code/.cache/spack/bin/spack setup -v splinelib@github%gcc@8.1.0
 RUN mkdir /code/build
 WORKDIR /code/build
+RUN lcov --directory . --zerocounters
 RUN ./../spconfig.py ..
 
 # Build and execute tests
