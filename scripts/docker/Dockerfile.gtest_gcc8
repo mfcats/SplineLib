@@ -1,0 +1,14 @@
+FROM mfcats/splinelib:gcc7
+
+# Work in /spack
+ADD . /code
+WORKDIR /code
+
+# Set-up shell
+SHELL ["bash", "-c"]
+ENV BASH_ENV /spack/bashrc
+
+#install googletest with gcc7
+RUN spack install googletest+gmock~shared%gcc@7.3.0
+
+CMD /bin/bash
