@@ -18,8 +18,6 @@ cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
 project(SplineLib VERSION 0.0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/)
-
 # Installation
 set(include_install_dir "include")
 set(library_install_dir "lib")

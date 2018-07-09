@@ -29,8 +29,7 @@ spl::SquareGenerator::SquareGenerator() {
                        baf::ControlPoint(std::vector<double>({-1.0, 1.0})),
                        baf::ControlPoint(std::vector<double>({0.0, 1.0})),
                        baf::ControlPoint(std::vector<double>({1.0, 1.0}))};
-    knot_vector_ptr_[0] = std::make_shared<baf::KnotVector>(knot_vectors_[0]);
-    knot_vector_ptr_[1] = std::make_shared<baf::KnotVector>(knot_vectors_[1]);
+    knot_vector_ptr_ = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vectors_);
 };
 
 spl::SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({degree, degree}) {
@@ -45,8 +44,7 @@ spl::SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees
     knots.push_back(one_);
   }
   knot_vectors_ = {baf::KnotVector(knots), baf::KnotVector(knots)};
-  knot_vector_ptr_[0] = std::make_shared<baf::KnotVector>(knot_vectors_[0]);
-  knot_vector_ptr_[1] = std::make_shared<baf::KnotVector>(knot_vectors_[1]);
+  knot_vector_ptr_ = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vectors_);
 
   for (int dimension1 = 0; dimension1 < number_of_knots - degree - 1; dimension1++) {
     for (int dimension2 = 0; dimension2 < number_of_knots - degree - 1; dimension2++) {
