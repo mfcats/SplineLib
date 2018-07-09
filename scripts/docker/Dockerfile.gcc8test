@@ -12,9 +12,6 @@ ENV CXXFLAGS="-coverage"
 # Prepare build
 RUN pip install cpplint
 # RUN cpplint --recursive /code/src/*
-RUN git clone https://github.com/linux-test-project/lcov.git
-RUN cd lcov
-RUN make install
 
 WORKDIR /code
 RUN /code/.cache/spack/bin/spack repo add /code/scripts/spack-repo
