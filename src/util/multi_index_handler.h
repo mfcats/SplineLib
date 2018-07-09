@@ -58,7 +58,7 @@ class MultiIndexHandler {
     return result;
   }
 
-  void SetIndices(std::array<int, DIM> &indices) {
+  void SetIndices(const std::array<int, DIM> &indices) {
     for (int i = 0; i < DIM; ++i) {
       current_multi_index_value_[i] = indices[i];
     }

@@ -1,9 +1,6 @@
 # Build on top of ubuntu
 FROM mfcats/splinelib:spack
 
-# Work in /spack
-WORKDIR /spack
-
 # Install linter
 RUN pip install cpplint
 
