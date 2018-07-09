@@ -40,4 +40,4 @@ find_package(GMock REQUIRED)
 add_executable(SplineLibTests ${TEST_SOURCES})
 target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil GMock::Main)
 
-target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
+#target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
