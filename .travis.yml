@@ -6,17 +6,23 @@ services:
   - docker
 
 stages:
+  - lint
   - test
-  - check
+  - coverage
 
-install:
-  - docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
-
-script:
-  - docker run --name tests_gcc8 splinelibtests:gcc8
-  - docker cp $(sudo docker ps -aqf "name=tests_gcc8"):/code/build ${TRAVIS_BUILD_DIR}
-  - docker rm tests_gcc8
-
-after_success:
-  - cd ${TRAVIS_BUILD_DIR}/build
+jobs:
+  include:
+    - stage: lint
+      install: echo lint cpplint install # docker build -t splinelib:cpplint -f scripts/docker/Dockerfile.lint.cpplint .
+      script: echo lint cpplint # docker run --name cpplint splinelib:cpplint
+    - stage: lint
+      install: echo lint clang-tidy install # docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
+      script: echo lint clang-tidy # docker run --name clang-tidy splinelib:clang-tidy
+    - stage: test
+      install: echo lint test install # docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
+      script: echo test # docker run --name tests_gcc8 splinelibtests:gcc8
+    - stage: coverage
+      install: echo lint coverage install # docker build -t splinelibtests:coverage -f scripts/docker/Dockerfile.coverage .
+      script: echo coverage # docker run --name coverage splinelibtests:coverage
+      after_success: echo finish
 
