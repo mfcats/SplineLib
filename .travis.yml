@@ -13,10 +13,11 @@ stages:
 jobs:
   include:
     - stage: lint
-      install: echo lint cpplint install # docker build -t splinelib:cpplint -f scripts/docker/Dockerfile.lint.cpplint .
-      script: echo lint cpplint # docker run --name cpplint splinelib:cpplint
+      install: docker build -t splinelib:cpplint -f scripts/docker/Dockerfile.cpplint.cpplint .
+      script: docker run --name cpplint splinelib:cpplint
+      after_success: docker remove cpplint
     - stage: lint
-      install: echo lint clang-tidy install # docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
+      install: echo lint clang-tidy install # docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.cpplint.clang-tidy .
       script: echo lint clang-tidy # docker run --name clang-tidy splinelib:clang-tidy
     - stage: test
       install: echo lint test install # docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
