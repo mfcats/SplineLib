@@ -39,14 +39,13 @@ class A2DBSpline : public Test {
         baf::ControlPoint(std::vector<double>({0.0, 1.0, 0.0})),
         baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.0}))
     };
-    knot_vector_ptr[0] = std::make_shared<baf::KnotVector>(knot_vector[0]);
-    knot_vector_ptr[1] = std::make_shared<baf::KnotVector>(knot_vector[1]);
+    knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vector);
     b_spline = std::make_unique<spl::BSpline<2>>(knot_vector_ptr, degree, control_points);
   }
 
  protected:
   std::unique_ptr<spl::BSpline<2>> b_spline;
-  std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector_ptr;
+  std::shared_ptr<std::array<baf::KnotVector, 2>> knot_vector_ptr;
 };
 
 TEST_F(A2DBSpline, Corner) {

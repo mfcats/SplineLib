@@ -33,11 +33,9 @@ set(TEST_SOURCES
         physical_space_test.cc
         weighted_physical_space_test.cc)
 
-
-find_package(GMock REQUIRED)
-#include_directories(${GTEST_INCLUDE_DIRS})
+find_package(GTest REQUIRED)
 
 add_executable(SplineLibTests ${TEST_SOURCES})
-target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil GMock::Main)
+target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil GTest::Main)
 
-#target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
+target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
