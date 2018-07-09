@@ -12,6 +12,7 @@ ENV CXXFLAGS="-coverage"
 # Prepare build
 # RUN pip install cpplint
 # RUN cpplint --recursive /code/src/*
+RUN apt-get update && apt-get -y upgrade && apt-get install -y lcov
 
 WORKDIR /code
 RUN /code/.cache/spack/bin/spack repo add /code/scripts/spack-repo
@@ -21,4 +22,4 @@ WORKDIR /code/build
 RUN ./../spconfig.py ..
 
 # Build and execute tests
-CMD make CXXFLAGS=--coverage LDFLAGS=--coverage && ./test/SplineLibTests CXXFLAGS=--coverage LDFLAGS=--coverage
+CMD make CXXFLAGS=-coverage LDFLAGS=--coverage && ./test/SplineLibTests CXXFLAGS=--coverage LDFLAGS=--coverage
