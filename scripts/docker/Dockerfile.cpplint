@@ -9,7 +9,6 @@ SHELL ["bash", "-c"]
 ENV BASH_ENV /spack/bashrc
 
 # Install linter
-RUN spack install -v cppcheck
 RUN pip install cpplint
 
 CMD /bin/bash
