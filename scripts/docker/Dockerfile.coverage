@@ -1,0 +1,32 @@
+FROM mfcats/splinelib:gtest_gcc7
+
+# Add current directory as working directory to docker
+ADD . /code
+WORKDIR /code
+
+# Set-up shell
+SHELL ["bash", "-c"]
+ENV BASH_ENV /spack/bashrc
+ENV CXXFLAGS="-coverage"
+
+RUN spack repo add /code/scripts/spack-repo
+RUN spack setup -v splinelib@github%gcc@7.3.0
+RUN mkdir /code/build
+WORKDIR /code/build
+RUN ./../spconfig.py ..
+
+# Build and execute tests
+RUN make
+RUN ./test/SplineLibTests
+
+# Get code coverage information
+RUN lcov --directory . --capture --output-file coverage.info
+RUN lcov --remove coverage.info '/usr/*' --output-file coverage.info
+RUN lcov --remove coverage.info '*/.cache/*' --output-file coverage.info
+RUN lcov --remove coverage.info '*/CMakeFiles/*' --output-file coverage.info
+RUN lcov --list coverage.info
+RUN find . -name "*.gcov" -type f -delete
+RUN find . -name "*.gcda" -type f -delete
+
+# Generate code coverage output
+CMD bash <(curl -s https://codecov.io/bash) -X gcov || echo "Codecov did not collect coverage reports"
