@@ -26,8 +26,6 @@ baf::KnotVector::KnotVector(const baf::KnotVector &knotVector) : knots_(knotVect
 
 baf::KnotVector::KnotVector(const baf::KnotVector &&knotVector) : knots_(std::move(knotVector.knots_)) {}
 
-//baf::KnotVector::KnotVector(const std::shared_ptr<baf::KnotVector>knotVector) : knots_(knotVector->knots_) {}
-
 baf::KnotVector::KnotVector(std::initializer_list<ParamCoord> knots) : knots_(knots) {}
 
 baf::KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<ParamCoord>(begin,
