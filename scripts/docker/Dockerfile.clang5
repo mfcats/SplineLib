@@ -8,9 +8,9 @@ WORKDIR /spack
 SHELL ["bash", "-c"]
 ENV BASH_ENV /spack/bashrc
 
-# Install llvm@7.0.0
-RUN spack install -v llvm@7.0.0
-RUN spack load llvm@7.0.0
+# Install llvm@5.0.1
+RUN spack install -v llvm@5.0.1
+RUN spack load llvm@5.0.1
 RUN spack compiler find
 
 CMD /bin/bash

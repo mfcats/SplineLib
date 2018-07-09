@@ -8,6 +8,9 @@ WORKDIR /spack
 SHELL ["bash", "-c"]
 ENV BASH_ENV /spack/bashrc
 
+# Install lcov
+RUN apt-get update && apt-get -y upgrade && apt-get install -y lcov
+
 # Install gcc@7.3.0
 RUN spack install -v gcc@7.3.0
 RUN spack load gcc@7.3.0
