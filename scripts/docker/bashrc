@@ -2,4 +2,6 @@ export SPACK_ROOT=/spack/.cache/spack
 export PATH=/spack/.cache/spack/bin:$PATH
 . $SPACK_ROOT/share/spack/setup-env.sh
 export FORCE_UNSAFE_CONFIGURE=1
+export OCLINT_HOME=/spack/oclint-0.13.1
+export PATH=$OCLINT_HOME/bin:$PATH
 

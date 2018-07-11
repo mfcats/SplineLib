@@ -1,0 +1,17 @@
+# Build on top of ubuntu
+FROM mfcats/splinelib:spack
+
+# Work in /spack
+WORKDIR /spack
+
+# Set-up shell
+SHELL ["bash", "-c"]
+ENV BASH_ENV /spack/bashrc
+
+# Install googletest versions
+RUN spack install googletest +gmock %gcc@8
+RUN spack install googletest +gmock %gcc@7
+RUN spack install googletest +gmock %clang@6
+RUN spack install googletest +gmock %clang@5
+
+CMD /bin/bash

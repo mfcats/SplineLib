@@ -10,7 +10,6 @@ ENV BASH_ENV /spack/bashrc
 
 # Install gcc@8.1.0
 RUN spack install -v gcc@8.1.0
-RUN spack load gcc@8.1.0
-RUN spack compiler find
+RUN spack load gcc && spack compiler find
 
 CMD /bin/bash

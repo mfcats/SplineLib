@@ -16,10 +16,16 @@ ENV BASH_ENV /spack/bashrc
 RUN cat bashrc >> ~/.bashrc
 
 # Install all requirements
-RUN apt-get update && apt-get -y upgrade && apt-get install -y build-essential git python curl unzip python-pip
+RUN apt-get update && apt-get -y upgrade && apt-get install -y build-essential git python curl unzip python-pip lcov gfortran-8 gcc-8 gfortran-7 gcc-7 llvm-5.0 llvm-6.0 clang-5.0 clang-6.0 libstdc++-6-dev libstdc++-7-dev libstdc++-8-dev clang-tidy cppcheck wget gfortran g++-8
+RUN pip install cpplint
+RUN wget https://github.com/oclint/oclint/releases/download/v0.13.1/oclint-0.13.1-x86_64-linux-4.4.0-112-generic.tar.gz
+RUN tar -zxvf oclint-0.13.1-x86_64-linux-4.4.0-112-generic.tar.gz
 
 # Prepare spack
 RUN git clone https://github.com/spack/spack.git /spack/.cache/spack
 RUN spack bootstrap
+RUN spack compiler find
+RUN spack compiler list
+RUN sed -i -e 's/null/\/usr\/bin\/gfortran/g' ~/.spack/linux/compilers.yaml
 
 CMD /bin/bash
