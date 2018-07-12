@@ -1,4 +1,4 @@
-FROM mfcats/splinelib:clang-tidy
+FROM mfcats/splinelib:spack
 
 # Add current directory as working directory to docker
 ADD . /code
