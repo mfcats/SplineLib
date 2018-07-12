@@ -14,9 +14,11 @@ stages:
 jobs:
   include:
     - stage: prepare
-      install: docker pull mfcats/splinelib:spack
+      name: compiler and linter
+      script: docker pull mfcats/splinelib:spack
     - stage: prepare
-      install: docker pull mfcats/splinelib:gtest
+      name: googletest
+      script: docker pull mfcats/splinelib:gtest
     - stage: lint
       name: cpplint
       install: docker build -t splinelib:cpplint -f scripts/docker/Dockerfile.lint.cpplint .
