@@ -10,6 +10,10 @@ stages:
   - test
   - coverage
 
+before_install:
+  - docker pull mfcats/splinelib:spack
+  - docker pull mfcats/splinelib:gtest
+
 jobs:
   include:
     - stage: lint
@@ -22,6 +26,10 @@ jobs:
       install: docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
       script: docker run --name clang-tidy splinelib:clang-tidy
       after_success: docker rm clang-tidy
+    - stage: lint
+      name: oclint
+      before_install: echo oclint # docker cp $(sudo docker ps -aqf "name=clang-tidy"):/code/compile_commands.json ${TRAVIS_BUILD_DIR}
+      script: echo oclint
     - stage: test
       name: gcc7
       install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.gcc7test .
