@@ -17,12 +17,17 @@ before_install:
 jobs:
   include:
     - stage: lint
+      name: cpplint
       install: docker build -t splinelib:cpplint -f scripts/docker/Dockerfile.lint.cpplint .
       script: docker run --name cpplint splinelib:cpplint
       after_success: docker remove cpplint
     - stage: lint
       install: echo lint clang-tidy install # docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
       script: echo lint clang-tidy # docker run --name clang-tidy splinelib:clang-tidy
+    - stage: test
+      install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.gcc7test .
+      script: docker run --name tests_gcc7 splinelibtests:gcc7
+      after_success: docker remove tests_gcc7
     - stage: test
       install: docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
       script: docker run --name tests_gcc8 splinelibtests:gcc8
