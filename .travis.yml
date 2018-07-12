@@ -15,7 +15,7 @@ jobs:
     - stage: lint
       name: cpplint
       install: docker build -t splinelib:cpplint -f scripts/docker/Dockerfile.lint.cpplint .
-      script: docker run -te --name cpplint splinelib:cpplint
+      script: docker run -te "TERM=xterm-256color" --name cpplint splinelib:cpplint
       after_success: docker remove cpplint
     - stage: lint
       name: clang-tidy
