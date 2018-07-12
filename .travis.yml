@@ -19,8 +19,9 @@ jobs:
       after_success: docker remove cpplint
     - stage: lint
       name: clang-tidy
-      install: echo lint clang-tidy install # docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
-      script: echo lint clang-tidy # docker run --name clang-tidy splinelib:clang-tidy
+      install: docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
+      script: docker run --name clang-tidy splinelib:clang-tidy
+      after_success: docker rm clang-tidy
     - stage: test
       name: gcc7
       install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.gcc7test .
