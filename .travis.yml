@@ -15,21 +15,21 @@ jobs:
     - stage: lint
       name: cpplint
       install: docker build -t splinelib:cpplint -f scripts/docker/Dockerfile.lint.cpplint .
-      script: docker run -e "TERM=xterm-256color" --name cpplint splinelib:cpplint
+      script: docker run -te --name cpplint splinelib:cpplint
       after_success: docker remove cpplint
     - stage: lint
       name: clang-tidy
       install: echo lint clang-tidy install # docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
-      script: echo lint clang-tidy # docker run -e "TERM=xterm-256color" --name clang-tidy splinelib:clang-tidy
+      script: echo lint clang-tidy # docker run --name clang-tidy splinelib:clang-tidy
     - stage: test
       name: gcc7
       install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.gcc7test .
-      script: docker run -e "TERM=xterm-256color" --name tests_gcc7 splinelibtests:gcc7
+      script: docker run -te "TERM=xterm-256color" --name tests_gcc7 splinelibtests:gcc7
       after_success: docker remove tests_gcc7
     - stage: test
       name: gcc8
       install: docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
-      script: docker run -e "TERM=xterm-256color" --name tests_gcc8 splinelibtests:gcc8
+      script: docker run -te "TERM=xterm-256color" --name tests_gcc8 splinelibtests:gcc8
       after_success: docker remove tests_gcc8
     - stage: coverage
       install: echo lint coverage install # docker build -t splinelibtests:coverage -f scripts/docker/Dockerfile.coverage .
