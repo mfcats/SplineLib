@@ -7,8 +7,8 @@ services:
 
 stages:
   - lint
-  - test
   - coverage
+  - test
 
 jobs:
   include:
@@ -32,7 +32,7 @@ jobs:
       script: docker run -te "TERM=xterm-256color" --name tests_gcc8 splinelibtests:gcc8
       after_success: docker remove tests_gcc8
     - stage: coverage
-      install: echo lint coverage install # docker build -t splinelibtests:coverage -f scripts/docker/Dockerfile.coverage .
-      script: echo coverage # docker run -e "TERM=xterm-256color" --name coverage splinelibtests:coverage
-      after_success: echo finish
+      install: docker build -t splinelibtests:coverage -f scripts/docker/Dockerfile.coverage .
+      script: docker run -te "TERM=xterm-256color" --name coverage splinelibtests:coverage
+      after_success: docker remove coverage
 
