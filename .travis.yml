@@ -10,6 +10,10 @@ stages:
   - test
   - coverage
 
+before_install:
+  - docker pull mfcats/splinelib:spack
+  - docker pull mfcats/splinelib:gtest
+
 jobs:
   include:
     - stage: lint
@@ -20,8 +24,9 @@ jobs:
       install: echo lint clang-tidy install # docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
       script: echo lint clang-tidy # docker run --name clang-tidy splinelib:clang-tidy
     - stage: test
-      install: echo lint test install # docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
-      script: echo test # docker run --name tests_gcc8 splinelibtests:gcc8
+      install: docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
+      script: docker run --name tests_gcc8 splinelibtests:gcc8
+      after_success: docker remove tests_gcc8
     - stage: coverage
       install: echo lint coverage install # docker build -t splinelibtests:coverage -f scripts/docker/Dockerfile.coverage .
       script: echo coverage # docker run --name coverage splinelibtests:coverage

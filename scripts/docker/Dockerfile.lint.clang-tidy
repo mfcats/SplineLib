@@ -1,0 +1,8 @@
+FROM mfcats/splinelib:clang-tidy
+
+# Add current directory as working directory to docker
+ADD . /code
+WORKDIR /code
+
+# execute cpplint
+CMD clang-tidy *

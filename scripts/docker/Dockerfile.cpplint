@@ -1,7 +1,0 @@
-# Build on top of ubuntu
-FROM mfcats/splinelib:spack
-
-# Install linter
-RUN pip install cpplint
-
-CMD /bin/bash
