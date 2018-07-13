@@ -27,12 +27,10 @@ namespace spl {
 template<int DIM>
 class Projection {
  public:
-  static std::array<double, DIM> ProjectionOnSpline(std::vector<double> pointPhysicalCoords,
+  static std::array<double, DIM> ProjectionOnSpline(const std::vector<double> &pointPhysicalCoords,
                                                     spl::Spline<DIM> *spline) {
     double tolerance = 0.0001;
     int iteration = 0;
-    double delta;
-    int signum;
     std::vector<int> dimensions;
     for (auto i = 0u; i < pointPhysicalCoords.size(); ++i) {
       dimensions.emplace_back(i);
@@ -43,7 +41,6 @@ class Projection {
     while (!converged) {
       if (DIM == 1) {
         std::vector<double> firstDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {1});
-        std::vector<double> secondDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {2});
         std::vector<double> projectionVector = ComputePiecewiseVectorDifference(pointPhysicalCoords,
                                                                                 spline->Evaluate(
                                                                                     projectionPointParamCoords,
@@ -51,10 +48,9 @@ class Projection {
 
         // This is only the first order algorithm. An implemented but non-working version of the second order algorithm
         // can be found in commit 2ed993e6dcef3d184b70640f6b9498efae52747a.
-        delta = ComputeScalarProduct(firstDer, projectionVector) / ComputeScalarProduct(firstDer, firstDer);
-        signum = 1;
+        double delta = ComputeScalarProduct(firstDer, projectionVector) / ComputeScalarProduct(firstDer, firstDer);
 
-        projectionPointParamCoords[0] = projectionPointParamCoords[0] + ParamCoord{signum * delta};
+        projectionPointParamCoords[0] = projectionPointParamCoords[0] + ParamCoord{delta};
         if (projectionPointParamCoords[0] < spline->GetKnotVector(0).GetKnot(0)) {
           projectionPointParamCoords[0] = spline->GetKnotVector(0).GetKnot(0);
         } else if (projectionPointParamCoords[0] > spline->GetKnotVector(0).GetLastKnot()) {
@@ -72,7 +68,7 @@ class Projection {
     return {projectionPointParamCoords[0].get()};
   }
 
-  static std::array<ParamCoord, DIM> FindInitialValue(std::vector<double> pointPhysicalCoords,
+  static std::array<ParamCoord, DIM> FindInitialValue(const std::vector<double> &pointPhysicalCoords,
                                                       spl::Spline<DIM> *spline, const std::vector<int> &dimensions) {
     std::vector<elm::Element> elements = spline->GetElementList();
     std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
@@ -81,9 +77,8 @@ class Projection {
     double distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
     paramCoords[0] = ParamCoord{{0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0))}};
     for (auto i = 1u; i < elements.size(); ++i) {
-      splinePhysicalCoords =
-          spline->Evaluate({ParamCoord{
-              0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)) + elements[i].GetNode(0)}}, dimensions);
+      splinePhysicalCoords = spline->Evaluate({ParamCoord{
+          0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)) + elements[i].GetNode(0)}}, dimensions);
       if (ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords)) < distance) {
         distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
         paramCoords[0] = ParamCoord{0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)) + elements[i].GetNode(0)};
@@ -101,11 +96,6 @@ class Projection {
                                                               std::vector<double> vectorB) {
     std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::minus<double>());
     return vectorB;
-  }
-
-  static double ComputeArea(std::vector<double> vectorA, std::vector<double> vectorB) {
-    return sqrt(abs(ComputeScalarProduct(vectorA, vectorA) *
-        ComputeScalarProduct(vectorB, vectorB) - pow(ComputeScalarProduct(vectorA, vectorB), 2)));
   }
 
   static double ComputeScalarProduct(std::vector<double> vectorA, std::vector<double> vectorB) {
