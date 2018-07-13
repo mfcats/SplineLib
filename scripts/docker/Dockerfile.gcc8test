@@ -10,7 +10,7 @@ ENV BASH_ENV /spack/bashrc
 
 RUN spack repo add /code/scripts/spack-repo
 RUN spack find -v
-RUN spack spec -I
+RUN spack spec -I splinelib@github%gcc@8.0.1
 RUN spack setup -v splinelib@github%gcc@8.0.1
 RUN mkdir /code/build
 WORKDIR /code/build
