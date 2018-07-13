@@ -1,7 +1,0 @@
-# Build on top of ubuntu
-FROM mfcats/splinelib:clang6
-
-# install clang-tidy
-RUN apt-get update && apt-get -y upgrade && apt-get install -y clang-tidy
-
-CMD /bin/bash
