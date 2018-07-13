@@ -16,6 +16,8 @@ RUN ./../spconfig.py ..
 
 # Build and execute tests
 RUN spack load cmake
+RUN which cmake
+RUN cmake -h
 RUN cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
 
 # execute cpplint
