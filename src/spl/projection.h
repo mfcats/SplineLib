@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "knot_vector.h"
-#include "numeric_settings.h"
+#include "vector_utils.h"
 
 namespace spl {
 template<int DIM>
@@ -41,14 +41,15 @@ class Projection {
     while (!converged) {
       if (DIM == 1) {
         std::vector<double> firstDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {1});
-        std::vector<double> projectionVector = ComputePiecewiseVectorDifference(pointPhysicalCoords,
-                                                                                spline->Evaluate(
-                                                                                    projectionPointParamCoords,
-                                                                                    dimensions));
+        std::vector<double> projectionVector = util::VectorUtils<double>::ComputeDifference(pointPhysicalCoords,
+                                                                                            spline->Evaluate(
+                                                                                                projectionPointParamCoords,
+                                                                                                dimensions));
 
         // This is only the first order algorithm. An implemented but non-working version of the second order algorithm
         // can be found in commit 2ed993e6dcef3d184b70640f6b9498efae52747a.
-        double delta = ComputeScalarProduct(firstDer, projectionVector) / ComputeScalarProduct(firstDer, firstDer);
+        double delta = util::VectorUtils<double>::ComputeScalarProduct(firstDer, projectionVector)
+            / util::VectorUtils<double>::ComputeScalarProduct(firstDer, firstDer);
 
         projectionPointParamCoords[0] = projectionPointParamCoords[0] + ParamCoord{delta};
         if (projectionPointParamCoords[0] < spline->GetKnotVector(0).GetKnot(0)) {
@@ -74,33 +75,23 @@ class Projection {
     std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
     std::vector<double> splinePhysicalCoords =
         spline->Evaluate({ParamCoord{(0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0)))}}, dimensions);
-    double distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
+    double distance = util::VectorUtils<double>::ComputeTwoNorm(util::VectorUtils<double>::ComputeDifference(
+        pointPhysicalCoords,
+        splinePhysicalCoords));
     paramCoords[0] = ParamCoord{{0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0))}};
     for (auto i = 1u; i < elements.size(); ++i) {
       splinePhysicalCoords = spline->Evaluate({ParamCoord{
           0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)) + elements[i].GetNode(0)}}, dimensions);
-      if (ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords)) < distance) {
-        distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
+      if (util::VectorUtils<double>::ComputeTwoNorm(util::VectorUtils<double>::ComputeDifference(pointPhysicalCoords,
+                                                                                                 splinePhysicalCoords))
+          < distance) {
+        distance = util::VectorUtils<double>::ComputeTwoNorm(util::VectorUtils<double>::ComputeDifference(
+            pointPhysicalCoords,
+            splinePhysicalCoords));
         paramCoords[0] = ParamCoord{0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)) + elements[i].GetNode(0)};
       }
     }
     return paramCoords;
-  }
-
-  static double ComputeTwoNorm(std::vector<double> vectorA) {
-    std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(), vectorA.begin(), std::multiplies<double>());
-    return sqrt(std::accumulate(vectorA.begin(), vectorA.end(), 0));
-  }
-
-  static std::vector<double> ComputePiecewiseVectorDifference(std::vector<double> vectorA,
-                                                              std::vector<double> vectorB) {
-    std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::minus<double>());
-    return vectorB;
-  }
-
-  static double ComputeScalarProduct(std::vector<double> vectorA, std::vector<double> vectorB) {
-    std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::multiplies<double>());
-    return std::accumulate(vectorB.begin(), vectorB.end(), 0);
   }
 };
 }  // namespace spl
