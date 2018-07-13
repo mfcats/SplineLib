@@ -15,21 +15,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "square_generator.h"
 
 spl::SquareGenerator::SquareGenerator() {
-    // zero_ and one_ should be used here
-    knot_vectors_ =
+  // zero_ and one_ should be used here
+  knot_vectors_ =
         {baf::KnotVector{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}},
          {baf::KnotVector{{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}}}};
   degrees_ = {2, 2};
-    control_points_ = {baf::ControlPoint(std::vector<double>({-1.0, -1.0})),
-                       baf::ControlPoint(std::vector<double>({0.0, -1.0})),
-                       baf::ControlPoint(std::vector<double>({1.0, -1.0})),
-                       baf::ControlPoint(std::vector<double>({-1.0, 0.0})),
-                       baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-                       baf::ControlPoint(std::vector<double>({1.0, 0.0})),
-                       baf::ControlPoint(std::vector<double>({-1.0, 1.0})),
-                       baf::ControlPoint(std::vector<double>({0.0, 1.0})),
-                       baf::ControlPoint(std::vector<double>({1.0, 1.0}))};
-    knot_vector_ptr_ = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vectors_);
+  control_points_ = {baf::ControlPoint(std::vector<double>({-1.0, -1.0})),
+                     baf::ControlPoint(std::vector<double>({0.0, -1.0})),
+                     baf::ControlPoint(std::vector<double>({1.0, -1.0})),
+                     baf::ControlPoint(std::vector<double>({-1.0, 0.0})),
+                     baf::ControlPoint(std::vector<double>({0.0, 0.0})),
+                     baf::ControlPoint(std::vector<double>({1.0, 0.0})),
+                     baf::ControlPoint(std::vector<double>({-1.0, 1.0})),
+                     baf::ControlPoint(std::vector<double>({0.0, 1.0})),
+                     baf::ControlPoint(std::vector<double>({1.0, 1.0}))};
+  knot_vector_ptr_ = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vectors_);
 }
 
 spl::SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({degree, degree}) {
