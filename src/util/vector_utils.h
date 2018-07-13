@@ -15,6 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_UTIL_VECTOR_UTILS
 #define SRC_UTIL_VECTOR_UTILS
 
+#include <vector>
+
 namespace util {
 template<typename T>
 class VectorUtils {
