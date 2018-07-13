@@ -6,13 +6,13 @@ services:
   - docker
 
 stages:
-  - lint
   - test
   - coverage
+  - lint
 
 before_install:
   - docker pull mfcats/splinelib:spack
-  - docker pull mfcats/splinelib:gtest
+  - docker pull cm314/splinelib:gtest
 
 jobs:
   include:
