@@ -43,12 +43,12 @@ jobs:
       after_success: docker remove tests_gcc8
     - stage: test
       name: clang5
-      install: docker build -t splinelibtests:clang5 -f scripts/docker/Dockerfile.clang5 .
+      install: docker build -t splinelibtests:clang5 -f scripts/docker/Dockerfile.clang5test .
       script: docker run -te "TERM=xterm-256color" --name tests_clang5 splinelibtests:clang5
       after_success: docker remove tests_clang5
     - stage: test
       name: clang6
-      install: docker build -t splinelibtests:clang6 -f scripts/docker/Dockerfile.clang6 .
+      install: docker build -t splinelibtests:clang6 -f scripts/docker/Dockerfile.clang6test .
       script: docker run -te "TERM=xterm-256color" --name tests_clang6 splinelibtests:clang6
       after_success: docker remove tests_clang6
 
