@@ -1,4 +1,4 @@
-FROM cm314/splinelib:gtest
+FROM cm314/splinelib:gtest2
 
 # Add current directory as working directory to docker
 ADD . /code
