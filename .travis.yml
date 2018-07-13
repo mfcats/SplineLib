@@ -6,9 +6,9 @@ services:
   - docker
 
 stages:
-  - lint
   - test
   - coverage
+  - lint
 
 jobs:
   include:
@@ -45,13 +45,13 @@ jobs:
       name: clang5
       before_install: docker pull cm314/splinelib:gtest3
       install: docker build -t splinelibtests:clang5 -f scripts/docker/Dockerfile.clang5test .
-      script: docker run --name tests_clang5 splinelibtests:clang5
+      script: docker run -te "TERM=xterm-256color" --name tests_clang5 splinelibtests:clang5
       after_success: docker rm tests_clang5
     - stage: test
       name: clang6
       before_install: docker pull cm314/splinelib:gtest3
       install: docker build -t splinelibtests:clang6 -f scripts/docker/Dockerfile.clang6test .
-      script: docker run --name tests_clang6 splinelibtests:clang6
+      script: docker run -te "TERM=xterm-256color" --name tests_clang6 splinelibtests:clang6
       after_success: docker rm tests_clang6
 
     - stage: coverage
