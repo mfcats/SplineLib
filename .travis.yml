@@ -10,18 +10,17 @@ stages:
   - coverage
   - lint
 
-before_install:
-  - docker pull mfcats/splinelib:spack
-
 jobs:
   include:
     - stage: lint
       name: cpplint
+      before_install: docker pull mfcats/splinelib:spack
       install: docker build -t splinelib:cpplint -f scripts/docker/Dockerfile.lint.cpplint .
       script: docker run -te "TERM=xterm-256color" --name cpplint splinelib:cpplint
       after_success: docker rm cpplint
     - stage: lint
       name: clang-tidy
+      before_install: docker pull cm314/splinelib:gtest3
       install: docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
       script: docker run -te "TERM=xterm-256color" --name clang-tidy splinelib:clang-tidy
       after_success: docker rm clang-tidy
@@ -31,29 +30,32 @@ jobs:
       script: echo oclint
 
     - stage: test
-      before_install: docker pull cm314/splinelib:gtest3
-    - stage: test
       name: gcc7
+      before_install: docker pull cm314/splinelib:gtest3
       install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.gcc7test .
       script: docker run -te "TERM=xterm-256color" --name tests_gcc7 splinelibtests:gcc7
       after_success: docker rm tests_gcc7
     - stage: test
       name: gcc8
+      before_install: docker pull cm314/splinelib:gtest3
       install: docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
       script: docker run -te "TERM=xterm-256color" --name tests_gcc8 splinelibtests:gcc8
       after_success: docker rm tests_gcc8
     - stage: test
       name: clang5
+      before_install: docker pull cm314/splinelib:gtest3
       install: docker build -t splinelibtests:clang5 -f scripts/docker/Dockerfile.clang5test .
-      script: docker run -te "TERM=xterm-256color" --name tests_clang5 splinelibtests:clang5
+      script: docker run --name tests_clang5 splinelibtests:clang5
       after_success: docker rm tests_clang5
     - stage: test
       name: clang6
+      before_install: docker pull cm314/splinelib:gtest3
       install: docker build -t splinelibtests:clang6 -f scripts/docker/Dockerfile.clang6test .
-      script: docker run -te "TERM=xterm-256color" --name tests_clang6 splinelibtests:clang6
+      script: docker run --name tests_clang6 splinelibtests:clang6
       after_success: docker rm tests_clang6
 
     - stage: coverage
+      before_install: docker pull cm314/splinelib:gtest3
       install: docker build -t splinelibtests:coverage -f scripts/docker/Dockerfile.coverage .
       script: docker run -te "TERM=xterm-256color" --name coverage splinelibtests:coverage
       after_success: docker rm coverage
