@@ -24,7 +24,7 @@ jobs:
     - stage: lint
       name: clang-tidy
       install: docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
-      script: docker run --name clang-tidy splinelib:clang-tidy
+      script: docker run -te "TERM=xterm-256color" --name clang-tidy splinelib:clang-tidy
       after_success: docker rm clang-tidy
     - stage: lint
       name: oclint
