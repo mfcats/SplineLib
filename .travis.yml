@@ -30,6 +30,7 @@ jobs:
       name: oclint
       before_install: echo oclint # docker cp $(sudo docker ps -aqf "name=clang-tidy"):/code/compile_commands.json ${TRAVIS_BUILD_DIR}
       script: echo oclint
+
     - stage: test
       name: gcc7
       install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.gcc7test .
@@ -40,6 +41,17 @@ jobs:
       install: docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.gcc8test .
       script: docker run -te "TERM=xterm-256color" --name tests_gcc8 splinelibtests:gcc8
       after_success: docker remove tests_gcc8
+    - stage: test
+      name: clang5
+      install: docker build -t splinelibtests:clang5 -f scripts/docker/Dockerfile.clang5 .
+      script: docker run -te "TERM=xterm-256color" --name tests_clang5 splinelibtests:clang5
+      after_success: docker remove tests_clang5
+    - stage: test
+      name: clang6
+      install: docker build -t splinelibtests:clang6 -f scripts/docker/Dockerfile.clang6 .
+      script: docker run -te "TERM=xterm-256color" --name tests_clang6 splinelibtests:clang6
+      after_success: docker remove tests_clang6
+
     - stage: coverage
       install: docker build -t splinelibtests:coverage -f scripts/docker/Dockerfile.coverage .
       script: docker run -te "TERM=xterm-256color" --name coverage splinelibtests:coverage
