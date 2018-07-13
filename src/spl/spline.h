@@ -105,12 +105,12 @@ class Spline {
 
   double JacobianDeterminant(int element_number, int integration_point, const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
-    double dx_dxi = EvaluateDerivative({ReferenceSpace2ParameterSpace(element.node(0),
-                                                                      element.node(1),
-                                                                      rule.coordinate(integration_point, 0))},
+    double dx_dxi = EvaluateDerivative({ReferenceSpace2ParameterSpace(element.GetNode(0),
+                                                                      element.GetNode(1),
+                                                                      rule.GetCoordinate(integration_point, 0))},
                                        {0},
                                        {1})[0];
-    double dxi_dtildexi = (element.node(1) - element.node(0)) / 2.0;
+    double dxi_dtildexi = (element.GetNode(1) - element.GetNode(0)) / 2.0;
     return dx_dxi * dxi_dtildexi;
   }
 
@@ -141,15 +141,15 @@ class Spline {
       const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
     for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      std::vector<double> element_non_zero_basis_functions = element_integration_points[i].non_zero_basis_functions();
+      std::vector<double> element_non_zero_basis_functions = element_integration_points[i].GetNonZeroBasisFunctions();
       std::transform(element_non_zero_basis_functions.cbegin(),
                      element_non_zero_basis_functions.cend(),
                      element_non_zero_basis_functions.begin(),
                      std::bind(std::divides<double>(), std::placeholders::_1,
                                EvaluateDerivative(
-                                   {ReferenceSpace2ParameterSpace(element.node(0),
-                                                                  element.node(1),
-                                                                  rule.coordinate(i, 0))}, {0}, {1})[0]));
+                                   {ReferenceSpace2ParameterSpace(element.GetNode(0),
+                                                                  element.GetNode(1),
+                                                                  rule.GetCoordinate(i, 0))}, {0}, {1})[0]));
 
       element_integration_points[i] = elm::ElementIntegrationPoint(element_non_zero_basis_functions);
     }

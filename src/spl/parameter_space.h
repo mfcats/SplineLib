@@ -104,8 +104,8 @@ class ParameterSpace {
     std::vector<elm::ElementIntegrationPoint> element_integration_points;
     std::vector<double> non_zero_basis_functions;
     for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      ParamCoord
-          integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
+      ParamCoord integration_point =
+          ReferenceSpace2ParameterSpace(element.GetNode(1), element.GetNode(0), rule.GetCoordinate(i, 0));
       non_zero_basis_functions = EvaluateAllNonZeroBasisFunctions(direction, ParamCoord{integration_point});
       element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_functions));
     }
@@ -120,8 +120,8 @@ class ParameterSpace {
     std::vector<elm::ElementIntegrationPoint> element_integration_points;
     std::vector<double> non_zero_basis_function_derivatives;
     for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      ParamCoord
-          integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
+      ParamCoord integration_point =
+          ReferenceSpace2ParameterSpace(element.GetNode(1), element.GetNode(0), rule.GetCoordinate(i, 0));
       non_zero_basis_function_derivatives =
           EvaluateAllNonZeroBasisFunctionDerivatives(direction, ParamCoord{integration_point}, 1);
       element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_function_derivatives));

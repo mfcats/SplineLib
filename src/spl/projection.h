@@ -77,16 +77,16 @@ class Projection {
     std::vector<elm::Element> elements = spline->GetElementList();
     std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
     std::vector<double> splinePhysicalCoords =
-        spline->Evaluate({ParamCoord{(0.5 * (elements[0].node(1) - elements[0].node(0)))}}, dimensions);
+        spline->Evaluate({ParamCoord{(0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0)))}}, dimensions);
     double distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
-    paramCoords[0] = ParamCoord{{0.5 * (elements[0].node(1) - elements[0].node(0))}};
+    paramCoords[0] = ParamCoord{{0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0))}};
     for (auto i = 1u; i < elements.size(); ++i) {
       splinePhysicalCoords =
-          spline->Evaluate({ParamCoord{0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)}},
-                           dimensions);
+          spline->Evaluate({ParamCoord{
+              0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)) + elements[i].GetNode(0)}}, dimensions);
       if (ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords)) < distance) {
         distance = ComputeTwoNorm(ComputePiecewiseVectorDifference(pointPhysicalCoords, splinePhysicalCoords));
-        paramCoords[0] = ParamCoord{0.5 * (elements[i].node(1) - elements[i].node(0)) + elements[i].node(0)};
+        paramCoords[0] = ParamCoord{0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)) + elements[i].GetNode(0)};
       }
     }
     return paramCoords;
