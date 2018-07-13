@@ -6,9 +6,9 @@ services:
   - docker
 
 stages:
+  - lint
   - test
   - coverage
-  - lint
 
 jobs:
   include:
