@@ -24,11 +24,13 @@ namespace itg {
 template<int DIM>
 class ThreePointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  ThreePointGaussLegendre() : IntegrationRule<DIM>(
-      {IntegrationPoint<1>(std::array<double, 1>{-sqrt(3.0 / 5)}, 5.0 / 9.0),
-       IntegrationPoint<1>(std::array<double, 1>{0}, 8.0 / 9.0),
-       IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0 / 5)},
-                           5.0 / 9.0)}) {}
+  ThreePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>({points_[0]}, weights_[0]),
+                                                    IntegrationPoint<1>({points_[1]}, weights_[1]),
+                                                    IntegrationPoint<1>({points_[2]}, weights_[2])}) {}
+
+ private:
+  static constexpr std::array<double, 3> weights_ = {5.0 / 9.0, 8.0 / 9.0, 5.0 / 9.0};
+  static constexpr std::array<double, 3> points_ = {-sqrt(3.0 / 5), 0, sqrt(3.0 / 5)};
 };
 }  // namespace itg
 

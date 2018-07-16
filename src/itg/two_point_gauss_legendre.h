@@ -24,9 +24,12 @@ namespace itg {
 template<int DIM>
 class TwoPointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  TwoPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{-sqrt(1.0 / 3)}, 1),
-                                                  IntegrationPoint<1>(std::array<double, 1>{sqrt(1.0 / 3)},
-                                                                      1)}) {}
+  TwoPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>({points_[0]}, weights_[0]),
+                                                  IntegrationPoint<1>({points_[1]}, weights_[1])}) {}
+
+ private:
+  static constexpr std::array<double, 2> weights_ = {1, 1};
+  static constexpr std::array<double, 2> points_ = {-sqrt(1.0 / 3), sqrt(1.0 / 3)};
 };
 }  // namespace itg
 
