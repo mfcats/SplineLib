@@ -10,15 +10,12 @@ ENV BASH_ENV /spack/bashrc
 
 RUN spack repo add /code/scripts/spack-repo
 RUN spack setup -v splinelib@github%clang@6
-RUN mkdir /code/build
+RUN mkdir -p /code/build
 WORKDIR /code/build
 RUN ./../spconfig.py ..
 
 # Build and execute tests
-RUN spack load cmake
-RUN which cmake
-RUN cmake -h
-RUN cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
+RUN spack -d load -v cmake && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
 
-# execute cpplint
+# execute clang-tidy
 CMD run-clang-tidy.py
