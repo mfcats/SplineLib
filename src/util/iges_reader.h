@@ -15,6 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SPLINELIB_IGES_READER_H
 #define SPLINELIB_IGES_READER_H
 
+#include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -47,13 +49,12 @@ class IGESReader {
     std::string delimiter = GetDelimiter(globalSection);
     std::string recordDelimiter = GetRecordDelimiter(globalSection);
     std::vector<std::string> data = SplitString(parameterDataSection, delimiter, recordDelimiter);
-    if (data[0] == "406") {
+    if (data[0] == "126") {
       return Get1DSpline(data);
     }
     if (data[0] == "128") {
       //return Get2DSpline(data);
     }
-    std::cout << std::endl << data[0] << std::endl;
     throw std::runtime_error( // NOLINT
         "The given IGES-file doesn't contain a readable B-Spline or NURBS.");
   }
@@ -207,15 +208,49 @@ class IGESReader {
     std::vector<std::string> splittedString;
     while (!string.empty()) {
       std::size_t foundDelimiter = string.find_first_of(delimiter);
-      if (foundDelimiter == std::string::npos) {
-        splittedString.push_back(string.substr(0, splittedString.back().find(recordDelimiter)));
+      std::size_t foundRecordDelimiter = string.find_first_of(recordDelimiter);
+      std::string nextEntry;
+      #define next(x, y) ((x < y) ? (x) : (x > y) ? (y) : 0)
+      if (next(foundDelimiter, foundRecordDelimiter) == std::string::npos) {
+        nextEntry = string.substr(0, splittedString.back().find(next(foundDelimiter, foundRecordDelimiter)));
+        trim(nextEntry);
+        splittedString.push_back(nextEntry);
         string.clear();
       } else {
-        splittedString.push_back(string.substr(0, foundDelimiter));
-        string.erase(0, foundDelimiter + 1);
+        if (next(foundDelimiter, foundRecordDelimiter) != 0) {
+          nextEntry = string.substr(0, next(foundDelimiter, foundRecordDelimiter));
+          trim(nextEntry);
+          splittedString.push_back(nextEntry);
+        }
+        string.erase(0, next(foundDelimiter, foundRecordDelimiter) + 1);
       }
     }
+
+    for(int i = 0; i < splittedString.size(); ++i) {
+      std::cout << splittedString[i] << std::endl;
+    }
+
     return splittedString;
+  }
+
+  //trim from left
+  inline std::string& ltrim(std::string& s, const char* t = " \t\n\r\f\v")
+  {
+    s.erase(0, s.find_first_not_of(t));
+    return s;
+  }
+
+  //trim from right
+  inline std::string& rtrim(std::string& s, const char* t = " \t\n\r\f\v")
+  {
+    s.erase(s.find_last_not_of(t) + 1);
+    return s;
+  }
+
+  //trim from left & right
+  inline std::string& trim(std::string& s, const char* t = " \t\n\r\f\v")
+  {
+    return ltrim(rtrim(s, t), t);
   }
 
   std::string filename_;
