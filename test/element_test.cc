@@ -28,16 +28,16 @@ class A1DElement : public Test {
 };
 
 TEST_F(A1DElement, ReturnsCorrectDimension) {
-  ASSERT_THAT(element.dimension(), 1);
+  ASSERT_THAT(element.GetDimension(), 1);
 }
 
 TEST_F(A1DElement, ReturnsCorrectNumberOfNodes) {
-  ASSERT_THAT(element.numberOfNodes(), 2);
+  ASSERT_THAT(element.GetNumberOfNodes(), 2);
 }
 
 TEST_F(A1DElement, ReturnsCorrectNode) {
-  ASSERT_THAT(element.node(0), DoubleEq(0.5));
-  ASSERT_THAT(element.node(1), DoubleEq(1.0));
+  ASSERT_THAT(element.GetNode(0), DoubleEq(0.5));
+  ASSERT_THAT(element.GetNode(1), DoubleEq(1.0));
 }
 
 class A1DElementGenerator : public Test {
@@ -57,20 +57,20 @@ TEST_F(A1DElementGenerator, ReturnsCorrectNumberOfElements) {
 
 TEST_F(A1DElementGenerator, Returns1DElements) {
   for (auto &element : element_generator.GetElementList()) {
-    ASSERT_THAT(element.dimension(), 1);
+    ASSERT_THAT(element.GetDimension(), 1);
   }
 }
 
 TEST_F(A1DElementGenerator, ReturnsElementsWith2Nodes) {
   for (auto &element : element_generator.GetElementList()) {
-    ASSERT_THAT(element.numberOfNodes(), 2);
+    ASSERT_THAT(element.GetNumberOfNodes(), 2);
   }
 }
 
 TEST_F(A1DElementGenerator, ReturnsElementsWithCorrectNodes) {
   auto element_list = element_generator.GetElementList();
   for (auto element = 0u; element < element_list.size(); element++) {
-    ASSERT_THAT(element_list[element].node(0), element);
-    ASSERT_THAT(element_list[element].node(1), element + 1);
+    ASSERT_THAT(element_list[element].GetNode(0), element);
+    ASSERT_THAT(element_list[element].GetNode(1), element + 1);
   }
 }

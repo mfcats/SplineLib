@@ -19,11 +19,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 elm::ElementIntegrationPoint::ElementIntegrationPoint(const std::vector<double> &non_zero_basis_functions)
     : non_zero_basis_functions_(non_zero_basis_functions) {}
 
-std::vector<double> elm::ElementIntegrationPoint::non_zero_basis_functions() const {
+std::vector<double> elm::ElementIntegrationPoint::GetNonZeroBasisFunctions() const {
   return non_zero_basis_functions_;
 }
 
-int elm::ElementIntegrationPoint::NumberOfNonZeroBasisFunctions() const {
+int elm::ElementIntegrationPoint::GetNumberOfNonZeroBasisFunctions() const {
   return static_cast<int>(non_zero_basis_functions_.size());
 }
 

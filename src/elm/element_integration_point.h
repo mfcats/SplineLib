@@ -22,8 +22,8 @@ class ElementIntegrationPoint {
  public:
   explicit ElementIntegrationPoint(const std::vector<double> &non_zero_basis_functions);
 
-  std::vector<double> non_zero_basis_functions() const;
-  int NumberOfNonZeroBasisFunctions() const;
+  std::vector<double> GetNonZeroBasisFunctions() const;
+  int GetNumberOfNonZeroBasisFunctions() const;
   double GetBasisFunctionValue(int firstNonZeroOffset) const;
 
  private:

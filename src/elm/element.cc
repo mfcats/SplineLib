@@ -17,15 +17,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 elm::Element::Element(int dimension, const std::vector<double> &nodes)
     : dimension_(dimension), number_of_nodes_(static_cast<int>(nodes.size())), nodes_(nodes) {}
 
-int elm::Element::dimension() const {
+int elm::Element::GetDimension() const {
   return dimension_;
 }
 
-int elm::Element::numberOfNodes() const {
+int elm::Element::GetNumberOfNodes() const {
   return number_of_nodes_;
 }
 
-double elm::Element::node(int number) const {
+double elm::Element::GetNode(int number) const {
 #ifdef DEBUG
   return nodes_.at(number);
 #else

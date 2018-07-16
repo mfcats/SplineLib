@@ -80,9 +80,9 @@ TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {
 }
 
 TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPoint) {
-  ASSERT_THAT(rule_.coordinate(0, 0), DoubleNear(-sqrt(3.0 / 5), util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(rule_.coordinate(1, 0), DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(rule_.coordinate(2, 0), DoubleNear(sqrt(3.0 / 5), util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(rule_.GetCoordinate(0, 0), DoubleNear(-sqrt(3.0 / 5), util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(rule_.GetCoordinate(1, 0), DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(rule_.GetCoordinate(2, 0), DoubleNear(sqrt(3.0 / 5), util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectWeightSum) {
