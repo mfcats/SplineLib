@@ -37,18 +37,32 @@ class IGESReader {
     newFile.open(filename_);
     std::string line;
     std::string globalSection;
+    std::string directoryEntry;
     std::string parameterDataSection;
+    int directoryEntryLineCount = 0;
     while (getline(newFile, line)) {
       if (line[72] == 'G') {
         globalSection += line.substr(0, 72);
+      }
+      if (line[72] == 'D') {
+        directoryEntry += line.substr(0, 72);
+        directoryEntryLineCount++;
       }
       if (line[72] == 'P') {
         parameterDataSection += line.substr(0, 64);
       }
     }
+    int numberOfEntities = directoryEntryLineCount/2;
     std::string delimiter = GetDelimiter(globalSection);
     std::string recordDelimiter = GetRecordDelimiter(globalSection);
     std::vector<std::string> data = SplitString(parameterDataSection, delimiter, recordDelimiter);
+    
+    std::string::iterator new_end = std::unique(directoryEntry.begin(), directoryEntry.end(), [=](char lhs, char rhs){ return (lhs == rhs) && (lhs == ' '); });
+    directoryEntry.erase(new_end, directoryEntry.end());
+    std::replace(directoryEntry.begin(), directoryEntry.end(), ' ', ',');
+
+    std::cout << std::endl << directoryEntry << std::endl << std::endl;
+
     if (data[0] == "126") {
       return Get1DSpline(data);
     }
@@ -225,11 +239,6 @@ class IGESReader {
         string.erase(0, next(foundDelimiter, foundRecordDelimiter) + 1);
       }
     }
-
-    for(int i = 0; i < splittedString.size(); ++i) {
-      std::cout << splittedString[i] << std::endl;
-    }
-
     return splittedString;
   }
 
