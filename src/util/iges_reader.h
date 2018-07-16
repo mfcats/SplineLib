@@ -30,7 +30,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace util {
 class IGESReader {
  public:
-  explicit IGESReader(std::string filename) : filename_(std::move(filename)) {}
+  explicit IGESReader(std::string filename, int numberOfEntityToBeRead) : filename_(std::move(filename)) {}
 
   std::shared_ptr<spl::Spline<1>> ReadIGESFile() {
     std::ifstream newFile;
@@ -39,31 +39,29 @@ class IGESReader {
     std::string globalSection;
     std::string directoryEntry;
     std::string parameterDataSection;
-    int directoryEntryLineCount = 0;
     while (getline(newFile, line)) {
       if (line[72] == 'G') {
         globalSection += line.substr(0, 72);
       }
       if (line[72] == 'D') {
         directoryEntry += line.substr(0, 72);
-        directoryEntryLineCount++;
       }
       if (line[72] == 'P') {
         parameterDataSection += line.substr(0, 64);
       }
     }
-    int numberOfEntities = directoryEntryLineCount/2;
-    std::string delimiter = GetDelimiter(globalSection);
-    std::string recordDelimiter = GetRecordDelimiter(globalSection);
-    std::vector<std::string> data = SplitString(parameterDataSection, delimiter, recordDelimiter);
-    
-    std::string::iterator new_end = std::unique(directoryEntry.begin(), directoryEntry.end(), [=](char lhs, char rhs){ return (lhs == rhs) && (lhs == ' '); });
-    directoryEntry.erase(new_end, directoryEntry.end());
-    std::replace(directoryEntry.begin(), directoryEntry.end(), ' ', ',');
 
-    std::cout << std::endl << directoryEntry << std::endl << std::endl;
+    std::vector<std::string> data = ParameterSectionToVector(parameterDataSection, GetRecordDelimiter(globalSection), GetDelimiter(globalSection));
 
-    if (data[0] == "126") {
+    //std::vector<std::string> directoryEntryVector = DirectoryEntrySectionToVector(directoryEntry);
+
+
+    std::cout << std::endl;
+    for (int i = 0; i < data.size(); ++i) {
+      std::cout << data[i] << std::endl;
+    }
+
+    /*if (data[0] == "126") {
       return Get1DSpline(data);
     }
     if (data[0] == "128") {
@@ -71,6 +69,66 @@ class IGESReader {
     }
     throw std::runtime_error( // NOLINT
         "The given IGES-file doesn't contain a readable B-Spline or NURBS.");
+
+     */}
+
+
+
+  std::vector<std::string> ParameterSectionToVector(std::string parameterDataSection, const std::string &recordDelimiter, const std::string &delimiter) {
+    std::vector<std::string> splittedByRecordDelimiter;
+    std::vector<std::string> completelySplittedElement;
+    std::vector<std::string> completelySplitted;
+    splittedByRecordDelimiter = DelimiterSeperatedStringToVector(parameterDataSection, recordDelimiter);
+    /*for(int i = 0; i < splittedByRecordDelimiter.size(); ++i) {
+      completelySplittedElement = DelimiterSeperatedStringToVector(splittedByRecordDelimiter[i], delimiter);
+      for (int j = 0; j < completelySplitted.size(); ++j) {
+        completelySplitted.push_back(completelySplittedElement[j]);
+      }*/
+
+    for (int i = 0; i < splittedByRecordDelimiter.size(); ++i) {
+      std::cout << std::endl;
+      std::cout << splittedByRecordDelimiter[i] << std::endl;
+    }
+
+    return splittedByRecordDelimiter;
+  }
+
+
+  std::vector<std::string> DirectoryEntrySectionToVector(std::string string) {
+    std::string::iterator new_end = std::unique(string.begin(), string.end(), [=](char lhs, char rhs){ return (lhs == rhs) && (lhs == ' '); });
+    string.erase(new_end, string.end());
+    std::replace(string.begin(), string.end(), ' ', ',');
+    std::stringstream ss(string);
+    std::vector<std::string> splittedString;
+    while(ss.good()) {
+      std::string substr;
+      getline(ss, substr, ',');
+      splittedString.push_back(substr);
+    }
+  }
+
+  std::vector<std::string> DelimiterSeperatedStringToVector(std::string string, const std::string &delimiter) {
+    std::vector<std::string> splittedString;
+    std::string nextEntry;
+    while (!string.empty()) {
+      std::size_t foundDelimiter = string.find_first_of(delimiter);
+      if (foundDelimiter == string.find_last_of(delimiter)) {
+        nextEntry = string.substr(0, splittedString.back().find(foundDelimiter));
+        trim(nextEntry);
+        if (!nextEntry.empty()) {
+          splittedString.push_back(nextEntry);
+        }
+        string.clear();
+      } else {
+        nextEntry = string.substr(0, foundDelimiter);
+        trim(nextEntry);
+        if (!nextEntry.empty()) {
+          splittedString.push_back(nextEntry);
+        }
+      }
+        string.erase(0, foundDelimiter + 1);
+      }
+    return splittedString;
   }
 
  private:
@@ -216,11 +274,11 @@ class IGESReader {
     return number;
   }
 
-  std::vector<std::string> SplitString(std::string string,
+  /*std::vector<std::string> ParameterSectionToVector(std::string string,
                                                    const std::string &delimiter,
                                                    const std::string &recordDelimiter) {
     std::vector<std::string> splittedString;
-    while (!string.empty()) {
+      while (!string.empty()) {
       std::size_t foundDelimiter = string.find_first_of(delimiter);
       std::size_t foundRecordDelimiter = string.find_first_of(recordDelimiter);
       std::string nextEntry;
@@ -240,7 +298,7 @@ class IGESReader {
       }
     }
     return splittedString;
-  }
+  }*/
 
   //trim from left
   inline std::string& ltrim(std::string& s, const char* t = " \t\n\r\f\v")
