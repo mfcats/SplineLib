@@ -24,17 +24,17 @@ namespace itg {
 template<int DIM>
 class FourPointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  FourPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>({points_[0]}, weights_[0]),
-                                                   IntegrationPoint<1>({points_[1]}, weights_[1]),
-                                                   IntegrationPoint<1>({points_[2]}, weights_[2]),
-                                                   IntegrationPoint<1>({points_[3]}, weights_[3])}) {}
-
- private:
-  static constexpr std::array<double, 4> weights_ =
-      {(18.0 - sqrt(30)) / 36, (18.0 + sqrt(30)) / 36, (18.0 + sqrt(30)) / 36, (18.0 - sqrt(30)) / 36};
-  static constexpr std::array<double, 4> points_ =
-      {-sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5)), -sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5)),
-       sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5)), sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))};
+  FourPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{
+      -sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))}, (18.0 - sqrt(30)) / 36),
+                                                   IntegrationPoint<1>(std::array<double, 1>{
+                                                                           -sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))},
+                                                                       (18.0 + sqrt(30)) / 36),
+                                                   IntegrationPoint<1>(std::array<double, 1>{
+                                                                           sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))},
+                                                                       (18.0 + sqrt(30)) / 36),
+                                                   IntegrationPoint<1>(std::array<double, 1>{
+                                                                           sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))},
+                                                                       (18.0 - sqrt(30)) / 36)}) {}
 };
 }  // namespace itg
 
