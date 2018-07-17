@@ -15,7 +15,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
-#include "projection.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -25,10 +24,10 @@ class ABSpline2 : public Test {
  public:
   ABSpline2() {
     std::array<baf::KnotVector, 1> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.2}, ParamCoord{0.4},
+        {{baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.2}, ParamCoord{0.4},
                           ParamCoord{0.6}, ParamCoord{0.8}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1},
-                          ParamCoord{1}})};
-    std::array<int, 1> degree = {3};
+                              ParamCoord{1}})}};
+    std::array<int, 1> degree = {{3}};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({100, 100})),
         baf::ControlPoint(std::vector<double>({140, 196})),

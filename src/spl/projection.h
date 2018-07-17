@@ -40,7 +40,7 @@ class Projection {
 
     while (!converged) {
       if (DIM == 1) {
-        std::vector<double> firstDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {1});
+        std::vector<double> firstDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {{1}});
         std::vector<double> projectionVector = util::VectorUtils<double>::ComputeDifference(pointPhysicalCoords,
                                                                                             spline->Evaluate(
                                                                                                 projectionPointParamCoords,
@@ -66,22 +66,22 @@ class Projection {
         break;
       }
     }
-    return {projectionPointParamCoords[0].get()};
+    return {{projectionPointParamCoords[0].get()}};
   }
 
   static std::array<ParamCoord, DIM> FindInitialValue(const std::vector<double> &pointPhysicalCoords,
                                                       spl::Spline<DIM> *spline, const std::vector<int> &dimensions) {
     std::vector<elm::Element> elements = spline->GetElementList();
-    std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
+    std::array<ParamCoord, DIM> paramCoords = {{ParamCoord{0}}};
     std::vector<double> splinePhysicalCoords =
-        spline->Evaluate({ParamCoord{(0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0)))}}, dimensions);
+        spline->Evaluate({{ParamCoord{(0.5*(elements[0].GetNode(1) - elements[0].GetNode(0)))}}}, dimensions);
     double distance = util::VectorUtils<double>::ComputeTwoNorm(util::VectorUtils<double>::ComputeDifference(
         pointPhysicalCoords,
         splinePhysicalCoords));
     paramCoords[0] = ParamCoord{{0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0))}};
     for (auto i = 1u; i < elements.size(); ++i) {
-      splinePhysicalCoords = spline->Evaluate({ParamCoord{
-          0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)) + elements[i].GetNode(0)}}, dimensions);
+      splinePhysicalCoords = spline->Evaluate({{ParamCoord{
+          0.5*(elements[i].GetNode(1) - elements[i].GetNode(0)) + elements[i].GetNode(0)}}}, dimensions);
       if (util::VectorUtils<double>::ComputeTwoNorm(util::VectorUtils<double>::ComputeDifference(pointPhysicalCoords,
                                                                                                  splinePhysicalCoords))
           < distance) {

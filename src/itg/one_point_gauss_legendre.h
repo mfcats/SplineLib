@@ -21,7 +21,7 @@ namespace itg {
 template<int DIM>
 class OnePointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  OnePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{0}, 2)}) {}
+  OnePointGaussLegendre() : IntegrationRule<DIM>({{IntegrationPoint<1>(std::array<double, 1>{{0}}, 2)}}) {}
 };
 }  // namespace itg
 

@@ -24,19 +24,15 @@ namespace itg {
 template<int DIM>
 class FivePointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  FivePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>({points_[0]}, weights_[0]),
-                                                   IntegrationPoint<1>({points_[1]}, weights_[1]),
-                                                   IntegrationPoint<1>({points_[2]}, weights_[2]),
-                                                   IntegrationPoint<1>({points_[3]}, weights_[3]),
-                                                   IntegrationPoint<1>({points_[4]}, weights_[4])}) {}
-
- private:
-  static constexpr std::array<double, 5> weights_ =
-      {(322.0 - 13 * sqrt(70)) / 900, (322.0 + 13 * sqrt(70)) / 900, 128.0 / 225,
-       (322.0 + 13 * sqrt(70)) / 900, (322.0 - 13 * sqrt(70)) / 900};
-  static constexpr std::array<double, 5> points_ =
-      {-(1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7)), -(1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7)), 0,
-       (1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7)), (1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7))};
+  FivePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>({{-(1.0/3)*sqrt(5 + 2.0*sqrt(10.0/7))}},
+                                                                       (322.0 - 13*sqrt(70))/900),
+                                                      IntegrationPoint<1>({{-(1.0/3)*sqrt(5 - 2.0*sqrt(10.0/7))}},
+                                                                          (322.0 + 13*sqrt(70))/900),
+                                                      IntegrationPoint<1>({{0}}, 128.0/225),
+                                                      IntegrationPoint<1>({{(1.0/3)*sqrt(5 - 2.0*sqrt(10.0/7))}},
+                                                                          (322.0 + 13*sqrt(70))/900),
+                                                      IntegrationPoint<1>({{(1.0/3)*sqrt(5 + 2.0*sqrt(10.0/7))}},
+                                                                          (322.0 - 13*sqrt(70))/900)}) {}
 };
 }  // namespace itg
 

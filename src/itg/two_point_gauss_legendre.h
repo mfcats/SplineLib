@@ -24,9 +24,9 @@ namespace itg {
 template<int DIM>
 class TwoPointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  TwoPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{-sqrt(1.0 / 3)}, 1),
-                                                  IntegrationPoint<1>(std::array<double, 1>{sqrt(1.0 / 3)},
-                                                                      1)}) {}
+  TwoPointGaussLegendre() : IntegrationRule<DIM>({{IntegrationPoint<1>(std::array<double, 1>{{-sqrt(1.0/3)}}, 1),
+      IntegrationPoint<1>(std::array<double, 1>{{sqrt(1.0/3)}},
+                          1)}}) {}
 };
 }  // namespace itg
 
