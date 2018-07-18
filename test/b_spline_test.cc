@@ -24,10 +24,19 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "four_point_gauss_legendre.h"
 #include "five_point_gauss_legendre.h"
 #include "numeric_settings.h"
+#include "b_spline_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
+
+template<int T>
+class MockParameterSpace : public spl::ParameterSpace<T> {
+ public:
+  MOCK_CONST_METHOD1_T(GetKnotVector, std::shared_ptr<baf::KnotVector>(int));
+  MOCK_CONST_METHOD1_T(GetDegree, int(int));
+  MOCK_CONST_METHOD2_T(GetBasisFunctions, double(std::array<int, 1>, std::array<ParamCoord, 1>));
+};
 
 class ABSpline : public Test {
  public:
@@ -46,8 +55,15 @@ class ABSpline : public Test {
         baf::ControlPoint(std::vector<double>({4.0, 1.5})),
         baf::ControlPoint(std::vector<double>({4.0, 0.0}))
     };
-    knot_vector_[0] = {std::make_shared<baf::KnotVector>(knot_vector[0])};
-    b_spline = std::make_unique<spl::BSpline<1>>(knot_vector_, degree_, control_points_);
+    knot_vector_[0] = std::make_shared<baf::KnotVector>(knot_vector[0]);
+
+    spl::ParameterSpace<1> parameter_space = spl::ParameterSpace<1>(knot_vector_, degree_);
+    std::array<int, 1> number_of_points;
+    number_of_points[0] = knot_vector[0].GetNumberOfKnots() - degree_[0] - 1;
+    spl::PhysicalSpace<1> physical_space = spl::PhysicalSpace<1>(control_points_, number_of_points);
+
+    spl::BSplineGenerator<1> b_spline_generator(physical_space, parameter_space);
+    b_spline = std::make_unique<spl::BSpline<1>>(b_spline_generator);
   }
 
  protected:

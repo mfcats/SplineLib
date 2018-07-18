@@ -19,6 +19,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <functional>
 #include <vector>
+#include "spline_generator.h"
+#include "b_spline_generator.h"
 
 #include "spline.h"
 
@@ -36,9 +38,12 @@ class BSpline : public Spline<DIM> {
     physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
   }
 
+  BSpline(BSplineGenerator <DIM> b_spline_generator){}
+
   BSpline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space)
       : Spline<DIM>(std::move(parameter_space)), physical_space_(physical_space) {
   }
+
 
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
