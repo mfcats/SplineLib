@@ -66,11 +66,10 @@ class IGESReader {
       knot_vector[0] = std::make_shared<baf::KnotVector>(knots);
       std::vector<baf::ControlPoint> control_points;
       for (int i = 0; i <= upperSumIndex; ++i) {
-        std::vector<double> controlPoint;
-        for (int j = (2*upperSumIndex + degree[0] + 10 + 3*i); j <= (2*upperSumIndex + degree[0] + 10 + 3*i + 2); ++j) {
-          controlPoint.push_back(parameterData[i]);
-        }
-        control_points.push_back(baf::ControlPoint(controlPoint));
+        control_points.emplace_back(baf::ControlPoint(GetData(
+            2 * upperSumIndex + degree[0] + 10 + 3 * i,
+            2 * upperSumIndex + degree[0] + 10 + 3 * i + 2,
+            parameterData)));
       }
       if (parameterData[5] == 0) {
         std::vector<double> weights;
@@ -84,6 +83,16 @@ class IGESReader {
     } else {
       throw std::runtime_error("The given IGES-file doesn't contain a readable B-Spline or NURBS.");
     }
+  }
+
+  std::vector<double> GetData(int start,
+                              int end,
+                              const std::vector<double> &parameterData) {
+    std::vector<double> data;
+    for (int i = start; i <= end; ++i) {
+      data.emplace_back(parameterData[i]);
+    }
+    return data;
   }
 
   std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
