@@ -25,10 +25,10 @@ class AnIGESReader : public Test {
   }
 };
 
-TEST_F(AnIGESReader, ReadBSplineCurveFromIGESFile) {
+TEST_F(AnIGESReader, ReadNURBSCurveFromIGESFile) {
   util::IGESReader reader = util::IGESReader("/Users/christophsusen/SplineLib/test/test.iges");
   std::shared_ptr<spl::Spline<1>> spline = reader.ReadIGESFile(4);
-  //ASSERT_THAT(spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(3.75));
+  ASSERT_THAT(spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(3.75));
 }
 
 

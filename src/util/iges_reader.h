@@ -26,6 +26,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 #include "b_spline.h"
+#include "nurbs.h"
 #include "spline.h"
 
 namespace util {
@@ -48,7 +49,7 @@ class IGESReader {
         parameterDataSection.push_back(line.substr(0, 64));
       }
     }
-  return GetSpline(parameterDataSection);
+    return GetSpline(ParameterSectionToVector(parameterDataSection, GetParameterSectionStartEndPointers(directoryEntrySection, entityToBeRead)));
   }
 
  private:
@@ -58,24 +59,29 @@ class IGESReader {
       std::array<int, 1> degree;
       degree[0] = int(parameterData[2]);
       std::vector<ParamCoord> knots;
-      for (int i = 7; i <= (upperSumIndex + degree[0] + 7)) {
+      for (int i = 7; i <= (upperSumIndex + degree[0] + 7); ++i) {
         knots.push_back(ParamCoord{parameterData[i]});
       }
       std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
       knot_vector[0] = std::make_shared<baf::KnotVector>(knots);
-      std::vector<double> weights;
-      for (int i = (upperSumIndex + degree[0] + 8); i <= (2*upperSumIndex + degree[0] + 8); ++i) {
-        weights.push_back(parameterData[i]);
-      }
       std::vector<baf::ControlPoint> control_points;
-      for (int i = (2*upperSumIndex + degree[0] + 9); i <= (5*upperSumIndex + degree[0] + 9); ++i) {
-        control_points.push_back(parameterData[i]);
+      for (int i = 0; i <= upperSumIndex; ++i) {
+        std::vector<double> controlPoint;
+        for (int j = (2*upperSumIndex + degree[0] + 9 + 3*i); j <= (2*upperSumIndex + degree[0] + 9 + 3*i + 2); ++j) {
+          controlPoint.push_back(parameterData[i]);
+        }
+        control_points.push_back(baf::ControlPoint(controlPoint));
+      }
+      if (parameterData[4]) {
+        std::vector<double> weights;
+        for (int i = (upperSumIndex + degree[0] + 8); i <= (2*upperSumIndex + degree[0] + 8); ++i) {
+          weights.push_back(parameterData[i]);
+          return std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+        }
       }
     } else {
       throw std::runtime_error("The given IGES-file doesn't contain a readable B-Spline or NURBS.");
     }
-      return std::make_shared<NURBS>(controlPoints,
-                                     BasisFunctionDerivativeSet(knotVector, degree, degree + 1));
   }
 
   std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
