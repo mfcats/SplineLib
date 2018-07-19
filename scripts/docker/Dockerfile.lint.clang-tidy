@@ -1,21 +1,21 @@
-FROM cm314/splinelib:gtest3
-
-# Add current directory as working directory to docker
-ADD . /code
-WORKDIR /code
-
-# Set-up shell
-SHELL ["bash", "-c"]
-ENV BASH_ENV /spack/bashrc
-
-RUN spack repo add /code/scripts/spack-repo
-RUN spack setup -v splinelib@github%clang@6
-RUN mkdir -p /code/build2
-WORKDIR /code/build2
-RUN ./../spconfig.py ..
-
-# Build and execute tests
-RUN spack load cmake && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
-
-# execute clang-tidy
-CMD python ../scripts/run-clang-tidy.py -checks="*"
+#FROM cm314/splinelib:gtest3
+#
+## Add current directory as working directory to docker
+#ADD . /code
+#WORKDIR /code
+#
+## Set-up shell
+#SHELL ["bash", "-c"]
+#ENV BASH_ENV /spack/bashrc
+#
+#RUN spack repo add /code/scripts/spack-repo
+#RUN spack setup -v splinelib@github%clang@6
+#RUN mkdir -p /code/build2
+#WORKDIR /code/build2
+#RUN ./../spconfig.py ..
+#
+## Build and execute tests
+#RUN spack load cmake && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
+#
+## execute clang-tidy
+#CMD python ../scripts/run-clang-tidy.py -checks="*"

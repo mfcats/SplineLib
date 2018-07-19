@@ -1,8 +1,8 @@
-FROM mfcats/splinelib:spack
-
-# Add current directory as working directory to docker
-ADD . /code
-WORKDIR /code
-
-# execute cpplint
-CMD cpplint --filter=-build/include_subdir,-build/header_guard --linelength=120 --recursive /code/src/*
+#FROM mfcats/splinelib:spack
+#
+## Add current directory as working directory to docker
+#ADD . /code
+#WORKDIR /code
+#
+## execute cpplint
+#CMD cpplint --filter=-build/include_subdir,-build/header_guard --linelength=120 --recursive /code/src/*
