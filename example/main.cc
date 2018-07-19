@@ -13,7 +13,27 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 int main() {
-  int a = 2;
-  int b = 6;
-  int c = a + b;
+  std::array<baf::KnotVector, 1> knot_vector =
+      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
+                        ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}})};
+  std::array<int, 1> degree = {2};
+  std::vector<baf::ControlPoint> control_points = {
+      baf::ControlPoint(std::vector<double>({0.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({0.0, 1.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+      baf::ControlPoint(std::vector<double>({1.5, 1.5})),
+      baf::ControlPoint(std::vector<double>({2.0, 1.3})),
+      baf::ControlPoint(std::vector<double>({3.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({4.0, 1.5})),
+      baf::ControlPoint(std::vector<double>({4.0, 0.0}))
+  };
+  std::shared_ptr < std::array < baf::KnotVector, 1 >> knot_vector_ptr =
+                                                      std::make_shared < std::array < baf::KnotVector, 1
+      >> (knot_vector);
+  std::unique_ptr<spl::BSpline<1>> b_spline =
+      std::make_unique < spl::BSpline < 1 >> (knot_vector_ptr, degree, control_points);
+
+  for (int i = 0; i <= 5000; i++) {
+    b_spline->Evaluate({ParamCoord{i / 1000.0}}, {0});
+  }
 }
