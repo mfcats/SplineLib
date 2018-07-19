@@ -3,3 +3,5 @@ FROM cm314/splinelib:gtest3
 # Add current directory as working directory to docker
 ADD . /code
 WORKDIR /code
+
+CMD echo 0

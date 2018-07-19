@@ -4,6 +4,8 @@ FROM cm314/splinelib:gtest3
 ADD . /code
 WORKDIR /code
 
+CMD echo 0
+
 ## Set-up shell
 #SHELL ["bash", "-c"]
 #ENV BASH_ENV /spack/bashrc

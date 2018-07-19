@@ -3,3 +3,5 @@ FROM mfcats/splinelib:spack
 # Add current directory as working directory to docker
 ADD . /code
 WORKDIR /code
+
+CMD echo 0

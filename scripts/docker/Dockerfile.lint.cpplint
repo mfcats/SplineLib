@@ -4,5 +4,6 @@ FROM mfcats/splinelib:spack
 ADD . /code
 WORKDIR /code
 
+CMD echo 0
 ## execute cpplint
 #CMD cpplint --filter=-build/include_subdir,-build/header_guard --linelength=120 --recursive /code/src/*
