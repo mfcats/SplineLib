@@ -59,7 +59,7 @@ class IGESReader {
       std::array<int, 1> degree;
       degree[0] = int(parameterData[2]);
       std::vector<ParamCoord> knots;
-      for (int i = 7; i <= (upperSumIndex + degree[0] + 7); ++i) {
+      for (int i = 7; i <= (upperSumIndex + degree[0] + 8); ++i) {
         knots.push_back(ParamCoord{parameterData[i]});
       }
       std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
@@ -67,17 +67,19 @@ class IGESReader {
       std::vector<baf::ControlPoint> control_points;
       for (int i = 0; i <= upperSumIndex; ++i) {
         std::vector<double> controlPoint;
-        for (int j = (2*upperSumIndex + degree[0] + 9 + 3*i); j <= (2*upperSumIndex + degree[0] + 9 + 3*i + 2); ++j) {
+        for (int j = (2*upperSumIndex + degree[0] + 10 + 3*i); j <= (2*upperSumIndex + degree[0] + 10 + 3*i + 2); ++j) {
           controlPoint.push_back(parameterData[i]);
         }
         control_points.push_back(baf::ControlPoint(controlPoint));
       }
-      if (parameterData[4]) {
+      if (parameterData[5] == 0) {
         std::vector<double> weights;
         for (int i = (upperSumIndex + degree[0] + 8); i <= (2*upperSumIndex + degree[0] + 8); ++i) {
           weights.push_back(parameterData[i]);
-          return std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
         }
+        return std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+      } else {
+        return std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
       }
     } else {
       throw std::runtime_error("The given IGES-file doesn't contain a readable B-Spline or NURBS.");
