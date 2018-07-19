@@ -48,55 +48,35 @@ class IGESReader {
         parameterDataSection.push_back(line.substr(0, 64));
       }
     }
-
-    std::array<int, 2> p = GetParameterSectionStartEndPointers(directoryEntrySection, entityToBeRead);
-    //std::cout << std::endl << p[0] << ' ' << p[1];
-
-    std::vector<double> pv = ParameterSectionToVector(parameterDataSection, p);
-    std::cout << std::endl;
-    for (int i = 0; i < pv.size(); ++i) {
-      std::cout << std::setprecision(15) << pv[i] << std::endl;
-    }
-
-
-
-
-     }
+  return GetSpline(parameterDataSection);
+  }
 
  private:
-
-  std::shared_ptr<spl::BSpline<1>> GetSpline(const std::vector<double> &parameterData) {
+  std::shared_ptr<spl::Spline<1>> GetSpline(const std::vector<double> &parameterData) {
     if (parameterData[0] == 126) {
       int upperSumIndex = int(parameterData[1]);
       std::array<int, 1> degree;
-      degree[0] = int(parameterData[3]);
+      degree[0] = int(parameterData[2]);
+      std::vector<ParamCoord> knots;
+      for (int i = 7; i <= (upperSumIndex + degree[0] + 7)) {
+        knots.push_back(ParamCoord{parameterData[i]});
+      }
+      std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
+      knot_vector[0] = std::make_shared<baf::KnotVector>(knots);
+      std::vector<double> weights;
+      for (int i = (upperSumIndex + degree[0] + 8); i <= (2*upperSumIndex + degree[0] + 8); ++i) {
+        weights.push_back(parameterData[i]);
+      }
+      std::vector<baf::ControlPoint> control_points;
+      for (int i = (2*upperSumIndex + degree[0] + 9); i <= (5*upperSumIndex + degree[0] + 9); ++i) {
+        control_points.push_back(parameterData[i]);
+      }
     } else {
       throw std::runtime_error("The given IGES-file doesn't contain a readable B-Spline or NURBS.");
     }
-
-
-
-
-    
-    std::vector<double> knots = GetData(7, upperSumIndex + degree[0] + 8, parameterData);
-    std::vector<ParamCoord> knots_param;
-    for(int i; i < knots.size(); ++i) {
-      knots_param.push_back(ParamCoord{knots[i]});
-    }
-    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
-    knot_vector[0] = std::make_shared<baf::KnotVector>(knots_param);
-    std::vector<baf::ControlPoint> control_points;
-    for (int controlPoint = 0; controlPoint < upperSumIndex + 1; controlPoint++) {
-      control_points.emplace_back(baf::ControlPoint(GetData(
-          2 * upperSumIndex + degree[0] + 10 + 3 * controlPoint,
-          2 * upperSumIndex + degree[0] + 10 + 3 * controlPoint + 2,
-          parameterData)));
-    }
-    return std::make_shared<spl::BSpline<1>>(spl::BSplineGenerator<1>(knot_vector, degree, control_points));
+      return std::make_shared<NURBS>(controlPoints,
+                                     BasisFunctionDerivativeSet(knotVector, degree, degree + 1));
   }
-
-
-
 
   std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
     std::string parameterDataStartPointer = directoryEntrySection[entityToBeRead*2];
