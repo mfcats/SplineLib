@@ -6,8 +6,8 @@ services:
   - docker
 
 stages:
-  - Lint
   - UnitTests
+  - Lint
 #  - AcceptanceTests
 #  - Install
 
