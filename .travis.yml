@@ -84,7 +84,7 @@ jobs:
 
     - stage: AcceptanceTests
       before_install: docker pull mfcats/splinelib:spack
-      install: docker build -t splinelibtests:acceptance -f scripts/docker/Dockerfile.acceptencetests .
+      install: docker build -t splinelibtests:acceptance -f scripts/docker/Dockerfile.acceptancetests .
       script: docker run -te "TERM=xterm-256color" --name acceptance splinelibtests:acceptance
       after_success: docker rm acceptance
 #

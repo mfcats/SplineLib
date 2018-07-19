@@ -15,4 +15,4 @@ WORKDIR /code/build
 RUN ./../spconfig.py ..
 
 # Build and execute tests
-CMD make && ./expl/Example
+CMD make && ./example/Example
