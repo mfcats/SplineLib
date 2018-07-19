@@ -4,6 +4,18 @@ FROM mfcats/splinelib:spack
 ADD . /code
 WORKDIR /code
 
-CMD echo 0
-## execute clang-tidy
-#CMD ln -s /code/compile_commands.json /code && oclint-json-compilation-database
+# Set-up shell
+SHELL ["bash", "-c"]
+ENV BASH_ENV /spack/bashrc
+
+RUN spack repo add /code/scripts/spack-repo
+RUN spack setup -v splinelib@github%clang@6
+RUN mkdir -p /code/build
+WORKDIR /code/build
+RUN ./../spconfig.py ..
+
+# Build and execute tests
+RUN spack load cmake && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
+
+# execute clang-tidy
+CMD ln -s /code/build/compile_commands.json /code && cd /code && oclint-json-compilation-database

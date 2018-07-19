@@ -7,9 +7,9 @@ services:
 
 stages:
   - Lint
-  - UnitTests
-  - AcceptanceTests
-  - Install
+#  - UnitTests
+#  - AcceptanceTests
+#  - Install
 
 jobs:
   include:
@@ -32,64 +32,64 @@ jobs:
       script: docker run -te "TERM=xterm-256color" --name oclint splinelib:oclint
       after_success: docker rm clang-tidy
 
-    - stage: UnitTests
-      name: GCC 7 - Release
-      before_install: docker pull cm314/splinelib:gtest3
-      install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.test.gcc7.release .
-      script: docker run -te "TERM=xterm-256color" --name tests_gcc7 splinelibtests:gcc7
-      after_success: docker rm tests_gcc7
-    - stage: UnitTests
-      name: GCC 7 - Debug
-      before_install: docker pull cm314/splinelib:gtest3
-      install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.test.gcc7.debug .
-      script: docker run -te "TERM=xterm-256color" --name tests_gcc7 splinelibtests:gcc7
-      after_success: docker rm tests_gcc7
-    - stage: UnitTests
-      name: GCC 8 - Release
-      before_install: docker pull cm314/splinelib:gtest3
-      install: docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.test.gcc8.release .
-      script: docker run -te "TERM=xterm-256color" --name tests_gcc8 splinelibtests:gcc8
-      after_success: docker rm tests_gcc8
-    - stage: UnitTests
-      name: GCC 8 - Debug
-      before_install: docker pull cm314/splinelib:gtest3
-      install: docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.test.gcc8.debug .
-      script: docker run -te "TERM=xterm-256color" --name tests_gcc8 splinelibtests:gcc8
-      after_success: docker rm tests_gcc8
-    - stage: UnitTests
-      name: Clang 5 - Release
-      before_install: docker pull cm314/splinelib:gtest3
-      install: docker build -t splinelibtests:clang5 -f scripts/docker/Dockerfile.test.clang5.release .
-      script: docker run -te "TERM=xterm-256color" --name tests_clang5 splinelibtests:clang5
-      after_success: docker rm tests_clang5
-    - stage: UnitTests
-      name: Clang 5 - Debug
-      before_install: docker pull cm314/splinelib:gtest3
-      install: docker build -t splinelibtests:clang5 -f scripts/docker/Dockerfile.test.clang5.debug .
-      script: docker run -te "TERM=xterm-256color" --name tests_clang5 splinelibtests:clang5
-      after_success: docker rm tests_clang5
-    - stage: UnitTests
-      name: Clang 6 - Release
-      before_install: docker pull cm314/splinelib:gtest3
-      install: docker build -t splinelibtests:clang6 -f scripts/docker/Dockerfile.test.clang6.release .
-      script: docker run -te "TERM=xterm-256color" --name tests_clang6 splinelibtests:clang6
-      after_success: docker rm tests_clang6
-    - stage: UnitTests
-      name: Clang 6 - Debug
-      before_install: docker pull cm314/splinelib:gtest3
-      install: docker build -t splinelibtests:clang6 -f scripts/docker/Dockerfile.test.clang6.debug .
-      script: docker run -te "TERM=xterm-256color" --name tests_clang6 splinelibtests:clang6
-      after_success: docker rm tests_clang6
-
-    - stage: AcceptanceTests
-      before_install: docker pull cm314/splinelib:spack
-      install: docker build -t splinelibtests:acceptance -f scripts/docker/Dockerfile.acceptencetests .
-      script: docker run -te "TERM=xterm-256color" --name acceptance splinelibtests:acceptance
-      after_success: docker rm acceptance
-
-    - stage: Install
-      before_install: docker pull cm314/splinelib:spack
-      install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
-      script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
-      after_success: docker rm install
-
+#    - stage: UnitTests
+#      name: GCC 7 - Release
+#      before_install: docker pull cm314/splinelib:gtest3
+#      install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.test.gcc7.release .
+#      script: docker run -te "TERM=xterm-256color" --name tests_gcc7 splinelibtests:gcc7
+#      after_success: docker rm tests_gcc7
+#    - stage: UnitTests
+#      name: GCC 7 - Debug
+#      before_install: docker pull cm314/splinelib:gtest3
+#      install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.test.gcc7.debug .
+#      script: docker run -te "TERM=xterm-256color" --name tests_gcc7 splinelibtests:gcc7
+#      after_success: docker rm tests_gcc7
+#    - stage: UnitTests
+#      name: GCC 8 - Release
+#      before_install: docker pull cm314/splinelib:gtest3
+#      install: docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.test.gcc8.release .
+#      script: docker run -te "TERM=xterm-256color" --name tests_gcc8 splinelibtests:gcc8
+#      after_success: docker rm tests_gcc8
+#    - stage: UnitTests
+#      name: GCC 8 - Debug
+#      before_install: docker pull cm314/splinelib:gtest3
+#      install: docker build -t splinelibtests:gcc8 -f scripts/docker/Dockerfile.test.gcc8.debug .
+#      script: docker run -te "TERM=xterm-256color" --name tests_gcc8 splinelibtests:gcc8
+#      after_success: docker rm tests_gcc8
+#    - stage: UnitTests
+#      name: Clang 5 - Release
+#      before_install: docker pull cm314/splinelib:gtest3
+#      install: docker build -t splinelibtests:clang5 -f scripts/docker/Dockerfile.test.clang5.release .
+#      script: docker run -te "TERM=xterm-256color" --name tests_clang5 splinelibtests:clang5
+#      after_success: docker rm tests_clang5
+#    - stage: UnitTests
+#      name: Clang 5 - Debug
+#      before_install: docker pull cm314/splinelib:gtest3
+#      install: docker build -t splinelibtests:clang5 -f scripts/docker/Dockerfile.test.clang5.debug .
+#      script: docker run -te "TERM=xterm-256color" --name tests_clang5 splinelibtests:clang5
+#      after_success: docker rm tests_clang5
+#    - stage: UnitTests
+#      name: Clang 6 - Release
+#      before_install: docker pull cm314/splinelib:gtest3
+#      install: docker build -t splinelibtests:clang6 -f scripts/docker/Dockerfile.test.clang6.release .
+#      script: docker run -te "TERM=xterm-256color" --name tests_clang6 splinelibtests:clang6
+#      after_success: docker rm tests_clang6
+#    - stage: UnitTests
+#      name: Clang 6 - Debug
+#      before_install: docker pull cm314/splinelib:gtest3
+#      install: docker build -t splinelibtests:clang6 -f scripts/docker/Dockerfile.test.clang6.debug .
+#      script: docker run -te "TERM=xterm-256color" --name tests_clang6 splinelibtests:clang6
+#      after_success: docker rm tests_clang6
+#
+#    - stage: AcceptanceTests
+#      before_install: docker pull cm314/splinelib:spack
+#      install: docker build -t splinelibtests:acceptance -f scripts/docker/Dockerfile.acceptencetests .
+#      script: docker run -te "TERM=xterm-256color" --name acceptance splinelibtests:acceptance
+#      after_success: docker rm acceptance
+#
+#    - stage: Install
+#      before_install: docker pull cm314/splinelib:spack
+#      install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
+#      script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
+#      after_success: docker rm install
+#
