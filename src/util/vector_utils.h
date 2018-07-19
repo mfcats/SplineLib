@@ -15,6 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_UTIL_VECTOR_UTILS
 #define SRC_UTIL_VECTOR_UTILS
 
+#include <algorithm>
+#include <functional>
 #include <vector>
 
 namespace util {
@@ -38,4 +40,4 @@ class VectorUtils {
 };
 }  // namespace util
 
-#endif // SRC_UTIL_VECTOR_UTILS
+#endif  // SRC_UTIL_VECTOR_UTILS

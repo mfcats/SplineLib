@@ -15,8 +15,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_PROJECTION_H_
 #define SRC_SPL_PROJECTION_H_
 
-#include <algorithm>
-#include <functional>
 #include <vector>
 
 #include "b_spline.h"
@@ -41,10 +39,9 @@ class Projection {
     while (!converged) {
       if (DIM == 1) {
         std::vector<double> firstDer = spline->EvaluateDerivative(projectionPointParamCoords, dimensions, {1});
-        std::vector<double> projectionVector = util::VectorUtils<double>::ComputeDifference(pointPhysicalCoords,
-                                                                                            spline->Evaluate(
-                                                                                                projectionPointParamCoords,
-                                                                                                dimensions));
+        std::vector<double> projectionVector =
+            util::VectorUtils<double>::ComputeDifference(pointPhysicalCoords,
+                                                         spline->Evaluate(projectionPointParamCoords, dimensions));
 
         // This is only the first order algorithm. An implemented but non-working version of the second order algorithm
         // can be found in commit 2ed993e6dcef3d184b70640f6b9498efae52747a.
