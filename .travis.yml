@@ -82,13 +82,13 @@ jobs:
 #      after_success: docker rm tests_clang6
 #
 #    - stage: AcceptanceTests
-#      before_install: docker pull cm314/splinelib:spack
+#      before_install: docker pull mfcats/splinelib:spack
 #      install: docker build -t splinelibtests:acceptance -f scripts/docker/Dockerfile.acceptencetests .
 #      script: docker run -te "TERM=xterm-256color" --name acceptance splinelibtests:acceptance
 #      after_success: docker rm acceptance
 #
 #    - stage: Install
-#      before_install: docker pull cm314/splinelib:spack
+#      before_install: docker pull mfcats/splinelib:spack
 #      install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
 #      script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
 #      after_success: docker rm install
