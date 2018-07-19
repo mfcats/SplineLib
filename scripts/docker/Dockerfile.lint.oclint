@@ -18,4 +18,4 @@ RUN ./../spconfig.py ..
 RUN spack load cmake && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
 
 # execute clang-tidy
-CMD ln -s /code/build/compile_commands.json /code && cd /code && oclint-json-compilation-database -v -- -rc LONG_LINE=120
+CMD ln -s /code/build/compile_commands.json /code && cd /code && oclint-json-compilation-database -v -- -rc LONG_LINE=120 -max-priority-1=0 -max-priority-2=0 -max-priority-3=0
