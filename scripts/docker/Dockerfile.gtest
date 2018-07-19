@@ -1,17 +1,25 @@
-# Build on top of ubuntu
-FROM cm314/splinelib:gtest2
+# Build on top of spack
+FROM mfcats/splinelib:spack
 
-# Work in /spack
-WORKDIR /spack
+# Add code directory
+ADD . /spackrepo
+WORKDIR /spackrepo
 
 # Set-up shell
 SHELL ["bash", "-c"]
-ENV BASH_ENV /spack/bashrc
+ENV BASH_ENV /spack/docker/bashrc
+ENV DEBIAN_FRONTEND noninteractive
 
 # Install googletest versions
-RUN spack install googletest +gmock ~shared %gcc@8.0.1
-RUN spack install googletest +gmock ~shared %gcc@7.3.0
-RUN spack install googletest +gmock ~shared %clang@6.0.0-1ubuntu2
-RUN spack install googletest +gmock ~shared %clang@5.0.1-4
+RUN spack repo add /spackrepo/scripts/spack-repo
+RUN spack setup -v splinelib@github build_type=Debug %gcc@7
+RUN spack setup -v splinelib@github build_type=Release %gcc@7
+RUN spack setup -v splinelib@github build_type=Debug %clang@6
+RUN spack setup -v splinelib@github build_type=Release %clang@6
+RUN spack setup -v splinelib@github build_type=Debug %clang@5
+RUN spack setup -v splinelib@github build_type=Release %clang@5
+RUN spack setup -v splinelib@github build_type=Debug %gcc@8
+RUN spack setup -v splinelib@github build_type=Release %gcc@8
+RUN spack clean -a
 
 CMD /bin/bash

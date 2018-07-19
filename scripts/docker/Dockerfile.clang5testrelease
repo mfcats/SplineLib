@@ -1,0 +1,18 @@
+FROM mfcats/splinelib:spack
+
+# Add current directory as working directory to docker
+ADD . /code
+WORKDIR /code
+
+# Set-up shell
+SHELL ["bash", "-c"]
+ENV BASH_ENV /spack/docker/bashrc
+
+RUN spack repo add /code/scripts/spack-repo
+RUN spack setup -v splinelib@github build_type=Release %clang@5
+RUN mkdir /code/build-clang5-release
+WORKDIR /code/build-clang5-release
+RUN ../spconfig.py ..
+
+# Build and execute tests
+CMD make && ./test/SplineLibTests
