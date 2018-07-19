@@ -1,8 +1,8 @@
-#FROM cm314/splinelib:spack
-#
-## Add current directory as working directory to docker
-#ADD . /code
-#WORKDIR /code
-#
+FROM cm314/splinelib:spack
+
+# Add current directory as working directory to docker
+ADD . /code
+WORKDIR /code
+
 ## execute clang-tidy
 #CMD ln -s /code/compile_commands.json /code && oclint-json-compilation-database
