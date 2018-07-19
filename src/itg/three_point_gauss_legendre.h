@@ -25,10 +25,10 @@ template<int DIM>
 class ThreePointGaussLegendre : public IntegrationRule<DIM> {
  public:
   ThreePointGaussLegendre() : IntegrationRule<DIM>(
-      {{IntegrationPoint<1>(std::array<double, 1>{{-sqrt(3.0/5)}}, 5.0/9.0),
-          IntegrationPoint<1>(std::array<double, 1>{{0}}, 8.0/9.0),
-          IntegrationPoint<1>(std::array<double, 1>{{sqrt(3.0/5)}},
-                              5.0/9.0)}}) {}
+      {IntegrationPoint<1>(std::array<double, 1>{-sqrt(3.0 / 5)}, 5.0 / 9.0),
+       IntegrationPoint<1>(std::array<double, 1>{0}, 8.0 / 9.0),
+       IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0 / 5)},
+                           5.0 / 9.0)}) {}
 };
 }  // namespace itg
 

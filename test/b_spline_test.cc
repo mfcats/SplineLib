@@ -13,10 +13,17 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include <array>
+#include <numeric>
 
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
+#include "one_point_gauss_legendre.h"
+#include "two_point_gauss_legendre.h"
+#include "three_point_gauss_legendre.h"
+#include "four_point_gauss_legendre.h"
+#include "five_point_gauss_legendre.h"
+#include "numeric_settings.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -26,9 +33,9 @@ class ABSpline : public Test {
  public:
   ABSpline() {
     std::array<baf::KnotVector, 1> knot_vector =
-        {{baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
-                              ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}})}};
-    degree_ = {{2}};
+        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
+                          ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}})};
+    degree_ = {2};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0})),
@@ -51,46 +58,46 @@ class ABSpline : public Test {
 };
 
 TEST_F(ABSpline, Returns0_0For0AndDim0) {
-  ASSERT_THAT(b_spline->Evaluate({{ParamCoord{0.0}}}, {0})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns0_0For0AndDim1) {
-  ASSERT_THAT(b_spline->Evaluate({{ParamCoord{0.0}}}, {1})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{0.0}}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns4_0For5AndDim0) {
-  ASSERT_THAT(b_spline->Evaluate({{ParamCoord{5.0}}}, {0})[0], DoubleEq(4.0));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{5.0}}, {0})[0], DoubleEq(4.0));
 }
 
 TEST_F(ABSpline, Returns0_0For5AndDim1) {
-  ASSERT_THAT(b_spline->Evaluate({{ParamCoord{5.0}}}, {1})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{5.0}}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns1_5For2_5AndDim0) {
-  ASSERT_THAT(b_spline->Evaluate({{ParamCoord{2.5}}}, {0})[0], DoubleEq(1.5));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{2.5}}, {0})[0], DoubleEq(1.5));
 }
 
 TEST_F(ABSpline, Returns0_0For0_0Dim0AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({{ParamCoord{0.0}}}, {0}, {{1}})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{0.0}}, {0}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns1_0For0_0Dim1AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({{ParamCoord{0.0}}}, {1}, {{1}})[0], DoubleEq(2.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{0.0}}, {1}, {1})[0], DoubleEq(2.0));
 }
 
 TEST_F(ABSpline, Returns12_0For5_0Dim0AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({{ParamCoord{5.0}}}, {0}, {{1}})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{5.0}}, {0}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) {
-  ASSERT_THAT(b_spline->EvaluateDerivative({{ParamCoord{2.25}}}, {1}, {{1}})[0], DoubleEq(0.325));
+  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{2.25}}, {1}, {1})[0], DoubleEq(0.325));
 }
 
 TEST_F(ABSpline, CanBeConstructedWithAPhysicalAndAParameterSpace) {
-  spl::ParameterSpace<1> parameter_space = spl::ParameterSpace<1>({{(*knot_vector_)[0]}}, {{degree_[0]}});
-  spl::PhysicalSpace<1> physical_space = spl::PhysicalSpace<1>(control_points_, {{8}});
+  spl::ParameterSpace<1> parameter_space = spl::ParameterSpace<1>({(*knot_vector_)[0]}, {degree_[0]});
+  spl::PhysicalSpace<1> physical_space = spl::PhysicalSpace<1>(control_points_, {8});
   b_spline = std::make_unique<spl::BSpline<1>>(parameter_space, physical_space);
-  ASSERT_THAT(b_spline->Evaluate({{ParamCoord{5.0}}}, {0})[0], DoubleEq(4.0));
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{5.0}}, {0})[0], DoubleEq(4.0));
 }
 
 TEST_F(ABSpline, ThrowsExceptionForDifferentControlPointDimensions) {
@@ -104,19 +111,19 @@ TEST_F(ABSpline, ThrowsExceptionForNotFittingKnotVectorAndControlPoints) {
 }
 
 TEST_F(ABSpline, ThrowsExceptionForEvaluationAt6_0) {
-  ASSERT_THROW(b_spline->Evaluate({{ParamCoord{6.0}}}, {0}), std::runtime_error);
+  ASSERT_THROW(b_spline->Evaluate({ParamCoord{6.0}}, {0}), std::runtime_error);
 }
 
 TEST_F(ABSpline, ThrowsExceptionForEvaluationAtMinus1_0) {
-  ASSERT_THROW(b_spline->Evaluate({{ParamCoord{-1.0}}}, {0}), std::runtime_error);
+  ASSERT_THROW(b_spline->Evaluate({ParamCoord{-1.0}}, {0}), std::runtime_error);
 }
 
 TEST_F(ABSpline, ThrowsExceptionForDerivativeEvaluationAt6_0) {
-  ASSERT_THROW(b_spline->EvaluateDerivative({{ParamCoord{6.0}}}, {0}, {{1}}), std::runtime_error);
+  ASSERT_THROW(b_spline->EvaluateDerivative({ParamCoord{6.0}}, {0}, {1}), std::runtime_error);
 }
 
 TEST_F(ABSpline, ThrowsExceptionForDerivativeEvaluationAtMinus1_0) {
-  ASSERT_THROW(b_spline->EvaluateDerivative({{ParamCoord{-1.0}}}, {0}, {{1}}), std::runtime_error);
+  ASSERT_THROW(b_spline->EvaluateDerivative({ParamCoord{-1.0}}, {0}, {1}), std::runtime_error);
 }
 
 TEST_F(ABSpline, ReturnsCorrectNumberOfElements) {

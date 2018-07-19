@@ -21,7 +21,7 @@ using testing::DoubleEq;
 
 class A1DIntegrationPoint : public Test {
  public:
-  A1DIntegrationPoint() : integration_point_({{1.5}}, 0.5) {}
+  A1DIntegrationPoint() : integration_point_({1.5}, 0.5) {}
 
  protected:
   itg::IntegrationPoint<1> integration_point_;

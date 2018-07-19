@@ -17,10 +17,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 spl::SquareGenerator::SquareGenerator() {
   // zero_ and one_ should be used here
   knot_vectors_ =
-      {{baf::KnotVector{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}},
-          {baf::KnotVector{
-              {ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}}}}};
-  degrees_ = {{2, 2}};
+        {baf::KnotVector{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}},
+         {baf::KnotVector{{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}}}};
+  degrees_ = {2, 2};
   control_points_ = {baf::ControlPoint(std::vector<double>({-1.0, -1.0})),
                      baf::ControlPoint(std::vector<double>({0.0, -1.0})),
                      baf::ControlPoint(std::vector<double>({1.0, -1.0})),
@@ -33,7 +32,7 @@ spl::SquareGenerator::SquareGenerator() {
   knot_vector_ptr_ = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vectors_);
 }
 
-spl::SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({{degree, degree}}) {
+spl::SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({degree, degree}) {
   std::vector<ParamCoord> knots;
   for (int i = 0; i <= degree; i++) {
     knots.push_back(zero_);
@@ -44,7 +43,7 @@ spl::SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees
   for (int i = 0; i <= degree; i++) {
     knots.push_back(one_);
   }
-  knot_vectors_ = {{baf::KnotVector(knots), baf::KnotVector(knots)}};
+  knot_vectors_ = {baf::KnotVector(knots), baf::KnotVector(knots)};
   knot_vector_ptr_ = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vectors_);
 
   for (int dimension1 = 0; dimension1 < number_of_knots - degree - 1; dimension1++) {

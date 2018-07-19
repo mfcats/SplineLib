@@ -24,17 +24,17 @@ namespace itg {
 template<int DIM>
 class FourPointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  FourPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{{
-      -sqrt(3.0/7 + 2.0/7*sqrt(6.0/5))}}, (18.0 - sqrt(30))/36),
+  FourPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{
+      -sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))}, (18.0 - sqrt(30)) / 36),
                                                    IntegrationPoint<1>(std::array<double, 1>{
-                                                                           {-sqrt(3.0/7 - 2.0/7*sqrt(6.0/5))}},
+                                                                           -sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))},
                                                                        (18.0 + sqrt(30)) / 36),
-                                                      IntegrationPoint<1>(std::array<double, 1>{{
-                                                                              sqrt(3.0/7 - 2.0/7*sqrt(6.0/5))}},
-                                                                          (18.0 + sqrt(30)) / 36),
-                                                      IntegrationPoint<1>(std::array<double, 1>{{
-                                                                              sqrt(3.0/7 + 2.0/7*sqrt(6.0/5))}},
-                                                                          (18.0 - sqrt(30)) / 36)}) {}
+                                                   IntegrationPoint<1>(std::array<double, 1>{
+                                                                           sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))},
+                                                                       (18.0 + sqrt(30)) / 36),
+                                                   IntegrationPoint<1>(std::array<double, 1>{
+                                                                           sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))},
+                                                                       (18.0 - sqrt(30)) / 36)}) {}
 };
 }  // namespace itg
 

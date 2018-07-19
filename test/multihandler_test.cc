@@ -22,7 +22,7 @@ using testing::Eq;
 class MultiHandler1D : public Test {
  public:
   MultiHandler1D() {
-    std::array<int, 1> lastKnotOffset1D = {{10}};
+    std::array<int, 1> lastKnotOffset1D = {10};
     multiIndexHandler1D = std::make_unique<util::MultiIndexHandler<1>>(lastKnotOffset1D);
   }
 
@@ -35,7 +35,7 @@ TEST_F(MultiHandler1D, Returns1DIndex0AfterConstruction) {
 }
 
 TEST_F(MultiHandler1D, Returns1DIndex5AfterSettingCurrentIndexTo5) {
-  std::array<int, 1> currentIndex = {{5}};
+  std::array<int, 1> currentIndex = {5};
   multiIndexHandler1D->SetIndices(currentIndex);
   ASSERT_THAT(multiIndexHandler1D->Get1DIndex(), Eq(5));
 }
@@ -43,7 +43,7 @@ TEST_F(MultiHandler1D, Returns1DIndex5AfterSettingCurrentIndexTo5) {
 class MultiHandler2D : public Test {
  public:
   MultiHandler2D() {
-    std::array<int, 2> lastKnotOffset2D = {{10, 3}};
+    std::array<int, 2> lastKnotOffset2D = {10, 3};
     multiIndexHandler2D = std::make_unique<util::MultiIndexHandler<2>>(lastKnotOffset2D);
   }
 
@@ -56,7 +56,7 @@ TEST_F(MultiHandler2D, Returns1DIndex0AfterConstruction) {
 }
 
 TEST_F(MultiHandler2D, Returns1DIndex23AfterSettingCurrentIndexTo3And2) {
-  std::array<int, 2> currentIndex = {{3, 2}};
+  std::array<int, 2> currentIndex = {3, 2};
   multiIndexHandler2D->SetIndices(currentIndex);
   ASSERT_THAT(multiIndexHandler2D->Get1DIndex(), Eq(23));
 }
@@ -64,7 +64,7 @@ TEST_F(MultiHandler2D, Returns1DIndex23AfterSettingCurrentIndexTo3And2) {
 class MultiHandler3D : public Test {
  public:
   MultiHandler3D() {
-    std::array<int, 3> lastKnotOffset3D = {{4, 3, 5}};
+    std::array<int, 3> lastKnotOffset3D = {4, 3, 5};
     multiIndexHandler3D = std::make_unique<util::MultiIndexHandler<3>>(lastKnotOffset3D);
   }
  protected:
@@ -76,7 +76,7 @@ TEST_F(MultiHandler3D, Returns1DIndex0AfterConstruction) {
 }
 
 TEST_F(MultiHandler3D, Returns1DIndex30AfterSettingCurrentIndexTo2And1And2) {
-  std::array<int, 3> currentIndex = {{2, 1, 2}};
+  std::array<int, 3> currentIndex = {2, 1, 2};
   multiIndexHandler3D->SetIndices(currentIndex);
   ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(30));
 }

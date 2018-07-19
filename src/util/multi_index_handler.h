@@ -23,7 +23,7 @@ class MultiIndexHandler {
  public:
   MultiIndexHandler() = default;
   explicit MultiIndexHandler(const std::array<int, DIM> &multi_index_length) : multi_index_length_(
-      multi_index_length), current_multi_index_value_({{0}}) {}
+      multi_index_length), current_multi_index_value_({0}) {}
 
   int operator[](int i) {
 #ifdef DEBUG
