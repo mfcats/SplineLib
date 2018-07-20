@@ -5,11 +5,6 @@ FROM mfcats/splinelib:spack
 ADD . /spackrepo
 WORKDIR /spackrepo
 
-# Set-up shell
-SHELL ["bash", "-c"]
-ENV BASH_ENV /spack/docker/bashrc
-ENV DEBIAN_FRONTEND noninteractive
-
 # Install googletest versions
 RUN spack repo add /spackrepo/scripts/spack-repo
 RUN spack setup -v splinelib@github build_type=Debug %gcc@7
