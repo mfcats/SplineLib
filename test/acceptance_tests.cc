@@ -46,6 +46,8 @@ int main() {
   }
   std::chrono::system_clock::time_point after = std::chrono::system_clock::now();
   double duration = std::chrono::duration_cast<std::chrono::milliseconds>(after - before).count();
-  std::cout << "test result: " << repetitions << " times evaluation of the spline lasted " << duration
-            << " milliseconds." << std::endl;
+  std::cout << "-------------------------------------------------------------------------------" << std::endl
+            << "test result: Evaluating the spline " << repetitions << " times lasted " << duration << " milliseconds."
+            << std::endl << "-------------------------------------------------------------------------------"
+            << std::endl;
 }
