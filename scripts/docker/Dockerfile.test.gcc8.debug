@@ -1,4 +1,4 @@
-FROM cm314/splinelib:gtest3
+FROM mfcats/splinelib:gtest
 
 # Add current directory as working directory to docker
 ADD . /code
@@ -7,13 +7,13 @@ WORKDIR /code
 # Set-up shell
 SHELL ["bash", "-c"]
 ENV BASH_ENV /spack/bashrc
-ENV CXXFLAGS="-coverage"
+ENV CXXFLGAS='-coverage'
 
 RUN spack repo add /code/scripts/spack-repo
-RUN spack setup -v splinelib@github%gcc@8 build_type=Debug
-RUN mkdir /code/build
-WORKDIR /code/build
-RUN ./../spconfig.py ..
+RUN spack setup -v splinelib@github build_type=Debug %gcc@8
+RUN mkdir /code/build-gcc8-debug
+WORKDIR /code/build-gcc8-debug
+RUN ../spconfig.py ..
 
 # Build and execute tests
 RUN make

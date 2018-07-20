@@ -9,9 +9,9 @@ SHELL ["bash", "-c"]
 ENV BASH_ENV /spack/bashrc
 
 RUN spack repo add /code/scripts/spack-repo
-RUN spack setup -v splinelib@github%clang@6
-RUN mkdir -p /code/build
-WORKDIR /code/build
+RUN spack setup -v splinelib@github %clang@6
+RUN mkdir -p /code/build-clang-tidy
+WORKDIR /code/build-clang-tidy
 RUN ./../spconfig.py ..
 
 # Build and execute tests
