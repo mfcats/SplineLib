@@ -14,7 +14,7 @@
 #
 
 set(TEST_SOURCES main.cc)
-
+set(SplineLib_DIR "/code/build")
 find_package(SplineLib REQUIRED)
 
 add_executable(Example ${TEST_SOURCES})
