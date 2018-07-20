@@ -15,7 +15,7 @@
 
 set(TEST_SOURCES main.cc)
 
-find_package(splinelib REQUIRED)
+find_package(SplineLib REQUIRED)
 
 add_executable(Example ${TEST_SOURCES})
-target_link_libraries(Example splinelib)
+target_link_libraries(Example SplineLib)
