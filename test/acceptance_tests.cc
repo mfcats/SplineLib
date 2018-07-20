@@ -13,11 +13,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include <array>
+#include <chrono>
 #include <memory>
-#include <vector>
+#include <iostream>
 
-#include "knot_vector.h"
-#include "control_point.h"
 #include "b_spline.h"
 
 int main() {
@@ -40,5 +39,13 @@ int main() {
   std::unique_ptr<spl::BSpline<1>> b_spline =
       std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
 
-  b_spline->Evaluate({ParamCoord{1.0}}, {0});
+  int repetitions = 20000000;
+  std::chrono::system_clock::time_point before = std::chrono::system_clock::now();
+  for (int i = 0; i < repetitions; i++) {
+    b_spline->Evaluate({ParamCoord{i * 5.0 / repetitions}}, {0});
+  }
+  std::chrono::system_clock::time_point after = std::chrono::system_clock::now();
+  double duration = std::chrono::duration_cast<std::chrono::milliseconds>(after - before).count();
+  std::cout << "test result: " << repetitions << " times evaluation of the spline lasted " << duration
+            << " milliseconds." << std::endl;
 }

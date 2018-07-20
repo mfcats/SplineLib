@@ -14,4 +14,5 @@ RUN mkdir /code/build-acceptance
 WORKDIR /code/build-acceptance
 RUN ./../spconfig.py ..
 
-CMD echo 0
+# Install Splinelib
+CMD make && ./test/AcceptanceTests

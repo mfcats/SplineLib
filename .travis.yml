@@ -6,10 +6,10 @@ services:
   - docker
 
 stages:
-#  - AcceptanceTests
 #  - UnitTests
 #  - Lint
-  - Install
+  - AcceptanceTests
+#  - Install
 
 jobs:
   include:
@@ -82,15 +82,15 @@ jobs:
 #      script: docker run -te "TERM=xterm-256color" --name oclint splinelib:oclint
 #      after_success: docker rm clang-tidy
 
-#    - stage: AcceptanceTests
-#      before_install: docker pull mfcats/splinelib:gtest
-#      install: docker build -t splinelibtests:acceptance -f scripts/docker/Dockerfile.acceptancetests .
-#      script: docker run -te "TERM=xterm-256color" --name acceptance splinelibtests:acceptance
-#      after_success: docker rm acceptance
-
-    - stage: Install
+    - stage: AcceptanceTests
       before_install: docker pull mfcats/splinelib:gtest
-      install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
-      script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
-      after_success: docker rm install
+      install: docker build -t splinelibtests:acceptance -f scripts/docker/Dockerfile.acceptancetests .
+      script: docker run -te "TERM=xterm-256color" --name acceptance splinelibtests:acceptance
+      after_success: docker rm acceptance
+
+#    - stage: Install
+#      before_install: docker pull mfcats/splinelib:gtest
+#      install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
+#      script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
+#      after_success: docker rm install
 
