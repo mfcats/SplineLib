@@ -12,10 +12,11 @@
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
+cmake_minimum_required(VERSION 3.6)
 
-set(TEST_SOURCES main.cc)
-set(SplineLib_DIR "/code/build")
+set(SOURCES main.cc)
+
 find_package(SplineLib REQUIRED)
 
-add_executable(Example ${TEST_SOURCES})
-target_link_libraries(Example SplineLib)
+add_executable(Example ${SOURCES})
+target_link_libraries(Example SplineLib::splinelibbaf SplineLib::splinelibspl)

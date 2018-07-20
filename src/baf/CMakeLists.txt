@@ -13,6 +13,7 @@
 # <http://www.gnu.org/licenses/>.
 #
 
+
 set(SOURCES
         b_spline_basis_function.cc
         basis_function.cc
@@ -40,8 +41,11 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-install(
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DESTINATION "${include_install_dir}"
-				FILES_MATCHING PATTERN "*.h"
-)
+install(FILES
+        b_spline_basis_function.h
+        basis_function.h
+        basis_function_factory.h
+        control_point.h
+        knot_vector.h
+        zero_degree_b_spline_basis_function.h
+        DESTINATION "${include_install_dir}")

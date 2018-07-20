@@ -7,17 +7,11 @@ WORKDIR /code
 # Set-up shell
 SHELL ["bash", "-c"]
 ENV BASH_ENV /spack/bashrc
-ENV TERM=xterm-256color
 
 RUN spack repo add /code/scripts/spack-repo
-RUN spack setup -v splinelib@github%gcc@8 build_type=Release
-RUN mkdir /code/build
-WORKDIR /code/build
+RUN spack setup -v splinelib@github build_type=Release %gcc@8
+RUN mkdir /code/build-acceptance
+WORKDIR /code/build-acceptance
 RUN ./../spconfig.py ..
 
-# Build and execute tests
-RUN make
-RUN mkdir /code/example/build
-WORKDIR /code/example/build
-RUN spack load cmake && cmake ../
-CMD ./example/Example
+CMD echo 0

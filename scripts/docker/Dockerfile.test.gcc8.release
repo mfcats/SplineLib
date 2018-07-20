@@ -11,7 +11,7 @@ ENV BASH_ENV /spack/bashrc
 RUN spack repo add /code/scripts/spack-repo
 RUN spack setup -v splinelib@github build_type=Release %gcc@8
 RUN mkdir /code/build-gcc8-release
-WORKDIR /code/build-gcc8release
+WORKDIR /code/build-gcc8-release
 RUN ../spconfig.py ..
 
 # Build and execute tests

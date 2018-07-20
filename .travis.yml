@@ -6,10 +6,10 @@ services:
   - docker
 
 stages:
-  - AcceptanceTests
+#  - AcceptanceTests
 #  - UnitTests
 #  - Lint
-#  - Install
+  - Install
 
 jobs:
   include:
@@ -71,26 +71,26 @@ jobs:
 #      after_success: docker rm cpplint
 #    - stage: Lint
 #      name: Clang-Tidy
-#      before_install: docker pull cm314/splinelib:gtest3
+#      before_install: docker pull mfcats/splinelib:gtest
 #      install: docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
 #      script: docker run -te "TERM=xterm-256color" --name clang-tidy splinelib:clang-tidy
 #      after_success: docker rm clang-tidy
 #    - stage: Lint
 #      name: OCLint
-#      before_install: docker pull cm314/splinelib:gtest3
+#      before_install: docker pull mfcats/splinelib:gtest
 #      install: docker build -t splinelib:oclint -f scripts/docker/Dockerfile.lint.oclint .
 #      script: docker run -te "TERM=xterm-256color" --name oclint splinelib:oclint
 #      after_success: docker rm clang-tidy
 
-    - stage: AcceptanceTests
-      before_install: docker pull cm314/splinelib:gtest3
-      install: docker build -t splinelibtests:acceptance -f scripts/docker/Dockerfile.acceptancetests .
-      script: docker run -te "TERM=xterm-256color" --name acceptance splinelibtests:acceptance
-      after_success: docker rm acceptance
+#    - stage: AcceptanceTests
+#      before_install: docker pull mfcats/splinelib:gtest
+#      install: docker build -t splinelibtests:acceptance -f scripts/docker/Dockerfile.acceptancetests .
+#      script: docker run -te "TERM=xterm-256color" --name acceptance splinelibtests:acceptance
+#      after_success: docker rm acceptance
 
-#    - stage: Install
-#      before_install: docker pull mfcats/splinelib:spack
-#      install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
-#      script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
-#      after_success: docker rm install
-#
+    - stage: Install
+      before_install: docker pull mfcats/splinelib:gtest
+      install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
+      script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
+      after_success: docker rm install
+
