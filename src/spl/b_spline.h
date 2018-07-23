@@ -41,9 +41,8 @@ class BSpline : public Spline<DIM> {
       : Spline<DIM>(std::move(parameter_space)), physical_space_(physical_space) {
   }
 
-  BSpline(SplineGenerator<DIM> b_spline_generator) {
+  BSpline(BSplineGenerator<DIM> b_spline_generator) : Spline<DIM>(*(b_spline_generator.GetParameterSpace())) {
     physical_space_ = *(b_spline_generator.GetPhysicalSpace());
-    this->parameter_space_ = *(b_spline_generator.GetParameterSpace());
   }
 
  private:

@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_IGESSPLINEGENERATOR_H
-#define SPLINELIB_IGESSPLINEGENERATOR_H
+#ifndef SPLINELIB_IGES_NURBS_GENERATOR_H
+#define SPLINELIB_IGES_NURBS_GENERATOR_H
 
 #include <algorithm>
 #include <cctype>
@@ -25,16 +25,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <utility>
 #include <vector>
-#include "b_spline.h"
 #include "nurbs.h"
 #include "spline.h"
-#include "spline_generator.h"
+#include "nurbs_generator.h"
 
 namespace spl {
 template<int DIM>
-class IGESSplineGenerator : public SplineGenerator<DIM> {
+class IGESNURBSGenerator : public NURBSGenerator<DIM> {
  public:
-  explicit IGESSplineGenerator(std::string filename) : filename_(std::move(filename)) {}
+  explicit IGESNURBSGenerator(std::string filename) : filename_(std::move(filename)) {}
 
   void ReadIGESFile(int entityToBeRead) {
     std::ifstream newFile;
@@ -61,9 +60,7 @@ class IGESSplineGenerator : public SplineGenerator<DIM> {
     if (parameterData[0] == 126) {
       Read1D(parameterData);
     } else if (parameterData[0] == 128) {
-      //Read2D(parameterData);
-    } else {
-      throw std::runtime_error("The given IGES-file doesn't contain a readable B-Spline or NURBS.");
+      Read2D(parameterData);
     }
   }
 
@@ -104,15 +101,15 @@ class IGESSplineGenerator : public SplineGenerator<DIM> {
     for (int i = 0; i < DIM; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
     }
-    if (parameterData[5] == 1) {
-      this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
-    } else if (parameterData[5] == 0) {
+    if (parameterData[5] == 0) {
       this->physical_space_ptr = std::make_shared<WeightedPhysicalSpace<DIM>>(control_points, weights, number_of_points);
+      this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
+    } else if (parameterData[5] == 1) {
+      throw std::runtime_error("You are trying to read a B-Spline with the NURBS spline generator.");
     }
-    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
   }
 
-  /*void Read2D(const std::vector<double> &parameterData) {
+  void Read2D(const std::vector<double> &parameterData) {
     std::array<int, 2> upperSumIndex;
     upperSumIndex[0] = int(parameterData[1]);
     upperSumIndex[1] = int(parameterData[2]);
@@ -158,13 +155,13 @@ class IGESSplineGenerator : public SplineGenerator<DIM> {
     for (int i = 0; i < DIM; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
     }
-    if (parameterData[5] == 1) {
-      this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
-    } else if (parameterData[5] == 0) {
-      this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, weights, number_of_points);
+    if (parameterData[5] == 0) {
+      this->physical_space_ptr = std::make_shared<WeightedPhysicalSpace<DIM>>(control_points, weights, number_of_points);
+      this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
+    } else if (parameterData[5] == 1) {
+      throw std::runtime_error("You are trying to read a B-Spline with the NURBS spline generator.");
     }
-    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
-  }*/
+  }
 
   std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
     std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2]).substr(8,8);
@@ -229,4 +226,4 @@ class IGESSplineGenerator : public SplineGenerator<DIM> {
 };
 }
 
-#endif //SPLINELIB_IGESSPLINEGENERATOR_H
+#endif //SPLINELIB_IGES_NURBS_GENERATOR_H

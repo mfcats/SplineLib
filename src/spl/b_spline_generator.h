@@ -15,12 +15,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SPLINELIB_B_SPLINE_GENERATOR_H
 #define SPLINELIB_B_SPLINE_GENERATOR_H
 
+#include "physical_space.h"
 #include "spline_generator.h"
 
 namespace spl {
 template<int DIM>
 class BSplineGenerator : public SplineGenerator<DIM> {
  public:
+  BSplineGenerator() = default;
+  virtual ~BSplineGenerator() = default;
+
   BSplineGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
                    std::array<int, DIM> degree,
                    const std::vector<baf::ControlPoint> &control_points) {
@@ -36,6 +40,13 @@ class BSplineGenerator : public SplineGenerator<DIM> {
     this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(physical_space);
     this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(parameter_space);
   }
+
+  std::shared_ptr<PhysicalSpace<DIM>> GetPhysicalSpace() {
+    return physical_space_ptr;
+  }
+
+ protected:
+  std::shared_ptr<PhysicalSpace<DIM>> physical_space_ptr;
 };
 }
 

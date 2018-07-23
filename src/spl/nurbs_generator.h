@@ -16,11 +16,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SPLINELIB_NURBS_GENERATOR_H
 
 #include "spline_generator.h"
+#include "weighted_physical_space.h"
 
 namespace spl {
 template<int DIM>
 class NURBSGenerator : public SplineGenerator<DIM> {
  public:
+  NURBSGenerator() = default;
+  virtual ~NURBSGenerator() = default;
+
   NURBSGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
                  std::array<int, DIM> degree,
                  const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) {
@@ -36,6 +40,13 @@ class NURBSGenerator : public SplineGenerator<DIM> {
     this->physical_space_ptr = std::make_shared<WeightedPhysicalSpace<DIM>>(weigthed_physical_space);
     this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(parameter_space);
   }
+
+  std::shared_ptr<WeightedPhysicalSpace<DIM>> GetWeightedPhysicalSpace() {
+    return physical_space_ptr;
+  }
+
+ protected:
+  std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_ptr;
 };
 }
 

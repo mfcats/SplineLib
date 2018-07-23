@@ -16,8 +16,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SPLINELIB_SPLINE_GENERATOR_H
 
 #include "parameter_space.h"
-#include "physical_space.h"
-#include "weighted_physical_space.h"
 
 namespace spl {
 template<int DIM>
@@ -30,13 +28,8 @@ class SplineGenerator {
     return parameter_space_ptr;
   }
 
-  std::shared_ptr<PhysicalSpace<DIM>> GetPhysicalSpace() {
-    return physical_space_ptr;
-  }
-
  protected:
   std::shared_ptr<ParameterSpace<DIM>> parameter_space_ptr;
-  std::shared_ptr<PhysicalSpace<DIM>> physical_space_ptr;
 };
 }
 
