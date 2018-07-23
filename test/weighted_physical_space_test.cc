@@ -39,7 +39,7 @@ class A1DWeightedPhysicalSpace : public Test {
   std::vector<double> weights_;
 };
 
-TEST_F(A1DWeightedPhysicalSpace, ThrowsForDifferingNumberOfControlPointsAndWeights) {
+TEST_F(A1DWeightedPhysicalSpace, ThrowsForDifferingNumberOfControlPointsAndWeights) { // NOLINT
   control_points.emplace_back(std::vector<double>({0.0, 0.0}));
   ASSERT_THROW(spl::WeightedPhysicalSpace<1>(control_points, weights_, {6}), std::runtime_error);
 }
@@ -48,17 +48,17 @@ TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectWeight) {
   ASSERT_THAT(weighted_physical_space.GetWeight({2}), DoubleEq(0.8));
 }
 
-TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPoint) {
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPoint) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{0}).GetValue(0), DoubleEq(0.0));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{0}).GetValue(1), DoubleEq(0.0));
 }
 
-TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectInnerHomogenousControlPoint) {
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectInnerHomogenousControlPoint) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{2}).GetValue(0), DoubleEq(2.4));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{2}).GetValue(1), DoubleEq(1.6));
 }
 
-TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPoint) {
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPoint) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{4}).GetValue(0), DoubleEq(6.0));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{4}).GetValue(1), DoubleEq(-1.2));
 }
@@ -84,61 +84,61 @@ class A2DWeightedPhysicalSpace : public Test {
   std::vector<double> weights_;
 };
 
-TEST_F(A2DWeightedPhysicalSpace, ThrowsForDifferingNumberOfControlPointsAndWeights) {
+TEST_F(A2DWeightedPhysicalSpace, ThrowsForDifferingNumberOfControlPointsAndWeights) { // NOLINT
   weights_.emplace_back(1.0);
   ASSERT_THROW(spl::WeightedPhysicalSpace<2>(control_points, weights_, {3, 2}), std::runtime_error);
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstWeightFor2DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstWeightFor2DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetWeight({0, 0}), DoubleEq(0.5));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerWeightFor2DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerWeightFor2DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetWeight({0, 1}), DoubleEq(1.0));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastWeightFor2DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastWeightFor2DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetWeight({2, 1}), DoubleEq(3.8));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstWeightFor1DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstWeightFor1DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetWeight({0}), DoubleEq(0.5));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerWeightFor1DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerWeightFor1DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetWeight({3}), DoubleEq(1.0));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastWeightFor1DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastWeightFor1DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetWeight({5}), DoubleEq(3.8));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPointFor2DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPointFor2DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{0, 0}).GetValue(0), DoubleEq(0.0));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{0, 0}).GetValue(1), DoubleEq(0.0));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerHomogenousControlPointFor2DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerHomogenousControlPointFor2DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{1, 1}).GetValue(0), DoubleEq(1.8));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{1, 1}).GetValue(1), DoubleEq(3.0));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPointFor2DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPointFor2DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{2, 1}).GetValue(0), DoubleEq(19.0));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{2, 1}).GetValue(1), DoubleEq(3.8));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPointFor1DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPointFor1DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{0}).GetValue(0), DoubleEq(0.0));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{0}).GetValue(1), DoubleEq(0.0));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerHomogenousControlPointFor1DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerHomogenousControlPointFor1DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{4}).GetValue(0), DoubleEq(1.8));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{4}).GetValue(1), DoubleEq(3.0));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPointFor1DIndex) {
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPointFor1DIndex) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{5}).GetValue(0), DoubleEq(19.0));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{5}).GetValue(1), DoubleEq(3.8));
 }
