@@ -61,7 +61,7 @@ class IGESSplineGenerator : public SplineGenerator<DIM> {
     if (parameterData[0] == 126) {
       Read1D(parameterData);
     } else if (parameterData[0] == 128) {
-      Read2D(parameterData);
+      //Read2D(parameterData);
     } else {
       throw std::runtime_error("The given IGES-file doesn't contain a readable B-Spline or NURBS.");
     }
@@ -107,12 +107,12 @@ class IGESSplineGenerator : public SplineGenerator<DIM> {
     if (parameterData[5] == 1) {
       this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
     } else if (parameterData[5] == 0) {
-      this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points, weights);
+      this->physical_space_ptr = std::make_shared<WeightedPhysicalSpace<DIM>>(control_points, weights, number_of_points);
     }
     this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
   }
 
-  void Read2D(const std::vector<double> &parameterData) {
+  /*void Read2D(const std::vector<double> &parameterData) {
     std::array<int, 2> upperSumIndex;
     upperSumIndex[0] = int(parameterData[1]);
     upperSumIndex[1] = int(parameterData[2]);
@@ -161,10 +161,10 @@ class IGESSplineGenerator : public SplineGenerator<DIM> {
     if (parameterData[5] == 1) {
       this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
     } else if (parameterData[5] == 0) {
-      this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points, weights);
+      this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, weights, number_of_points);
     }
     this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
-  }
+  }*/
 
   std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
     std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2]).substr(8,8);
