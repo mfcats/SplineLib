@@ -15,7 +15,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "physical_space.h"
-#include "weighted_physical_space.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -126,17 +125,32 @@ TEST_F(A2DPhysicalSpace, ThrowsForDifferingDimensionsOfControlPoints) { // NOLIN
   ASSERT_THROW(spl::PhysicalSpace<2>(control_points, {1, 7}), std::runtime_error);
 }
 
-TEST_F(A2DPhysicalSpace, ReturnsCorrectFirstControlPoint) { // NOLINT
+TEST_F(A2DPhysicalSpace, ReturnsCorrectFirstControlPointFor2DIndex) {
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{0, 0}).GetValue(0), DoubleEq(0.0));
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{0, 0}).GetValue(1), DoubleEq(0.0));
 }
 
-TEST_F(A2DPhysicalSpace, ReturnsCorrectInnerControlPoint) { // NOLINT
+TEST_F(A2DPhysicalSpace, ReturnsCorrectInnerControlPointFor2DIndex) {
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{1, 1}).GetValue(0), DoubleEq(1.5));
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{1, 1}).GetValue(1), DoubleEq(2.5));
 }
 
-TEST_F(A2DPhysicalSpace, ReturnsCorrectLastControlPoint) { // NOLINT
+TEST_F(A2DPhysicalSpace, ReturnsCorrectLastControlPointFor2DIndex) {
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{2, 1}).GetValue(0), DoubleEq(5.0));
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{2, 1}).GetValue(1), DoubleEq(1.0));
+}
+
+TEST_F(A2DPhysicalSpace, ReturnsCorrectFirstControlPointFor1DIndex) {
+  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{0}).GetValue(0), DoubleEq(0.0));
+  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{0}).GetValue(1), DoubleEq(0.0));
+}
+
+TEST_F(A2DPhysicalSpace, ReturnsCorrectInnerControlPointFor1DIndex) {
+  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{4}).GetValue(0), DoubleEq(1.5));
+  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{4}).GetValue(1), DoubleEq(2.5));
+}
+
+TEST_F(A2DPhysicalSpace, ReturnsCorrectLastControlPointFor1DIndex) {
+  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{5}).GetValue(0), DoubleEq(5.0));
+  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{5}).GetValue(1), DoubleEq(1.0));
 }
