@@ -6,7 +6,7 @@ WORKDIR /code
 
 # Set-up shell
 SHELL ["bash", "-c"]
-ENV BASH_ENV /spack/bashrc
+ENV BASH_ENV /etc/profile.d/spack.sh
 
 RUN spack repo add /code/scripts/spack-repo
 RUN spack setup -v splinelib@github build_type=Release %gcc@8
@@ -21,6 +21,6 @@ RUN mkdir /code/example/build
 WORKDIR /code/example/build
 
 RUN spack load splinelib && spack load cmake && cmake ../
-
 RUN make
+
 CMD spack load splinelib && ./Example

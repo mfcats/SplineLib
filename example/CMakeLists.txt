@@ -14,9 +14,9 @@
 #
 cmake_minimum_required(VERSION 3.6)
 
-set(SOURCES main.cc)
+set(SOURCES ex1.cc)
 
 find_package(SplineLib REQUIRED)
 
-add_executable(Example ${SOURCES})
-target_link_libraries(Example SplineLib::splinelibbaf SplineLib::splinelibspl)
+add_executable(ex1 ${SOURCES})
+target_link_libraries(ex1 SplineLib::splinelibspl)
