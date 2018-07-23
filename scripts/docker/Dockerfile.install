@@ -23,4 +23,4 @@ WORKDIR /code/example/build
 RUN spack load splinelib && spack load cmake && cmake ../
 RUN make
 
-CMD spack load splinelib && ./Example
+CMD spack load splinelib && ./ex1

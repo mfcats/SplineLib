@@ -77,14 +77,17 @@ jobs:
       script: docker run -te "TERM=xterm-256color" --name oclint splinelib:oclint
 
     - stage: AcceptanceTests
+      name: Timing
       install: docker build -t splinelibtests:acceptance -f scripts/docker/Dockerfile.acceptancetests .
       script: docker run -te "TERM=xterm-256color" --name acceptance splinelibtests:acceptance
 
     - stage: AcceptanceTests
+      name: Memory
       install: docker build -t splinelibtests:valgrind -f scripts/docker/Dockerfile.test.valgrind .
       script: docker run -te "TERM=xterm-256color" --name valgrind splinelibtests:valgrind
 
     - stage: Install
+      name: Ex1
       install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
       script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
 

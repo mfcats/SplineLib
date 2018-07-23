@@ -55,7 +55,7 @@ TEST_F(NurbsEx4_1, Returns1_2For1AndDim1) { // NOLINT
 
 class ANurbs : public Test {
  public:
-  ANurbs() : degree_{2}{
+  ANurbs() : degree_{2} {
     std::array<baf::KnotVector, 1>
         knot_vector =
         {baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.25}, ParamCoord{0.5},
