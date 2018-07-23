@@ -27,15 +27,15 @@ class A1DIntegrationPoint : public Test {
   itg::IntegrationPoint<1> integration_point_;
 };
 
-TEST_F(A1DIntegrationPoint, ReturnsCorrectCoordinate) {
+TEST_F(A1DIntegrationPoint, ReturnsCorrectCoordinate) { // NOLINT
   ASSERT_THAT(integration_point_.GetCoordinates().size(), 1);
   ASSERT_THAT(integration_point_.GetCoordinates()[0], DoubleEq(1.5));
 }
 
-TEST_F(A1DIntegrationPoint, ReturnsCorrectWeight) {
+TEST_F(A1DIntegrationPoint, ReturnsCorrectWeight) { // NOLINT
   ASSERT_THAT(integration_point_.GetWeight(), DoubleEq(0.5));
 }
 
-TEST_F(A1DIntegrationPoint, ReturnsCorrectDimension) {
+TEST_F(A1DIntegrationPoint, ReturnsCorrectDimension) { // NOLINT
   ASSERT_THAT(integration_point_.GetDimension(), 1);
 }

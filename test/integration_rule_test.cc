@@ -40,13 +40,13 @@ class A1DIntegrationRule : public Test {
   std::vector<itg::IntegrationRule<1>> rules_;
 };
 
-TEST_F(A1DIntegrationRule, ReturnsCorrectNumberOfPoints) {
+TEST_F(A1DIntegrationRule, ReturnsCorrectNumberOfPoints) { // NOLINT
   for (int points = 1; points <= 5; points++) {
     ASSERT_THAT(rules_[points - 1].GetNumberOfIntegrationPoints(), points);
   }
 }
 
-TEST_F(A1DIntegrationRule, ReturnsCorrectWeightSum) {
+TEST_F(A1DIntegrationRule, ReturnsCorrectWeightSum) { // NOLINT
   for (int points = 1; points <= 5; points++) {
     double weight_sum = 0;
     for (int weight = 0; weight < points; weight++) {
@@ -56,7 +56,7 @@ TEST_F(A1DIntegrationRule, ReturnsCorrectWeightSum) {
   }
 }
 
-TEST_F(A1DIntegrationRule, ReturnsCorrectPointSum) {
+TEST_F(A1DIntegrationRule, ReturnsCorrectPointSum) { // NOLINT
   for (int points = 1; points <= 5; points++) {
     double point_sum = 0;
     for (int point = 0; point < points; point++) {
@@ -74,18 +74,18 @@ class A2DIntegrationRuleWith3Points : public Test {
   itg::IntegrationRule<2> rule_;
 };
 
-TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {
+TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) { // NOLINT
   ASSERT_THAT(rule_.GetNumberOfIntegrationPoints(), 9);
   ASSERT_THAT(rule_.GetIntegrationPoints().size(), 9);
 }
 
-TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPoint) {
+TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPoint) { // NOLINT
   ASSERT_THAT(rule_.GetCoordinate(0, 0), DoubleNear(-sqrt(3.0 / 5), util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(rule_.GetCoordinate(1, 0), DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(rule_.GetCoordinate(2, 0), DoubleNear(sqrt(3.0 / 5), util::NumericSettings<double>::kEpsilon()));
 }
 
-TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectWeightSum) {
+TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectWeightSum) { // NOLINT
   double weight_sum = 0;
   for (int weight = 0; weight < rule_.GetNumberOfIntegrationPoints(); weight++) {
     weight_sum += rule_.GetIntegrationPoints()[weight].GetWeight();
@@ -93,7 +93,7 @@ TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectWeightSum) {
   ASSERT_THAT(weight_sum, DoubleEq(4));
 }
 
-TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPointSum) {
+TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPointSum) { // NOLINT
   double point_sum = 0;
   for (int weight_dim0 = 0; weight_dim0 < 3; weight_dim0++) {
     for (int weight_dim1 = 0; weight_dim1 < 3; weight_dim1++) {
@@ -105,10 +105,10 @@ TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPointSum) {
   ASSERT_THAT(point_sum, DoubleEq(0));
 }
 
-TEST(A3DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) {
+TEST(A3DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) { // NOLINT
   ASSERT_THAT(itg::ThreePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 27);
 }
 
-TEST(A3DIntegrationRuleWith1Point, ReturnsCorrectNumberOfPoints) {
+TEST(A3DIntegrationRuleWith1Point, ReturnsCorrectNumberOfPoints) { // NOLINT
   ASSERT_THAT(itg::OnePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 1);
 }

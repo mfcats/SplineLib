@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace elm {
 class ElementIntegrationPoint {
  public:
-  explicit ElementIntegrationPoint(const std::vector<double> &non_zero_basis_functions);
+  explicit ElementIntegrationPoint(std::vector<double> basis_functions);
 
   std::vector<double> GetNonZeroBasisFunctions() const;
   int GetNumberOfNonZeroBasisFunctions() const;

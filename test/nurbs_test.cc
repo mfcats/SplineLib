@@ -45,22 +45,21 @@ class NurbsEx4_1 : public Test {
   std::unique_ptr<spl::NURBS<1>> nurbs;
 };
 
-TEST_F(NurbsEx4_1, Returns1_4For1AndDim0) {
+TEST_F(NurbsEx4_1, Returns1_4For1AndDim0) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {0})[0], DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
 }
 
-TEST_F(NurbsEx4_1, Returns1_2For1AndDim1) {
+TEST_F(NurbsEx4_1, Returns1_2For1AndDim1) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {1})[0], DoubleNear(1.2, util::NumericSettings<double>::kEpsilon()));
 }
 
 class ANurbs : public Test {
  public:
-  ANurbs() {
+  ANurbs() : degree_{2}{
     std::array<baf::KnotVector, 1>
         knot_vector =
         {baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.25}, ParamCoord{0.5},
                           ParamCoord{0.75}, ParamCoord{0.95}, ParamCoord{1.0}, ParamCoord{1.0}, ParamCoord{1.0}})};
-    degree_ = {2};
     weights_ = {1.0, 0.9, 0.7, 0.5, 0.8, 1.2, 2.0};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.5, 3.0, 1.0})),
@@ -83,13 +82,13 @@ class ANurbs : public Test {
   std::vector<baf::ControlPoint> control_points_;
 };
 
-TEST_F(ANurbs, ReturnsCorrectCurvePointForFirstKnot) {
+TEST_F(ANurbs, ReturnsCorrectCurvePointForFirstKnot) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleNear(0.5, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {1})[0], DoubleNear(3.0, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {2})[0], DoubleNear(1.0, util::NumericSettings<double>::kEpsilon()));
 }
 
-TEST_F(ANurbs, ReturnsCorrectCurvePointForInnerKnot) {
+TEST_F(ANurbs, ReturnsCorrectCurvePointForInnerKnot) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.25}}, {0})[0],
               DoubleNear(2.8125, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.25}}, {1})[0], DoubleNear(5.5, util::NumericSettings<double>::kEpsilon()));
@@ -97,44 +96,44 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForInnerKnot) {
               DoubleNear(2.29375, util::NumericSettings<double>::kEpsilon()));
 }
 
-TEST_F(ANurbs, ReturnsCorrectCurvePointForValueBetweenTwoKnots) {
+TEST_F(ANurbs, ReturnsCorrectCurvePointForValueBetweenTwoKnots) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0 / 3.0}}, {0})[0],
               DoubleNear(3.625, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0 / 3.0}}, {1})[0], DoubleNear(5.34848, 0.000005));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0 / 3.0}}, {2})[0], DoubleNear(1.23561, 0.000005));
 }
 
-TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) {
+TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {0})[0], DoubleNear(8.5, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {1})[0], DoubleNear(4.5, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {2})[0], DoubleNear(0.0, util::NumericSettings<double>::kEpsilon()));
 }
 
-TEST_F(ANurbs, CanBeConstructedWithAPhysicalAndAParameterSpace) {
+TEST_F(ANurbs, CanBeConstructedWithAPhysicalAndAParameterSpace) { // NOLINT
   spl::ParameterSpace<1> parameter_space = spl::ParameterSpace<1>({(*knot_vector_)[0]}, {degree_[0]});
   spl::WeightedPhysicalSpace<1> physicalSpace = spl::WeightedPhysicalSpace<1>(control_points_, weights_, {7});
   nurbs = std::make_unique<spl::NURBS<1>>(parameter_space, physicalSpace);
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(0.5));
 }
 
-TEST_F(ANurbs, ThrowsExceptionForDifferentControlPointDimensions) {
+TEST_F(ANurbs, ThrowsExceptionForDifferentControlPointDimensions) { // NOLINT
   control_points_.emplace_back(std::vector<double>({0.0}));
   ASSERT_THROW(std::make_unique<spl::NURBS<1>>(knot_vector_, degree_, control_points_, weights_), std::runtime_error);
 }
 
-TEST_F(ANurbs, ThrowsExceptionForEvaluationAt1_2) {
+TEST_F(ANurbs, ThrowsExceptionForEvaluationAt1_2) { // NOLINT
   ASSERT_THROW(nurbs->Evaluate({ParamCoord{1.2}}, {0}), std::runtime_error);
 }
 
-TEST_F(ANurbs, ThrowsExceptionForEvaluationAtMinus0_1) {
+TEST_F(ANurbs, ThrowsExceptionForEvaluationAtMinus0_1) { // NOLINT
   ASSERT_THROW(nurbs->Evaluate({ParamCoord{-0.1}}, {0}), std::runtime_error);
 }
 
-TEST_F(ANurbs, ThrowsExceptionForDerivativeEvaluationAt1_05) {
+TEST_F(ANurbs, ThrowsExceptionForDerivativeEvaluationAt1_05) { // NOLINT
   ASSERT_THROW(nurbs->EvaluateDerivative({ParamCoord{1.05}}, {0}, {1}), std::runtime_error);
 }
 
-TEST_F(ANurbs, ThrowsExceptionForDerivativeEvaluationAtMinus1_0) {
+TEST_F(ANurbs, ThrowsExceptionForDerivativeEvaluationAtMinus1_0) { // NOLINT
   ASSERT_THROW(nurbs->EvaluateDerivative({ParamCoord{-0.05}}, {0}, {1}), std::runtime_error);
 }
 
@@ -159,51 +158,51 @@ class NurbsDerivativeEx4_2 : public Test {
   std::unique_ptr<spl::NURBS<1>> nurbs;
 };
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtFirstKnot) {
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtFirstKnot) { // NOLINT
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.0}}, {0}, {1})[0], 0.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.0}}, {1}, {1})[0], 2.0);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtValueBetweenKnots) {
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtValueBetweenKnots) { // NOLINT
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.5}}, {0}, {1})[0], -1.28);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.5}}, {1}, {1})[0], 0.96);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtLastKnot) {
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtLastKnot) { // NOLINT
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{1.0}}, {0}, {1})[0], -1.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{1.0}}, {1}, {1})[0], 0.0);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtFirstKnot) {
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtFirstKnot) { // NOLINT
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.0}}, {0}, {2})[0], -4.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.0}}, {1}, {2})[0], 0.0);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtValueBetweenKnots) {
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtValueBetweenKnots) { // NOLINT
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.5}}, {0}, {2})[0],
               DoubleNear(-0.512, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.5}}, {1}, {2})[0],
               DoubleNear(-2.816, util::NumericSettings<double>::kEpsilon()));
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtLastKnot) {
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtLastKnot) { // NOLINT
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{1.0}}, {0}, {2})[0], 1.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{1.0}}, {1}, {2})[0], -1.0);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtFirstKnot) {
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtFirstKnot) { // NOLINT
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.0}}, {0}, {3})[0], 0.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.0}}, {1}, {3})[0], -12.0);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtValueBetweenKnots) {
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtValueBetweenKnots) { // NOLINT
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.5}}, {0}, {3})[0],
               DoubleNear(7.3728, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{0.5}}, {1}, {3})[0],
               DoubleNear(2.1504, util::NumericSettings<double>::kEpsilon()));
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtLastKnot) {
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtLastKnot) { // NOLINT
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{1.0}}, {0}, {3})[0], 0.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{1.0}}, {1}, {3})[0], 3.0);
 }

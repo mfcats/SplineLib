@@ -16,8 +16,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <vector>
 
-elm::ElementIntegrationPoint::ElementIntegrationPoint(const std::vector<double> &non_zero_basis_functions)
-    : non_zero_basis_functions_(non_zero_basis_functions) {}
+elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions)
+    : non_zero_basis_functions_(std::move(basis_functions)) {}
 
 std::vector<double> elm::ElementIntegrationPoint::GetNonZeroBasisFunctions() const {
   return non_zero_basis_functions_;

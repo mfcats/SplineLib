@@ -26,7 +26,7 @@ template<int DIM>
 class Projection {
  public:
   static std::array<double, DIM> ProjectionOnSpline(const std::vector<double> &pointPhysicalCoords,
-                                                    spl::Spline<DIM> *spline) {
+                                                    std::unique_ptr<spl::Spline<DIM>> spline) {
     double tolerance = 0.0001;
     int iteration = 0;
     std::vector<int> dimensions;
@@ -67,7 +67,7 @@ class Projection {
   }
 
   static std::array<ParamCoord, DIM> FindInitialValue(const std::vector<double> &pointPhysicalCoords,
-                                                      spl::Spline<DIM> *spline, const std::vector<int> &dimensions) {
+                                                      const std::unique_ptr<spl::Spline<DIM>> &spline, const std::vector<int> &dimensions) {
     std::vector<elm::Element> elements = spline->GetElementList();
     std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
     std::vector<double> splinePhysicalCoords =

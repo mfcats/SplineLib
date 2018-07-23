@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 
-int main() {
+std::unique_ptr<spl::BSpline<1>> GenerateSpline() {
   std::array<baf::KnotVector, 1> knot_vector =
       {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                         ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}})};
@@ -36,8 +36,11 @@ int main() {
   };
   std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_ptr =
       std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
-  std::unique_ptr<spl::BSpline<1>> b_spline =
-      std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
+  return std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
+}
+
+int main() {
+  auto b_spline = GenerateSpline();
 
   int repetitions = 20000000;
   std::chrono::system_clock::time_point before = std::chrono::system_clock::now();

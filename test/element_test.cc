@@ -27,15 +27,15 @@ class A1DElement : public Test {
   elm::Element element;
 };
 
-TEST_F(A1DElement, ReturnsCorrectDimension) {
+TEST_F(A1DElement, ReturnsCorrectDimension) { // NOLINT
   ASSERT_THAT(element.GetDimension(), 1);
 }
 
-TEST_F(A1DElement, ReturnsCorrectNumberOfNodes) {
+TEST_F(A1DElement, ReturnsCorrectNumberOfNodes) { // NOLINT
   ASSERT_THAT(element.GetNumberOfNodes(), 2);
 }
 
-TEST_F(A1DElement, ReturnsCorrectNode) {
+TEST_F(A1DElement, ReturnsCorrectNode) { // NOLINT
   ASSERT_THAT(element.GetNode(0), DoubleEq(0.5));
   ASSERT_THAT(element.GetNode(1), DoubleEq(1.0));
 }
@@ -51,23 +51,23 @@ class A1DElementGenerator : public Test {
   elm::ElementGenerator element_generator;
 };
 
-TEST_F(A1DElementGenerator, ReturnsCorrectNumberOfElements) {
+TEST_F(A1DElementGenerator, ReturnsCorrectNumberOfElements) { // NOLINT
   ASSERT_THAT(element_generator.GetElementList().size(), 5);
 }
 
-TEST_F(A1DElementGenerator, Returns1DElements) {
+TEST_F(A1DElementGenerator, Returns1DElements) { // NOLINT
   for (auto &element : element_generator.GetElementList()) {
     ASSERT_THAT(element.GetDimension(), 1);
   }
 }
 
-TEST_F(A1DElementGenerator, ReturnsElementsWith2Nodes) {
+TEST_F(A1DElementGenerator, ReturnsElementsWith2Nodes) { // NOLINT
   for (auto &element : element_generator.GetElementList()) {
     ASSERT_THAT(element.GetNumberOfNodes(), 2);
   }
 }
 
-TEST_F(A1DElementGenerator, ReturnsElementsWithCorrectNodes) {
+TEST_F(A1DElementGenerator, ReturnsElementsWithCorrectNodes) { // NOLINT
   auto element_list = element_generator.GetElementList();
   for (auto element = 0u; element < element_list.size(); element++) {
     ASSERT_THAT(element_list[element].GetNode(0), element);

@@ -2,20 +2,23 @@ FROM mfcats/splinelib:gtest
 
 # Add current directory as working directory to docker
 ADD . /code
-WORKDIR /code
+
+RUN mkdir -p /code/build-clang-tidy
+WORKDIR /code/build-clang-tidy
 
 # Set-up shell
 SHELL ["bash", "-c"]
-ENV BASH_ENV /spack/bashrc
-
-RUN spack repo add /code/scripts/spack-repo
-RUN spack setup -v splinelib@github %clang@6
-RUN mkdir -p /code/build-oclint
-WORKDIR /code/build-oclint
-RUN ./../spconfig.py ..
+ENV BASH_ENV /etc/profile.d/spack.sh
+ENV PATH "${OCLINT_HOME}/bin:${PATH}"
 
 # Build and execute tests
-RUN spack load cmake && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
+RUN spack load cmake googletest+gmock~shared%gcc@7 && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../
+RUN echo "export PATH=/spack/oclint-0.13.1/bin:$PATH" >> /etc/profile.d/spack.sh
+WORKDIR /spack
+RUN wget https://github.com/oclint/oclint/releases/download/v0.13.1/oclint-0.13.1-x86_64-linux-4.4.0-112-generic.tar.gz
+RUN tar -zxvf oclint-0.13.1-x86_64-linux-4.4.0-112-generic.tar.gz
+WORKDIR /code/build-clang-tidy
+RUN ln -s ../.oclint .
 
 # execute clang-tidy
-CMD ln -s /code/build/compile_commands.json /code && cd /code && oclint-json-compilation-database -v -- -rc LONG_LINE=120 -max-priority-1=0 -max-priority-2=0 -max-priority-3=0
+CMD oclint-json-compilation-database -- -enable-clang-static-analyzer -enable-global-analysis -max-priority-1=0 -max-priority-2=0 -max-priority-3=0

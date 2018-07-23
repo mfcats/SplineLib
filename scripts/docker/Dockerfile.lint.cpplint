@@ -5,4 +5,4 @@ ADD . /code
 WORKDIR /code
 
 # execute cpplint
-CMD cpplint --filter=-build/include_subdir,-build/header_guard --linelength=120 --recursive /code/*
+CMD cpplint --extensions=cc,h --recursive /code/src/* /code/test/*

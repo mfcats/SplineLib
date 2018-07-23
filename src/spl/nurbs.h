@@ -139,4 +139,4 @@ class NURBS : public Spline<DIM> {
 };
 }  // namespace spl
 
-#endif  // SRC_SPL__NURBS_H_
+#endif  // SRC_SPL_NURBS_H_

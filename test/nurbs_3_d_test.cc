@@ -55,21 +55,21 @@ class A3DNurbsWithAllWeights1 : public Test {
   std::unique_ptr<spl::BSpline<3>> bspline_;
 };
 
-TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_5And0_5AndDerivatives1And1And0) {
+TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_5And0_5AndDerivatives1And1And0) { // NOLINT
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.5}}, {0}, {1, 1, 0})[0],
               DoubleEq(bspline_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.5}},
                                                     {0},
                                                     {1, 1, 0})[0]));
 }
 
-TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And1And1) {
+TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And1And1) { // NOLINT
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.8}, ParamCoord{0.1}}, {0}, {1, 1, 1})[0],
               DoubleEq(bspline_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.8}, ParamCoord{0.1}},
                                                     {0},
                                                     {1, 1, 1})[0]));
 }
 
-TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And2And1) {
+TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And2And1) { // NOLINT
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.8}, ParamCoord{0.1}}, {0}, {1, 2, 1})[0],
               DoubleNear(bspline_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.8}, ParamCoord{0.1}},
                                                       {0},

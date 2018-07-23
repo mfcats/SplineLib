@@ -34,8 +34,8 @@ class KnotVector {
 
   KnotVector() = default;
   KnotVector(const KnotVector &knotVector);
-  KnotVector(const KnotVector &&knotVector);
-  explicit KnotVector(const std::vector<ParamCoord> &knots);
+  KnotVector(KnotVector &&knotVector) noexcept;
+  explicit KnotVector(std::vector<ParamCoord> knots);
   explicit KnotVector(std::initializer_list<ParamCoord> knots);
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
 
@@ -43,7 +43,7 @@ class KnotVector {
 
   KnotVector operator -(const KnotVector& rhs) const;
   KnotVector &operator=(const KnotVector &other);
-  KnotVector &operator=(const KnotVector &&other);
+  KnotVector &operator=(KnotVector &&other) noexcept;
   // Check if absolute distance between all knots is smaller than the epsilon defined in
   // NumericSettings.
   bool operator==(const KnotVector &rhs) const;
