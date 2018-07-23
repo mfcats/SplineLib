@@ -44,10 +44,10 @@ class NURBS : public Spline<DIM> {
   NURBS(ParameterSpace<DIM> parameter_space, WeightedPhysicalSpace<DIM> physical_space) : Spline<DIM>(std::move(
       parameter_space)), physical_space_(physical_space) {}
 
- NURBS(NURBSGenerator<DIM> nurbs_generator) {
-    physical_space_ = nurbs_generator.GetPhysicalSpace();
-    this->parameter_space_ = nurbs_generator.GetParameterSpace();
-  }
+  /*NURBS(NURBSGenerator<DIM> nurbs_generator) {
+    physical_space_ = *(nurbs_generator.GetPhysicalSpace());
+    this->parameter_space_ = *(nurbs_generator.GetParameterSpace());
+  }*/
 
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,

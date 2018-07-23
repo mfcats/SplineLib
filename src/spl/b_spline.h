@@ -42,8 +42,8 @@ class BSpline : public Spline<DIM> {
   }
 
   BSpline(BSplineGenerator<DIM> b_spline_generator) {
-    physical_space_ = b_spline_generator.GetPhysicalSpace();
-    this->parameter_space_ = b_spline_generator.GetParameterSpace();
+    physical_space_ = *(b_spline_generator.GetPhysicalSpace());
+    this->parameter_space_ = *(b_spline_generator.GetParameterSpace());
   }
 
  private:

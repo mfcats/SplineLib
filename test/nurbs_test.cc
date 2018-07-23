@@ -209,7 +209,7 @@ TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtLastKnot) {
   ASSERT_THAT(nurbs->EvaluateDerivative({ParamCoord{1.0}}, {1}, {3})[0], 3.0);
 }
 
-class ANURBSWithSplineGenerator : public Test {
+/*class ANURBSWithSplineGenerator : public Test {
  public:
   ANURBSWithSplineGenerator() {
     std::array<baf::KnotVector, 1> knot_vector =
@@ -237,4 +237,4 @@ class ANURBSWithSplineGenerator : public Test {
 
 TEST_F(ANURBSWithSplineGenerator, Returns1_4For1AndDim0) {
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {0})[0], DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
-}
+}*/

@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_IGES_READER_H
-#define SPLINELIB_IGES_READER_H
+#ifndef SPLINELIB_IGESSPLINEGENERATOR_H
+#define SPLINELIB_IGESSPLINEGENERATOR_H
 
 #include <algorithm>
 #include <cctype>
@@ -28,13 +28,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 #include "nurbs.h"
 #include "spline.h"
+#include "spline_generator.h"
 
-namespace util {
-class IGESReader {
+namespace spl {
+template<int DIM>
+class IGESSplineGenerator : SplineGenerator {
  public:
   explicit IGESReader(std::string filename) : filename_(std::move(filename)) {}
 
-  std::shared_ptr<spl::Spline<1>> ReadIGESFile(int entityToBeRead) {
+  void ReadIGESFile(int entityToBeRead) {
     std::ifstream newFile;
     newFile.open(filename_);
     std::string line;
@@ -49,21 +51,23 @@ class IGESReader {
         parameterDataSection.push_back(line.substr(0, 64));
       }
     }
-    return GetSpline(ParameterSectionToVector(parameterDataSection, GetParameterSectionStartEndPointers(directoryEntrySection, entityToBeRead)));
+    return ReadParameterData(ParameterSectionToVector(parameterDataSection,
+                                                      GetParameterSectionStartEndPointers(directoryEntrySection,
+                                                                                          entityToBeRead)));
   }
 
  private:
-  std::shared_ptr<spl::Spline<1>> GetSpline(const std::vector<double> &parameterData) {
+  void ReadParameterData(const std::vector<double> &parameterData) {
     if (parameterData[0] == 126) {
-      return Get1DSpline(parameterData);
+      Read1D(parameterData);
     } else if (parameterData[0] == 128) {
-      //return  Get2DSpline(parameterData);
+      Read2D(parameterData);
     } else {
       throw std::runtime_error("The given IGES-file doesn't contain a readable B-Spline or NURBS.");
     }
   }
 
-  std::shared_ptr<spl::Spline<1>> Get1DSpline(const std::vector<double> &parameterData) {
+  void Read1D(const std::vector<double> &parameterData) {
     int upperSumIndex = int(parameterData[1]);
     std::array<int, 1> degree;
     degree[0] = int(parameterData[2]);
@@ -96,14 +100,19 @@ class IGESReader {
                                                   controlPointCoordinates[i + 1],
                                                   controlPointCoordinates[i + 2]}));
     }
-    if (parameterData[5] == 1) {
-      return std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
-    } else if (parameterData[5] == 0) {
-      return std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+    std::array<int, DIM> number_of_points;
+    for (int i = 0; i < DIM; ++i) {
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
     }
+    if (parameterData[5] == 1) {
+      this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
+    } else if (parameterData[5] == 0) {
+      this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points, weights);
+    }
+    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
   }
 
-  std::shared_ptr<spl::Spline<2>> Get2DSpline(const std::vector<double> &parameterData) {
+  void Read2D(const std::vector<double> &parameterData) {
     std::array<int, 2> upperSumIndex;
     upperSumIndex[0] = int(parameterData[1]);
     upperSumIndex[1] = int(parameterData[2]);
@@ -145,11 +154,16 @@ class IGESReader {
                                                   controlPointCoordinates[i + 1],
                                                   controlPointCoordinates[i + 2]}));
     }
-    if (parameterData[7] == 1) {
-      return std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points);
-    } else if (parameterData[7] == 0) {
-      return std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
+    std::array<int, DIM> number_of_points;
+    for (int i = 0; i < DIM; ++i) {
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
     }
+    if (parameterData[5] == 1) {
+      this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
+    } else if (parameterData[5] == 0) {
+      this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points, weights);
+    }
+    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
   }
 
   std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
@@ -179,8 +193,8 @@ class IGESReader {
   }
 
   std::vector<double> ExtractPartOfVector(int start,
-                              int end,
-                              const std::vector<double> &input) {
+                                          int end,
+                                          const std::vector<double> &input) {
     std::vector<double> output;
     for (int i = start; i <= end; ++i) {
       output.emplace_back(input[i]);
@@ -215,4 +229,4 @@ class IGESReader {
 };
 }
 
-#endif //SPLINELIB_IGES_READER_H
+#endif //SPLINELIB_IGESSPLINEGENERATOR_H

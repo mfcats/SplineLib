@@ -23,25 +23,19 @@ class BSplineGenerator : public SplineGenerator<DIM> {
  public:
   BSplineGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
                    std::array<int, DIM> degree,
-                   const std::vector<baf::ControlPoint> &control_points) : SplineGenerator<DIM>(knot_vector, degree) {
+                   const std::vector<baf::ControlPoint> &control_points) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
     }
-    physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
+    this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
+    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
   }
 
   BSplineGenerator(PhysicalSpace<DIM> physical_space, ParameterSpace<DIM> parameter_space) {
-    this->parameter_space_ = parameter_space;
-    physical_space_ = physical_space;
+    this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(physical_space);
+    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(parameter_space);
   }
-
-  PhysicalSpace<DIM> GetPhysicalSpace() {
-    return physical_space_;
-  }
-
- private:
-  PhysicalSpace<DIM> physical_space_;
 };
 }
 
