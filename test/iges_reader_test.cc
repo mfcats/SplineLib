@@ -13,7 +13,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "gmock/gmock.h"
-#include "iges_reader.h"
+#include "iges_spline_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -25,9 +25,10 @@ class AnIGESReader : public Test {
   }
 };
 
-TEST_F(AnIGESReader, ReadNURBSCurveFromIGESFile) {
-  util::IGESReader reader = util::IGESReader("/Users/christophsusen/SplineLib/test/test.iges");
-  std::shared_ptr<spl::Spline<1>> spline = reader.ReadIGESFile(4);
+TEST_F(AnIGESReader, ReadBSplineCurveFromIGESFile) {
+  spl::IGESSplineGenerator<1> reader = spl::IGESSplineGenerator<1>("/Users/christophsusen/SplineLib/test/test.iges");
+  reader.ReadIGESFile(4);
+  std::unique_ptr<spl::BSpline<1>> spline = std::make_unique<spl::BSpline<1>>(reader);
   ASSERT_THAT(spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.005));
 }
 

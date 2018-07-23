@@ -32,9 +32,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace spl {
 template<int DIM>
-class IGESSplineGenerator : SplineGenerator {
+class IGESSplineGenerator : public SplineGenerator<DIM> {
  public:
-  explicit IGESReader(std::string filename) : filename_(std::move(filename)) {}
+  explicit IGESSplineGenerator(std::string filename) : filename_(std::move(filename)) {}
 
   void ReadIGESFile(int entityToBeRead) {
     std::ifstream newFile;
