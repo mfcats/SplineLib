@@ -83,7 +83,7 @@ jobs:
 
     - stage: AcceptanceTests
       name: Memory
-      install: docker build -t splinelibtests:valgrind -f scripts/docker/Dockerfile.test.valgrind .
+      install: docker build -t splinelibtests:valgrind -f scripts/docker/Dockerfile.test.gcc8.valgrind .
       script: docker run -te "TERM=xterm-256color" --name valgrind splinelibtests:valgrind
 
     - stage: Install
