@@ -14,46 +14,43 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "square_generator.h"
 
-spl::SquareGenerator::SquareGenerator() {
-    // zero_ and one_ should be used here
-    knot_vectors_ =
-        {baf::KnotVector{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}},
-         {baf::KnotVector{{ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}}}};
-  degrees_ = {2, 2};
-    control_points_ = {baf::ControlPoint(std::vector<double>({-1.0, -1.0})),
-                       baf::ControlPoint(std::vector<double>({0.0, -1.0})),
-                       baf::ControlPoint(std::vector<double>({1.0, -1.0})),
-                       baf::ControlPoint(std::vector<double>({-1.0, 0.0})),
-                       baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-                       baf::ControlPoint(std::vector<double>({1.0, 0.0})),
-                       baf::ControlPoint(std::vector<double>({-1.0, 1.0})),
-                       baf::ControlPoint(std::vector<double>({0.0, 1.0})),
-                       baf::ControlPoint(std::vector<double>({1.0, 1.0}))};
-    knot_vector_ptr_ = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vectors_);
-};
+spl::SquareGenerator::SquareGenerator() : degree_(2), number_of_knots_(6) {}
 
-spl::SquareGenerator::SquareGenerator(int degree, int number_of_knots) : degrees_({degree, degree}) {
-  std::vector<ParamCoord> knots;
-  for (int i = 0; i <= degree; i++) {
-    knots.push_back(zero_);
-  }
-  for (int i = 1; i <= number_of_knots - 2 * degree - 2; i++) {
-    knots.emplace_back(static_cast<double>(i) / (number_of_knots - 2 * degree - 1));
-  }
-  for (int i = 0; i <= degree; i++) {
-    knots.push_back(one_);
-  }
-  knot_vectors_ = {baf::KnotVector(knots), baf::KnotVector(knots)};
-  knot_vector_ptr_ = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vectors_);
+spl::SquareGenerator::SquareGenerator(u_int64_t degree, u_int64_t number_of_knots) : degree_(degree),
+                                                                                     number_of_knots_(number_of_knots)
+                                                                                     {}
 
-  for (int dimension1 = 0; dimension1 < number_of_knots - degree - 1; dimension1++) {
-    for (int dimension2 = 0; dimension2 < number_of_knots - degree - 1; dimension2++) {
-      control_points_.push_back(baf::ControlPoint({2.0 * dimension2 / (number_of_knots - degree - 2) - 1,
-                                                   2.0 * dimension1 / (number_of_knots - degree - 2) - 1}));
-    }
-  }
-}
 
 std::unique_ptr<spl::BSpline<2>> spl::SquareGenerator::CreateSquare() const {
-  return std::make_unique<BSpline<2>>(knot_vector_ptr_, degrees_, control_points_);
+  auto parameter_space = GenerateParameterSpace();
+  auto physical_space = GeneratePhysicalSpace();
+  return std::make_unique<BSpline<2>>(parameter_space, physical_space);
+}
+
+spl::ParameterSpace<2> spl::SquareGenerator::GenerateParameterSpace() const {
+  std::vector<ParamCoord> knots(number_of_knots_, ParamCoord{0.0});
+  for (auto knot = knots.begin() + degree_ + 1; knot != knots.end() - degree_ - 1; ++knot) {
+    *knot = *(knot - 1) + ParamCoord{1.0/(number_of_knots_ - 2.0 * degree_ - 1)};
+  }
+  std::fill(knots.end()-degree_-1, knots.end(), ParamCoord{1.0});
+  baf::KnotVector knotVector(knots);
+  return spl::ParameterSpace<2>({knotVector, knotVector}, {static_cast<int>(degree_), static_cast<int>(degree_)});
+}
+
+spl::PhysicalSpace<2> spl::SquareGenerator::GeneratePhysicalSpace() const {
+  u_int64_t num_cps = number_of_knots_ - degree_ - 1;
+  double delta = 2.0/(num_cps - 1.0);
+  std::vector<double> coordinates(num_cps, - 1.0);
+  double val = -1.0;
+  for (auto coord = coordinates.begin(); coord != coordinates.end(); ++coord, val += delta) {
+    *coord = val;
+  }
+  std::vector<baf::ControlPoint> cps(num_cps * num_cps, baf::ControlPoint({0.0, 0.0}));
+  size_t cp_it = 0;
+  for (u_int64_t y_it = 0; y_it < num_cps; ++y_it) {
+    for (u_int64_t x_it = 0; x_it < num_cps; ++x_it) {
+      cps[cp_it++] = baf::ControlPoint(std::vector({coordinates[x_it], coordinates[y_it]}));
+    }
+  }
+  return spl::PhysicalSpace<2>(cps, {static_cast<int>(num_cps), static_cast<int>(num_cps)});
 }

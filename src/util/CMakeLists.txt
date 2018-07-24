@@ -26,9 +26,12 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-install(
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DESTINATION "${include_install_dir}"
-        FILES_MATCHING PATTERN "*.h"
-)
+
+install(FILES
+        named_type.h
+        numeric_settings.h
+        multi_index_handler.h
+        vector_utils.h
+        DESTINATION "${include_install_dir}")
+
 

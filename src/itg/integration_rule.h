@@ -33,7 +33,7 @@ class IntegrationRule {
     return pow(points_.size(), DIM);
   }
 
-  double coordinate(int point, int dimension) const {
+  double GetCoordinate(int point, int dimension) const {
 #ifdef DEBUG
     return points_.at(point).GetCoordinates().at(dimension);
 #else

@@ -23,7 +23,7 @@ class ControlPoint {
  public:
   explicit ControlPoint(std::initializer_list<double> coordinates);
 
-  explicit ControlPoint(const std::vector<double> &coordinates);
+  explicit ControlPoint(std::vector<double> coordinates);
 
   int GetDimension() const;
 

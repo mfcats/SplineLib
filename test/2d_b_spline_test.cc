@@ -17,7 +17,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 using testing::Test;
-using testing::DoubleEq;
 
 class A2DBSpline : public Test {
  public:
@@ -48,79 +47,79 @@ class A2DBSpline : public Test {
   std::shared_ptr<std::array<baf::KnotVector, 2>> knot_vector_ptr;
 };
 
-TEST_F(A2DBSpline, Corner) {
+TEST_F(A2DBSpline, Corner) { // NOLINT
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0], -1.0, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0], -1.0, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0], 0.0, 0.00005);
 }
 
-TEST_F(A2DBSpline, EdgeDim0) {
+TEST_F(A2DBSpline, EdgeDim0) { // NOLINT
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.0}, ParamCoord{0.33333}}, {0})[0], -1.0, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.0}, ParamCoord{0.33333}}, {1})[0], -0.33333, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.0}, ParamCoord{0.33333}}, {2})[0], 0.0, 0.00005);
 }
 
-TEST_F(A2DBSpline, EdgeDim1) {
+TEST_F(A2DBSpline, EdgeDim1) { // NOLINT
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.33333}, ParamCoord{0.0}}, {0})[0], -0.33333, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.33333}, ParamCoord{0.0}}, {1})[0], -1.0, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.33333}, ParamCoord{0.0}}, {2})[0], 0.0, 0.00005);
 }
 
-TEST_F(A2DBSpline, Center) {
+TEST_F(A2DBSpline, Center) { // NOLINT
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {0})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {1})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {2})[0], 0.25, 0.00005);
 }
 
-TEST_F(A2DBSpline, Random) {
+TEST_F(A2DBSpline, Random) { // NOLINT
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.75}, ParamCoord{0.25}}, {0})[0], 0.5, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.75}, ParamCoord{0.25}}, {1})[0], -0.5, 0.00005);
   ASSERT_NEAR(b_spline->Evaluate({ParamCoord{0.75}, ParamCoord{0.25}}, {2})[0], 0.14063, 0.00005);
 }
 
-TEST_F(A2DBSpline, CornerDer10) {
+TEST_F(A2DBSpline, CornerDer10) { // NOLINT
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.0}}, {0}, {1, 0})[0], 2.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.0}}, {1}, {1, 0})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.0}}, {2}, {1, 0})[0], 0.0, 0.00005);
 }
 
-TEST_F(A2DBSpline, CornerDer01) {
+TEST_F(A2DBSpline, CornerDer01) { // NOLINT
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.0}}, {0}, {0, 1})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.0}}, {1}, {0, 1})[0], 2.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.0}}, {2}, {0, 1})[0], 0.0, 0.00005);
 }
 
-TEST_F(A2DBSpline, EdgeDim0Der10) {
+TEST_F(A2DBSpline, EdgeDim0Der10) { // NOLINT
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.33333}}, {0}, {1, 0})[0], 2.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.33333}}, {1}, {1, 0})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.33333}}, {2}, {1, 0})[0], 0.888889, 0.00005);
 }
 
-TEST_F(A2DBSpline, EdgeDim0Der01) {
+TEST_F(A2DBSpline, EdgeDim0Der01) { // NOLINT
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.33333}}, {0}, {0, 1})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.33333}}, {1}, {0, 1})[0], 2.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.33333}}, {2}, {0, 1})[0], 0.0, 0.00005);
 }
 
-TEST_F(A2DBSpline, CenterDer10) {
+TEST_F(A2DBSpline, CenterDer10) { // NOLINT
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}}, {0}, {1, 0})[0], 2.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}}, {1}, {1, 0})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}}, {2}, {1, 0})[0], 0.0, 0.00005);
 }
 
-TEST_F(A2DBSpline, RandomDer10) {
+TEST_F(A2DBSpline, RandomDer10) { // NOLINT
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {0}, {1, 0})[0], 2.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {1}, {1, 0})[0], 0.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {2}, {1, 0})[0], -0.375, 0.00005);
 }
 
-TEST_F(A2DBSpline, RandomDer01) {
+TEST_F(A2DBSpline, RandomDer01) { // NOLINT
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {0}, {0, 1})[0], 0.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {1}, {0, 1})[0], 2.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {2}, {0, 1})[0], 0.375, 0.00005);
 }
 
-TEST_F(A2DBSpline, RandomDer12) {
+TEST_F(A2DBSpline, RandomDer12) { // NOLINT
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {0}, {1, 2})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {1}, {1, 2})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {2}, {1, 2})[0], 4.0, 0.00005);

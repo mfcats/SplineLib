@@ -27,14 +27,14 @@ class AControlPoint : public Test {
   baf::ControlPoint control_point;
 };
 
-TEST_F(AControlPoint, ReturnsCorrectDimension) {
+TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
   ASSERT_THAT(control_point.GetDimension(), 2);
 }
 
-TEST_F(AControlPoint, Returns1For0Dimension) {
+TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
   ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
 }
 
-TEST_F(AControlPoint, Returns2For1Dimension) {
+TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
   ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
 }

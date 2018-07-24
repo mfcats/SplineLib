@@ -34,7 +34,7 @@ class Splinelib(CMakePackage):
 
     version('github', git='https://github.com/mfcats/SplineLib.git', branch='master')
 
-    depends_on("googletest+gmock")
+    depends_on("googletest+gmock~shared")
 
     def cmake_args(self):
         options = []

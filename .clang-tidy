@@ -1,0 +1,3 @@
+Checks: '*,-android-*,-llvm-include-order,-fuchsia-overloaded-operator,-fuchsia-default-arguments'
+FormatStyle: google
+WarningsAsErrors: '*'

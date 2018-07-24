@@ -39,4 +39,9 @@ find_package(GTest REQUIRED)
 add_executable(SplineLibTests ${TEST_SOURCES})
 target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil GTest::Main)
 
+set(ACCEPTANCE_TEST_SOURCES
+        acceptance_tests.cc)
+add_executable(AcceptanceTests ${ACCEPTANCE_TEST_SOURCES})
+target_link_libraries(AcceptanceTests splinelibbaf splinelibspl splinelibutil)
+
 target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
