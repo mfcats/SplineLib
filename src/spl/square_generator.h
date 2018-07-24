@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_SQUARE_GENERATOR_H
-#define SRC_SPL_SQUARE_GENERATOR_H
+#ifndef SRC_SPL_SQUARE_GENERATOR_H_
+#define SRC_SPL_SQUARE_GENERATOR_H_
 
 #include <array>
 #include <vector>
@@ -25,18 +25,18 @@ namespace spl {
 class SquareGenerator {
  public:
   SquareGenerator();
-  SquareGenerator(int degree, int number_of_knots);
+  SquareGenerator(u_int64_t degree, u_int64_t number_of_knots);
 
   std::unique_ptr<BSpline<2>> CreateSquare() const;
 
  private:
-  std::array<baf::KnotVector, 2> knot_vectors_;
-  std::array<int, 2> degrees_;
-  std::vector<baf::ControlPoint> control_points_;
-  ParamCoord one_{1};
-  ParamCoord zero_{0};
-  std::shared_ptr<std::array<baf::KnotVector, 2>> knot_vector_ptr_;
+  spl::ParameterSpace<2> GenerateParameterSpace() const;
+
+  spl::PhysicalSpace<2> GeneratePhysicalSpace() const;
+
+  u_int64_t degree_;
+  u_int64_t number_of_knots_;
 };
 }  // namespace spl
 
-#endif  // SRC_SPL_SQUARE_GENERATOR_H
+#endif  // SRC_SPL_SQUARE_GENERATOR_H_

@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_PHYSICAL_SPACE_H
-#define SRC_SPL_PHYSICAL_SPACE_H
+#ifndef SRC_SPL_PHYSICAL_SPACE_H_
+#define SRC_SPL_PHYSICAL_SPACE_H_
 
 #include <stdexcept>
 #include <vector>
@@ -28,7 +28,7 @@ class PhysicalSpace {
   PhysicalSpace() = default;
   explicit PhysicalSpace(const std::vector<baf::ControlPoint> &control_points, std::array<int, DIM> number_of_points)
       : dimension_(control_points[0].GetDimension()), number_of_points_(number_of_points) {
-    int total_number_of_points = 1;
+    uint64_t total_number_of_points = 1;
     for (int dim = 0; dim < DIM; dim++) {
       total_number_of_points *= number_of_points[dim];
     }
@@ -58,11 +58,11 @@ class PhysicalSpace {
   }
 
  protected:
-  std::vector<double> control_points_;
-  std::array<int, DIM> number_of_points_;
   int dimension_;
+  std::array<int, DIM> number_of_points_;
+  std::vector<double> control_points_;
 };
 
 }  // namespace spl
 
-#endif  // SRC_SPL_PHYSICAL_SPACE_H
+#endif  // SRC_SPL_PHYSICAL_SPACE_H_

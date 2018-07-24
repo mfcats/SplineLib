@@ -12,10 +12,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_UTIL_MULTI_INDEX_HANDLER_H
-#define SRC_UTIL_MULTI_INDEX_HANDLER_H
+#ifndef SRC_UTIL_MULTI_INDEX_HANDLER_H_
+#define SRC_UTIL_MULTI_INDEX_HANDLER_H_
 
-#include "multi_index_handler.h"
 #include <array>
 
 namespace util {
@@ -59,7 +58,7 @@ class MultiIndexHandler {
     return result;
   }
 
-  void SetIndices(std::array<int, DIM> &indices) {
+  void SetIndices(const std::array<int, DIM> &indices) {
     for (int i = 0; i < DIM; ++i) {
       current_multi_index_value_[i] = indices[i];
     }
@@ -104,4 +103,4 @@ class MultiIndexHandler {
 };
 }  // namespace util
 
-#endif  // SRC_UTIL_MULTI_INDEX_HANDLER_H
+#endif  // SRC_UTIL_MULTI_INDEX_HANDLER_H_

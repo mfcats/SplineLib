@@ -12,18 +12,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_ELM_ELEMENT_INTEGRATION_POINT_H
-#define SRC_ELM_ELEMENT_INTEGRATION_POINT_H
+#ifndef SRC_ELM_ELEMENT_INTEGRATION_POINT_H_
+#define SRC_ELM_ELEMENT_INTEGRATION_POINT_H_
 
 #include <vector>
 
 namespace elm {
 class ElementIntegrationPoint {
  public:
-  explicit ElementIntegrationPoint(const std::vector<double> &non_zero_basis_functions);
+  explicit ElementIntegrationPoint(std::vector<double> basis_functions);
 
-  std::vector<double> non_zero_basis_functions() const;
-  int NumberOfNonZeroBasisFunctions() const;
+  std::vector<double> GetNonZeroBasisFunctions() const;
+  int GetNumberOfNonZeroBasisFunctions() const;
   double GetBasisFunctionValue(int firstNonZeroOffset) const;
 
  private:
@@ -31,4 +31,4 @@ class ElementIntegrationPoint {
 };
 }  // namespace elm
 
-#endif  // SRC_ELM_ELEMENT_INTEGRATION_POINT_H
+#endif  // SRC_ELM_ELEMENT_INTEGRATION_POINT_H_

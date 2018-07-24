@@ -13,6 +13,7 @@
 # <http://www.gnu.org/licenses/>.
 #
 
+
 set(SOURCES
         b_spline_basis_function.cc
         basis_function.cc
@@ -25,6 +26,11 @@ set(SOURCES
 add_library(splinelibbaf SHARED ${SOURCES})
 target_include_directories(splinelibbaf PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_link_libraries(splinelibbaf splinelibutil)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+	target_compile_options(splinelibbaf PUBLIC ${RUNTIME_CHECKS_DEBUG} ${WARNING_FLAGS})
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+	target_compile_options(splinelibbaf PUBLIC ${OPTIMIZATION_FLAGS} ${WARNING_FLAGS} ${PARALLELIZATION_FLAGS})
+endif ()
 
 install(
         TARGETS splinelibbaf
@@ -35,8 +41,11 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-install(
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DESTINATION "${include_install_dir}"
-				FILES_MATCHING PATTERN "*.h"
-)
+install(FILES
+        b_spline_basis_function.h
+        basis_function.h
+        basis_function_factory.h
+        control_point.h
+        knot_vector.h
+        zero_degree_b_spline_basis_function.h
+        DESTINATION "${include_install_dir}")

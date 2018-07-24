@@ -22,12 +22,12 @@ baf::ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const baf::K
                                                                     uint64_t start_of_support)
     : BasisFunction(knot_vector, 0, start_of_support) {}
 
-double baf::ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(ParamCoord param_coord) const {
+double baf::ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(ParamCoord /*param_coord*/) const {
   return util::NumericSettings<double>::AreEqual(GetKnot(GetStartOfSupport() + 1).get(),
-                                                 GetKnot(GetStartOfSupport()).get()) ? 0.0
-                                                                                     : 1.0;
+                                                 GetKnot(GetStartOfSupport()).get()) ? 0.0 : 1.0;
 }
 
-double baf::ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const {
+double baf::ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(ParamCoord /*param_coord*/,
+                                                                        int /*degree*/) const {
   return 0.0;
 }

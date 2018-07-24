@@ -25,11 +25,11 @@ class Element {
  public:
   Element(int dimension, const std::vector<double> &nodes);
 
-  int dimension() const;
+  int GetDimension() const;
 
-  int numberOfNodes() const;
+  int GetNumberOfNodes() const;
 
-  double node(int number) const;
+  double GetNode(int number) const;
 
  private:
   int dimension_;

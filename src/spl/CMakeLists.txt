@@ -14,7 +14,8 @@
 #
 
 set(SOURCES
-		square_generator.cc)
+        square_generator.cc
+        projection.h)
 
 add_library(splinelibspl SHARED ${SOURCES})
 target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
@@ -29,9 +30,16 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-install(
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DESTINATION "${include_install_dir}"
-				FILES_MATCHING PATTERN "*.h"
-)
+
+install(FILES
+        parameter_space.h
+        physical_space.h
+        weighted_physical_space.h
+        spline.h
+        b_spline.h
+        nurbs.h
+        projection.h
+        square_generator.h
+        DESTINATION "${include_install_dir}")
+
 

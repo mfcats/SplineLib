@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 baf::BasisFunction *baf::BasisFunctionFactory::CreateDynamic(const KnotVector &knot_vector,
                                                              uint64_t start_of_support,
                                                              int degree) const {
-  if (degree < 0) throw std::runtime_error("Basis function degree must be positive.");
-  if (degree == 0) return new baf::ZeroDegreeBSplineBasisFunction(knot_vector, start_of_support);
+  if (degree < 0) {throw std::runtime_error("Basis function degree must be positive.");}
+  if (degree == 0) {return new baf::ZeroDegreeBSplineBasisFunction(knot_vector, start_of_support);}
   return new baf::BSplineBasisFunction(knot_vector, degree, start_of_support);
 }

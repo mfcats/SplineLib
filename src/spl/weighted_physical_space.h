@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H
-#define SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H
+#ifndef SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H_
+#define SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H_
 
 #include <vector>
 
@@ -56,4 +56,4 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
   std::vector<double> weights_;
 };
 }  // namespace spl
-#endif  // SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H
+#endif  // SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H_

@@ -30,11 +30,11 @@ class MultiHandler1D : public Test {
   std::unique_ptr<util::MultiIndexHandler<1>> multiIndexHandler1D;
 };
 
-TEST_F(MultiHandler1D, Returns1DIndex0AfterConstruction) {
+TEST_F(MultiHandler1D, Returns1DIndex0AfterConstruction) { // NOLINT
   ASSERT_THAT(multiIndexHandler1D->Get1DIndex(), Eq(0));
 }
 
-TEST_F(MultiHandler1D, Returns1DIndex5AfterSettingCurrentIndexTo5) {
+TEST_F(MultiHandler1D, Returns1DIndex5AfterSettingCurrentIndexTo5) { // NOLINT
   std::array<int, 1> currentIndex = {5};
   multiIndexHandler1D->SetIndices(currentIndex);
   ASSERT_THAT(multiIndexHandler1D->Get1DIndex(), Eq(5));
@@ -51,11 +51,11 @@ class MultiHandler2D : public Test {
   std::unique_ptr<util::MultiIndexHandler<2>> multiIndexHandler2D;
 };
 
-TEST_F(MultiHandler2D, Returns1DIndex0AfterConstruction) {
+TEST_F(MultiHandler2D, Returns1DIndex0AfterConstruction) { // NOLINT
   ASSERT_THAT(multiIndexHandler2D->Get1DIndex(), Eq(0));
 }
 
-TEST_F(MultiHandler2D, Returns1DIndex23AfterSettingCurrentIndexTo3And2) {
+TEST_F(MultiHandler2D, Returns1DIndex23AfterSettingCurrentIndexTo3And2) { // NOLINT
   std::array<int, 2> currentIndex = {3, 2};
   multiIndexHandler2D->SetIndices(currentIndex);
   ASSERT_THAT(multiIndexHandler2D->Get1DIndex(), Eq(23));
@@ -71,17 +71,17 @@ class MultiHandler3D : public Test {
   std::unique_ptr<util::MultiIndexHandler<3>> multiIndexHandler3D;
 };
 
-TEST_F(MultiHandler3D, Returns1DIndex0AfterConstruction) {
+TEST_F(MultiHandler3D, Returns1DIndex0AfterConstruction) { // NOLINT
   ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(0));
 }
 
-TEST_F(MultiHandler3D, Returns1DIndex30AfterSettingCurrentIndexTo2And1And2) {
+TEST_F(MultiHandler3D, Returns1DIndex30AfterSettingCurrentIndexTo2And1And2) { // NOLINT
   std::array<int, 3> currentIndex = {2, 1, 2};
   multiIndexHandler3D->SetIndices(currentIndex);
   ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(30));
 }
 
-TEST_F(MultiHandler3D, ReturnsIndex3And1And0AfterAdding1DIndex7) {
+TEST_F(MultiHandler3D, ReturnsIndex3And1And0AfterAdding1DIndex7) { // NOLINT
   *multiIndexHandler3D + 7;
   ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(7));
   ASSERT_THAT(multiIndexHandler3D->GetIndices()[0], Eq(3));
@@ -89,7 +89,7 @@ TEST_F(MultiHandler3D, ReturnsIndex3And1And0AfterAdding1DIndex7) {
   ASSERT_THAT(multiIndexHandler3D->GetIndices()[2], Eq(0));
 }
 
-TEST_F(MultiHandler3D, ReturnsDifferenceIndex0And1And4AfterAdding1DIndex7) {
+TEST_F(MultiHandler3D, ReturnsDifferenceIndex0And1And4AfterAdding1DIndex7) { // NOLINT
   *multiIndexHandler3D + 7;
   ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(7));
   ASSERT_THAT(multiIndexHandler3D->GetDifferenceIndices()[0], Eq(0));
@@ -97,6 +97,6 @@ TEST_F(MultiHandler3D, ReturnsDifferenceIndex0And1And4AfterAdding1DIndex7) {
   ASSERT_THAT(multiIndexHandler3D->GetDifferenceIndices()[2], Eq(4));
 }
 
-TEST_F(MultiHandler3D, ReturnsCorrectLengthOf60) {
+TEST_F(MultiHandler3D, ReturnsCorrectLengthOf60) { // NOLINT
   ASSERT_THAT(multiIndexHandler3D->Get1DLength(), Eq(60));
 }

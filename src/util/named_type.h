@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_UTIL_NAMEDTYPE_H
-#define SRC_UTIL_NAMEDTYPE_H
+#ifndef SRC_UTIL_NAMED_TYPE_H_
+#define SRC_UTIL_NAMED_TYPE_H_
 
 namespace util {
 template<typename T, typename Parameter>
@@ -21,23 +21,29 @@ class NamedType {
  public:
   explicit NamedType(T const &value) : value_(value) {}
   explicit NamedType(T &&value) : value_(std::move(value)) {}
-  T &get() { return value_; }
-  T const &get() const { return value_; }
-  NamedType<T, Parameter> operator+ (const NamedType<T, Parameter> &rhs) const {
+
+  constexpr T &get() { return value_; }
+  constexpr T const &get() const { return value_; }
+
+  constexpr NamedType<T, Parameter> operator+(const NamedType<T, Parameter> &rhs) const {
     return NamedType<T, Parameter>{value_ + rhs.get()};
   }
-  NamedType<T, Parameter> operator- (const NamedType<T, Parameter> &rhs) const {
+
+  constexpr NamedType<T, Parameter> operator-(const NamedType<T, Parameter> &rhs) const {
     return NamedType<T, Parameter>{value_ - rhs.get()};
   }
-  bool operator> (const NamedType<T, Parameter> &rhs) const {
+
+  constexpr bool operator>(const NamedType<T, Parameter> &rhs) const {
     return value_ > rhs.get();
   }
-  bool operator< (const NamedType<T, Parameter> &rhs) const {
+
+  constexpr bool operator<(const NamedType<T, Parameter> &rhs) const {
     return value_ < rhs.get();
   }
+
  private:
   T value_;
 };
 }  // namespace util
 
-#endif  // SRC_UTIL_NAMEDTYPE_H
+#endif  // SRC_UTIL_NAMED_TYPE_H_

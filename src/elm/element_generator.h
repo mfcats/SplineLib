@@ -23,7 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace elm {
 class ElementGenerator {
  public:
-  ElementGenerator(int degree, const baf::KnotVector &knot_vector);
+  ElementGenerator(int degree, baf::KnotVector knot_vector);
 
   std::vector<Element> GetElementList();
 

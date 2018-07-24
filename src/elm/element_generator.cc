@@ -14,8 +14,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element_generator.h"
 
-elm::ElementGenerator::ElementGenerator(int degree, const baf::KnotVector &knot_vector)
-    : degree_(degree), knot_vector_(knot_vector) {}
+elm::ElementGenerator::ElementGenerator(int degree, baf::KnotVector knot_vector)
+    : degree_(degree), knot_vector_(std::move(knot_vector)) {}
 
 std::vector<elm::Element> elm::ElementGenerator::GetElementList() {
   std::vector<Element> elements;
