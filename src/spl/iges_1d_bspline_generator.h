@@ -57,7 +57,7 @@ class IGES1DBSplineGenerator : public BSplineGenerator<1> {
 
  private:
   void ReadParameterData(const std::vector<double> &parameterData) {
-    if ((parameterData[1] == 126) && (parameterData[5] == 1)) {
+    if ((parameterData[0] == 126) && (parameterData[5] == 1)) {
       int upperSumIndex = int(parameterData[1]);
       std::array<int, 1> degree;
       degree[0] = int(parameterData[2]);

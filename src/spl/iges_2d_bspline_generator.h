@@ -57,7 +57,7 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
 
  private:
   void ReadParameterData(const std::vector<double> &parameterData) {
-    if ((parameterData[1] == 128) && (parameterData[7] == 1)) {
+    if ((parameterData[0] == 128) && (parameterData[7] == 1)) {
       std::array<int, 2> upperSumIndex;
       upperSumIndex[0] = int(parameterData[1]);
       upperSumIndex[1] = int(parameterData[2]);

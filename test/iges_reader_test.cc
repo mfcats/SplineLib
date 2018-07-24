@@ -27,11 +27,11 @@ class AnIGESReader : public Test {
   }
 };
 
-/*TEST_F(AnIGESReader, ReadBSplineCurveFromIGESFile) {
-  spl::IGESBSplineGenerator<1> reader = spl::IGESBSplineGenerator<1>("/Users/christophsusen/SplineLib/test/test.iges");
+TEST_F(AnIGESReader, ReadBSplineCurveFromIGESFile) { // NOLINT
+  spl::IGES1DBSplineGenerator reader = spl::IGES1DBSplineGenerator("/Users/christophsusen/SplineLib/test/test.iges");
   reader.ReadIGESFile(4);
   std::unique_ptr<spl::BSpline<1>> spline = std::make_unique<spl::BSpline<1>>(reader);
   ASSERT_THAT(spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.005));
-}*/
+}
 
 

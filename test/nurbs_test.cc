@@ -234,6 +234,6 @@ class ANURBSWithSplineGenerator : public Test {
   std::unique_ptr<spl::NURBS<1>> nurbs;
 };
 
-TEST_F(ANURBSWithSplineGenerator, Returns1_4For1AndDim0) {
+TEST_F(ANURBSWithSplineGenerator, Returns1_4For1AndDim0) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {0})[0], DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
 }

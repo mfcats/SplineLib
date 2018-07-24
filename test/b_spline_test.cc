@@ -253,6 +253,6 @@ class ABSplineWithSplineGenerator : public Test {
   std::vector<baf::ControlPoint> control_points_;
 };
 
-TEST_F(ABSplineWithSplineGenerator, Returns0_0For0AndDim0) {
+TEST_F(ABSplineWithSplineGenerator, Returns0_0For0AndDim0) { // NOLINT
   ASSERT_THAT(b_spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(0.0));
 }

@@ -56,7 +56,7 @@ class IGES1DNURBSGenerator : public NURBSGenerator<1> {
 
  private:
   void Read1D(const std::vector<double> &parameterData) {
-    if ((parameterData[1] == 126) && (parameterData[5] == 0)) {
+    if ((parameterData[0] == 126) && (parameterData[5] == 0)) {
       int upperSumIndex = int(parameterData[1]);
       std::array<int, 1> degree;
       degree[0] = int(parameterData[2]);
