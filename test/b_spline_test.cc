@@ -47,13 +47,13 @@ class ABSpline : public Test {
         baf::ControlPoint(std::vector<double>({4.0, 1.5})),
         baf::ControlPoint(std::vector<double>({4.0, 0.0}))
     };
-    knot_vector_[0] = {std::make_shared<baf::KnotVector>(knot_vector[0])};
+    knot_vector_ = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
     b_spline = std::make_unique<spl::BSpline<1>>(knot_vector_, degree_, control_points_);
   }
 
  protected:
   std::unique_ptr<spl::BSpline<1>> b_spline;
-  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_;
+  std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_;
   std::array<int, 1> degree_;
   std::vector<baf::ControlPoint> control_points_;
 };
@@ -95,7 +95,7 @@ TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) {
 }
 
 TEST_F(ABSpline, CanBeConstructedWithAPhysicalAndAParameterSpace) {
-  spl::ParameterSpace<1> parameter_space = spl::ParameterSpace<1>({knot_vector_[0]}, {degree_[0]});
+  spl::ParameterSpace<1> parameter_space = spl::ParameterSpace<1>({(*knot_vector_)[0]}, {degree_[0]});
   spl::PhysicalSpace<1> physical_space = spl::PhysicalSpace<1>(control_points_, {8});
   b_spline = std::make_unique<spl::BSpline<1>>(parameter_space, physical_space);
   ASSERT_THAT(b_spline->Evaluate({ParamCoord{5.0}}, {0})[0], DoubleEq(4.0));

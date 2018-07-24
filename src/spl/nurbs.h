@@ -30,13 +30,13 @@ namespace spl {
 template<int DIM>
 class NURBS : public Spline<DIM> {
  public:
-  NURBS(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
+  NURBS(std::shared_ptr<std::array<baf::KnotVector, DIM >> knot_vector,
         std::array<int, DIM> degree,
         const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) : Spline<DIM>(knot_vector,
                                                                                                          degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
-      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
+      number_of_points[i] = (*knot_vector)[i].GetNumberOfKnots() - degree[i] - 1;
     }
     physical_space_ = WeightedPhysicalSpace<DIM>(control_points, weights, number_of_points);
   }

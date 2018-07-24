@@ -32,8 +32,15 @@ class NURBSGenerator : public SplineGenerator<DIM> {
     for (int i = 0; i < DIM; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
     }
+
+    std::array<baf::KnotVector, DIM> knot_vectors;
+    for(int dim = 0; dim < DIM; ++dim) {
+      knot_vectors[dim] = *(knot_vector[dim]);
+    }
+
+
     this->physical_space_ptr = std::make_shared<WeightedPhysicalSpace<DIM>>(control_points, weights, number_of_points);
-    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
+    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vectors, degree);
   }
 
   NURBSGenerator(WeightedPhysicalSpace<DIM> weigthed_physical_space, ParameterSpace<DIM> parameter_space) {

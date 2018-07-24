@@ -27,12 +27,12 @@ namespace spl {
 template<int DIM>
 class BSpline : public Spline<DIM> {
  public:
-  BSpline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
+  BSpline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector,
           std::array<int, DIM> degree,
           const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
-      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
+      number_of_points[i] = (*knot_vector)[i].GetNumberOfKnots() - degree[i] - 1;
     }
     physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
   }
