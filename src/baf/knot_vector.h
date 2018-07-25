@@ -24,6 +24,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "named_type.h"
 
 using ParamCoord = util::NamedType<double, struct ParamCoordParameter>;
+using KnotSpan = util::NamedType<int, struct KnotSpanParameter>;
 
 namespace baf {
 
@@ -51,7 +52,7 @@ class KnotVector {
 
   ParamCoord GetKnot(size_t index) const;
   ParamCoord GetLastKnot() const;
-  u_int64_t GetKnotSpan(ParamCoord param_coord) const;
+  KnotSpan GetKnotSpan(ParamCoord param_coord) const;
   size_t GetNumberOfKnots() const;
 
   ConstKnotIterator begin() const;

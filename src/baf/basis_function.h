@@ -20,6 +20,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "knot_vector.h"
+#include "named_type.h"
+
+using Degree = util::NamedType<int, struct DegreeParameter>;
 
 namespace baf {
 class BasisFunction {
@@ -38,9 +41,9 @@ class BasisFunction {
 
   ParamCoord GetKnot(uint64_t knot_position) const;
 
-  uint64_t GetStartOfSupport() const;
+  KnotSpan GetStartOfSupport() const;
 
-  int GetDegree() const;
+  Degree GetDegree() const;
 
   virtual double EvaluateOnSupport(ParamCoord param_coord) const = 0;
 
@@ -54,8 +57,8 @@ class BasisFunction {
   bool IsCoordinateInSupportSpan(ParamCoord param_coord) const;
 
   KnotVector knotVector_;
-  int degree_;
-  uint64_t start_of_support_;
+  Degree degree_;
+  KnotSpan start_of_support_;
 };
 }  // namespace baf
 

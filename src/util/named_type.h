@@ -33,12 +33,24 @@ class NamedType {
     return NamedType<T, Parameter>{value_ - rhs.get()};
   }
 
+  constexpr bool operator==(const NamedType<T, Parameter> &rhs) const {
+    return value_ == rhs.get();
+  }
+
   constexpr bool operator>(const NamedType<T, Parameter> &rhs) const {
     return value_ > rhs.get();
   }
 
   constexpr bool operator<(const NamedType<T, Parameter> &rhs) const {
     return value_ < rhs.get();
+  }
+
+  constexpr bool operator>=(const NamedType<T, Parameter> &rhs) const {
+    return value_ >= rhs.get();
+  }
+
+  constexpr bool operator<=(const NamedType<T, Parameter> &rhs) const {
+    return value_ <= rhs.get();
   }
 
  private:

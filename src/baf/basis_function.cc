@@ -32,11 +32,11 @@ ParamCoord baf::BasisFunction::GetKnot(uint64_t knot_position) const {
   return knotVector_.GetKnot(knot_position);
 }
 
-uint64_t baf::BasisFunction::GetStartOfSupport() const {
+KnotSpan baf::BasisFunction::GetStartOfSupport() const {
   return start_of_support_;
 }
 
-int baf::BasisFunction::GetDegree() const {
+Degree baf::BasisFunction::GetDegree() const {
   return degree_;
 }
 
@@ -46,5 +46,5 @@ bool baf::BasisFunction::IsCoordinateInSupport(ParamCoord param_coord) const {
 
 bool baf::BasisFunction::IsCoordinateInSupportSpan(ParamCoord param_coord) const {
   auto span = knotVector_.GetKnotSpan(param_coord);
-  return !(span < start_of_support_ || span >= start_of_support_ + degree_ + 1);
+  return !(span < start_of_support_ || span >= start_of_support_ + KnotSpan{degree_.get() + 1});
 }

@@ -67,7 +67,7 @@ class ParameterSpace {
 
   std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator GetFirstNonZeroKnot(int direction,
                                                                                        ParamCoord param_coord) const {
-    return basis_functions_[direction].begin() + knot_vector_[direction].GetKnotSpan(param_coord) - degree_[direction];
+    return basis_functions_[direction].begin() + knot_vector_[direction].GetKnotSpan(param_coord).get() - degree_[direction];
   }
 
   int GetDegree(int direction) const {

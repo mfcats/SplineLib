@@ -164,7 +164,7 @@ class Spline {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] =
-          this->parameter_space_.GetKnotVector(i).GetKnotSpan(param_coord[i]) - this->parameter_space_.GetDegree(i);
+          this->parameter_space_.GetKnotVector(i).GetKnotSpan(param_coord[i]).get() - this->parameter_space_.GetDegree(i);
     }
     return first_non_zero;
   }

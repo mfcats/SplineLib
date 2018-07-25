@@ -34,32 +34,32 @@ class AKnotVector : public Test {
 // U = {0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 1.0, 1.0, 1.0} u = 0.0 is in knot span 2.
 // The parametric coordinate is equal to the smallest knot
 TEST_F(AKnotVector, FindsZeroInKnotSpanTwo) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(ParamCoord{0.0}), Eq(2));
+  ASSERT_THAT(knot_vector_.GetKnotSpan(ParamCoord{0.0}), Eq(KnotSpan{2}));
 }
 
 // The parametric coordinate is between two knots.
 TEST_F(AKnotVector, Finds0_3InKnotSpanTwo) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(ParamCoord{0.3}), Eq(2));
+  ASSERT_THAT(knot_vector_.GetKnotSpan(ParamCoord{0.3}), Eq(KnotSpan{2}));
 }
 
 // The parametric coordinate is last knots.
 TEST_F(AKnotVector, Finds1_0InKnotSpanFive) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(ParamCoord{1.0}), Eq(5));
+  ASSERT_THAT(knot_vector_.GetKnotSpan(ParamCoord{1.0}), Eq(KnotSpan{5}));
 }
 
 // The parametric coordinate is equal to an inner repeated knot.
 TEST_F(AKnotVector, Finds0_5InKnotSpanFour) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(ParamCoord{0.5}), Eq(4));
+  ASSERT_THAT(knot_vector_.GetKnotSpan(ParamCoord{0.5}), Eq(KnotSpan{4}));
 }
 
 // The parametric coordinate is equal to an inner not repeated knot.
 TEST_F(AKnotVector, Finds0_75InKnotSpanFive) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(ParamCoord{0.75}), Eq(5));
+  ASSERT_THAT(knot_vector_.GetKnotSpan(ParamCoord{0.75}), Eq(KnotSpan{5}));
 }
 
 // The last knot is defined to be in the last non-zero knot span.
 TEST_F(AKnotVector, FindsLastKnotInSpanSix) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(knot_vector_.GetLastKnot()), Eq(5));
+  ASSERT_THAT(knot_vector_.GetKnotSpan(knot_vector_.GetLastKnot()), Eq(KnotSpan{5}));
 }
 
 TEST_F(AKnotVector, CanCheckIfParametricCoordinateIsEqualLastKnot) { // NOLINT

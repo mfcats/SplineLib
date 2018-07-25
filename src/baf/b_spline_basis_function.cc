@@ -27,7 +27,7 @@ double baf::BSplineBasisFunction::EvaluateOnSupport(ParamCoord param_coord) cons
 }
 
 double baf::BSplineBasisFunction::EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const {
-  return GetDegree()
+  return GetDegree().get()
       * (ComputeLeftQuotientDenominatorInverse() * left_lower_degree_->EvaluateDerivative(param_coord, derivative - 1)
           - ComputeRightQuotientDenominatorInverse()
               * right_lower_degree_->EvaluateDerivative(param_coord, derivative - 1));
@@ -43,21 +43,21 @@ void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &k
 }
 
 double baf::BSplineBasisFunction::ComputeLeftQuotientDenominatorInverse() const {
-  auto left_denom = GetKnot(GetStartOfSupport() + GetDegree()) - GetKnot(GetStartOfSupport());
+  auto left_denom = GetKnot(GetStartOfSupport().get() + GetDegree().get()) - GetKnot(GetStartOfSupport().get());
   return InverseWithPossiblyZeroDenominator(left_denom.get());
 }
 
 double baf::BSplineBasisFunction::ComputeRightQuotientDenominatorInverse() const {
-  auto right_denom = GetKnot(GetStartOfSupport() + GetDegree() + 1) - GetKnot(GetStartOfSupport() + 1);
+  auto right_denom = GetKnot(GetStartOfSupport().get() + GetDegree().get() + 1) - GetKnot(GetStartOfSupport().get() + 1);
   return InverseWithPossiblyZeroDenominator(right_denom.get());
 }
 
 double baf::BSplineBasisFunction::ComputeLeftQuotient(ParamCoord param_coord) const {
-  return (param_coord - GetKnot(GetStartOfSupport())).get() * ComputeLeftQuotientDenominatorInverse();
+  return (param_coord - GetKnot(GetStartOfSupport().get())).get() * ComputeLeftQuotientDenominatorInverse();
 }
 
 double baf::BSplineBasisFunction::ComputeRightQuotient(ParamCoord param_coord) const {
-  return (GetKnot(GetStartOfSupport() + GetDegree() + 1) - param_coord).get()
+  return (GetKnot(GetStartOfSupport().get() + GetDegree().get() + 1) - param_coord).get()
       * ComputeRightQuotientDenominatorInverse();
 }
 
