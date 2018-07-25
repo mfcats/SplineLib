@@ -32,7 +32,7 @@ class BasisFunction {
   // The evaluation of the i-th basis function of degree p > 0 N_{i,p} is a linear combination of the basis functions
   // N_{i,p-1} and N_{i+1,p-1} (see NURBS book equation 2.5). Therefore, for each basis function of degree > 0 a pointer
   // to these two basis functions is set in constructor, so that a basis function can be evaluated recursively.
-  double Evaluate(ParamCoord paramCoord) const;
+  double Evaluate(ParamCoord paramCoord, const KnotVector &knotVector) const;
 
   double EvaluateDerivative(ParamCoord param_coord, int derivative) const;
 
@@ -49,6 +49,8 @@ class BasisFunction {
 
   virtual double EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const = 0;
 
+  KnotVector knotVector_;
+
  private:
   // Check if parametric coordinate is in knot vector range (see IsCoordinateInSupportSpan) and in support span.
   bool IsCoordinateInSupport(ParamCoord param_coord) const;
@@ -56,7 +58,7 @@ class BasisFunction {
   // Check if parametric coordinate is in the range of knot spans where the basis function is defined to be non-zero.
   bool IsCoordinateInSupportSpan(ParamCoord param_coord) const;
 
-  KnotVector knotVector_;
+
   Degree degree_;
   KnotSpan start_of_support_;
 };

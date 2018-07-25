@@ -22,8 +22,8 @@ baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector, i
 }
 
 double baf::BSplineBasisFunction::EvaluateOnSupport(ParamCoord param_coord) const {
-  return ComputeLeftQuotient(param_coord) * left_lower_degree_->Evaluate(param_coord)
-      + ComputeRightQuotient(param_coord) * right_lower_degree_->Evaluate(param_coord);
+  return ComputeLeftQuotient(param_coord) * left_lower_degree_->Evaluate(param_coord, knotVector_)
+      + ComputeRightQuotient(param_coord) * right_lower_degree_->Evaluate(param_coord, knotVector_);
 }
 
 double baf::BSplineBasisFunction::EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const {
