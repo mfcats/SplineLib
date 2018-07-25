@@ -16,12 +16,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "numeric_settings.h"
 
-double baf::BasisFunction::Evaluate(ParamCoord paramCoord, const KnotVector &knotVector) const {
+double baf::BasisFunction::Evaluate(ParamCoord paramCoord) const {
   return IsCoordinateInSupport(paramCoord) ? this->EvaluateOnSupport(paramCoord) : 0.0;
 }
 
 double baf::BasisFunction::EvaluateDerivative(ParamCoord param_coord, int derivative) const {
-  return derivative == 0 ? Evaluate(param_coord, knotVector_) :
+  return derivative == 0 ? Evaluate(param_coord) :
          IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0;
 }
 

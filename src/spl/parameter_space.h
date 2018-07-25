@@ -47,7 +47,7 @@ class ParameterSpace {
     auto first_non_zero = GetFirstNonZeroKnot(direction, param_coord);
     std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction]) + 1, 0.0);
     for (int i = 0; i < degree_[direction] + 1; ++i) {
-      basis_function_values[i] = (*first_non_zero)->Evaluate(param_coord, knot_vector_[i]);
+      basis_function_values[i] = (*first_non_zero)->Evaluate(param_coord);
       ++first_non_zero;
     }
     return basis_function_values;
@@ -81,7 +81,7 @@ class ParameterSpace {
   double GetBasisFunctions(std::array<int, DIM> indices, std::array<ParamCoord, DIM> param_coord) const {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
-      value *= basis_functions_[i][indices[i]]->Evaluate(param_coord[i], knot_vector_[i]);
+      value *= basis_functions_[i][indices[i]]->Evaluate(param_coord[i]);
     }
     return value;
   }

@@ -33,23 +33,23 @@ class BasisFunctionEx21N01 : public Test {
 };
 
 TEST_F(BasisFunctionEx21N01, IsZeroAt0_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N01, IsZeroAt0_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N01, IsZeroAt1_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N01, IsZeroAt1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N01, IsZeroAtMinus1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}), DoubleEq(0.0));
 }
 
 // Test basis function N_{1,1} from NURBS book example 2.1
@@ -66,23 +66,23 @@ class BasisFunctionEx21N11 : public Test {
 };
 
 TEST_F(BasisFunctionEx21N11, IsZeroAt0_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}, knot_vector_), DoubleEq(1.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(1.0));
 }
 
 TEST_F(BasisFunctionEx21N11, IsZeroAt0_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}, knot_vector_), DoubleEq(0.5));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}), DoubleEq(0.5));
 }
 
 TEST_F(BasisFunctionEx21N11, IsZeroAt1_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N11, IsZeroAt1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N11, IsZeroAtMinus1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}), DoubleEq(0.0));
 }
 
 // Test basis function N_{2,1} from NURBS book example 2.1
@@ -99,23 +99,23 @@ class BasisFunctionEx21N21 : public Test {
 };
 
 TEST_F(BasisFunctionEx21N21, IsZeroAt0_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N21, IsZeroAt0_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}, knot_vector_), DoubleEq(0.5));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}), DoubleEq(0.5));
 }
 
 TEST_F(BasisFunctionEx21N21, IsOneAt1_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}, knot_vector_), DoubleEq(1.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}), DoubleEq(1.0));
 }
 
 TEST_F(BasisFunctionEx21N21, IsZeroAt1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N21, IsZeroAtMinus1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}), DoubleEq(0.0));
 }
 
 // Test basis function N_{3,1} from NURBS book example 2.1
@@ -132,23 +132,23 @@ class BasisFunctionEx21N31 : public Test {
 };
 
 TEST_F(BasisFunctionEx21N31, IsZeroAt0_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N31, IsZeroAt0_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N31, IsZeroAt1_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N31, IsZeroAt1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N31, IsZeroAtMinus1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}), DoubleEq(0.0));
 }
 
 // Test basis function N_{0,2} from NURBS book example 2.1
@@ -165,23 +165,23 @@ class BasisFunctionEx21N02 : public Test {
 };
 
 TEST_F(BasisFunctionEx21N02, IsZeroAt0_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}, knot_vector_), DoubleEq(1.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(1.0));
 }
 
 TEST_F(BasisFunctionEx21N02, IsZeroAt0_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}, knot_vector_), DoubleEq(0.25));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}), DoubleEq(0.25));
 }
 
 TEST_F(BasisFunctionEx21N02, IsZeroAt1_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N02, IsZeroAt1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N02, IsZeroAtMinus1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}), DoubleEq(0.0));
 }
 
 // Test basis function N_{1,2} from NURBS book example 2.1
@@ -198,23 +198,23 @@ class BasisFunctionEx21N12 : public Test {
 };
 
 TEST_F(BasisFunctionEx21N12, IsZeroAt0_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N12, IsZeroAt0_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}, knot_vector_), DoubleEq(0.5));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}), DoubleEq(0.5));
 }
 
 TEST_F(BasisFunctionEx21N12, IsZeroAt1_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N12, IsZeroAt1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N12, IsZeroAtMinus1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}), DoubleEq(0.0));
 }
 
 // Test basis function N_{2,2} from NURBS book example 2.1
@@ -231,23 +231,23 @@ class BasisFunctionEx21N22 : public Test {
 };
 
 TEST_F(BasisFunctionEx21N22, IsZeroAt0_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.0}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N22, IsZeroAt0_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}, knot_vector_), DoubleEq(0.25));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{0.5}), DoubleEq(0.25));
 }
 
 TEST_F(BasisFunctionEx21N22, IsOneAt1_0) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}, knot_vector_), DoubleEq(1.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.0}), DoubleEq(1.0));
 }
 
 TEST_F(BasisFunctionEx21N22, IsZeroAt1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{1.5}), DoubleEq(0.0));
 }
 
 TEST_F(BasisFunctionEx21N22, IsZeroAtMinus1_5) { // NOLINT
-  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}, knot_vector_), DoubleEq(0.0));
+  ASSERT_THAT(basis_function_.Evaluate(ParamCoord{-1.5}), DoubleEq(0.0));
 }
 
 // Test basis function N_{0,1} from NURBS book example 2.2
@@ -266,37 +266,37 @@ class BasisFunctionEx22N01 : public Test {
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt0_0) { // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{0}, 0),
-              DoubleEq(basis_function_.Evaluate(ParamCoord{0.0}, knot_vector_)));
+              DoubleEq(basis_function_.Evaluate(ParamCoord{0.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt1_5) { // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{1.5}, 0),
-              DoubleEq(basis_function_.Evaluate(ParamCoord{1.5}, knot_vector_)));
+              DoubleEq(basis_function_.Evaluate(ParamCoord{1.5})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt2_0) { // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{2.0}, 0),
-              DoubleEq(basis_function_.Evaluate(ParamCoord{2.0}, knot_vector_)));
+              DoubleEq(basis_function_.Evaluate(ParamCoord{2.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt4_0) { // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{4.0}, 0),
-              DoubleEq(basis_function_.Evaluate(ParamCoord{4.0}, knot_vector_)));
+              DoubleEq(basis_function_.Evaluate(ParamCoord{4.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt5_0) { // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{5.0}, 0),
-              DoubleEq(basis_function_.Evaluate(ParamCoord{5.0}, knot_vector_)));
+              DoubleEq(basis_function_.Evaluate(ParamCoord{5.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt6_0) { // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{6.0}, 0),
-              DoubleEq(basis_function_.Evaluate(ParamCoord{6.0}, knot_vector_)));
+              DoubleEq(basis_function_.Evaluate(ParamCoord{6.0})));
 }
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAtMinus0_5) { // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParamCoord{-0.5}, 0),
-              DoubleEq(basis_function_.Evaluate(ParamCoord{-0.5}, knot_vector_)));
+              DoubleEq(basis_function_.Evaluate(ParamCoord{-0.5})));
 }
 
 TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAt0_0) { // NOLINT
