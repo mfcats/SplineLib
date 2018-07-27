@@ -61,8 +61,8 @@ class KnotVector {
   KnotIterator begin();
   KnotIterator end();
 
-  bool IsInKnotVectorRange(ParamCoord param_coord) const;
-  bool IsLastKnot(ParamCoord param_coord) const;
+  bool IsInKnotVectorRange(const ParamCoord &param_coord) const;
+  bool IsLastKnot(const ParamCoord &param_coord) const;
 
  private:
   std::vector<ParamCoord> knots_;

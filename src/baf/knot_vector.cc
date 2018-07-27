@@ -98,11 +98,11 @@ baf::KnotVector::KnotIterator baf::KnotVector::end() {
   return knots_.end();
 }
 
-bool baf::KnotVector::IsInKnotVectorRange(ParamCoord param_coord) const {
+bool baf::KnotVector::IsInKnotVectorRange(const ParamCoord &param_coord) const {
   return param_coord >= knots_.front() && param_coord <= knots_.back();
 }
 
-bool baf::KnotVector::IsLastKnot(ParamCoord param_coord) const {
+bool baf::KnotVector::IsLastKnot(const ParamCoord &param_coord) const {
   return util::NumericSettings<double>::AreEqual(param_coord.get(), knots_.back().get());
 }
 

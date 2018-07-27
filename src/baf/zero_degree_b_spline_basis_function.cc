@@ -25,11 +25,11 @@ baf::ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const baf::K
                                                                     end_knot_(knot_vector.GetKnot(start_of_support + 1))
                                                                     {}
 
-double baf::ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(ParamCoord /* param_coord*/) const {
+double baf::ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(const ParamCoord /* param_coord*/&) const {
   return util::NumericSettings<double>::AreEqual(start_knot_.get(), end_knot_.get()) ? 0.0 : 1.0;
 }
 
-double baf::ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(ParamCoord /*param_coord*/,
-                                                                        Derivative /*degree*/) const {
+double baf::ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(const ParamCoord /*param_coord*/&,
+                                                                        const Derivative /*degree*/&) const {
   return 0.0;
 }

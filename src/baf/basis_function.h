@@ -42,12 +42,12 @@ class BasisFunction {
 
   Degree GetDegree() const;
 
-  virtual double EvaluateOnSupport(ParamCoord param_coord) const = 0;
+  virtual double EvaluateOnSupport(const ParamCoord &param_coord) const = 0;
 
-  virtual double EvaluateDerivativeOnSupport(ParamCoord param_coord, Derivative derivative) const = 0;
+  virtual double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const = 0;
 
  private:
-  bool IsCoordinateInSupport(ParamCoord param_coord) const;
+  bool IsCoordinateInSupport(const ParamCoord &param_coord) const;
 
   Degree degree_;
   ParamCoord start_knot_;

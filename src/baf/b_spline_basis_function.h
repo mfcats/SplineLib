@@ -28,9 +28,9 @@ class BSplineBasisFunction : public BasisFunction {
   BSplineBasisFunction(const KnotVector &knot_vector, Degree deg, uint64_t start_of_support);
 
  protected:
-  double EvaluateOnSupport(ParamCoord param_coord) const override;
+  double EvaluateOnSupport(const ParamCoord &param_coord) const override;
 
-  double EvaluateDerivativeOnSupport(ParamCoord param_coord, Derivative derivative) const override;
+  double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const override;
 
   std::unique_ptr<BasisFunction> left_lower_degree_;
   std::unique_ptr<BasisFunction> right_lower_degree_;

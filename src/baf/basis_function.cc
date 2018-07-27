@@ -33,6 +33,6 @@ Degree baf::BasisFunction::GetDegree() const {
   return degree_;
 }
 
-bool baf::BasisFunction::IsCoordinateInSupport(ParamCoord param_coord) const {
+bool baf::BasisFunction::IsCoordinateInSupport(const ParamCoord &param_coord) const {
   return (start_knot_ <= param_coord && param_coord < end_knot_) || (end_knot_is_last_knot_ && param_coord == end_knot_);
 }
