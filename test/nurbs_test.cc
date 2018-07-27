@@ -27,7 +27,7 @@ class NurbsEx4_1 : public Test {
     std::array<baf::KnotVector, 1> knot_vector =
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                           ParamCoord{3}, ParamCoord{3}})};
-    std::array<int, 1> degree = {2};
+    std::array<Degree, 1> degree = {Degree{2}};
     std::vector<double> weights = {1, 4, 1, 1, 1};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
@@ -55,7 +55,7 @@ TEST_F(NurbsEx4_1, Returns1_2For1AndDim1) { // NOLINT
 
 class ANurbs : public Test {
  public:
-  ANurbs() : degree_{2} {
+  ANurbs() : degree_{Degree{2}} {
     std::array<baf::KnotVector, 1>
         knot_vector =
         {baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.25}, ParamCoord{0.5},
@@ -77,7 +77,7 @@ class ANurbs : public Test {
  protected:
   std::unique_ptr<spl::NURBS<1>> nurbs;
   std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_;
-  std::array<int, 1> degree_;
+  std::array<Degree, 1> degree_;
   std::vector<double> weights_;
   std::vector<baf::ControlPoint> control_points_;
 };
@@ -142,7 +142,7 @@ class NurbsDerivativeEx4_2 : public Test {
   NurbsDerivativeEx4_2() {
     std::array<baf::KnotVector, 1> knot_vector =
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
-    std::array<int, 1> degree = {2};
+    std::array<Degree, 1> degree = {Degree{2}};
     std::vector<double> weights = {1, 1, 2};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({1.0, 0.0})),

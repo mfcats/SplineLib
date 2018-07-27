@@ -35,7 +35,7 @@ class Spline {
  public:
   virtual ~Spline() = default;
   Spline() = default;
-  Spline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector, std::array<int, DIM> degree) :
+  Spline(std::shared_ptr<std::array<baf::KnotVector, DIM>> knot_vector, std::array<Degree, DIM> degree) :
       parameter_space_(*knot_vector, degree) {}
   explicit Spline(ParameterSpace<DIM> parameter_space) : parameter_space_(std::move(parameter_space)) {}
 
@@ -76,7 +76,7 @@ class Spline {
     return evaluated_point;
   }
 
-  int GetDegree(int i) const {
+  Degree GetDegree(int i) const {
     return parameter_space_.GetDegree(i);
   }
 
@@ -164,7 +164,7 @@ class Spline {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] =
-          this->parameter_space_.GetKnotVector(i).GetKnotSpan(param_coord[i]).get() - this->parameter_space_.GetDegree(i);
+          this->parameter_space_.GetKnotVector(i).GetKnotSpan(param_coord[i]).get() - this->parameter_space_.GetDegree(i).get();
     }
     return first_non_zero;
   }
@@ -172,7 +172,7 @@ class Spline {
   std::array<int, DIM> GetNumberOfBasisFunctionsToEvaluate() const {
     std::array<int, DIM> total_length;
     for (int i = 0; i < DIM; ++i) {
-      total_length[i] = parameter_space_.GetDegree(i) + 1;
+      total_length[i] = parameter_space_.GetDegree(i).get() + 1;
     }
     return total_length;
   }

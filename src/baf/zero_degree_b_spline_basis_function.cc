@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 baf::ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const baf::KnotVector &knot_vector,
                                                                     uint64_t start_of_support) :
-                                                                    BasisFunction(knot_vector, 0, start_of_support),
+                                                                    BasisFunction(knot_vector, Degree{0}, start_of_support),
                                                                     start_knot_(knot_vector.GetKnot(start_of_support)),
                                                                     end_knot_(knot_vector.GetKnot(start_of_support + 1))
                                                                     {}

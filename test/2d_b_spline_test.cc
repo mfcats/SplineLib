@@ -26,7 +26,7 @@ class A2DBSpline : public Test {
                                                    ParamCoord{1}, ParamCoord{1}})}),
          baf::KnotVector({std::vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                    ParamCoord{1}, ParamCoord{1}})})};
-    std::array<int, 2> degree = {2, 2};
+    std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({-1.0, -1.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, -1.0, 0.0})),

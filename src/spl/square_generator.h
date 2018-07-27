@@ -25,7 +25,7 @@ namespace spl {
 class SquareGenerator {
  public:
   SquareGenerator();
-  SquareGenerator(u_int64_t degree, u_int64_t number_of_knots);
+  SquareGenerator(Degree degree, u_int64_t number_of_knots);
 
   std::unique_ptr<BSpline<2>> CreateSquare() const;
 
@@ -34,7 +34,7 @@ class SquareGenerator {
 
   spl::PhysicalSpace<2> GeneratePhysicalSpace() const;
 
-  u_int64_t degree_;
+  Degree degree_;
   u_int64_t number_of_knots_;
 };
 }  // namespace spl

@@ -16,8 +16,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 spl::SquareGenerator::SquareGenerator() : degree_(2), number_of_knots_(6) {}
 
-spl::SquareGenerator::SquareGenerator(u_int64_t degree, u_int64_t number_of_knots) : degree_(degree),
-                                                                                     number_of_knots_(number_of_knots)
+spl::SquareGenerator::SquareGenerator(Degree degree, u_int64_t number_of_knots) : degree_(degree),
+                                                                                  number_of_knots_(number_of_knots)
                                                                                      {}
 
 
@@ -29,16 +29,16 @@ std::unique_ptr<spl::BSpline<2>> spl::SquareGenerator::CreateSquare() const {
 
 spl::ParameterSpace<2> spl::SquareGenerator::GenerateParameterSpace() const {
   std::vector<ParamCoord> knots(number_of_knots_, ParamCoord{0.0});
-  for (auto knot = knots.begin() + degree_ + 1; knot != knots.end() - degree_ - 1; ++knot) {
-    *knot = *(knot - 1) + ParamCoord{1.0/(number_of_knots_ - 2.0 * degree_ - 1)};
+  for (auto knot = knots.begin() + degree_.get() + 1; knot != knots.end() - degree_.get() - 1; ++knot) {
+    *knot = *(knot - 1) + ParamCoord{1.0/(number_of_knots_ - 2.0 * degree_.get() - 1)};
   }
-  std::fill(knots.end()-degree_-1, knots.end(), ParamCoord{1.0});
+  std::fill(knots.end()-degree_.get()-1, knots.end(), ParamCoord{1.0});
   baf::KnotVector knotVector(knots);
-  return spl::ParameterSpace<2>({knotVector, knotVector}, {static_cast<int>(degree_), static_cast<int>(degree_)});
+  return spl::ParameterSpace<2>({knotVector, knotVector}, {degree_, degree_});
 }
 
 spl::PhysicalSpace<2> spl::SquareGenerator::GeneratePhysicalSpace() const {
-  u_int64_t num_cps = number_of_knots_ - degree_ - 1;
+  u_int64_t num_cps = number_of_knots_ - degree_.get() - 1;
   double delta = 2.0/(num_cps - 1.0);
   std::vector<double> coordinates(num_cps, - 1.0);
   double val = -1.0;

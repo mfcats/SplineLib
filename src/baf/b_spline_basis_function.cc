@@ -16,8 +16,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function_factory.h"
 
-baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector, int deg, uint64_t start_of_support)
-    : BasisFunction(knot_vector, deg, start_of_support), start_knot_(knot_vector.GetKnot(start_of_support)), end_knot_(knot_vector.GetKnot(start_of_support+deg+1)), left_denom_inv_(InverseWithPossiblyZeroDenominator(knot_vector.GetKnot(start_of_support+deg).get() - start_knot_.get())), right_denom_inv_(InverseWithPossiblyZeroDenominator(end_knot_.get() - knot_vector.GetKnot(start_of_support+1).get())) {
+baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector, Degree deg, uint64_t start_of_support)
+    : BasisFunction(knot_vector, deg, start_of_support), start_knot_(knot_vector.GetKnot(start_of_support)), end_knot_(knot_vector.GetKnot(start_of_support+deg.get()+1)), left_denom_inv_(InverseWithPossiblyZeroDenominator(knot_vector.GetKnot(start_of_support+deg.get()).get() - start_knot_.get())), right_denom_inv_(InverseWithPossiblyZeroDenominator(end_knot_.get() - knot_vector.GetKnot(start_of_support+1).get())) {
   SetLowerDegreeBasisFunctions(knot_vector, start_of_support, deg);
 }
 
@@ -35,11 +35,11 @@ double baf::BSplineBasisFunction::EvaluateDerivativeOnSupport(ParamCoord param_c
 
 void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
                                                              uint64_t start_of_support,
-                                                             int deg) {
+                                                             Degree deg) {
   BasisFunctionFactory factory;
 
-  left_lower_degree_.reset(factory.CreateDynamic(knot_vector, start_of_support, deg - 1));
-  right_lower_degree_.reset(factory.CreateDynamic(knot_vector, start_of_support + 1, deg - 1));
+  left_lower_degree_.reset(factory.CreateDynamic(knot_vector, start_of_support, deg - Degree{1}));
+  right_lower_degree_.reset(factory.CreateDynamic(knot_vector, start_of_support + 1, deg - Degree{1}));
 }
 
 double baf::BSplineBasisFunction::ComputeLeftQuotientDenominatorInverse() const {

@@ -28,7 +28,7 @@ class A3DNurbsWithAllWeights1 : public Test {
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
          baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}),
          baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})};
-    std::array<int, 3> degree = {2, 1, 1};
+    std::array<Degree, 3> degree = {Degree{2}, Degree{1}, Degree{1}};
     std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
