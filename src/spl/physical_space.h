@@ -46,7 +46,7 @@ class PhysicalSpace {
     }
   }
 
-  baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const {
+  virtual baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const {
     std::vector<double> coordinates;
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
     point_handler.SetIndices(indices);

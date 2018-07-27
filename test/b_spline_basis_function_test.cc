@@ -17,8 +17,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline_basis_function.h"
 #include "named_type.h"
 
-using ParamCoord = util::NamedType<double, struct ParamCoordParameter>;
-
 using std::make_shared;
 using std::vector;
 
