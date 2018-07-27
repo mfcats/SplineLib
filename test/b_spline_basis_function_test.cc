@@ -25,7 +25,7 @@ class BasisFunctionEx21N01 : public Test {
   BasisFunctionEx21N01() :
       knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                        ParamCoord{1}, ParamCoord{1}}))),
-      basis_function_(knot_vector_, Degree{1}, 0) {}
+      basis_function_(knot_vector_, Degree{1}, KnotSpan{0}) {}
 
  protected:
   baf::KnotVector knot_vector_;
@@ -58,7 +58,7 @@ class BasisFunctionEx21N11 : public Test {
   BasisFunctionEx21N11() :
       knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                        ParamCoord{1}}))),
-      basis_function_(knot_vector_, Degree{1}, 1) {}
+      basis_function_(knot_vector_, Degree{1}, KnotSpan{1}) {}
 
  protected:
   baf::KnotVector knot_vector_;
@@ -91,7 +91,7 @@ class BasisFunctionEx21N21 : public Test {
   BasisFunctionEx21N21() :
       knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                        ParamCoord{1}, ParamCoord{1}}))),
-      basis_function_(knot_vector_, Degree{1}, 2) {}
+      basis_function_(knot_vector_, Degree{1}, KnotSpan{2}) {}
 
  protected:
   baf::KnotVector knot_vector_;
@@ -124,7 +124,7 @@ class BasisFunctionEx21N31 : public Test {
   BasisFunctionEx21N31() :
       knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                        ParamCoord{1}, ParamCoord{1}}))),
-      basis_function_(knot_vector_, Degree{1}, 3) {}
+      basis_function_(knot_vector_, Degree{1}, KnotSpan{3}) {}
 
  protected:
   baf::KnotVector knot_vector_;
@@ -157,7 +157,7 @@ class BasisFunctionEx21N02 : public Test {
   BasisFunctionEx21N02() :
       knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                        ParamCoord{1}, ParamCoord{1}}))),
-      basis_function_(knot_vector_, Degree{2}, 0) {}
+      basis_function_(knot_vector_, Degree{2}, KnotSpan{0}) {}
 
  protected:
   baf::KnotVector knot_vector_;
@@ -190,7 +190,7 @@ class BasisFunctionEx21N12 : public Test {
   BasisFunctionEx21N12() :
       knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                        ParamCoord{1}, ParamCoord{1}}))),
-      basis_function_(knot_vector_, Degree{2}, 1) {}
+      basis_function_(knot_vector_, Degree{2}, KnotSpan{1}) {}
 
  protected:
   baf::KnotVector knot_vector_;
@@ -223,7 +223,7 @@ class BasisFunctionEx21N22 : public Test {
   BasisFunctionEx21N22() :
       knot_vector_(baf::KnotVector(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                        ParamCoord{1}, ParamCoord{1}}))),
-      basis_function_(knot_vector_, Degree{2}, 2) {}
+      basis_function_(knot_vector_, Degree{2}, KnotSpan{2}) {}
 
  protected:
   baf::KnotVector knot_vector_;
@@ -257,7 +257,7 @@ class BasisFunctionEx22N01 : public Test {
                                                                             ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                                                                             ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
                                                                             ParamCoord{5}, ParamCoord{5}}))),
-                           basis_function_(knot_vector_, Degree{1}, 0) {}
+                           basis_function_(knot_vector_, Degree{1}, KnotSpan{0}) {}
 
  protected:
   baf::KnotVector knot_vector_;
@@ -334,7 +334,7 @@ class BasisFunctionEx22N13 : public Test {
                                                                             ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                                                                             ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
                                                                             ParamCoord{5}, ParamCoord{5}}))),
-                           basis_function_(knot_vector_, Degree{1}, 3) {}
+                           basis_function_(knot_vector_, Degree{1}, KnotSpan{3}) {}
 
  protected:
   baf::KnotVector knot_vector_;
@@ -380,7 +380,7 @@ class BasisFunctionEx22N61 : public Test {
                                                                             ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                                                                             ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
                                                                             ParamCoord{5}, ParamCoord{5}}))),
-                           basis_function_(knot_vector_, Degree{1}, 6) {}
+                           basis_function_(knot_vector_, Degree{1}, KnotSpan{6}) {}
 
  protected:
   baf::KnotVector knot_vector_;
@@ -402,7 +402,7 @@ class BasisFunctionEx22N72 : public Test {
                                                                             ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                                                                             ParamCoord{4}, ParamCoord{4}, ParamCoord{5},
                                                                             ParamCoord{5}, ParamCoord{5}}))),
-                           basis_function_(knot_vector_, Degree{2}, 7) {}
+                           basis_function_(knot_vector_, Degree{2}, KnotSpan{7}) {}
 
  protected:
   baf::KnotVector knot_vector_;

@@ -25,26 +25,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace baf {
 class BSplineBasisFunction : public BasisFunction {
  public:
-  BSplineBasisFunction(const KnotVector &knot_vector, Degree deg, uint64_t start_of_support);
+  BSplineBasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support);
 
  protected:
   double EvaluateOnSupport(const ParamCoord &param_coord) const override;
 
   double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const override;
 
-  std::unique_ptr<BasisFunction> left_lower_degree_;
-  std::unique_ptr<BasisFunction> right_lower_degree_;
-
  private:
-  void SetLowerDegreeBasisFunctions(const KnotVector &knot_vector, uint64_t start_of_support, Degree deg);
+  void SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
+                                    const Degree &degree,
+                                    const KnotSpan &start_of_support);
 
-  double ComputeLeftQuotientDenominatorInverse() const;
+  double ComputeLeftQuotient(const ParamCoord &param_coord) const;
 
-  double ComputeRightQuotientDenominatorInverse() const;
-
-  double ComputeLeftQuotient(ParamCoord param_coord) const;
-
-  double ComputeRightQuotient(ParamCoord param_coord) const;
+  double ComputeRightQuotient(const ParamCoord &param_coord) const;
 
   static double InverseWithPossiblyZeroDenominator(double denominator);
 
@@ -52,6 +47,8 @@ class BSplineBasisFunction : public BasisFunction {
   ParamCoord end_knot_;
   double left_denom_inv_;
   double right_denom_inv_;
+  std::unique_ptr<BasisFunction> left_lower_degree_;
+  std::unique_ptr<BasisFunction> right_lower_degree_;
 
 };
 }  // namespace baf

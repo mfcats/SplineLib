@@ -38,7 +38,7 @@ class ParameterSpace {
     for (int i = 0; i < DIM; i++) {
       basis_functions_[i].reserve(knot_vector_[i].GetNumberOfKnots() - degree_[i].get() - 1);
       for (uint64_t j = 0; j < (knot_vector_[i].GetNumberOfKnots() - degree_[i].get() - 1); ++j) {
-        basis_functions_[i].emplace_back(factory.CreateDynamic(knot_vector_[i], j, degree_[i]));
+        basis_functions_[i].emplace_back(factory.CreateDynamic(knot_vector_[i], KnotSpan{j}, degree_[i]));
       }
     }
   }
