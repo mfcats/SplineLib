@@ -27,8 +27,11 @@ class ZeroDegreeBSplineBasisFunction : public baf::BasisFunction {
 
  protected:
   double EvaluateOnSupport(ParamCoord param_coord) const override;
-
   double EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const override;
+
+ private:
+  ParamCoord start_knot_;
+  ParamCoord end_knot_;
 };
 }  // namespace baf
 

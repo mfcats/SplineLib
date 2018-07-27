@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "basis_function_factory.h"
 
 baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector, int deg, uint64_t start_of_support)
-    : BasisFunction(knot_vector, deg, start_of_support) {
+    : BasisFunction(knot_vector, deg, start_of_support), start_knot_(knot_vector.GetKnot(start_of_support)), end_knot_(knot_vector.GetKnot(start_of_support+deg+1)), left_denom_inv_(InverseWithPossiblyZeroDenominator(knot_vector.GetKnot(start_of_support+deg).get() - start_knot_.get())), right_denom_inv_(InverseWithPossiblyZeroDenominator(end_knot_.get() - knot_vector.GetKnot(start_of_support+1).get())) {
   SetLowerDegreeBasisFunctions(knot_vector, start_of_support, deg);
 }
 
@@ -43,25 +43,22 @@ void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &k
 }
 
 double baf::BSplineBasisFunction::ComputeLeftQuotientDenominatorInverse() const {
-  auto left_denom = GetKnot(GetStartOfSupport().get() + GetDegree().get()) - GetKnot(GetStartOfSupport().get());
-  return InverseWithPossiblyZeroDenominator(left_denom.get());
+  return left_denom_inv_;
 }
 
 double baf::BSplineBasisFunction::ComputeRightQuotientDenominatorInverse() const {
-  auto right_denom = GetKnot(GetStartOfSupport().get() + GetDegree().get() + 1) - GetKnot(GetStartOfSupport().get() + 1);
-  return InverseWithPossiblyZeroDenominator(right_denom.get());
+  return right_denom_inv_;
 }
 
 double baf::BSplineBasisFunction::ComputeLeftQuotient(ParamCoord param_coord) const {
-  return (param_coord - GetKnot(GetStartOfSupport().get())).get() * ComputeLeftQuotientDenominatorInverse();
+  return (param_coord - start_knot_).get() * ComputeLeftQuotientDenominatorInverse();
 }
 
 double baf::BSplineBasisFunction::ComputeRightQuotient(ParamCoord param_coord) const {
-  return (GetKnot(GetStartOfSupport().get() + GetDegree().get() + 1) - param_coord).get()
-      * ComputeRightQuotientDenominatorInverse();
+  return (end_knot_ - param_coord).get() * ComputeRightQuotientDenominatorInverse();
 }
 
-double baf::BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {
-  return std::fabs(denominator) < util::NumericSettings<double>::kEpsilon() ? 0.0 : 1.0 / denominator;
+double baf::BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) {
+  return std::abs(denominator) < util::NumericSettings<double>::kEpsilon() ? 0.0 : 1.0 / denominator;
 }
 

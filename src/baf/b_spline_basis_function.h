@@ -46,7 +46,13 @@ class BSplineBasisFunction : public BasisFunction {
 
   double ComputeRightQuotient(ParamCoord param_coord) const;
 
-  double InverseWithPossiblyZeroDenominator(double denominator) const;
+  static double InverseWithPossiblyZeroDenominator(double denominator);
+
+  ParamCoord start_knot_;
+  ParamCoord end_knot_;
+  double left_denom_inv_;
+  double right_denom_inv_;
+
 };
 }  // namespace baf
 

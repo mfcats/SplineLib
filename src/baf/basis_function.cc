@@ -25,15 +25,8 @@ double baf::BasisFunction::EvaluateDerivative(ParamCoord param_coord, int deriva
          IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0;
 }
 
-baf::BasisFunction::BasisFunction(KnotVector knot_vector, int degree, uint64_t start)
-    : knotVector_(std::move(knot_vector)), degree_(degree), start_of_support_(start) {}
-
-ParamCoord baf::BasisFunction::GetKnot(uint64_t knot_position) const {
-  return knotVector_.GetKnot(knot_position);
-}
-
-KnotSpan baf::BasisFunction::GetStartOfSupport() const {
-  return start_of_support_;
+baf::BasisFunction::BasisFunction(const KnotVector &knot_vector, int degree, uint64_t start)
+    : degree_(degree), start_knot_(knot_vector.GetKnot(start)), end_knot_(knot_vector.GetKnot(start+degree+1)), end_knot_is_last_knot_(knot_vector.IsLastKnot(end_knot_)) {
 }
 
 Degree baf::BasisFunction::GetDegree() const {
@@ -41,10 +34,5 @@ Degree baf::BasisFunction::GetDegree() const {
 }
 
 bool baf::BasisFunction::IsCoordinateInSupport(ParamCoord param_coord) const {
-  return knotVector_.IsInKnotVectorRange(param_coord) && IsCoordinateInSupportSpan(param_coord);
-}
-
-bool baf::BasisFunction::IsCoordinateInSupportSpan(ParamCoord param_coord) const {
-  auto span = knotVector_.GetKnotSpan(param_coord);
-  return !(span < start_of_support_ || span >= start_of_support_ + KnotSpan{degree_.get() + 1});
+  return (start_knot_ <= param_coord && param_coord < end_knot_) || (end_knot_is_last_knot_ && param_coord == end_knot_);
 }

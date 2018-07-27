@@ -37,11 +37,7 @@ class BasisFunction {
   double EvaluateDerivative(ParamCoord param_coord, int derivative) const;
 
  protected:
-  BasisFunction(KnotVector knot_vector, int degree, uint64_t start);
-
-  ParamCoord GetKnot(uint64_t knot_position) const;
-
-  KnotSpan GetStartOfSupport() const;
+  BasisFunction(const KnotVector &knot_vector, int degree, uint64_t start);
 
   Degree GetDegree() const;
 
@@ -53,12 +49,10 @@ class BasisFunction {
   // Check if parametric coordinate is in knot vector range (see IsCoordinateInSupportSpan) and in support span.
   bool IsCoordinateInSupport(ParamCoord param_coord) const;
 
-  // Check if parametric coordinate is in the range of knot spans where the basis function is defined to be non-zero.
-  bool IsCoordinateInSupportSpan(ParamCoord param_coord) const;
-
-  KnotVector knotVector_;
   Degree degree_;
-  KnotSpan start_of_support_;
+  ParamCoord start_knot_;
+  ParamCoord end_knot_;
+  bool end_knot_is_last_knot_;
 };
 }  // namespace baf
 
