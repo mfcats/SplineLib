@@ -23,6 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "named_type.h"
 
 using Degree = util::NamedType<int, struct DegreeParameter>;
+using Derivative = util::NamedType<int, struct DerivativeParameter>;
 
 namespace baf {
 class BasisFunction {
@@ -34,7 +35,7 @@ class BasisFunction {
   // to these two basis functions is set in constructor, so that a basis function can be evaluated recursively.
   double Evaluate(ParamCoord paramCoord) const;
 
-  double EvaluateDerivative(ParamCoord param_coord, int derivative) const;
+  double EvaluateDerivative(ParamCoord param_coord, Derivative derivative) const;
 
  protected:
   BasisFunction(const KnotVector &knot_vector, Degree degree, uint64_t start);
@@ -43,7 +44,7 @@ class BasisFunction {
 
   virtual double EvaluateOnSupport(ParamCoord param_coord) const = 0;
 
-  virtual double EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const = 0;
+  virtual double EvaluateDerivativeOnSupport(ParamCoord param_coord, Derivative derivative) const = 0;
 
  private:
   // Check if parametric coordinate is in knot vector range (see IsCoordinateInSupportSpan) and in support span.

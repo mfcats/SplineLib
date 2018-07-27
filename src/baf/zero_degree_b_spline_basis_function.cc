@@ -30,6 +30,6 @@ double baf::ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(ParamCoord /* para
 }
 
 double baf::ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(ParamCoord /*param_coord*/,
-                                                                        int /*degree*/) const {
+                                                                        Derivative /*degree*/) const {
   return 0.0;
 }

@@ -30,7 +30,7 @@ class BSplineBasisFunction : public BasisFunction {
  protected:
   double EvaluateOnSupport(ParamCoord param_coord) const override;
 
-  double EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const override;
+  double EvaluateDerivativeOnSupport(ParamCoord param_coord, Derivative derivative) const override;
 
   std::unique_ptr<BasisFunction> left_lower_degree_;
   std::unique_ptr<BasisFunction> right_lower_degree_;

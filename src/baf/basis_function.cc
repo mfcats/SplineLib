@@ -20,8 +20,8 @@ double baf::BasisFunction::Evaluate(ParamCoord paramCoord) const {
   return IsCoordinateInSupport(paramCoord) ? this->EvaluateOnSupport(paramCoord) : 0.0;
 }
 
-double baf::BasisFunction::EvaluateDerivative(ParamCoord param_coord, int derivative) const {
-  return derivative == 0 ? Evaluate(param_coord) :
+double baf::BasisFunction::EvaluateDerivative(ParamCoord param_coord, Derivative derivative) const {
+  return derivative.get() == 0 ? Evaluate(param_coord) :
          IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0;
 }
 

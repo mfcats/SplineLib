@@ -27,7 +27,7 @@ class ZeroDegreeBSplineBasisFunction : public baf::BasisFunction {
 
  protected:
   double EvaluateOnSupport(ParamCoord param_coord) const override;
-  double EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const override;
+  double EvaluateDerivativeOnSupport(ParamCoord param_coord, Derivative derivative) const override;
 
  private:
   ParamCoord start_knot_;
