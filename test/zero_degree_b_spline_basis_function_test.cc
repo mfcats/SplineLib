@@ -21,12 +21,12 @@ using std::vector;
 using testing::DoubleEq;
 using testing::Test;
 
+static const baf::KnotVector knot_vector_000111({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}});
+
 // Test basis function N_{0,0} from NURBS book example 2.1
 class ZeroDegreeBasisFunctionEx21N00 : public Test {
  public:
-  ZeroDegreeBasisFunctionEx21N00() : basis_function_(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                                         ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-                                                     KnotSpan{0}) {}
+  ZeroDegreeBasisFunctionEx21N00() : basis_function_(knot_vector_000111, KnotSpan{0}) {}
 
  protected:
   baf::ZeroDegBSplBasFnc basis_function_;
@@ -55,9 +55,7 @@ TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAMinust1_5) { // NOLINT
 // Test basis function N_{2,0} from NURBS book example 2.1
 class ZeroDegreeBasisFunctionEx21N20 : public Test {
  public:
-  ZeroDegreeBasisFunctionEx21N20() : basis_function_(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                                         ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-                                                     KnotSpan{2}) {}
+  ZeroDegreeBasisFunctionEx21N20() : basis_function_(knot_vector_000111, KnotSpan{2}) {}
 
  protected:
   baf::ZeroDegBSplBasFnc basis_function_;
@@ -86,9 +84,7 @@ TEST_F(ZeroDegreeBasisFunctionEx21N20, IsZeroAMinust1_5) { // NOLINT
 // Test basis function N_{4,0} from NURBS book example 2.1
 class ZeroDegreeBasisFunctionEx21N40 : public Test {
  public:
-  ZeroDegreeBasisFunctionEx21N40() : basis_function_(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                                         ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-                                                     KnotSpan{0}) {}
+  ZeroDegreeBasisFunctionEx21N40() : basis_function_(knot_vector_000111, KnotSpan{0}) {}
 
  protected:
   baf::ZeroDegBSplBasFnc basis_function_;
@@ -117,9 +113,7 @@ TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAMinust1_5) { // NOLINT
 // Test basis function N_{0,0} from NURBS book example 2.2
 class ZeroDegreeBasisFunctionEx22N00 : public Test {
  public:
-  ZeroDegreeBasisFunctionEx22N00() : basis_function_(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                                         ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-                                                     KnotSpan{0}) {}
+  ZeroDegreeBasisFunctionEx22N00() : basis_function_(knot_vector_000111, KnotSpan{0}) {}
 
  protected:
   baf::ZeroDegBSplBasFnc basis_function_;
@@ -191,9 +185,7 @@ TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAtMinus0_5) { //
 // Test basis function N_{4,0} from NURBS book example 2.2
 class ZeroDegreeBasisFunctionEx22N40 : public Test {
  public:
-  ZeroDegreeBasisFunctionEx22N40() : basis_function_(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                                         ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-                                                     KnotSpan{0}) {}
+  ZeroDegreeBasisFunctionEx22N40() : basis_function_(knot_vector_000111, KnotSpan{0}) {}
 
  protected:
   baf::ZeroDegBSplBasFnc basis_function_;
