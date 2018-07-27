@@ -35,7 +35,7 @@ class BSpline : public Spline<DIM> {
     for (int i = 0; i < DIM; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
     }
-    physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
+    physical_space_ = std::make_shared<PhysicalSpace<DIM>>(PhysicalSpace<DIM>(control_points, number_of_points));
   }
 
   BSpline(BSplineGenerator <DIM> b_spline_generator)
@@ -52,19 +52,19 @@ class BSpline : public Spline<DIM> {
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,
                                   int dimension) const override {
-    return this->parameter_space_.GetBasisFunctions(indices, param_coord)
-        * physical_space_.GetControlPoint(indices).GetValue(dimension);
+    return this->parameter_space_->GetBasisFunctions(indices, param_coord)
+        * physical_space_->GetControlPoint(indices).GetValue(dimension);
   }
 
   double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,
                                             std::array<int, DIM> derivative,
                                             std::array<int, DIM> indices,
                                             int dimension) const override {
-    return this->parameter_space_.GetBasisFunctionDerivatives(indices, param_coord, derivative)
-        * physical_space_.GetControlPoint(indices).GetValue(dimension);
+    return this->parameter_space_->GetBasisFunctionDerivatives(indices, param_coord, derivative)
+        * physical_space_->GetControlPoint(indices).GetValue(dimension);
   }
 
-  PhysicalSpace<DIM> physical_space_;
+  std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
 };
 }  // namespace spl
 

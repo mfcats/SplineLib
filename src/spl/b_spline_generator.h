@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SPLINELIB_B_SPLINE_GENERATOR_H
 
 #include "spline_generator.h"
+#include <memory>
 
 namespace spl {
 template<int DIM>
@@ -31,17 +32,17 @@ class BSplineGenerator : public SplineGenerator<DIM> {
     physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
   }
 
-  BSplineGenerator(PhysicalSpace<DIM> physical_space, ParameterSpace<DIM> parameter_space) {
+  BSplineGenerator(std::shared_ptr<PhysicalSpace<1>> physical_space, std::shared_ptr<ParameterSpace<1>> parameter_space) {
     this->parameter_space_ = parameter_space;
     physical_space_ = physical_space;
   }
 
-  PhysicalSpace<DIM> GetPhysicalSpace() {
+  std::shared_ptr<PhysicalSpace<DIM>> GetPhysicalSpace() const {
     return physical_space_;
   }
 
  private:
-  PhysicalSpace<DIM> physical_space_;
+  std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
 };
 }
 

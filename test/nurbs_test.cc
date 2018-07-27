@@ -111,8 +111,8 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) {
 }
 
 TEST_F(ANurbs, CanBeConstructedWithAPhysicalAndAParameterSpace) {
-  spl::ParameterSpace<1> parameter_space = spl::ParameterSpace<1>(knot_vector_, {degree_[0]});
-  spl::WeightedPhysicalSpace<1> physicalSpace = spl::WeightedPhysicalSpace<1>(control_points_, weights_, {7});
+  std::shared_ptr<spl::ParameterSpace<1>> parameter_space = std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(knot_vector_, {degree_[0]}));
+  std::shared_ptr<spl::WeightedPhysicalSpace<1>> physicalSpace = std::make_shared<spl::WeightedPhysicalSpace<1>>(spl::WeightedPhysicalSpace<1>(control_points_, weights_, {7}));
   nurbs = std::make_unique<spl::NURBS<1>>(parameter_space, physicalSpace);
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(0.5));
 }

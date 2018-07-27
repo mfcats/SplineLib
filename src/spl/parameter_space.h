@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_SPL_PARAMETER_SPACE_H_
 
 #include <vector>
+#include <sstream>
 
 #include "basis_function.h"
 #include "basis_function_factory.h"
@@ -41,6 +42,8 @@ class ParameterSpace {
       }
     }
   }
+
+  virtual ~ParameterSpace() = default;
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParamCoord param_coord) const {
     auto first_non_zero = GetFirstNonZeroKnot(direction, param_coord);
@@ -69,7 +72,7 @@ class ParameterSpace {
     return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord) - degree_[direction];
   }
 
-  int GetDegree(int direction) const {
+  virtual int GetDegree(int direction) const {
     return degree_[direction];
   }
 
@@ -77,7 +80,7 @@ class ParameterSpace {
     return knot_vector_[direction];
   }
 
-  double GetBasisFunctions(std::array<int, DIM> indices, std::array<ParamCoord, DIM> param_coord) const {
+  virtual double GetBasisFunctions(std::array<int, DIM> indices, std::array<ParamCoord, DIM> param_coord) const {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
       value *= basis_functions_[i][indices[i]]->Evaluate(param_coord[i]);
@@ -85,7 +88,7 @@ class ParameterSpace {
     return value;
   }
 
-  double GetBasisFunctionDerivatives(std::array<int, DIM> indices,
+  virtual double GetBasisFunctionDerivatives(std::array<int, DIM> indices,
                                      std::array<ParamCoord, DIM> param_coord,
                                      std::array<int, DIM> derivative) const {
     double value = 1;
@@ -134,6 +137,27 @@ class ParameterSpace {
 
   ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
     return ParamCoord{((upper - lower) * point + (upper + lower)) / 2.0};
+  }
+
+  virtual std::array<int, DIM>  GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const
+  {
+    std::array<int, DIM> first_non_zero;
+    for (int i = 0; i < DIM; ++i) {
+      first_non_zero[i] =
+          GetKnotVector(i)->GetKnotSpan(param_coord[i]) - GetDegree(i);
+    }
+    return first_non_zero;
+  }
+
+  virtual void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
+    for (int dim = 0; dim < DIM; dim++) {
+      if (!this->GetKnotVector(dim)->IsInKnotVectorRange(param_coord[dim])) {
+        std::stringstream message;
+        message << "The parametric coordinate " << param_coord[dim].get() << " is outside the knot vector range from "
+                << GetKnotVector(dim)->GetKnot(0).get() << " to " << GetKnotVector(dim)->GetLastKnot().get() << ".";
+        throw std::range_error(message.str());
+      }
+    }
   }
 
  private:
