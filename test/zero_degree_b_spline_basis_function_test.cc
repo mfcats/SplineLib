@@ -26,11 +26,11 @@ class ZeroDegreeBasisFunctionEx21N00 : public Test {
  public:
   ZeroDegreeBasisFunctionEx21N00() : knot_vector_(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                                       ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
-                                     basis_function_(knot_vector_, 0) {}
+                                     basis_function_(knot_vector_, KnotSpan{0}) {}
 
  protected:
   baf::KnotVector knot_vector_;
-  baf::ZeroDegreeBSplineBasisFunction basis_function_;
+  baf::ZeroDegBSplBasFnc basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAt0_0) { // NOLINT
@@ -58,11 +58,11 @@ class ZeroDegreeBasisFunctionEx21N20 : public Test {
  public:
   ZeroDegreeBasisFunctionEx21N20() : knot_vector_(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                                       ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
-                                     basis_function_(knot_vector_, 2) {}
+                                     basis_function_(knot_vector_, KnotSpan{2}) {}
 
  protected:
   baf::KnotVector knot_vector_;
-  baf::ZeroDegreeBSplineBasisFunction basis_function_;
+  baf::ZeroDegBSplBasFnc basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx21N20, IsOneAt0_0) { // NOLINT
@@ -90,11 +90,11 @@ class ZeroDegreeBasisFunctionEx21N40 : public Test {
  public:
   ZeroDegreeBasisFunctionEx21N40() : knot_vector_(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                                       ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
-                                     basis_function_(knot_vector_, 0) {}
+                                     basis_function_(knot_vector_, KnotSpan{0}) {}
 
  protected:
   baf::KnotVector knot_vector_;
-  baf::ZeroDegreeBSplineBasisFunction basis_function_;
+  baf::ZeroDegBSplBasFnc basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAt0_0) { // NOLINT
@@ -122,11 +122,11 @@ class ZeroDegreeBasisFunctionEx22N00 : public Test {
  public:
   ZeroDegreeBasisFunctionEx22N00() : knot_vector_(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                                       ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
-                                     basis_function_(knot_vector_, 0) {}
+                                     basis_function_(knot_vector_, KnotSpan{0}) {}
 
  protected:
   baf::KnotVector knot_vector_;
-  baf::ZeroDegreeBSplineBasisFunction basis_function_;
+  baf::ZeroDegBSplBasFnc basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt0_0) { // NOLINT
@@ -197,11 +197,11 @@ class ZeroDegreeBasisFunctionEx22N40 : public Test {
  public:
   ZeroDegreeBasisFunctionEx22N40() : knot_vector_(vector<ParamCoord>({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                                       ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
-                                     basis_function_(knot_vector_, 0) {}
+                                     basis_function_(knot_vector_, KnotSpan{0}) {}
 
  protected:
   baf::KnotVector knot_vector_;
-  baf::ZeroDegreeBSplineBasisFunction basis_function_;
+  baf::ZeroDegBSplBasFnc basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt0_0) { // NOLINT

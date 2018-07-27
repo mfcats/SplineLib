@@ -44,9 +44,10 @@ double baf::BSplineBasisFunction::EvaluateDerivativeOnSupport(const ParamCoord &
 void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
                                                              const Degree &degree,
                                                              const KnotSpan &start_of_support) {
-  BasisFunctionFactory factory;
-  left_lower_degree_.reset(factory.CreateDynamic(knot_vector, start_of_support, degree - Degree{1}));
-  right_lower_degree_.reset(factory.CreateDynamic(knot_vector, start_of_support + KnotSpan{1}, degree - Degree{1}));
+  left_lower_degree_.reset(BasisFunctionFactory::CreateDynamic(knot_vector, start_of_support, degree - Degree{1}));
+  right_lower_degree_.reset(BasisFunctionFactory::CreateDynamic(knot_vector,
+                                                                start_of_support + KnotSpan{1},
+                                                                degree - Degree{1}));
 }
 
 double baf::BSplineBasisFunction::ComputeLeftQuotient(const ParamCoord &param_coord) const {

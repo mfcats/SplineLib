@@ -15,10 +15,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_BAF_BASIS_FUNCTION_H_
 #define SRC_BAF_BASIS_FUNCTION_H_
 
-#include <memory>
-#include <utility>
-#include <vector>
-
 #include "knot_vector.h"
 #include "named_type.h"
 
