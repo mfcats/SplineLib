@@ -21,12 +21,15 @@ double baf::BasisFunction::Evaluate(const ParamCoord &paramCoord) const {
 }
 
 double baf::BasisFunction::EvaluateDerivative(const ParamCoord &param_coord, const Derivative &derivative) const {
-  return derivative.get() == 0 ? Evaluate(param_coord) :
-         IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0;
+  return derivative.get() == 0 ? Evaluate(param_coord)
+      : IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0;
 }
 
 baf::BasisFunction::BasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support)
-    : degree_(degree), start_knot_(knot_vector.GetKnot(start_of_support.get())), end_knot_(knot_vector.GetKnot(start_of_support.get()+degree.get()+1)), end_knot_is_last_knot_(knot_vector.IsLastKnot(end_knot_)) {
+    : degree_(degree),
+      start_knot_(knot_vector.GetKnot(static_cast<size_t>(start_of_support.get()))),
+      end_knot_(knot_vector.GetKnot(static_cast<size_t>(start_of_support.get() + degree.get() + 1))),
+      end_knot_is_last_knot_(knot_vector.IsLastKnot(end_knot_)) {
 }
 
 Degree baf::BasisFunction::GetDegree() const {
@@ -34,5 +37,6 @@ Degree baf::BasisFunction::GetDegree() const {
 }
 
 bool baf::BasisFunction::IsCoordinateInSupport(const ParamCoord &param_coord) const {
-  return (start_knot_ <= param_coord && param_coord < end_knot_) || (end_knot_is_last_knot_ && param_coord == end_knot_);
+  return (start_knot_ <= param_coord && param_coord < end_knot_)
+      || (end_knot_is_last_knot_ && param_coord == end_knot_);
 }
