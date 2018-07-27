@@ -19,13 +19,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
                                                 const Degree &degree,
                                                 const KnotSpan &start_of_support)
-    : BasisFunction(knot_vector, degree, start_of_support),
-      start_knot_(knot_vector.GetKnot(static_cast<size_t>(start_of_support.get()))),
-      end_knot_(knot_vector.GetKnot(static_cast<size_t>(start_of_support.get() + degree.get() + 1))),
-      left_denom_inv_(InverseWithPossiblyZeroDenominator(
-          knot_vector.GetKnot(static_cast<size_t>(start_of_support.get() + degree.get())).get() - start_knot_.get())),
-      right_denom_inv_(InverseWithPossiblyZeroDenominator(
-          end_knot_.get() - knot_vector.GetKnot(static_cast<size_t>(start_of_support.get() + 1)).get())) {
+    : BasisFunction(knot_vector, degree, start_of_support) {
+  auto start_index = static_cast<size_t>(start_of_support.get());
+  auto degree_index = static_cast<size_t>(degree.get());
+  auto left_denom = (knot_vector.GetKnot(start_index + degree_index) - GetStartKnot()).get();
+  left_denom_inv_ = InverseWithPossiblyZeroDenominator(left_denom);
+  auto right_denom = (GetEndKnot() - knot_vector.GetKnot(start_index + 1)).get();
+  right_denom_inv_ = InverseWithPossiblyZeroDenominator(right_denom);
   SetLowerDegreeBasisFunctions(knot_vector, degree, start_of_support);
 }
 
@@ -51,14 +51,14 @@ void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &k
 }
 
 double baf::BSplineBasisFunction::ComputeLeftQuotient(const ParamCoord &param_coord) const {
-  return (param_coord - start_knot_).get()*left_denom_inv_;
+  return (param_coord - GetStartKnot()).get()*left_denom_inv_;
 }
 
 double baf::BSplineBasisFunction::ComputeRightQuotient(const ParamCoord &param_coord) const {
-  return (end_knot_ - param_coord).get()*right_denom_inv_;
+  return (GetEndKnot() - param_coord).get()*right_denom_inv_;
 }
 
-double baf::BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) {
+double baf::BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {
   return std::abs(denominator) < util::NumericSettings<double>::kEpsilon() ? 0.0 : 1.0/denominator;
 }
 

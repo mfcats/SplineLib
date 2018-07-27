@@ -44,7 +44,7 @@ TEST_F(A1DWeightedPhysicalSpace, ThrowsForDifferingNumberOfControlPointsAndWeigh
   ASSERT_THROW(spl::WeightedPhysicalSpace<1>(control_points, weights_, {6}), std::runtime_error);
 }
 
-TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectWeight) {
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectWeight) { // NOLINT
   ASSERT_THAT(weighted_physical_space.GetWeight({2}), DoubleEq(0.8));
 }
 

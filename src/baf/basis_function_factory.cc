@@ -26,7 +26,8 @@ baf::BasisFunction *baf::BasisFunctionFactory::CreateDynamic(const KnotVector &k
     std::string msg;
     msg = "Basis function degree must be positive. Given degree is " + std::to_string(degree.get());
     throw std::runtime_error(msg);
-  } else if (degree == Degree{0}) {
+  }
+  if (degree == Degree{0}) {
     return new baf::ZeroDegBSplBasFnc(knot_vector, start_of_support);
   }
   return new baf::BSplineBasisFunction(knot_vector, degree, start_of_support);

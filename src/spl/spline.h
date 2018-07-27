@@ -110,8 +110,8 @@ class Spline {
                                                                       rule.GetCoordinate(integration_point, 0))},
                                        {0},
                                        {1})[0];
-    double dxi_dtildexi = (element.GetNode(1) - element.GetNode(0)) / 2.0;
-    return dx_dxi * dxi_dtildexi;
+    double dxi_dtildexi = (element.GetNode(1) - element.GetNode(0))/2.0;
+    return dx_dxi*dxi_dtildexi;
   }
 
  protected:
@@ -164,7 +164,8 @@ class Spline {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] =
-          this->parameter_space_.GetKnotVector(i).GetKnotSpan(param_coord[i]).get() - this->parameter_space_.GetDegree(i).get();
+          this->parameter_space_.GetKnotVector(i).GetKnotSpan(param_coord[i]).get()
+              - this->parameter_space_.GetDegree(i).get();
     }
     return first_non_zero;
   }

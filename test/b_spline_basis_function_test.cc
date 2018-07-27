@@ -12,13 +12,30 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline_basis_function.h"
 
-using std::vector;
-
 using testing::DoubleEq;
 using testing::Test;
 
-static const baf::KnotVector knot_vector_000111({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}});
-static const baf::KnotVector knot_vector_00012344555({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}});
+static const baf::KnotVector knot_vector_000111({
+  ParamCoord{0},
+  ParamCoord{0}, ParamCoord{0},
+  ParamCoord{1},
+  ParamCoord{1},
+  ParamCoord{1}
+});
+
+static const baf::KnotVector knt_vec_00012344555({
+  ParamCoord{0},
+  ParamCoord{0},
+  ParamCoord{0},
+  ParamCoord{1},
+  ParamCoord{2},
+  ParamCoord{3},
+  ParamCoord{4},
+  ParamCoord{4},
+  ParamCoord{5},
+  ParamCoord{5},
+  ParamCoord{5}
+});
 
 // Test basis function N_{0,1} from NURBS book example 2.1
 class BasisFunctionEx21N01 : public Test {
@@ -226,7 +243,7 @@ TEST_F(BasisFunctionEx21N22, IsZeroAtMinus1_5) { // NOLINT
 // Test basis function N_{0,1} from NURBS book example 2.2
 class BasisFunctionEx22N01 : public Test {
  public:
-  BasisFunctionEx22N01() : basis_function_(knot_vector_00012344555, Degree{1}, KnotSpan{0}) {}
+  BasisFunctionEx22N01() : basis_function_(knt_vec_00012344555, Degree{1}, KnotSpan{0}) {}
 
  protected:
   baf::BSplineBasisFunction basis_function_;
@@ -298,7 +315,7 @@ TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAtMinus0_5) { // NOLINT
 // Test basis function derivative N_{3,1} from NURBS book example 2.2
 class BasisFunctionEx22N13 : public Test {
  public:
-  BasisFunctionEx22N13() : basis_function_(knot_vector_00012344555, Degree{1}, KnotSpan{3}) {}
+  BasisFunctionEx22N13() : basis_function_(knt_vec_00012344555, Degree{1}, KnotSpan{3}) {}
 
  protected:
   baf::BSplineBasisFunction basis_function_;
@@ -339,7 +356,7 @@ TEST_F(BasisFunctionEx22N13, FourthDerevitveIsEqual0At1_5) { // NOLINT
 // Test basis function derivative N_{6,1} from NURBS book example 2.2
 class BasisFunctionEx22N61 : public Test {
  public:
-  BasisFunctionEx22N61() : basis_function_(knot_vector_00012344555, Degree{1}, KnotSpan{6}) {}
+  BasisFunctionEx22N61() : basis_function_(knt_vec_00012344555, Degree{1}, KnotSpan{6}) {}
 
  protected:
   baf::BSplineBasisFunction basis_function_;
@@ -356,7 +373,7 @@ TEST_F(BasisFunctionEx22N61, SecondDerevitveIsEqual0At4_5) { // NOLINT
 // Test basis function derivative N_{7,2} from NURBS book example 2.2
 class BasisFunctionEx22N72 : public Test {
  public:
-  BasisFunctionEx22N72() : basis_function_(knot_vector_00012344555, Degree{2}, KnotSpan{7}) {}
+  BasisFunctionEx22N72() : basis_function_(knt_vec_00012344555, Degree{2}, KnotSpan{7}) {}
 
  protected:
   baf::BSplineBasisFunction basis_function_;

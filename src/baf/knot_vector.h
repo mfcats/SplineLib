@@ -34,7 +34,7 @@ class KnotVector {
   KnotVector(const KnotVector &knotVector);
   KnotVector(KnotVector &&knotVector) noexcept;
   explicit KnotVector(std::vector<ParamCoord> knots);
-  explicit KnotVector(std::initializer_list<ParamCoord> knots);
+  explicit KnotVector(std::initializer_list<ParamCoord> knots) noexcept;
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
 
   virtual ~KnotVector() = default;

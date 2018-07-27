@@ -42,13 +42,16 @@ class BasisFunction {
 
   virtual double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const = 0;
 
+  ParamCoord GetStartKnot() const;
+  ParamCoord GetEndKnot() const;
+
  private:
   bool IsCoordinateInSupport(const ParamCoord &param_coord) const;
 
   Degree degree_;
-  ParamCoord start_knot_;
-  ParamCoord end_knot_;
-  bool end_knot_is_last_knot_;
+  ParamCoord start_knot_{0};
+  ParamCoord end_knot_{1};
+  bool end_knot_is_last_knot_{false};
 };
 }  // namespace baf
 

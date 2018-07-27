@@ -31,9 +31,9 @@ class ParameterSpace {
  public:
   ParameterSpace() = default;
 
-  ParameterSpace(const std::array<baf::KnotVector, DIM> &knot_vector, std::array<Degree, DIM> degree) : degree_(degree),
-                                                                                                     knot_vector_(
-                                                                                                         knot_vector) {
+  ParameterSpace(const std::array<baf::KnotVector, DIM> &knot_vector, std::array<Degree, DIM> degree) :
+  degree_(degree),
+  knot_vector_(knot_vector) {
     baf::BasisFunctionFactory factory;
     for (int i = 0; i < DIM; i++) {
       basis_functions_[i].reserve(knot_vector_[i].GetNumberOfKnots() - degree_[i].get() - 1);
@@ -67,7 +67,8 @@ class ParameterSpace {
 
   std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator GetFirstNonZeroKnot(int direction,
                                                                                        ParamCoord param_coord) const {
-    return basis_functions_[direction].begin() + knot_vector_[direction].GetKnotSpan(param_coord).get() - degree_[direction].get();
+    return basis_functions_[direction].begin() + knot_vector_[direction].GetKnotSpan(param_coord).get()
+        - degree_[direction].get();
   }
 
   Degree GetDegree(int direction) const {
@@ -134,7 +135,7 @@ class ParameterSpace {
   }
 
   ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
-    return ParamCoord{((upper - lower) * point + (upper + lower)) / 2.0};
+    return ParamCoord{((upper - lower)*point + (upper + lower))/2.0};
   }
 
  private:

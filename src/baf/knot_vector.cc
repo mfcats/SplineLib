@@ -25,7 +25,7 @@ baf::KnotVector::KnotVector(const baf::KnotVector &knotVector) = default;
 
 baf::KnotVector::KnotVector(baf::KnotVector &&knotVector) noexcept : knots_(std::move(knotVector.knots_)) {}
 
-baf::KnotVector::KnotVector(std::initializer_list<ParamCoord> knots) : knots_(knots) {}
+baf::KnotVector::KnotVector(std::initializer_list<ParamCoord> knots) noexcept : knots_(knots) {}
 
 baf::KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<ParamCoord>(begin,
                                                                                                              end)) {}
@@ -76,9 +76,8 @@ ParamCoord baf::KnotVector::GetLastKnot() const {
 KnotSpan baf::KnotVector::GetKnotSpan(ParamCoord param_coord) const {
   if (IsLastKnot(param_coord)) {
     return KnotSpan{static_cast<int>(std::lower_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1)};
-  } else {
-    return KnotSpan{static_cast<int>(std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1)};
   }
+  return KnotSpan{static_cast<int>(std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1)};
 }
 
 baf::KnotVector::ConstKnotIterator baf::KnotVector::begin() const {

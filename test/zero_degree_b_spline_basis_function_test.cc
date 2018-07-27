@@ -21,7 +21,14 @@ using std::vector;
 using testing::DoubleEq;
 using testing::Test;
 
-static const baf::KnotVector knot_vector_000111({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}});
+static const baf::KnotVector knot_vector_000111({
+  ParamCoord{0},
+  ParamCoord{0},
+  ParamCoord{0},
+  ParamCoord{1},
+  ParamCoord{1},
+  ParamCoord{1}
+});
 
 // Test basis function N_{0,0} from NURBS book example 2.1
 class ZeroDegreeBasisFunctionEx21N00 : public Test {
