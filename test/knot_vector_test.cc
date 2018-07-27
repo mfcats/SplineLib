@@ -58,7 +58,7 @@ TEST_F(AKnotVector, Finds0_75InKnotSpanFive) { // NOLINT
 }
 
 // The last knot is defined to be in the last non-zero knot span.
-TEST_F(AKnotVector, FindsLastKnotInSpanSix) { // NOLINT
+TEST_F(AKnotVector, FindsLastKnotInSpanFive) { // NOLINT
   ASSERT_THAT(knot_vector_.GetKnotSpan(knot_vector_.GetLastKnot()), Eq(KnotSpan{5}));
 }
 
@@ -80,8 +80,7 @@ TEST_F(AKnotVector, CanBeChangedWithAccessOperator) { // NOLINT
 }
 
 TEST_F(AKnotVector, CanBeCreatedWithMoveConstructor) { // NOLINT
-  baf::KnotVector knot_vector
-      (std::move(knot_vector_));
+  baf::KnotVector knot_vector(std::move(knot_vector_));
   ASSERT_THAT(knot_vector[0].get(), DoubleEq(0.0));
 }
 
@@ -106,21 +105,21 @@ TEST_F(AKnotVector, DoesNotFindLargeParametricCoordinateInKnotVectorRange) { // 
 }
 
 TEST_F(AKnotVector, CanBeCopied) { // NOLINT
-  baf::KnotVector knotVector = this->knot_vector_;
-  ASSERT_THAT(knotVector, Eq(this->knot_vector_));
+  baf::KnotVector knot_vector = knot_vector_;
+  ASSERT_THAT(knot_vector, Eq(knot_vector_));
 }
 
 TEST_F(AKnotVector, CanBeAssigned) { // NOLINT
-  baf::KnotVector knotVector;
-  knotVector = this->knot_vector_;
-  ASSERT_THAT(knotVector, Eq(this->knot_vector_));
+  baf::KnotVector knot_vector;
+  knot_vector = knot_vector_;
+  ASSERT_THAT(knot_vector, Eq(knot_vector_));
 }
 
 TEST_F(AKnotVector, CanBeSubtracted) { // NOLINT
-  ParamCoord zero = ParamCoord{0.0};
-  baf::KnotVector knotVectorOfZeros = baf::KnotVector({zero, zero, zero, zero, zero, zero, zero, zero, zero});
-  this->knot_vector_ = this->knot_vector_ - this->knot_vector_;
-  ASSERT_THAT(this->knot_vector_, Eq(knotVectorOfZeros));
+  const ParamCoord kZERO = ParamCoord{0.0};
+  baf::KnotVector zeros = baf::KnotVector({kZERO, kZERO, kZERO, kZERO, kZERO, kZERO, kZERO, kZERO, kZERO});
+  knot_vector_ = knot_vector_ - knot_vector_;
+  ASSERT_THAT(knot_vector_, Eq(zeros));
 }
 
 TEST_F(AKnotVector, CanBeUsedWithConstRangeBasedForLoop) { // NOLINT
@@ -143,12 +142,12 @@ TEST_F(AKnotVector, CanBeUsedWithNonConstRangeBasedForLoop) { // NOLINT
 }
 
 TEST_F(AKnotVector, CanBeMovedInAssignment) { // NOLINT
-  baf::KnotVector knotVector;
-  knotVector = baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.25}, ParamCoord{0.5}});
-  ASSERT_THAT(knotVector, Eq(baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.25}, ParamCoord{0.5}})));
+  baf::KnotVector knot_vector;
+  knot_vector = baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.25}, ParamCoord{0.5}});
+  ASSERT_THAT(knot_vector, Eq(baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.25}, ParamCoord{0.5}})));
 }
 
 TEST_F(AKnotVector, CanBeAssignedByIterators) { // NOLINT
-  baf::KnotVector knotVector = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
-  ASSERT_THAT(knotVector, Eq(this->knot_vector_));
+  baf::KnotVector knot_vector = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
+  ASSERT_THAT(knot_vector, Eq(knot_vector_));
 }
