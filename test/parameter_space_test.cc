@@ -106,9 +106,7 @@ class A3DParameterSpace : public Test {
                                                                                          ParamCoord{1}, ParamCoord{2},
                                                                                          ParamCoord{3},
                                                                                          ParamCoord{3}})})},
-                                        {Degree{2}, Degree{0}, Degree{1}}) {
-
-  }
+                                        {Degree{2}, Degree{0}, Degree{1}}) {}
 
  protected:
   spl::ParameterSpace<3> parameter_space;

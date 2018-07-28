@@ -99,7 +99,7 @@ TEST_F(A2DPhysicalSpace, ReturnsCorrectInnerControlPointFor2DIndex) { // NOLINT
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{1, 1}).GetValue(1), DoubleEq(2.5));
 }
 
-TEST_F(A2DPhysicalSpace, ReturnsCorrectLastControlPointFor2DIndex) {
+TEST_F(A2DPhysicalSpace, ReturnsCorrectLastControlPointFor2DIndex) { // NOLINT
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{2, 1}).GetValue(0), DoubleEq(5.0));
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{2, 1}).GetValue(1), DoubleEq(1.0));
 }
