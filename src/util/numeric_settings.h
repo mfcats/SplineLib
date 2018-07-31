@@ -32,11 +32,12 @@ class NumericSettings {
     return std::abs(a - b) < kEpsilon();
   }
 
- private:
-  NumericSettings() {}
-
   NumericSettings(const NumericSettings &numericSettings) = delete;
+
   void operator=(const NumericSettings &numericSettings)  = delete;
+
+ private:
+  NumericSettings() = default;
 
   constexpr static double kEpsilonFactor_ = 10.0;
 };
