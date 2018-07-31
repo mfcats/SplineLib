@@ -37,7 +37,7 @@ class NurbsEx4_1 : public Test {
         baf::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
     std::array<std::shared_ptr<baf::KnotVector>, 1>
-    knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
+        knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
     nurbs = std::make_unique<spl::NURBS<1>>(knot_vector_ptr, degree, control_points, weights);
   }
 
@@ -110,8 +110,10 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) { // NOLINT
 }
 
 TEST_F(ANurbs, CanBeConstructedWithAPhysicalAndAParameterSpace) { // NOLINT
-  std::shared_ptr<spl::ParameterSpace<1>> parameter_space = std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(knot_vector_, {degree_[0]}));
-  std::shared_ptr<spl::WeightedPhysicalSpace<1>> physicalSpace = std::make_shared<spl::WeightedPhysicalSpace<1>>(spl::WeightedPhysicalSpace<1>(control_points_, weights_, {7}));
+  std::shared_ptr<spl::ParameterSpace<1>>
+      parameter_space = std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(knot_vector_, {degree_[0]}));
+  std::shared_ptr<spl::WeightedPhysicalSpace<1>> physicalSpace =
+      std::make_shared<spl::WeightedPhysicalSpace<1>>(spl::WeightedPhysicalSpace<1>(control_points_, weights_, {7}));
   nurbs = std::make_unique<spl::NURBS<1>>(parameter_space, physicalSpace);
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(0.5));
 }

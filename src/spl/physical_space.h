@@ -26,6 +26,7 @@ template<int DIM>
 class PhysicalSpace {
  public:
   PhysicalSpace() = default;
+  virtual ~PhysicalSpace() = default;
   explicit PhysicalSpace(const std::vector<baf::ControlPoint> &control_points, std::array<int, DIM> number_of_points)
       : dimension_(control_points[0].GetDimension()), number_of_points_(number_of_points) {
     uint64_t total_number_of_points = 1;

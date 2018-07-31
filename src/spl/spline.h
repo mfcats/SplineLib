@@ -38,7 +38,8 @@ class Spline {
   Spline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector, std::array<Degree, DIM> degree) {
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
   }
-  explicit Spline(std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
+  explicit Spline(std::shared_ptr<ParameterSpace < DIM>>
+parameter_space) {
     parameter_space_ = parameter_space;
   }
 
@@ -113,8 +114,8 @@ class Spline {
                                                                       rule.GetCoordinate(integration_point, 0))},
                                        {0},
                                        {1})[0];
-    double dxi_dtildexi = (element.GetNode(1) - element.GetNode(0))/2.0;
-    return dx_dxi*dxi_dtildexi;
+    double dxi_dtildexi = (element.GetNode(1) - element.GetNode(0)) / 2.0;
+    return dx_dxi * dxi_dtildexi;
   }
 
  protected:
@@ -157,7 +158,6 @@ class Spline {
   }
 
   std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
-    //std::cout << "GetArrayOfFirstNonZeroBasisFunctions : " << parameter_space_->GetArrayOfFirstNonZeroBasisFunctions(param_coord)[0] << std::endl;
     return parameter_space_->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
@@ -176,8 +176,8 @@ class Spline {
     return total_length;
   }
 
-  std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
+  std::shared_ptr<ParameterSpace < DIM>> parameter_space_;
 };
-}  // namespace spl
+}  //  namespace spl
 
-#endif  // SRC_SPL_SPLINE_H_
+#endif  //  SRC_SPL_SPLINE_H_

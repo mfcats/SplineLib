@@ -21,8 +21,8 @@ using testing::Test;
 
 class KnotVectorMock000111 : public baf::KnotVector {
  public:
-  ParamCoord GetKnot(size_t i) const override {
-    return knts.at(i);
+  ParamCoord GetKnot(size_t knot_num) const override {
+    return knts.at(knot_num);
   }
 
   bool IsLastKnot(const ParamCoord &param_coord) const override {

@@ -29,7 +29,7 @@ namespace spl {
 template<int DIM>
 class NURBS : public Spline<DIM> {
  public:
-  NURBS(std::array<std::shared_ptr<baf::KnotVector>, DIM > knot_vector,
+  NURBS(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
         std::array<Degree, DIM> degree,
         const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) : Spline<DIM>(knot_vector,
                                                                                                          degree) {
@@ -37,12 +37,15 @@ class NURBS : public Spline<DIM> {
     for (int i = 0; i < DIM; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
-    physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(WeightedPhysicalSpace<DIM>(control_points, weights, number_of_points));
+    physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(WeightedPhysicalSpace<DIM>(control_points,
+                                                                                              weights,
+                                                                                              number_of_points));
   }
 
   virtual ~NURBS() = default;
 
-  NURBS(std::shared_ptr<ParameterSpace<DIM>> parameter_space, std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space) :
+  NURBS(std::shared_ptr<ParameterSpace<DIM>> parameter_space,
+        std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space) :
       physical_space_(physical_space) {
     this->parameter_space_ = parameter_space;
   }

@@ -38,15 +38,16 @@ class BSpline : public Spline<DIM> {
     physical_space_ = std::make_shared<PhysicalSpace<DIM>>(PhysicalSpace<DIM>(control_points, number_of_points));
   }
 
-  BSpline(BSplineGenerator <DIM> b_spline_generator)
-    : Spline<DIM>(b_spline_generator.GetParameterSpace()){
+  BSpline(BSplineGenerator<DIM> b_spline_generator)
+      : Spline<DIM>(b_spline_generator.GetParameterSpace()) {
     physical_space_ = b_spline_generator.GetPhysicalSpace();
   }
 
   virtual ~BSpline() = default;
 
   BSpline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space)
-      : Spline<DIM>(std::make_shared<spl::ParameterSpace<DIM>>(parameter_space)), physical_space_(std::make_shared<spl::PhysicalSpace<DIM>>(physical_space)) {
+      : Spline<DIM>(std::make_shared<spl::ParameterSpace<DIM>>(parameter_space)),
+        physical_space_(std::make_shared<spl::PhysicalSpace<DIM>>(physical_space)) {
   }
 
  private:

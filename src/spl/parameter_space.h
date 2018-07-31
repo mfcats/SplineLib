@@ -32,9 +32,8 @@ class ParameterSpace {
  public:
   ParameterSpace() = default;
 
-  ParameterSpace(std::array<std::shared_ptr<baf::KnotVector>, DIM> &knot_vector, std::array<Degree, DIM> degree) :
-      knot_vector_(knot_vector), degree_(degree)
-  {
+  ParameterSpace(const std::array<std::shared_ptr<baf::KnotVector>, DIM> &knot_vector, std::array<Degree, DIM> degree) :
+      knot_vector_(knot_vector), degree_(degree) {
     baf::BasisFunctionFactory factory;
     for (int i = 0; i < DIM; i++) {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
@@ -70,7 +69,8 @@ class ParameterSpace {
 
   std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator GetFirstNonZeroKnot(int direction,
                                                                                        ParamCoord param_coord) const {
-    return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord).get() - degree_[direction].get();
+    return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord).get()
+        - degree_[direction].get();
   }
 
   virtual Degree GetDegree(int direction) const {
@@ -90,8 +90,8 @@ class ParameterSpace {
   }
 
   virtual double GetBasisFunctionDerivatives(std::array<int, DIM> indices,
-                                     std::array<ParamCoord, DIM> param_coord,
-                                     std::array<int, DIM> derivative) const {
+                                             std::array<ParamCoord, DIM> param_coord,
+                                             std::array<int, DIM> derivative) const {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
       value *= basis_functions_[i][indices[i]]->EvaluateDerivative(param_coord[i], Derivative{derivative[i]});
@@ -137,11 +137,10 @@ class ParameterSpace {
   }
 
   ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
-    return ParamCoord{((upper - lower)*point + (upper + lower))/2.0};
+    return ParamCoord{((upper - lower) * point + (upper + lower)) / 2.0};
   }
 
-  virtual std::array<int, DIM>  GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const
-  {
+  virtual std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] =

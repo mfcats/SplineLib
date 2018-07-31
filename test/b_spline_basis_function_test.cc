@@ -12,18 +12,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline_basis_function.h"
 
-using std::make_shared;
-using std::vector;
-
 using testing::DoubleEq;
 using testing::Test;
-using ::testing::Return;
-using ::testing::NiceMock;
 
 class MockKnotVector000111 : public baf::KnotVector {
  public:
-  ParamCoord GetKnot(size_t i) const override {
-    return knts.at(i);
+  ParamCoord GetKnot(size_t knot_num) const override {
+    return knts.at(knot_num);
   }
 
   bool IsLastKnot(const ParamCoord &param_coord) const override {
@@ -37,7 +32,6 @@ class MockKnotVector000111 : public baf::KnotVector {
                                         ParamCoord{1},
                                         ParamCoord{1},
                                         ParamCoord{1}};
-
 };
 
 // Test basis function N_{0,1} from NURBS book example 2.1
@@ -252,8 +246,8 @@ TEST_F(BasisFunctionEx21N22, IsZeroAtMinus1_5) { // NOLINT
 
 class MockKnotVector00012344555 : public baf::KnotVector {
  public:
-  ParamCoord GetKnot(size_t i) const override {
-    return knts.at(i);
+  ParamCoord GetKnot(size_t knot_num) const override {
+    return knts.at(knot_num);
   }
 
   bool IsLastKnot(const ParamCoord &param_coord) const override {
@@ -272,7 +266,6 @@ class MockKnotVector00012344555 : public baf::KnotVector {
                                         ParamCoord{5},
                                         ParamCoord{5},
                                         ParamCoord{5}};
-
 };
 
 // Test basis function N_{0,1} from NURBS book example 2.2
