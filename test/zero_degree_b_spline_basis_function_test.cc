@@ -19,29 +19,26 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::DoubleEq;
 using testing::Test;
 
- class KnotVectorMock000111 : public baf::KnotVector {
-   public:
-   ParamCoord GetKnot(size_t i) const override {
-     return knts.at(i);
-   }
-   bool IsLastKnot(const ParamCoord &param_coord) const override {
-     if (param_coord == ParamCoord{1}) {
-       return true;
-     }
-     return false;
-   }
-   private:
-   std::vector<ParamCoord> knts = {
-       ParamCoord{0},
-       ParamCoord{0},
-       ParamCoord{0},
-       ParamCoord{1},
-       ParamCoord{1},
-       ParamCoord{1}
-   };
- };
+class KnotVectorMock000111 : public baf::KnotVector {
+ public:
+  ParamCoord GetKnot(size_t i) const override {
+    return knts.at(i);
+  }
 
-static const KnotVectorMock000111 knot_vector_000111;
+  bool IsLastKnot(const ParamCoord &param_coord) const override {
+    return param_coord == ParamCoord{1};
+  }
+
+ private:
+  std::vector<ParamCoord> knts = {
+      ParamCoord{0},
+      ParamCoord{0},
+      ParamCoord{0},
+      ParamCoord{1},
+      ParamCoord{1},
+      ParamCoord{1}
+  };
+};
 
 // Test basis function N_{0,0} from NURBS book example 2.1
 class ZeroDegreeBasisFunctionEx21N00 : public Test {
@@ -49,6 +46,7 @@ class ZeroDegreeBasisFunctionEx21N00 : public Test {
   ZeroDegreeBasisFunctionEx21N00() : basis_function_(knot_vector_000111, KnotSpan{0}) {}
 
  protected:
+  const KnotVectorMock000111 knot_vector_000111;
   baf::ZeroDegBSplBasFnc basis_function_;
 };
 
@@ -78,6 +76,7 @@ class ZeroDegreeBasisFunctionEx21N20 : public Test {
   ZeroDegreeBasisFunctionEx21N20() : basis_function_(knot_vector_000111, KnotSpan{2}) {}
 
  protected:
+  const KnotVectorMock000111 knot_vector_000111;
   baf::ZeroDegBSplBasFnc basis_function_;
 };
 
@@ -107,6 +106,7 @@ class ZeroDegreeBasisFunctionEx21N40 : public Test {
   ZeroDegreeBasisFunctionEx21N40() : basis_function_(knot_vector_000111, KnotSpan{0}) {}
 
  protected:
+  const KnotVectorMock000111 knot_vector_000111;
   baf::ZeroDegBSplBasFnc basis_function_;
 };
 
@@ -136,6 +136,7 @@ class ZeroDegreeBasisFunctionEx22N00 : public Test {
   ZeroDegreeBasisFunctionEx22N00() : basis_function_(knot_vector_000111, KnotSpan{0}) {}
 
  protected:
+  const KnotVectorMock000111 knot_vector_000111;
   baf::ZeroDegBSplBasFnc basis_function_;
 };
 
@@ -208,6 +209,7 @@ class ZeroDegreeBasisFunctionEx22N40 : public Test {
   ZeroDegreeBasisFunctionEx22N40() : basis_function_(knot_vector_000111, KnotSpan{0}) {}
 
  protected:
+  const KnotVectorMock000111 knot_vector_000111;
   baf::ZeroDegBSplBasFnc basis_function_;
 };
 

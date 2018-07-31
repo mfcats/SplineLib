@@ -20,28 +20,25 @@ using testing::Test;
 using ::testing::Return;
 using ::testing::NiceMock;
 
- class MockKnotVector000111 : public baf::KnotVector {
-  public:
-   ParamCoord GetKnot(size_t i) const override {
-     return knts.at(i);
-   }
-   bool IsLastKnot(const ParamCoord &param_coord) const override {
-     if (param_coord == ParamCoord{1}) {
-       return true;
-     }
-     return false;
-   }
-  private:
-   const std::vector<ParamCoord> knts = {ParamCoord{0},
-                                    ParamCoord{0},
-                                    ParamCoord{0},
-                                    ParamCoord{1},
-                                    ParamCoord{1},
-                                    ParamCoord{1}};
+class MockKnotVector000111 : public baf::KnotVector {
+ public:
+  ParamCoord GetKnot(size_t i) const override {
+    return knts.at(i);
+  }
 
- };
+  bool IsLastKnot(const ParamCoord &param_coord) const override {
+    return param_coord == ParamCoord{1};
+  }
 
-static const MockKnotVector000111 knot_vector_000111;
+ private:
+  const std::vector<ParamCoord> knts = {ParamCoord{0},
+                                        ParamCoord{0},
+                                        ParamCoord{0},
+                                        ParamCoord{1},
+                                        ParamCoord{1},
+                                        ParamCoord{1}};
+
+};
 
 // Test basis function N_{0,1} from NURBS book example 2.1
 class BasisFunctionEx21N01 : public Test {
@@ -49,6 +46,7 @@ class BasisFunctionEx21N01 : public Test {
   BasisFunctionEx21N01() : basis_function_(knot_vector_000111, Degree{1}, KnotSpan{0}) {}
 
  protected:
+  const MockKnotVector000111 knot_vector_000111;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -78,6 +76,7 @@ class BasisFunctionEx21N11 : public Test {
   BasisFunctionEx21N11() : basis_function_(knot_vector_000111, Degree{1}, KnotSpan{1}) {}
 
  protected:
+  const MockKnotVector000111 knot_vector_000111;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -107,6 +106,7 @@ class BasisFunctionEx21N21 : public Test {
   BasisFunctionEx21N21() : basis_function_(knot_vector_000111, Degree{1}, KnotSpan{2}) {}
 
  protected:
+  const MockKnotVector000111 knot_vector_000111;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -136,6 +136,7 @@ class BasisFunctionEx21N31 : public Test {
   BasisFunctionEx21N31() : basis_function_(knot_vector_000111, Degree{1}, KnotSpan{3}) {}
 
  protected:
+  const MockKnotVector000111 knot_vector_000111;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -165,6 +166,7 @@ class BasisFunctionEx21N02 : public Test {
   BasisFunctionEx21N02() : basis_function_(knot_vector_000111, Degree{2}, KnotSpan{0}) {}
 
  protected:
+  const MockKnotVector000111 knot_vector_000111;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -194,6 +196,7 @@ class BasisFunctionEx21N12 : public Test {
   BasisFunctionEx21N12() : basis_function_(knot_vector_000111, Degree{2}, KnotSpan{1}) {}
 
  protected:
+  const MockKnotVector000111 knot_vector_000111;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -223,7 +226,7 @@ class BasisFunctionEx21N22 : public Test {
   BasisFunctionEx21N22() : basis_function_(knot_vector_000111, Degree{2}, KnotSpan{2}) {}
 
  protected:
-  baf::KnotVector knot_vector_;
+  const MockKnotVector000111 knot_vector_000111;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -252,12 +255,11 @@ class MockKnotVector00012344555 : public baf::KnotVector {
   ParamCoord GetKnot(size_t i) const override {
     return knts.at(i);
   }
+
   bool IsLastKnot(const ParamCoord &param_coord) const override {
-    if (param_coord == ParamCoord{5}) {
-      return true;
-    }
-    return false;
+    return param_coord == ParamCoord{5};
   }
+
  private:
   const std::vector<ParamCoord> knts = {ParamCoord{0},
                                         ParamCoord{0},
@@ -273,14 +275,13 @@ class MockKnotVector00012344555 : public baf::KnotVector {
 
 };
 
-static const MockKnotVector00012344555 knot_vector_00012344555;
-
 // Test basis function N_{0,1} from NURBS book example 2.2
 class BasisFunctionEx22N01 : public Test {
  public:
   BasisFunctionEx22N01() : basis_function_(knot_vector_00012344555, Degree{1}, KnotSpan{0}) {}
 
  protected:
+  const MockKnotVector00012344555 knot_vector_00012344555;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -353,6 +354,7 @@ class BasisFunctionEx22N13 : public Test {
   BasisFunctionEx22N13() : basis_function_(knot_vector_00012344555, Degree{1}, KnotSpan{3}) {}
 
  protected:
+  const MockKnotVector00012344555 knot_vector_00012344555;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -394,6 +396,7 @@ class BasisFunctionEx22N61 : public Test {
   BasisFunctionEx22N61() : basis_function_(knot_vector_00012344555, Degree{1}, KnotSpan{6}) {}
 
  protected:
+  const MockKnotVector00012344555 knot_vector_00012344555;
   baf::BSplineBasisFunction basis_function_;
 };
 
@@ -411,6 +414,7 @@ class BasisFunctionEx22N72 : public Test {
   BasisFunctionEx22N72() : basis_function_(knot_vector_00012344555, Degree{2}, KnotSpan{7}) {}
 
  protected:
+  const MockKnotVector00012344555 knot_vector_00012344555;
   baf::BSplineBasisFunction basis_function_;
 };
 
