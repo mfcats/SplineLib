@@ -21,9 +21,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 
 int main() {
-  std::array<baf::KnotVector, 1> knot_vector =
-      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
-                        ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}})};
   std::array<Degree, 1> degree = {Degree{2}};
   std::vector<baf::ControlPoint> control_points = {
       baf::ControlPoint(std::vector<double>({0.0, 0.0})),
@@ -35,10 +32,10 @@ int main() {
       baf::ControlPoint(std::vector<double>({4.0, 1.5})),
       baf::ControlPoint(std::vector<double>({4.0, 0.0}))
   };
-  std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_ptr =
-      std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
-  std::unique_ptr<spl::BSpline<1>> b_spline =
-      std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_ptr = {
+      std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
+                                                         ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))};
+  return std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
 
   b_spline->Evaluate({ParamCoord{1.0}}, {0});
 }
