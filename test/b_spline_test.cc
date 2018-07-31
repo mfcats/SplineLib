@@ -44,7 +44,8 @@ class MockParameterSpace : public spl::ParameterSpace<1> {
 
 class MockPhysicalSpace : public spl::PhysicalSpace<1> {
  public:
-  virtual ~MockPhysicalSpace() = default;
+  MockPhysicalSpace() = default;
+  ~MockPhysicalSpace() override = default;
   MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 1>));
 };
 
@@ -67,22 +68,16 @@ void mock_physicalSpace(const std::shared_ptr<NiceMock<MockPhysicalSpace>> &phys
       .WillByDefault(Return(baf::ControlPoint({4.0, 0.0})));
 }
 
-void mock_parameterSpace(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
-  //Span - degree
+void set_throw_method(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
   ON_CALL(*parameter_space,
           ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, 1>{ParamCoord{-1.0}}))
       .WillByDefault(Throw(std::range_error("Out of knotvector range")));
-  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{0.0}}))
-      .WillByDefault(Return(std::array<int, 1>{0}));
-  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{2.25}}))
-      .WillByDefault(Return(std::array<int, 1>{2}));
-  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{2.5}}))
-      .WillByDefault(Return(std::array<int, 1>{2}));
-  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{5.0}}))
-      .WillByDefault(Return(std::array<int, 1>{5}));
   ON_CALL(*parameter_space,
           ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, 1>{ParamCoord{6.0}}))
       .WillByDefault(Throw(std::range_error("Out of knotvector range")));
+}
+
+void set_get_basis_function(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{0}, std::array<ParamCoord, 1>{ParamCoord{0.0}}))
       .WillByDefault(Return(0.0));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{2}, std::array<ParamCoord, 1>{ParamCoord{2.5}}))
@@ -97,8 +92,9 @@ void mock_parameterSpace(const std::shared_ptr<NiceMock<MockParameterSpace>> &pa
       .WillByDefault(Return(0.0));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{7}, std::array<ParamCoord, 1>{ParamCoord{5.0}}))
       .WillByDefault(Return(1.0));
-  ON_CALL(*parameter_space, GetDegree(0))
-      .WillByDefault(Return(Degree{2}));
+}
+
+void set_basis_function_derivative(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{0},
                                       std::array<ParamCoord, 1>{ParamCoord{0.0}},
@@ -144,6 +140,22 @@ void mock_parameterSpace(const std::shared_ptr<NiceMock<MockParameterSpace>> &pa
                                       std::array<ParamCoord, 1>{ParamCoord{2.25}},
                                       std::array<int, 1>{1}))
       .WillByDefault(Return(0.25));
+}
+
+void mock_parameterSpace(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
+  set_throw_method(parameter_space);
+  set_get_basis_function(parameter_space);
+  set_basis_function_derivative(parameter_space);
+  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{0.0}}))
+      .WillByDefault(Return(std::array<int, 1>{0}));
+  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{2.25}}))
+      .WillByDefault(Return(std::array<int, 1>{2}));
+  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{2.5}}))
+      .WillByDefault(Return(std::array<int, 1>{2}));
+  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{5.0}}))
+      .WillByDefault(Return(std::array<int, 1>{5}));
+  ON_CALL(*parameter_space, GetDegree(0))
+      .WillByDefault(Return(Degree{2}));
 }
 
 // U = {0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5}

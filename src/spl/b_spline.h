@@ -38,7 +38,7 @@ class BSpline : public Spline<DIM> {
     physical_space_ = std::make_shared<PhysicalSpace<DIM>>(PhysicalSpace<DIM>(control_points, number_of_points));
   }
 
-  BSpline(BSplineGenerator<DIM> b_spline_generator)
+  explicit BSpline(BSplineGenerator<DIM> b_spline_generator)
       : Spline<DIM>(b_spline_generator.GetParameterSpace()) {
     physical_space_ = b_spline_generator.GetPhysicalSpace();
   }
