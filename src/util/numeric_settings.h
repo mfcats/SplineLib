@@ -18,6 +18,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <cmath>
 #include <limits>
 
+#include "named_type.h"
+
 namespace util {
 template<typename T>
 class NumericSettings {
@@ -36,7 +38,7 @@ class NumericSettings {
   NumericSettings(const NumericSettings &numericSettings) = delete;
   void operator=(const NumericSettings &numericSettings)  = delete;
 
-  constexpr static T kEpsilonFactor_ = 10;
+  constexpr static double kEpsilonFactor_ = 10.0;
 };
 }  // namespace util
 

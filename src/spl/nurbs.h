@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_NURBS_H
-#define SRC_SPL_NURBS_H
+#ifndef SRC_SPL_NURBS_H_
+#define SRC_SPL_NURBS_H_
 
 #include <algorithm>
 #include <array>
@@ -30,15 +30,17 @@ template<int DIM>
 class NURBS : public Spline<DIM> {
  public:
   NURBS(std::array<std::shared_ptr<baf::KnotVector>, DIM > knot_vector,
-        std::array<int, DIM> degree,
+        std::array<Degree, DIM> degree,
         const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) : Spline<DIM>(knot_vector,
                                                                                                          degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
-      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
     physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(WeightedPhysicalSpace<DIM>(control_points, weights, number_of_points));
   }
+
+  virtual ~NURBS() = default;
 
   NURBS(std::shared_ptr<ParameterSpace<DIM>> parameter_space, std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space) :
       physical_space_(physical_space) {
@@ -139,4 +141,4 @@ class NURBS : public Spline<DIM> {
 };
 }  // namespace spl
 
-#endif  // SRC_SPL__NURBS_H
+#endif  // SRC_SPL_NURBS_H_

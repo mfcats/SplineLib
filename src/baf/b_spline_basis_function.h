@@ -15,8 +15,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_
 #define SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_
 
-#include <cmath>
-#include <limits>
 #include <memory>
 
 #include "basis_function.h"
@@ -25,28 +23,28 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace baf {
 class BSplineBasisFunction : public BasisFunction {
  public:
-  BSplineBasisFunction(const std::shared_ptr<KnotVector> knot_vector, int deg, uint64_t start_of_support);
+  BSplineBasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support);
 
  protected:
-  double EvaluateOnSupport(ParamCoord param_coord) const override;
+  double EvaluateOnSupport(const ParamCoord &param_coord) const override;
 
-  double EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const override;
-
-  std::unique_ptr<BasisFunction> left_lower_degree_;
-  std::unique_ptr<BasisFunction> right_lower_degree_;
+  double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const override;
 
  private:
-  void SetLowerDegreeBasisFunctions(const std::shared_ptr<KnotVector> knot_vector, uint64_t start_of_support, int deg);
+  void SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
+                                    const Degree &degree,
+                                    const KnotSpan &start_of_support);
 
-  double ComputeLeftQuotientDenominatorInverse() const;
+  double ComputeLeftQuotient(const ParamCoord &param_coord) const;
 
-  double ComputeRightQuotientDenominatorInverse() const;
-
-  double ComputeLeftQuotient(ParamCoord param_coord) const;
-
-  double ComputeRightQuotient(ParamCoord param_coord) const;
+  double ComputeRightQuotient(const ParamCoord &param_coord) const;
 
   double InverseWithPossiblyZeroDenominator(double denominator) const;
+
+  double left_denom_inv_;
+  double right_denom_inv_;
+  std::unique_ptr<BasisFunction> left_lower_degree_;
+  std::unique_ptr<BasisFunction> right_lower_degree_;
 };
 }  // namespace baf
 

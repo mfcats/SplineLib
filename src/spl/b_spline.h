@@ -29,11 +29,11 @@ template<int DIM>
 class BSpline : public Spline<DIM> {
  public:
   BSpline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
-          std::array<int, DIM> degree,
+          std::array<Degree, DIM> degree,
           const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
-      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
     physical_space_ = std::make_shared<PhysicalSpace<DIM>>(PhysicalSpace<DIM>(control_points, number_of_points));
   }
@@ -43,10 +43,11 @@ class BSpline : public Spline<DIM> {
     physical_space_ = b_spline_generator.GetPhysicalSpace();
   }
 
-  BSpline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space)
-      : Spline<DIM>(std::move(parameter_space)), physical_space_(physical_space) {
-  }
+  virtual ~BSpline() = default;
 
+  BSpline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space)
+      : Spline<DIM>(std::make_shared<spl::ParameterSpace<DIM>>(parameter_space)), physical_space_(std::make_shared<spl::PhysicalSpace<DIM>>(physical_space)) {
+  }
 
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,

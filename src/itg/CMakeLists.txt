@@ -25,9 +25,15 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-install(
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DESTINATION "${include_install_dir}"
-				FILES_MATCHING PATTERN "*.h"
-)
+
+install(FILES
+        integration_point.h
+        integration_rule.h
+        one_point_gauss_legendre.h
+        two_point_gauss_legendre.h
+        three_point_gauss_legendre.h
+        four_point_gauss_legendre.h
+        five_point_gauss_legendre.h
+        DESTINATION "${include_install_dir}")
+
 

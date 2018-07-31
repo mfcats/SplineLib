@@ -26,7 +26,7 @@ class SplineGenerator {
   SplineGenerator() = default;
   virtual ~SplineGenerator() = default;
 
-  SplineGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector, std::array<int, DIM> degree) {
+  SplineGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector, std::array<Degree, DIM> degree) {
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
   };
 

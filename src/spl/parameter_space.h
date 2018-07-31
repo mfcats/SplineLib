@@ -15,8 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_PARAMETER_SPACE_H_
 #define SRC_SPL_PARAMETER_SPACE_H_
 
-#include <vector>
 #include <sstream>
+#include <vector>
 
 #include "basis_function.h"
 #include "basis_function_factory.h"
@@ -31,14 +31,15 @@ template<int DIM>
 class ParameterSpace {
  public:
   ParameterSpace() = default;
-  ParameterSpace(const std::array<std::shared_ptr<baf::KnotVector>, DIM> &knot_vector, std::array<int, DIM> degree) : degree_(degree),
-                                                                                                     knot_vector_(
-                                                                                                         knot_vector) {
+
+  ParameterSpace(std::array<std::shared_ptr<baf::KnotVector>, DIM> &knot_vector, std::array<Degree, DIM> degree) :
+      knot_vector_(knot_vector), degree_(degree)
+  {
     baf::BasisFunctionFactory factory;
     for (int i = 0; i < DIM; i++) {
-      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i] - 1);
-      for (uint64_t j = 0; j < (knot_vector_[i]->GetNumberOfKnots() - degree_[i] - 1); ++j) {
-        basis_functions_[i].emplace_back(factory.CreateDynamic(knot_vector_[i], j, degree_[i]));
+      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
+      for (uint64_t j = 0; j < (knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1); ++j) {
+        basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
       }
     }
   }
@@ -47,8 +48,8 @@ class ParameterSpace {
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParamCoord param_coord) const {
     auto first_non_zero = GetFirstNonZeroKnot(direction, param_coord);
-    std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction]) + 1, 0.0);
-    for (int i = 0; i < degree_[direction] + 1; ++i) {
+    std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction].get()) + 1, 0.0);
+    for (int i = 0; i < degree_[direction].get() + 1; ++i) {
       basis_function_values[i] = (*first_non_zero)->Evaluate(param_coord);
       ++first_non_zero;
     }
@@ -59,9 +60,9 @@ class ParameterSpace {
                                                                  ParamCoord param_coord,
                                                                  int derivative) const {
     auto first_non_zero = GetFirstNonZeroKnot(direction, param_coord);
-    std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction]) + 1, 0.0);
-    for (int i = 0; i < degree_[direction] + 1; ++i) {
-      basis_function_values[i] = (*first_non_zero)->EvaluateDerivative(param_coord, derivative);
+    std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction].get()) + 1, 0.0);
+    for (int i = 0; i < degree_[direction].get() + 1; ++i) {
+      basis_function_values[i] = (*first_non_zero)->EvaluateDerivative(param_coord, Derivative{derivative});
       ++first_non_zero;
     }
     return basis_function_values;
@@ -69,10 +70,10 @@ class ParameterSpace {
 
   std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator GetFirstNonZeroKnot(int direction,
                                                                                        ParamCoord param_coord) const {
-    return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord) - degree_[direction];
+    return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord).get() - degree_[direction].get();
   }
 
-  virtual int GetDegree(int direction) const {
+  virtual Degree GetDegree(int direction) const {
     return degree_[direction];
   }
 
@@ -93,7 +94,7 @@ class ParameterSpace {
                                      std::array<int, DIM> derivative) const {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
-      value *= basis_functions_[i][indices[i]]->EvaluateDerivative(param_coord[i], derivative[i]);
+      value *= basis_functions_[i][indices[i]]->EvaluateDerivative(param_coord[i], Derivative{derivative[i]});
     }
     return value;
   }
@@ -106,8 +107,8 @@ class ParameterSpace {
     std::vector<elm::ElementIntegrationPoint> element_integration_points;
     std::vector<double> non_zero_basis_functions;
     for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      ParamCoord
-          integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
+      ParamCoord integration_point =
+          ReferenceSpace2ParameterSpace(element.GetNode(1), element.GetNode(0), rule.GetCoordinate(i, 0));
       non_zero_basis_functions = EvaluateAllNonZeroBasisFunctions(direction, ParamCoord{integration_point});
       element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_functions));
     }
@@ -122,8 +123,8 @@ class ParameterSpace {
     std::vector<elm::ElementIntegrationPoint> element_integration_points;
     std::vector<double> non_zero_basis_function_derivatives;
     for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      ParamCoord
-          integration_point = ReferenceSpace2ParameterSpace(element.node(1), element.node(0), rule.coordinate(i, 0));
+      ParamCoord integration_point =
+          ReferenceSpace2ParameterSpace(element.GetNode(1), element.GetNode(0), rule.GetCoordinate(i, 0));
       non_zero_basis_function_derivatives =
           EvaluateAllNonZeroBasisFunctionDerivatives(direction, ParamCoord{integration_point}, 1);
       element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_function_derivatives));
@@ -132,11 +133,11 @@ class ParameterSpace {
   }
 
   std::vector<elm::Element> GetElementList(int direction) const {
-    return elm::ElementGenerator(degree_[direction], *(knot_vector_[direction])).GetElementList();
+    return elm::ElementGenerator(degree_[direction].get(), *(knot_vector_[direction])).GetElementList();
   }
 
   ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
-    return ParamCoord{((upper - lower) * point + (upper + lower)) / 2.0};
+    return ParamCoord{((upper - lower)*point + (upper + lower))/2.0};
   }
 
   virtual std::array<int, DIM>  GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const
@@ -144,7 +145,7 @@ class ParameterSpace {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] =
-          GetKnotVector(i)->GetKnotSpan(param_coord[i]) - GetDegree(i);
+          GetKnotVector(i)->GetKnotSpan(param_coord[i]).get() - GetDegree(i).get();
     }
     return first_non_zero;
   }
@@ -162,7 +163,7 @@ class ParameterSpace {
 
  private:
   std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector_;
-  std::array<int, DIM> degree_;
+  std::array<Degree, DIM> degree_{Degree{0}};
   std::array<std::vector<std::shared_ptr<baf::BasisFunction>>, DIM> basis_functions_;
 };
 }  // namespace spl

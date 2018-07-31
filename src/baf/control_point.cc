@@ -16,7 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 baf::ControlPoint::ControlPoint(std::initializer_list<double> coordinates) : coordinates_(coordinates) {}
 
-baf::ControlPoint::ControlPoint(const std::vector<double> &coordinates) : coordinates_(coordinates) {}
+baf::ControlPoint::ControlPoint(std::vector<double> coordinates) : coordinates_(std::move(coordinates)) {}
 
 int baf::ControlPoint::GetDimension() const {
   return static_cast<int>(coordinates_.size());

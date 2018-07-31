@@ -16,15 +16,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_BAF_KNOT_VECTOR_H_
 
 #include <initializer_list>
-#include <limits>
-#include<stdexcept>
-#include <utility>
 #include <vector>
-#include <memory>
 
 #include "named_type.h"
 
 using ParamCoord = util::NamedType<double, struct ParamCoordParameter>;
+using KnotSpan = util::NamedType<int, struct KnotSpanParameter>;
 
 namespace baf {
 
@@ -35,17 +32,16 @@ class KnotVector {
 
   KnotVector() = default;
   KnotVector(const KnotVector &knotVector);
-  KnotVector(const KnotVector &&knotVector);
-  //KnotVector(std::shared_ptr<KnotVector> knotVector);
-  explicit KnotVector(const std::vector<ParamCoord> &knots);
-  explicit KnotVector(std::initializer_list<ParamCoord> knots);
+  KnotVector(KnotVector &&knotVector) noexcept;
+  explicit KnotVector(std::vector<ParamCoord> knots);
+  KnotVector(std::initializer_list<ParamCoord> knots) noexcept;
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
 
   virtual ~KnotVector() = default;
 
   KnotVector operator -(const KnotVector& rhs) const;
   KnotVector &operator=(const KnotVector &other);
-  KnotVector &operator=(const KnotVector &&other);
+  KnotVector &operator=(KnotVector &&other) noexcept;
   // Check if absolute distance between all knots is smaller than the epsilon defined in
   // NumericSettings.
   bool operator==(const KnotVector &rhs) const;
@@ -53,7 +49,7 @@ class KnotVector {
 
   virtual ParamCoord GetKnot(size_t index) const;
   ParamCoord GetLastKnot() const;
-  virtual int64_t GetKnotSpan(ParamCoord param_coord) const;
+  virtual KnotSpan GetKnotSpan(ParamCoord param_coord) const;
   virtual size_t GetNumberOfKnots() const;
 
   ConstKnotIterator begin() const;
@@ -62,8 +58,8 @@ class KnotVector {
   KnotIterator begin();
   KnotIterator end();
 
-  virtual bool IsInKnotVectorRange(ParamCoord param_coord) const;
-  bool IsLastKnot(ParamCoord param_coord) const;
+  virtual bool IsInKnotVectorRange(const ParamCoord &param_coord) const;
+  virtual bool IsLastKnot(const ParamCoord &param_coord) const;
 
  private:
   std::vector<ParamCoord> knots_;

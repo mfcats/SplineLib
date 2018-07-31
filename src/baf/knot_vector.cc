@@ -14,39 +14,31 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "knot_vector.h"
 
-#include <cmath>
 #include <algorithm>
 #include <functional>
 
 #include "numeric_settings.h"
 
-baf::KnotVector::KnotVector(const std::vector<ParamCoord> &knots) : knots_(knots) {}
+baf::KnotVector::KnotVector(std::vector<ParamCoord> knots) : knots_(std::move(knots)) {}
 
-baf::KnotVector::KnotVector(const baf::KnotVector &knotVector) : knots_(knotVector.knots_) {}
+baf::KnotVector::KnotVector(const baf::KnotVector &knotVector) = default;
 
-baf::KnotVector::KnotVector(const baf::KnotVector &&knotVector) : knots_(std::move(knotVector.knots_)) {}
+baf::KnotVector::KnotVector(baf::KnotVector &&knotVector) noexcept : knots_(std::move(knotVector.knots_)) {}
 
-//baf::KnotVector::KnotVector(const std::shared_ptr<baf::KnotVector>knotVector) : knots_(knotVector->knots_) {}
-
-baf::KnotVector::KnotVector(std::initializer_list<ParamCoord> knots) : knots_(knots) {}
+baf::KnotVector::KnotVector(std::initializer_list<ParamCoord> knots) noexcept : knots_(knots) {}
 
 baf::KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<ParamCoord>(begin,
                                                                                                              end)) {}
 
 baf::KnotVector baf::KnotVector::operator-(const baf::KnotVector &rhs) const {
-  std::vector<ParamCoord> differences;
-  for(int knot = 0; knot < this->GetNumberOfKnots(); knot++) {
-    differences.push_back(ParamCoord{knots_[knot] - rhs.knots_[knot]});
-  }
+  std::vector<ParamCoord> differences(GetNumberOfKnots(), ParamCoord{0.0});
+  std::transform(begin(), end(), rhs.begin(), differences.begin(), std::minus<>());
   return baf::KnotVector(differences);
 }
 
-baf::KnotVector &baf::KnotVector::operator=(const baf::KnotVector &other) {
-  knots_ = other.knots_;
-  return *this;
-}
+baf::KnotVector &baf::KnotVector::operator=(const baf::KnotVector &other) = default;
 
-baf::KnotVector &baf::KnotVector::operator=(const baf::KnotVector &&other) {
+baf::KnotVector &baf::KnotVector::operator=(KnotVector &&other) noexcept {
   knots_ = std::move(other.knots_);
   return *this;
 }
@@ -56,9 +48,8 @@ bool baf::KnotVector::operator==(const KnotVector &rhs) const {
                     this->end(),
                     rhs.begin(),
                     rhs.end(),
-                    [&](ParamCoord a, ParamCoord b) {
-                      return util::NumericSettings<double>::AreEqual(a.get(),
-                                                                     b.get());
+                    [&](ParamCoord knot_a, ParamCoord knot_b) {
+                      return util::NumericSettings<double>::AreEqual(knot_a.get(), knot_b.get());
                     });
 }
 
@@ -82,10 +73,11 @@ ParamCoord baf::KnotVector::GetLastKnot() const {
   return knots_.back();
 }
 
-int64_t baf::KnotVector::GetKnotSpan(ParamCoord param_coord) const {
-  return util::NumericSettings<double>::AreEqual(param_coord.get(), knots_.back().get()) ?
-      std::lower_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1 :
-      std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1;
+KnotSpan baf::KnotVector::GetKnotSpan(ParamCoord param_coord) const {
+  if (IsLastKnot(param_coord)) {
+    return KnotSpan{static_cast<int>(std::lower_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1)};
+  }
+  return KnotSpan{static_cast<int>(std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1)};
 }
 
 baf::KnotVector::ConstKnotIterator baf::KnotVector::begin() const {
@@ -104,11 +96,11 @@ baf::KnotVector::KnotIterator baf::KnotVector::end() {
   return knots_.end();
 }
 
-bool baf::KnotVector::IsInKnotVectorRange(ParamCoord param_coord) const {
-  return param_coord.get() >= knots_.front().get() && param_coord.get() <= knots_.back().get();
+bool baf::KnotVector::IsInKnotVectorRange(const ParamCoord &param_coord) const {
+  return param_coord >= knots_.front() && param_coord <= knots_.back();
 }
 
-bool baf::KnotVector::IsLastKnot(ParamCoord param_coord) const {
+bool baf::KnotVector::IsLastKnot(const ParamCoord &param_coord) const {
   return util::NumericSettings<double>::AreEqual(param_coord.get(), knots_.back().get());
 }
 

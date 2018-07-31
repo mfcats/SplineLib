@@ -35,7 +35,7 @@ class Spline {
  public:
   virtual ~Spline() = default;
   Spline() = default;
-  Spline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector, std::array<int, DIM> degree) {
+  Spline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector, std::array<Degree, DIM> degree) {
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
   }
   explicit Spline(std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
@@ -53,7 +53,7 @@ class Spline {
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();
       std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
-      for (int j = 0; j < dimensions.size(); ++j) {
+      for (auto j = 0u; j < dimensions.size(); ++j) {
         evaluated_point[j] += GetEvaluatedControlPoint(param_coord, indices, dimensions[j]);
       }
     }
@@ -72,15 +72,14 @@ class Spline {
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();
       std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
-      for (int j = 0; j < dimensions.size(); ++j) {
+      for (auto j = 0u; j < dimensions.size(); ++j) {
         evaluated_point[j] += GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
       }
     }
     return evaluated_point;
   }
 
-  int GetDegree(int i) const {
-    //std::cout << "Degree" << parameter_space_->GetDegree(i) << std::endl;
+  Degree GetDegree(int i) const {
     return parameter_space_->GetDegree(i);
   }
 
@@ -109,13 +108,13 @@ class Spline {
 
   double JacobianDeterminant(int element_number, int integration_point, const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
-    double dx_dxi = EvaluateDerivative({ReferenceSpace2ParameterSpace(element.node(0),
-                                                                      element.node(1),
-                                                                      rule.coordinate(integration_point, 0))},
+    double dx_dxi = EvaluateDerivative({ReferenceSpace2ParameterSpace(element.GetNode(0),
+                                                                      element.GetNode(1),
+                                                                      rule.GetCoordinate(integration_point, 0))},
                                        {0},
                                        {1})[0];
-    double dxi_dtildexi = (element.node(1) - element.node(0)) / 2.0;
-    return dx_dxi * dxi_dtildexi;
+    double dxi_dtildexi = (element.GetNode(1) - element.GetNode(0))/2.0;
+    return dx_dxi*dxi_dtildexi;
   }
 
  protected:
@@ -138,15 +137,15 @@ class Spline {
       const itg::IntegrationRule<1> &rule) const {
     elm::Element element = GetElementList()[element_number];
     for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      std::vector<double> element_non_zero_basis_functions = element_integration_points[i].non_zero_basis_functions();
+      std::vector<double> element_non_zero_basis_functions = element_integration_points[i].GetNonZeroBasisFunctions();
       std::transform(element_non_zero_basis_functions.cbegin(),
                      element_non_zero_basis_functions.cend(),
                      element_non_zero_basis_functions.begin(),
                      std::bind(std::divides<double>(), std::placeholders::_1,
                                EvaluateDerivative(
-                                   {ReferenceSpace2ParameterSpace(element.node(0),
-                                                                  element.node(1),
-                                                                  rule.coordinate(i, 0))}, {0}, {1})[0]));
+                                   {ReferenceSpace2ParameterSpace(element.GetNode(0),
+                                                                  element.GetNode(1),
+                                                                  rule.GetCoordinate(i, 0))}, {0}, {1})[0]));
 
       element_integration_points[i] = elm::ElementIntegrationPoint(element_non_zero_basis_functions);
     }
@@ -160,12 +159,19 @@ class Spline {
   std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
     //std::cout << "GetArrayOfFirstNonZeroBasisFunctions : " << parameter_space_->GetArrayOfFirstNonZeroBasisFunctions(param_coord)[0] << std::endl;
     return parameter_space_->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
+    std::array<int, DIM> first_non_zero;
+    for (int i = 0; i < DIM; ++i) {
+      first_non_zero[i] =
+          this->parameter_space_->GetKnotVector(i)->GetKnotSpan(param_coord[i]).get()
+              - this->parameter_space_->GetDegree(i).get();
+    }
+    return first_non_zero;
   }
 
   std::array<int, DIM> GetNumberOfBasisFunctionsToEvaluate() const {
     std::array<int, DIM> total_length;
     for (int i = 0; i < DIM; ++i) {
-      total_length[i] = parameter_space_->GetDegree(i) + 1;
+      total_length[i] = parameter_space_->GetDegree(i).get() + 1;
     }
     return total_length;
   }
