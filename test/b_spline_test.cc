@@ -44,8 +44,6 @@ class MockParameterSpace : public spl::ParameterSpace<1> {
 
 class MockPhysicalSpace : public spl::PhysicalSpace<1> {
  public:
-  MockPhysicalSpace() = default;
-  ~MockPhysicalSpace() override = default;
   MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 1>));
 };
 
@@ -94,52 +92,41 @@ void set_get_basis_function(const std::shared_ptr<NiceMock<MockParameterSpace>> 
       .WillByDefault(Return(1.0));
 }
 
-void set_basis_function_derivative(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
+void set_basis_function_derivative1(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{0},
                                       std::array<ParamCoord, 1>{ParamCoord{0.0}},
-                                      std::array<int, 1>{1}))
-      .WillByDefault(Return(-2.0));
+                                      std::array<int, 1>{1})).WillByDefault(Return(-2.0));
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{1},
                                       std::array<ParamCoord, 1>{ParamCoord{0.0}},
-                                      std::array<int, 1>{1}))
-      .WillByDefault(Return(2.0));
+                                      std::array<int, 1>{1})).WillByDefault(Return(2.0));
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{2},
                                       std::array<ParamCoord, 1>{ParamCoord{0.0}},
-                                      std::array<int, 1>{1}))
-      .WillByDefault(Return(0.0));
+                                      std::array<int, 1>{1})).WillByDefault(Return(0.0));
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{5},
                                       std::array<ParamCoord, 1>{ParamCoord{5.0}},
-                                      std::array<int, 1>{1}))
-      .WillByDefault(Return(0.0));
-  ON_CALL(*parameter_space,
-          GetBasisFunctionDerivatives(std::array<int, 1>{6},
-                                      std::array<ParamCoord, 1>{ParamCoord{5.0}},
-                                      std::array<int, 1>{1}))
-      .WillByDefault(Return(-2.0));
-  ON_CALL(*parameter_space,
-          GetBasisFunctionDerivatives(std::array<int, 1>{7},
-                                      std::array<ParamCoord, 1>{ParamCoord{5.0}},
-                                      std::array<int, 1>{1}))
-      .WillByDefault(Return(2.0));
-  ON_CALL(*parameter_space,
-          GetBasisFunctionDerivatives(std::array<int, 1>{2},
+                                      std::array<int, 1>{1})).WillByDefault(Return(0.0));
+}
+
+void set_basis_function_derivative2(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 1>{6},
+                                                        std::array<ParamCoord, 1>{ParamCoord{5.0}},
+                                                        std::array<int, 1>{1})).WillByDefault(Return(-2.0));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 1>{7},
+                                                        std::array<ParamCoord, 1>{ParamCoord{5.0}},
+                                                        std::array<int, 1>{1})).WillByDefault(Return(2.0));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 1>{2},
+                                                        std::array<ParamCoord, 1>{ParamCoord{2.25}},
+                                                        std::array<int, 1>{1})).WillByDefault(Return(-0.75));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 1>{3},
+      std::array<ParamCoord, 1>{ParamCoord{2.25}},
+                                      std::array<int, 1>{1})).WillByDefault(Return(0.5));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 1>{4},
                                       std::array<ParamCoord, 1>{ParamCoord{2.25}},
-                                      std::array<int, 1>{1}))
-      .WillByDefault(Return(-0.75));
-  ON_CALL(*parameter_space,
-          GetBasisFunctionDerivatives(std::array<int, 1>{3},
-                                      std::array<ParamCoord, 1>{ParamCoord{2.25}},
-                                      std::array<int, 1>{1}))
-      .WillByDefault(Return(0.5));
-  ON_CALL(*parameter_space,
-          GetBasisFunctionDerivatives(std::array<int, 1>{4},
-                                      std::array<ParamCoord, 1>{ParamCoord{2.25}},
-                                      std::array<int, 1>{1}))
-      .WillByDefault(Return(0.25));
+                                      std::array<int, 1>{1})).WillByDefault(Return(0.25));
 }
 
 void mock_parameterSpace(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
