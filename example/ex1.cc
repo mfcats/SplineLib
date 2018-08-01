@@ -35,7 +35,9 @@ int main() {
   std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_ptr = {
       std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                                                          ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))};
-  return std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
+  spl::BSpline<1> b_spline(knot_vector_ptr, degree, control_points);
 
-  b_spline->Evaluate({ParamCoord{1.0}}, {0});
+  b_spline.Evaluate({ParamCoord{1.0}}, {0});
+
+  return 0;
 }
