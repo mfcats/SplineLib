@@ -132,7 +132,8 @@ void set_basis_function_derivative2(const std::shared_ptr<NiceMock<MockParameter
 void mock_parameterSpace(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
   set_throw_method(parameter_space);
   set_get_basis_function(parameter_space);
-  set_basis_function_derivative(parameter_space);
+  set_basis_function_derivative1(parameter_space);
+  set_basis_function_derivative2(parameter_space);
   ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{0.0}}))
       .WillByDefault(Return(std::array<int, 1>{0}));
   ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{2.25}}))
