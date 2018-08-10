@@ -102,8 +102,8 @@ class IGES1DBSplineGenerator : public BSplineGenerator<1> {
   }
 
   std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
-    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2]).substr(8,8);
-    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead*2 + 1]).substr(24,8);
+    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2].substr(8,8));
+    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead*2 + 1].substr(24,8));
     std::array<int, 2> ParameterSectionStartEndPointers;
     ParameterSectionStartEndPointers[0] = GetInteger(trim(parameterDataStartPointer));
     ParameterSectionStartEndPointers[1] = GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
