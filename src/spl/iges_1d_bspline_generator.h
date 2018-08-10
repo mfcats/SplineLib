@@ -30,6 +30,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "spline_generator.h"
 #include "b_spline_generator.h"
 
+
 namespace spl {
 class IGES1DBSplineGenerator : public BSplineGenerator<1> {
  public:
@@ -102,8 +103,8 @@ class IGES1DBSplineGenerator : public BSplineGenerator<1> {
   }
 
   std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
-    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2].substr(8,8));
-    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead*2 + 1].substr(24,8));
+    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2].substr(8,8)); //48
+    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead*2 + 1].substr(24,8)); //16
     std::array<int, 2> ParameterSectionStartEndPointers;
     ParameterSectionStartEndPointers[0] = GetInteger(trim(parameterDataStartPointer));
     ParameterSectionStartEndPointers[1] = GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
@@ -115,16 +116,34 @@ class IGES1DBSplineGenerator : public BSplineGenerator<1> {
     int first = ParameterSectionStartEndPointers[0] - 1;
     int last = ParameterSectionStartEndPointers[1] - 1;
     for (int i = first; i <= last; ++i) {
-      std::stringstream ss(parameterSection[i]);
-      double d;
-      while (ss >> d) {
-        parameterSectionVector.push_back(d);
-        if (ss.peek() == ',') {
-          ss.ignore();
-        }
+      auto temp = DelimitedStringToVector(parameterSection[i]);
+      for (int j = 0; j < temp.size(); ++j) {
+        parameterSectionVector.push_back(temp[j]);
       }
     }
     return parameterSectionVector;
+  }
+
+ std::vector<double> DelimitedStringToVector (std::string str) {
+   std::vector<double> vector;
+   std::size_t found1;
+   std::size_t found2;
+   while (!str.empty()) {
+     found1 = str.find_first_of(',');
+     found2 = str.find_first_of(';');
+     if ((found1 < found2) && (found1 != 0)) {
+       str.substr(0,found1);
+       vector.push_back(GetDouble(str));
+       str.erase(0,found1 + 1);
+     } else if ((found2 < found1) && (found2 != 0)) {
+       str.substr(0,found2);
+       vector.push_back(GetDouble(str));
+       str.erase(0,found2 + 1);
+     } else {
+       str.erase(0,1);
+     }
+   }
+    return vector;
   }
 
   std::vector<double> ExtractPartOfVector(int start,
@@ -139,6 +158,12 @@ class IGES1DBSplineGenerator : public BSplineGenerator<1> {
 
   int GetInteger(const std::string &string) {
     int number = 0;
+    std::istringstream(string) >> number;
+    return number;
+  }
+
+  double GetDouble(const std::string &string) {
+    double number = 0;
     std::istringstream(string) >> number;
     return number;
   }

@@ -12,27 +12,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
-#include "spline_generator.h"
-#include "b_spline_generator.h"
-#include "iges_1d_bspline_generator.h"
-#include <config.h>
+#ifndef SPLINELIB_CONFIG_IN_H
+#define SPLINELIB_CONFIG_IN_H
 
-using testing::Test;
-using testing::DoubleEq;
-using testing::DoubleNear;
+const std::string path_to_iges_file = "@PATH_TO_IGES_FILE@";
 
-class AnIGESReader : public Test {
- public:
-  AnIGESReader() {
-  }
-};
-
-TEST_F(AnIGESReader, ReadBSplineCurveFromIGESFile) { // NOLINT
-  spl::IGES1DBSplineGenerator reader = spl::IGES1DBSplineGenerator(path_to_iges_file);
-  reader.ReadIGESFile(4);
-  std::unique_ptr<spl::BSpline<1>> spline = std::make_unique<spl::BSpline<1>>(reader);
-  ASSERT_THAT(spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.005));
-}
-
-
+#endif //SPLINELIB_CONFIG_IN_H
