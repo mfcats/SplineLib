@@ -111,8 +111,8 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
   }
 
   std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
-    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2]).substr(8,8);
-    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead*2 + 1]).substr(24,8);
+    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2].substr(8,8)); //48
+    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead*2 + 1].substr(24,8)); //16
     std::array<int, 2> ParameterSectionStartEndPointers;
     ParameterSectionStartEndPointers[0] = GetInteger(trim(parameterDataStartPointer));
     ParameterSectionStartEndPointers[1] = GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
@@ -124,16 +124,32 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
     int first = ParameterSectionStartEndPointers[0] - 1;
     int last = ParameterSectionStartEndPointers[1] - 1;
     for (int i = first; i <= last; ++i) {
-      std::stringstream ss(parameterSection[i]);
-      double d;
-      while (ss >> d) {
-        parameterSectionVector.push_back(d);
-        if (ss.peek() == ',') {
-          ss.ignore();
-        }
+      auto temp = DelimitedStringToVector(parameterSection[i]);
+      for (int j = 0; j < temp.size(); ++j) {
+        parameterSectionVector.push_back(temp[j]);
       }
     }
     return parameterSectionVector;
+  }
+
+  std::vector<double> DelimitedStringToVector (std::string str) {
+    std::vector<double> vector;
+    std::size_t found1;
+    std::size_t found2;
+    while (!str.empty()) {
+      found1 = str.find_first_of(',');
+      found2 = str.find_first_of(';');
+      if ((found1 < found2) && (found1 != 0)) {
+        vector.push_back(GetDouble(str.substr(0,found1)));
+        str.erase(0,found1 + 1);
+      } else if ((found2 < found1) && (found2 != 0)) {
+        vector.push_back(GetDouble(str.substr(0,found2)));
+        str.erase(0,found2 + 1);
+      } else {
+        str.erase(0,1);
+      }
+    }
+    return vector;
   }
 
   std::vector<double> ExtractPartOfVector(int start,
@@ -152,21 +168,20 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
     return number;
   }
 
-  inline std::string& ltrim(std::string& s, const char* t = " \t\n\r\f\v")
-  {
-    s.erase(0, s.find_first_not_of(t));
-    return s;
+  double GetDouble(const std::string &string) {
+    double number = 0;
+    std::istringstream(string) >> number;
+    return number;
   }
 
-  inline std::string& rtrim(std::string& s, const char* t = " \t\n\r\f\v")
-  {
-    s.erase(s.find_last_not_of(t) + 1);
+  static inline std::string trim(std::string s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
+      return !std::isspace(ch);
+    }));
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
+      return !std::isspace(ch);
+    }).base(), s.end());
     return s;
-  }
-
-  inline std::string& trim(std::string& s, const char* t = " \t\n\r\f\v")
-  {
-    return ltrim(rtrim(s, t), t);
   }
 
   std::string filename_;
