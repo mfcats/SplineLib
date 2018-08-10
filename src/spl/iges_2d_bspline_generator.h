@@ -38,6 +38,9 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
   void ReadIGESFile(int entityToBeRead) {
     std::ifstream newFile;
     newFile.open(filename_);
+    if (!newFile.good()) {
+      throw std::runtime_error("IGES file could not be opened.");
+    }
     std::string line;
     std::string globalSection;
     std::vector<std::string> directoryEntrySection;
@@ -111,8 +114,8 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
   }
 
   std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
-    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2].substr(8,8)); //48
-    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead*2 + 1].substr(24,8)); //16
+    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2].substr(8,8));
+    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead*2 + 1].substr(24,8));
     std::array<int, 2> ParameterSectionStartEndPointers;
     ParameterSectionStartEndPointers[0] = GetInteger(trim(parameterDataStartPointer));
     ParameterSectionStartEndPointers[1] = GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
