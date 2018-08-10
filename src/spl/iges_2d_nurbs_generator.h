@@ -105,6 +105,22 @@ class IGES2DNURBSGenerator : public NURBSGenerator<2> {
       for (int i = 0; i < 2; ++i) {
         number_of_points[i] = knot_vector[i].GetNumberOfKnots() - degree[i] - 1;
       }
+
+      /*std::cout << control_points.size() << std::endl;
+      std::cout << weights.size() << std::endl;
+      std::cout.precision(20);
+      std::cout << control_points[40].GetValue(0) << std::endl;
+      std::cout << control_points[40].GetValue(1) << std::endl;
+      std::cout << control_points[40].GetValue(2) << std::endl;
+      std::cout << control_points[41].GetValue(0) << std::endl;
+      std::cout << control_points[41].GetValue(1) << std::endl;
+      std::cout << control_points[41].GetValue(2) << std::endl;
+      std::cout << control_points[42].GetValue(0) << std::endl;
+      std::cout << control_points[42].GetValue(1) << std::endl;
+      std::cout << control_points[42].GetValue(2) << std::endl;
+      std::cout << control_points[43].GetValue(0) << std::endl;
+      std::cout << control_points[43].GetValue(1) << std::endl;
+      std::cout << control_points[43].GetValue(2) << std::endl;*/
       this->physical_space_ptr = std::make_shared<WeightedPhysicalSpace<2>>(control_points, weights, number_of_points);
       this->parameter_space_ptr = std::make_shared<ParameterSpace<2>>(knot_vector, degree);
     } else {
