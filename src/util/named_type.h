@@ -19,7 +19,6 @@ namespace util {
 template<typename T, typename Parameter>
 class NamedType {
  public:
-
   NamedType() = default;
 
   explicit NamedType(T const &value) : value_(value) {}

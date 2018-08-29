@@ -72,7 +72,6 @@ void mock_2dphysicalSpace(const std::shared_ptr<NiceMock<Mock2dPhysicalSpace>> &
 }
 
 void set_get_basis_function(const std::shared_ptr<NiceMock<Mock2dParameterSpace>> &parameter_space) {
-
   // Using wildcards
   ON_CALL(*parameter_space, GetBasisFunctions(_, _))
       .WillByDefault(Return(0.0));
@@ -131,7 +130,6 @@ void set_get_basis_function(const std::shared_ptr<NiceMock<Mock2dParameterSpace>
       .WillByDefault(Return(0.0234375));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 2}, std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.0351562));
-
 }
 
 void set_basis_function_derivative1(const std::shared_ptr<NiceMock<Mock2dParameterSpace>> &parameter_space) {
