@@ -27,13 +27,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline_generator.h"
 
 using testing::Test;
-using testing::DoubleEq;
 using ::testing::Return;
-using ::testing::Throw;
 using ::testing::NiceMock;
 using ::testing::_;
-
-using namespace testing;
 
 class Mock2dParameterSpace : public spl::ParameterSpace<2> {
  public:
@@ -76,59 +72,84 @@ void set_get_basis_function(const std::shared_ptr<NiceMock<Mock2dParameterSpace>
   ON_CALL(*parameter_space, GetBasisFunctions(_, _))
       .WillByDefault(Return(0.0));
 
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0}, std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.0}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0}, 
+        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.0}}))
       .WillByDefault(Return(1.0));
 
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0}, std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.33333}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0},
+        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.33333}}))
       .WillByDefault(Return(0.444449));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 1}, std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.33333}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 1},
+        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.33333}}))
       .WillByDefault(Return(0.444449));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 2}, std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.33333}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 2},
+        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.33333}}))
       .WillByDefault(Return(0.111109));
 
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0}, std::array<ParamCoord, 2>{ParamCoord{0.33333}, ParamCoord{0.0}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0},
+        std::array<ParamCoord, 2>{ParamCoord{0.33333}, ParamCoord{0.0}}))
       .WillByDefault(Return(0.444449));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 0}, std::array<ParamCoord, 2>{ParamCoord{0.33333}, ParamCoord{0.0}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 0},
+        std::array<ParamCoord, 2>{ParamCoord{0.33333}, ParamCoord{0.0}}))
       .WillByDefault(Return(0.444449));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 0}, std::array<ParamCoord, 2>{ParamCoord{0.33333}, ParamCoord{0.0}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 0},
+        std::array<ParamCoord, 2>{ParamCoord{0.33333}, ParamCoord{0.0}}))
       .WillByDefault(Return(0.111109));
 
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0},
+        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
       .WillByDefault(Return(0.0625));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 0}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 0},
+        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
       .WillByDefault(Return(0.125));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 0}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 0},
+        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
       .WillByDefault(Return(0.0625));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 1}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 1},
+        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
       .WillByDefault(Return(0.125));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 1}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 1},
+        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
       .WillByDefault(Return(0.25));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 1}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 1},
+        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
       .WillByDefault(Return(0.125));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 2}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 2},
+        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
       .WillByDefault(Return(0.0625));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 2}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 2},
+        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
       .WillByDefault(Return(0.125));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 2}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 2},
+        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
       .WillByDefault(Return(0.0625));
 
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0}, std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0},
+        std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.0351562));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 0}, std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 0},
+        std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.210938));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 0}, std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 0},
+        std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.316406));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 1}, std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 1},
+        std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.0234375));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 1}, std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 1},
+        std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.140625));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 1}, std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 1}, 
+        std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.210938));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 2}, std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 2},
+        std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.00390625));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 2}, std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 2},
+        std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.0234375));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 2}, std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 2},
+        std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.0351562));
 }
 
