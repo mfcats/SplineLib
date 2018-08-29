@@ -72,7 +72,7 @@ void set_get_basis_function(const std::shared_ptr<NiceMock<Mock2dParameterSpace>
   ON_CALL(*parameter_space, GetBasisFunctions(_, _))
       .WillByDefault(Return(0.0));
 
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0}, 
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0},
         std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.0}}))
       .WillByDefault(Return(1.0));
 
@@ -139,7 +139,7 @@ void set_get_basis_function(const std::shared_ptr<NiceMock<Mock2dParameterSpace>
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 1},
         std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.140625));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 1}, 
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 1},
         std::array<ParamCoord, 2>{ParamCoord{0.75}, ParamCoord{0.25}}))
       .WillByDefault(Return(0.210938));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 2},
