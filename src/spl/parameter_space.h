@@ -30,6 +30,7 @@ namespace spl {
 template<int DIM>
 class ParameterSpace {
  public:
+
   ParameterSpace() = default;
 
   ParameterSpace(const std::array<std::shared_ptr<baf::KnotVector>, DIM> &knot_vector, std::array<Degree, DIM> degree) :
@@ -162,7 +163,7 @@ class ParameterSpace {
 
  private:
   std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector_;
-  std::array<Degree, DIM> degree_{Degree{0}};
+  std::array<Degree, DIM> degree_;
   std::array<std::vector<std::shared_ptr<baf::BasisFunction>>, DIM> basis_functions_;
 };
 }  // namespace spl
