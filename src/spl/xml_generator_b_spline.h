@@ -12,13 +12,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_XMLGENERATOR_B_SPLINE_H
-#define SRC_SPL_XMLGENERATOR_B_SPLINE_H
+#ifndef SRC_SPL_XML_GENERATOR_B_SPLINE_H_
+#define SRC_SPL_XML_GENERATOR_B_SPLINE_H_
 
 #include "pugixml.hpp"
 
 #include "physical_space.h"
-#include "XMLGenerator_Spline.h"
+#include "xml_generator_spline.h"
 
 namespace spl {
 template<int DIM>
@@ -50,4 +50,4 @@ class XMLGenerator_B_Spline : public XMLGenerator_Spline<DIM> {
 };
 }  // namespace spl
 
-#endif  // SRC_SPL_XMLGENERATOR_B_SPLINE_H
+#endif  // SRC_SPL_XML_GENERATOR_B_SPLINE_H_

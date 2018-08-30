@@ -18,13 +18,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "pugixml.hpp"
 
-#include "xml_generator_b_spline.h"
+#include "xml_generator_nurbs.h"
 
 using testing::Test;
 
-class ABSplineXMLWriter : public Test {
+class ANURBSXMLWriter : public Test {
  public:
-  ABSplineXMLWriter() {
+  ANURBSXMLWriter() {
     std::array<baf::KnotVector, 1> knot_vector =
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})};
     degree_ = {1};
@@ -33,44 +33,45 @@ class ABSplineXMLWriter : public Test {
         baf::ControlPoint(std::vector<double>({0.0, 1.0})),
         baf::ControlPoint(std::vector<double>({1.0, 1.0}))
     };
-    physical_space = spl::PhysicalSpace<1>(control_points_, {3});
+    std::vector<double> weights = {2.0, 1.75, 0.36};
+    physical_space = spl::WeightedPhysicalSpace<1>(control_points_, weights, {3});
     parameter_space = spl::ParameterSpace<1>(knot_vector, degree_);
-    xml_generator = std::make_unique<spl::XMLGenerator_B_Spline<1>>(physical_space, parameter_space);
+    xml_generator = std::make_unique<spl::XMLGenerator_NURBS<1>>(physical_space, parameter_space);
   }
 
  protected:
-  std::unique_ptr<spl::XMLGenerator_B_Spline<1>> xml_generator;
-  spl::PhysicalSpace<1> physical_space;
+  std::unique_ptr<spl::XMLGenerator_NURBS<1>> xml_generator;
+  spl::WeightedPhysicalSpace<1> physical_space;
   spl::ParameterSpace<1> parameter_space;
   std::array<int, 1> degree_;
   std::vector<baf::ControlPoint> control_points_;
 };
 
-TEST_F(ABSplineXMLWriter, IsCreated) {
-  xml_generator->WriteXMLFile("bspline.xml");
+TEST_F(ANURBSXMLWriter, IsCreated) {
+  xml_generator->WriteXMLFile("nurbs.xml");
   std::ifstream newFile;
-  newFile.open("bspline.xml");
+  newFile.open("nurbs.xml");
   ASSERT_TRUE(newFile.is_open());
   newFile.close();
 }
 
-TEST_F(ABSplineXMLWriter, CreatesCorrectXMLFile) {
-  xml_generator->WriteXMLFile("bspline.xml");
+TEST_F(ANURBSXMLWriter, CreatesCorrectXMLFile) {
+  xml_generator->WriteXMLFile("nurbs.xml");
   pugi::xml_document doc;
-  pugi::xml_parse_result result = doc.load_file("bspline.xml");
+  pugi::xml_parse_result result = doc.load_file("nurbs.xml");
   ASSERT_STREQ(result.description(), "No error");
 }
 
-TEST_F(ABSplineXMLWriter, CreatesSplineList) {
-  xml_generator->WriteXMLFile("bspline.xml");
+TEST_F(ANURBSXMLWriter, CreatesSplineList) {
+  xml_generator->WriteXMLFile("nurbs.xml");
   pugi::xml_document doc;
-  doc.load_file("bspline.xml");
+  doc.load_file("nurbs.xml");
   ASSERT_STREQ(doc.first_child().name(), "SplineList");
 }
 
-TEST_F(ABSplineXMLWriter, CreatesSpline) {
-  xml_generator->WriteXMLFile("bspline.xml");
+TEST_F(ANURBSXMLWriter, CreatesSpline) {
+  xml_generator->WriteXMLFile("nurbs.xml");
   pugi::xml_document doc;
-  doc.load_file("bspline.xml");
+  doc.load_file("nurbs.xml");
   ASSERT_STREQ(doc.first_child().first_child().name(), "SplineEntry");
 }

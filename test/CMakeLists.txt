@@ -32,7 +32,8 @@ set(TEST_SOURCES
         parameter_space_test.cc
         physical_space_test.cc
         weighted_physical_space_test.cc
-        xml_writer_b_spline_test.cc)
+        xml_writer_b_spline_test.cc
+        xml_writer_nurbs_test.cc)
 
 find_package(GTest REQUIRED)
 

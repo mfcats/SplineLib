@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_XMLGENERATOR_SPLINE_H
-#define SRC_SPL_XMLGENERATOR_SPLINE_H
+#ifndef SRC_SPL_XML_GENERATOR_SPLINE_H_
+#define SRC_SPL_XML_GENERATOR_SPLINE_H_
 
 #include <string>
 
@@ -41,6 +41,16 @@ class XMLGenerator_Spline {
   virtual std::array<int, DIM> GetNumberOfPointsInEachDirection() = 0;
   virtual double GetControlPoint(std::array<int, DIM>, int dimension) = 0;
 
+  virtual void AddWeights(pugi::xml_node *spline) {}
+
+  template<class T>
+  std::string GetString(T value, int precision) const {
+    std::ostringstream out;
+    out << std::setprecision(precision) << value;
+    std::string string = std::to_string(value);
+    return string;
+  }
+
   std::shared_ptr<ParameterSpace<DIM>> parameter_space_ptr;
 
  private:
@@ -53,7 +63,7 @@ class XMLGenerator_Spline {
   void AddSplineAttributes(pugi::xml_node *spline) {
     spline->append_attribute("splDim") = DIM;
     spline->append_attribute("spaceDim") = GetSpaceDimension();
-    spline->append_attribute("numOfCntrlPntVars") = DIM;
+    spline->append_attribute("numOfCntrlPntVars") = GetSpaceDimension();
     spline->append_attribute("numCntrlPnts") = GetNumberOfControlPoints();
   }
 
@@ -62,6 +72,7 @@ class XMLGenerator_Spline {
     AddSplineAttributes(&spline);
     AddControlPointVarNames(&spline);
     AddControlPointVars(&spline);
+    AddWeights(&spline);
     AddDegrees(&spline);
     AddKnotVectors(&spline);
   }
@@ -78,9 +89,9 @@ class XMLGenerator_Spline {
   void AddControlPointVars(pugi::xml_node *spline) {
     pugi::xml_node values = spline->append_child("cntrlPntVars");
     std::string string;
-    util::MultiIndexHandler<DIM> basisFunctionHandler(GetNumberOfPointsInEachDirection());
-    for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
-      auto indices = basisFunctionHandler.GetIndices();
+    util::MultiIndexHandler<DIM> point_handler(GetNumberOfPointsInEachDirection());
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, point_handler++) {
+      auto indices = point_handler.GetIndices();
       string += "\n      ";
       for (int j = 0; j < GetSpaceDimension(); j++) {
         string += GetString(GetControlPoint(indices, j), 10) + "  ";
@@ -110,15 +121,7 @@ class XMLGenerator_Spline {
       knots.append_child(pugi::node_pcdata).text() = (string + "\n      ").c_str();
     }
   }
-
-  template<class T>
-  std::string GetString(T value, int precision) const {
-    std::ostringstream out;
-    out << std::setprecision(precision) << value;
-    std::string string = std::to_string(value);
-    return string;
-  }
 };
 }  // namespace spl
 
-#endif  // SRC_SPL_XMLGENERATOR_SPLINE_H
+#endif  // SRC_SPL_XML_GENERATOR_SPLINE_H_
