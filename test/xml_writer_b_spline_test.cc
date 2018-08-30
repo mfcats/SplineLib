@@ -13,7 +13,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include <fstream>
+
 #include "gmock/gmock.h"
+
+#include "pugixml.hpp"
 
 #include "XMLGenerator_B_Spline.h"
 
@@ -49,4 +52,25 @@ TEST_F(ABSplineXMLWriter, IsCreated) {
   newFile.open("bspline.xml");
   ASSERT_TRUE(newFile.is_open());
   newFile.close();
+}
+
+TEST_F(ABSplineXMLWriter, CreatesCorrectXMLFile) {
+  xml_generator->WriteXMLFile("bspline.xml");
+  pugi::xml_document doc;
+  pugi::xml_parse_result result = doc.load_file("bspline.xml");
+  ASSERT_STREQ(result.description(), "No error");
+}
+
+TEST_F(ABSplineXMLWriter, CreatesSplineList) {
+  xml_generator->WriteXMLFile("bspline.xml");
+  pugi::xml_document doc;
+  doc.load_file("bspline.xml");
+  ASSERT_STREQ(doc.first_child().name(), "SplineList");
+}
+
+TEST_F(ABSplineXMLWriter, CreatesSpline) {
+  xml_generator->WriteXMLFile("bspline.xml");
+  pugi::xml_document doc;
+  doc.load_file("bspline.xml");
+  ASSERT_STREQ(doc.first_child().first_child().name(), "SplineEntry");
 }

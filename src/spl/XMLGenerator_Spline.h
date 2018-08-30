@@ -30,7 +30,6 @@ class XMLGenerator_Spline {
   void WriteXMLFile(const char *filename) {
     pugi::xml_document doc;
     AddSplineList(&doc);
-    doc.print(std::cout, "  ");
     doc.save_file(filename, "  ", pugi::format_indent_attributes, pugi::encoding_utf8);
   }
 
@@ -84,7 +83,7 @@ class XMLGenerator_Spline {
       auto indices = basisFunctionHandler.GetIndices();
       string += "\n      ";
       for (int j = 0; j < GetSpaceDimension(); j++) {
-        string += GetString(GetControlPoint(indices, j), 10) + " ";
+        string += GetString(GetControlPoint(indices, j), 10) + "  ";
       }
     }
     values.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
