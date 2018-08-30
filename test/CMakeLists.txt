@@ -32,7 +32,8 @@ set(TEST_SOURCES
         parameter_space_test.cc
         physical_space_test.cc
         weighted_physical_space_test.cc
-        basis_function_factory.cc)
+        basis_function_factory.cc
+        element_integration_point_test.cc)
 
 
 find_package(GMock REQUIRED)
