@@ -22,10 +22,10 @@ using testing::DoubleEq;
 using testing::Test;
 
 class AElementIntegrationPoint : public Test{
-  public:
+   public:
     AElementIntegrationPoint() : basis_functions_({2.3, 4.5}), element_integration_point(basis_functions_) {}
 
-  protected:
+   protected:
     std::vector<double> basis_functions_;
     elm::ElementIntegrationPoint element_integration_point;
 };
