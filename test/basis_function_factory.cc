@@ -14,7 +14,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 #include <memory>
-
 #include "basis_function_factory.h"
 
 using testing::Test;
@@ -35,4 +34,3 @@ class ABasisFunctionFactory : public Test {
 TEST_F(ABasisFunctionFactory, throwsError) { //NOLINT
   ASSERT_THROW(basis_function_factory.CreateDynamic(knot_vector_, start_of_support_, degree_), std::runtime_error);
 }
-  
