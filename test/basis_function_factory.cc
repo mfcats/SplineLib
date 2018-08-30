@@ -12,8 +12,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
 #include <memory>
+
+#include "gmock/gmock.h"
+
 #include "basis_function_factory.h"
 
 using testing::Test;
