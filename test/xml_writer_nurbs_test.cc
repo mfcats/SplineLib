@@ -12,13 +12,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include "xml_generator_nurbs.h"
+
 #include <fstream>
 
 #include "gmock/gmock.h"
-
-#include "pugixml.hpp"
-
-#include "xml_generator_nurbs.h"
 
 using testing::Test;
 

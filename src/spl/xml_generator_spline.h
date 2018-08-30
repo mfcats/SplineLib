@@ -44,9 +44,8 @@ class XMLGenerator_Spline {
   virtual void AddWeights(pugi::xml_node *spline) {}
 
   template<class T>
-  std::string GetString(T value, int precision) const {
+  std::string GetString(T value) const {
     std::ostringstream out;
-    out << std::setprecision(precision) << value;
     std::string string = std::to_string(value);
     return string;
   }
@@ -94,7 +93,7 @@ class XMLGenerator_Spline {
       auto indices = point_handler.GetIndices();
       string += "\n      ";
       for (int j = 0; j < GetSpaceDimension(); j++) {
-        string += GetString(GetControlPoint(indices, j), 10) + "  ";
+        string += GetString(GetControlPoint(indices, j)) + "  ";
       }
     }
     values.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
@@ -104,7 +103,7 @@ class XMLGenerator_Spline {
     pugi::xml_node degrees = spline->append_child("deg");
     std::string string;
     for (int i = 0; i < DIM; i++) {
-      string = string + "\n      " + GetString(parameter_space_ptr->GetDegree(i), 1);
+      string = string + "\n      " + GetString(parameter_space_ptr->GetDegree(i));
     }
     degrees.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
@@ -116,7 +115,7 @@ class XMLGenerator_Spline {
       baf::KnotVector knot_vector = (*parameter_space_ptr).GetKnotVector(i);
       std::string string;
       for (ParamCoord knot : knot_vector) {
-        string += "\n        " + GetString(knot.get(), 10);
+        string += "\n        " + GetString(knot.get());
       }
       knots.append_child(pugi::node_pcdata).text() = (string + "\n      ").c_str();
     }

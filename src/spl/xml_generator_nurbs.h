@@ -15,6 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_XML_GENERATOR_NURBS_H_
 #define SRC_SPL_XML_GENERATOR_NURBS_H_
 
+#include <string>
+
 #include "pugixml.hpp"
 
 #include "weighted_physical_space.h"
@@ -44,7 +46,7 @@ class XMLGenerator_NURBS : public XMLGenerator_Spline<DIM> {
     for (int i = 0; i < weight_handler.Get1DLength(); ++i, weight_handler++) {
       auto indices = weight_handler.GetIndices();
       string += "\n      ";
-      string += this->GetString(GetWeight(indices), 10) + "  ";
+      string += this->GetString(GetWeight(indices)) + "  ";
     }
     weights.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
