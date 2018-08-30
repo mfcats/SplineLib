@@ -22,12 +22,12 @@ using testing::DoubleEq;
 using testing::Test;
 
 class AElementIntegrationPoint : public Test{
-   public:
-    AElementIntegrationPoint() : basis_functions_({2.3, 4.5}), element_integration_point(basis_functions_) {}
+ public:
+  AElementIntegrationPoint() : basis_functions_({2.3, 4.5}), element_integration_point(basis_functions_) {}
 
-   protected:
-    std::vector<double> basis_functions_;
-    elm::ElementIntegrationPoint element_integration_point;
+ protected:
+  std::vector<double> basis_functions_;
+  elm::ElementIntegrationPoint element_integration_point;
 };
 
 TEST_F(AElementIntegrationPoint, getNonZeroBasisFunctions) { //NOLINT

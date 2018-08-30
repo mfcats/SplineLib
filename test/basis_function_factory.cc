@@ -20,17 +20,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 
 class ABasisFunctionFactory : public Test {
-  public:
-    ABasisFunctionFactory() :
-      degree_{Degree{-1}},
+ public:
+  ABasisFunctionFactory() : degree_{Degree{-1}},
       knot_vector_({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
       start_of_support_{KnotSpan{4}} {}
 
-  protected:
-    Degree degree_;
-    baf::KnotVector knot_vector_;
-    KnotSpan start_of_support_;
-    baf::BasisFunctionFactory basis_function_factory;
+ protected:
+  Degree degree_;
+  baf::KnotVector knot_vector_;
+  KnotSpan start_of_support_;
+  baf::BasisFunctionFactory basis_function_factory;
 };
 
 TEST_F(ABasisFunctionFactory, throwsError) { //NOLINT
