@@ -57,6 +57,14 @@ class PhysicalSpace {
     return baf::ControlPoint(coordinates);
   }
 
+  int GetNumberOfControlPoints() {
+    return control_points_.size() / dimension_;
+  }
+
+  int GetDimension() {
+    return dimension_;
+  }
+
  protected:
   int dimension_;
   std::array<int, DIM> number_of_points_;
