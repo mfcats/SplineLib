@@ -45,7 +45,6 @@ class XMLGenerator_Spline {
 
   template<class T>
   std::string GetString(T value) const {
-    std::ostringstream out;
     std::string string = std::to_string(value);
     return string;
   }
