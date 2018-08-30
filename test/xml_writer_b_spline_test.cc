@@ -13,6 +13,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include <fstream>
+#include <stdio.h>
 
 #include "gmock/gmock.h"
 
@@ -52,6 +53,7 @@ TEST_F(ABSplineXMLWriter, IsCreated) {
   newFile.open("bspline.xml");
   ASSERT_TRUE(newFile.is_open());
   newFile.close();
+  remove("bspline.xml");
 }
 
 TEST_F(ABSplineXMLWriter, CreatesCorrectXMLFile) {
@@ -59,6 +61,7 @@ TEST_F(ABSplineXMLWriter, CreatesCorrectXMLFile) {
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file("bspline.xml");
   ASSERT_STREQ(result.description(), "No error");
+  remove("bspline.xml");
 }
 
 TEST_F(ABSplineXMLWriter, CreatesSplineList) {
@@ -66,6 +69,7 @@ TEST_F(ABSplineXMLWriter, CreatesSplineList) {
   pugi::xml_document doc;
   doc.load_file("bspline.xml");
   ASSERT_STREQ(doc.first_child().name(), "SplineList");
+  remove("bspline.xml");
 }
 
 TEST_F(ABSplineXMLWriter, CreatesSpline) {
@@ -73,4 +77,13 @@ TEST_F(ABSplineXMLWriter, CreatesSpline) {
   pugi::xml_document doc;
   doc.load_file("bspline.xml");
   ASSERT_STREQ(doc.first_child().first_child().name(), "SplineEntry");
+  remove("bspline.xml");
+}
+
+TEST_F(ABSplineXMLWriter, CreatesNoWeights) {
+  xml_generator->WriteXMLFile("bspline.xml");
+  pugi::xml_document doc;
+  doc.load_file("bspline.xml");
+  ASSERT_STREQ(doc.first_child().first_child().child("wght").name(), "");
+  remove("bspline.xml");
 }

@@ -53,6 +53,7 @@ TEST_F(ANURBSXMLWriter, IsCreated) {
   newFile.open("nurbs.xml");
   ASSERT_TRUE(newFile.is_open());
   newFile.close();
+  remove("nurbs.xml");
 }
 
 TEST_F(ANURBSXMLWriter, CreatesCorrectXMLFile) {
@@ -60,6 +61,7 @@ TEST_F(ANURBSXMLWriter, CreatesCorrectXMLFile) {
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file("nurbs.xml");
   ASSERT_STREQ(result.description(), "No error");
+  remove("nurbs.xml");
 }
 
 TEST_F(ANURBSXMLWriter, CreatesSplineList) {
@@ -67,6 +69,7 @@ TEST_F(ANURBSXMLWriter, CreatesSplineList) {
   pugi::xml_document doc;
   doc.load_file("nurbs.xml");
   ASSERT_STREQ(doc.first_child().name(), "SplineList");
+  remove("nurbs.xml");
 }
 
 TEST_F(ANURBSXMLWriter, CreatesSpline) {
@@ -74,4 +77,13 @@ TEST_F(ANURBSXMLWriter, CreatesSpline) {
   pugi::xml_document doc;
   doc.load_file("nurbs.xml");
   ASSERT_STREQ(doc.first_child().first_child().name(), "SplineEntry");
+  remove("nurbs.xml");
+}
+
+TEST_F(ANURBSXMLWriter, CreatesWeights) {
+  xml_generator->WriteXMLFile("nurbs.xml");
+  pugi::xml_document doc;
+  doc.load_file("nurbs.xml");
+  ASSERT_STREQ(doc.first_child().first_child().child("wght").name(), "wght");
+  remove("nurbs.xml");
 }
