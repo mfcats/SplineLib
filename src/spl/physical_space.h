@@ -61,6 +61,10 @@ class PhysicalSpace {
     return control_points_.size() / dimension_;
   }
 
+  std::array<int, DIM> GetNumberOfPointsInEachDirection() {
+    return number_of_points_;
+  }
+
   int GetDimension() {
     return dimension_;
   }

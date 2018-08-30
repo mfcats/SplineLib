@@ -39,8 +39,8 @@ class XMLGenerator_Spline {
  protected:
   virtual char GetNumberOfControlPoints() = 0;
   virtual char GetSpaceDimension() = 0;
-
-  // virtual const char *GetControlPoints() = 0;
+  virtual std::array<int, DIM> GetNumberOfPointsInEachDirection() = 0;
+  virtual double GetControlPoint(std::array<int, DIM>, int dimension) = 0;
 
   std::shared_ptr<ParameterSpace<DIM>> parameter_space_ptr;
 
@@ -78,6 +78,16 @@ class XMLGenerator_Spline {
 
   void AddControlPointVars(pugi::xml_node *spline) {
     pugi::xml_node values = spline->append_child("cntrlPntVars");
+    std::string string;
+    util::MultiIndexHandler<DIM> basisFunctionHandler(GetNumberOfPointsInEachDirection());
+    for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
+      auto indices = basisFunctionHandler.GetIndices();
+      string += "\n      ";
+      for (int j = 0; j < GetSpaceDimension(); j++) {
+        string += GetString(GetControlPoint(indices, j), 10) + " ";
+      }
+    }
+    values.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
 
   void AddDegrees(pugi::xml_node *spline) {

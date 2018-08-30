@@ -37,10 +37,13 @@ class XMLGenerator_B_Spline : public XMLGenerator_Spline<DIM> {
     return static_cast<char>(physical_space_ptr->GetDimension());
   }
 
-  /*const char *GetControlPoints() override {
-    std::string string;
-    util::MultiIndexHandler point_handler;
-  }*/
+  double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
+    return physical_space_ptr->GetControlPoint(indices).GetValue(dimension);
+  }
+
+  std::array<int, DIM> GetNumberOfPointsInEachDirection() override {
+    return physical_space_ptr->GetNumberOfPointsInEachDirection();
+  }
 
  private:
   std::shared_ptr<PhysicalSpace<DIM>> physical_space_ptr;
