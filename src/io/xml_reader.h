@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IO_XML_READER_H_
 #define SRC_IO_XML_READER_H_
 
+#include <any>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -30,7 +31,7 @@ class XMLReader {
  public:
   XMLReader() = default;
 
-  std::shared_ptr<spl::Spline<DIM>> ReadXMLFile(std::string filename) {
+  std::any ReadXMLFile(const std::string &filename) {
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(filename.c_str());
     if (!result) {
@@ -65,11 +66,11 @@ class XMLReader {
     }
     spl::PhysicalSpace<DIM> physical_space = spl::PhysicalSpace<DIM>(control_points_, number_of_control_points);
     if (spline.child("wght").empty()) {
-      return std::make_shared<spl::BSpline<DIM>>(parameterSpace, physical_space);
+      return std::make_any<spl::BSpline<DIM>>(parameterSpace, physical_space);
     } else {
       std::vector<double> weights = StringVectorToDoubleVector(split(spline.child("wght").first_child().value()));
       spl::WeightedPhysicalSpace<DIM> weightedPhysicalSpace(control_points_, weights, number_of_control_points);
-      return std::make_shared<spl::NURBS<DIM>>(parameterSpace, weightedPhysicalSpace);
+      return std::make_any<spl::NURBS<DIM>>(parameterSpace, weightedPhysicalSpace);
     }
   }
 

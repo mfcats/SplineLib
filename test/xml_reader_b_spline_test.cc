@@ -31,10 +31,12 @@ class ABSplineXMLReader : public Test {
 };
 
 TEST_F(ABSplineXMLReader, OpensFile) {  // NOLINT
-  xml_reader->ReadXMLFile(path_to_xml_file);
-  ASSERT_THAT(xml_reader->ReadXMLFile(path_to_xml_file)->GetDegree(0), 2);
-  ASSERT_THAT(xml_reader->ReadXMLFile(path_to_xml_file)->GetDegree(1), 2);
-  ASSERT_THAT(xml_reader->ReadXMLFile(path_to_xml_file)->GetKnotVector(0).GetKnot(3).get(), DoubleEq(0.0625));
-  ASSERT_THAT(xml_reader->ReadXMLFile(path_to_xml_file)->GetKnotVector(1).GetKnot(3).get(), DoubleEq(0.125));
-  ASSERT_THAT(xml_reader->ReadXMLFile(path_to_xml_file)->Evaluate({ParamCoord(1), ParamCoord(1)}, {1})[0], DoubleEq(1));
+  ASSERT_THAT(std::any_cast<spl::NURBS<2>>(xml_reader->ReadXMLFile(path_to_xml_file)).GetDegree(0), 2);
+  ASSERT_THAT(std::any_cast<spl::NURBS<2>>(xml_reader->ReadXMLFile(path_to_xml_file)).GetDegree(1), 2);
+  ASSERT_THAT(std::any_cast<spl::NURBS<2>>(xml_reader->ReadXMLFile(path_to_xml_file)).GetKnotVector(0).GetKnot(3).get(),
+              DoubleEq(0.0625));
+  ASSERT_THAT(std::any_cast<spl::NURBS<2>>(xml_reader->ReadXMLFile(path_to_xml_file)).GetKnotVector(1).GetKnot(3).get(),
+              DoubleEq(0.125));
+  ASSERT_THAT(std::any_cast<spl::NURBS<2>>(xml_reader->ReadXMLFile(path_to_xml_file)).Evaluate(
+      {ParamCoord(1), ParamCoord(1)}, {1})[0], DoubleEq(1));
 }
