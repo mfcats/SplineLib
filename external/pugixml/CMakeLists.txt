@@ -14,14 +14,13 @@
 #
 
 set(SOURCES
-        square_generator.cc)
+        pugixml.cpp)
 
-add_library(splinelibspl SHARED ${SOURCES})
-target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibspl splinelibitg splinelibelm pugixmllib)
+add_library(pugixmllib SHARED ${SOURCES})
+target_include_directories(pugixmllib PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 install(
-        TARGETS splinelibspl
+        TARGETS pugixmllib
         EXPORT "${targets_export_name}"
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
@@ -31,14 +30,6 @@ install(
 
 
 install(FILES
-        parameter_space.h
-        physical_space.h
-        weighted_physical_space.h
-        spline.h
-        b_spline.h
-        nurbs.h
-        projection.h
-        square_generator.h
+        pugiconfig.hpp
+        pugixml.hpp
         DESTINATION "${include_install_dir}")
-
-
