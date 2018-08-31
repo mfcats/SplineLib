@@ -23,6 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "pugixml.hpp"
 
 #include "b_spline.h"
+#include "nurbs.h"
 
 namespace spl {
 template<int DIM>
@@ -36,7 +37,7 @@ class XMLGenerator_Spline {
     doc.save_file(filename, "  ", pugi::format_indent_attributes, pugi::encoding_utf8);
   }
 
-  std::shared_ptr<BSpline<DIM>> ReadXMLFile(const char *filename) {
+  std::shared_ptr<Spline<DIM>> ReadXMLFile(const char *filename) {
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(filename);
     if (!result) {
@@ -57,7 +58,6 @@ class XMLGenerator_Spline {
       knot_vector[i] = StringVectorToKnotVector(split(child.first_child().value()));
     }
     ParameterSpace<DIM> parameterSpace = ParameterSpace<DIM>(knot_vector, degree);
-    // std::vector<double> weights;
     int dim = std::stoi(spline.attribute("spaceDim").value());
     std::vector<double>
         control_point_vars = StringVectorToDoubleVector(split(spline.child("cntrlPntVars").first_child().value()));
@@ -72,8 +72,13 @@ class XMLGenerator_Spline {
       number_of_control_points[i] = knot_vector[i].GetNumberOfKnots() - degree[i] - 1;
     }
     spl::PhysicalSpace<DIM> physical_space = spl::PhysicalSpace<DIM>(control_points_, number_of_control_points);
-    std::shared_ptr<BSpline<DIM>> b_spline = std::make_shared<BSpline<DIM>>(parameterSpace, physical_space);
-    return b_spline;
+    if (spline.child("wght").empty()) {
+      return std::make_shared<BSpline<DIM>>(parameterSpace, physical_space);
+    } else {
+      std::vector<double> weights = StringVectorToDoubleVector(split(spline.child("wght").first_child().value()));
+      spl::WeightedPhysicalSpace<DIM> weightedPhysicalSpace(control_points_, weights, number_of_control_points);
+      return std::make_shared<NURBS<DIM>>(parameterSpace, weightedPhysicalSpace);
+    }
   }
 
  protected:
