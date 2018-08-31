@@ -21,4 +21,4 @@ WORKDIR /code/build-clang-tidy
 RUN ln -s ../.oclint .
 
 # execute clang-tidy
-CMD oclint-json-compilation-database -- -enable-clang-static-analyzer -enable-global-analysis -max-priority-1=0 -max-priority-2=0 -max-priority-3=0 -e external/*
+CMD oclint-json-compilation-database -e external/* -- -enable-clang-static-analyzer -enable-global-analysis -max-priority-1=0 -max-priority-2=0 -max-priority-3=0
