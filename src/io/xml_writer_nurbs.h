@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IO_WRITER_NURBS_H_
-#define SRC_IO_WRITER_NURBS_H_
+#ifndef SRC_IO_XML_WRITER_NURBS_H_
+#define SRC_IO_XML_WRITER_NURBS_H_
 
 #include <string>
 
