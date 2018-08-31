@@ -8,9 +8,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_CONFIG_IN_H
-#define SPLINELIB_CONFIG_IN_H
+#ifndef TEST_CONFIG_IN_H_
+#define TEST_CONFIG_IN_H_
 
-const std::string path_to_xml_file = "@PATH_TO_XML_FILE@";
+const char path_to_xml_file[] = "@PATH_TO_XML_FILE@";
 
-#endif //SPLINELIB_CONFIG_IN_H
+#endif  // TEST_CONFIG_IN_H_
