@@ -30,6 +30,7 @@ class XMLWriterNURBS : public XMLWriterSpline<DIM> {
     this->parameter_space_ptr = std::make_shared<spl::ParameterSpace<DIM>>(parameter_space);
   }
 
+ private:
   char GetNumberOfControlPoints() override {
     return static_cast<char>(physical_space_ptr->GetNumberOfControlPoints());
   }
@@ -62,7 +63,6 @@ class XMLWriterNURBS : public XMLWriterSpline<DIM> {
     return physical_space_ptr->GetNumberOfPointsInEachDirection();
   }
 
- private:
   std::shared_ptr<spl::WeightedPhysicalSpace<DIM>> physical_space_ptr;
 };
 }  // namespace io

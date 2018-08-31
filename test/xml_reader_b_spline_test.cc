@@ -14,6 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "xml_reader.h"
 
+#include <config.h>
 #include <fstream>
 
 #include "gmock/gmock.h"
@@ -26,15 +27,14 @@ class ABSplineXMLReader : public Test {
   ABSplineXMLReader() : xml_reader(std::make_unique<io::XMLReader<2>>()) {}
 
  protected:
-  const char *file = "spline_tank.xml";
   std::unique_ptr<io::XMLReader<2>> xml_reader;
 };
 
 TEST_F(ABSplineXMLReader, OpensFile) {  // NOLINT
-  xml_reader->ReadXMLFile(file);
-  ASSERT_THAT(xml_reader->ReadXMLFile(file)->GetDegree(0), 2);
-  ASSERT_THAT(xml_reader->ReadXMLFile(file)->GetDegree(1), 2);
-  ASSERT_THAT(xml_reader->ReadXMLFile(file)->GetKnotVector(0).GetKnot(3).get(), DoubleEq(0.0625));
-  ASSERT_THAT(xml_reader->ReadXMLFile(file)->GetKnotVector(1).GetKnot(3).get(), DoubleEq(0.125));
-  ASSERT_THAT(xml_reader->ReadXMLFile(file)->Evaluate({ParamCoord(1), ParamCoord(1)}, {1})[0], DoubleEq(1));
+  xml_reader->ReadXMLFile(path_to_xml_file);
+  ASSERT_THAT(xml_reader->ReadXMLFile(path_to_xml_file)->GetDegree(0), 2);
+  ASSERT_THAT(xml_reader->ReadXMLFile(path_to_xml_file)->GetDegree(1), 2);
+  ASSERT_THAT(xml_reader->ReadXMLFile(path_to_xml_file)->GetKnotVector(0).GetKnot(3).get(), DoubleEq(0.0625));
+  ASSERT_THAT(xml_reader->ReadXMLFile(path_to_xml_file)->GetKnotVector(1).GetKnot(3).get(), DoubleEq(0.125));
+  ASSERT_THAT(xml_reader->ReadXMLFile(path_to_xml_file)->Evaluate({ParamCoord(1), ParamCoord(1)}, {1})[0], DoubleEq(1));
 }

@@ -79,7 +79,9 @@ class XMLWriterSpline {
 
   void AddControlPointVarNames(pugi::xml_node *spline) {
     pugi::xml_node names = spline->append_child("cntrlPntVarNames");
-    if (GetSpaceDimension() == 2) {
+    if (GetSpaceDimension() == 1) {
+      names.append_child(pugi::node_pcdata).set_value("\n      x\n    ");
+    } else if (GetSpaceDimension() == 2) {
       names.append_child(pugi::node_pcdata).set_value("\n      x y\n    ");
     } else if (GetSpaceDimension() == 3) {
       names.append_child(pugi::node_pcdata).set_value("\n      x y z\n    ");

@@ -15,9 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IO_XML_READER_H_
 #define SRC_IO_XML_READER_H_
 
-#include <string>
 #include <sstream>
-#include <iostream>
+#include <string>
 #include <vector>
 
 #include "pugixml.hpp"
@@ -31,11 +30,10 @@ class XMLReader {
  public:
   XMLReader() = default;
 
-  std::shared_ptr<spl::Spline<DIM>> ReadXMLFile(const char *filename) {
+  std::shared_ptr<spl::Spline<DIM>> ReadXMLFile(std::string filename) {
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(filename);
+    pugi::xml_parse_result result = doc.load_file(filename.c_str());
     if (!result) {
-      std::cout << result.description();
       throw std::runtime_error("File couldn't be loaded.");
     }
     pugi::xml_node spline = doc.child("SplineList").first_child();
@@ -93,7 +91,7 @@ class XMLReader {
   std::vector<double> StringVectorToDoubleVector(const std::vector<std::string> &string_vector) {
     std::vector<double> converted;
     for (const std::string &string : string_vector) {
-      converted.push_back(atof(string.c_str()));
+      converted.push_back(strtod(string.c_str(), nullptr));
     }
     return converted;
   }
@@ -109,12 +107,12 @@ class XMLReader {
   baf::KnotVector StringVectorToKnotVector(const std::vector<std::string> &string_vector) {
     std::vector<ParamCoord> converted;
     for (const std::string &string : string_vector) {
-      converted.emplace_back(atof(string.c_str()));
+      converted.emplace_back(strtod(string.c_str(), nullptr));
     }
     return baf::KnotVector(converted);
   }
 
-  int FindCoordinatePosition(std::string string) {
+  int FindCoordinatePosition(const std::string &string) {
     std::vector<std::string> vars = split(string);
     for (int i = 0; i < vars.size(); i++) {
       if (vars[i] == "x") {

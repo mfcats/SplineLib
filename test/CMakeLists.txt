@@ -47,3 +47,7 @@ add_executable(AcceptanceTests ${ACCEPTANCE_TEST_SOURCES})
 target_link_libraries(AcceptanceTests splinelibbaf splinelibspl splinelibutil)
 
 target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
+
+set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/spline_tank.xml)
+configure_file(config.in.h ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
