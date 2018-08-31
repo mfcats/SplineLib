@@ -16,10 +16,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_SPL_XML_GENERATOR_SPLINE_H_
 
 #include <string>
+#include <sstream>
+#include <iostream>
+#include <vector>
 
 #include "pugixml.hpp"
 
-#include "parameter_space.h"
+#include "b_spline.h"
 
 namespace spl {
 template<int DIM>
@@ -33,7 +36,45 @@ class XMLGenerator_Spline {
     doc.save_file(filename, "  ", pugi::format_indent_attributes, pugi::encoding_utf8);
   }
 
-  void ReadXMLFile(const std::string &filename) {}
+  std::shared_ptr<BSpline<DIM>> ReadXMLFile(const char *filename) {
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file(filename);
+    if (!result) {
+      std::cout << result.description();
+      throw std::runtime_error("File couldn't be loaded.");
+    }
+    pugi::xml_node spline = doc.child("SplineList").first_child();
+    std::array<int, DIM> degree = StringVectorToIntArray(split(spline.child("deg").first_child().value()));
+    std::array<baf::KnotVector, DIM> knot_vector;
+    for (int i = 0; i < DIM; i++) {
+      knot_vector[i] = baf::KnotVector({ParamCoord(0.5)});
+    }
+    for (int i = 0; i < DIM; i++) {
+      pugi::xml_node child = spline.child("kntVecs").first_child();
+      for (int j = 0; j < i; j++) {
+        child = child.next_sibling();
+      }
+      knot_vector[i] = StringVectorToKnotVector(split(child.first_child().value()));
+    }
+    ParameterSpace<DIM> parameterSpace = ParameterSpace<DIM>(knot_vector, degree);
+    // std::vector<double> weights;
+    int dim = std::stoi(spline.attribute("spaceDim").value());
+    std::vector<double>
+        control_point_vars = StringVectorToDoubleVector(split(spline.child("cntrlPntVars").first_child().value()));
+    std::string var_names = spline.child("cntrlPntVarNames").first_child().value();
+    int dimension = std::stoi(spline.attribute("spaceDim").value());
+    int numberOfVars = std::stoi(spline.attribute("numOfCntrlPntVars").value());
+    std::vector<baf::ControlPoint> control_points_ =
+        GetControlPoints(control_point_vars, FindCoordinatePosition(var_names), dimension, numberOfVars);
+    std::array<int, DIM> number_of_control_points;
+    for (int i = 0; i < DIM; i++) {
+      auto h = knot_vector[i].GetNumberOfKnots() - degree[i] - 1;
+      number_of_control_points[i] = knot_vector[i].GetNumberOfKnots() - degree[i] - 1;
+    }
+    spl::PhysicalSpace<DIM> physical_space = spl::PhysicalSpace<DIM>(control_points_, number_of_control_points);
+    std::shared_ptr<BSpline<DIM>> b_spline = std::make_shared<BSpline<DIM>>(parameterSpace, physical_space);
+    return b_spline;
+  }
 
  protected:
   virtual char GetNumberOfControlPoints() = 0;
@@ -118,6 +159,69 @@ class XMLGenerator_Spline {
       }
       knots.append_child(pugi::node_pcdata).text() = (string + "\n      ").c_str();
     }
+  }
+
+  std::vector<std::string> split(const std::string &string) {
+    std::stringstream ss(string);
+    std::string line;
+    std::string value;
+    std::vector<std::string> splitted;
+    while (std::getline(ss, line)) {
+      std::stringstream test(line);
+      while (std::getline(test, value, ' ')) {
+        if (!value.empty()) splitted.push_back(value);
+      }
+    }
+    return splitted;
+  }
+
+  std::vector<double> StringVectorToDoubleVector(const std::vector<std::string> &string_vector) {
+    std::vector<double> converted;
+    for (const std::string &string : string_vector) {
+      converted.push_back(atof(string.c_str()));
+    }
+    return converted;
+  }
+
+  std::array<int, DIM> StringVectorToIntArray(const std::vector<std::string> &string_vector) {
+    std::array<int, DIM> converted;
+    for (int i = 0; i < DIM; i++) {
+      converted[i] = std::stoi(string_vector[i]);
+    }
+    return converted;
+  }
+
+  baf::KnotVector StringVectorToKnotVector(const std::vector<std::string> &string_vector) {
+    std::vector<ParamCoord> converted;
+    for (const std::string &string : string_vector) {
+      converted.emplace_back(atof(string.c_str()));
+    }
+    return baf::KnotVector(converted);
+  }
+
+  int FindCoordinatePosition(std::string string) {
+    std::vector<std::string> vars = split(string);
+    for (int i = 0; i < vars.size(); i++) {
+      if (vars[i] == "x") {
+        return i;
+      }
+    }
+    return 0;
+  }
+
+  std::vector<baf::ControlPoint> GetControlPoints(std::vector<double> vars,
+                                                  int start,
+                                                  int dimension,
+                                                  int numberOfVars) {
+    std::vector<baf::ControlPoint> points;
+    for (int i = 0; i < vars.size() / numberOfVars; i++) {
+      std::vector<double> coordinates;
+      for (int j = start; j < start + dimension; j++) {
+        coordinates.push_back(vars[i * numberOfVars + j]);
+      }
+      points.emplace_back(coordinates);
+    }
+    return points;
   }
 };
 }  // namespace spl

@@ -24,9 +24,14 @@ namespace spl {
 template<int DIM>
 class XMLGenerator_B_Spline : public XMLGenerator_Spline<DIM> {
  public:
-  explicit XMLGenerator_B_Spline(PhysicalSpace<DIM> physical_space, ParameterSpace<DIM> parameter_space) {
+  XMLGenerator_B_Spline(PhysicalSpace<DIM> physical_space, ParameterSpace<DIM> parameter_space) {
     this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(physical_space);
     this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(parameter_space);
+  }
+
+  XMLGenerator_B_Spline() {
+    this->physical_space_ptr = nullptr;
+    this->parameter_space_ptr = nullptr;
   }
 
   char GetNumberOfControlPoints() override {
