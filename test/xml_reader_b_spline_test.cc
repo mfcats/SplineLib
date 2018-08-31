@@ -12,7 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "xml_generator_b_spline.h"
+#include "xml_reader.h"
 
 #include <fstream>
 
@@ -23,20 +23,18 @@ using testing::DoubleEq;
 
 class ABSplineXMLReader : public Test {
  public:
-  ABSplineXMLReader() {
-    xml_generator = std::make_unique<spl::XMLGenerator_B_Spline<2>>();
-  }
+  ABSplineXMLReader() : xml_reader(std::make_unique<io::XMLReader<2>>()) {}
 
  protected:
   const char *file = "spline_tank.xml";
-  std::unique_ptr<spl::XMLGenerator_B_Spline<2>> xml_generator;
+  std::unique_ptr<io::XMLReader<2>> xml_reader;
 };
 
-TEST_F(ABSplineXMLReader, OpensFile) {
-  xml_generator->ReadXMLFile(file);
-  ASSERT_THAT(xml_generator->ReadXMLFile(file)->GetDegree(0), 2);
-  ASSERT_THAT(xml_generator->ReadXMLFile(file)->GetDegree(1), 2);
-  ASSERT_THAT(xml_generator->ReadXMLFile(file)->GetKnotVector(0).GetKnot(3).get(), DoubleEq(0.0625));
-  ASSERT_THAT(xml_generator->ReadXMLFile(file)->GetKnotVector(1).GetKnot(3).get(), DoubleEq(0.125));
-  ASSERT_THAT(xml_generator->ReadXMLFile(file)->Evaluate({ParamCoord(1), ParamCoord(1)}, {1})[0], DoubleEq(1));
+TEST_F(ABSplineXMLReader, OpensFile) {  // NOLINT
+  xml_reader->ReadXMLFile(file);
+  ASSERT_THAT(xml_reader->ReadXMLFile(file)->GetDegree(0), 2);
+  ASSERT_THAT(xml_reader->ReadXMLFile(file)->GetDegree(1), 2);
+  ASSERT_THAT(xml_reader->ReadXMLFile(file)->GetKnotVector(0).GetKnot(3).get(), DoubleEq(0.0625));
+  ASSERT_THAT(xml_reader->ReadXMLFile(file)->GetKnotVector(1).GetKnot(3).get(), DoubleEq(0.125));
+  ASSERT_THAT(xml_reader->ReadXMLFile(file)->Evaluate({ParamCoord(1), ParamCoord(1)}, {1})[0], DoubleEq(1));
 }

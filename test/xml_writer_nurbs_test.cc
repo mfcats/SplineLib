@@ -12,7 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "xml_generator_nurbs.h"
+#include "xml_writer_nurbs.h"
 
 #include <fstream>
 
@@ -34,11 +34,11 @@ class ANURBSXMLWriter : public Test {
     std::vector<double> weights = {2.0, 1.75, 0.36};
     physical_space = spl::WeightedPhysicalSpace<1>(control_points_, weights, {3});
     parameter_space = spl::ParameterSpace<1>(knot_vector, degree_);
-    xml_generator = std::make_unique<spl::XMLGenerator_NURBS<1>>(physical_space, parameter_space);
+    xml_writer = std::make_unique<io::XMLWriterNURBS<1>>(physical_space, parameter_space);
   }
 
  protected:
-  std::unique_ptr<spl::XMLGenerator_NURBS<1>> xml_generator;
+  std::unique_ptr<io::XMLWriterNURBS<1>> xml_writer;
   spl::WeightedPhysicalSpace<1> physical_space;
   spl::ParameterSpace<1> parameter_space;
   std::array<int, 1> degree_;
@@ -46,7 +46,7 @@ class ANURBSXMLWriter : public Test {
 };
 
 TEST_F(ANURBSXMLWriter, IsCreated) {  // NOLINT
-  xml_generator->WriteXMLFile("nurbs.xml");
+  xml_writer->WriteXMLFile("nurbs.xml");
   std::ifstream newFile;
   newFile.open("nurbs.xml");
   ASSERT_TRUE(newFile.is_open());
@@ -55,7 +55,7 @@ TEST_F(ANURBSXMLWriter, IsCreated) {  // NOLINT
 }
 
 TEST_F(ANURBSXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
-  xml_generator->WriteXMLFile("nurbs.xml");
+  xml_writer->WriteXMLFile("nurbs.xml");
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file("nurbs.xml");
   ASSERT_STREQ(result.description(), "No error");
@@ -63,7 +63,7 @@ TEST_F(ANURBSXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
 }
 
 TEST_F(ANURBSXMLWriter, CreatesSplineList) {  // NOLINT
-  xml_generator->WriteXMLFile("nurbs.xml");
+  xml_writer->WriteXMLFile("nurbs.xml");
   pugi::xml_document doc;
   doc.load_file("nurbs.xml");
   ASSERT_STREQ(doc.first_child().name(), "SplineList");
@@ -71,7 +71,7 @@ TEST_F(ANURBSXMLWriter, CreatesSplineList) {  // NOLINT
 }
 
 TEST_F(ANURBSXMLWriter, CreatesSpline) {  // NOLINT
-  xml_generator->WriteXMLFile("nurbs.xml");
+  xml_writer->WriteXMLFile("nurbs.xml");
   pugi::xml_document doc;
   doc.load_file("nurbs.xml");
   ASSERT_STREQ(doc.first_child().first_child().name(), "SplineEntry");
@@ -79,7 +79,7 @@ TEST_F(ANURBSXMLWriter, CreatesSpline) {  // NOLINT
 }
 
 TEST_F(ANURBSXMLWriter, CreatesWeights) {  // NOLINT
-  xml_generator->WriteXMLFile("nurbs.xml");
+  xml_writer->WriteXMLFile("nurbs.xml");
   pugi::xml_document doc;
   doc.load_file("nurbs.xml");
   ASSERT_STREQ(doc.first_child().first_child().child("wght").name(), "wght");
@@ -104,11 +104,11 @@ class A2DNURBSXMLWriter : public Test {
     std::vector<double> weights = {2.0, 1.75, 0.36, 1.0, 1.0, 0.05};
     physical_space = spl::WeightedPhysicalSpace<2>(control_points_, weights, {3, 2});
     parameter_space = spl::ParameterSpace<2>(knot_vector, degree_);
-    xml_generator = std::make_unique<spl::XMLGenerator_NURBS<2>>(physical_space, parameter_space);
+    xml_writer = std::make_unique<io::XMLWriterNURBS<2>>(physical_space, parameter_space);
   }
 
  protected:
-  std::unique_ptr<spl::XMLGenerator_NURBS<2>> xml_generator;
+  std::unique_ptr<io::XMLWriterNURBS<2>> xml_writer;
   spl::WeightedPhysicalSpace<2> physical_space;
   spl::ParameterSpace<2> parameter_space;
   std::array<int, 2> degree_;
@@ -116,7 +116,7 @@ class A2DNURBSXMLWriter : public Test {
 };
 
 TEST_F(A2DNURBSXMLWriter, IsCreated) {  // NOLINT
-  xml_generator->WriteXMLFile("2d_nurbs.xml");
+  xml_writer->WriteXMLFile("2d_nurbs.xml");
   std::ifstream newFile;
   newFile.open("2d_nurbs.xml");
   ASSERT_TRUE(newFile.is_open());
@@ -125,7 +125,7 @@ TEST_F(A2DNURBSXMLWriter, IsCreated) {  // NOLINT
 }
 
 TEST_F(A2DNURBSXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
-  xml_generator->WriteXMLFile("2d_nurbs.xml");
+  xml_writer->WriteXMLFile("2d_nurbs.xml");
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file("2d_nurbs.xml");
   ASSERT_STREQ(result.description(), "No error");

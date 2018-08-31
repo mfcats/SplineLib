@@ -14,14 +14,18 @@
 #
 
 set(SOURCES
-        square_generator.cc)
+        xml_reader.cc
+        xml_writer_spline.h
+        xml_writer_b_spline.h
+        xml_writer_nurbs.h
+        xml_reader.h)
 
-add_library(splinelibspl SHARED ${SOURCES})
-target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibspl splinelibitg splinelibelm)
+add_library(splinelibio SHARED ${SOURCES})
+target_include_directories(splinelibio PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(splinelibio splinelibspl pugixmllib)
 
 install(
-        TARGETS splinelibspl
+        TARGETS splinelibio
         EXPORT "${targets_export_name}"
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
@@ -31,14 +35,8 @@ install(
 
 
 install(FILES
-        parameter_space.h
-        physical_space.h
-        weighted_physical_space.h
-        spline.h
-        b_spline.h
-        nurbs.h
-        projection.h
-        square_generator.h
+        xml_reader.h
+        xml_writer_spline.h
+        xml_writer_b_spline.h
+        xml_writer_nurbs.h
         DESTINATION "${include_install_dir}")
-
-

@@ -39,7 +39,7 @@ set(TEST_SOURCES
 find_package(GTest REQUIRED)
 
 add_executable(SplineLibTests ${TEST_SOURCES})
-target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil GTest::Main)
+target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil splinelibio GTest::Main)
 
 set(ACCEPTANCE_TEST_SOURCES
         acceptance_tests.cc)

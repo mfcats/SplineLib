@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_XML_GENERATOR_SPLINE_H_
-#define SRC_SPL_XML_GENERATOR_SPLINE_H_
+#ifndef SRC_IO_XML_READER_H_
+#define SRC_IO_XML_READER_H_
 
 #include <string>
 #include <sstream>
@@ -25,19 +25,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 #include "nurbs.h"
 
-namespace spl {
+namespace io {
 template<int DIM>
-class XMLGenerator_Spline {
+class XMLReader {
  public:
-  XMLGenerator_Spline() = default;
+  XMLReader() = default;
 
-  void WriteXMLFile(const char *filename) {
-    pugi::xml_document doc;
-    AddSplineList(&doc);
-    doc.save_file(filename, "  ", pugi::format_indent_attributes, pugi::encoding_utf8);
-  }
-
-  std::shared_ptr<Spline<DIM>> ReadXMLFile(const char *filename) {
+  std::shared_ptr<spl::Spline<DIM>> ReadXMLFile(const char *filename) {
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(filename);
     if (!result) {
@@ -57,7 +51,7 @@ class XMLGenerator_Spline {
       }
       knot_vector[i] = StringVectorToKnotVector(split(child.first_child().value()));
     }
-    ParameterSpace<DIM> parameterSpace = ParameterSpace<DIM>(knot_vector, degree);
+    spl::ParameterSpace<DIM> parameterSpace = spl::ParameterSpace<DIM>(knot_vector, degree);
     int dim = std::stoi(spline.attribute("spaceDim").value());
     std::vector<double>
         control_point_vars = StringVectorToDoubleVector(split(spline.child("cntrlPntVars").first_child().value()));
@@ -73,99 +67,15 @@ class XMLGenerator_Spline {
     }
     spl::PhysicalSpace<DIM> physical_space = spl::PhysicalSpace<DIM>(control_points_, number_of_control_points);
     if (spline.child("wght").empty()) {
-      return std::make_shared<BSpline<DIM>>(parameterSpace, physical_space);
+      return std::make_shared<spl::BSpline<DIM>>(parameterSpace, physical_space);
     } else {
       std::vector<double> weights = StringVectorToDoubleVector(split(spline.child("wght").first_child().value()));
       spl::WeightedPhysicalSpace<DIM> weightedPhysicalSpace(control_points_, weights, number_of_control_points);
-      return std::make_shared<NURBS<DIM>>(parameterSpace, weightedPhysicalSpace);
+      return std::make_shared<spl::NURBS<DIM>>(parameterSpace, weightedPhysicalSpace);
     }
   }
-
- protected:
-  virtual char GetNumberOfControlPoints() = 0;
-  virtual char GetSpaceDimension() = 0;
-  virtual std::array<int, DIM> GetNumberOfPointsInEachDirection() = 0;
-  virtual double GetControlPoint(std::array<int, DIM>, int dimension) = 0;
-
-  virtual void AddWeights(pugi::xml_node *spline) {}
-
-  template<class T>
-  std::string GetString(T value) const {
-    std::string string = std::to_string(value);
-    return string;
-  }
-
-  std::shared_ptr<ParameterSpace<DIM>> parameter_space_ptr;
 
  private:
-  void AddSplineList(pugi::xml_document *doc) {
-    pugi::xml_node spline_list = doc->append_child("SplineList");
-    spline_list.append_attribute("NumberOfSplines") = "1";
-    AddSpline(&spline_list);
-  }
-
-  void AddSplineAttributes(pugi::xml_node *spline) {
-    spline->append_attribute("splDim") = DIM;
-    spline->append_attribute("spaceDim") = GetSpaceDimension();
-    spline->append_attribute("numOfCntrlPntVars") = GetSpaceDimension();
-    spline->append_attribute("numCntrlPnts") = GetNumberOfControlPoints();
-  }
-
-  void AddSpline(pugi::xml_node *spline_list) {
-    pugi::xml_node spline = spline_list->append_child("SplineEntry");
-    AddSplineAttributes(&spline);
-    AddControlPointVarNames(&spline);
-    AddControlPointVars(&spline);
-    AddWeights(&spline);
-    AddDegrees(&spline);
-    AddKnotVectors(&spline);
-  }
-
-  void AddControlPointVarNames(pugi::xml_node *spline) {
-    pugi::xml_node names = spline->append_child("cntrlPntVarNames");
-    if (GetSpaceDimension() == 2) {
-      names.append_child(pugi::node_pcdata).set_value("\n      x y\n    ");
-    } else if (GetSpaceDimension() == 3) {
-      names.append_child(pugi::node_pcdata).set_value("\n      x y z\n    ");
-    }
-  }
-
-  void AddControlPointVars(pugi::xml_node *spline) {
-    pugi::xml_node values = spline->append_child("cntrlPntVars");
-    std::string string;
-    util::MultiIndexHandler<DIM> point_handler(GetNumberOfPointsInEachDirection());
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, point_handler++) {
-      auto indices = point_handler.GetIndices();
-      string += "\n      ";
-      for (int j = 0; j < GetSpaceDimension(); j++) {
-        string += GetString(GetControlPoint(indices, j)) + "  ";
-      }
-    }
-    values.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
-  }
-
-  void AddDegrees(pugi::xml_node *spline) {
-    pugi::xml_node degrees = spline->append_child("deg");
-    std::string string;
-    for (int i = 0; i < DIM; i++) {
-      string = string + "\n      " + GetString(parameter_space_ptr->GetDegree(i));
-    }
-    degrees.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
-  }
-
-  void AddKnotVectors(pugi::xml_node *spline) {
-    pugi::xml_node knot_vectors = spline->append_child("kntVecs");
-    for (int i = 0; i < DIM; i++) {
-      pugi::xml_node knots = knot_vectors.append_child("kntVec");
-      baf::KnotVector knot_vector = (*parameter_space_ptr).GetKnotVector(i);
-      std::string string;
-      for (ParamCoord knot : knot_vector) {
-        string += "\n        " + GetString(knot.get());
-      }
-      knots.append_child(pugi::node_pcdata).text() = (string + "\n      ").c_str();
-    }
-  }
-
   std::vector<std::string> split(const std::string &string) {
     std::stringstream ss(string);
     std::string line;
@@ -229,6 +139,6 @@ class XMLGenerator_Spline {
     return points;
   }
 };
-}  // namespace spl
+}  // namespace io
 
-#endif  // SRC_SPL_XML_GENERATOR_SPLINE_H_
+#endif  // SRC_IO_XML_READER_H_

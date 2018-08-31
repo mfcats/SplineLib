@@ -12,23 +12,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_XML_GENERATOR_NURBS_H_
-#define SRC_SPL_XML_GENERATOR_NURBS_H_
+#ifndef SRC_SPL_IO_WRITER_NURBS_H_
+#define SRC_SPL_IO_WRITER_NURBS_H_
 
 #include <string>
 
 #include "pugixml.hpp"
 
-#include "weighted_physical_space.h"
-#include "xml_generator_spline.h"
+#include "xml_writer_spline.h"
 
-namespace spl {
+namespace io {
 template<int DIM>
-class XMLGenerator_NURBS : public XMLGenerator_Spline<DIM> {
+class XMLWriterNURBS : public XMLWriterSpline<DIM> {
  public:
-  explicit XMLGenerator_NURBS(WeightedPhysicalSpace<DIM> physical_space, ParameterSpace<DIM> parameter_space) {
-    this->physical_space_ptr = std::make_shared<WeightedPhysicalSpace<DIM>>(physical_space);
-    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(parameter_space);
+  explicit XMLWriterNURBS(spl::WeightedPhysicalSpace<DIM> physical_space, spl::ParameterSpace<DIM> parameter_space) {
+    this->physical_space_ptr = std::make_shared<spl::WeightedPhysicalSpace<DIM>>(physical_space);
+    this->parameter_space_ptr = std::make_shared<spl::ParameterSpace<DIM>>(parameter_space);
   }
 
   char GetNumberOfControlPoints() override {
@@ -64,8 +63,8 @@ class XMLGenerator_NURBS : public XMLGenerator_Spline<DIM> {
   }
 
  private:
-  std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_ptr;
+  std::shared_ptr<spl::WeightedPhysicalSpace<DIM>> physical_space_ptr;
 };
-}  // namespace spl
+}  // namespace io
 
-#endif  // SRC_SPL_XML_GENERATOR_NURBS_H_
+#endif  // SRC_IO_XML_WRITER_NURBS_H_

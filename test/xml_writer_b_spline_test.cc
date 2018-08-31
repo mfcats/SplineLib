@@ -12,7 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "xml_generator_b_spline.h"
+#include "xml_writer_b_spline.h"
 
 #include <fstream>
 
@@ -34,11 +34,11 @@ class ABSplineXMLWriter : public Test {
     };
     physical_space = spl::PhysicalSpace<1>(control_points_, {3});
     parameter_space = spl::ParameterSpace<1>(knot_vector, degree_);
-    xml_generator = std::make_unique<spl::XMLGenerator_B_Spline<1>>(physical_space, parameter_space);
+    xml_writer = std::make_unique<io::XMLWriterBSpline<1>>(physical_space, parameter_space);
   }
 
  protected:
-  std::unique_ptr<spl::XMLGenerator_B_Spline<1>> xml_generator;
+  std::unique_ptr<io::XMLWriterBSpline<1>> xml_writer;
   spl::PhysicalSpace<1> physical_space;
   spl::ParameterSpace<1> parameter_space;
   std::array<int, 1> degree_;
@@ -46,7 +46,7 @@ class ABSplineXMLWriter : public Test {
 };
 
 TEST_F(ABSplineXMLWriter, IsCreated) {  // NOLINT
-  xml_generator->WriteXMLFile("bspline.xml");
+  xml_writer->WriteXMLFile("bspline.xml");
   std::ifstream newFile;
   newFile.open("bspline.xml");
   ASSERT_TRUE(newFile.is_open());
@@ -55,7 +55,7 @@ TEST_F(ABSplineXMLWriter, IsCreated) {  // NOLINT
 }
 
 TEST_F(ABSplineXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
-  xml_generator->WriteXMLFile("bspline.xml");
+  xml_writer->WriteXMLFile("bspline.xml");
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file("bspline.xml");
   ASSERT_STREQ(result.description(), "No error");
@@ -63,7 +63,7 @@ TEST_F(ABSplineXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
 }
 
 TEST_F(ABSplineXMLWriter, CreatesSplineList) {  // NOLINT
-  xml_generator->WriteXMLFile("bspline.xml");
+  xml_writer->WriteXMLFile("bspline.xml");
   pugi::xml_document doc;
   doc.load_file("bspline.xml");
   ASSERT_STREQ(doc.first_child().name(), "SplineList");
@@ -71,7 +71,7 @@ TEST_F(ABSplineXMLWriter, CreatesSplineList) {  // NOLINT
 }
 
 TEST_F(ABSplineXMLWriter, CreatesSpline) {  // NOLINT
-  xml_generator->WriteXMLFile("bspline.xml");
+  xml_writer->WriteXMLFile("bspline.xml");
   pugi::xml_document doc;
   doc.load_file("bspline.xml");
   ASSERT_STREQ(doc.first_child().first_child().name(), "SplineEntry");
@@ -79,7 +79,7 @@ TEST_F(ABSplineXMLWriter, CreatesSpline) {  // NOLINT
 }
 
 TEST_F(ABSplineXMLWriter, CreatesNoWeights) {  // NOLINT
-  xml_generator->WriteXMLFile("bspline.xml");
+  xml_writer->WriteXMLFile("bspline.xml");
   pugi::xml_document doc;
   doc.load_file("bspline.xml");
   ASSERT_STREQ(doc.first_child().first_child().child("wght").name(), "");
@@ -87,7 +87,7 @@ TEST_F(ABSplineXMLWriter, CreatesNoWeights) {  // NOLINT
 }
 
 TEST_F(ABSplineXMLWriter, HasSplineDimension1) {  // NOLINT
-  xml_generator->WriteXMLFile("bspline.xml");
+  xml_writer->WriteXMLFile("bspline.xml");
   pugi::xml_document doc;
   doc.load_file("bspline.xml");
   ASSERT_STREQ(doc.child("SplineList").child("SplineEntry").attribute("splDim").value(), "1");
@@ -95,7 +95,7 @@ TEST_F(ABSplineXMLWriter, HasSplineDimension1) {  // NOLINT
 }
 
 TEST_F(ABSplineXMLWriter, HasSpaceDimension2) {  // NOLINT
-  xml_generator->WriteXMLFile("bspline.xml");
+  xml_writer->WriteXMLFile("bspline.xml");
   pugi::xml_document doc;
   doc.load_file("bspline.xml");
   ASSERT_STREQ(doc.child("SplineList").child("SplineEntry").attribute("spaceDim").value(), "2");
@@ -115,11 +115,11 @@ class ABSplineXMLWriterWithSpaceDimension3 : public Test {
     };
     physical_space = spl::PhysicalSpace<1>(control_points_, {3});
     parameter_space = spl::ParameterSpace<1>(knot_vector, degree_);
-    xml_generator = std::make_unique<spl::XMLGenerator_B_Spline<1>>(physical_space, parameter_space);
+    xml_writer = std::make_unique<io::XMLWriterBSpline<1>>(physical_space, parameter_space);
   }
 
  protected:
-  std::unique_ptr<spl::XMLGenerator_B_Spline<1>> xml_generator;
+  std::unique_ptr<io::XMLWriterBSpline<1>> xml_writer;
   spl::PhysicalSpace<1> physical_space;
   spl::ParameterSpace<1> parameter_space;
   std::array<int, 1> degree_;
@@ -127,7 +127,7 @@ class ABSplineXMLWriterWithSpaceDimension3 : public Test {
 };
 
 TEST_F(ABSplineXMLWriterWithSpaceDimension3, IsCreated) {  // NOLINT
-  xml_generator->WriteXMLFile("bspline.xml");
+  xml_writer->WriteXMLFile("bspline.xml");
   std::ifstream newFile;
   newFile.open("bspline.xml");
   ASSERT_TRUE(newFile.is_open());
@@ -136,7 +136,7 @@ TEST_F(ABSplineXMLWriterWithSpaceDimension3, IsCreated) {  // NOLINT
 }
 
 TEST_F(ABSplineXMLWriterWithSpaceDimension3, CreatesCorrectXMLFile) {  // NOLINT
-  xml_generator->WriteXMLFile("bspline.xml");
+  xml_writer->WriteXMLFile("bspline.xml");
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file("bspline.xml");
   ASSERT_STREQ(result.description(), "No error");
@@ -144,7 +144,7 @@ TEST_F(ABSplineXMLWriterWithSpaceDimension3, CreatesCorrectXMLFile) {  // NOLINT
 }
 
 TEST_F(ABSplineXMLWriterWithSpaceDimension3, HasSpaceDimension3) {  // NOLINT
-  xml_generator->WriteXMLFile("bspline.xml");
+  xml_writer->WriteXMLFile("bspline.xml");
   pugi::xml_document doc;
   doc.load_file("bspline.xml");
   ASSERT_STREQ(doc.child("SplineList").child("SplineEntry").attribute("spaceDim").value(), "3");
@@ -168,11 +168,11 @@ class A2DBSplineXMLWriter : public Test {
     };
     physical_space = spl::PhysicalSpace<2>(control_points_, {3, 2});
     parameter_space = spl::ParameterSpace<2>(knot_vector, degree_);
-    xml_generator = std::make_unique<spl::XMLGenerator_B_Spline<2>>(physical_space, parameter_space);
+    xml_writer = std::make_unique<io::XMLWriterBSpline<2>>(physical_space, parameter_space);
   }
 
  protected:
-  std::unique_ptr<spl::XMLGenerator_B_Spline<2>> xml_generator;
+  std::unique_ptr<io::XMLWriterBSpline<2>> xml_writer;
   spl::PhysicalSpace<2> physical_space;
   spl::ParameterSpace<2> parameter_space;
   std::array<int, 2> degree_;
@@ -180,7 +180,7 @@ class A2DBSplineXMLWriter : public Test {
 };
 
 TEST_F(A2DBSplineXMLWriter, IsCreated) {  // NOLINT
-  xml_generator->WriteXMLFile("2d_bspline.xml");
+  xml_writer->WriteXMLFile("2d_bspline.xml");
   std::ifstream newFile;
   newFile.open("2d_bspline.xml");
   ASSERT_TRUE(newFile.is_open());
@@ -189,7 +189,7 @@ TEST_F(A2DBSplineXMLWriter, IsCreated) {  // NOLINT
 }
 
 TEST_F(A2DBSplineXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
-  xml_generator->WriteXMLFile("2d_bspline.xml");
+  xml_writer->WriteXMLFile("2d_bspline.xml");
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file("2d_bspline.xml");
   ASSERT_STREQ(result.description(), "No error");
@@ -197,7 +197,7 @@ TEST_F(A2DBSplineXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
 }
 
 TEST_F(A2DBSplineXMLWriter, HasSplineDimension2) {  // NOLINT
-  xml_generator->WriteXMLFile("2d_bspline.xml");
+  xml_writer->WriteXMLFile("2d_bspline.xml");
   pugi::xml_document doc;
   doc.load_file("2d_bspline.xml");
   ASSERT_STREQ(doc.child("SplineList").child("SplineEntry").attribute("splDim").value(), "2");
