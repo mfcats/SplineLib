@@ -46,7 +46,7 @@ class XMLWriterNURBS : public XMLWriterSpline<DIM> {
     for (int i = 0; i < weight_handler.Get1DLength(); ++i, weight_handler++) {
       auto indices = weight_handler.GetIndices();
       string += "\n      ";
-      string += this->GetString(GetWeight(indices)) + "  ";
+      string += std::to_string(GetWeight(indices)) + "  ";
     }
     weights.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }

@@ -24,6 +24,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "nurbs.h"
+#include "string_operations.h"
 
 namespace io {
 template<int DIM>
@@ -47,56 +48,25 @@ class XMLReader {
   }
 
  private:
-  std::vector<std::string> split(const std::string &string) {
-    std::stringstream ss_string(string);
-    std::string current_line;
-    std::string current_value;
-    std::vector<std::string> splitted_string;
-    while (std::getline(ss_string, current_line)) {
-      std::stringstream ss_current_line(current_line);
-      while (std::getline(ss_current_line, current_value, ' ')) {
-        if (!current_value.empty()) splitted_string.push_back(current_value);
-      }
+  void AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines) {
+    spl::ParameterSpace<DIM> parameter_space = GetParameterSpace(spline);
+    std::vector<baf::ControlPoint> control_points_ = GetControlPoints(spline);
+    std::array<int, DIM> number_of_control_points = GetNumberOfControlPoints(parameter_space);
+    if (spline->child("wght").empty()) {
+      splines->push_back(std::make_any<spl::BSpline<DIM>>(parameter_space, spl::PhysicalSpace<DIM>(
+          control_points_, number_of_control_points)));
+    } else {
+      std::vector<double> weights = util::StringOperations::StringVectorToNumberVector<double>(
+          util::StringOperations::split(spline->child("wght").first_child().value(), ' '));
+      spl::WeightedPhysicalSpace<DIM> weightedPhysicalSpace(control_points_, weights, number_of_control_points);
+      splines->push_back(std::make_any<spl::NURBS<DIM>>(parameter_space, weightedPhysicalSpace));
     }
-    return splitted_string;
-  }
-
-  std::vector<double> StringVectorToDoubleVector(const std::vector<std::string> &string_vector) {
-    std::vector<double> converted;
-    for (const std::string &string : string_vector) {
-      converted.push_back(strtod(string.c_str(), nullptr));
-    }
-    return converted;
-  }
-
-  std::array<int, DIM> StringVectorToIntArray(const std::vector<std::string> &string_vector) {
-    std::array<int, DIM> converted;
-    for (int i = 0; i < DIM; i++) {
-      converted[i] = std::stoi(string_vector[i]);
-    }
-    return converted;
-  }
-
-  baf::KnotVector StringVectorToKnotVector(const std::vector<std::string> &string_vector) {
-    std::vector<ParamCoord> converted;
-    for (const std::string &string : string_vector) {
-      converted.emplace_back(strtod(string.c_str(), nullptr));
-    }
-    return baf::KnotVector(converted);
-  }
-
-  int FindCoordinatePosition(const std::string &string) {
-    std::vector<std::string> vars = split(string);
-    for (int i = 0; i < vars.size(); i++) {
-      if (vars[i] == "x") {
-        return i;
-      }
-    }
-    return 0;
   }
 
   std::vector<baf::ControlPoint> GetControlPoints(pugi::xml_node *spline) {
-    std::vector<double> vars = StringVectorToDoubleVector(split(spline->child("cntrlPntVars").first_child().value()));
+    std::vector<double> vars =
+        util::StringOperations::StringVectorToNumberVector<double>(util::StringOperations::split(spline->child(
+            "cntrlPntVars").first_child().value(), ' '));
     int start = FindCoordinatePosition(spline->child("cntrlPntVarNames").first_child().value());
     int dimension = std::stoi(spline->attribute("spaceDim").value());
     int numberOfVars = std::stoi(spline->attribute("numOfCntrlPntVars").value());
@@ -122,7 +92,8 @@ class XMLReader {
   };
 
   spl::ParameterSpace<DIM> GetParameterSpace(pugi::xml_node *spline) {
-    std::array<int, DIM> degree = StringVectorToIntArray(split(spline->child("deg").first_child().value()));
+    std::array<int, DIM>
+        degree = StringVectorToIntArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
     std::array<baf::KnotVector, DIM> knot_vector;
     for (int i = 0; i < DIM; i++) {
       knot_vector[i] = baf::KnotVector({ParamCoord(0.5)});
@@ -132,23 +103,28 @@ class XMLReader {
       for (int j = 0; j < i; j++) {
         child = child.next_sibling();
       }
-      knot_vector[i] = StringVectorToKnotVector(split(child.first_child().value()));
+      knot_vector[i] = baf::KnotVector(util::StringOperations::StringVectorToNumberVector<ParamCoord>(
+          util::StringOperations::split(child.first_child().value(), ' ')));
     }
     return spl::ParameterSpace<DIM>(knot_vector, degree);
   }
 
-  void AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines) {
-    spl::ParameterSpace<DIM> parameter_space = GetParameterSpace(spline);
-    std::vector<baf::ControlPoint> control_points_ = GetControlPoints(spline);
-    std::array<int, DIM> number_of_control_points = GetNumberOfControlPoints(parameter_space);
-    if (spline->child("wght").empty()) {
-      splines->push_back(std::make_any<spl::BSpline<DIM>>(parameter_space, spl::PhysicalSpace<DIM>(
-          control_points_, number_of_control_points)));
-    } else {
-      std::vector<double> weights = StringVectorToDoubleVector(split(spline->child("wght").first_child().value()));
-      spl::WeightedPhysicalSpace<DIM> weightedPhysicalSpace(control_points_, weights, number_of_control_points);
-      splines->push_back(std::make_any<spl::NURBS<DIM>>(parameter_space, weightedPhysicalSpace));
+  std::array<int, DIM> StringVectorToIntArray(const std::vector<std::string> &string_vector) {
+    std::array<int, DIM> converted;
+    for (int i = 0; i < DIM; i++) {
+      converted[i] = std::stoi(string_vector[i]);
     }
+    return converted;
+  }
+
+  int FindCoordinatePosition(const std::string &string) {
+    std::vector<std::string> vars = util::StringOperations::split(string, ' ');
+    for (int i = 0; i < vars.size(); i++) {
+      if (vars[i] == "x") {
+        return i;
+      }
+    }
+    return 0;
   }
 };
 }  // namespace io
