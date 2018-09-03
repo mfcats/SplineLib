@@ -39,40 +39,7 @@ class XMLReader {
       throw std::runtime_error("File couldn't be loaded.");
     }
     pugi::xml_node spline = doc.child("SplineList").first_child();
-    std::array<int, DIM> degree = StringVectorToIntArray(split(spline.child("deg").first_child().value()));
-    std::array<baf::KnotVector, DIM> knot_vector;
-    for (int i = 0; i < DIM; i++) {
-      knot_vector[i] = baf::KnotVector({ParamCoord(0.5)});
-    }
-    for (int i = 0; i < DIM; i++) {
-      pugi::xml_node child = spline.child("kntVecs").first_child();
-      for (int j = 0; j < i; j++) {
-        child = child.next_sibling();
-      }
-      knot_vector[i] = StringVectorToKnotVector(split(child.first_child().value()));
-    }
-    spl::ParameterSpace<DIM> parameterSpace = spl::ParameterSpace<DIM>(knot_vector, degree);
-    int dim = std::stoi(spline.attribute("spaceDim").value());
-    std::vector<double>
-        control_point_vars = StringVectorToDoubleVector(split(spline.child("cntrlPntVars").first_child().value()));
-    std::string var_names = spline.child("cntrlPntVarNames").first_child().value();
-    int dimension = std::stoi(spline.attribute("spaceDim").value());
-    int numberOfVars = std::stoi(spline.attribute("numOfCntrlPntVars").value());
-    std::vector<baf::ControlPoint> control_points_ =
-        GetControlPoints(control_point_vars, FindCoordinatePosition(var_names), dimension, numberOfVars);
-    std::array<int, DIM> number_of_control_points;
-    for (int i = 0; i < DIM; i++) {
-      auto h = knot_vector[i].GetNumberOfKnots() - degree[i] - 1;
-      number_of_control_points[i] = knot_vector[i].GetNumberOfKnots() - degree[i] - 1;
-    }
-    spl::PhysicalSpace<DIM> physical_space = spl::PhysicalSpace<DIM>(control_points_, number_of_control_points);
-    if (spline.child("wght").empty()) {
-      splines.push_back(std::make_any<spl::BSpline<DIM>>(parameterSpace, physical_space));
-    } else {
-      std::vector<double> weights = StringVectorToDoubleVector(split(spline.child("wght").first_child().value()));
-      spl::WeightedPhysicalSpace<DIM> weightedPhysicalSpace(control_points_, weights, number_of_control_points);
-      splines.push_back(std::make_any<spl::NURBS<DIM>>(parameterSpace, weightedPhysicalSpace));
-    }
+    AddSpline(&spline, splines);
     return splines;
   }
 
@@ -125,10 +92,12 @@ class XMLReader {
     return 0;
   }
 
-  std::vector<baf::ControlPoint> GetControlPoints(std::vector<double> vars,
-                                                  int start,
-                                                  int dimension,
-                                                  int numberOfVars) {
+  std::vector<baf::ControlPoint> GetControlPoints(pugi::xml_node *spline) {
+    std::vector<double>
+        vars = StringVectorToDoubleVector(split(spline->child("cntrlPntVars").first_child().value()));
+    int start = FindCoordinatePosition(spline->child("cntrlPntVarNames").first_child().value());
+    int dimension = std::stoi(spline->attribute("spaceDim").value());
+    int numberOfVars = std::stoi(spline->attribute("numOfCntrlPntVars").value());
     std::vector<baf::ControlPoint> points;
     for (int i = 0; i < vars.size() / numberOfVars; i++) {
       std::vector<double> coordinates;
@@ -138,6 +107,46 @@ class XMLReader {
       points.emplace_back(coordinates);
     }
     return points;
+  }
+
+  std::array<int, DIM> GetNumberOfControlPoints(spl::ParameterSpace<DIM> parameterSpace) {
+    std::array<int, DIM> number_of_control_points;
+    for (int i = 0; i < DIM; i++) {
+      auto h = parameterSpace.GetKnotVector(i).GetNumberOfKnots() - parameterSpace.GetDegree(i) - 1;
+      number_of_control_points[i] =
+          parameterSpace.GetKnotVector(i).GetNumberOfKnots() - parameterSpace.GetDegree(i) - 1;
+    }
+    return number_of_control_points;
+  };
+
+  spl::ParameterSpace<DIM> GetParameterSpace(pugi::xml_node *spline) {
+    std::array<int, DIM> degree = StringVectorToIntArray(split(spline->child("deg").first_child().value()));
+    std::array<baf::KnotVector, DIM> knot_vector;
+    for (int i = 0; i < DIM; i++) {
+      knot_vector[i] = baf::KnotVector({ParamCoord(0.5)});
+    }
+    for (int i = 0; i < DIM; i++) {
+      pugi::xml_node child = spline->child("kntVecs").first_child();
+      for (int j = 0; j < i; j++) {
+        child = child.next_sibling();
+      }
+      knot_vector[i] = StringVectorToKnotVector(split(child.first_child().value()));
+    }
+    return spl::ParameterSpace<DIM>(knot_vector, degree);
+  }
+
+  void AddSpline(pugi::xml_node *spline, std::vector<std::any> &splines) {
+    spl::ParameterSpace<DIM> parameterSpace = GetParameterSpace(spline);
+    std::vector<baf::ControlPoint> control_points_ = GetControlPoints(spline);
+    std::array<int, DIM> number_of_control_points = GetNumberOfControlPoints(parameterSpace);
+    if (spline->child("wght").empty()) {
+      splines.push_back(std::make_any<spl::BSpline<DIM>>(parameterSpace, spl::PhysicalSpace<DIM>(
+          control_points_, number_of_control_points)));
+    } else {
+      std::vector<double> weights = StringVectorToDoubleVector(split(spline->child("wght").first_child().value()));
+      spl::WeightedPhysicalSpace<DIM> weightedPhysicalSpace(control_points_, weights, number_of_control_points);
+      splines.push_back(std::make_any<spl::NURBS<DIM>>(parameterSpace, weightedPhysicalSpace));
+    }
   }
 };
 }  // namespace io
