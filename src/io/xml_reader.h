@@ -31,7 +31,8 @@ class XMLReader {
  public:
   XMLReader() = default;
 
-  std::any ReadXMLFile(const std::string &filename) {
+  std::vector<std::any> ReadXMLFile(const std::string &filename) {
+    std::vector<std::any> splines;
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(filename.c_str());
     if (!result) {
@@ -66,12 +67,13 @@ class XMLReader {
     }
     spl::PhysicalSpace<DIM> physical_space = spl::PhysicalSpace<DIM>(control_points_, number_of_control_points);
     if (spline.child("wght").empty()) {
-      return std::make_any<spl::BSpline<DIM>>(parameterSpace, physical_space);
+      splines.push_back(std::make_any<spl::BSpline<DIM>>(parameterSpace, physical_space));
     } else {
       std::vector<double> weights = StringVectorToDoubleVector(split(spline.child("wght").first_child().value()));
       spl::WeightedPhysicalSpace<DIM> weightedPhysicalSpace(control_points_, weights, number_of_control_points);
-      return std::make_any<spl::NURBS<DIM>>(parameterSpace, weightedPhysicalSpace);
+      splines.push_back(std::make_any<spl::NURBS<DIM>>(parameterSpace, weightedPhysicalSpace));
     }
+    return splines;
   }
 
  private:
