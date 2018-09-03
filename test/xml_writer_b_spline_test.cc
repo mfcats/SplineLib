@@ -15,11 +15,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "xml_writer_b_spline.h"
 
 #include <fstream>
+#include <xml_reader.h>
 
 #include "gmock/gmock.h"
 
 using testing::Test;
 using testing::Eq;
+using testing::DoubleEq;
 
 class ABSplineXMLWriter : public Test {
  public:
@@ -100,6 +102,15 @@ TEST_F(ABSplineXMLWriter, HasSpaceDimension2) {  // NOLINT
   doc.load_file("bspline.xml");
   ASSERT_STREQ(doc.child("SplineList").child("SplineEntry").attribute("spaceDim").value(), "2");
   remove("bspline.xml");
+}
+
+TEST_F(ABSplineXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
+  spl::BSpline<1> bspline_before(parameter_space, physical_space);
+  xml_writer->WriteXMLFile("bspline.xml");
+  std::unique_ptr<io::XMLReader<1>> xml_reader(std::make_unique<io::XMLReader<1>>());
+  auto bspline_after = std::any_cast<spl::BSpline<1>>(xml_reader->ReadXMLFile("bspline.xml")[0]);
+  ASSERT_THAT(bspline_before.Evaluate({ParamCoord(0.75839)}, {0})[0],
+              DoubleEq(bspline_after.Evaluate({ParamCoord(0.75839)}, {0})[0]));
 }
 
 class ABSplineXMLWriterWithSpaceDimension3 : public Test {
