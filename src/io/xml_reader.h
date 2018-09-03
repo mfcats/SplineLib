@@ -32,30 +32,30 @@ class XMLReader {
   XMLReader() = default;
 
   std::vector<std::any> ReadXMLFile(const std::string &filename) {
-    std::vector<std::any> splines;
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(filename.c_str());
+    std::vector<std::any> vector_of_splines;
+    pugi::xml_document xml_document;
+    pugi::xml_parse_result result = xml_document.load_file(filename.c_str());
     if (!result) {
       throw std::runtime_error("File couldn't be loaded.");
     }
-    pugi::xml_node spline = doc.child("SplineList").first_child();
-    AddSpline(&spline, splines);
-    return splines;
+    pugi::xml_node next_spline = xml_document.child("SplineList").first_child();
+    AddSpline(&next_spline, &vector_of_splines);
+    return vector_of_splines;
   }
 
  private:
   std::vector<std::string> split(const std::string &string) {
-    std::stringstream ss(string);
-    std::string line;
-    std::string value;
-    std::vector<std::string> splitted;
-    while (std::getline(ss, line)) {
-      std::stringstream test(line);
-      while (std::getline(test, value, ' ')) {
-        if (!value.empty()) splitted.push_back(value);
+    std::stringstream ss_string(string);
+    std::string current_line;
+    std::string current_value;
+    std::vector<std::string> splitted_string;
+    while (std::getline(ss_string, current_line)) {
+      std::stringstream ss_current_line(current_line);
+      while (std::getline(ss_current_line, current_value, ' ')) {
+        if (!current_value.empty()) splitted_string.push_back(current_value);
       }
     }
-    return splitted;
+    return splitted_string;
   }
 
   std::vector<double> StringVectorToDoubleVector(const std::vector<std::string> &string_vector) {
@@ -93,8 +93,7 @@ class XMLReader {
   }
 
   std::vector<baf::ControlPoint> GetControlPoints(pugi::xml_node *spline) {
-    std::vector<double>
-        vars = StringVectorToDoubleVector(split(spline->child("cntrlPntVars").first_child().value()));
+    std::vector<double> vars = StringVectorToDoubleVector(split(spline->child("cntrlPntVars").first_child().value()));
     int start = FindCoordinatePosition(spline->child("cntrlPntVarNames").first_child().value());
     int dimension = std::stoi(spline->attribute("spaceDim").value());
     int numberOfVars = std::stoi(spline->attribute("numOfCntrlPntVars").value());
@@ -109,12 +108,12 @@ class XMLReader {
     return points;
   }
 
-  std::array<int, DIM> GetNumberOfControlPoints(spl::ParameterSpace<DIM> parameterSpace) {
+  std::array<int, DIM> GetNumberOfControlPoints(spl::ParameterSpace<DIM> parameter_space) {
     std::array<int, DIM> number_of_control_points;
     for (int i = 0; i < DIM; i++) {
-      auto h = parameterSpace.GetKnotVector(i).GetNumberOfKnots() - parameterSpace.GetDegree(i) - 1;
+      auto h = parameter_space.GetKnotVector(i).GetNumberOfKnots() - parameter_space.GetDegree(i) - 1;
       number_of_control_points[i] =
-          parameterSpace.GetKnotVector(i).GetNumberOfKnots() - parameterSpace.GetDegree(i) - 1;
+          parameter_space.GetKnotVector(i).GetNumberOfKnots() - parameter_space.GetDegree(i) - 1;
     }
     return number_of_control_points;
   };
@@ -135,17 +134,17 @@ class XMLReader {
     return spl::ParameterSpace<DIM>(knot_vector, degree);
   }
 
-  void AddSpline(pugi::xml_node *spline, std::vector<std::any> &splines) {
-    spl::ParameterSpace<DIM> parameterSpace = GetParameterSpace(spline);
+  void AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines) {
+    spl::ParameterSpace<DIM> parameter_space = GetParameterSpace(spline);
     std::vector<baf::ControlPoint> control_points_ = GetControlPoints(spline);
-    std::array<int, DIM> number_of_control_points = GetNumberOfControlPoints(parameterSpace);
+    std::array<int, DIM> number_of_control_points = GetNumberOfControlPoints(parameter_space);
     if (spline->child("wght").empty()) {
-      splines.push_back(std::make_any<spl::BSpline<DIM>>(parameterSpace, spl::PhysicalSpace<DIM>(
+      splines->push_back(std::make_any<spl::BSpline<DIM>>(parameter_space, spl::PhysicalSpace<DIM>(
           control_points_, number_of_control_points)));
     } else {
       std::vector<double> weights = StringVectorToDoubleVector(split(spline->child("wght").first_child().value()));
       spl::WeightedPhysicalSpace<DIM> weightedPhysicalSpace(control_points_, weights, number_of_control_points);
-      splines.push_back(std::make_any<spl::NURBS<DIM>>(parameterSpace, weightedPhysicalSpace));
+      splines->push_back(std::make_any<spl::NURBS<DIM>>(parameter_space, weightedPhysicalSpace));
     }
   }
 };
