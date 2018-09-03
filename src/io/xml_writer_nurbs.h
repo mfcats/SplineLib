@@ -25,18 +25,25 @@ namespace io {
 template<int DIM>
 class XMLWriterNURBS : public XMLWriterSpline<DIM> {
  public:
-  explicit XMLWriterNURBS(spl::WeightedPhysicalSpace<DIM> physical_space, spl::ParameterSpace<DIM> parameter_space) {
-    this->physical_space_ptr = std::make_shared<spl::WeightedPhysicalSpace<DIM>>(physical_space);
-    this->parameter_space_ptr = std::make_shared<spl::ParameterSpace<DIM>>(parameter_space);
+  explicit XMLWriterNURBS(std::shared_ptr<spl::NURBS<DIM>> nurbs) {
+    this->nurbs = nurbs;
   }
 
  private:
+  double GetDegree(int dimension) override {
+    return nurbs->GetDegree(dimension);
+  }
+
+  baf::KnotVector GetKnotVector(int dimension) override {
+    return nurbs->GetKnotVector(dimension);
+  }
+
   char GetNumberOfControlPoints() override {
-    return static_cast<char>(physical_space_ptr->GetNumberOfControlPoints());
+    return static_cast<char>(nurbs->GetNumberOfControlPoints());
   }
 
   char GetSpaceDimension() override {
-    return static_cast<char>(physical_space_ptr->GetDimension());
+    return static_cast<char>(nurbs->GetDimension());
   }
 
   void AddWeights(pugi::xml_node *spline) override {
@@ -52,18 +59,18 @@ class XMLWriterNURBS : public XMLWriterSpline<DIM> {
   }
 
   double GetWeight(std::array<int, DIM> indices) {
-    return physical_space_ptr->GetWeight(indices);
+    return nurbs->GetWeight(indices);
   }
 
   double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
-    return physical_space_ptr->GetControlPoint(indices).GetValue(dimension);
+    return nurbs->GetControlPoint(indices, dimension);
   }
 
   std::array<int, DIM> GetNumberOfPointsInEachDirection() override {
-    return physical_space_ptr->GetNumberOfPointsInEachDirection();
+    return nurbs->GetPointsPerDirection();
   }
 
-  std::shared_ptr<spl::WeightedPhysicalSpace<DIM>> physical_space_ptr;
+  std::shared_ptr<spl::NURBS<DIM>> nurbs;
 };
 }  // namespace io
 

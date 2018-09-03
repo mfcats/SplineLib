@@ -84,12 +84,11 @@ class XMLReader {
   std::array<int, DIM> GetNumberOfControlPoints(spl::ParameterSpace<DIM> parameter_space) {
     std::array<int, DIM> number_of_control_points;
     for (int i = 0; i < DIM; i++) {
-      auto h = parameter_space.GetKnotVector(i).GetNumberOfKnots() - parameter_space.GetDegree(i) - 1;
       number_of_control_points[i] =
           parameter_space.GetKnotVector(i).GetNumberOfKnots() - parameter_space.GetDegree(i) - 1;
     }
     return number_of_control_points;
-  };
+  }
 
   spl::ParameterSpace<DIM> GetParameterSpace(pugi::xml_node *spline) {
     std::array<int, DIM>

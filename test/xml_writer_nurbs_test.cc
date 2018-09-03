@@ -34,7 +34,8 @@ class ANURBSXMLWriter : public Test {
     std::vector<double> weights = {2.0, 1.75, 0.36};
     physical_space = spl::WeightedPhysicalSpace<1>(control_points_, weights, {3});
     parameter_space = spl::ParameterSpace<1>(knot_vector, degree_);
-    xml_writer = std::make_unique<io::XMLWriterNURBS<1>>(physical_space, parameter_space);
+    xml_writer =
+        std::make_unique<io::XMLWriterNURBS<1>>(std::make_shared<spl::NURBS<1>>(parameter_space, physical_space));
   }
 
  protected:
@@ -104,7 +105,8 @@ class A2DNURBSXMLWriter : public Test {
     std::vector<double> weights = {2.0, 1.75, 0.36, 1.0, 1.0, 0.05};
     physical_space = spl::WeightedPhysicalSpace<2>(control_points_, weights, {3, 2});
     parameter_space = spl::ParameterSpace<2>(knot_vector, degree_);
-    xml_writer = std::make_unique<io::XMLWriterNURBS<2>>(physical_space, parameter_space);
+    xml_writer =
+        std::make_unique<io::XMLWriterNURBS<2>>(std::make_shared<spl::NURBS<2>>(parameter_space, physical_space));
   }
 
  protected:

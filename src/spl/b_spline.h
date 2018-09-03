@@ -42,6 +42,22 @@ class BSpline : public Spline<DIM> {
       : Spline<DIM>(std::move(parameter_space)), physical_space_(physical_space) {
   }
 
+  int GetNumberOfControlPoints() {
+    return physical_space_.GetNumberOfControlPoints();
+  }
+
+  std::array<int, DIM> GetPointsPerDirection() {
+    return physical_space_.GetNumberOfPointsInEachDirection();
+  }
+
+  int GetDimension() {
+    return physical_space_.GetDimension();
+  }
+
+  double GetControlPoint(std::array<int, DIM> indices, int dimension) {
+    return physical_space_.GetControlPoint(indices).GetValue(dimension);
+  }
+
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,

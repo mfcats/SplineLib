@@ -23,29 +23,36 @@ namespace io {
 template<int DIM>
 class XMLWriterBSpline : public XMLWriterSpline<DIM> {
  public:
-  XMLWriterBSpline(spl::PhysicalSpace<DIM> physical_space, spl::ParameterSpace<DIM> parameter_space) {
-    this->physical_space_ptr = std::make_shared<spl::PhysicalSpace<DIM>>(physical_space);
-    this->parameter_space_ptr = std::make_shared<spl::ParameterSpace<DIM>>(parameter_space);
+  explicit XMLWriterBSpline(std::shared_ptr<spl::BSpline<DIM>> b_spline) {
+    this->b_spline = b_spline;
   }
 
  private:
+  double GetDegree(int dimension) override {
+    return b_spline->GetDegree(dimension);
+  }
+
+  baf::KnotVector GetKnotVector(int dimension) override {
+    return b_spline->GetKnotVector(dimension);
+  }
+
   char GetNumberOfControlPoints() override {
-    return static_cast<char>(physical_space_ptr->GetNumberOfControlPoints());
+    return static_cast<char>(b_spline->GetNumberOfControlPoints());
   }
 
   char GetSpaceDimension() override {
-    return static_cast<char>(physical_space_ptr->GetDimension());
+    return static_cast<char>(b_spline->GetDimension());
   }
 
   double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
-    return physical_space_ptr->GetControlPoint(indices).GetValue(dimension);
+    return b_spline->GetControlPoint(indices, dimension);
   }
 
   std::array<int, DIM> GetNumberOfPointsInEachDirection() override {
-    return physical_space_ptr->GetNumberOfPointsInEachDirection();
+    return b_spline->GetPointsPerDirection();
   }
 
-  std::shared_ptr<spl::PhysicalSpace<DIM>> physical_space_ptr;
+  std::shared_ptr<spl::BSpline<DIM>> b_spline;
 };
 }  // namespace io
 

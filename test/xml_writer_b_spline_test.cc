@@ -15,9 +15,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "xml_writer_b_spline.h"
 
 #include <fstream>
-#include <xml_reader.h>
 
 #include "gmock/gmock.h"
+
+#include "xml_reader.h"
 
 using testing::Test;
 using testing::Eq;
@@ -36,7 +37,8 @@ class ABSplineXMLWriter : public Test {
     };
     physical_space = spl::PhysicalSpace<1>(control_points_, {3});
     parameter_space = spl::ParameterSpace<1>(knot_vector, degree_);
-    xml_writer = std::make_unique<io::XMLWriterBSpline<1>>(physical_space, parameter_space);
+    xml_writer =
+        std::make_unique<io::XMLWriterBSpline<1>>(std::make_shared<spl::BSpline<1>>(parameter_space, physical_space));
   }
 
  protected:
@@ -126,7 +128,8 @@ class ABSplineXMLWriterWithSpaceDimension3 : public Test {
     };
     physical_space = spl::PhysicalSpace<1>(control_points_, {3});
     parameter_space = spl::ParameterSpace<1>(knot_vector, degree_);
-    xml_writer = std::make_unique<io::XMLWriterBSpline<1>>(physical_space, parameter_space);
+    xml_writer =
+        std::make_unique<io::XMLWriterBSpline<1>>(std::make_shared<spl::BSpline<1>>(parameter_space, physical_space));
   }
 
  protected:
@@ -179,7 +182,8 @@ class A2DBSplineXMLWriter : public Test {
     };
     physical_space = spl::PhysicalSpace<2>(control_points_, {3, 2});
     parameter_space = spl::ParameterSpace<2>(knot_vector, degree_);
-    xml_writer = std::make_unique<io::XMLWriterBSpline<2>>(physical_space, parameter_space);
+    xml_writer =
+        std::make_unique<io::XMLWriterBSpline<2>>(std::make_shared<spl::BSpline<2>>(parameter_space, physical_space));
   }
 
  protected:

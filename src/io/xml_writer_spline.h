@@ -38,14 +38,14 @@ class XMLWriterSpline {
   }
 
  protected:
+  virtual double GetDegree(int dimension) = 0;
+  virtual baf::KnotVector GetKnotVector(int dimension) = 0;
   virtual char GetNumberOfControlPoints() = 0;
   virtual char GetSpaceDimension() = 0;
   virtual std::array<int, DIM> GetNumberOfPointsInEachDirection() = 0;
   virtual double GetControlPoint(std::array<int, DIM>, int dimension) = 0;
 
   virtual void AddWeights(pugi::xml_node *spline) {}
-
-  std::shared_ptr<spl::ParameterSpace<DIM>> parameter_space_ptr;
 
  private:
   void AddSplineList(pugi::xml_document *doc) {
@@ -100,7 +100,7 @@ class XMLWriterSpline {
     pugi::xml_node degrees = spline->append_child("deg");
     std::string string;
     for (int i = 0; i < DIM; i++) {
-      string = string + "\n      " + std::to_string(parameter_space_ptr->GetDegree(i));
+      string = string + "\n      " + std::to_string(GetDegree(i));
     }
     degrees.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
@@ -109,7 +109,7 @@ class XMLWriterSpline {
     pugi::xml_node knot_vectors = spline->append_child("kntVecs");
     for (int i = 0; i < DIM; i++) {
       pugi::xml_node knots = knot_vectors.append_child("kntVec");
-      baf::KnotVector knot_vector = (*parameter_space_ptr).GetKnotVector(i);
+      baf::KnotVector knot_vector = GetKnotVector(i);
       std::string string;
       for (ParamCoord knot : knot_vector) {
         string += "\n        " + std::to_string(knot.get());
