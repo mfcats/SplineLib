@@ -39,7 +39,10 @@ class XMLReader {
       throw std::runtime_error("File couldn't be loaded.");
     }
     pugi::xml_node next_spline = xml_document.child("SplineList").first_child();
-    AddSpline(&next_spline, &vector_of_splines);
+    while (!next_spline.empty()) {
+      AddSpline(&next_spline, &vector_of_splines);
+      next_spline = next_spline.next_sibling();
+    }
     return vector_of_splines;
   }
 

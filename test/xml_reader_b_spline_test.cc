@@ -40,3 +40,11 @@ TEST_F(ABSplineXMLReader, OpensFile) {  // NOLINT
   ASSERT_THAT(std::any_cast<spl::NURBS<2>>(xml_reader->ReadXMLFile(path_to_xml_file)[0]).Evaluate(
       {ParamCoord(1), ParamCoord(1)}, {1})[0], DoubleEq(1));
 }
+
+TEST_F(ABSplineXMLReader, ReadsMultipleSplinesInOneFile) {  // NOLINT
+  ASSERT_THAT(std::any_cast<spl::BSpline<2>>(xml_reader->ReadXMLFile(path_to_xml_file)[1]).GetDegree(0), 1);
+  ASSERT_THAT(std::any_cast<spl::BSpline<2>>
+                  (xml_reader->ReadXMLFile(path_to_xml_file)[1]).GetKnotVector(0).GetKnot(2).get(), DoubleEq(0.5));
+  ASSERT_THAT(std::any_cast<spl::BSpline<2>>(xml_reader->ReadXMLFile(path_to_xml_file)[1]).Evaluate(
+      {ParamCoord(0.5), ParamCoord(0.5)}, {0})[0], DoubleEq(1));
+}

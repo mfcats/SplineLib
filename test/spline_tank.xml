@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SplineList
         SplineType="1"
-        NumberOfSplines="1">
+        NumberOfSplines="2">
     <SplineEntry
             splDim="  2"
             spaceDim="  3"
@@ -2643,5 +2643,42 @@
             0.1000000000000000E+01 0.1000000000000000E+01 0.0000000000000000E+00 0.1000000000000000E-01
         </elementVars>
 
+    </SplineEntry>
+    <SplineEntry
+            splDim="2"
+            spaceDim="2"
+            numOfCntrlPntVars="2"
+            numCntrlPnts="3">
+        <cntrlPntVarNames>
+            x y
+        </cntrlPntVarNames>
+        <cntrlPntVars>
+            0.000000 0.000000
+            1.000000 0.000000
+            2.000000 0.000000
+            0.000000 1.000000
+            1.000000 1.000000
+            2.000000 1.000000
+        </cntrlPntVars>
+        <deg>
+            1
+            2
+        </deg>
+        <kntVecs>
+            <kntVec>
+                0.000000
+                0.000000
+                0.500000
+                1.000000
+                1.000000
+            </kntVec>
+            <kntVec>
+                0.000000
+                0.000000
+                0.500000
+                1.000000
+                1.000000
+            </kntVec>
+        </kntVecs>
     </SplineEntry>
 </SplineList>
