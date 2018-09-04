@@ -184,7 +184,6 @@ class A2DBSplineXMLWriter : public Test {
     };
     physical_space = spl::PhysicalSpace<2>(control_points_, {3, 2});
     parameter_space = spl::ParameterSpace<2>(knot_vector, degree_);
-    std::vector<spl::BSpline<2>> splines;
     splines.emplace_back(parameter_space, physical_space);
     xml_writer = std::make_unique<io::XMLWriterBSpline<2>>(splines);
   }
@@ -195,6 +194,7 @@ class A2DBSplineXMLWriter : public Test {
   spl::ParameterSpace<2> parameter_space;
   std::array<int, 2> degree_;
   std::vector<baf::ControlPoint> control_points_;
+  std::vector<spl::BSpline<2>> splines;
 };
 
 TEST_F(A2DBSplineXMLWriter, IsCreated) {  // NOLINT
@@ -219,5 +219,15 @@ TEST_F(A2DBSplineXMLWriter, HasSplineDimension2) {  // NOLINT
   pugi::xml_document doc;
   doc.load_file("2d_bspline.xml");
   ASSERT_STREQ(doc.child("SplineList").child("SplineEntry").attribute("splDim").value(), "2");
+  remove("2d_bspline.xml");
+}
+
+TEST_F(A2DBSplineXMLWriter, CanWriteTwoSplines) {  // NOLINT
+  splines.emplace_back(parameter_space, physical_space);
+  xml_writer = std::make_unique<io::XMLWriterBSpline<2>>(splines);
+  xml_writer->WriteXMLFile("2d_bspline.xml");
+  pugi::xml_document doc;
+  doc.load_file("2d_bspline.xml");
+  ASSERT_STREQ(doc.child("SplineList").attribute("NumberOfSplines").value(), "2");
   remove("2d_bspline.xml");
 }

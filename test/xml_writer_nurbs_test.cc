@@ -121,11 +121,11 @@ class A2DNURBSXMLWriter : public Test {
 
 TEST_F(A2DNURBSXMLWriter, IsCreated) {  // NOLINT
   xml_writer->WriteXMLFile("2d_nurbs.xml");
-  /* std::ifstream newFile;
+  std::ifstream newFile;
   newFile.open("2d_nurbs.xml");
   ASSERT_TRUE(newFile.is_open());
   newFile.close();
-  remove("2d_nurbs.xml"); */
+  remove("2d_nurbs.xml");
 }
 
 TEST_F(A2DNURBSXMLWriter, CreatesCorrectXMLFile) {  // NOLINT

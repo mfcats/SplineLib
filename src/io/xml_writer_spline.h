@@ -42,12 +42,12 @@ class XMLWriterSpline {
   }
 
  protected:
-  virtual double GetDegree(int spline, int dimension) = 0;
-  virtual baf::KnotVector GetKnotVector(int spline, int dimension) = 0;
-  virtual char GetNumberOfControlPoints(int spline) = 0;
-  virtual char GetSpaceDimension(int spline) = 0;
-  virtual std::array<int, DIM> GetNumberOfPointsInEachDirection(int spline) = 0;
-  virtual double GetControlPoint(int spline, std::array<int, DIM>, int dimension) = 0;
+  virtual double GetDegree(int number, int dimension) = 0;
+  virtual baf::KnotVector GetKnotVector(int number, int dimension) = 0;
+  virtual char GetNumberOfControlPoints(int number) = 0;
+  virtual char GetSpaceDimension(int number) = 0;
+  virtual std::array<int, DIM> GetNumberOfPointsInEachDirection(int number) = 0;
+  virtual double GetControlPoint(int number, std::array<int, DIM>, int dimension) = 0;
 
   virtual void AddWeights(pugi::xml_node *spline, int number) {}
 

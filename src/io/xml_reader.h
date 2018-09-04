@@ -71,7 +71,7 @@ class XMLReader {
     int dimension = std::stoi(spline->attribute("spaceDim").value());
     int numberOfVars = std::stoi(spline->attribute("numOfCntrlPntVars").value());
     std::vector<baf::ControlPoint> points;
-    for (int i = 0; i < vars.size() / numberOfVars; i++) {
+    for (int i = 0; i < static_cast<int>(vars.size() / numberOfVars); i++) {
       std::vector<double> coordinates;
       for (int j = start; j < start + dimension; j++) {
         coordinates.push_back(vars[i * numberOfVars + j]);
@@ -118,7 +118,7 @@ class XMLReader {
 
   int FindCoordinatePosition(const std::string &string) {
     std::vector<std::string> vars = util::StringOperations::split(string, ' ');
-    for (int i = 0; i < vars.size(); i++) {
+    for (int i = 0; i < static_cast<int>(vars.size()); i++) {
       if (vars[i] == "x") {
         return i;
       }

@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IO_XML_WRITER_NURBS_H_
 
 #include <string>
+#include <vector>
 
 #include "pugixml.hpp"
 
