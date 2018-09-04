@@ -37,8 +37,9 @@ class ABSplineXMLWriter : public Test {
     };
     physical_space = spl::PhysicalSpace<1>(control_points_, {3});
     parameter_space = spl::ParameterSpace<1>(knot_vector, degree_);
-    xml_writer =
-        std::make_unique<io::XMLWriterBSpline<1>>(std::make_shared<spl::BSpline<1>>(parameter_space, physical_space));
+    std::vector<spl::BSpline<1>> splines;
+    splines.emplace_back(parameter_space, physical_space);
+    xml_writer = std::make_unique<io::XMLWriterBSpline<1>>(splines);
   }
 
  protected:
@@ -128,8 +129,9 @@ class ABSplineXMLWriterWithSpaceDimension3 : public Test {
     };
     physical_space = spl::PhysicalSpace<1>(control_points_, {3});
     parameter_space = spl::ParameterSpace<1>(knot_vector, degree_);
-    xml_writer =
-        std::make_unique<io::XMLWriterBSpline<1>>(std::make_shared<spl::BSpline<1>>(parameter_space, physical_space));
+    std::vector<spl::BSpline<1>> splines;
+    splines.emplace_back(parameter_space, physical_space);
+    xml_writer = std::make_unique<io::XMLWriterBSpline<1>>(splines);
   }
 
  protected:
@@ -182,8 +184,9 @@ class A2DBSplineXMLWriter : public Test {
     };
     physical_space = spl::PhysicalSpace<2>(control_points_, {3, 2});
     parameter_space = spl::ParameterSpace<2>(knot_vector, degree_);
-    xml_writer =
-        std::make_unique<io::XMLWriterBSpline<2>>(std::make_shared<spl::BSpline<2>>(parameter_space, physical_space));
+    std::vector<spl::BSpline<2>> splines;
+    splines.emplace_back(parameter_space, physical_space);
+    xml_writer = std::make_unique<io::XMLWriterBSpline<2>>(splines);
   }
 
  protected:

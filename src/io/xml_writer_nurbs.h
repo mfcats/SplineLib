@@ -25,52 +25,55 @@ namespace io {
 template<int DIM>
 class XMLWriterNURBS : public XMLWriterSpline<DIM> {
  public:
-  explicit XMLWriterNURBS(std::shared_ptr<spl::NURBS<DIM>> nurbs) {
-    this->nurbs = nurbs;
+  explicit XMLWriterNURBS(std::vector<spl::NURBS<DIM>> nurbs)
+      : XMLWriterSpline<DIM>(static_cast<int>(nurbs.size())) {
+    for (auto &spline : nurbs) {
+      this->nurbs.push_back(std::make_shared<spl::NURBS<DIM>>(spline));
+    }
   }
 
  private:
-  double GetDegree(int dimension) override {
-    return nurbs->GetDegree(dimension);
+  double GetDegree(int spline, int dimension) override {
+    return nurbs[spline]->GetDegree(dimension);
   }
 
-  baf::KnotVector GetKnotVector(int dimension) override {
-    return nurbs->GetKnotVector(dimension);
+  baf::KnotVector GetKnotVector(int spline, int dimension) override {
+    return nurbs[spline]->GetKnotVector(dimension);
   }
 
-  char GetNumberOfControlPoints() override {
-    return static_cast<char>(nurbs->GetNumberOfControlPoints());
+  char GetNumberOfControlPoints(int spline) override {
+    return static_cast<char>(nurbs[spline]->GetNumberOfControlPoints());
   }
 
-  char GetSpaceDimension() override {
-    return static_cast<char>(nurbs->GetDimension());
+  char GetSpaceDimension(int spline) override {
+    return static_cast<char>(nurbs[spline]->GetDimension());
   }
 
-  void AddWeights(pugi::xml_node *spline) override {
+  void AddWeights(pugi::xml_node *spline, int number) override {
     pugi::xml_node weights = spline->append_child("wght");
     std::string string;
-    util::MultiIndexHandler<DIM> weight_handler(GetNumberOfPointsInEachDirection());
+    util::MultiIndexHandler<DIM> weight_handler(GetNumberOfPointsInEachDirection(number));
     for (int i = 0; i < weight_handler.Get1DLength(); ++i, weight_handler++) {
       auto indices = weight_handler.GetIndices();
       string += "\n      ";
-      string += std::to_string(GetWeight(indices)) + "  ";
+      string += std::to_string(GetWeight(number, indices)) + "  ";
     }
     weights.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
 
-  double GetWeight(std::array<int, DIM> indices) {
-    return nurbs->GetWeight(indices);
+  double GetWeight(int spline, std::array<int, DIM> indices) {
+    return nurbs[spline]->GetWeight(indices);
   }
 
-  double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
-    return nurbs->GetControlPoint(indices, dimension);
+  double GetControlPoint(int spline, std::array<int, DIM> indices, int dimension) override {
+    return nurbs[spline]->GetControlPoint(indices, dimension);
   }
 
-  std::array<int, DIM> GetNumberOfPointsInEachDirection() override {
-    return nurbs->GetPointsPerDirection();
+  std::array<int, DIM> GetNumberOfPointsInEachDirection(int spline) override {
+    return nurbs[spline]->GetPointsPerDirection();
   }
 
-  std::shared_ptr<spl::NURBS<DIM>> nurbs;
+  std::vector<std::shared_ptr<spl::NURBS<DIM>>> nurbs;
 };
 }  // namespace io
 

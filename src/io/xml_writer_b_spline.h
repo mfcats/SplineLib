@@ -23,36 +23,39 @@ namespace io {
 template<int DIM>
 class XMLWriterBSpline : public XMLWriterSpline<DIM> {
  public:
-  explicit XMLWriterBSpline(std::shared_ptr<spl::BSpline<DIM>> b_spline) {
-    this->b_spline = b_spline;
+  explicit XMLWriterBSpline(std::vector<spl::BSpline<DIM>> b_splines)
+      : XMLWriterSpline<DIM>(static_cast<int>(b_splines.size())) {
+    for (auto &b_spline : b_splines) {
+      this->b_splines.push_back(std::make_shared<spl::BSpline<DIM>>(b_spline));
+    }
   }
 
  private:
-  double GetDegree(int dimension) override {
-    return b_spline->GetDegree(dimension);
+  double GetDegree(int spline, int dimension) override {
+    return b_splines[spline]->GetDegree(dimension);
   }
 
-  baf::KnotVector GetKnotVector(int dimension) override {
-    return b_spline->GetKnotVector(dimension);
+  baf::KnotVector GetKnotVector(int spline, int dimension) override {
+    return b_splines[spline]->GetKnotVector(dimension);
   }
 
-  char GetNumberOfControlPoints() override {
-    return static_cast<char>(b_spline->GetNumberOfControlPoints());
+  char GetNumberOfControlPoints(int spline) override {
+    return static_cast<char>(b_splines[spline]->GetNumberOfControlPoints());
   }
 
-  char GetSpaceDimension() override {
-    return static_cast<char>(b_spline->GetDimension());
+  char GetSpaceDimension(int spline) override {
+    return static_cast<char>(b_splines[spline]->GetDimension());
   }
 
-  double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
-    return b_spline->GetControlPoint(indices, dimension);
+  double GetControlPoint(int spline, std::array<int, DIM> indices, int dimension) override {
+    return b_splines[spline]->GetControlPoint(indices, dimension);
   }
 
-  std::array<int, DIM> GetNumberOfPointsInEachDirection() override {
-    return b_spline->GetPointsPerDirection();
+  std::array<int, DIM> GetNumberOfPointsInEachDirection(int spline) override {
+    return b_splines[spline]->GetPointsPerDirection();
   }
 
-  std::shared_ptr<spl::BSpline<DIM>> b_spline;
+  std::vector<std::shared_ptr<spl::BSpline<DIM>>> b_splines;
 };
 }  // namespace io
 
