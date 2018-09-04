@@ -53,13 +53,13 @@ class XMLReader {
     std::vector<baf::ControlPoint> control_points_ = GetControlPoints(spline);
     std::array<int, DIM> number_of_control_points = GetNumberOfControlPoints(parameter_space);
     if (spline->child("wght").empty()) {
-      splines->push_back(std::make_any<spl::BSpline<DIM>>(parameter_space, spl::PhysicalSpace<DIM>(
-          control_points_, number_of_control_points)));
+      splines->push_back(std::make_any<spl::BSpline<DIM>>(
+          parameter_space, spl::PhysicalSpace<DIM>(control_points_, number_of_control_points)));
     } else {
       std::vector<double> weights = util::StringOperations::StringVectorToNumberVector<double>(
           util::StringOperations::split(spline->child("wght").first_child().value(), ' '));
-      spl::WeightedPhysicalSpace<DIM> weightedPhysicalSpace(control_points_, weights, number_of_control_points);
-      splines->push_back(std::make_any<spl::NURBS<DIM>>(parameter_space, weightedPhysicalSpace));
+      splines->push_back(std::make_any<spl::NURBS<DIM>>(
+          parameter_space, spl::WeightedPhysicalSpace<DIM>(control_points_, weights, number_of_control_points)));
     }
   }
 
@@ -68,12 +68,13 @@ class XMLReader {
         util::StringOperations::split(spline->child("cntrlPntVars").first_child().value(), ' '));
     int start = FindCoordinatePosition(spline->child("cntrlPntVarNames").first_child().value());
     int dimension = std::stoi(spline->attribute("spaceDim").value());
-    int numberOfVars = std::stoi(spline->attribute("numOfCntrlPntVars").value());
+    int number_of_vars = std::stoi(spline->attribute("numOfCntrlPntVars").value());
+    int number_of_points = std::stoi(spline->attribute("numCntrlPnts").value());
     std::vector<baf::ControlPoint> points;
-    for (int i = 0; i < static_cast<int>(vars.size() / numberOfVars); i++) {
+    for (int i = 0; i < number_of_points; i++) {
       std::vector<double> coordinates;
       for (int j = start; j < start + dimension; j++) {
-        coordinates.push_back(vars[i * numberOfVars + j]);
+        coordinates.push_back(vars[i * number_of_vars + j]);
       }
       points.emplace_back(coordinates);
     }

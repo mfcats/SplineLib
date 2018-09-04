@@ -2648,7 +2648,7 @@
             splDim="2"
             spaceDim="2"
             numOfCntrlPntVars="2"
-            numCntrlPnts="3">
+            numCntrlPnts="6">
         <cntrlPntVarNames>
             x y
         </cntrlPntVarNames>
