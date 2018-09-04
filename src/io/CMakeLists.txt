@@ -13,16 +13,10 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(SOURCES
-        xml_reader.cc
-        xml_writer_spline.h
-        xml_writer_b_spline.h
-        xml_writer_nurbs.h
-        xml_reader.h)
-
-add_library(splinelibio SHARED ${SOURCES})
-target_include_directories(splinelibio PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibio splinelibspl pugixmllib)
+add_library(splinelibio INTERFACE)
+target_include_directories(splinelibio INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(splinelibio INTERFACE splinelibspl pugixmllib)
 
 install(
         TARGETS splinelibio

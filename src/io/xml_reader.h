@@ -64,9 +64,8 @@ class XMLReader {
   }
 
   std::vector<baf::ControlPoint> GetControlPoints(pugi::xml_node *spline) {
-    std::vector<double> vars =
-        util::StringOperations::StringVectorToNumberVector<double>(util::StringOperations::split(spline->child(
-            "cntrlPntVars").first_child().value(), ' '));
+    std::vector<double> vars = util::StringOperations::StringVectorToNumberVector<double>(
+        util::StringOperations::split(spline->child("cntrlPntVars").first_child().value(), ' '));
     int start = FindCoordinatePosition(spline->child("cntrlPntVarNames").first_child().value());
     int dimension = std::stoi(spline->attribute("spaceDim").value());
     int numberOfVars = std::stoi(spline->attribute("numOfCntrlPntVars").value());
