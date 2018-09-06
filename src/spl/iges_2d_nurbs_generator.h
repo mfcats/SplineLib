@@ -79,7 +79,7 @@ class IGES2DNURBSGenerator : public NURBSGenerator<2> {
       weightsStartEnd[0] = knotsStartEnd[1][1] + 1;
       weightsStartEnd[1] = weightsStartEnd[0] - 1 + ((1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
       controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
-      controlPointsStartEnd[1] = controlPointsStartEnd[0] - 3 + (3 * (1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
+      controlPointsStartEnd[1] = controlPointsStartEnd[0] - 1 + (3 * (1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
       std::array<std::vector<ParamCoord>, 2> knots;
       for (int i = knotsStartEnd[0][0]; i <= knotsStartEnd[0][1]; ++i) {
         knots[0].push_back(ParamCoord{parameterData[i]});
@@ -96,7 +96,7 @@ class IGES2DNURBSGenerator : public NURBSGenerator<2> {
       for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {
         controlPointCoordinates.push_back(parameterData[i]);
       }
-      for (int i = 0; i < controlPointCoordinates.size(); i += 3) {
+      for (int i = 0; i < controlPointCoordinates.size() - 2; i += 3) {
         control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
                                                     controlPointCoordinates[i + 1],
                                                     controlPointCoordinates[i + 2]}));

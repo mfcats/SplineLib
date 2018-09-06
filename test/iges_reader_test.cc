@@ -52,7 +52,7 @@ TEST_F(AnIGESReader, Read2DNURBSFromIGESFile) { // NOLINT
   ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0], DoubleNear(-1, 0.0005));
   ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {0})[0], DoubleNear(0, 0.0005));
   ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {1})[0], DoubleNear(0, 0.0005));
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {2})[0], DoubleNear(0, 0.0005));
+  ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {2})[0], DoubleNear(1, 0.0005));
 }
 
 
