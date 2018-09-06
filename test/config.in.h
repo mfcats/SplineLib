@@ -12,9 +12,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEST_CONFIG_IN_H
-#define TEST_CONFIG_IN_H
+#ifndef TEST_CONFIG_IN_H_
+#define TEST_CONFIG_IN_H_
 
 const char path_to_iges_file[] = "@PATH_TO_IGES_FILE@";
 
-#endif  // TEST_CONFIG_IN_H
+#endif  // TEST_CONFIG_IN_H_

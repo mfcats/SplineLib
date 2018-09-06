@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_IGES_1D_NURBS_GENERATOR_H
-#define SRC_SPL_IGES_1D_NURBS_GENERATOR_H
+#ifndef SRC_SPL_IGES_1D_NURBS_GENERATOR_H_
+#define SRC_SPL_IGES_1D_NURBS_GENERATOR_H_
 
 #include <algorithm>
 #include <cctype>
@@ -112,7 +112,7 @@ class IGES1DNURBSGenerator : public NURBSGenerator<1> {
     ParameterSectionStartEndPointers[1] =
         GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
     return ParameterSectionStartEndPointers;
-  };
+  }
 
   std::vector<double> ParameterSectionToVector(std::vector<std::string> parameterSection,
                                                std::array<int, 2> ParameterSectionStartEndPointers) {
@@ -184,4 +184,4 @@ class IGES1DNURBSGenerator : public NURBSGenerator<1> {
 };
 }  // namespace spl
 
-#endif  // SRC_SPL_IGES_1D_NURBS_GENERATOR_H
+#endif  // SRC_SPL_IGES_1D_NURBS_GENERATOR_H_

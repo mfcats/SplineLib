@@ -46,7 +46,7 @@ class NURBS : public Spline<DIM> {
   NURBS(ParameterSpace<DIM> parameter_space, WeightedPhysicalSpace<DIM> physical_space) : Spline<DIM>(std::move(
       parameter_space)), physical_space_(physical_space) {}
 
-  explicit NURBS(NURBSGenerator<DIM> nurbs_generator) : Spline<DIM>(*(nurbs_generator.GetParameterSpace())){
+  explicit NURBS(NURBSGenerator<DIM> nurbs_generator) : Spline<DIM>(*(nurbs_generator.GetParameterSpace())) {
     physical_space_ = *(nurbs_generator.GetWeightedPhysicalSpace());
   }
 

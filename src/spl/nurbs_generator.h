@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_NURBS_GENERATOR_H
-#define SRC_SPL_NURBS_GENERATOR_H
+#ifndef SRC_SPL_NURBS_GENERATOR_H_
+#define SRC_SPL_NURBS_GENERATOR_H_
 
 #include <vector>
 
@@ -36,7 +36,7 @@ class NURBSGenerator : public SplineGenerator<DIM> {
     }
 
     std::array<baf::KnotVector, DIM> knot_vectors;
-    for(int dim = 0; dim < DIM; ++dim) {
+    for (int dim = 0; dim < DIM; ++dim) {
       knot_vectors[dim] = *(knot_vector[dim]);
     }
 
@@ -59,4 +59,4 @@ class NURBSGenerator : public SplineGenerator<DIM> {
 };
 }  // namespace spl
 
-#endif  // SRC_SPL_NURBS_GENERATOR_H
+#endif  // SRC_SPL_NURBS_GENERATOR_H_

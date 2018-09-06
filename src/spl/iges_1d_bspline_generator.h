@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_IGES_1D_BSPLINE_GENERATOR_H
-#define SRC_SPL_IGES_1D_BSPLINE_GENERATOR_H
+#ifndef SRC_SPL_IGES_1D_BSPLINE_GENERATOR_H_
+#define SRC_SPL_IGES_1D_BSPLINE_GENERATOR_H_
 
 #include <algorithm>
 #include <cctype>
@@ -29,7 +29,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "spline.h"
 #include "spline_generator.h"
 #include "b_spline_generator.h"
-
 
 namespace spl {
 class IGES1DBSplineGenerator : public BSplineGenerator<1> {
@@ -100,21 +99,24 @@ class IGES1DBSplineGenerator : public BSplineGenerator<1> {
       }
       this->physical_space_ptr = std::make_shared<PhysicalSpace<1>>(control_points, number_of_points);
       this->parameter_space_ptr = std::make_shared<ParameterSpace<1>>(knot_vector, degree);
-  } else {
+    } else {
       throw std::runtime_error("You are trying to read an entity of the wrong type.");
     }
   }
 
-  std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
-    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2].substr(8, 8));
-    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead*2 + 1].substr(24, 8));
+  std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection,
+                                                         int entityToBeRead) {
+    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead * 2].substr(8, 8));
+    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead * 2 + 1].substr(24, 8));
     std::array<int, 2> ParameterSectionStartEndPointers;
     ParameterSectionStartEndPointers[0] = GetInteger(trim(parameterDataStartPointer));
-    ParameterSectionStartEndPointers[1] = GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
+    ParameterSectionStartEndPointers[1] =
+        GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
     return ParameterSectionStartEndPointers;
   }
 
-  std::vector<double> ParameterSectionToVector(std::vector<std::string> parameterSection, std::array<int, 2> ParameterSectionStartEndPointers) {
+  std::vector<double> ParameterSectionToVector(std::vector<std::string> parameterSection,
+                                               std::array<int, 2> ParameterSectionStartEndPointers) {
     std::vector<double> parameterSectionVector;
     int first = ParameterSectionStartEndPointers[0] - 1;
     int last = ParameterSectionStartEndPointers[1] - 1;
@@ -135,13 +137,13 @@ class IGES1DBSplineGenerator : public BSplineGenerator<1> {
       found1 = str.find_first_of(',');
       found2 = str.find_first_of(';');
       if ((found1 < found2) && (found1 != 0)) {
-        vector.push_back(GetDouble(str.substr(0,found1)));
-        str.erase(0,found1 + 1);
+        vector.push_back(GetDouble(str.substr(0, found1)));
+        str.erase(0, found1 + 1);
       } else if ((found2 < found1) && (found2 != 0)) {
-        vector.push_back(GetDouble(str.substr(0,found2)));
-        str.erase(0,found2 + 1);
+        vector.push_back(GetDouble(str.substr(0, found2)));
+        str.erase(0, found2 + 1);
       } else {
-        str.erase(0,1);
+        str.erase(0, 1);
       }
     }
     return vector;
@@ -183,4 +185,4 @@ class IGES1DBSplineGenerator : public BSplineGenerator<1> {
 };
 }  // namespace spl
 
-#endif  // SRC_SPL_IGES_1D_BSPLINE_GENERATOR_H
+#endif  // SRC_SPL_IGES_1D_BSPLINE_GENERATOR_H_
