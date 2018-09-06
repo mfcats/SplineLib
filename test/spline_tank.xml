@@ -2646,36 +2646,41 @@
     </SplineEntry>
     <SplineEntry
             splDim="2"
-            spaceDim="2"
-            numOfCntrlPntVars="2"
-            numCntrlPnts="6">
+            spaceDim="3"
+            numOfCntrlPntVars="3"
+            numCntrlPnts="9">
         <cntrlPntVarNames>
-            a b
+            a b c
         </cntrlPntVarNames>
         <cntrlPntVars>
-            0.000000 0.000000
-            1.000000 0.000000
-            2.000000 0.000000
-            0.000000 1.000000
-            1.000000 1.000000
-            2.000000 1.000000
+            -1.0 -1.0 0.0
+            0.0 -1.0 0.0
+            1.0 -1.0 0.0
+            -1.0 0.0 0.0
+            0.0 0.0 1.0
+            1.0 0.0 0.0
+            -1.0 1.0 0.0
+            0.0 1.0 0.0
+            1.0 1.0 0.0
         </cntrlPntVars>
         <deg>
-            1
+            2
             2
         </deg>
         <kntVecs>
             <kntVec>
                 0.000000
                 0.000000
-                0.500000
+                0.000000
+                1.000000
                 1.000000
                 1.000000
             </kntVec>
             <kntVec>
                 0.000000
                 0.000000
-                0.500000
+                0.000000
+                1.000000
                 1.000000
                 1.000000
             </kntVec>
