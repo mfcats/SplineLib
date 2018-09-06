@@ -116,6 +116,57 @@ TEST_F(ABSplineXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFil
               DoubleEq(bspline_after.Evaluate({ParamCoord(0.75839)}, {0})[0]));
 }
 
+class ABSplineXMLWriterWithSpaceDimension1 : public Test {
+ public:
+  ABSplineXMLWriterWithSpaceDimension1() {
+    std::array<baf::KnotVector, 1> knot_vector =
+        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})};
+    degree_ = {1};
+    control_points_ = {
+        baf::ControlPoint(std::vector<double>({0.0})),
+        baf::ControlPoint(std::vector<double>({0.5})),
+        baf::ControlPoint(std::vector<double>({1.0}))
+    };
+    physical_space = spl::PhysicalSpace<1>(control_points_, {3});
+    parameter_space = spl::ParameterSpace<1>(knot_vector, degree_);
+    std::vector<spl::BSpline<1>> splines;
+    splines.emplace_back(parameter_space, physical_space);
+    xml_writer = std::make_unique<io::XMLWriterBSpline<1>>(splines);
+  }
+
+ protected:
+  std::unique_ptr<io::XMLWriterBSpline<1>> xml_writer;
+  spl::PhysicalSpace<1> physical_space;
+  spl::ParameterSpace<1> parameter_space;
+  std::array<int, 1> degree_;
+  std::vector<baf::ControlPoint> control_points_;
+};
+
+TEST_F(ABSplineXMLWriterWithSpaceDimension1, IsCreated) {  // NOLINT
+  xml_writer->WriteXMLFile("bspline.xml");
+  std::ifstream newFile;
+  newFile.open("bspline.xml");
+  ASSERT_TRUE(newFile.is_open());
+  newFile.close();
+  remove("bspline.xml");
+}
+
+TEST_F(ABSplineXMLWriterWithSpaceDimension1, CreatesCorrectXMLFile) {  // NOLINT
+  xml_writer->WriteXMLFile("bspline.xml");
+  pugi::xml_document doc;
+  pugi::xml_parse_result result = doc.load_file("bspline.xml");
+  ASSERT_STREQ(result.description(), "No error");
+  remove("bspline.xml");
+}
+
+TEST_F(ABSplineXMLWriterWithSpaceDimension1, HasSpaceDimension1) {  // NOLINT
+  xml_writer->WriteXMLFile("bspline.xml");
+  pugi::xml_document doc;
+  doc.load_file("bspline.xml");
+  ASSERT_STREQ(doc.child("SplineList").child("SplineEntry").attribute("spaceDim").value(), "1");
+  remove("bspline.xml");
+}
+
 class ABSplineXMLWriterWithSpaceDimension3 : public Test {
  public:
   ABSplineXMLWriterWithSpaceDimension3() {

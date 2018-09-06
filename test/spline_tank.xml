@@ -2650,7 +2650,7 @@
             numOfCntrlPntVars="2"
             numCntrlPnts="6">
         <cntrlPntVarNames>
-            x y
+            a b
         </cntrlPntVarNames>
         <cntrlPntVars>
             0.000000 0.000000

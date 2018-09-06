@@ -30,6 +30,10 @@ class ASplineXMLReader : public Test {
   std::unique_ptr<io::XMLReader<2>> xml_reader;
 };
 
+TEST_F(ASplineXMLReader, ThrowsExceptionForNonExistingFile) {  // NOLINT
+  ASSERT_THROW(xml_reader->ReadXMLFile("test.xml"), std::runtime_error);
+}
+
 TEST_F(ASplineXMLReader, GetsCorrectDegreeOfFirstSplineInFirstDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<spl::NURBS<2>>(xml_reader->ReadXMLFile(path_to_xml_file)[0]).GetDegree(0), 2);
 }
