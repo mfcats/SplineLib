@@ -119,9 +119,9 @@ TEST_F(A2DNurbsFromIGESFile, Read1DBSplineFromIGESFile) { // NOLINT
 }
 
 TEST_F(A2DNurbsFromIGESFile, Read2DNURBSFromIGESFile) { // NOLINT
-  spl::IGES2DNURBSGenerator reader2 = spl::IGES2DNURBSGenerator(path_to_iges_file);
-  reader2.ReadIGESFile(2);
-  std::unique_ptr<spl::NURBS<2>> spline2 = std::make_unique<spl::NURBS<2>>(reader2);
+  spl::IGES2DNURBSGenerator reader = spl::IGES2DNURBSGenerator(path_to_iges_file);
+  reader.ReadIGESFile(2);
+  std::unique_ptr<spl::NURBS<2>> spline2 = std::make_unique<spl::NURBS<2>>(reader);
   ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0],
               DoubleEq(nurbs_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0]));
   ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0],
@@ -136,4 +136,16 @@ TEST_F(A2DNurbsFromIGESFile, Read2DNURBSFromIGESFile) { // NOLINT
               DoubleEq(nurbs_->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {2})[0]));
 }
 
+TEST_F(A2DNurbsFromIGESFile, ThrowIfFileCantBeOpened) { // NOLINT
+  spl::IGES1DBSplineGenerator reader1 = spl::IGES1DBSplineGenerator(path_to_iges_file);
+  spl::IGES2DNURBSGenerator reader2 = spl::IGES2DNURBSGenerator("a");
+  ASSERT_THROW(reader1.ReadIGESFile(1), std::runtime_error);
+  ASSERT_THROW(reader2.ReadIGESFile(1), std::runtime_error);
+}
 
+TEST_F(A2DNurbsFromIGESFile, ThrowIfWrongEntityType) { // NOLINT
+  spl::IGES1DBSplineGenerator reader1 = spl::IGES1DBSplineGenerator(path_to_iges_file);
+  spl::IGES2DNURBSGenerator reader2 = spl::IGES2DNURBSGenerator(path_to_iges_file);
+  ASSERT_THROW(reader1.ReadIGESFile(2), std::runtime_error);
+  ASSERT_THROW(reader2.ReadIGESFile(4), std::runtime_error);
+}
