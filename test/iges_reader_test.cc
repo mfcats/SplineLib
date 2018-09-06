@@ -25,13 +25,86 @@ using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
-class AnIGESReader : public Test {
+class A2DNurbsFromIGESFile : public Test {
  public:
-  AnIGESReader() {
+  A2DNurbsFromIGESFile() {
+    std::array<baf::KnotVector, 2> knot_vector =
+        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.25}, ParamCoord{0.25},
+                          ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.75}, ParamCoord{0.75}, ParamCoord{1},
+                          ParamCoord{1}, ParamCoord{1}}),
+         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{1},
+                          ParamCoord{1}, ParamCoord{1}})};
+
+    std::array<int, 2> degree = {2, 2};
+
+    std::vector<double> weights = {1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 1.0, 0.70710678118654757,
+                                   1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 0.50000000000000011,
+                                   0.70710678118654757, 0.50000000000000011, 0.70710678118654757, 0.50000000000000011,
+                                   0.70710678118654757, 0.50000000000000011, 0.70710678118654757, 1.0, 0.70710678118654757,
+                                   1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 1.0,
+                                   0.70710678118654757, 0.50000000000000011, 0.70710678118654757, 0.50000000000000011,
+                                   0.70710678118654757, 0.50000000000000011, 0.70710678118654757, 0.50000000000000011,
+                                   0.70710678118654757, 1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 1.0,
+                                   0.70710678118654757, 1.0, 0.70710678118654757, 1.0};
+
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, -1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, -0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, -1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, -0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, -1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, -0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, -1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, -0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, -1.0})),
+        baf::ControlPoint(std::vector<double>({0.99999999999999989, 0.0, -0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.99999999999999978, 0.99999999999999944, -0.99999999999999956})),
+        baf::ControlPoint(std::vector<double>({6.1232339957367648E-17, 0.99999999999999989, -0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({-0.99999999999999956, 0.99999999999999978, -0.99999999999999956})),
+        baf::ControlPoint(std::vector<double>({-0.99999999999999989, 1.224646799147353E-16, -0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({-0.99999999999999978, -0.99999999999999956, -0.99999999999999956})),
+        baf::ControlPoint(std::vector<double>({-1.8369701987210294E-16, -0.99999999999999989, -0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.99999999999999978, -0.99999999999999956, -0.99999999999999956})),
+        baf::ControlPoint(std::vector<double>({0.99999999999999989, 0.0, -0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({1.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.99999999999999989, 0.99999999999999989, 0.0})),
+        baf::ControlPoint(std::vector<double>({6.123233995736766E-17, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({-0.99999999999999989, 0.99999999999999967, 0.0})),
+        baf::ControlPoint(std::vector<double>({-1.0, 1.2246467991473532E-16, 0.0})),
+        baf::ControlPoint(std::vector<double>({-1.0, -0.99999999999999989, 0.0})),
+        baf::ControlPoint(std::vector<double>({-1.8369701987210297E-16, -1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, -1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.99999999999999989, 0.0, 0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.99999999999999978, 0.99999999999999944, 0.99999999999999956})),
+        baf::ControlPoint(std::vector<double>({6.1232339957367648E-17, 0.99999999999999989, 0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({-0.99999999999999956, 0.99999999999999978, 0.99999999999999956})),
+        baf::ControlPoint(std::vector<double>({-0.99999999999999989, 1.224646799147353E-16, 0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({-0.99999999999999978, -0.99999999999999956, 0.99999999999999956})),
+        baf::ControlPoint(std::vector<double>({-1.8369701987210294E-16, -0.99999999999999989, 0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.99999999999999978, -0.99999999999999956, 0.99999999999999956})),
+        baf::ControlPoint(std::vector<double>({0.99999999999999989, 0.0, 0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.99999999999999989})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 1.0}))
+    };
+
+    std::shared_ptr<std::array<baf::KnotVector, 2>>
+        knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vector);
+    nurbs_ = std::make_unique<spl::NURBS<2>>(knot_vector_ptr, degree, control_points, weights);
   }
+
+ protected:
+  std::unique_ptr<spl::NURBS<2>> nurbs_;
 };
 
-TEST_F(AnIGESReader, Read1DBSplineFromIGESFile) { // NOLINT
+TEST_F(A2DNurbsFromIGESFile, Read1DBSplineFromIGESFile) { // NOLINT
   spl::IGES1DBSplineGenerator reader = spl::IGES1DBSplineGenerator(path_to_iges_file);
   reader.ReadIGESFile(4);
   std::unique_ptr<spl::BSpline<1>> spline = std::make_unique<spl::BSpline<1>>(reader);
@@ -43,16 +116,22 @@ TEST_F(AnIGESReader, Read1DBSplineFromIGESFile) { // NOLINT
   ASSERT_THAT(spline->Evaluate({ParamCoord{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
 }
 
-TEST_F(AnIGESReader, Read2DNURBSFromIGESFile) { // NOLINT
+TEST_F(A2DNurbsFromIGESFile, Read2DNURBSFromIGESFile) { // NOLINT
   spl::IGES2DNURBSGenerator reader2 = spl::IGES2DNURBSGenerator(path_to_iges_file);
   reader2.ReadIGESFile(2);
   std::unique_ptr<spl::NURBS<2>> spline2 = std::make_unique<spl::NURBS<2>>(reader2);
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0], DoubleNear(0, 0.0005));
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0], DoubleNear(0, 0.0005));
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0], DoubleNear(-1, 0.0005));
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {0})[0], DoubleNear(0, 0.0005));
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {1})[0], DoubleNear(0, 0.0005));
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {2})[0], DoubleNear(1, 0.0005));
+  ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0],
+              DoubleEq(nurbs_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0]));
+  ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0],
+              DoubleEq(nurbs_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0]));
+  ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0],
+              DoubleEq(nurbs_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0]));
+  ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {0})[0],
+              DoubleEq(nurbs_->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {0})[0]));
+  ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {1})[0],
+              DoubleEq(nurbs_->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {1})[0]));
+  ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {2})[0],
+              DoubleEq(nurbs_->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {2})[0]));
 }
 
 
