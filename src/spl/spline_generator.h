@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_SPLINE_GENERATOR_H
-#define SPLINELIB_SPLINE_GENERATOR_H
+#ifndef SRC_SPL_SPLINE_GENERATOR_H
+#define SRC_SPL_SPLINE_GENERATOR_H
 
 #include "parameter_space.h"
 
@@ -33,4 +33,4 @@ class SplineGenerator {
 };
 }
 
-#endif //SPLINELIB_SPLINE_GENERATOR_H
+#endif  // SRC_SPL_SPLINE_GENERATOR_H

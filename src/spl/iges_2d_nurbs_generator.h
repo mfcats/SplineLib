@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_IGES_2D_NURBS_GENERATOR_H
-#define SPLINELIB_IGES_2D_NURBS_GENERATOR_H
+#ifndef SRC_SPL_IGES_2D_NURBS_GENERATOR_H
+#define SRC_SPL_IGES_2D_NURBS_GENERATOR_H
 
 #include <algorithm>
 #include <cctype>
@@ -112,16 +112,19 @@ class IGES2DNURBSGenerator : public NURBSGenerator<2> {
     }
   }
 
-  std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
-    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2].substr(8,8));
-    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead*2 + 1].substr(24,8));
+  std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection,
+                                                         int entityToBeRead) {
+    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead * 2].substr(8, 8));
+    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead * 2 + 1].substr(24, 8));
     std::array<int, 2> ParameterSectionStartEndPointers;
     ParameterSectionStartEndPointers[0] = GetInteger(trim(parameterDataStartPointer));
-    ParameterSectionStartEndPointers[1] = GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
+    ParameterSectionStartEndPointers[1] =
+        GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
     return ParameterSectionStartEndPointers;
   };
 
-  std::vector<double> ParameterSectionToVector(std::vector<std::string> parameterSection, std::array<int, 2> ParameterSectionStartEndPointers) {
+  std::vector<double> ParameterSectionToVector(std::vector<std::string> parameterSection,
+                                               std::array<int, 2> ParameterSectionStartEndPointers) {
     std::vector<double> parameterSectionVector;
     int first = ParameterSectionStartEndPointers[0] - 1;
     int last = ParameterSectionStartEndPointers[1] - 1;
@@ -134,7 +137,7 @@ class IGES2DNURBSGenerator : public NURBSGenerator<2> {
     return parameterSectionVector;
   }
 
-  std::vector<double> DelimitedStringToVector (std::string str) {
+  std::vector<double> DelimitedStringToVector(std::string str) {
     std::vector<double> vector;
     std::size_t found1;
     std::size_t found2;
@@ -142,13 +145,13 @@ class IGES2DNURBSGenerator : public NURBSGenerator<2> {
       found1 = str.find_first_of(',');
       found2 = str.find_first_of(';');
       if ((found1 < found2) && (found1 != 0)) {
-        vector.push_back(GetDouble(str.substr(0,found1)));
-        str.erase(0,found1 + 1);
+        vector.push_back(GetDouble(str.substr(0, found1)));
+        str.erase(0, found1 + 1);
       } else if ((found2 < found1) && (found2 != 0)) {
-        vector.push_back(GetDouble(str.substr(0,found2)));
-        str.erase(0,found2 + 1);
+        vector.push_back(GetDouble(str.substr(0, found2)));
+        str.erase(0, found2 + 1);
       } else {
-        str.erase(0,1);
+        str.erase(0, 1);
       }
     }
     return vector;
@@ -188,6 +191,6 @@ class IGES2DNURBSGenerator : public NURBSGenerator<2> {
 
   std::string filename_;
 };
-}
+}  // namespace spl
 
-#endif //SPLINELIB_IGES_2D_NURBS_GENERATOR_H
+#endif  // SRC_SPL_2D_NURBS_GENERATOR_H

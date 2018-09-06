@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_IGES_1D_BSPLINE_GENERATOR_H
-#define SPLINELIB_IGES_1D_BSPLINE_GENERATOR_H
+#ifndef SRC_SPL_IGES_1D_BSPLINE_GENERATOR_H
+#define SRC_SPL_IGES_1D_BSPLINE_GENERATOR_H
 
 #include <algorithm>
 #include <cctype>
@@ -181,6 +181,6 @@ class IGES1DBSplineGenerator : public BSplineGenerator<1> {
 
   std::string filename_;
 };
-}
+}  // namespace spl
 
-#endif //SPLINELIB_IGES_1D_BSPLINE_GENERATOR_H
+#endif  // SRC_SPL_IGES_1D_BSPLINE_GENERATOR_H
