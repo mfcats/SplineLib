@@ -193,4 +193,4 @@ class IGES2DNURBSGenerator : public NURBSGenerator<2> {
 };
 }  // namespace spl
 
-#endif  // SRC_SPL_2D_NURBS_GENERATOR_H_
+#endif  // SRC_SPL_IGES_2D_NURBS_GENERATOR_H_
