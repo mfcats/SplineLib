@@ -16,6 +16,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "spline_generator.h"
 #include "b_spline_generator.h"
 #include "iges_1d_bspline_generator.h"
+#include "iges_2d_bspline_generator.h"
+#include "iges_1d_nurbs_generator.h"
 #include "iges_2d_nurbs_generator.h"
 #include <config.h>
 
@@ -40,6 +42,5 @@ TEST_F(AnIGESReader, Read2DNURBSFromIGESFile) { // NOLINT
   spl::IGES2DNURBSGenerator reader2 = spl::IGES2DNURBSGenerator(path_to_iges_file);
   reader2.ReadIGESFile(2);
   std::unique_ptr<spl::NURBS<2>> spline2 = std::make_unique<spl::NURBS<2>>(reader2);
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.005));
+  ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0], DoubleNear(0, 0.005));
 }
-

@@ -80,7 +80,7 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
       weightsStartEnd[0] = knotsStartEnd[1][1] + 1;
       weightsStartEnd[1] = weightsStartEnd[0] - 1 + ((1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
       controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
-      controlPointsStartEnd[1] = controlPointsStartEnd[0] - 4 + (3 * (1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
+      controlPointsStartEnd[1] = controlPointsStartEnd[0] - 3 + (3 * (1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
       std::array<std::vector<ParamCoord>, 2> knots;
       for (int i = knotsStartEnd[0][0]; i <= knotsStartEnd[0][1]; ++i) {
         knots[0].push_back(ParamCoord{parameterData[i]});
