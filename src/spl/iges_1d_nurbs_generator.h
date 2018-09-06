@@ -60,9 +60,9 @@ class IGES1DNURBSGenerator : public NURBSGenerator<1> {
  private:
   void ReadParameterData(const std::vector<double> &parameterData) {
     if ((parameterData[0] == 126) && (parameterData[5] == 0)) {
-      int upperSumIndex = int(parameterData[1]);
+      int upperSumIndex = static_cast<int>(parameterData[1]);
       std::array<int, 1> degree;
-      degree[0] = int(parameterData[2]);
+      degree[0] = static_cast<int>(parameterData[2]);
       std::array<baf::KnotVector, 1> knot_vector;
       std::vector<double> weights;
       std::vector<baf::ControlPoint> control_points;
@@ -103,16 +103,19 @@ class IGES1DNURBSGenerator : public NURBSGenerator<1> {
     }
   }
 
-  std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection, int entityToBeRead) {
-    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead*2].substr(8,8));
-    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead*2 + 1].substr(24,8));
+  std::array<int, 2> GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection,
+                                                         int entityToBeRead) {
+    std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead * 2].substr(8, 8));
+    std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead * 2 + 1].substr(24, 8));
     std::array<int, 2> ParameterSectionStartEndPointers;
     ParameterSectionStartEndPointers[0] = GetInteger(trim(parameterDataStartPointer));
-    ParameterSectionStartEndPointers[1] = GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
+    ParameterSectionStartEndPointers[1] =
+        GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
     return ParameterSectionStartEndPointers;
   };
 
-  std::vector<double> ParameterSectionToVector(std::vector<std::string> parameterSection, std::array<int, 2> ParameterSectionStartEndPointers) {
+  std::vector<double> ParameterSectionToVector(std::vector<std::string> parameterSection,
+                                               std::array<int, 2> ParameterSectionStartEndPointers) {
     std::vector<double> parameterSectionVector;
     int first = ParameterSectionStartEndPointers[0] - 1;
     int last = ParameterSectionStartEndPointers[1] - 1;
@@ -125,7 +128,7 @@ class IGES1DNURBSGenerator : public NURBSGenerator<1> {
     return parameterSectionVector;
   }
 
-  std::vector<double> DelimitedStringToVector (std::string str) {
+  std::vector<double> DelimitedStringToVector(std::string str) {
     std::vector<double> vector;
     std::size_t found1;
     std::size_t found2;
@@ -133,13 +136,13 @@ class IGES1DNURBSGenerator : public NURBSGenerator<1> {
       found1 = str.find_first_of(',');
       found2 = str.find_first_of(';');
       if ((found1 < found2) && (found1 != 0)) {
-        vector.push_back(GetDouble(str.substr(0,found1)));
-        str.erase(0,found1 + 1);
+        vector.push_back(GetDouble(str.substr(0, found1)));
+        str.erase(0, found1 + 1);
       } else if ((found2 < found1) && (found2 != 0)) {
-        vector.push_back(GetDouble(str.substr(0,found2)));
-        str.erase(0,found2 + 1);
+        vector.push_back(GetDouble(str.substr(0, found2)));
+        str.erase(0, found2 + 1);
       } else {
-        str.erase(0,1);
+        str.erase(0, 1);
       }
     }
     return vector;

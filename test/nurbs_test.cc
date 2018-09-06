@@ -227,7 +227,6 @@ class ANURBSWithSplineGenerator : public Test {
         knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
     spl::NURBSGenerator<1> nurbs_generator(knot_vector_ptr, degree, control_points, weights);
     nurbs = std::make_unique<spl::NURBS<1>>(nurbs_generator);
-
   }
 
  protected:

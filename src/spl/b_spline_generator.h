@@ -12,8 +12,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_B_SPLINE_GENERATOR_H
-#define SPLINELIB_B_SPLINE_GENERATOR_H
+#ifndef SRC_SPL_B_SPLINE_GENERATOR_H
+#define SRC_SPL_B_SPLINE_GENERATOR_H
+
+#include <vector>
 
 #include "physical_space.h"
 #include "spline_generator.h"
@@ -34,7 +36,7 @@ class BSplineGenerator : public SplineGenerator<DIM> {
     }
 
     std::array<baf::KnotVector, DIM> knot_vectors;
-    for(int dim = 0; dim < DIM; ++dim) {
+    for (int dim = 0; dim < DIM; ++dim) {
       knot_vectors[dim] = *(knot_vector[dim]);
     }
 
@@ -54,6 +56,6 @@ class BSplineGenerator : public SplineGenerator<DIM> {
  protected:
   std::shared_ptr<PhysicalSpace<DIM>> physical_space_ptr;
 };
-}
+}  // namespace spl
 
-#endif //SPLINELIB_B_SPLINE_GENERATOR_H
+#endif  // SRC_SPL_B_SPLINE_GENERATOR_H

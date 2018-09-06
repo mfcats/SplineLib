@@ -61,11 +61,11 @@ class IGES2DNURBSGenerator : public NURBSGenerator<2> {
   void ReadParameterData(const std::vector<double> &parameterData) {
     if ((parameterData[0] == 128) && (parameterData[7] == 0)) {
       std::array<int, 2> upperSumIndex;
-      upperSumIndex[0] = int(parameterData[1]);
-      upperSumIndex[1] = int(parameterData[2]);
+      upperSumIndex[0] = static_cast<int>(parameterData[1]);
+      upperSumIndex[1] = static_cast<int>(parameterData[2]);
       std::array<int, 2> degree;
-      degree[0] = int(parameterData[3]);
-      degree[1] = int(parameterData[4]);
+      degree[0] = static_cast<int>(parameterData[3]);
+      degree[1] = static_cast<int>(parameterData[4]);
       std::array<baf::KnotVector, 2> knot_vector;
       std::vector<double> weights;
       std::vector<baf::ControlPoint> control_points;
@@ -121,7 +121,7 @@ class IGES2DNURBSGenerator : public NURBSGenerator<2> {
     ParameterSectionStartEndPointers[1] =
         GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
     return ParameterSectionStartEndPointers;
-  };
+  }
 
   std::vector<double> ParameterSectionToVector(std::vector<std::string> parameterSection,
                                                std::array<int, 2> ParameterSectionStartEndPointers) {

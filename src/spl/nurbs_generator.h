@@ -12,8 +12,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SPLINELIB_NURBS_GENERATOR_H
-#define SPLINELIB_NURBS_GENERATOR_H
+#ifndef SRC_SPL_NURBS_GENERATOR_H
+#define SRC_SPL_NURBS_GENERATOR_H
+
+#include <vector>
 
 #include "spline_generator.h"
 #include "weighted_physical_space.h"
@@ -55,6 +57,6 @@ class NURBSGenerator : public SplineGenerator<DIM> {
  protected:
   std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_ptr;
 };
-}
+}  // namespace spl
 
-#endif //SPLINELIB_NURBS_GENERATOR_H
+#endif  // SRC_SPL_NURBS_GENERATOR_H
