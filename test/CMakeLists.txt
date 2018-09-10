@@ -34,7 +34,8 @@ set(TEST_SOURCES
         weighted_physical_space_test.cc
         xml_writer_b_spline_test.cc
         xml_writer_nurbs_test.cc
-        xml_reader_test.ccbasis_function_factory.cc
+        xml_reader_test.cc
+        basis_function_factory.cc
         element_integration_point_test.cc)
 
 
