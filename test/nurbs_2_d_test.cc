@@ -121,20 +121,20 @@ class A2DNurbsWithAllWeights1 : public Test {
  public:
   A2DNurbsWithAllWeights1() {
     std::array<baf::KnotVector, 2> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
+        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{2}, ParamCoord{2}, ParamCoord{2}}),
+         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{2}, ParamCoord{2}, ParamCoord{2}})};
     std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
     std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1, 1, 1};
     std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({3.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({-1.0, 0.5})),
+        baf::ControlPoint(std::vector<double>({1.0, 2.0})),
         baf::ControlPoint(std::vector<double>({2.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({4.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({0.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.5, 3.5})),
-        baf::ControlPoint(std::vector<double>({5.0, 2.0}))
+        baf::ControlPoint(std::vector<double>({4.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 2.5})),
+        baf::ControlPoint(std::vector<double>({3.0, 4.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 3.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 4.0})),
+        baf::ControlPoint(std::vector<double>({3.5, 5.5})),
+        baf::ControlPoint(std::vector<double>({6.0, 4.0}))
     };
     std::array<std::shared_ptr<baf::KnotVector>, 2>
         knot_vector_ptr =

@@ -23,14 +23,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 int main() {
   std::array<Degree, 1> degree = {Degree{2}};
   std::vector<baf::ControlPoint> control_points = {
-      baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.0, 1.0})),
-      baf::ControlPoint(std::vector<double>({1.0, 1.0})),
-      baf::ControlPoint(std::vector<double>({1.5, 1.5})),
-      baf::ControlPoint(std::vector<double>({2.0, 1.3})),
-      baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-      baf::ControlPoint(std::vector<double>({4.0, 1.5})),
-      baf::ControlPoint(std::vector<double>({4.0, 0.0}))
+      baf::ControlPoint(std::vector<double>({4.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({7.0, 1.5})),
+      baf::ControlPoint(std::vector<double>({11.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({2.5, 4.5})),
+      baf::ControlPoint(std::vector<double>({3.0, 4.3})),
+      baf::ControlPoint(std::vector<double>({7.0, 3.0})),
+      baf::ControlPoint(std::vector<double>({8.0, 2.5})),
+      baf::ControlPoint(std::vector<double>({8.0, 1.0}))
   };
   std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_ptr = {
       std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
