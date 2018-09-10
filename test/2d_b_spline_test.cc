@@ -28,9 +28,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "2d_b_spline_mocking.h"
 
 using testing::Test;
-using ::testing::Return;
 using ::testing::NiceMock;
-using ::testing::_;
 
 /* 2-dimensional spline with following properties :
  * KnotVector1 = {0, 0, 0, 1, 1, 1}
