@@ -106,8 +106,8 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
       for (int i = 0; i < 2; ++i) {
         number_of_points[i] = knot_vector[i].GetNumberOfKnots() - degree[i] - 1;
       }
-      this->physical_space_ptr = std::make_shared<PhysicalSpace<2>>(control_points, number_of_points);
-      this->parameter_space_ptr = std::make_shared<ParameterSpace<2>>(knot_vector, degree);
+      this->physical_space_ = std::make_shared<PhysicalSpace<2>>(control_points, number_of_points);
+      this->parameter_space_ = std::make_shared<ParameterSpace<2>>(knot_vector, degree);
     } else {
       throw std::runtime_error("You are trying to read an entity of the wrong type.");
     }

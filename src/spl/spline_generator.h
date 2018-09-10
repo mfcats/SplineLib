@@ -25,11 +25,11 @@ class SplineGenerator {
   virtual ~SplineGenerator() = default;
 
   std::shared_ptr<ParameterSpace<DIM>> GetParameterSpace() {
-    return parameter_space_ptr;
+    return parameter_space_;
   }
 
  protected:
-  std::shared_ptr<ParameterSpace<DIM>> parameter_space_ptr;
+  std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
 };
 }  // namespace spl
 

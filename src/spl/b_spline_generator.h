@@ -40,21 +40,21 @@ class BSplineGenerator : public SplineGenerator<DIM> {
       knot_vectors[dim] = *(knot_vector[dim]);
     }
 
-    this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
-    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vectors, degree);
+    this->physical_space_ = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
+    this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(knot_vectors, degree);
   }
 
   BSplineGenerator(PhysicalSpace<DIM> physical_space, ParameterSpace<DIM> parameter_space) {
-    this->physical_space_ptr = std::make_shared<PhysicalSpace<DIM>>(physical_space);
-    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(parameter_space);
+    this->physical_space_ = std::make_shared<PhysicalSpace<DIM>>(physical_space);
+    this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(parameter_space);
   }
 
   std::shared_ptr<PhysicalSpace<DIM>> GetPhysicalSpace() {
-    return physical_space_ptr;
+    return physical_space_;
   }
 
  protected:
-  std::shared_ptr<PhysicalSpace<DIM>> physical_space_ptr;
+  std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
 };
 }  // namespace spl
 

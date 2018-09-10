@@ -41,21 +41,21 @@ class NURBSGenerator : public SplineGenerator<DIM> {
     }
 
 
-    this->physical_space_ptr = std::make_shared<WeightedPhysicalSpace<DIM>>(control_points, weights, number_of_points);
-    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(knot_vectors, degree);
+    this->physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(control_points, weights, number_of_points);
+    this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(knot_vectors, degree);
   }
 
   NURBSGenerator(WeightedPhysicalSpace<DIM> weigthed_physical_space, ParameterSpace<DIM> parameter_space) {
-    this->physical_space_ptr = std::make_shared<WeightedPhysicalSpace<DIM>>(weigthed_physical_space);
-    this->parameter_space_ptr = std::make_shared<ParameterSpace<DIM>>(parameter_space);
+    this->physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(weigthed_physical_space);
+    this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(parameter_space);
   }
 
   std::shared_ptr<WeightedPhysicalSpace<DIM>> GetWeightedPhysicalSpace() {
-    return physical_space_ptr;
+    return physical_space_;
   }
 
  protected:
-  std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_ptr;
+  std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_;
 };
 }  // namespace spl
 
