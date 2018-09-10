@@ -226,11 +226,10 @@ TEST_F(ABSpline, ReturnsCorrectJacobianDeterminant) { // NOLINT
 
 class ABSplineWithSplineGenerator : public Test {
  public:
-  ABSplineWithSplineGenerator() {
+  ABSplineWithSplineGenerator() : degree_{2} {
     std::array<baf::KnotVector, 1> knot_vector =
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                           ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}})};
-    degree_ = {2};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0})),
