@@ -1,38 +1,42 @@
 /* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+
 This file is part of SplineLib.
+
 SplineLib is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation version 3 of the License.
+
 SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_SQUARE_GENERATOR_H_
-#define SRC_SPL_SQUARE_GENERATOR_H_
+#ifndef SRC_SPL_SPLINE_GENERATOR_H_
+#define SRC_SPL_SPLINE_GENERATOR_H_
 
-#include <array>
-#include <vector>
-
-#include "b_spline.h"
-#include "knot_vector.h"
+#include "parameter_space.h"
+#include "physical_space.h"
+#include "weighted_physical_space.h"
 
 namespace spl {
-class SquareGenerator {
+template<int DIM>
+class SplineGenerator {
  public:
-  SquareGenerator();
-  SquareGenerator(Degree degree, u_int64_t number_of_knots);
+  SplineGenerator() = default;
+  virtual ~SplineGenerator() = default;
 
-  std::unique_ptr<BSpline<2>> CreateSquare() const;
+  SplineGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector, std::array<Degree, DIM> degree) {
+    parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
+  }
 
- private:
-  spl::ParameterSpace<2> GenerateParameterSpace() const;
+  std::shared_ptr<ParameterSpace<DIM>> GetParameterSpace() {
+    return parameter_space_;
+  }
 
-  spl::PhysicalSpace<2> GeneratePhysicalSpace() const;
-
-  Degree degree_;
-  u_int64_t number_of_knots_;
+ protected:
+  std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
 };
-}  // namespace spl
+}  //  namespace spl
 
-#endif  // SRC_SPL_SQUARE_GENERATOR_H_
+#endif  //  SRC_SPL_SPLINE_GENERATOR_H_

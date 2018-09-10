@@ -18,6 +18,8 @@ cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
 project(SplineLib VERSION 0.0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/)
+
 # Installation
 set(include_install_dir "include")
 set(library_install_dir "lib")
@@ -39,7 +41,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(OPTIMIZATION_FLAGS -O3 -march=native)
     set(RUNTIME_CHECKS_DEBUG "")
     set(PARALLELIZATION_FLAGS "")
-    set(WARNING_FLAGS -Wall -Wextra -Wpedantic -Wunused) # -Werror)
+    set(WARNING_FLAGS -Wall -Wextra -Wpedantic -Wunused -Wno-missing-braces) # -Werror)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     message(STATUS "Compile using gcc compiler!")
     set(OPTIMIZATION_FLAGS -O3 -march=native)

@@ -15,11 +15,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_BAF_BASIS_FUNCTION_H_
 #define SRC_BAF_BASIS_FUNCTION_H_
 
-#include <memory>
-#include <utility>
-#include <vector>
-
 #include "knot_vector.h"
+#include "named_type.h"
+
+using Degree = util::NamedType<int, struct DegreeParameter>;
+using Derivative = util::NamedType<int, struct DerivativeParameter>;
 
 namespace baf {
 class BasisFunction {
@@ -29,33 +29,29 @@ class BasisFunction {
   // The evaluation of the i-th basis function of degree p > 0 N_{i,p} is a linear combination of the basis functions
   // N_{i,p-1} and N_{i+1,p-1} (see NURBS book equation 2.5). Therefore, for each basis function of degree > 0 a pointer
   // to these two basis functions is set in constructor, so that a basis function can be evaluated recursively.
-  double Evaluate(ParamCoord paramCoord) const;
+  double Evaluate(const ParamCoord &paramCoord) const;
 
-  double EvaluateDerivative(ParamCoord param_coord, int derivative) const;
+  double EvaluateDerivative(const ParamCoord &param_coord, const Derivative &derivative) const;
 
  protected:
-  BasisFunction(KnotVector knot_vector, int degree, uint64_t start);
+  BasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support);
 
-  ParamCoord GetKnot(uint64_t knot_position) const;
+  Degree GetDegree() const;
 
-  uint64_t GetStartOfSupport() const;
+  virtual double EvaluateOnSupport(const ParamCoord &param_coord) const = 0;
 
-  int GetDegree() const;
+  virtual double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const = 0;
 
-  virtual double EvaluateOnSupport(ParamCoord param_coord) const = 0;
-
-  virtual double EvaluateDerivativeOnSupport(ParamCoord param_coord, int derivative) const = 0;
+  ParamCoord GetStartKnot() const;
+  ParamCoord GetEndKnot() const;
 
  private:
-  // Check if parametric coordinate is in knot vector range (see IsCoordinateInSupportSpan) and in support span.
-  bool IsCoordinateInSupport(ParamCoord param_coord) const;
+  bool IsCoordinateInSupport(const ParamCoord &param_coord) const;
 
-  // Check if parametric coordinate is in the range of knot spans where the basis function is defined to be non-zero.
-  bool IsCoordinateInSupportSpan(ParamCoord param_coord) const;
-
-  KnotVector knotVector_;
-  int degree_;
-  uint64_t start_of_support_;
+  Degree degree_;
+  ParamCoord start_knot_{0};
+  ParamCoord end_knot_{1};
+  bool end_knot_is_last_knot_{false};
 };
 }  // namespace baf
 

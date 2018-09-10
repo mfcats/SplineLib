@@ -14,13 +14,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function_factory.h"
 
+#include <string>
+
 #include "b_spline_basis_function.h"
 #include "zero_degree_b_spline_basis_function.h"
 
 baf::BasisFunction *baf::BasisFunctionFactory::CreateDynamic(const KnotVector &knot_vector,
-                                                             uint64_t start_of_support,
-                                                             int degree) const {
-  if (degree < 0) {throw std::runtime_error("Basis function degree must be positive.");}
-  if (degree == 0) {return new baf::ZeroDegreeBSplineBasisFunction(knot_vector, start_of_support);}
+                                                             const KnotSpan &start_of_support,
+                                                             const Degree &degree) {
+  if (degree < Degree{0}) {
+    std::string msg;
+    msg = "Basis function degree must be positive. Given degree is " + std::to_string(degree.get());
+    throw std::runtime_error(msg);
+  }
+  if (degree == Degree{0}) {
+    return new baf::ZeroDegBSplBasFnc(knot_vector, start_of_support);
+  }
   return new baf::BSplineBasisFunction(knot_vector, degree, start_of_support);
 }

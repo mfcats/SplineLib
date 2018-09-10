@@ -12,18 +12,27 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_BAF_BASIS_FUNCTION_FACTORY_H_
-#define SRC_BAF_BASIS_FUNCTION_FACTORY_H_
+#include <memory>
 
-#include "basis_function.h"
+#include "gmock/gmock.h"
 
-namespace baf {
-class BasisFunctionFactory {
+#include "basis_function_factory.h"
+
+using testing::Test;
+
+class ABasisFunctionFactory : public Test {
  public:
-  static BasisFunction *CreateDynamic(const KnotVector &knot_vector,
-                                      const KnotSpan &start_of_support,
-                                      const Degree &degree);
-};
-}  // namespace baf
+  ABasisFunctionFactory() : degree_{Degree{-1}},
+      knot_vector_({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
+      start_of_support_{KnotSpan{4}} {}
 
-#endif  // SRC_BAF_BASIS_FUNCTION_FACTORY_H_
+ protected:
+  Degree degree_;
+  baf::KnotVector knot_vector_;
+  KnotSpan start_of_support_;
+  baf::BasisFunctionFactory basis_function_factory;
+};
+
+TEST_F(ABasisFunctionFactory, throwsError) { //NOLINT
+  ASSERT_THROW(basis_function_factory.CreateDynamic(knot_vector_, start_of_support_, degree_), std::runtime_error);
+}

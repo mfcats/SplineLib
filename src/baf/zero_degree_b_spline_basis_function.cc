@@ -14,20 +14,19 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "zero_degree_b_spline_basis_function.h"
 
-#include <cmath>
-
 #include "numeric_settings.h"
 
-baf::ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const baf::KnotVector &knot_vector,
-                                                                    uint64_t start_of_support)
-    : BasisFunction(knot_vector, 0, start_of_support) {}
+baf::ZeroDegBSplBasFnc::ZeroDegBSplBasFnc(const baf::KnotVector &knot_vector,
+                                          const KnotSpan &start_of_support) :
+    BasisFunction(knot_vector, Degree{0}, start_of_support),
+    start_knot_(knot_vector.GetKnot(static_cast<size_t>(start_of_support.get()))),
+    end_knot_(knot_vector.GetKnot(static_cast<size_t>(start_of_support.get()) + 1)) {}
 
-double baf::ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(ParamCoord /*param_coord*/) const {
-  return util::NumericSettings<double>::AreEqual(GetKnot(GetStartOfSupport() + 1).get(),
-                                                 GetKnot(GetStartOfSupport()).get()) ? 0.0 : 1.0;
+double baf::ZeroDegBSplBasFnc::EvaluateOnSupport(const ParamCoord /* param_coord*/&) const {
+  return util::NumericSettings<double>::AreEqual(start_knot_.get(), end_knot_.get()) ? 0.0 : 1.0;
 }
 
-double baf::ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(ParamCoord /*param_coord*/,
-                                                                        int /*degree*/) const {
+double baf::ZeroDegBSplBasFnc::EvaluateDerivativeOnSupport(const ParamCoord /*param_coord*/&,
+                                                           const Derivative /*degree*/&) const {
   return 0.0;
 }

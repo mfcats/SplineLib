@@ -1,3 +1,6 @@
 Checks: '*,-android-*,-llvm-include-order,-fuchsia-overloaded-operator,-fuchsia-default-arguments'
 FormatStyle: google
 WarningsAsErrors: '*'
+CheckOptions:
+    - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+      value: '1'

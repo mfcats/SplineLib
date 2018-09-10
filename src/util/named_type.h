@@ -19,8 +19,10 @@ namespace util {
 template<typename T, typename Parameter>
 class NamedType {
  public:
+  NamedType() = default;
+
   explicit NamedType(T const &value) : value_(value) {}
-  explicit NamedType(T &&value) : value_(std::move(value)) {}
+  explicit NamedType(T &&value) noexcept : value_(std::move(value)) {}
 
   constexpr T &get() { return value_; }
   constexpr T const &get() const { return value_; }
@@ -33,12 +35,24 @@ class NamedType {
     return NamedType<T, Parameter>{value_ - rhs.get()};
   }
 
+  constexpr bool operator==(const NamedType<T, Parameter> &rhs) const {
+    return value_ == rhs.get();
+  }
+
   constexpr bool operator>(const NamedType<T, Parameter> &rhs) const {
     return value_ > rhs.get();
   }
 
   constexpr bool operator<(const NamedType<T, Parameter> &rhs) const {
     return value_ < rhs.get();
+  }
+
+  constexpr bool operator>=(const NamedType<T, Parameter> &rhs) const {
+    return value_ >= rhs.get();
+  }
+
+  constexpr bool operator<=(const NamedType<T, Parameter> &rhs) const {
+    return value_ <= rhs.get();
   }
 
  private:

@@ -39,6 +39,8 @@ install(FILES
         b_spline.h
         nurbs.h
         projection.h
+        spline_generator.h
+        b_spline_generator.h
         square_generator.h
         DESTINATION "${include_install_dir}")
 
