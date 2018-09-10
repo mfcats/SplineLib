@@ -33,7 +33,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace spl {
 class IGES2DBSplineGenerator : public BSplineGenerator<2> {
  public:
-  explicit IGES2DBSplineGenerator(std::string filename) : filename_(std::move(filename)) {}
+  explicit IGES2DBSplineGenerator(const std::string &filename) : filename_(std::move(filename)) {}
 
   void ReadIGESFile(int entityToBeRead) {
     std::ifstream newFile;

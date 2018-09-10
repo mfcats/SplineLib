@@ -32,7 +32,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace spl {
 class IGES2DNURBSGenerator : public NURBSGenerator<2> {
  public:
-  explicit IGES2DNURBSGenerator(std::string filename) : filename_(std::move(filename)) {}
+  explicit IGES2DNURBSGenerator(const std::string &filename) : filename_(std::move(filename)) {}
 
   void ReadIGESFile(int entityToBeRead) {
     std::ifstream newFile;
