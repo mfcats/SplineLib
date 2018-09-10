@@ -33,11 +33,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace spl {
 class IGES1DBSplineGenerator : public BSplineGenerator<1> {
  public:
-  explicit IGES1DBSplineGenerator(const std::string &filename) : filename_(std::move(filename)) {}
+  IGES1DBSplineGenerator() {}
 
-  void ReadIGESFile(int entityToBeRead) {
+  void ReadIGESFile(const std::string &filename, int entityToBeRead) {
     std::ifstream newFile;
-    newFile.open(filename_);
+    newFile.open(filename);
     if (!newFile.good()) {
       throw std::runtime_error("IGES file could not be opened.");
     }
@@ -180,8 +180,6 @@ class IGES1DBSplineGenerator : public BSplineGenerator<1> {
     }).base(), s.end());
     return s;
   }
-
-  std::string filename_;
 };
 }  // namespace spl
 

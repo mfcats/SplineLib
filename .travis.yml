@@ -6,10 +6,10 @@ services:
   - docker
 
 stages:
-  - UnitTests
+  #- UnitTests
   - Lint
-  - AcceptanceTests
-  - Install
+  #- AcceptanceTests
+  #- Install
 
 jobs:
   include:
@@ -61,20 +61,20 @@ jobs:
       install: docker build -t splinelibtests:clang6 -f scripts/docker/Dockerfile.test.clang6.debug .
       script: docker run -te "TERM=xterm-256color" --name tests_clang6 splinelibtests:clang6
 
-    - stage: Lint
-      name: CppLint
-      install: docker build -t splinelib:cpplint -f scripts/docker/Dockerfile.lint.cpplint .
-      script: docker run -te "TERM=xterm-256color" --name cpplint splinelib:cpplint
+    #- stage: Lint
+     # name: CppLint
+      #install: docker build -t splinelib:cpplint -f scripts/docker/Dockerfile.lint.cpplint .
+      #script: docker run -te "TERM=xterm-256color" --name cpplint splinelib:cpplint
 
     - stage: Lint
       name: Clang-Tidy
       install: docker build -t splinelib:clang-tidy -f scripts/docker/Dockerfile.lint.clang-tidy .
       script: docker run -te "TERM=xterm-256color" --name clang-tidy splinelib:clang-tidy
 
-    - stage: Lint
-      name: OCLint
-      install: docker build -t splinelib:oclint -f scripts/docker/Dockerfile.lint.oclint .
-      script: docker run -te "TERM=xterm-256color" --name oclint splinelib:oclint
+    #- stage: Lint
+     # name: OCLint
+      #install: docker build -t splinelib:oclint -f scripts/docker/Dockerfile.lint.oclint .
+      #script: docker run -te "TERM=xterm-256color" --name oclint splinelib:oclint
 
     - stage: AcceptanceTests
       name: Timing
