@@ -85,33 +85,33 @@ class XMLReader {
     std::array<int, DIM> number_of_control_points;
     for (int i = 0; i < DIM; i++) {
       number_of_control_points[i] =
-          parameter_space.GetKnotVector(i).GetNumberOfKnots() - parameter_space.GetDegree(i) - 1;
+          parameter_space.GetKnotVector(i)->GetNumberOfKnots() - parameter_space.GetDegree(i).get() - 1;
     }
     return number_of_control_points;
   }
 
   spl::ParameterSpace<DIM> GetParameterSpace(pugi::xml_node *spline) {
-    std::array<int, DIM>
-        degree = StringVectorToIntArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
-    std::array<baf::KnotVector, DIM> knot_vector;
+    std::array<Degree, DIM>
+        degree = StringVectorToDegreeArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
+    std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector;
     for (int i = 0; i < DIM; i++) {
-      knot_vector[i] = baf::KnotVector({ParamCoord(0.5)});
+      knot_vector[i] = std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord(0.5)}));
     }
     for (int i = 0; i < DIM; i++) {
       pugi::xml_node child = spline->child("kntVecs").first_child();
       for (int j = 0; j < i; j++) {
         child = child.next_sibling();
       }
-      knot_vector[i] = baf::KnotVector(util::StringOperations::StringVectorToNumberVector<ParamCoord>(
-          util::StringOperations::split(child.first_child().value(), ' ')));
+      knot_vector[i] = std::make_shared<baf::KnotVector>(baf::KnotVector(util::StringOperations::StringVectorToNumberVector<ParamCoord>(
+          util::StringOperations::split(child.first_child().value(), ' '))));
     }
     return spl::ParameterSpace<DIM>(knot_vector, degree);
   }
 
-  std::array<int, DIM> StringVectorToIntArray(const std::vector<std::string> &string_vector) {
-    std::array<int, DIM> converted;
+  std::array<Degree, DIM> StringVectorToDegreeArray(const std::vector<std::string> &string_vector) {
+    std::array<Degree, DIM> converted;
     for (int i = 0; i < DIM; i++) {
-      converted[i] = std::stoi(string_vector[i]);
+      converted[i] = Degree{std::stoi(string_vector[i])};
     }
     return converted;
   }
