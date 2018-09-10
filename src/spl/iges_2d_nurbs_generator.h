@@ -34,7 +34,7 @@ class IGES2DNURBSGenerator : public NURBSGenerator<2> {
  public:
   explicit IGES2DNURBSGenerator() {}
 
-  void ReadIGESFile(const std::string &filename, int entityToBeRead) {
+  void ReadIGESFile(const char* filename, int entityToBeRead) {
     std::ifstream newFile;
     newFile.open(filename);
     if (!newFile.good()) {

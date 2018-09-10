@@ -35,7 +35,7 @@ class IGES1DBSplineGenerator : public BSplineGenerator<1> {
  public:
   IGES1DBSplineGenerator() {}
 
-  void ReadIGESFile(const std::string &filename, int entityToBeRead) {
+  void ReadIGESFile(const char* filename, int entityToBeRead) {
     std::ifstream newFile;
     newFile.open(filename);
     if (!newFile.good()) {
