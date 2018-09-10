@@ -145,7 +145,7 @@ TEST_F(A2DNurbsFromIGESFile, ThrowIfFileCantBeOpened) { // NOLINT
 
 TEST_F(A2DNurbsFromIGESFile, ThrowIfWrongEntityType) { // NOLINT
   spl::IGES1DBSplineGenerator reader1 = spl::IGES1DBSplineGenerator(std::string(path_to_iges_file));
-  spl::IGES2DNURBSGenerator reader2 = spl::IGES2DNURBSGenerator(std::string(path_to_iges_file));
+  spl::IGES2DNURBSGenerator reader2 = spl::IGES2DNURBSGenerator(std::string(std::string(path_to_iges_file)));
   ASSERT_THROW(reader1.ReadIGESFile(2), std::runtime_error);
   ASSERT_THROW(reader2.ReadIGESFile(4), std::runtime_error);
 }
