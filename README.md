@@ -14,21 +14,24 @@ details.
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 http://www.gnu.org/licenses/.
 
+### Citation
+If you want to use SplineLib in your scientific project please cite [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1320259.svg)](https://doi.org/10.5281/zenodo.1320259).
+
 ## Status
 [![CodeFactor](https://www.codefactor.io/repository/github/mfcats/splinelib/badge)](https://www.codefactor.io/repository/github/mfcats/splinelib)
 [![codecov](https://codecov.io/gh/mfcats/SplineLib/branch/master/graph/badge.svg)](https://codecov.io/gh/mfcats/SplineLib)
 [![Build Status](https://travis-ci.org/mfcats/SplineLib.svg?branch=master)](https://travis-ci.org/mfcats/SplineLib)
 
+
 ## Installation
 
-A compiler with C++11 support is required to build the SplineLib.
-The SplineLib was tested with gcc version 7.3.0.
+A compiler with C++ 17 support is required to successfully build SplineLib. Compilers that fulfill this requirement are GCC 7, GCC 8, clang 5, and clang 6. The project is tested with these compilers. Therefore, the master branch should always run with them.
 
-First you have to clone the github repository to your local machine.
+To use SplineLib, you have to clone the github repository to your local machine.
 
 	 $ git clone https://github.com/mfcats/SplineLib.git
 
-Spack is used to install all the needed dependencies.
+For installation of all dependencies you can use spack.
 For more information on how to install spack see: https://spack.readthedocs.io/en/latest/
 
 After installing spack you need to add the SplineLib repository.
@@ -39,6 +42,12 @@ After that you can install the SplineLib.
 
 	 $ spack install splinelib
 
+This will install the Google testing framework as dependency and afterwards SplineLib. Then, you can use SplineLib by running 
+
+	$ spack load splinelib
+
+
+
 
 ## Installation for developers
 
@@ -47,11 +56,11 @@ If you wish to install the SplineLib for development use the following command:
 	 $ spack setup splinelib@github
 
 Now go to the SplineLib directory and create a build directory in which you can
-build the splinelib with cmake and make.
+build SplineLib with CMake and make.
 
 	 $ mkdir build
 	 $ cd build
-	 $ ./setup.py
+	 $ ./spconfig.py ..
 
 To verify that everything went right you can execute the built-in SplineLib tests.
 
