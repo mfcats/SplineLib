@@ -51,23 +51,23 @@ class NURBS : public Spline<DIM> {
   }
 
   int GetNumberOfControlPoints() {
-    return physical_space_.GetNumberOfControlPoints();
+    return physical_space_->GetNumberOfControlPoints();
   }
 
   std::array<int, DIM> GetPointsPerDirection() {
-    return physical_space_.GetNumberOfPointsInEachDirection();
+    return physical_space_->GetNumberOfPointsInEachDirection();
   }
 
   int GetDimension() {
-    return physical_space_.GetDimension();
+    return physical_space_->GetDimension();
   }
 
   virtual double GetControlPoint(std::array<int, DIM> indices, int dimension) {
-    return physical_space_.GetControlPoint(indices).GetValue(dimension);
+    return physical_space_->GetControlPoint(indices).GetValue(dimension);
   }
 
   int GetWeight(std::array<int, DIM> indices) {
-    return physical_space_.GetWeight(indices);
+    return physical_space_->GetWeight(indices);
   }
 
  private:

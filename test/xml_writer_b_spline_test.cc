@@ -27,9 +27,8 @@ using testing::DoubleEq;
 class ABSplineXMLWriter : public Test {
  public:
   ABSplineXMLWriter() {
-    std::array<baf::KnotVector, 1> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})};
-    degree_ = {1};
+    knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}))};
+    degree_ = {Degree{1}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0})),
@@ -43,10 +42,11 @@ class ABSplineXMLWriter : public Test {
   }
 
  protected:
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
   std::unique_ptr<io::XMLWriterBSpline<1>> xml_writer;
   spl::PhysicalSpace<1> physical_space;
   spl::ParameterSpace<1> parameter_space;
-  std::array<int, 1> degree_;
+  std::array<Degree, 1> degree_;
   std::vector<baf::ControlPoint> control_points_;
 };
 
@@ -119,9 +119,8 @@ TEST_F(ABSplineXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFil
 class ABSplineXMLWriterWithSpaceDimension1 : public Test {
  public:
   ABSplineXMLWriterWithSpaceDimension1() {
-    std::array<baf::KnotVector, 1> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})};
-    degree_ = {1};
+    knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}))};
+    degree_ = {Degree{1}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0})),
         baf::ControlPoint(std::vector<double>({0.5})),
@@ -135,10 +134,11 @@ class ABSplineXMLWriterWithSpaceDimension1 : public Test {
   }
 
  protected:
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
   std::unique_ptr<io::XMLWriterBSpline<1>> xml_writer;
   spl::PhysicalSpace<1> physical_space;
   spl::ParameterSpace<1> parameter_space;
-  std::array<int, 1> degree_;
+  std::array<Degree, 1> degree_;
   std::vector<baf::ControlPoint> control_points_;
 };
 
@@ -170,9 +170,8 @@ TEST_F(ABSplineXMLWriterWithSpaceDimension1, HasSpaceDimension1) {  // NOLINT
 class ABSplineXMLWriterWithSpaceDimension3 : public Test {
  public:
   ABSplineXMLWriterWithSpaceDimension3() {
-    std::array<baf::KnotVector, 1> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})};
-    degree_ = {1};
+    knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}))};
+    degree_ = {Degree{1}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0, 1.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0, 1.0})),
@@ -186,10 +185,11 @@ class ABSplineXMLWriterWithSpaceDimension3 : public Test {
   }
 
  protected:
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
   std::unique_ptr<io::XMLWriterBSpline<1>> xml_writer;
   spl::PhysicalSpace<1> physical_space;
   spl::ParameterSpace<1> parameter_space;
-  std::array<int, 1> degree_;
+  std::array<Degree, 1> degree_;
   std::vector<baf::ControlPoint> control_points_;
 };
 
@@ -221,10 +221,9 @@ TEST_F(ABSplineXMLWriterWithSpaceDimension3, HasSpaceDimension3) {  // NOLINT
 class A2DBSplineXMLWriter : public Test {
  public:
   A2DBSplineXMLWriter() {
-    std::array<baf::KnotVector, 2> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}),
-         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})};
-    degree_ = {1, 2};
+    knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})),
+                   std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}))};
+    degree_ = {Degree{1}, Degree{2}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({1.0, 0.0})),
@@ -240,10 +239,11 @@ class A2DBSplineXMLWriter : public Test {
   }
 
  protected:
+  std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector;
   std::unique_ptr<io::XMLWriterBSpline<2>> xml_writer;
   spl::PhysicalSpace<2> physical_space;
   spl::ParameterSpace<2> parameter_space;
-  std::array<int, 2> degree_;
+  std::array<Degree, 2> degree_;
   std::vector<baf::ControlPoint> control_points_;
   std::vector<spl::BSpline<2>> splines;
 };

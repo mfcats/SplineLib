@@ -44,12 +44,12 @@ TEST_F(ASplineXMLReader, GetsCorrectDegreeOfFirstSplineInSecondDirection) {  // 
 
 TEST_F(ASplineXMLReader, GetsCorrectKnotOfFirstSplineInFirstDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<spl::NURBS<2>>
-                  (xml_reader->ReadXMLFile(path_to_xml_file)[0]).GetKnotVector(0).GetKnot(3).get(), DoubleEq(0.0625));
+                  (xml_reader->ReadXMLFile(path_to_xml_file)[0]).GetKnotVector(0)->GetKnot(3).get(), DoubleEq(0.0625));
 }
 
 TEST_F(ASplineXMLReader, GetsCorrectKnotOfFirstSplineInSecondDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<spl::NURBS<2>>
-                  (xml_reader->ReadXMLFile(path_to_xml_file)[0]).GetKnotVector(1).GetKnot(3).get(), DoubleEq(0.125));
+                  (xml_reader->ReadXMLFile(path_to_xml_file)[0]).GetKnotVector(1)->GetKnot(3).get(), DoubleEq(0.125));
 }
 
 TEST_F(ASplineXMLReader, EvaluatesFirstSplineCorrectly) {  // NOLINT
@@ -67,12 +67,12 @@ TEST_F(ASplineXMLReader, GetsCorrectDegreeOfSecondSplineInSecondDirection) {  //
 
 TEST_F(ASplineXMLReader, GetsCorrectKnotOfSecondSplineInFirstDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<spl::BSpline<2>>
-                  (xml_reader->ReadXMLFile(path_to_xml_file)[1]).GetKnotVector(0).GetKnot(2).get(), DoubleEq(0.0));
+                  (xml_reader->ReadXMLFile(path_to_xml_file)[1]).GetKnotVector(0)->GetKnot(2).get(), DoubleEq(0.0));
 }
 
 TEST_F(ASplineXMLReader, GetsCorrectKnotOfSecondSplineInSecondDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<spl::BSpline<2>>
-                  (xml_reader->ReadXMLFile(path_to_xml_file)[1]).GetKnotVector(1).GetKnot(2).get(), DoubleEq(0.0));
+                  (xml_reader->ReadXMLFile(path_to_xml_file)[1]).GetKnotVector(1)->GetKnot(2).get(), DoubleEq(0.0));
 }
 
 TEST_F(ASplineXMLReader, EvaluatesSecondSplineCorrectly) {  // NOLINT
