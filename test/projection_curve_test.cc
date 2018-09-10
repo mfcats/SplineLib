@@ -23,12 +23,12 @@ using testing::DoubleNear;
 
 class ABSpline2 : public Test {
  public:
-  ABSpline2() : b_spline(nullptr) {
+  ABSpline2() {
     std::array<baf::KnotVector, 1> knot_vector =
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.2}, ParamCoord{0.4},
                           ParamCoord{0.6}, ParamCoord{0.8}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1},
                           ParamCoord{1}})};
-    std::array<int, 1> degree = {3};
+    std::array<Degree, 1> degree = {Degree{3}};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({100, 100})),
         baf::ControlPoint(std::vector<double>({140, 196})),
@@ -39,13 +39,13 @@ class ABSpline2 : public Test {
         baf::ControlPoint(std::vector<double>({460, 196})),
         baf::ControlPoint(std::vector<double>({500, 100}))
     };
-    knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    knot_vector_ptr[0] = std::make_shared<baf::KnotVector>(knot_vector[0]);
     b_spline = std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
   }
 
  protected:
   std::unique_ptr<spl::Spline<1>> b_spline;
-  std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_ptr;
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_ptr;
 };
 
 TEST_F(ABSpline2, CloseToCenter) { // NOLINT

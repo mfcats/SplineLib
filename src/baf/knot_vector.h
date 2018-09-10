@@ -16,14 +16,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_BAF_KNOT_VECTOR_H_
 
 #include <initializer_list>
-#include <limits>
-#include<stdexcept>
-#include <utility>
 #include <vector>
 
 #include "named_type.h"
 
 using ParamCoord = util::NamedType<double, struct ParamCoordParameter>;
+using KnotSpan = util::NamedType<int, struct KnotSpanParameter>;
 
 namespace baf {
 
@@ -36,7 +34,7 @@ class KnotVector {
   KnotVector(const KnotVector &knotVector);
   KnotVector(KnotVector &&knotVector) noexcept;
   explicit KnotVector(std::vector<ParamCoord> knots);
-  explicit KnotVector(std::initializer_list<ParamCoord> knots);
+  KnotVector(std::initializer_list<ParamCoord> knots) noexcept;
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
 
   virtual ~KnotVector() = default;
@@ -49,10 +47,10 @@ class KnotVector {
   bool operator==(const KnotVector &rhs) const;
   ParamCoord &operator[](size_t index);
 
-  ParamCoord GetKnot(size_t index) const;
+  virtual ParamCoord GetKnot(size_t index) const;
   ParamCoord GetLastKnot() const;
-  u_int64_t GetKnotSpan(ParamCoord param_coord) const;
-  size_t GetNumberOfKnots() const;
+  virtual KnotSpan GetKnotSpan(ParamCoord param_coord) const;
+  virtual size_t GetNumberOfKnots() const;
 
   ConstKnotIterator begin() const;
   ConstKnotIterator end() const;
@@ -60,8 +58,8 @@ class KnotVector {
   KnotIterator begin();
   KnotIterator end();
 
-  bool IsInKnotVectorRange(ParamCoord param_coord) const;
-  bool IsLastKnot(ParamCoord param_coord) const;
+  virtual bool IsInKnotVectorRange(const ParamCoord &param_coord) const;
+  virtual bool IsLastKnot(const ParamCoord &param_coord) const;
 
  private:
   std::vector<ParamCoord> knots_;
