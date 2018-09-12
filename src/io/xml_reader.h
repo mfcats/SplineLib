@@ -59,7 +59,8 @@ class XMLReader {
       std::vector<double> weights = util::StringOperations::StringVectorToNumberVector<double>(
           util::StringOperations::split(spline->child("wght").first_child().value(), ' '));
       splines->push_back(std::make_any<spl::NURBS<DIM>>(
-          parameter_space, spl::WeightedPhysicalSpace<DIM>(control_points_, weights, number_of_control_points)));
+          std::make_shared<spl::ParameterSpace<DIM>>(parameter_space),
+          std::make_shared<spl::WeightedPhysicalSpace<DIM>>(control_points_, weights, number_of_control_points)));
     }
   }
 

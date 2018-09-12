@@ -33,11 +33,11 @@ class XMLWriterBSpline : public XMLWriterSpline<DIM> {
   }
 
  private:
-  double GetDegree(int spline, int dimension) override {
+  Degree GetDegree(int spline, int dimension) override {
     return b_splines[spline]->GetDegree(dimension);
   }
 
-  baf::KnotVector GetKnotVector(int spline, int dimension) override {
+  std::shared_ptr<baf::KnotVector> GetKnotVector(int spline, int dimension) override {
     return b_splines[spline]->GetKnotVector(dimension);
   }
 

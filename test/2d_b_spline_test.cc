@@ -153,5 +153,5 @@ TEST_F(A2DBSpline, RandomDer12) { // NOLINT
   mock_2dparameterSpace(parameter_space);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {0}, {1, 2})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {1}, {1, 2})[0], 0.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75000001}, ParamCoord{0.25}}, {2}, {1, 2})[0], 4.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({ParamCoord{0.75}, ParamCoord{0.25}}, {2}, {1, 2})[0], 4.0, 0.00005);
 }

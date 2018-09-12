@@ -23,7 +23,8 @@ using testing::Test;
 class ANURBSXMLWriter : public Test {
  public:
   ANURBSXMLWriter() {
-    knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}))};
+    knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
+                                                                      ParamCoord{1}, ParamCoord{1}}))};
     degree_ = {Degree{1}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
@@ -31,8 +32,8 @@ class ANURBSXMLWriter : public Test {
         baf::ControlPoint(std::vector<double>({1.0, 1.0}))
     };
     std::vector<double> weights = {2.0, 1.75, 0.36};
-    physical_space = spl::WeightedPhysicalSpace<1>(control_points_, weights, {3});
-    parameter_space = spl::ParameterSpace<1>(knot_vector, degree_);
+    physical_space = std::make_shared<spl::WeightedPhysicalSpace<1>>(control_points_, weights, std::array<int, 1>({3}));
+    parameter_space = std::make_shared<spl::ParameterSpace<1>>(knot_vector, degree_);
     std::vector<spl::NURBS<1>> splines;
     splines.emplace_back(parameter_space, physical_space);
     xml_writer = std::make_unique<io::XMLWriterNURBS<1>>(splines);
@@ -41,8 +42,8 @@ class ANURBSXMLWriter : public Test {
  protected:
   std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
   std::unique_ptr<io::XMLWriterNURBS<1>> xml_writer;
-  spl::WeightedPhysicalSpace<1> physical_space;
-  spl::ParameterSpace<1> parameter_space;
+  std::shared_ptr<spl::WeightedPhysicalSpace<1>> physical_space;
+  std::shared_ptr<spl::ParameterSpace<1>> parameter_space;
   std::array<Degree, 1> degree_;
   std::vector<baf::ControlPoint> control_points_;
 };
@@ -91,8 +92,10 @@ TEST_F(ANURBSXMLWriter, CreatesWeights) {  // NOLINT
 class A2DNURBSXMLWriter : public Test {
  public:
   A2DNURBSXMLWriter() {
-    knot_vector = {std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})),
-                   std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}))};
+    knot_vector = {std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
+                                                                      ParamCoord{1}, ParamCoord{1}})),
+                   std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
+                                                                      ParamCoord{1}, ParamCoord{1}}))};
     degree_ = {Degree{1}, Degree{2}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
@@ -103,8 +106,9 @@ class A2DNURBSXMLWriter : public Test {
         baf::ControlPoint(std::vector<double>({2.0, 1.0}))
     };
     std::vector<double> weights = {2.0, 1.75, 0.36, 1.0, 1.0, 0.05};
-    physical_space = spl::WeightedPhysicalSpace<2>(control_points_, weights, {3, 2});
-    parameter_space = spl::ParameterSpace<2>(knot_vector, degree_);
+    physical_space =
+        std::make_shared<spl::WeightedPhysicalSpace<2>>(control_points_, weights, std::array<int, 2>({3, 2}));
+    parameter_space = std::make_shared<spl::ParameterSpace<2>>(knot_vector, degree_);
     std::vector<spl::NURBS<2>> splines;
     splines.emplace_back(parameter_space, physical_space);
     xml_writer = std::make_unique<io::XMLWriterNURBS<2>>(splines);
@@ -113,8 +117,8 @@ class A2DNURBSXMLWriter : public Test {
  protected:
   std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector;
   std::unique_ptr<io::XMLWriterNURBS<2>> xml_writer;
-  spl::WeightedPhysicalSpace<2> physical_space;
-  spl::ParameterSpace<2> parameter_space;
+  std::shared_ptr<spl::WeightedPhysicalSpace<2>> physical_space;
+  std::shared_ptr<spl::ParameterSpace<2>> parameter_space;
   std::array<Degree, 2> degree_;
   std::vector<baf::ControlPoint> control_points_;
 };
