@@ -42,8 +42,9 @@ spl::PhysicalSpace<2> spl::SquareGenerator::GeneratePhysicalSpace() const {
   double delta = 2.0/(num_cps - 1.0);
   std::vector<double> coordinates(num_cps, - 1.0);
   double val = -1.0;
-  for (auto coord = coordinates.begin(); coord != coordinates.end(); ++coord, val += delta) {
-    *coord = val;
+  for (double &coordinate : coordinates) {
+    coordinate = val;
+    val += delta;
   }
   std::vector<baf::ControlPoint> cps(num_cps * num_cps, baf::ControlPoint({0.0, 0.0}));
   size_t cp_it = 0;
