@@ -213,10 +213,11 @@ TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtLastKnot) {
 class ANURBSWithSplineGenerator : public Test {
  public:
   ANURBSWithSplineGenerator() {
-    std::array<baf::KnotVector, 1> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
-                          ParamCoord{3}, ParamCoord{3}})};
-    std::array<int, 1> degree = {2};
+    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector =
+        {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                            ParamCoord{2}, ParamCoord{3},
+                                                            ParamCoord{3}, ParamCoord{3}}))};
+    std::array<Degree, 1> degree = {Degree{2}};
     std::vector<double> weights = {1, 4, 1, 1, 1};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
@@ -225,9 +226,7 @@ class ANURBSWithSplineGenerator : public Test {
         baf::ControlPoint(std::vector<double>({4.0, 1.0})),
         baf::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
-    std::array<std::shared_ptr<baf::KnotVector>, 1>
-        knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
-    spl::NURBSGenerator<1> nurbs_generator(knot_vector_ptr, degree, control_points, weights);
+    spl::NURBSGenerator<1> nurbs_generator(knot_vector, degree, control_points, weights);
     nurbs = std::make_unique<spl::NURBS<1>>(nurbs_generator);
   }
 

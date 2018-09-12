@@ -61,16 +61,16 @@ class IGES1DNURBSGenerator : public NURBSGenerator<1> {
   void ReadParameterData(const std::vector<double> &parameterData) {
     if ((parameterData[0] == 126) && (parameterData[5] == 0)) {
       int upperSumIndex = static_cast<int>(parameterData[1]);
-      std::array<int, 1> degree;
-      degree[0] = static_cast<int>(parameterData[2]);
-      std::array<baf::KnotVector, 1> knot_vector;
+      std::array<Degree, 1> degree;
+      degree[0] = Degree{static_cast<int>(parameterData[2])};
+      std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
       std::vector<double> weights;
       std::vector<baf::ControlPoint> control_points;
       std::array<int, 2> knotsStartEnd;
       std::array<int, 2> weightsStartEnd;
       std::array<int, 2> controlPointsStartEnd;
       knotsStartEnd[0] = 7;
-      knotsStartEnd[1] = knotsStartEnd[0] + upperSumIndex + degree[0] + 1;
+      knotsStartEnd[1] = knotsStartEnd[0] + upperSumIndex + degree[0].get() + 1;
       weightsStartEnd[0] = knotsStartEnd[1] + 1;
       weightsStartEnd[1] = weightsStartEnd[0] + upperSumIndex;
       controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
@@ -79,7 +79,7 @@ class IGES1DNURBSGenerator : public NURBSGenerator<1> {
       for (int i = knotsStartEnd[0]; i <= knotsStartEnd[1]; ++i) {
         knots.push_back(ParamCoord{parameterData[i]});
       }
-      knot_vector[0] = baf::KnotVector(knots);
+      knot_vector[0] = std::make_shared<baf::KnotVector>(knots);
       for (int i = weightsStartEnd[0]; i <= weightsStartEnd[1]; ++i) {
         weights.push_back(parameterData[i]);
       }
@@ -94,7 +94,7 @@ class IGES1DNURBSGenerator : public NURBSGenerator<1> {
       }
       std::array<int, 1> number_of_points;
       for (int i = 0; i < 1; ++i) {
-        number_of_points[i] = knot_vector[i].GetNumberOfKnots() - degree[i] - 1;
+        number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
       }
       this->physical_space_ = std::make_shared<WeightedPhysicalSpace<1>>(control_points, weights, number_of_points);
       this->parameter_space_ = std::make_shared<ParameterSpace<1>>(knot_vector, degree);

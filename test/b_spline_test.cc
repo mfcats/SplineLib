@@ -29,6 +29,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::Test;
 using testing::DoubleEq;
+using testing::DoubleNear;
 using ::testing::Return;
 using ::testing::Throw;
 using ::testing::NiceMock;
@@ -347,7 +348,7 @@ TEST_F(ABSpline, ReturnsCorrectJacobianDeterminant) { // NOLINT
 
 class ABSplineWithSplineGenerator : public Test {
  public:
-  ABSplineWithSplineGenerator() : degree_{2} {
+  ABSplineWithSplineGenerator() : degree_{Degree{2}} {
     std::array<baf::KnotVector, 1> knot_vector =
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                           ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}})};
@@ -369,7 +370,7 @@ class ABSplineWithSplineGenerator : public Test {
  protected:
   std::unique_ptr<spl::BSpline<1>> b_spline;
   std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_;
-  std::array<int, 1> degree_;
+  std::array<Degree, 1> degree_;
   std::vector<baf::ControlPoint> control_points_;
 };
 

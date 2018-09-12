@@ -71,8 +71,8 @@ class NURBS : public Spline<DIM> {
     return physical_space_->GetWeight(indices);
   }
 
-  explicit NURBS(NURBSGenerator<DIM> nurbs_generator) : Spline<DIM>(*(nurbs_generator.GetParameterSpace())) {
-    physical_space_ = *(nurbs_generator.GetWeightedPhysicalSpace());
+  explicit NURBS(NURBSGenerator<DIM> nurbs_generator) : Spline<DIM>(nurbs_generator.GetParameterSpace()) {
+    physical_space_ = nurbs_generator.GetWeightedPhysicalSpace();
   }
 
  private:

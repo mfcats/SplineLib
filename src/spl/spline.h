@@ -39,7 +39,7 @@ class Spline {
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
   }
   explicit Spline(std::shared_ptr<ParameterSpace < DIM>>
-parameter_space) {
+  parameter_space) {
     parameter_space_ = parameter_space;
   }
 

@@ -33,7 +33,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace spl {
 class IGES2DBSplineGenerator : public BSplineGenerator<2> {
  public:
-  explicit IGES2DBSplineGenerator() {}
+  IGES2DBSplineGenerator() {}
 
   void ReadIGESFile(const char* filename, int entityToBeRead) {
     std::ifstream newFile;
@@ -64,19 +64,19 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
       std::array<int, 2> upperSumIndex;
       upperSumIndex[0] = static_cast<int>(parameterData[1]);
       upperSumIndex[1] = static_cast<int>(parameterData[2]);
-      std::array<int, 2> degree;
-      degree[0] = static_cast<int>(parameterData[3]);
-      degree[1] = static_cast<int>(parameterData[4]);
-      std::array<baf::KnotVector, 2> knot_vector;
+      std::array<Degree, 2> degree;
+      degree[0] = Degree{static_cast<int>(parameterData[3])};
+      degree[1] = Degree{static_cast<int>(parameterData[4])};
+      std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector;
       std::vector<double> weights;
       std::vector<baf::ControlPoint> control_points;
       std::array<std::array<int, 2>, 2> knotsStartEnd;
       std::array<int, 2> weightsStartEnd;
       std::array<int, 2> controlPointsStartEnd;
       knotsStartEnd[0][0] = 10;
-      knotsStartEnd[0][1] = knotsStartEnd[0][0] + upperSumIndex[0] + degree[0] + 1;
+      knotsStartEnd[0][1] = knotsStartEnd[0][0] + upperSumIndex[0] + degree[0].get() + 1;
       knotsStartEnd[1][0] = knotsStartEnd[0][1] + 1;
-      knotsStartEnd[1][1] = knotsStartEnd[1][0] + upperSumIndex[1] + degree[1] + 1;
+      knotsStartEnd[1][1] = knotsStartEnd[1][0] + upperSumIndex[1] + degree[1].get() + 1;
       weightsStartEnd[0] = knotsStartEnd[1][1] + 1;
       weightsStartEnd[1] = weightsStartEnd[0] - 1 + ((1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
       controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
@@ -88,8 +88,8 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
       for (int i = knotsStartEnd[1][0]; i <= knotsStartEnd[1][1]; ++i) {
         knots[1].push_back(ParamCoord{parameterData[i]});
       }
-      knot_vector[0] = baf::KnotVector(knots[0]);
-      knot_vector[1] = baf::KnotVector(knots[1]);
+      knot_vector[0] = std::make_shared<baf::KnotVector>(knots[0]);
+      knot_vector[1] = std::make_shared<baf::KnotVector>(knots[1]);
       for (int i = weightsStartEnd[0]; i <= weightsStartEnd[1]; ++i) {
         weights.push_back(parameterData[i]);
       }
@@ -104,7 +104,7 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
       }
       std::array<int, 2> number_of_points;
       for (int i = 0; i < 2; ++i) {
-        number_of_points[i] = knot_vector[i].GetNumberOfKnots() - degree[i] - 1;
+        number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
       }
       this->physical_space_ = std::make_shared<PhysicalSpace<2>>(control_points, number_of_points);
       this->parameter_space_ = std::make_shared<ParameterSpace<2>>(knot_vector, degree);

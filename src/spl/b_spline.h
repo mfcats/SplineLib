@@ -39,8 +39,7 @@ class BSpline : public Spline<DIM> {
     physical_space_ = std::make_shared<PhysicalSpace<DIM>>(PhysicalSpace<DIM>(control_points, number_of_points));
   }
 
-  explicit BSpline(BSplineGenerator<DIM> b_spline_generator)
-      : Spline<DIM>(b_spline_generator.GetParameterSpace()) {
+  explicit BSpline(BSplineGenerator<DIM> b_spline_generator) : Spline<DIM>(b_spline_generator.GetParameterSpace()) {
     physical_space_ = b_spline_generator.GetPhysicalSpace();
   }
 
@@ -65,10 +64,6 @@ class BSpline : public Spline<DIM> {
 
   double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
     return physical_space_->GetControlPoint(indices).GetValue(dimension);
-  }
-
-  explicit BSpline(BSplineGenerator<DIM> b_spline_generator) : Spline<DIM>(*(b_spline_generator.GetParameterSpace())) {
-    physical_space_ = *(b_spline_generator.GetPhysicalSpace());
   }
 
  private:

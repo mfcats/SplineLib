@@ -29,14 +29,19 @@ using testing::DoubleNear;
 class A2DNurbsFromIGESFile : public Test {
  public:
   A2DNurbsFromIGESFile() {
-    std::array<baf::KnotVector, 2> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.25}, ParamCoord{0.25},
-                          ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.75}, ParamCoord{0.75}, ParamCoord{1},
-                          ParamCoord{1}, ParamCoord{1}}),
-         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{1},
-                          ParamCoord{1}, ParamCoord{1}})};
+    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector =
+        {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                            ParamCoord{0.25},
+                                                            ParamCoord{0.25}, ParamCoord{0.5}, ParamCoord{0.5},
+                                                            ParamCoord{0.75},
+                                                            ParamCoord{0.75}, ParamCoord{1}, ParamCoord{1},
+                                                            ParamCoord{1}})),
+         std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                            ParamCoord{0.5},
+                                                            ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1},
+                                                            ParamCoord{1}}))};
 
-    std::array<int, 2> degree = {2, 2};
+    std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
 
     std::vector<double> weights = {1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 1.0, 0.70710678118654757,
                                    1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 0.50000000000000011,
@@ -97,9 +102,7 @@ class A2DNurbsFromIGESFile : public Test {
         baf::ControlPoint(std::vector<double>({0.0, 0.0, 1.0}))
     };
 
-    std::shared_ptr<std::array<baf::KnotVector, 2>>
-        knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 2>>(knot_vector);
-    nurbs_ = std::make_unique<spl::NURBS<2>>(knot_vector_ptr, degree, control_points, weights);
+    nurbs_ = std::make_unique<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
   }
 
  protected:

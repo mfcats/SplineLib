@@ -28,21 +28,15 @@ class NURBSGenerator : public SplineGenerator<DIM> {
   virtual ~NURBSGenerator() = default;
 
   NURBSGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
-                 std::array<int, DIM> degree,
+                 std::array<Degree, DIM> degree,
                  const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
-      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
-
-    std::array<baf::KnotVector, DIM> knot_vectors;
-    for (int dim = 0; dim < DIM; ++dim) {
-      knot_vectors[dim] = *(knot_vector[dim]);
-    }
-
 
     this->physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(control_points, weights, number_of_points);
-    this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(knot_vectors, degree);
+    this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
   }
 
   NURBSGenerator(WeightedPhysicalSpace<DIM> weigthed_physical_space, ParameterSpace<DIM> parameter_space) {
