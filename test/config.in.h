@@ -8,9 +8,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEST_CONFIG_IN_H_
+#ifndef TEST_CONFIG_IN_H_  // NOLINT
 #define TEST_CONFIG_IN_H_
 
-const char path_to_xml_file[] = "@PATH_TO_XML_FILE@";
+#include <string>
+
+static const char *path_to_xml_file = "@PATH_TO_XML_FILE@";
 
 #endif  // TEST_CONFIG_IN_H_
