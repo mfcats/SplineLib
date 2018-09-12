@@ -50,19 +50,19 @@ class BSpline : public Spline<DIM> {
         physical_space_(std::make_shared<spl::PhysicalSpace<DIM>>(physical_space)) {
   }
 
-  int GetNumberOfControlPoints() {
+  int GetNumberOfControlPoints() override {
     return physical_space_->GetNumberOfControlPoints();
   }
 
-  std::array<int, DIM> GetPointsPerDirection() {
+  std::array<int, DIM> GetPointsPerDirection() override {
     return physical_space_->GetNumberOfPointsInEachDirection();
   }
 
-  int GetDimension() {
+  int GetDimension() override {
     return physical_space_->GetDimension();
   }
 
-  double GetControlPoint(std::array<int, DIM> indices, int dimension) {
+  double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
     return physical_space_->GetControlPoint(indices).GetValue(dimension);
   }
 

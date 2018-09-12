@@ -21,15 +21,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "xml_reader.h"
 
 using testing::Test;
-using testing::Eq;
 using testing::DoubleEq;
 
 class ABSplineXMLWriter : public Test {
  public:
-  ABSplineXMLWriter() {
+  ABSplineXMLWriter() : degree_{Degree{1}} {
     knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
                                                                       ParamCoord{1}, ParamCoord{1}}))};
-    degree_ = {Degree{1}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0})),
@@ -108,21 +106,20 @@ TEST_F(ABSplineXMLWriter, HasSpaceDimension2) {  // NOLINT
   remove("bspline.xml");
 }
 
-/* TEST_F(ABSplineXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
+TEST_F(ABSplineXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
   spl::BSpline<1> bspline_before(parameter_space, physical_space);
   xml_writer->WriteXMLFile("bspline.xml");
   std::unique_ptr<io::XMLReader<1>> xml_reader(std::make_unique<io::XMLReader<1>>());
   auto bspline_after = std::any_cast<spl::BSpline<1>>(xml_reader->ReadXMLFile("bspline.xml")[0]);
   ASSERT_THAT(bspline_before.Evaluate({ParamCoord(0.75839)}, {0})[0],
               DoubleEq(bspline_after.Evaluate({ParamCoord(0.75839)}, {0})[0]));
-} */
+}
 
 class ABSplineXMLWriterWithSpaceDimension1 : public Test {
  public:
-  ABSplineXMLWriterWithSpaceDimension1() {
+  ABSplineXMLWriterWithSpaceDimension1() : degree_{Degree{1}} {
     knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
                                                                       ParamCoord{1}, ParamCoord{1}}))};
-    degree_ = {Degree{1}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0})),
         baf::ControlPoint(std::vector<double>({0.5})),
@@ -171,10 +168,9 @@ TEST_F(ABSplineXMLWriterWithSpaceDimension1, HasSpaceDimension1) {  // NOLINT
 
 class ABSplineXMLWriterWithSpaceDimension3 : public Test {
  public:
-  ABSplineXMLWriterWithSpaceDimension3() {
+  ABSplineXMLWriterWithSpaceDimension3() : degree_{Degree{1}} {
     knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
                                                                       ParamCoord{1}, ParamCoord{1}}))};
-    degree_ = {Degree{1}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0, 1.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0, 1.0})),
@@ -223,12 +219,11 @@ TEST_F(ABSplineXMLWriterWithSpaceDimension3, HasSpaceDimension3) {  // NOLINT
 
 class A2DBSplineXMLWriter : public Test {
  public:
-  A2DBSplineXMLWriter() {
+  A2DBSplineXMLWriter() : degree_{Degree{1}, Degree{2}} {
     knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
                                                                       ParamCoord{1}, ParamCoord{1}})),
                    std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
                                                                       ParamCoord{1}, ParamCoord{1}}))};
-    degree_ = {Degree{1}, Degree{2}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({1.0, 0.0})),

@@ -92,8 +92,8 @@ class XMLReader {
   }
 
   spl::ParameterSpace<DIM> GetParameterSpace(pugi::xml_node *spline) {
-    std::array<Degree, DIM>
-        degree = StringVectorToDegreeArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
+    std::array<Degree, DIM> degree =
+        StringVectorToDegreeArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
     std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector;
     for (int i = 0; i < DIM; i++) {
       knot_vector[i] = std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord(0.5)}));
@@ -103,8 +103,9 @@ class XMLReader {
       for (int j = 0; j < i; j++) {
         child = child.next_sibling();
       }
-      knot_vector[i] = std::make_shared<baf::KnotVector>(baf::KnotVector(util::StringOperations::StringVectorToNumberVector<ParamCoord>(
-          util::StringOperations::split(child.first_child().value(), ' '))));
+      knot_vector[i] = std::make_shared<baf::KnotVector>(
+          baf::KnotVector(util::StringOperations::StringVectorToNumberVector<ParamCoord>(
+              util::StringOperations::split(child.first_child().value(), ' '))));
     }
     return spl::ParameterSpace<DIM>(knot_vector, degree);
   }

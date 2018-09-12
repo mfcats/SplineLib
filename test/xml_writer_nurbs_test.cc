@@ -22,17 +22,16 @@ using testing::Test;
 
 class ANURBSXMLWriter : public Test {
  public:
-  ANURBSXMLWriter() {
+  ANURBSXMLWriter() : degree_{Degree{1}} {
     knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
                                                                       ParamCoord{1}, ParamCoord{1}}))};
-    degree_ = {Degree{1}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0})),
         baf::ControlPoint(std::vector<double>({1.0, 1.0}))
     };
     std::vector<double> weights = {2.0, 1.75, 0.36};
-    physical_space = std::make_shared<spl::WeightedPhysicalSpace<1>>(control_points_, weights, std::array<int, 1>({3}));
+    physical_space = std::make_shared<spl::WeightedPhysicalSpace<1>>(control_points_, weights, std::array<int, 1>{3});
     parameter_space = std::make_shared<spl::ParameterSpace<1>>(knot_vector, degree_);
     std::vector<spl::NURBS<1>> splines;
     splines.emplace_back(parameter_space, physical_space);
@@ -91,12 +90,11 @@ TEST_F(ANURBSXMLWriter, CreatesWeights) {  // NOLINT
 
 class A2DNURBSXMLWriter : public Test {
  public:
-  A2DNURBSXMLWriter() {
+  A2DNURBSXMLWriter() : degree_{Degree{1}, Degree{2}} {
     knot_vector = {std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
                                                                       ParamCoord{1}, ParamCoord{1}})),
                    std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
                                                                       ParamCoord{1}, ParamCoord{1}}))};
-    degree_ = {Degree{1}, Degree{2}};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({1.0, 0.0})),
@@ -107,7 +105,7 @@ class A2DNURBSXMLWriter : public Test {
     };
     std::vector<double> weights = {2.0, 1.75, 0.36, 1.0, 1.0, 0.05};
     physical_space =
-        std::make_shared<spl::WeightedPhysicalSpace<2>>(control_points_, weights, std::array<int, 2>({3, 2}));
+        std::make_shared<spl::WeightedPhysicalSpace<2>>(control_points_, weights, std::array<int, 2>{3, 2});
     parameter_space = std::make_shared<spl::ParameterSpace<2>>(knot_vector, degree_);
     std::vector<spl::NURBS<2>> splines;
     splines.emplace_back(parameter_space, physical_space);
