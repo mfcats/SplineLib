@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_B_SPLINE_GENERATOR_H_
 #define SRC_SPL_B_SPLINE_GENERATOR_H_
 
+#include <memory>
 #include <vector>
 
 #include "physical_space.h"
@@ -26,36 +27,30 @@ class BSplineGenerator : public SplineGenerator<DIM> {
  public:
   BSplineGenerator() = default;
   virtual ~BSplineGenerator() = default;
-
+  
   BSplineGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
                    std::array<int, DIM> degree,
-                   const std::vector<baf::ControlPoint> &control_points) {
+                   const std::vector<baf::ControlPoint> &control_points) : SplineGenerator<DIM>(knot_vector, degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
     }
-
-    std::array<baf::KnotVector, DIM> knot_vectors;
-    for (int dim = 0; dim < DIM; ++dim) {
-      knot_vectors[dim] = *(knot_vector[dim]);
-    }
-
-    this->physical_space_ = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
-    this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(knot_vectors, degree);
+    physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
   }
 
-  BSplineGenerator(PhysicalSpace<DIM> physical_space, ParameterSpace<DIM> parameter_space) {
-    this->physical_space_ = std::make_shared<PhysicalSpace<DIM>>(physical_space);
-    this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(parameter_space);
+  BSplineGenerator(std::shared_ptr<PhysicalSpace <DIM>> physical_space, 
+                   std::shared_ptr<ParameterSpace <DIM>> parameter_space) {
+    this->parameter_space_ = parameter_space;
+    physical_space_ = physical_space;
   }
 
-  std::shared_ptr<PhysicalSpace<DIM>> GetPhysicalSpace() {
+  std::shared_ptr<PhysicalSpace <DIM>> GetPhysicalSpace() const {
     return physical_space_;
   }
 
- protected:
-  std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
+ private:
+  std::shared_ptr<PhysicalSpace <DIM>> physical_space_;
 };
-}  // namespace spl
+}  //  namespace spl
 
-#endif  // SRC_SPL_B_SPLINE_GENERATOR_H_
+#endif  //  SRC_SPL_B_SPLINE_GENERATOR_H_

@@ -28,7 +28,7 @@ class NurbsEx4_1 : public Test {
     std::array<baf::KnotVector, 1> knot_vector =
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                           ParamCoord{3}, ParamCoord{3}})};
-    std::array<int, 1> degree = {2};
+    std::array<Degree, 1> degree = {Degree{2}};
     std::vector<double> weights = {1, 4, 1, 1, 1};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
@@ -37,8 +37,8 @@ class NurbsEx4_1 : public Test {
         baf::ControlPoint(std::vector<double>({4.0, 1.0})),
         baf::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
-    std::shared_ptr<std::array<baf::KnotVector, 1>>
-        knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    std::array<std::shared_ptr<baf::KnotVector>, 1>
+        knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
     nurbs = std::make_unique<spl::NURBS<1>>(knot_vector_ptr, degree, control_points, weights);
   }
 
@@ -56,7 +56,7 @@ TEST_F(NurbsEx4_1, Returns1_2For1AndDim1) { // NOLINT
 
 class ANurbs : public Test {
  public:
-  ANurbs() : degree_{2} {
+  ANurbs() : degree_{Degree{2}} {
     std::array<baf::KnotVector, 1>
         knot_vector =
         {baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.25}, ParamCoord{0.5},
@@ -71,14 +71,14 @@ class ANurbs : public Test {
         baf::ControlPoint(std::vector<double>({6.0, 4.0, 5.3})),
         baf::ControlPoint(std::vector<double>({8.5, 4.5, 0.0}))
     };
-    knot_vector_ = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    knot_vector_[0] = std::make_shared<baf::KnotVector>(knot_vector[0]);
     nurbs = std::make_unique<spl::NURBS<1>>(knot_vector_, degree_, control_points_, weights_);
   }
 
  protected:
   std::unique_ptr<spl::NURBS<1>> nurbs;
-  std::shared_ptr<std::array<baf::KnotVector, 1>> knot_vector_;
-  std::array<int, 1> degree_;
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_;
+  std::array<Degree, 1> degree_;
   std::vector<double> weights_;
   std::vector<baf::ControlPoint> control_points_;
 };
@@ -111,8 +111,10 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) { // NOLINT
 }
 
 TEST_F(ANurbs, CanBeConstructedWithAPhysicalAndAParameterSpace) { // NOLINT
-  spl::ParameterSpace<1> parameter_space = spl::ParameterSpace<1>({(*knot_vector_)[0]}, {degree_[0]});
-  spl::WeightedPhysicalSpace<1> physicalSpace = spl::WeightedPhysicalSpace<1>(control_points_, weights_, {7});
+  std::shared_ptr<spl::ParameterSpace<1>>
+      parameter_space = std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(knot_vector_, {degree_[0]}));
+  std::shared_ptr<spl::WeightedPhysicalSpace<1>> physicalSpace =
+      std::make_shared<spl::WeightedPhysicalSpace<1>>(spl::WeightedPhysicalSpace<1>(control_points_, weights_, {7}));
   nurbs = std::make_unique<spl::NURBS<1>>(parameter_space, physicalSpace);
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(0.5));
 }
@@ -143,15 +145,15 @@ class NurbsDerivativeEx4_2 : public Test {
   NurbsDerivativeEx4_2() {
     std::array<baf::KnotVector, 1> knot_vector =
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
-    std::array<int, 1> degree = {2};
+    std::array<Degree, 1> degree = {Degree{2}};
     std::vector<double> weights = {1, 1, 2};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({1.0, 0.0})),
         baf::ControlPoint(std::vector<double>({1.0, 1.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0}))
     };
-    std::shared_ptr<std::array<baf::KnotVector, 1>>
-        knot_vector_ptr = std::make_shared<std::array<baf::KnotVector, 1>>(knot_vector);
+    std::array<std::shared_ptr<baf::KnotVector>, 1>
+        knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
     nurbs = std::make_unique<spl::NURBS<1>>(knot_vector_ptr, degree, control_points, weights);
   }
 

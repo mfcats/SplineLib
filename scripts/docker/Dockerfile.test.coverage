@@ -20,6 +20,7 @@ lcov --directory . --capture --output-file coverage.info && \
 lcov --remove coverage.info '/usr/*' --output-file coverage.info && \
 lcov --remove coverage.info '*/.cache/*' --output-file coverage.info && \
 lcov --remove coverage.info '*/CMakeFiles/*' --output-file coverage.info && \
+lcov --remove coverage.info '*/external/*' --output-file coverage.info && \
 lcov --list coverage.info && \
 find . -name "*.gcov" -type f -delete && \
 find . -name "*.gcda" -type f -delete

@@ -20,7 +20,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace baf {
 class BasisFunctionFactory {
  public:
-  BasisFunction *CreateDynamic(const KnotVector &knot_vector, uint64_t start_of_support, int degree) const;
+  static BasisFunction *CreateDynamic(const KnotVector &knot_vector,
+                                      const KnotSpan &start_of_support,
+                                      const Degree &degree);
 };
 }  // namespace baf
 

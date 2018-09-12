@@ -49,10 +49,10 @@ class Projection {
             /util::VectorUtils<double>::ComputeScalarProduct(firstDer, firstDer);
 
         projectionPointParamCoords[0] = projectionPointParamCoords[0] + ParamCoord{delta};
-        if (projectionPointParamCoords[0] < spline->GetKnotVector(0).GetKnot(0)) {
-          projectionPointParamCoords[0] = spline->GetKnotVector(0).GetKnot(0);
-        } else if (projectionPointParamCoords[0] > spline->GetKnotVector(0).GetLastKnot()) {
-          projectionPointParamCoords[0] = spline->GetKnotVector(0).GetLastKnot();
+        if (projectionPointParamCoords[0].get() < spline->GetKnotVector(0)->GetKnot(0).get()) {
+          projectionPointParamCoords[0] = spline->GetKnotVector(0)->GetKnot(0);
+        } else if (projectionPointParamCoords[0] > spline->GetKnotVector(0)->GetLastKnot()) {
+          projectionPointParamCoords[0] = spline->GetKnotVector(0)->GetLastKnot();
         }
         if (std::abs(delta) < tolerance) {
           converged = true;
