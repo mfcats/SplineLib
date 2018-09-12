@@ -50,6 +50,26 @@ class NURBS : public Spline<DIM> {
     this->parameter_space_ = parameter_space;
   }
 
+  int GetNumberOfControlPoints() override {
+    return physical_space_->GetNumberOfControlPoints();
+  }
+
+  std::array<int, DIM> GetPointsPerDirection() override {
+    return physical_space_->GetNumberOfPointsInEachDirection();
+  }
+
+  int GetDimension() override {
+    return physical_space_->GetDimension();
+  }
+
+  double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
+    return physical_space_->GetControlPoint(indices).GetValue(dimension);
+  }
+
+  int GetWeight(std::array<int, DIM> indices) {
+    return physical_space_->GetWeight(indices);
+  }
+
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,

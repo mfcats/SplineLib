@@ -32,6 +32,9 @@ set(TEST_SOURCES
         parameter_space_test.cc
         physical_space_test.cc
         weighted_physical_space_test.cc
+        xml_writer_b_spline_test.cc
+        xml_writer_nurbs_test.cc
+        xml_reader_test.cc
         basis_function_factory.cc
         element_integration_point_test.cc)
 
@@ -40,7 +43,7 @@ find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
 
 add_executable(SplineLibTests ${TEST_SOURCES})
-target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil GMock::Main)
+target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil splinelibio GMock::Main)
 
 set(ACCEPTANCE_TEST_SOURCES
         acceptance_tests.cc)
@@ -48,3 +51,7 @@ add_executable(AcceptanceTests ${ACCEPTANCE_TEST_SOURCES})
 target_link_libraries(AcceptanceTests splinelibbaf splinelibspl splinelibutil)
 
 target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
+
+set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/spline_tank.xml)
+configure_file(config.in.h ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})

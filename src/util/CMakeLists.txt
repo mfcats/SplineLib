@@ -31,6 +31,7 @@ install(FILES
         named_type.h
         numeric_settings.h
         multi_index_handler.h
+        string_operations.h
         vector_utils.h
         DESTINATION "${include_install_dir}")
 

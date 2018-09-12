@@ -13,9 +13,24 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-add_subdirectory(util)
-add_subdirectory(baf)
-add_subdirectory(elm)
-add_subdirectory(itg)
-add_subdirectory(spl)
-add_subdirectory(io)
+add_library(splinelibio INTERFACE)
+target_include_directories(splinelibio INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(splinelibio INTERFACE splinelibspl pugixmllib)
+
+install(
+        TARGETS splinelibio
+        EXPORT "${targets_export_name}"
+        LIBRARY DESTINATION "${library_install_dir}"
+        ARCHIVE DESTINATION "${library_install_dir}"
+        RUNTIME DESTINATION "${executable_install_dir}"
+        INCLUDES DESTINATION "${include_install_dir}"
+)
+
+
+install(FILES
+        xml_reader.h
+        xml_writer_spline.h
+        xml_writer_b_spline.h
+        xml_writer_nurbs.h
+        DESTINATION "${include_install_dir}")

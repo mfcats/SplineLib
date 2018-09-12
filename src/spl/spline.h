@@ -88,6 +88,11 @@ parameter_space) {
     return parameter_space_->GetKnotVector(i);
   }
 
+  virtual int GetNumberOfControlPoints() = 0;
+  virtual std::array<int, DIM> GetPointsPerDirection() = 0;
+  virtual int GetDimension() = 0;
+  virtual double GetControlPoint(std::array<int, DIM> indices, int dimension) = 0;
+
   std::vector<elm::Element> GetElementList() const {
     return parameter_space_->GetElementList(0);
   }

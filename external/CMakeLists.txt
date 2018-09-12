@@ -13,9 +13,4 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-add_subdirectory(util)
-add_subdirectory(baf)
-add_subdirectory(elm)
-add_subdirectory(itg)
-add_subdirectory(spl)
-add_subdirectory(io)
+add_subdirectory(pugixml)
