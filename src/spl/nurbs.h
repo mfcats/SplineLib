@@ -62,7 +62,7 @@ class NURBS : public Spline<DIM> {
     return physical_space_->GetDimension();
   }
 
-  virtual double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
+  double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
     return physical_space_->GetControlPoint(indices).GetValue(dimension);
   }
 
