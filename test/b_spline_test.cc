@@ -18,12 +18,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
-#include "b_spline_generator.h"
-#include "numeric_settings.h"
 
 using testing::Test;
 using testing::DoubleEq;
-using testing::DoubleNear;
 using ::testing::Return;
 using ::testing::Throw;
 using ::testing::NiceMock;
