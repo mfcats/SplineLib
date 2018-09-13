@@ -37,6 +37,6 @@ class SplineGenerator {
  protected:
   std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
 };
-}  //  namespace spl
+}  // namespace spl
 
-#endif  //  SRC_SPL_SPLINE_GENERATOR_H_
+#endif  // SRC_SPL_SPLINE_GENERATOR_H_

@@ -28,8 +28,7 @@ class A1DParameterSpace : public Test {
                                                              ParamCoord{2}, ParamCoord{3},
                                                              ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5},
                                                              ParamCoord{5}}))},
-      parameter_space(spl::ParameterSpace<1>(knot_vector_, degree_)) {
-  }
+      parameter_space(spl::ParameterSpace<1>(knot_vector_, degree_)) {}
 
  protected:
   std::array<Degree, 1> degree_;
@@ -37,22 +36,22 @@ class A1DParameterSpace : public Test {
   spl::ParameterSpace<1> parameter_space;
 };
 
-TEST_F(A1DParameterSpace, returnsCorrectDegree) { // NOLINT
+TEST_F(A1DParameterSpace, returnsCorrectDegree) {  // NOLINT
   ASSERT_THAT(parameter_space.GetDegree(0), Degree{2});
 }
 
-TEST_F(A1DParameterSpace, returns3_0ForFifthKnot) { // NOLINT
+TEST_F(A1DParameterSpace, returns3_0ForFifthKnot) {  // NOLINT
   ASSERT_THAT((*parameter_space.GetKnotVector(0))[5].get(), DoubleEq(3.0));
 }
 
-TEST_F(A1DParameterSpace, returnsCorrectBasisFunctionValuesForParamCoord0_5) { // NOLINT
+TEST_F(A1DParameterSpace, returnsCorrectBasisFunctionValuesForParamCoord0_5) {  // NOLINT
   std::vector<double> values = {0.25, 0.625, 0.125, 0, 0, 0, 0, 0};
   for (int i = 0; i < 8; ++i) {
     ASSERT_THAT(parameter_space.GetBasisFunctions({i}, {ParamCoord(0.5)}), DoubleEq(values[i]));
   }
 }
 
-TEST_F(A1DParameterSpace, returnsCorrectBasisFunctionDerivativeValuesForParamCoord0_5AndDerivative1) { // NOLINT
+TEST_F(A1DParameterSpace, returnsCorrectBasisFunctionDerivativeValuesForParamCoord0_5AndDerivative1) {  // NOLINT
   std::vector<double> values = {-1, 0.5, 0.5, 0, 0, 0, 0, 0};
   for (int i = 0; i < 8; ++i) {
     ASSERT_THAT(parameter_space.GetBasisFunctionDerivatives({i}, {ParamCoord(0.5)}, {1}), DoubleEq(values[i]));
@@ -68,8 +67,7 @@ class A2DParameterSpace : public Test {
                                      std::make_shared<baf::KnotVector>(baf::KnotVector{ParamCoord{0}, ParamCoord{0},
                                                                                        ParamCoord{1}, ParamCoord{2},
                                                                                        ParamCoord{3}, ParamCoord{3}})},
-                        parameter_space(knot_vector_, degree_) {
-  }
+                        parameter_space(knot_vector_, degree_) {}
 
  protected:
   std::array<Degree, 2> degree_;
@@ -77,27 +75,27 @@ class A2DParameterSpace : public Test {
   spl::ParameterSpace<2> parameter_space;
 };
 
-TEST_F(A2DParameterSpace, returnsDegree2ForFirstDimension) { // NOLINT
+TEST_F(A2DParameterSpace, returnsDegree2ForFirstDimension) {  // NOLINT
   ASSERT_THAT(parameter_space.GetDegree(0), Degree{2});
 }
 
-TEST_F(A2DParameterSpace, returnsDegree1ForSecondDimension) { // NOLINT
+TEST_F(A2DParameterSpace, returnsDegree1ForSecondDimension) {  // NOLINT
   ASSERT_THAT(parameter_space.GetDegree(1), Degree{1});
 }
 
-TEST_F(A2DParameterSpace, returns1_0ForFourthKnotOfFirstKnotVector) { // NOLINT
+TEST_F(A2DParameterSpace, returns1_0ForFourthKnotOfFirstKnotVector) {  // NOLINT
   ASSERT_THAT((*parameter_space.GetKnotVector(0))[3].get(), DoubleEq(1.0));
 }
 
-TEST_F(A2DParameterSpace, returns2_0ForFourthKnotOfSecondKnotVector) { // NOLINT
+TEST_F(A2DParameterSpace, returns2_0ForFourthKnotOfSecondKnotVector) {  // NOLINT
   ASSERT_THAT((*parameter_space.GetKnotVector(1))[3].get(), DoubleEq(2.0));
 }
 
-TEST_F(A2DParameterSpace, returnsCorrectBasisFunctionValue) { // NOLINT
+TEST_F(A2DParameterSpace, returnsCorrectBasisFunctionValue) {  // NOLINT
   ASSERT_THAT(parameter_space.GetBasisFunctions({1, 1}, {ParamCoord(0.5), ParamCoord(0.25)}), DoubleEq(0.125));
 }
 
-TEST_F(A2DParameterSpace, returnsCorrectBasisFunctionDerivativeValue) { // NOLINT
+TEST_F(A2DParameterSpace, returnsCorrectBasisFunctionDerivativeValue) {  // NOLINT
   ASSERT_THAT(parameter_space.GetBasisFunctionDerivatives({1, 1}, {ParamCoord(0.5), ParamCoord(0.25)}, {0, 1}),
               DoubleEq(0.5));
 }
@@ -125,8 +123,7 @@ class A3DParameterSpace : public Test {
                                                                                                         ParamCoord{3},
                                                                                                         ParamCoord{
                                                                                                             3}})}))},
-                        parameter_space(knot_vector_, degree_) {
-  }
+                        parameter_space(knot_vector_, degree_) {}
 
  protected:
   std::array<Degree, 3> degree_;
@@ -134,36 +131,36 @@ class A3DParameterSpace : public Test {
   spl::ParameterSpace<3> parameter_space;
 };
 
-TEST_F(A3DParameterSpace, returnsDegree2ForFirstDimension) { // NOLINT
+TEST_F(A3DParameterSpace, returnsDegree2ForFirstDimension) {  // NOLINT
   ASSERT_THAT(parameter_space.GetDegree(0), Degree{2});
 }
 
-TEST_F(A3DParameterSpace, returnsDegree0ForSecondDimension) { // NOLINT
+TEST_F(A3DParameterSpace, returnsDegree0ForSecondDimension) {  // NOLINT
   ASSERT_THAT(parameter_space.GetDegree(1), Degree{0});
 }
 
-TEST_F(A3DParameterSpace, returnsDegree1ForThirdDimension) { // NOLINT
+TEST_F(A3DParameterSpace, returnsDegree1ForThirdDimension) {  // NOLINT
   ASSERT_THAT(parameter_space.GetDegree(2), Degree{1});
 }
 
-TEST_F(A3DParameterSpace, returns1_0ForFourthKnotOfFirstKnotVector) { // NOLINT
+TEST_F(A3DParameterSpace, returns1_0ForFourthKnotOfFirstKnotVector) {  // NOLINT
   ASSERT_THAT((*parameter_space.GetKnotVector(0))[3].get(), DoubleEq(1.0));
 }
 
-TEST_F(A3DParameterSpace, returns0_3ForSecondKnotOfSecondKnotVector) { // NOLINT
+TEST_F(A3DParameterSpace, returns0_3ForSecondKnotOfSecondKnotVector) {  // NOLINT
   ASSERT_THAT((*parameter_space.GetKnotVector(1))[1].get(), DoubleEq(0.3));
 }
 
-TEST_F(A3DParameterSpace, returns2_0ForFourthKnotOfThirdKnotVector) { // NOLINT
+TEST_F(A3DParameterSpace, returns2_0ForFourthKnotOfThirdKnotVector) {  // NOLINT
   ASSERT_THAT((*parameter_space.GetKnotVector(2))[3].get(), DoubleEq(2.0));
 }
 
-TEST_F(A3DParameterSpace, returnsCorrectBasisFunctionValue) { // NOLINT
+TEST_F(A3DParameterSpace, returnsCorrectBasisFunctionValue) {  // NOLINT
   ASSERT_THAT(parameter_space.GetBasisFunctions({1, 1, 1}, {ParamCoord(0.5), ParamCoord(0.5), ParamCoord(0.25)}),
               DoubleEq(0.125));
 }
 
-TEST_F(A3DParameterSpace, returnsCorrectBasisFunctionDerivativeValue) { // NOLINT
+TEST_F(A3DParameterSpace, returnsCorrectBasisFunctionDerivativeValue) {  // NOLINT
   ASSERT_THAT(parameter_space.GetBasisFunctionDerivatives({1, 1, 1},
                                                           {ParamCoord(0.5), ParamCoord(0.5), ParamCoord(0.25)},
                                                           {0, 0, 1}), DoubleEq(0.5));

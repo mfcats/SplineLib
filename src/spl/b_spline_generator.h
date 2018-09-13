@@ -18,34 +18,39 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <memory>
 #include <vector>
 
+#include "physical_space.h"
 #include "spline_generator.h"
 
 namespace spl {
 template<int DIM>
 class BSplineGenerator : public SplineGenerator<DIM> {
  public:
+  BSplineGenerator() = default;
+  virtual ~BSplineGenerator() = default;
+
   BSplineGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
-                   std::array<int, DIM> degree,
+                   std::array<Degree, DIM> degree,
                    const std::vector<baf::ControlPoint> &control_points) : SplineGenerator<DIM>(knot_vector, degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
-      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i] - 1;
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
-    physical_space_ = PhysicalSpace<DIM>(control_points, number_of_points);
+    physical_space_ = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
   }
 
-  BSplineGenerator(std::shared_ptr<PhysicalSpace <DIM>>
-physical_space, std::shared_ptr<ParameterSpace <DIM>> parameter_space) {
+  BSplineGenerator(std::shared_ptr<PhysicalSpace < DIM>>
+  physical_space,
+  std::shared_ptr<ParameterSpace < DIM>> parameter_space) {
     this->parameter_space_ = parameter_space;
     physical_space_ = physical_space;
   }
 
-  std::shared_ptr<PhysicalSpace <DIM>> GetPhysicalSpace() const {
+  std::shared_ptr<PhysicalSpace < DIM>> GetPhysicalSpace() const {
     return physical_space_;
   }
 
- private:
-  std::shared_ptr<PhysicalSpace <DIM>> physical_space_;
+ protected:
+  std::shared_ptr<PhysicalSpace < DIM>> physical_space_;
 };
 }  //  namespace spl
 

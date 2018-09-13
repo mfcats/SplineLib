@@ -18,13 +18,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
-#include "one_point_gauss_legendre.h"
-#include "two_point_gauss_legendre.h"
-#include "three_point_gauss_legendre.h"
-#include "four_point_gauss_legendre.h"
-#include "five_point_gauss_legendre.h"
-#include "numeric_settings.h"
-#include "b_spline_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -244,4 +237,36 @@ TEST_F(ABSpline, ThrowsExceptionForDerivativeEvaluationAtMinus1_0) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THROW(b_spline->EvaluateDerivative({ParamCoord{-1.0}}, {0}, {1}), std::runtime_error);
+}
+
+class ABSplineWithSplineGenerator : public Test {
+ public:
+  ABSplineWithSplineGenerator() : degree_{Degree{2}} {
+    std::array<baf::KnotVector, 1> knot_vector =
+        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
+                          ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}})};
+    control_points_ = {
+        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.5, 1.5})),
+        baf::ControlPoint(std::vector<double>({2.0, 1.3})),
+        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({4.0, 1.5})),
+        baf::ControlPoint(std::vector<double>({4.0, 0.0}))
+    };
+    knot_vector_[0] = {std::make_shared<baf::KnotVector>(knot_vector[0])};
+    spl::BSplineGenerator<1> b_spline_generator(knot_vector_, degree_, control_points_);
+    b_spline = std::make_unique<spl::BSpline<1>>(b_spline_generator);
+  }
+
+ protected:
+  std::unique_ptr<spl::BSpline<1>> b_spline;
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_;
+  std::array<Degree, 1> degree_;
+  std::vector<baf::ControlPoint> control_points_;
+};
+
+TEST_F(ABSplineWithSplineGenerator, Returns0_0For0AndDim0) { // NOLINT
+  ASSERT_THAT(b_spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(0.0));
 }

@@ -23,6 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "spline.h"
+#include "nurbs_generator.h"
 #include "weighted_physical_space.h"
 
 namespace spl {
@@ -68,6 +69,10 @@ class NURBS : public Spline<DIM> {
 
   int GetWeight(std::array<int, DIM> indices) {
     return physical_space_->GetWeight(indices);
+  }
+
+  explicit NURBS(NURBSGenerator<DIM> nurbs_generator) : Spline<DIM>(nurbs_generator.GetParameterSpace()) {
+    physical_space_ = nurbs_generator.GetWeightedPhysicalSpace();
   }
 
  private:

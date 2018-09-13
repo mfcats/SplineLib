@@ -19,10 +19,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <functional>
 #include <vector>
-#include "spline_generator.h"
-#include "b_spline_generator.h"
 
+#include "b_spline_generator.h"
 #include "spline.h"
+#include "spline_generator.h"
 
 namespace spl {
 template<int DIM>
@@ -38,8 +38,7 @@ class BSpline : public Spline<DIM> {
     physical_space_ = std::make_shared<PhysicalSpace<DIM>>(PhysicalSpace<DIM>(control_points, number_of_points));
   }
 
-  explicit BSpline(BSplineGenerator<DIM> b_spline_generator)
-      : Spline<DIM>(b_spline_generator.GetParameterSpace()) {
+  explicit BSpline(BSplineGenerator<DIM> b_spline_generator) : Spline<DIM>(b_spline_generator.GetParameterSpace()) {
     physical_space_ = b_spline_generator.GetPhysicalSpace();
   }
 

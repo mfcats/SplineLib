@@ -16,6 +16,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_BAF_KNOT_VECTOR_H_
 
 #include <initializer_list>
+#include <limits>
+#include <stdexcept>
+#include <utility>
 #include <vector>
 
 #include "named_type.h"
