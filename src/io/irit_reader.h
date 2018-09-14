@@ -17,7 +17,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <any>
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -44,66 +43,46 @@ class IRITReader {
       file += line;
     }
     std::vector<std::string> entries = util::StringOperations::split(file, ' ');
-    std::cout << std::endl;
-    for (int i = 0; i < entries.size(); i++) {
-      std::cout << i << ": " << entries[i] << std::endl;
-    }
-
-    std::vector<int> start_of_splines;
-    for (int i = 0; i < entries.size(); i++) {
-      if (entries[i] == "BSPLINE") {
-        start_of_splines.push_back(i - 1);
-      }
-    }
-    std::vector<int> end_of_splines;
-    for (const auto &spline : start_of_splines) {
-      end_of_splines.push_back(GetEndOfSpline(spline, entries));
-    }
-
-    for (int i = 0; i < start_of_splines.size(); i++) {
-      std::cout << "start: " << start_of_splines[i] << ", end: " << end_of_splines[i] << std::endl;
-    }
-
-    for (int i = 0; i < start_of_splines.size(); i++) {
-      std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector =
-          GetKnotVectors(start_of_splines[i], end_of_splines[i], entries);
-      std::array<Degree, DIM> degree = GetDegrees(start_of_splines[i], end_of_splines[i], entries);
-      std::vector<baf::ControlPoint> control_points =
-          GetControlPoints(start_of_splines[i], end_of_splines[i], entries);
-      for (auto cp : control_points) {
-        for (int j = 0; j < (cp.GetDimension() - 1); j++) {
-          std::cout << cp.GetValue(j) << ", ";
-        }
-        std::cout << cp.GetValue(cp.GetDimension() - 1) << std::endl;
-      }
-      vector_of_splines.emplace_back(std::make_any<spl::BSpline<DIM>>(knot_vector, degree, control_points));
+    std::vector<int> spline_positions = GetSplinePositions(entries);
+    for (int i = 0; i < spline_positions.size(); i += 2) {
+      vector_of_splines.emplace_back(GetSpline(spline_positions[i], spline_positions[i + 1], entries));
     }
     return vector_of_splines;
   }
 
  private:
-  int GetEndOfSpline(int start, const std::vector<std::string> &entries) const {
-    int count = 0;
-    int i = start;
-    for (; i < entries.size(); i++) {
-      if (StartsWith(entries[i], "[")) {
-        count++;
-      } else if (EndsWith(entries[i], "]")) {
-        count--;
-      }
-      if (count == 0) {
-        break;
+  std::vector<int> GetSplinePositions(const std::vector<std::string> &entries) const {
+    std::vector<int> spline_positions;
+    for (int i = 0; i < entries.size(); i++) {
+      if (entries[i] == "BSPLINE") {
+        spline_positions.push_back(i - 1);
+        int position = i - 1;
+        int brace_difference = 0;
+        for (; position < entries.size(); position++) {
+          if (StartsWith(entries[position], "[")) brace_difference++;
+          else if (EndsWith(entries[position], "]")) brace_difference--;
+          if (brace_difference == 0) break;
+        }
+        spline_positions.push_back(position);
       }
     }
-    return i;
+    return spline_positions;
+  }
+
+  std::any GetSpline(int start_of_spline, int end_of_spline, std::vector<std::string> entries) {
+    std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector =
+        GetKnotVectors(start_of_spline, end_of_spline, entries);
+    std::array<Degree, DIM> degree = GetDegrees(start_of_spline, entries);
+    std::vector<baf::ControlPoint> control_points =
+        GetControlPoints(start_of_spline, entries);
+    return std::make_any<spl::BSpline<DIM>>(knot_vector, degree, control_points);
   }
 
   std::array<Degree, DIM>
-  GetDegrees(int start_of_spline, int end_of_spline, const std::vector<std::string> &entries) {
+  GetDegrees(int start_of_spline, const std::vector<std::string> &entries) {
     std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; i++) {
-      degrees[i] =
-          Degree(
+      degrees[i] = Degree(
               util::StringOperations::StringVectorToNumberVector<int>({entries[start_of_spline + DIM + 2 + i]})[0] - 1);
     }
     return degrees;
@@ -128,7 +107,7 @@ class IRITReader {
   }
 
   std::vector<baf::ControlPoint>
-  GetControlPoints(int start_of_spline, int end_of_spline, const std::vector<std::string> &entries) {
+  GetControlPoints(int start_of_spline, const std::vector<std::string> &entries) {
     std::vector<baf::ControlPoint> control_points;
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; i++) {

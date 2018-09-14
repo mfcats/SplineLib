@@ -60,8 +60,14 @@ class A1DBSplineFromIRITFile : public Test {
   std::unique_ptr<io::IRITReader<1>> irit_reader;
 };
 
-TEST_F(A1DBSplineFromIRITFile, ReturnsDegree3) { // NOLINT
+TEST_F(A1DBSplineFromIRITFile, ReturnsDegree3) {  // NOLINT
   ASSERT_THAT(std::any_cast<spl::BSpline<1>>(irit_reader->ReadIRITFile(path_to_iris_file)[0]).GetDegree(0).get(), 3);
-  // std::any_cast<std::shared_ptr<spl::BSpline<1>>(irit_reader->ReadIRITFile(path_to_iris_file)[0])->Evaluate({ParamCoord{0.5}}, {0})[0];
-  // ASSERT_THAT(b_spline_->Evaluate({ParamCoord{0.5}}, {0})[0], DoubleEq(6));
+}
+
+TEST_F(A1DBSplineFromIRITFile, ReturnsSameValueAsSplineFromIRITFile) {  // NOLINT
+  std::any spline_from_file = irit_reader->ReadIRITFile(path_to_iris_file)[0];
+  ASSERT_THAT(b_spline_->Evaluate({ParamCoord{0.5}}, {0})[0],
+              DoubleEq(std::any_cast<spl::BSpline<1>>(spline_from_file).Evaluate({ParamCoord{0.5}}, {0})[0]));
+  ASSERT_THAT(b_spline_->Evaluate({ParamCoord{10.5}}, {0})[0],
+              DoubleEq(std::any_cast<spl::BSpline<1>>(spline_from_file).Evaluate({ParamCoord{10.5}}, {0})[0]));
 }
