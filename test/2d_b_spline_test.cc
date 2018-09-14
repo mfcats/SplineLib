@@ -18,13 +18,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
-#include "one_point_gauss_legendre.h"
-#include "two_point_gauss_legendre.h"
-#include "three_point_gauss_legendre.h"
-#include "four_point_gauss_legendre.h"
-#include "five_point_gauss_legendre.h"
-#include "numeric_settings.h"
-#include "b_spline_generator.h"
 #include "2d_b_spline_mocking.h"
 
 using testing::Test;
