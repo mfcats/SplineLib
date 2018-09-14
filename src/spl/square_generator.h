@@ -32,6 +32,8 @@ class SquareGenerator {
 
   Degree degree_;
   u_int64_t number_of_knots_;
+  ParamCoord one_{1};
+  ParamCoord zero_{0};
 };
 }  // namespace spl
 

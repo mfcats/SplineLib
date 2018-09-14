@@ -24,11 +24,11 @@ std::unique_ptr<spl::BSpline<2>> spl::SquareGenerator::CreateSquare() const {
 }
 
 spl::ParameterSpace<2> spl::SquareGenerator::GenerateParameterSpace() const {
-  std::vector<ParamCoord> knots(number_of_knots_, ParamCoord{0.0});
+  std::vector<ParamCoord> knots(number_of_knots_, zero_);
   for (auto knot = knots.begin() + degree_.get() + 1; knot != knots.end() - degree_.get() - 1; ++knot) {
     *knot = *(knot - 1) + ParamCoord{1.0/(number_of_knots_ - 2.0 * degree_.get() - 1)};
   }
-  std::fill(knots.end()-degree_.get()-1, knots.end(), ParamCoord{1.0});
+  std::fill(knots.end() - degree_.get() - 1, knots.end(), one_);
   std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vectors = {
       std::make_shared<baf::KnotVector>(knots),
       std::make_shared<baf::KnotVector>(knots)
