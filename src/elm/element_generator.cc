@@ -20,21 +20,21 @@ elm::ElementGenerator::ElementGenerator(int degree, baf::KnotVector knot_vector)
 std::vector<elm::Element> elm::ElementGenerator::GetElementList() {
   std::vector<Element> elements;
   for (uint64_t currentKnot = 0; currentKnot < knot_vector_.GetNumberOfKnots() - degree_ - 1; currentKnot++) {
-    if ((GetLowerElementBound(currentKnot) - GetHigherElementBound(currentKnot)) != 0) {
+    if ((GetLowerElementBound(currentKnot).get() - GetHigherElementBound(currentKnot).get()) != 0) {
       elements.emplace_back(Element(1, GetElementNodes(currentKnot)));
     }
   }
   return elements;
 }
 
-double elm::ElementGenerator::GetLowerElementBound(uint64_t currentKnot) {
-  return knot_vector_[currentKnot].get();
+ParamCoord elm::ElementGenerator::GetLowerElementBound(uint64_t currentKnot) {
+  return knot_vector_[currentKnot];
 }
 
-double elm::ElementGenerator::GetHigherElementBound(uint64_t currentKnot) {
-  return knot_vector_[currentKnot + 1].get();
+ParamCoord elm::ElementGenerator::GetHigherElementBound(uint64_t currentKnot) {
+  return knot_vector_[currentKnot + 1];
 }
 
-std::vector<double> elm::ElementGenerator::GetElementNodes(uint64_t currentKnot) {
+std::vector<ParamCoord> elm::ElementGenerator::GetElementNodes(uint64_t currentKnot) {
   return {GetLowerElementBound(currentKnot), GetHigherElementBound(currentKnot)};
 }

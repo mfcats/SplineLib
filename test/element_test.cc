@@ -21,7 +21,7 @@ using testing::DoubleEq;
 
 class A1DElement : public Test {
  public:
-  A1DElement() : element(1, {0.5, 1.0}) {}
+  A1DElement() : element(1, {ParamCoord(0.5), ParamCoord(1.0)}) {}
 
  protected:
   elm::Element element;
@@ -36,8 +36,8 @@ TEST_F(A1DElement, ReturnsCorrectNumberOfNodes) { // NOLINT
 }
 
 TEST_F(A1DElement, ReturnsCorrectNode) { // NOLINT
-  ASSERT_THAT(element.GetNode(0), DoubleEq(0.5));
-  ASSERT_THAT(element.GetNode(1), DoubleEq(1.0));
+  ASSERT_THAT(element.GetNode(0).get(), DoubleEq(0.5));
+  ASSERT_THAT(element.GetNode(1).get(), DoubleEq(1.0));
 }
 
 class A1DElementGenerator : public Test {
@@ -70,7 +70,7 @@ TEST_F(A1DElementGenerator, ReturnsElementsWith2Nodes) { // NOLINT
 TEST_F(A1DElementGenerator, ReturnsElementsWithCorrectNodes) { // NOLINT
   auto element_list = element_generator.GetElementList();
   for (auto element = 0u; element < element_list.size(); element++) {
-    ASSERT_THAT(element_list[element].GetNode(0), element);
-    ASSERT_THAT(element_list[element].GetNode(1), element + 1);
+    ASSERT_THAT(element_list[element].GetNode(0).get(), element);
+    ASSERT_THAT(element_list[element].GetNode(1).get(), element + 1);
   }
 }

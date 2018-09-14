@@ -19,22 +19,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "control_point.h"
+#include "knot_vector.h"
 
 namespace elm {
 class Element {
  public:
-  Element(int dimension, const std::vector<double> &nodes);
+  Element(int dimension, const std::vector<ParamCoord> &nodes);
 
   int GetDimension() const;
 
   int GetNumberOfNodes() const;
 
-  double GetNode(int number) const;
+  ParamCoord GetNode(int number) const;
 
  private:
   int dimension_;
   int number_of_nodes_;
-  std::vector<double> nodes_;
+  std::vector<ParamCoord> nodes_;
 };
 }  // namespace elm
 

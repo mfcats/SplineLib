@@ -119,7 +119,7 @@ class Spline {
                                                                       rule.GetCoordinate(integration_point, 0))},
                                        {0},
                                        {1})[0];
-    double dxi_dtildexi = (element.GetNode(1) - element.GetNode(0)) / 2.0;
+    double dxi_dtildexi = (element.GetNode(1) - element.GetNode(0)).get() / 2.0;
     return dx_dxi * dxi_dtildexi;
   }
 

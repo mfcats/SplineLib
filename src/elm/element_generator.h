@@ -28,11 +28,11 @@ class ElementGenerator {
   std::vector<Element> GetElementList();
 
  private:
-  double GetLowerElementBound(uint64_t currentKnot);
+  ParamCoord GetLowerElementBound(uint64_t currentKnot);
 
-  double GetHigherElementBound(uint64_t currentKnot);
+  ParamCoord GetHigherElementBound(uint64_t currentKnot);
 
-  std::vector<double> GetElementNodes(uint64_t currentKnot);
+  std::vector<ParamCoord> GetElementNodes(uint64_t currentKnot);
 
   int degree_;
   baf::KnotVector knot_vector_;

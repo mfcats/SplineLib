@@ -46,7 +46,7 @@ class Projection {
         // This is only the first order algorithm. An implemented but non-working version of the second order algorithm
         // can be found in commit 2ed993e6dcef3d184b70640f6b9498efae52747a.
         double delta = util::VectorUtils<double>::ComputeScalarProduct(firstDer, projectionVector)
-            /util::VectorUtils<double>::ComputeScalarProduct(firstDer, firstDer);
+            / util::VectorUtils<double>::ComputeScalarProduct(firstDer, firstDer);
 
         projectionPointParamCoords[0] = projectionPointParamCoords[0] + ParamCoord{delta};
         if (projectionPointParamCoords[0].get() < spline->GetKnotVector(0)->GetKnot(0).get()) {
@@ -72,21 +72,22 @@ class Projection {
     std::vector<elm::Element> elements = spline->GetElementList();
     std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
     std::vector<double> splinePhysicalCoords =
-        spline->Evaluate({ParamCoord{(0.5*(elements[0].GetNode(1) - elements[0].GetNode(0)))}}, dimensions);
+        spline->Evaluate({ParamCoord{(0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0)).get())}}, dimensions);
     double distance = util::VectorUtils<double>::ComputeTwoNorm(util::VectorUtils<double>::ComputeDifference(
         pointPhysicalCoords,
         splinePhysicalCoords));
-    paramCoords[0] = ParamCoord{{0.5*(elements[0].GetNode(1) - elements[0].GetNode(0))}};
+    paramCoords[0] = ParamCoord{{0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0)).get()}};
     for (auto i = 1u; i < elements.size(); ++i) {
       splinePhysicalCoords = spline->Evaluate({ParamCoord{
-          0.5*(elements[i].GetNode(1) - elements[i].GetNode(0)) + elements[i].GetNode(0)}}, dimensions);
+          0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)).get() + elements[i].GetNode(0).get()}}, dimensions);
       if (util::VectorUtils<double>::ComputeTwoNorm(util::VectorUtils<double>::ComputeDifference(pointPhysicalCoords,
                                                                                                  splinePhysicalCoords))
           < distance) {
         distance = util::VectorUtils<double>::ComputeTwoNorm(util::VectorUtils<double>::ComputeDifference(
             pointPhysicalCoords,
             splinePhysicalCoords));
-        paramCoords[0] = ParamCoord{0.5*(elements[i].GetNode(1) - elements[i].GetNode(0)) + elements[i].GetNode(0)};
+        paramCoords[0] =
+            ParamCoord{0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)).get() + elements[i].GetNode(0).get()};
       }
     }
     return paramCoords;
