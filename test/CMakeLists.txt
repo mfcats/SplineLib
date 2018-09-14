@@ -37,7 +37,8 @@ set(TEST_SOURCES
         xml_writer_nurbs_test.cc
         xml_reader_test.cc
         basis_function_factory.cc
-        element_integration_point_test.cc)
+        element_integration_point_test.cc
+        irit_reader_test.cc)
 
 
 find_package(GMock REQUIRED)
@@ -54,6 +55,7 @@ target_link_libraries(AcceptanceTests splinelibbaf splinelibspl splinelibutil)
 target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
 
 set(PATH_TO_IGES_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test.iges)
+set(PATH_TO_IRIS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test.itd)
 set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/spline_tank.xml)
 configure_file(config.in.h ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
