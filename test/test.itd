@@ -1,0 +1,85 @@
+This is a legal comment in a data file.
+ [OBJECT DEMO
+     [OBJECT REAL_NUM
+         And this is also a legal comment.
+         [NUMBER 4]
+     ]
+
+     [OBJECT A_POINT
+         [POINT 1 2 3]
+     ]
+
+     [OBJECT A_VECTOR
+         [VECTOR 1 2 3]
+     ]
+
+     [OBJECT CTL_POINT
+         [CTLPT E3 1 2 3]
+     ]
+
+     [OBJECT STR_OBJ
+         [STRING "string"]
+     ]
+
+     [OBJECT UNIT_MAT
+         [MATRIX
+            1 0 0 0
+            0 1 0 0
+            0 0 1 0
+            0 0 0 1
+         ]
+     ]
+
+     [OBJECT [COLOR 4] POLY1OBJ
+         [POLYGON [PLANE 1 0 0 0.5] 4
+             [-0.5 0.5 0.5]
+             [-0.5 -0.5 0.5]
+             [-0.5 -0.5 -0.5]
+             [-0.5 0.5 -0.5]
+         ]
+         [POLYGON [PLANE 0 -1 0 0.5] 4
+             [0.5 0.5 0.5]
+             [-0.5 0.5 0.5]
+             [-0.5 0.5 -0.5]
+             [0.5 0.5 -0.5]
+         ]
+     ]
+
+     [OBJECT [COLOR 63] ACURVE
+         [CURVE BSPLINE 16 4 E2
+             [KV 0 0 0 0 1 1 1 2 3 4 5 6 7 8 9 10 11 11 11 11]
+             [0.874 0]
+             [0.899333 0.0253333]
+             [0.924667 0.0506667]
+             [0.95 0.076]
+             [0.95 0.76]
+             [0.304 1.52]
+             [0.304 1.9]
+             [0.494 2.09]
+             [0.722 2.242]
+             [0.722 2.318]
+             [0.38 2.508]
+             [0.418 2.698]
+             [0.57 2.812]
+             [0.57 3.42]
+             [0.19 3.572]
+             [0 3.572]
+         ]
+     ]
+
+     [OBJECT [COLOR 2] SOMESRF
+         [SURFACE BEZIER 3 3 E3
+             [0 0 0]
+             [0.05 0.2 0.1]
+             [0.1 0.05 0.2]
+
+             [0.1 -0.2 0]
+             [0.15 0.05 0.1]
+             [0.2 -0.1 0.2]
+
+             [0.2 0 0]
+             [0.25 0.2 0.1]
+             [0.3 0.05 0.2]
+         ]
+     ]
+ ] 
