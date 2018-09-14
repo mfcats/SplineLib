@@ -136,8 +136,8 @@ class ParameterSpace {
     return elm::ElementGenerator(degree_[direction].get(), *(knot_vector_[direction])).GetElementList();
   }
 
-  ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
-    return ParamCoord{((upper - lower) * point + (upper + lower)) / 2.0};
+  ParamCoord ReferenceSpace2ParameterSpace(ParamCoord upper, ParamCoord lower, double point) const {
+    return ParamCoord{((upper - lower).get() * point + (upper + lower).get()) / 2.0};
   }
 
   virtual std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
