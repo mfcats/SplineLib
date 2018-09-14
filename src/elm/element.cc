@@ -14,7 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element.h"
 
-elm::Element::Element(int dimension, const std::vector<double> &nodes)
+elm::Element::Element(int dimension, const std::vector<ParamCoord> &nodes)
     : dimension_(dimension), number_of_nodes_(static_cast<int>(nodes.size())), nodes_(nodes) {}
 
 int elm::Element::GetDimension() const {
@@ -25,7 +25,7 @@ int elm::Element::GetNumberOfNodes() const {
   return number_of_nodes_;
 }
 
-double elm::Element::GetNode(int number) const {
+ParamCoord elm::Element::GetNode(int number) const {
 #ifdef DEBUG
   return nodes_.at(number);
 #else
