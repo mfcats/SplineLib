@@ -158,7 +158,7 @@ class Spline {
     return element_integration_points;
   }
 
-  ParamCoord ReferenceSpace2ParameterSpace(double upper, double lower, double point) const {
+  ParamCoord ReferenceSpace2ParameterSpace(ParamCoord upper, ParamCoord lower, double point) const {
     return parameter_space_->ReferenceSpace2ParameterSpace(upper, lower, point);
   }
 
