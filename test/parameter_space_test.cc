@@ -109,6 +109,22 @@ TEST_F(A1DParameterSpace, ReturnsCorrectNonZeroElementBasisFunctionDerivativesFo
   ASSERT_THAT(values[0].GetBasisFunctionValue(2), DoubleEq(0.5));
 }
 
+TEST_F(A1DParameterSpace, TransformsReferenceElementCoordinateToParametricCoordinate) { // NOLINT
+  ASSERT_THAT(parameter_space.ReferenceSpace2ParameterSpace(ParamCoord{3}, ParamCoord{2}, 0.5).get(), DoubleEq(2.75));
+}
+
+TEST_F(A1DParameterSpace, Returns1AsFirstNonZeroBasisFunctionsForParamCoord1_5) { // NOLINT
+  ASSERT_THAT(parameter_space.GetArrayOfFirstNonZeroBasisFunctions({ParamCoord(1.5)})[0], 1);
+}
+
+TEST_F(A1DParameterSpace, Returns5AsFirstNonZeroBasisFunctionsForParamCoord4) { // NOLINT
+  ASSERT_THAT(parameter_space.GetArrayOfFirstNonZeroBasisFunctions({ParamCoord(4.0)})[0], 5);
+}
+
+TEST_F(A1DParameterSpace, ThrowsIfParametricCoordinateOutsideKnotVectorRange) { // NOLINT
+  ASSERT_THROW(parameter_space.ThrowIfParametricCoordinateOutsideKnotVectorRange({ParamCoord(5.1)}), std::range_error);
+}
+
 class AnIntegrationRule : public A1DParameterSpace {
  public:
   AnIntegrationRule() {

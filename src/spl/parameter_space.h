@@ -143,8 +143,7 @@ class ParameterSpace {
   virtual std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
-      first_non_zero[i] =
-          GetKnotVector(i)->GetKnotSpan(param_coord[i]).get() - GetDegree(i).get();
+      first_non_zero[i] = GetKnotVector(i)->GetKnotSpan(param_coord[i]).get() - GetDegree(i).get();
     }
     return first_non_zero;
   }
