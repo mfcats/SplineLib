@@ -73,8 +73,7 @@ class IRITReader {
     std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector =
         GetKnotVectors(start_of_spline, end_of_spline, entries);
     std::array<Degree, DIM> degree = GetDegrees(start_of_spline, entries);
-    std::vector<baf::ControlPoint> control_points =
-        GetControlPoints(start_of_spline, entries);
+    std::vector<baf::ControlPoint> control_points = GetControlPoints(start_of_spline, entries);
     return std::make_any<spl::BSpline<DIM>>(knot_vector, degree, control_points);
   }
 
@@ -91,17 +90,14 @@ class IRITReader {
   GetKnotVectors(int start_of_spline, int end_of_spline, const std::vector<std::string> &entries) const {
     std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors;
     int count = 0;
-    for (int i = start_of_spline; i < end_of_spline; i++) {
-      if (StartsWith(entries[i], "[KV")) {
+    while (start_of_spline < end_of_spline) {
+      if (StartsWith(entries[start_of_spline++], "[KV")) {
         std::vector<ParamCoord> knots;
-        i++;
-        while (!StartsWith(entries[i], "[")) {
-          knots.emplace_back(util::StringOperations::StringVectorToNumberVector<double>({entries[i]})[0]);
-          i++;
+        while (!StartsWith(entries[start_of_spline], "[")) {
+          knots.emplace_back(
+              util::StringOperations::StringVectorToNumberVector<double>({entries[start_of_spline++]})[0]);
         }
-        knot_vectors[count] = std::make_shared<baf::KnotVector>(knots);
-        count++;
-        i--;
+        knot_vectors[count++] = std::make_shared<baf::KnotVector>(knots);
       }
     }
     return knot_vectors;
