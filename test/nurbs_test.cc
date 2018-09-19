@@ -21,12 +21,33 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
+using ::testing::NiceMock;
+
+class MockParameterSpace : public spl::ParameterSpace<1> {
+ public:
+  MOCK_CONST_METHOD1(GetDegree, Degree(int));
+  MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 1>, std::array<ParamCoord, 1>));
+  MOCK_CONST_METHOD3(GetBasisFunctionDerivatives,
+                     double(std::array<int, 1>, std::array<ParamCoord, 1>, std::array<int, 1>));
+  MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 1>(std::array<ParamCoord, 1>));
+  MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<ParamCoord, 1>));
+};
+
+class MockWeightedPhysicalSpace : public spl::WeightedPhysicalSpace<1> {
+ public:
+  MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 1>));
+};
 
 class NurbsEx4_1 : public Test {
  public:
-  NurbsEx4_1() {
+  NurbsEx4_1() : 
+      parameter_space(std::make_shared<NiceMock<MockParameterSpace>>()),
+      weihted_physical_space(std::make_shared<NiceMock<MockWeightedPhysicalSpace>>()) {
+    spl::NURBSGenerator<1> nurbs_generator(weighted_physical_space, parameter_space);
+    nurbs = std::make_unique<spl::NURBS<1>>(nurbs_generator);
+    /*
     std::array<baf::KnotVector, 1> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
+    {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
                           ParamCoord{3}, ParamCoord{3}})};
     std::array<Degree, 1> degree = {Degree{2}};
     std::vector<double> weights = {1, 4, 1, 1, 1};
@@ -40,10 +61,13 @@ class NurbsEx4_1 : public Test {
     std::array<std::shared_ptr<baf::KnotVector>, 1>
         knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
     nurbs = std::make_unique<spl::NURBS<1>>(knot_vector_ptr, degree, control_points, weights);
+    */
   }
 
  protected:
   std::unique_ptr<spl::NURBS<1>> nurbs;
+  std::shared_ptr<NiceMock<MockParameterSpace>> parameter_space;
+  std::shared_ptr<NiceMock<MockWeightedPhysicalSpace>> weighted_physical_space;
 };
 
 TEST_F(NurbsEx4_1, Returns1_4For1AndDim0) { // NOLINT
