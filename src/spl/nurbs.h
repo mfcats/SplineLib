@@ -99,11 +99,11 @@ class NURBS : public Spline<DIM> {
                                             int dimension) const {
     if (derivative == std::array<int, DIM>{0}) {
       return this->parameter_space_->GetBasisFunctions(indices, param_coord)
-          * physical_space_->GetWeight(indices) / GetEvaluatedDerivativeWeightSum(param_coord, std::array<int, DIM>{0});
+          * physical_space_->GetWeight(indices) / GetEvaluatedWeightSum(param_coord);
     }
     return (GetEvaluatedDerivativeWeight(param_coord, derivative, indices)
         - GetDerivativesSum(param_coord, derivative, indices, dimension))
-        / GetEvaluatedDerivativeWeightSum(param_coord, std::array<int, DIM>{0});
+        / GetEvaluatedWeightSum(param_coord);
   }
 
   double GetDerivativesSum(std::array<ParamCoord, DIM> param_coord,

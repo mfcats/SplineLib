@@ -45,7 +45,7 @@ class Spline {
 
   virtual std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord,
                                        const std::vector<int> &dimensions) const {
-    ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
+    this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
 
     auto first_non_zero = GetArrayOfFirstNonZeroBasisFunctions(param_coord);
     util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
