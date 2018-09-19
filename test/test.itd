@@ -142,6 +142,41 @@ This is a legal comment in a data file.
          ]
      ]
 
+
+     [OBJECT [transp 0] [rgb "200,0,0"]
+         [ObjWrapper _REFPTR_ATTR_NOT_CNVRTED_] SBSPLINE_000056
+         [TRIVAR BSPLINE 2 2 2 2 2 2 E3
+       [KV 0 0 1 1]
+       [KV 0 0 1 1]
+       [KV 0 0 1 1]
+       [0 0 0]
+       [1 0 0]
+       [0 1 0]
+       [1 1 0]
+       [0 0 1]
+       [1 0 1]
+       [0 1 1]
+       [1 1 1]
+         ]
+     ]
+
+     [OBJECT [transp 0] [rgb "200,0,0"]
+         [ObjWrapper _REFPTR_ATTR_NOT_CNVRTED_] SNURBS_000056
+         [TRIVAR BSPLINE 2 2 2 2 2 2 P3
+       [KV 0 0 1 1]
+       [KV 0 0 1 1]
+       [KV 0 0 1 1]
+       [0.2 0 0 0]
+       [0.3 1 0 0]
+       [0.5 0 1 0]
+       [0.75 1 1 0]
+       [1 0 0 1]
+       [1.3 1 0 1]
+       [1.5 0 1 1]
+       [2 1 1 1]
+         ]
+     ]
+
      [OBJECT [COLOR 2] SOMESRF
          [SURFACE BEZIER 3 3 E3
              [0 0 0]
