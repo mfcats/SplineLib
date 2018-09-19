@@ -22,9 +22,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleEq;
 
-class A1DBSplineFromIRITFile : public Test {
+class A1DIRITReader : public Test {
  public:
-  A1DBSplineFromIRITFile() : irit_reader(std::make_unique<io::IRITReader<1>>()) {
+  A1DIRITReader() : irit_reader(std::make_unique<io::IRITReader<1>>()) {}
+
+ protected:
+  std::unique_ptr<io::IRITReader<1>> irit_reader;
+};
+
+TEST_F(A1DIRITReader, Finds3SplinesOfDimension1) {  // NOLINT
+  ASSERT_THAT(irit_reader->ReadIRITFile(path_to_iris_file).size(), 3);
+}
+
+class A1DBSplineFromIRITFile : public A1DIRITReader {
+ public:
+  A1DBSplineFromIRITFile() {
     std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1},
                          ParamCoord{1}, ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{5}, ParamCoord{6},
@@ -57,7 +69,6 @@ class A1DBSplineFromIRITFile : public Test {
 
  protected:
   std::unique_ptr<spl::BSpline<1>> b_spline_;
-  std::unique_ptr<io::IRITReader<1>> irit_reader;
 };
 
 TEST_F(A1DBSplineFromIRITFile, ReturnsDegree3) {  // NOLINT
@@ -72,7 +83,7 @@ TEST_F(A1DBSplineFromIRITFile, ReturnsSameValueAsSplineFromIRITFile) {  // NOLIN
               DoubleEq(std::any_cast<spl::BSpline<1>>(spline_from_file).Evaluate({ParamCoord{10.5}}, {0})[0]));
 }
 
-class ASecond1DBSplineFromIRITFile : public A1DBSplineFromIRITFile {
+class ASecond1DBSplineFromIRITFile : public A1DIRITReader {
  public:
   ASecond1DBSplineFromIRITFile() {
     std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
@@ -91,15 +102,11 @@ class ASecond1DBSplineFromIRITFile : public A1DBSplineFromIRITFile {
         baf::ControlPoint(std::vector<double>({0.5, 0, 0}))
     };
 
-    b_spline_2 = std::make_unique<spl::BSpline<1>>(knot_vector, degree, control_points);
+    b_spline_ = std::make_unique<spl::BSpline<1>>(knot_vector, degree, control_points);
   }
  protected:
-  std::unique_ptr<spl::BSpline<1>> b_spline_2;
+  std::unique_ptr<spl::BSpline<1>> b_spline_;
 };
-
-TEST_F(ASecond1DBSplineFromIRITFile, Finds2SplinesOfDimension1) {  // NOLINT
-  ASSERT_THAT(irit_reader->ReadIRITFile(path_to_iris_file).size(), 2);
-}
 
 TEST_F(ASecond1DBSplineFromIRITFile, ReturnsDegree2) {  // NOLINT
   ASSERT_THAT(std::any_cast<spl::BSpline<1>>(irit_reader->ReadIRITFile(path_to_iris_file)[1]).GetDegree(0).get(), 2);
@@ -107,25 +114,68 @@ TEST_F(ASecond1DBSplineFromIRITFile, ReturnsDegree2) {  // NOLINT
 
 TEST_F(ASecond1DBSplineFromIRITFile, ReturnsSameValueAsSplineFromIRITFile) {  // NOLINT
   std::any spline_from_file = irit_reader->ReadIRITFile(path_to_iris_file)[1];
-  ASSERT_THAT(b_spline_2->Evaluate({ParamCoord{0.5}}, {0})[0],
+  ASSERT_THAT(b_spline_->Evaluate({ParamCoord{0.5}}, {0})[0],
               DoubleEq(std::any_cast<spl::BSpline<1>>(spline_from_file).Evaluate({ParamCoord{0.5}}, {0})[0]));
-  ASSERT_THAT(b_spline_2->Evaluate({ParamCoord{1}}, {0})[0],
+  ASSERT_THAT(b_spline_->Evaluate({ParamCoord{1}}, {0})[0],
               DoubleEq(std::any_cast<spl::BSpline<1>>(spline_from_file).Evaluate({ParamCoord{1}}, {0})[0]));
 }
 
-class A2DBSplineFromIRITFile : public Test {
+class A1DNURBSFromIRITFile : public A1DIRITReader {
  public:
-  A2DBSplineFromIRITFile() : irit_reader(std::make_unique<io::IRITReader<2>>()) {
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {std::make_shared<baf::KnotVector>(
-        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
-                                                                   std::make_shared<baf::KnotVector>(
-                                                                       baf::KnotVector({ParamCoord{0}, ParamCoord{0},
-                                                                                        ParamCoord{0}, ParamCoord{1},
-                                                                                        ParamCoord{1},
-                                                                                        ParamCoord{1}}))};
+  A1DNURBSFromIRITFile() {
+    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.25}, ParamCoord{0.5},
+                         ParamCoord{0.75}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    std::array<Degree, 1> degree = {Degree{2}};
+    std::vector<double> weights = {0.5, 0.5, 0.5, 1, 1, 1};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0, 0})),
+        baf::ControlPoint(std::vector<double>({1, 0.3})),
+        baf::ControlPoint(std::vector<double>({2, 0.5})),
+        baf::ControlPoint(std::vector<double>({0, 0.6})),
+        baf::ControlPoint(std::vector<double>({1, 0.8})),
+        baf::ControlPoint(std::vector<double>({2, 1}))
+    };
 
+    nurbs_ = std::make_unique<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+  }
+ protected:
+  std::unique_ptr<spl::NURBS<1>> nurbs_;
+};
+
+TEST_F(A1DNURBSFromIRITFile, ReturnsDegree2) {  // NOLINT
+  ASSERT_THAT(std::any_cast<spl::NURBS<1>>(irit_reader->ReadIRITFile(path_to_iris_file)[2]).GetDegree(0).get(), 2);
+}
+
+TEST_F(A1DNURBSFromIRITFile, ReturnsSameValueAsSplineFromIRITFile) {  // NOLINT
+  std::any spline_from_file = irit_reader->ReadIRITFile(path_to_iris_file)[2];
+  ASSERT_THAT(nurbs_->Evaluate({ParamCoord{0.5}}, {0})[0],
+              DoubleEq(std::any_cast<spl::NURBS<1>>(spline_from_file).Evaluate({ParamCoord{0.5}}, {0})[0]));
+  ASSERT_THAT(nurbs_->Evaluate({ParamCoord{1}}, {0})[0],
+              DoubleEq(std::any_cast<spl::NURBS<1>>(spline_from_file).Evaluate({ParamCoord{1}}, {0})[0]));
+}
+
+class A2DIRITReader : public Test {
+ public:
+  A2DIRITReader() : irit_reader(std::make_unique<io::IRITReader<2>>()) {}
+
+ protected:
+  std::unique_ptr<io::IRITReader<2>> irit_reader;
+};
+
+TEST_F(A2DIRITReader, Finds2SplinesOfDimension2) {  // NOLINT
+  ASSERT_THAT(irit_reader->ReadIRITFile(path_to_iris_file).size(), 2);
+}
+
+class A2DBSplineFromIRITFile : public A2DIRITReader {
+ public:
+  A2DBSplineFromIRITFile() {
+    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                           ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                           ParamCoord{1}, ParamCoord{1}}))};
     std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
-
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0, 0, 0})),
         baf::ControlPoint(std::vector<double>({0, 1, 0.3})),
@@ -137,18 +187,12 @@ class A2DBSplineFromIRITFile : public Test {
         baf::ControlPoint(std::vector<double>({2, 1, 0.9})),
         baf::ControlPoint(std::vector<double>({2, 2, 0.5}))
     };
-
     b_spline_ = std::make_unique<spl::BSpline<2>>(knot_vector, degree, control_points);
   }
 
  protected:
   std::unique_ptr<spl::BSpline<2>> b_spline_;
-  std::unique_ptr<io::IRITReader<2>> irit_reader;
 };
-
-TEST_F(A2DBSplineFromIRITFile, Finds1SplineOfDimension2) {  // NOLINT
-  ASSERT_THAT(irit_reader->ReadIRITFile(path_to_iris_file).size(), 1);
-}
 
 TEST_F(A2DBSplineFromIRITFile, ReturnsDegree2) {  // NOLINT
   ASSERT_THAT(std::any_cast<spl::BSpline<2>>(irit_reader->ReadIRITFile(path_to_iris_file)[0]).GetDegree(0).get(), 2);
@@ -165,4 +209,48 @@ TEST_F(A2DBSplineFromIRITFile, ReturnsSameValueAsSplineFromIRITFile) {  // NOLIN
       std::any_cast<spl::BSpline<2>>(spline_from_file).Evaluate({ParamCoord{0.3}, ParamCoord{0.9}}, {0})[0]));
   ASSERT_THAT(b_spline_->Evaluate({ParamCoord{0.3}, ParamCoord{0.9}}, {1})[0], DoubleEq(
       std::any_cast<spl::BSpline<2>>(spline_from_file).Evaluate({ParamCoord{0.3}, ParamCoord{0.9}}, {1})[0]));
+}
+
+class A2DNURBSFromIRITFile : public A2DIRITReader {
+ public:
+  A2DNURBSFromIRITFile() {
+    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                           ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                           ParamCoord{1}, ParamCoord{1}}))};
+    std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
+    std::vector<double> weights = {0.5, 0.5, 0.5, 1, 1, 1, 2, 2, 2};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0, 0})),
+        baf::ControlPoint(std::vector<double>({1, 0.3})),
+        baf::ControlPoint(std::vector<double>({2, 0.5})),
+        baf::ControlPoint(std::vector<double>({0, 0.6})),
+        baf::ControlPoint(std::vector<double>({1, 0.8})),
+        baf::ControlPoint(std::vector<double>({2, 1})),
+        baf::ControlPoint(std::vector<double>({0, 0.5})),
+        baf::ControlPoint(std::vector<double>({1, 0.9})),
+        baf::ControlPoint(std::vector<double>({2, 0.5}))
+    };
+    nurbs_ = std::make_unique<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
+  }
+ protected:
+  std::unique_ptr<spl::NURBS<2>> nurbs_;
+};
+
+TEST_F(A2DNURBSFromIRITFile, ReturnsDegree2) {  // NOLINT
+  ASSERT_THAT(std::any_cast<spl::NURBS<2>>(irit_reader->ReadIRITFile(path_to_iris_file)[1]).GetDegree(0).get(), 2);
+  ASSERT_THAT(std::any_cast<spl::NURBS<2>>(irit_reader->ReadIRITFile(path_to_iris_file)[1]).GetDegree(1).get(), 2);
+}
+
+TEST_F(A2DNURBSFromIRITFile, ReturnsSameValueAsSplineFromIRITFile) {  // NOLINT
+  std::any spline_from_file = irit_reader->ReadIRITFile(path_to_iris_file)[1];
+  ASSERT_THAT(nurbs_->Evaluate({ParamCoord{0}, ParamCoord{0}}, {0})[0], DoubleEq(
+      std::any_cast<spl::NURBS<2>>(spline_from_file).Evaluate({ParamCoord{0}, ParamCoord{0}}, {0})[0]));
+  ASSERT_THAT(nurbs_->Evaluate({ParamCoord{0}, ParamCoord{0}}, {1})[0], DoubleEq(
+      std::any_cast<spl::NURBS<2>>(spline_from_file).Evaluate({ParamCoord{0}, ParamCoord{0}}, {1})[0]));
+  ASSERT_THAT(nurbs_->Evaluate({ParamCoord{0.3}, ParamCoord{0.9}}, {0})[0], DoubleEq(
+      std::any_cast<spl::NURBS<2>>(spline_from_file).Evaluate({ParamCoord{0.3}, ParamCoord{0.9}}, {0})[0]));
+  ASSERT_THAT(nurbs_->Evaluate({ParamCoord{0.3}, ParamCoord{0.9}}, {1})[0], DoubleEq(
+      std::any_cast<spl::NURBS<2>>(spline_from_file).Evaluate({ParamCoord{0.3}, ParamCoord{0.9}}, {1})[0]));
 }

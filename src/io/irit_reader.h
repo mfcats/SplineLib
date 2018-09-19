@@ -56,25 +56,24 @@ class IRITReader {
     for (int i = 0; i < entries.size(); i++) {
       if (entries[i] == "BSPLINE" && FitsDimension(i, entries)) {
         spline_positions.push_back(i - 1);
-        int position = i - 1;
-        int brace_difference = 0;
-        for (; position < entries.size(); position++) {
-          if (StartsWith(entries[position], "[")) brace_difference++;
-          else if (EndsWith(entries[position], "]")) brace_difference--;
-          if (brace_difference == 0) break;
-        }
-        spline_positions.push_back(position);
+        spline_positions.push_back(ClosingBrace(i - 1, entries));
       }
     }
     return spline_positions;
   }
 
-  std::any GetSpline(int start_of_spline, int end_of_spline, std::vector<std::string> entries) const {
+  std::any GetSpline(int start_of_spline, int end_of_spline, const std::vector<std::string> &entries) const {
     std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector =
         GetKnotVectors(start_of_spline, end_of_spline, entries);
     std::array<Degree, DIM> degree = GetDegrees(start_of_spline, entries);
-    std::vector<baf::ControlPoint> control_points = GetControlPoints(start_of_spline, entries);
-    return std::make_any<spl::BSpline<DIM>>(knot_vector, degree, control_points);
+    bool rational = IsRational(start_of_spline, entries);
+    std::vector<baf::ControlPoint> control_points = GetControlPoints(start_of_spline, entries, rational);
+    if (!rational) {
+      return std::make_any<spl::BSpline<DIM>>(knot_vector, degree, control_points);
+    } else {
+      std::vector<double> weights = GetWeights(start_of_spline, entries);
+      return std::make_any<spl::NURBS<DIM>>(knot_vector, degree, control_points, weights);
+    }
   }
 
   std::array<Degree, DIM> GetDegrees(int start_of_spline, const std::vector<std::string> &entries) const {
@@ -104,7 +103,40 @@ class IRITReader {
   }
 
   std::vector<baf::ControlPoint>
-  GetControlPoints(int start_of_spline, const std::vector<std::string> &entries) const {
+  GetControlPoints(int start_of_spline, const std::vector<std::string> &entries, bool rational) const {
+    std::vector<baf::ControlPoint> control_points;
+    std::array<int, DIM> number_of_points;
+    int total_number_of_points = 1;
+    for (int i = 0; i < DIM; i++) {
+      number_of_points[i] =
+          util::StringOperations::StringVectorToNumberVector<int>({entries[start_of_spline + 2 + i]})[0];
+      total_number_of_points *= number_of_points[i];
+    }
+    start_of_spline++;
+    while (!StartsWith(entries[start_of_spline], "[") || StartsWith(entries[start_of_spline], "[KV")) {
+      start_of_spline++;
+    }
+    for (int i = 0; i < total_number_of_points; i++) {
+      std::vector<double> coordinates;
+      while (!EndsWith(entries[start_of_spline], "]")) {
+        coordinates.push_back(
+            util::StringOperations::StringVectorToNumberVector<double>({trim(entries[start_of_spline])})[0]);
+        start_of_spline++;
+      }
+      coordinates.push_back(util::StringOperations::StringVectorToNumberVector<double>(
+          {trim(entries[start_of_spline])})[0]);
+      if (rational) {
+        coordinates.erase(coordinates.begin());
+      }
+      control_points.emplace_back(coordinates);
+      start_of_spline++;
+    }
+    return control_points;
+  }
+
+  std::vector<double>
+  GetWeights(int start_of_spline, const std::vector<std::string> &entries) const {
+    std::vector<double> weights;
     std::vector<baf::ControlPoint> control_points;
     std::array<int, DIM> number_of_points;
     int total_number_of_points = 1;
@@ -127,9 +159,20 @@ class IRITReader {
       coordinates.push_back(util::StringOperations::StringVectorToNumberVector<double>(
           {trim(entries[start_of_spline])})[0]);
       control_points.emplace_back(coordinates);
+      weights.push_back(coordinates.front());
       start_of_spline++;
     }
-    return control_points;
+    return weights;
+  }
+
+  int ClosingBrace(int position, const std::vector<std::string> &entries) const {
+    int brace_difference = 0;
+    for (; position < entries.size(); position++) {
+      if (StartsWith(entries[position], "[")) brace_difference++;
+      else if (EndsWith(entries[position], "]")) brace_difference--;
+      if (brace_difference == 0) break;
+    }
+    return position;
   }
 
   bool StartsWith(const std::string &string, const std::string &start_of_string) const {
@@ -151,6 +194,10 @@ class IRITReader {
 
   bool FitsDimension(int position, const std::vector<std::string> &entries) const {
     return ((DIM == 1 && entries[position - 1] == "[CURVE") || (DIM == 2 && entries[position - 1] == "[SURFACE"));
+  }
+
+  bool IsRational(int start_of_spline, const std::vector<std::string> &entries) const {
+    return StartsWith(entries[start_of_spline + 2 * DIM + 2], "P");
   }
 };
 }  // namespace io
