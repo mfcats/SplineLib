@@ -97,7 +97,7 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
       for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {
         controlPointCoordinates.push_back(parameterData[i]);
       }
-      for (int i = 0; i < controlPointCoordinates.size(); i += 3) {
+      for (uint i = 0; i < controlPointCoordinates.size(); i += 3) {
         control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
                                                     controlPointCoordinates[i + 1],
                                                     controlPointCoordinates[i + 2]}));
@@ -131,7 +131,7 @@ class IGES2DBSplineGenerator : public BSplineGenerator<2> {
     int last = ParameterSectionStartEndPointers[1] - 1;
     for (int i = first; i <= last; ++i) {
       auto temp = DelimitedStringToVector(parameterSection[i]);
-      for (int j = 0; j < temp.size(); ++j) {
+      for (uint j = 0; j < temp.size(); ++j) {
         parameterSectionVector.push_back(temp[j]);
       }
     }

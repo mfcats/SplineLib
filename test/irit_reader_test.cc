@@ -30,6 +30,10 @@ class A1DIRITReader : public Test {
   std::unique_ptr<io::IRITReader<1>> irit_reader;
 };
 
+TEST_F(A1DIRITReader, ThrowsExceptionForNonExistingFile) {  // NOLINT
+  ASSERT_THROW(irit_reader->ReadIRITFile("testing.itd"), std::runtime_error);
+}
+
 TEST_F(A1DIRITReader, Finds3SplinesOfDimension1) {  // NOLINT
   ASSERT_THAT(irit_reader->ReadIRITFile(path_to_iris_file).size(), 3);
 }
