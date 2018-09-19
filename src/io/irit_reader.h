@@ -62,107 +62,87 @@ class IRITReader {
     return spline_positions;
   }
 
-  std::any GetSpline(int start_of_spline, int end_of_spline, const std::vector<std::string> &entries) const {
-    std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector =
-        GetKnotVectors(start_of_spline, end_of_spline, entries);
-    std::array<Degree, DIM> degree = GetDegrees(start_of_spline, entries);
-    bool rational = IsRational(start_of_spline, entries);
-    std::vector<baf::ControlPoint> control_points = GetControlPoints(start_of_spline, entries, rational);
+  std::any GetSpline(int first, int last, const std::vector<std::string> &entries) const {
+    std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector = GetKnotVectors(first, last, entries);
+    std::array<Degree, DIM> degree = GetDegrees(first, entries);
+    bool rational = IsRational(first, entries);
+    std::vector<baf::ControlPoint> control_points = GetControlPoints(first, entries, rational);
     if (!rational) {
       return std::make_any<spl::BSpline<DIM>>(knot_vector, degree, control_points);
     } else {
-      std::vector<double> weights = GetWeights(start_of_spline, entries);
+      std::vector<double> weights = GetWeights(first, entries);
       return std::make_any<spl::NURBS<DIM>>(knot_vector, degree, control_points, weights);
     }
   }
 
-  std::array<Degree, DIM> GetDegrees(int start_of_spline, const std::vector<std::string> &entries) const {
+  std::array<Degree, DIM> GetDegrees(int first, const std::vector<std::string> &entries) const {
     std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; i++) {
-      degrees[i] = Degree(
-          util::StringOperations::StringVectorToNumberVector<int>({entries[start_of_spline + DIM + 2 + i]})[0] - 1);
+      degrees[i] =
+          Degree(util::StringOperations::StringVectorToNumberVector<int>({entries[first + DIM + 2 + i]})[0] - 1);
     }
     return degrees;
   }
 
   std::array<std::shared_ptr<baf::KnotVector>, DIM>
-  GetKnotVectors(int start_of_spline, int end_of_spline, const std::vector<std::string> &entries) const {
+  GetKnotVectors(int first, int last, const std::vector<std::string> &entries) const {
     std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors;
-    int count = 0;
-    while (start_of_spline < end_of_spline) {
-      if (StartsWith(entries[start_of_spline++], "[KV")) {
-        std::vector<ParamCoord> knots;
-        while (!StartsWith(entries[start_of_spline], "[")) {
-          knots.emplace_back(
-              util::StringOperations::StringVectorToNumberVector<double>({entries[start_of_spline++]})[0]);
-        }
-        knot_vectors[count++] = std::make_shared<baf::KnotVector>(knots);
+    for (int i = 0; i < DIM; i++) {
+      while (!StartsWith(entries[first++], "[KV")) {}
+      std::vector<ParamCoord> knots;
+      while (!StartsWith(entries[first], "[")) {
+        knots.emplace_back(util::StringOperations::StringVectorToNumberVector<double>({entries[first++]})[0]);
       }
+      knot_vectors[i] = std::make_shared<baf::KnotVector>(knots);
     }
     return knot_vectors;
   }
 
   std::vector<baf::ControlPoint>
-  GetControlPoints(int start_of_spline, const std::vector<std::string> &entries, bool rational) const {
+  GetControlPoints(int first, const std::vector<std::string> &entries, bool rational) const {
     std::vector<baf::ControlPoint> control_points;
-    std::array<int, DIM> number_of_points;
-    int total_number_of_points = 1;
-    for (int i = 0; i < DIM; i++) {
-      number_of_points[i] =
-          util::StringOperations::StringVectorToNumberVector<int>({entries[start_of_spline + 2 + i]})[0];
-      total_number_of_points *= number_of_points[i];
-    }
-    start_of_spline++;
-    while (!StartsWith(entries[start_of_spline], "[") || StartsWith(entries[start_of_spline], "[KV")) {
-      start_of_spline++;
-    }
-    for (int i = 0; i < total_number_of_points; i++) {
+    int number_of_control_points = GetNumberOfControlPoints(first, entries);
+    first = GetPositionOfFirstControlPoint(first, entries);
+    for (int i = 0; i < number_of_control_points; i++) {
       std::vector<double> coordinates;
-      while (!EndsWith(entries[start_of_spline], "]")) {
-        coordinates.push_back(
-            util::StringOperations::StringVectorToNumberVector<double>({trim(entries[start_of_spline])})[0]);
-        start_of_spline++;
+      while (!EndsWith(entries[first], "]")) {
+        coordinates.push_back(util::StringOperations::StringVectorToNumberVector<double>({trim(entries[first++])})[0]);
       }
-      coordinates.push_back(util::StringOperations::StringVectorToNumberVector<double>(
-          {trim(entries[start_of_spline])})[0]);
-      if (rational) {
-        coordinates.erase(coordinates.begin());
-      }
+      coordinates.push_back(util::StringOperations::StringVectorToNumberVector<double>({trim(entries[first++])})[0]);
+      if (rational) coordinates.erase(coordinates.begin());
       control_points.emplace_back(coordinates);
-      start_of_spline++;
     }
     return control_points;
   }
 
-  std::vector<double>
-  GetWeights(int start_of_spline, const std::vector<std::string> &entries) const {
+  std::vector<double> GetWeights(int first, const std::vector<std::string> &entries) const {
     std::vector<double> weights;
-    std::vector<baf::ControlPoint> control_points;
-    std::array<int, DIM> number_of_points;
-    int total_number_of_points = 1;
-    for (int i = 0; i < DIM; i++) {
-      number_of_points[i] =
-          util::StringOperations::StringVectorToNumberVector<int>({entries[start_of_spline + 2 + i]})[0];
-      total_number_of_points *= number_of_points[i];
-    }
-    start_of_spline++;
-    while (!StartsWith(entries[start_of_spline], "[") || StartsWith(entries[start_of_spline], "[KV")) {
-      start_of_spline++;
-    }
-    for (int i = 0; i < total_number_of_points; i++) {
-      std::vector<double> coordinates;
-      while (!EndsWith(entries[start_of_spline], "]")) {
-        coordinates.push_back(
-            util::StringOperations::StringVectorToNumberVector<double>({trim(entries[start_of_spline])})[0]);
-        start_of_spline++;
+    int number_of_control_points = GetNumberOfControlPoints(first, entries);
+    first = GetPositionOfFirstControlPoint(first, entries);
+    for (int i = 0; i < number_of_control_points; i++) {
+      weights.push_back(util::StringOperations::StringVectorToNumberVector<double>({trim(entries[first++])})[0]);
+      while (!EndsWith(entries[first], "]")) {
+        first++;
       }
-      coordinates.push_back(util::StringOperations::StringVectorToNumberVector<double>(
-          {trim(entries[start_of_spline])})[0]);
-      control_points.emplace_back(coordinates);
-      weights.push_back(coordinates.front());
-      start_of_spline++;
+      first++;
     }
     return weights;
+  }
+
+  int GetNumberOfControlPoints(int first, const std::vector<std::string> &entries) const {
+    int total_number_of_points = 1;
+    for (int i = 0; i < DIM; i++) {
+      total_number_of_points *= util::StringOperations::StringVectorToNumberVector<int>({entries[first + 2 + i]})[0];
+    }
+    return total_number_of_points;
+  }
+
+  int GetPositionOfFirstControlPoint(int first, const std::vector<std::string> &entries) const {
+    first++;
+    while (!StartsWith(entries[first], "[") || StartsWith(entries[first], "[KV")) {
+      first++;
+    }
+    return first;
   }
 
   int ClosingBrace(int position, const std::vector<std::string> &entries) const {
@@ -178,6 +158,7 @@ class IRITReader {
   bool StartsWith(const std::string &string, const std::string &start_of_string) const {
     return string.find(start_of_string) == 0;
   }
+
   bool EndsWith(const std::string &string, const std::string &end_of_string) const {
     return string.find(end_of_string) == string.length() - end_of_string.length();
   }

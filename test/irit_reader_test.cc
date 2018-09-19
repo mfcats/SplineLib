@@ -42,9 +42,7 @@ class A1DBSplineFromIRITFile : public A1DIRITReader {
                          ParamCoord{1}, ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{5}, ParamCoord{6},
                          ParamCoord{7}, ParamCoord{8}, ParamCoord{9}, ParamCoord{10}, ParamCoord{11}, ParamCoord{11},
                          ParamCoord{11}, ParamCoord{11}}))};
-
     std::array<Degree, 1> degree = {Degree{3}};
-
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.874, 0})),
         baf::ControlPoint(std::vector<double>({0.899333, 0.0253333})),
@@ -63,7 +61,6 @@ class A1DBSplineFromIRITFile : public A1DIRITReader {
         baf::ControlPoint(std::vector<double>({0.19, 3.572})),
         baf::ControlPoint(std::vector<double>({0, 3.572}))
     };
-
     b_spline_ = std::make_unique<spl::BSpline<1>>(knot_vector, degree, control_points);
   }
 
@@ -101,9 +98,9 @@ class ASecond1DBSplineFromIRITFile : public A1DIRITReader {
         baf::ControlPoint(std::vector<double>({0.8, 0.3, -0.4})),
         baf::ControlPoint(std::vector<double>({0.5, 0, 0}))
     };
-
     b_spline_ = std::make_unique<spl::BSpline<1>>(knot_vector, degree, control_points);
   }
+
  protected:
   std::unique_ptr<spl::BSpline<1>> b_spline_;
 };
@@ -136,9 +133,9 @@ class A1DNURBSFromIRITFile : public A1DIRITReader {
         baf::ControlPoint(std::vector<double>({1, 0.8})),
         baf::ControlPoint(std::vector<double>({2, 1}))
     };
-
     nurbs_ = std::make_unique<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
   }
+
  protected:
   std::unique_ptr<spl::NURBS<1>> nurbs_;
 };
@@ -234,6 +231,7 @@ class A2DNURBSFromIRITFile : public A2DIRITReader {
     };
     nurbs_ = std::make_unique<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
   }
+
  protected:
   std::unique_ptr<spl::NURBS<2>> nurbs_;
 };
