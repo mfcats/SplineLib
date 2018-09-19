@@ -54,7 +54,7 @@ class IRITReader {
   std::vector<int> GetSplinePositions(const std::vector<std::string> &entries) const {
     std::vector<int> spline_positions;
     for (int i = 0; i < entries.size(); i++) {
-      if (entries[i] == "BSPLINE") {
+      if (entries[i] == "BSPLINE" && FitsDimension(i, entries)) {
         spline_positions.push_back(i - 1);
         int position = i - 1;
         int brace_difference = 0;
@@ -69,7 +69,7 @@ class IRITReader {
     return spline_positions;
   }
 
-  std::any GetSpline(int start_of_spline, int end_of_spline, std::vector<std::string> entries) {
+  std::any GetSpline(int start_of_spline, int end_of_spline, std::vector<std::string> entries) const {
     std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector =
         GetKnotVectors(start_of_spline, end_of_spline, entries);
     std::array<Degree, DIM> degree = GetDegrees(start_of_spline, entries);
@@ -78,18 +78,17 @@ class IRITReader {
     return std::make_any<spl::BSpline<DIM>>(knot_vector, degree, control_points);
   }
 
-  std::array<Degree, DIM>
-  GetDegrees(int start_of_spline, const std::vector<std::string> &entries) {
+  std::array<Degree, DIM> GetDegrees(int start_of_spline, const std::vector<std::string> &entries) const {
     std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; i++) {
       degrees[i] = Degree(
-              util::StringOperations::StringVectorToNumberVector<int>({entries[start_of_spline + DIM + 2 + i]})[0] - 1);
+          util::StringOperations::StringVectorToNumberVector<int>({entries[start_of_spline + DIM + 2 + i]})[0] - 1);
     }
     return degrees;
   }
 
   std::array<std::shared_ptr<baf::KnotVector>, DIM>
-  GetKnotVectors(int start_of_spline, int end_of_spline, const std::vector<std::string> &entries) {
+  GetKnotVectors(int start_of_spline, int end_of_spline, const std::vector<std::string> &entries) const {
     std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors;
     int count = 0;
     for (int i = start_of_spline; i < end_of_spline; i++) {
@@ -107,7 +106,7 @@ class IRITReader {
   }
 
   std::vector<baf::ControlPoint>
-  GetControlPoints(int start_of_spline, const std::vector<std::string> &entries) {
+  GetControlPoints(int start_of_spline, const std::vector<std::string> &entries) const {
     std::vector<baf::ControlPoint> control_points;
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; i++) {
@@ -151,6 +150,10 @@ class IRITReader {
     } else {
       return string;
     }
+  }
+
+  bool FitsDimension(int position, const std::vector<std::string> &entries) const {
+    return (DIM == 1 && entries[position - 1] == "[CURVE" || DIM == 2 && entries[position - 1] == "[SURFACE");
   }
 };
 }  // namespace io
