@@ -39,9 +39,9 @@ class NURBSGenerator : public SplineGenerator<DIM> {
     this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
   }
 
-  NURBSGenerator(WeightedPhysicalSpace<DIM> weigthed_physical_space, ParameterSpace<DIM> parameter_space) {
-    this->physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(weigthed_physical_space);
-    this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(parameter_space);
+  NURBSGenerator(std::shared_ptr<WeightedPhysicalSpace<DIM>> weighted_physical_space, std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
+    this->physical_space_ = weighted_physical_space;
+    this->parameter_space_ = parameter_space;
   }
 
   std::shared_ptr<WeightedPhysicalSpace<DIM>> GetWeightedPhysicalSpace() {

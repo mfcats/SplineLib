@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H_
 
 #include <vector>
+#include <iostream>
 
 #include "physical_space.h"
 
@@ -34,7 +35,9 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     }
   }
 
-  baf::ControlPoint GetHomogenousControlPoint(std::array<int, DIM> indices) const {
+  virtual baf::ControlPoint GetHomogenousControlPoint(std::array<int, DIM> indices) const {
+    std::cout << "------------GETHOMOGENOUS--------------" << std::endl;
+    std::cout << "indices[0] : " << indices[0] << std::endl;
     std::vector<double> coordinates;
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);
     point_handler.SetIndices(indices);
@@ -42,10 +45,11 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     for (int coordinate = 0; coordinate < this->dimension_; coordinate++) {
       coordinates.push_back(this->control_points_[first + coordinate] * weights_[first / this->dimension_]);
     }
+    std::cout << "coordinates " << coordinates[0] << " " << coordinates[1]  << " " << coordinates[2] << std::endl;
     return baf::ControlPoint(coordinates);
   }
 
-  double GetWeight(std::array<int, DIM> indices) const {
+  virtual double GetWeight(std::array<int, DIM> indices) const {
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);
     point_handler.SetIndices(indices);
     int first = this->dimension_ * point_handler.Get1DIndex();
