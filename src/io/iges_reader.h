@@ -47,8 +47,7 @@ class IGESReader {
       }
     }
     std::vector<std::any> splines;
-    for(int i = 0; i < directoryEntrySection.size() * 0.5; ++i) {
-
+    for (int i = 0; i < directoryEntrySection.size() * 0.5; ++i) {
       int entityType = GetInteger(trim(directoryEntrySection[i * 2].substr(5, 3)));
       if ((entityType == 126) || (entityType == 128)) {
         splines.push_back(CreateSpline(ParameterSectionToVector(parameterDataSection,
