@@ -132,5 +132,5 @@ TEST_F(A2DNurbsFromIGESFile, Read2DNURBSFromIGESFile) { // NOLINT
 }
 
 TEST_F(A2DNurbsFromIGESFile, ThrowIfFileCantBeOpened) { // NOLINT
-  std::vector<std::any> splines = iges_reader_->ReadIGESFile("a");
+  ASSERT_THROW(std::vector<std::any> splines = iges_reader_->ReadIGESFile("a"), std::runtime_error);
 }
