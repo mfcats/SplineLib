@@ -29,8 +29,6 @@ class MockParameterSpace14111 : public spl::ParameterSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetDegree, Degree(int));
   MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 1>, std::array<ParamCoord, 1>));
-  MOCK_CONST_METHOD3(GetBasisFunctionDerivatives,
-                     double(std::array<int, 1>, std::array<ParamCoord, 1>, std::array<int, 1>));
   MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 1>(std::array<ParamCoord, 1>));
   MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<ParamCoord, 1>));
 };
@@ -115,8 +113,6 @@ class MockParameterSpace1009 : public spl::ParameterSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetDegree, Degree(int));
   MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 1>, std::array<ParamCoord, 1>));
-  MOCK_CONST_METHOD3(GetBasisFunctionDerivatives,
-                     double(std::array<int, 1>, std::array<ParamCoord, 1>, std::array<int, 1>));
   MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 1>(std::array<ParamCoord, 1>));
   MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<ParamCoord, 1>));
 };
