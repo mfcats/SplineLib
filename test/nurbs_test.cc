@@ -58,7 +58,8 @@ void mock_homogenous(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace141
       .WillByDefault(Return(baf::ControlPoint({4.0, 1.0})));
 }
 
-void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace14111>> &weighted_physical_space) {
+void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace14111>>
+                                &weighted_physical_space) {
   mock_weights(weighted_physical_space);
   mock_homogenous(weighted_physical_space);
 }
@@ -161,7 +162,8 @@ void mock_homogenous(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace100
       .WillByDefault(Return(baf::ControlPoint({17.0, 9.0, 0.0})));
 }
 
-void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace1009>> &weighted_physical_space) {
+void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace1009>>
+                                &weighted_physical_space) {
   mock_weights(weighted_physical_space);
   mock_homogenous(weighted_physical_space);
 }
@@ -307,7 +309,8 @@ void mock_weights(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace112>> 
       .WillByDefault(Return(2.0));
 }
 
-void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace112>> &weighted_physical_space) {
+void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace112>>
+                                &weighted_physical_space) {
   mock_weights(weighted_physical_space);
   ON_CALL(*weighted_physical_space, GetControlPoint(std::array<int, 1>{0}))
       .WillByDefault(Return(baf::ControlPoint({1.0, 0.0})));
