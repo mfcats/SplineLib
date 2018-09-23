@@ -61,75 +61,107 @@ class IGESReader {
  private:
   std::any CreateSpline(const std::vector<double> &parameterData) {
     if (parameterData[0] == 126) {
-      std::array<Degree, 1> degree;
-      degree[0] = Degree{static_cast<int>(parameterData[2])};
-      std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
-      std::vector<double> weights;
-      std::vector<baf::ControlPoint> control_points;
-      std::vector<ParamCoord> knots;
-      for (int i = 7; i <= 23; ++i) {
-        knots.push_back(ParamCoord{parameterData[i]});
-      }
-      knot_vector[0] = std::make_shared<baf::KnotVector>(knots);
-      for (int i = 24; i <= 36; ++i) {
-        weights.push_back(parameterData[i]);
-      }
-      std::vector<double> controlPointCoordinates;
-      for (int i = 37; i <= 73; ++i) {
-        controlPointCoordinates.push_back(parameterData[i]);
-      }
-      for (uint i = 0; i < controlPointCoordinates.size(); i += 3) {
-        control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
-                                                    controlPointCoordinates[i + 1],
-                                                    controlPointCoordinates[i + 2]}));
-      }
-      std::array<int, 1> number_of_points;
-      for (int i = 0; i < 1; ++i) {
-        number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
-      }
-      if (parameterData[5] == 1) {
-        return std::make_any<spl::BSpline<1>>(knot_vector, degree, control_points);
-      } else if (parameterData[5] == 0) {
-        return std::make_any<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
-      }
+      return Create1DSpline(parameterData);
     }
     if (parameterData[0] == 128) {
-      std::array<Degree, 2> degree;
-      degree[0] = Degree{static_cast<int>(parameterData[3])};
-      degree[1] = Degree{static_cast<int>(parameterData[4])};
-      std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector;
-      std::vector<double> weights;
-      std::vector<baf::ControlPoint> control_points;
-      std::array<std::vector<ParamCoord>, 2> knots;
-      for (int i = 10; i <= 21; ++i) {
-        knots[0].push_back(ParamCoord{parameterData[i]});
-      }
-      for (int i = 22; i <= 29; ++i) {
-        knots[1].push_back(ParamCoord{parameterData[i]});
-      }
-      knot_vector[0] = std::make_shared<baf::KnotVector>(knots[0]);
-      knot_vector[1] = std::make_shared<baf::KnotVector>(knots[1]);
-      for (int i = 30; i <= 74; ++i) {
-        weights.push_back(parameterData[i]);
-      }
-      std::vector<double> controlPointCoordinates;
-      for (int i = 75; i <= 209; ++i) {
-        controlPointCoordinates.push_back(parameterData[i]);
-      }
-      for (uint i = 0; i < controlPointCoordinates.size() - 2; i += 3) {
-        control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
-                                                    controlPointCoordinates[i + 1],
-                                                    controlPointCoordinates[i + 2]}));
-      }
-      std::array<int, 2> number_of_points;
-      for (int i = 0; i < 2; ++i) {
-        number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
-      }
-      if (parameterData[5] == 1) {
-        return std::make_any<spl::BSpline<2>>(knot_vector, degree, control_points);
-      } else if (parameterData[5] == 0) {
-        return std::make_any<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
-      }
+      return Create2DSpline(parameterData);
+    }
+  }
+
+  std::any Create1DSpline(const std::vector<double> &parameterData) {
+    int upperSumIndex = static_cast<int>(parameterData[1]);
+    std::array<Degree, 1> degree;
+    degree[0] = Degree{static_cast<int>(parameterData[2])};
+    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
+    std::vector<double> weights;
+    std::vector<baf::ControlPoint> control_points;
+    std::array<int, 2> knotsStartEnd;
+    std::array<int, 2> weightsStartEnd;
+    std::array<int, 2> controlPointsStartEnd;
+    knotsStartEnd[0] = 7;
+    knotsStartEnd[1] = knotsStartEnd[0] + upperSumIndex + degree[0].get() + 1;
+    weightsStartEnd[0] = knotsStartEnd[1] + 1;
+    weightsStartEnd[1] = weightsStartEnd[0] + upperSumIndex;
+    controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
+    controlPointsStartEnd[1] = controlPointsStartEnd[0] + (3 * upperSumIndex);
+    std::vector<ParamCoord> knots;
+    for (int i = knotsStartEnd[0]; i <= knotsStartEnd[1]; ++i) {
+      knots.push_back(ParamCoord{parameterData[i]});
+    }
+    knot_vector[0] = std::make_shared<baf::KnotVector>(knots);
+    for (int i = weightsStartEnd[0]; i <= weightsStartEnd[1]; ++i) {
+      weights.push_back(parameterData[i]);
+    }
+    std::vector<double> controlPointCoordinates;
+    for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {
+      controlPointCoordinates.push_back(parameterData[i]);
+    }
+    for (uint i = 0; i < controlPointCoordinates.size(); i += 3) {
+      control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
+                                                  controlPointCoordinates[i + 1],
+                                                  controlPointCoordinates[i + 2]}));
+    }
+    std::array<int, 1> number_of_points;
+    for (int i = 0; i < 1; ++i) {
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
+    }
+    if (parameterData[5] == 1) {
+      return std::make_any<spl::BSpline<1>>(knot_vector, degree, control_points);
+    } else if (parameterData[5] == 0) {
+      return std::make_any<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+    }
+  }
+
+  std::any Create2DSpline(const std::vector<double> &parameterData) {
+    std::array<int, 2> upperSumIndex;
+    upperSumIndex[0] = static_cast<int>(parameterData[1]);
+    upperSumIndex[1] = static_cast<int>(parameterData[2]);
+    std::array<Degree, 2> degree;
+    degree[0] = Degree{static_cast<int>(parameterData[3])};
+    degree[1] = Degree{static_cast<int>(parameterData[4])};
+    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector;
+    std::vector<double> weights;
+    std::vector<baf::ControlPoint> control_points;
+    std::array<std::array<int, 2>, 2> knotsStartEnd;
+    std::array<int, 2> weightsStartEnd;
+    std::array<int, 2> controlPointsStartEnd;
+    knotsStartEnd[0][0] = 10;
+    knotsStartEnd[0][1] = knotsStartEnd[0][0] + upperSumIndex[0] + degree[0].get() + 1;
+    knotsStartEnd[1][0] = knotsStartEnd[0][1] + 1;
+    knotsStartEnd[1][1] = knotsStartEnd[1][0] + upperSumIndex[1] + degree[1].get() + 1;
+    weightsStartEnd[0] = knotsStartEnd[1][1] + 1;
+    weightsStartEnd[1] = weightsStartEnd[0] - 1 + ((1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
+    controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
+    controlPointsStartEnd[1] = controlPointsStartEnd[0] - 1 + (3 * (1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
+    std::array<std::vector<ParamCoord>, 2> knots;
+    for (int i = knotsStartEnd[0][0]; i <= knotsStartEnd[0][1]; ++i) {
+      knots[0].push_back(ParamCoord{parameterData[i]});
+    }
+    for (int i = knotsStartEnd[1][0]; i <= knotsStartEnd[1][1]; ++i) {
+      knots[1].push_back(ParamCoord{parameterData[i]});
+    }
+    knot_vector[0] = std::make_shared<baf::KnotVector>(knots[0]);
+    knot_vector[1] = std::make_shared<baf::KnotVector>(knots[1]);
+    for (int i = weightsStartEnd[0]; i <= weightsStartEnd[1]; ++i) {
+      weights.push_back(parameterData[i]);
+    }
+    std::vector<double> controlPointCoordinates;
+    for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {
+      controlPointCoordinates.push_back(parameterData[i]);
+    }
+    for (uint i = 0; i < controlPointCoordinates.size() - 2; i += 3) {
+      control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
+                                                  controlPointCoordinates[i + 1],
+                                                  controlPointCoordinates[i + 2]}));
+    }
+    std::array<int, 2> number_of_points;
+    for (int i = 0; i < 2; ++i) {
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
+    }
+    if (parameterData[5] == 1) {
+      return std::make_any<spl::BSpline<2>>(knot_vector, degree, control_points);
+    } else if (parameterData[5] == 0) {
+      return std::make_any<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
     }
   }
 
