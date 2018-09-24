@@ -47,7 +47,9 @@ class A1DIRITWriter : public Test {
         baf::ControlPoint(std::vector<double>({0.19, 3.572})),
         baf::ControlPoint(std::vector<double>({0, 3.572}))
     };
-    std::any b_spline_ = std::make_any<spl::BSpline<1>>(knot_vector, degree, control_points);
+    std::shared_ptr<spl::BSpline<1>>
+        b_spline_ptr = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
+    std::any b_spline_ = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_ptr);
     splines.push_back(b_spline_);
     irit_writer = std::make_unique<io::IRITWriter<1>>(splines);
   }
