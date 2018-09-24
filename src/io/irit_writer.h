@@ -39,8 +39,6 @@ class IRITWriter {
         WriteSpline(newFile, i);
       }
       newFile.close();
-    } else {
-      throw std::runtime_error("The IRIT file couldn't be opened.");  // NOLINT
     }
   }
 
