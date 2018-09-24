@@ -73,8 +73,7 @@ TEST_F(A1DIRITWriter, CreatesCorrectFile) {  // NOLINT
   irit_writer->WriteIRITFile("bspline.itd");
   std::ifstream newFile;
   newFile.open("bspline.itd");
-  std::string line;
-  std::string file;
+  std::string line, file;
   while (getline(newFile, line)) {
     file += line;
   }
@@ -113,21 +112,11 @@ class A1DIRITWriterWithTwoSplines : public A1DIRITWriter {
   }
 };
 
-TEST_F(A1DIRITWriterWithTwoSplines, IsCreated) {  // NOLINT
-  irit_writer->WriteIRITFile("2bsplines.itd");
-  std::ifstream newFile;
-  newFile.open("2bsplines.itd");
-  ASSERT_TRUE(newFile.is_open());
-  newFile.close();
-  remove("2bsplines.itd");
-}
-
 TEST_F(A1DIRITWriterWithTwoSplines, CreatesCorrectFile) {  // NOLINT
   irit_writer->WriteIRITFile("2bsplines.itd");
   std::ifstream newFile;
   newFile.open("2bsplines.itd");
-  std::string line;
-  std::string file;
+  std::string line, file;
   while (getline(newFile, line)) {
     file += line;
   }
@@ -168,21 +157,11 @@ class A1DIRITWriterWithNURBS : public A1DIRITWriterWithTwoSplines {
   }
 };
 
-TEST_F(A1DIRITWriterWithNURBS, IsCreated) {  // NOLINT
-  irit_writer->WriteIRITFile("nurbs.itd");
-  std::ifstream newFile;
-  newFile.open("nurbs.itd");
-  ASSERT_TRUE(newFile.is_open());
-  newFile.close();
-  remove("nurbs.itd");
-}
-
 TEST_F(A1DIRITWriterWithNURBS, CreatesCorrectFile) {  // NOLINT
   irit_writer->WriteIRITFile("nurbs.itd");
   std::ifstream newFile;
   newFile.open("nurbs.itd");
-  std::string line;
-  std::string file;
+  std::string line, file;
   while (getline(newFile, line)) {
     file += line;
   }
@@ -196,6 +175,7 @@ TEST_F(A1DIRITWriterWithNURBS, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("3.572000]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("-0.400000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[0.500000 2.000000 0.500000]"), Ne(std::string::npos));
   // remove("nurbs.itd");
 }
 
@@ -231,21 +211,11 @@ class A2DIRITWriter : public Test {
   std::vector<std::any> splines;
 };
 
-TEST_F(A2DIRITWriter, IsCreated) {  // NOLINT
-  irit_writer->WriteIRITFile("2d_bspline.itd");
-  std::ifstream newFile;
-  newFile.open("2d_bspline.itd");
-  ASSERT_TRUE(newFile.is_open());
-  newFile.close();
-  remove("2d_bspline.itd");
-}
-
 TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
   irit_writer->WriteIRITFile("2d_bspline.itd");
   std::ifstream newFile;
   newFile.open("2d_bspline.itd");
-  std::string line;
-  std::string file;
+  std::string line, file;
   while (getline(newFile, line)) {
     file += line;
   }
@@ -256,4 +226,50 @@ TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("0.500000]"), Ne(std::string::npos));
   // remove("2d_bspline.itd");
+}
+
+class A2DIRITWriterwithNURBS : public A2DIRITWriter {
+ public:
+  A2DIRITWriterwithNURBS() {
+    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                           ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                           ParamCoord{1}, ParamCoord{1}}))};
+    std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
+    std::vector<double> weights = {0.5, 0.5, 0.5, 1, 1, 1, 2, 2, 2};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0, 0})),
+        baf::ControlPoint(std::vector<double>({1, 0.3})),
+        baf::ControlPoint(std::vector<double>({2, 0.5})),
+        baf::ControlPoint(std::vector<double>({0, 0.6})),
+        baf::ControlPoint(std::vector<double>({1, 0.8})),
+        baf::ControlPoint(std::vector<double>({2, 1})),
+        baf::ControlPoint(std::vector<double>({0, 0.5})),
+        baf::ControlPoint(std::vector<double>({1, 0.9})),
+        baf::ControlPoint(std::vector<double>({2, 0.5}))
+    };
+    std::shared_ptr<spl::NURBS<2>>
+        nurbs_ptr = std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
+    std::any nurbs = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_ptr);
+    splines.push_back(nurbs);
+    irit_writer = std::make_unique<io::IRITWriter<2>>(splines);
+  }
+};
+
+TEST_F(A2DIRITWriterwithNURBS, CreatesCorrectFile) {  // NOLINT
+  irit_writer->WriteIRITFile("2d_nurbs.itd");
+  std::ifstream newFile;
+  newFile.open("2d_nurbs.itd");
+  std::string line, file;
+  while (getline(newFile, line)) {
+    file += line;
+  }
+  ASSERT_THAT(file.find("BSPLINE 3 3 3 3"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("SURFACE"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("E3"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("0.500000]"), Ne(std::string::npos));
+  // remove("2d_nurbs.itd");
 }

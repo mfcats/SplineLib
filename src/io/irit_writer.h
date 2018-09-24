@@ -22,6 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "b_spline.h"
+#include "nurbs.h"
 
 namespace io {
 template<int DIM>
@@ -36,9 +37,10 @@ class IRITWriter {
       newFile << "[OBJECT SPLINES\n";
       for (uint i = 0; i < splines_.size(); i++) {
         std::shared_ptr<spl::Spline<DIM>> spline = GetSpline(i);
-        newFile << "  [" + GetObjectType() + " BSPLINE " + GetNumberOfControlPoints(spline) + GetOrder(spline)
-            + GetPointType(IsRational(i), spline) + "\n" + GetKnotVectors(spline) + GetControlPoints(i, spline)
-            + "  ]\n" + (i < splines_.size() - 1 ? "\n" : "]");
+        newFile << "  [OBJECT SPLINE" + std::to_string(i + 1) + "\n    [" + GetObjectType() + " BSPLINE "
+            + GetNumberOfControlPoints(spline) + GetOrder(spline) + GetPointType(IsRational(i), spline) + "\n"
+            + GetKnotVectors(spline) + GetControlPoints(i, spline) + "    ]\n  ]\n"
+            + (i < splines_.size() - 1 ? "\n" : "]");
       }
       newFile.close();
     } else {
@@ -96,7 +98,7 @@ class IRITWriter {
   std::string GetKnotVectors(std::shared_ptr<spl::Spline<DIM>> spline) {
     std::string string;
     for (int i = 0; i < DIM; i++) {
-      string += "    [KV ";
+      string += "      [KV ";
       std::shared_ptr<baf::KnotVector> knot_vector = spline->GetKnotVector(i);
       for (size_t j = 0; j < knot_vector->GetNumberOfKnots(); j++) {
         string += std::to_string(knot_vector->GetKnot(j).get()) +
@@ -114,8 +116,8 @@ class IRITWriter {
       nurbs = std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(splines_[u]);
     }
     for (int i = 0; i < control_point_handler.Get1DLength(); ++i, control_point_handler++) {
-      string += "    ["
-                + (IsRational(u) ? std::to_string(nurbs->GetWeight(control_point_handler.GetIndices())) + " " : "");
+      string += "      ["
+          + (IsRational(u) ? std::to_string(nurbs->GetWeight(control_point_handler.GetIndices())) + " " : "");
       for (int j = 0; j < spline->GetDimension(); j++) {
         string += std::to_string(spline->GetControlPoint(control_point_handler.GetIndices(), j))
             + (j < spline->GetDimension() - 1 ? " " : "]\n");
