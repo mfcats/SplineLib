@@ -78,6 +78,20 @@ class PhysicalSpace {
     return expansion;
   }
 
+  std::vector<double> GetControlPoints() const {
+    return control_points_;
+  }
+
+  std::vector<double> GetWeights() const {
+    std::vector<double> weights;
+    for (int i = 0; i < DIM; ++i) {
+      for (int j = 0; j < number_of_points_[i]; ++j) {
+        weights.emplace_back(1.0);
+      }
+    }
+    return weights;
+  }
+
  protected:
   int dimension_;
   std::array<int, DIM> number_of_points_;

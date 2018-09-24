@@ -32,11 +32,11 @@ class IGESWriter {
  public:
   IGESWriter() = default;
 
-  void WriteIGESFile(spl::BSpline<1> spline, const std::string &filename) {
+  void WriteIGESFile(spl::BSpline<1> b_spline, const std::string &filename) {
     std::ofstream newFile;
     newFile.open(filename);
     if (newFile.is_open()) {
-      WriteFile(newFile, GetStartSection(), GetGlobalSection(filename, ",", ";", spline));
+      WriteFile(newFile, GetStartSection(), GetGlobalSection(filename, ",", ";", b_spline));
     } else {
       throw std::runtime_error("The IGES file couldn't be opened.");
     }
@@ -49,15 +49,19 @@ class IGESWriter {
   }
 
   std::vector<std::string> GetGlobalSection(const std::string &filename, const std::string &delimiter,
-                                            const std::string &endDelimiter, spl::BSpline<1> spline) {
+                                            const std::string &endDelimiter, spl::BSpline<1> b_spline) {
     std::string contents;
     AddToContents(contents, {GetHollerithFormat(delimiter), GetHollerithFormat(endDelimiter),
-                             GetHollerithFormat("unknown"), filename, GetHollerithFormat("SplineLib"), GetHollerithFormat("pre_release"),
-                             GetString(std::numeric_limits<int>::digits), GetString(std::numeric_limits<float>::max_exponent),
-                             GetString(std::numeric_limits<float>::digits), GetString(std::numeric_limits<double>::max_exponent),
-                             GetString(std::numeric_limits<double>::digits), GetHollerithFormat("unknown"), GetString(1.0),
+                             GetHollerithFormat("unknown"), filename, GetHollerithFormat("SplineLib"),
+                             GetHollerithFormat("pre_release"),
+                             GetString(std::numeric_limits<int>::digits),
+                             GetString(std::numeric_limits<float>::max_exponent),
+                             GetString(std::numeric_limits<float>::digits),
+                             GetString(std::numeric_limits<double>::max_exponent),
+                             GetString(std::numeric_limits<double>::digits), GetHollerithFormat("unknown"),
+                             GetString(1.0),
                              GetString(2), GetHollerithFormat("MM"), GetString(1), GetString(0.001),
-                             GetHollerithFormat(GetTime()), GetString(0.000001), GetString(GetHighestValue(spline)),
+                             GetHollerithFormat(GetTime()), GetString(0.000001), GetString(GetHighestValue(b_spline)),
                              GetHollerithFormat("unknown"), GetHollerithFormat("unknown"), GetString(11),
                              GetString(0), GetHollerithFormat(GetTime())}, delimiter);
     contents += endDelimiter;
@@ -72,6 +76,47 @@ class IGESWriter {
                                      + 'G' + GetBlock(GetString(++line), 7, true));
     }
     return globalSection;
+  }
+
+  std::vector<std::string> GetParameterData(const std::string &delimiter, const std::string &endDelimiter,
+                                            spl::BSpline<1> b_spline) {
+    std::string contents;
+    GetParameterData1D(contents, delimiter, b_spline);
+    contents += endDelimiter;
+    return GetParameterSectionLayout(contents);
+  }
+
+  std::vector<std::string> GetParameterSectionLayout(const std::string &contents) {
+    int line = 0;
+    std::vector<std::string> parameterData;
+    for (unsigned long i = 0; i <= contents.size() / 64; i++) {
+      parameterData.emplace_back(GetBlock(contents.substr(i * 64, 64), 64, false)
+                                     + ' ' + GetBlock(GetString(1), 7, true)
+                                     + 'P' + GetBlock(GetString(++line), 7, true));
+    }
+    return parameterData;
+  }
+
+
+  void GetParameterData1D(std::string &contents, const std::string &delimiter, spl::BSpline<1> b_spline) {
+    AddToContents(contents,
+                  {GetString(126),
+                   GetString(b_spline.GetKnotVector(0)->GetNumberOfKnots() - b_spline.GetDegree(0).get() - 2),
+                   GetString(b_spline.GetDegree(0).get()), GetString(0), GetString(0), GetString(1), GetString(0)},
+                  delimiter);
+
+    std::vector<ParamCoord> knots = b_spline.GetKnots()[0];
+    for (size_t i = 0; i < knots.size(); ++i) {
+      contents += GetString(knots[i].get()) + delimiter;
+    }
+    std::vector<double> weights = b_spline.GetWeights();
+    for (size_t i = 0; i < weights.size(); ++i) {
+      contents += GetString(weights[i]) + delimiter;
+    }
+    std::vector<double> control_points = b_spline.GetControlPoints();
+    for (size_t i = 0; i < control_points.size(); ++i) {
+      contents += GetString(control_points[i]);
+    }
   }
 
   void AddToContents(std::string &contents, const std::vector<std::string> &add, const std::string &delimiter) {
@@ -123,8 +168,8 @@ class IGESWriter {
     return date;
   }
 
-  double GetHighestValue(spl::BSpline<1> spline) {
-    return spline.GetExpansion();
+  double GetHighestValue(spl::BSpline<1> b_spline) {
+    return b_spline.GetExpansion();
   }
 };
 }

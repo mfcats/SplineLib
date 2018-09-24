@@ -159,6 +159,17 @@ class ParameterSpace {
     }
   }
 
+  std::array<std::vector<ParamCoord>, DIM> GetKnots() const {
+    std::array<std::vector<ParamCoord>, DIM> knots;
+    for (int i = 0; i < DIM; ++i) {
+      std::vector<ParamCoord> temp = knot_vector_[i]->GetKnots();
+      for (int j = 0; j < temp.size(); ++j) {
+        knots[i].emplace_back(temp);
+      }
+    }
+    return knots;
+  }
+
  private:
   std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector_;
   std::array<Degree, DIM> degree_;

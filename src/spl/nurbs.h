@@ -80,6 +80,14 @@ class NURBS : public Spline<DIM> {
     return physical_space_->GetExpansion();
   }
 
+  std::vector<double> GetControlPoints() const {
+    return physical_space_->GetControlPoints();
+  }
+
+  std::vector<double> GetWeights() const {
+    return physical_space_->GetWeights();
+  }
+
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,
