@@ -12,13 +12,20 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEST_CONFIG_IN_H_  // NOLINT
-#define TEST_CONFIG_IN_H_
+#include <config.h>
+#include "gmock/gmock.h"
+#include "iges_writer.h"
 
-static const char *iges_read = "@IGES_READ@";
-static const char *iges_read_2 = "@IGES_READ_2@";
-static const char *iges_write = "@IGES_WRITE@";
-static const char *path_to_iris_file = "@PATH_TO_IRIS_FILE@";
-static const char *path_to_xml_file = "@PATH_TO_XML_FILE@";
+using testing::Test;
+using testing::DoubleEq;
+using testing::DoubleNear;
 
-#endif  // TEST_CONFIG_IN_H_
+class AnIGESFileFromSpline : public Test {
+ public:
+  AnIGESFileFromSpline() {
+    iges_writer_ = std::make_unique<io::IGESWriter>();
+  }
+
+ protected:
+  std::unique_ptr<io::IGESWriter> iges_writer_;
+};

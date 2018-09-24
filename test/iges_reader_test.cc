@@ -108,7 +108,7 @@ class A2DNurbsFromIGESFile : public Test {
 };
 
 TEST_F(A2DNurbsFromIGESFile, Read1DBSplineFromIGESFile) { // NOLINT
-  auto b_spline_1d = std::any_cast<spl::BSpline<1>>(iges_reader_->ReadIGESFile(path_to_iges_file)[1]);
+  auto b_spline_1d = std::any_cast<spl::BSpline<1>>(iges_reader_->ReadIGESFile(iges_read)[1]);
   ASSERT_THAT(b_spline_1d.Evaluate({ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
   ASSERT_THAT(b_spline_1d.Evaluate({ParamCoord{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
   ASSERT_THAT(b_spline_1d.Evaluate({ParamCoord{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
@@ -118,7 +118,7 @@ TEST_F(A2DNurbsFromIGESFile, Read1DBSplineFromIGESFile) { // NOLINT
 }
 
 TEST_F(A2DNurbsFromIGESFile, Read1DNURBSWithWeigthsOneFromIGESFile) { // NOLINT
-  auto nurbs_1d = std::any_cast<spl::NURBS<1>>(iges_reader_->ReadIGESFile(path_to_iges_file_2)[1]);
+  auto nurbs_1d = std::any_cast<spl::NURBS<1>>(iges_reader_->ReadIGESFile(iges_read_2)[1]);
   ASSERT_THAT(nurbs_1d.Evaluate({ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
   ASSERT_THAT(nurbs_1d.Evaluate({ParamCoord{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
   ASSERT_THAT(nurbs_1d.Evaluate({ParamCoord{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
@@ -128,7 +128,7 @@ TEST_F(A2DNurbsFromIGESFile, Read1DNURBSWithWeigthsOneFromIGESFile) { // NOLINT
 }
 
 TEST_F(A2DNurbsFromIGESFile, Read2DNURBSFromIGESFile) { // NOLINT
-  auto nurbs_2d = std::any_cast<spl::NURBS<2>>(iges_reader_->ReadIGESFile(path_to_iges_file)[0]);
+  auto nurbs_2d = std::any_cast<spl::NURBS<2>>(iges_reader_->ReadIGESFile(iges_read)[0]);
   ASSERT_THAT(nurbs_2d.Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0],
               DoubleEq(nurbs_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0]));
   ASSERT_THAT(nurbs_2d.Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0],
@@ -144,7 +144,7 @@ TEST_F(A2DNurbsFromIGESFile, Read2DNURBSFromIGESFile) { // NOLINT
 }
 
 TEST_F(A2DNurbsFromIGESFile, Read2DBSplineFromIGESFile) { // NOLINT
-  auto b_spline_2d = std::any_cast<spl::BSpline<2>>(iges_reader_->ReadIGESFile(path_to_iges_file_2)[0]);
+  auto b_spline_2d = std::any_cast<spl::BSpline<2>>(iges_reader_->ReadIGESFile(iges_read_2)[0]);
   ASSERT_THAT(b_spline_2d.Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0],
               DoubleEq(b_spline_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0]));
   ASSERT_THAT(b_spline_2d.Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0],
