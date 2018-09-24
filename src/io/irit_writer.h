@@ -49,7 +49,7 @@ class IRITWriter {
     std::shared_ptr<spl::Spline<DIM>> spline = GetSpline(spline_number);
     file << "  [OBJECT SPLINE" + std::to_string(spline_number + 1) + "\n    [" + GetObjectType() + " BSPLINE "
         + GetNumberOfControlPoints(spline) + GetOrder(spline) + GetPointType(IsRational(spline_number), spline) + "\n"
-        + GetKnotVectors(spline) + GetControlPoints(spline_number, spline) + "    ]\n  ]\n"
+        + GetKnotVectors(spline) + GetControlPoints(spline_number, IsRational(spline_number), spline) + "    ]\n  ]\n"
         + (spline_number < splines_.size() - 1 ? "\n" : "]");
   }
 
@@ -112,16 +112,15 @@ class IRITWriter {
     return string;
   }
 
-  std::string GetControlPoints(int spline_number, std::shared_ptr<spl::Spline<DIM>> spline) const {
+  std::string GetControlPoints(int spline_number, bool rational, std::shared_ptr<spl::Spline<DIM>> spline) const {
     std::string string;
     util::MultiIndexHandler<DIM> point_handler(spline->GetPointsPerDirection());
     std::shared_ptr<spl::NURBS<DIM>> nurbs;
-    if (IsRational(spline_number)) {
+    if (rational) {
       nurbs = std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(splines_[spline_number]);
     }
     for (int control_point = 0; control_point < point_handler.Get1DLength(); ++control_point, point_handler++) {
-      string += "      ["
-                + (IsRational(spline_number) ? std::to_string(nurbs->GetWeight(point_handler.GetIndices())) + " " : "");
+      string += "      [" + (rational ? std::to_string(nurbs->GetWeight(point_handler.GetIndices())) + " " : "");
       for (int dimension = 0; dimension < spline->GetDimension(); dimension++) {
         string += std::to_string(spline->GetControlPoint(point_handler.GetIndices(), dimension))
             + (dimension < spline->GetDimension() - 1 ? " " : "]\n");

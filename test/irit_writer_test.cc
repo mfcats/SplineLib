@@ -14,11 +14,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "b_spline.h"
 #include "irit_writer.h"
+#include "irit_reader.h"
 
 using testing::Test;
 using testing::Ne;
+using testing::DoubleEq;
 
 class A1DIRITWriter : public Test {
  public:
@@ -267,4 +268,18 @@ TEST_F(A2DIRITWriterwithNURBS, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("[2.000000 2.000000 0.500000]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("[0.500000 0.000000 0.000000]"), Ne(std::string::npos));
   remove("2d_nurbs.itd");
+}
+
+
+TEST_F(A2DIRITWriterwithNURBS, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {  // NOLINT
+  spl::BSpline<2> bspline_before = *std::any_cast<std::shared_ptr<spl::BSpline<2>>>(splines[0]);
+  spl::NURBS<2> nurbs_before = *std::any_cast<std::shared_ptr<spl::NURBS<2>>>(splines[1]);
+  irit_writer->WriteIRITFile("splines.itd");
+  std::unique_ptr<io::IRITReader<2>> irit_reader(std::make_unique<io::IRITReader<2>>());
+  auto bspline_after = std::any_cast<spl::BSpline<2>>(irit_reader->ReadIRITFile("splines.itd")[0]);
+  auto nurbs_after = std::any_cast<spl::NURBS<2>>(irit_reader->ReadIRITFile("splines.itd")[1]);
+  ASSERT_THAT(bspline_before.Evaluate({ParamCoord(0.75839), ParamCoord(0.01453)}, {0})[0],
+              DoubleEq(bspline_after.Evaluate({ParamCoord(0.75839), ParamCoord(0.01453)}, {0})[0]));
+  ASSERT_THAT(nurbs_before.Evaluate({ParamCoord(0.75839), ParamCoord(0.01453)}, {0})[0],
+              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.75839), ParamCoord(0.01453)}, {0})[0]));
 }
