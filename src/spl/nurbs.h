@@ -76,6 +76,10 @@ class NURBS : public Spline<DIM> {
     physical_space_ = nurbs_generator.GetWeightedPhysicalSpace();
   }
 
+  double GetExpansion() {
+    return physical_space_->GetExpansion();
+  }
+
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,

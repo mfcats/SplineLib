@@ -23,17 +23,20 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 #include <config.h>
+#include "spline.h"
+#include "b_spline.h"
+#include "multi_index_handler.h"
 
 namespace io {
 class IGESWriter {
  public:
   IGESWriter() = default;
 
-  void WriteIGESFile(/*const std::vector<std::any> &splines, */const std::string &filename) {
+  void WriteIGESFile(spl::BSpline<1> spline, const std::string &filename) {
     std::ofstream newFile;
     newFile.open(filename);
     if (newFile.is_open()) {
-      WriteFile(newFile, GetStartSection(), GetGlobalSection(filename, ",", ";"));
+      WriteFile(newFile, GetStartSection(), GetGlobalSection(filename, ",", ";", spline));
     } else {
       throw std::runtime_error("The IGES file couldn't be opened.");
     }
@@ -46,15 +49,15 @@ class IGESWriter {
   }
 
   std::vector<std::string> GetGlobalSection(const std::string &filename, const std::string &delimiter,
-                                            const std::string &endDelimiter) {
+                                            const std::string &endDelimiter, spl::BSpline<1> spline) {
     std::string contents;
     AddToContents(contents, {GetHollerithFormat(delimiter), GetHollerithFormat(endDelimiter),
                              GetHollerithFormat("unknown"), filename, GetHollerithFormat("SplineLib"), GetHollerithFormat("pre_release"),
                              GetString(std::numeric_limits<int>::digits), GetString(std::numeric_limits<float>::max_exponent),
                              GetString(std::numeric_limits<float>::digits), GetString(std::numeric_limits<double>::max_exponent),
-                             GetString(std::numeric_limits<double>::digits), GetHollerithFormat("unknown"), GetString(1.0, 3),
-                             GetString(2), GetHollerithFormat("MM"), GetString(1), GetString(0.001, 5),
-                             GetHollerithFormat(GetTime()), GetString(0.000001, 8), /*highest value,*/
+                             GetString(std::numeric_limits<double>::digits), GetHollerithFormat("unknown"), GetString(1.0),
+                             GetString(2), GetHollerithFormat("MM"), GetString(1), GetString(0.001),
+                             GetHollerithFormat(GetTime()), GetString(0.000001), GetString(GetHighestValue(spline)),
                              GetHollerithFormat("unknown"), GetHollerithFormat("unknown"), GetString(11),
                              GetString(0), GetHollerithFormat(GetTime())}, delimiter);
     contents += endDelimiter;
@@ -90,11 +93,6 @@ class IGESWriter {
     return std::to_string(value);
   }
 
-  template<typename T>
-  std::string GetString(T value, int precision) {
-    return std::to_string(value).substr(0, precision);
-  }
-
   void WriteFile(std::ofstream &file, const std::vector<std::string> &start,
                  const std::vector<std::string> &global/*, const std::vector<std::string> &data,
                  const std::vector<std::string> &parameter, const std::vector<std::string> &terminate*/) {
@@ -125,6 +123,9 @@ class IGESWriter {
     return date;
   }
 
+  double GetHighestValue(spl::BSpline<1> spline) {
+    return spline.GetExpansion();
+  }
 };
 }
 

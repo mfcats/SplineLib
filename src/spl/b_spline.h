@@ -65,6 +65,10 @@ class BSpline : public Spline<DIM> {
     return physical_space_->GetControlPoint(indices).GetValue(dimension);
   }
 
+  double GetExpansion() {
+    return physical_space_->GetExpansion();
+  }
+
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,

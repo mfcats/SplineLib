@@ -70,6 +70,14 @@ class PhysicalSpace {
     return dimension_;
   }
 
+  double GetExpansion() {
+    double expansion = 0;
+    for (auto &cp : control_points_) {
+      if (cp > expansion) expansion = cp;
+    }
+    return expansion;
+  }
+
  protected:
   int dimension_;
   std::array<int, DIM> number_of_points_;

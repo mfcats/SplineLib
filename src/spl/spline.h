@@ -123,6 +123,8 @@ class Spline {
     return dx_dxi * dxi_dtildexi;
   }
 
+  virtual double GetExpansion() = 0;
+
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
     parameter_space_->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
