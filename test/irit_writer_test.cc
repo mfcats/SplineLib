@@ -270,7 +270,6 @@ TEST_F(A2DIRITWriterwithNURBS, CreatesCorrectFile) {  // NOLINT
   remove("2d_nurbs.itd");
 }
 
-
 TEST_F(A2DIRITWriterwithNURBS, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {  // NOLINT
   spl::BSpline<2> bspline_before = *std::any_cast<std::shared_ptr<spl::BSpline<2>>>(splines[0]);
   spl::NURBS<2> nurbs_before = *std::any_cast<std::shared_ptr<spl::NURBS<2>>>(splines[1]);
@@ -282,4 +281,75 @@ TEST_F(A2DIRITWriterwithNURBS, ReturnsSameValuesBeforeAndAfterWritingAndReadingI
               DoubleEq(bspline_after.Evaluate({ParamCoord(0.75839), ParamCoord(0.01453)}, {0})[0]));
   ASSERT_THAT(nurbs_before.Evaluate({ParamCoord(0.75839), ParamCoord(0.01453)}, {0})[0],
               DoubleEq(nurbs_after.Evaluate({ParamCoord(0.75839), ParamCoord(0.01453)}, {0})[0]));
+  remove("splines.itd");
+}
+
+class A3DIRITWriter : public Test {
+ public:
+  A3DIRITWriter() {
+    std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vector = {
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+    std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{1}};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0, 0, 0})),
+        baf::ControlPoint(std::vector<double>({1, 0, 0})),
+        baf::ControlPoint(std::vector<double>({0, 1, 0})),
+        baf::ControlPoint(std::vector<double>({1, 1, 0})),
+        baf::ControlPoint(std::vector<double>({0, 0, 1})),
+        baf::ControlPoint(std::vector<double>({1, 0, 1})),
+        baf::ControlPoint(std::vector<double>({0, 1, 1})),
+        baf::ControlPoint(std::vector<double>({1, 1, 1}))
+    };
+    std::shared_ptr<spl::BSpline<3>>
+        b_spline_ptr = std::make_shared<spl::BSpline<3>>(knot_vector, degree, control_points);
+    splines.push_back(std::make_any<std::shared_ptr<spl::BSpline<3>>>(b_spline_ptr));
+
+    knot_vector = {
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+    degree = {Degree{1}, Degree{1}, Degree{1}};
+    std::vector<double> weights = {0.2, 0.3, 0.5, 0.75, 1, 1.3, 1.5, 2};
+    control_points = {
+        baf::ControlPoint(std::vector<double>({0, 0, 0})),
+        baf::ControlPoint(std::vector<double>({1, 0, 0})),
+        baf::ControlPoint(std::vector<double>({0, 1, 0})),
+        baf::ControlPoint(std::vector<double>({1, 1, 0})),
+        baf::ControlPoint(std::vector<double>({0, 0, 1})),
+        baf::ControlPoint(std::vector<double>({1, 0, 1})),
+        baf::ControlPoint(std::vector<double>({0, 1, 1})),
+        baf::ControlPoint(std::vector<double>({1, 1, 1}))
+    };
+    std::shared_ptr<spl::NURBS<3>>
+        nurbs_ptr = std::make_shared<spl::NURBS<3>>(knot_vector, degree, control_points, weights);
+    splines.push_back(std::make_any<std::shared_ptr<spl::NURBS<3>>>(nurbs_ptr));
+
+    irit_writer = std::make_unique<io::IRITWriter<3>>(splines);
+  }
+
+ protected:
+  std::unique_ptr<io::IRITWriter<3>> irit_writer;
+  std::vector<std::any> splines;
+};
+
+TEST_F(A3DIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {  // NOLINT
+  spl::BSpline<3> bspline_before = *std::any_cast<std::shared_ptr<spl::BSpline<3>>>(splines[0]);
+  spl::NURBS<3> nurbs_before = *std::any_cast<std::shared_ptr<spl::NURBS<3>>>(splines[1]);
+  irit_writer->WriteIRITFile("3d_splines.itd");
+  std::unique_ptr<io::IRITReader<3>> irit_reader(std::make_unique<io::IRITReader<3>>());
+  auto bspline_after = std::any_cast<spl::BSpline<3>>(irit_reader->ReadIRITFile("3d_splines.itd")[0]);
+  auto nurbs_after = std::any_cast<spl::NURBS<3>>(irit_reader->ReadIRITFile("3d_splines.itd")[1]);
+  ASSERT_THAT(bspline_before.Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)}, {0})[0],
+              DoubleEq(bspline_after.Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)}, {0})[0]));
+  ASSERT_THAT(nurbs_before.Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)}, {0})[0],
+              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)}, {0})[0]));
+  remove("3d_splines.itd");
 }
