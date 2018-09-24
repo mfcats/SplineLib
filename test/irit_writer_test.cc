@@ -68,7 +68,7 @@ TEST_F(A1DIRITWriter, IsCreated) {  // NOLINT
   remove("bspline.itd");
 }
 
-TEST_F(A1DIRITWriter, CreatesEmptyFile) {  // NOLINT
+TEST_F(A1DIRITWriter, CreatesCorrectFile) {  // NOLINT
   irit_writer->WriteIRITFile("bspline.itd");
   std::ifstream newFile;
   newFile.open("bspline.itd");
@@ -83,4 +83,59 @@ TEST_F(A1DIRITWriter, CreatesEmptyFile) {  // NOLINT
   ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
   ASSERT_THAT(file.find("11.000000 ]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("3.572000 ]"), Ne(std::string::npos));
+}
+
+class A1DIRITWriterWithTwoSplines : public A1DIRITWriter {
+ public:
+  A1DIRITWriterWithTwoSplines() {
+    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.16666666666667},
+                         ParamCoord{0.33333333333333}, ParamCoord{0.5}, ParamCoord{0.66666666666667},
+                         ParamCoord{0.83333333333333}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    std::array<Degree, 1> degree = {Degree{2}};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0, 0, 0})),
+        baf::ControlPoint(std::vector<double>({0.5, 0.5, 0})),
+        baf::ControlPoint(std::vector<double>({0.5, 0.5, 1})),
+        baf::ControlPoint(std::vector<double>({1, 1, 1})),
+        baf::ControlPoint(std::vector<double>({2, 1, 0})),
+        baf::ControlPoint(std::vector<double>({1.5, 0.5, -0.5})),
+        baf::ControlPoint(std::vector<double>({0.8, 0.3, -0.4})),
+        baf::ControlPoint(std::vector<double>({0.5, 0, 0}))
+    };
+    std::shared_ptr<spl::BSpline<1>>
+        b_spline_ptr = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
+    std::any b_spline_ = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_ptr);
+    splines.push_back(b_spline_);
+    irit_writer = std::make_unique<io::IRITWriter<1>>(splines);
+  }
+};
+
+TEST_F(A1DIRITWriterWithTwoSplines, IsCreated) {  // NOLINT
+  irit_writer->WriteIRITFile("2bsplines.itd");
+  std::ifstream newFile;
+  newFile.open("2bsplines.itd");
+  ASSERT_TRUE(newFile.is_open());
+  newFile.close();
+  remove("2bsplines.itd");
+}
+
+TEST_F(A1DIRITWriterWithTwoSplines, CreatesCorrectFile) {  // NOLINT
+  irit_writer->WriteIRITFile("2bsplines.itd");
+  std::ifstream newFile;
+  newFile.open("2bsplines.itd");
+  std::string line;
+  std::string file;
+  while (getline(newFile, line)) {
+    file += line;
+  }
+  ASSERT_THAT(file.find("BSPLINE 16 4"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CURVE"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("E2"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("E3"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("11.000000 ]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("1.000000 ]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("3.572000 ]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("-0.400000 ]"), Ne(std::string::npos));
 }
