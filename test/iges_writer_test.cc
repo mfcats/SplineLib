@@ -29,3 +29,7 @@ class AnIGESFileFromSpline : public Test {
  protected:
   std::unique_ptr<io::IGESWriter> iges_writer_;
 };
+
+TEST_F(AnIGESFileFromSpline, Test1) {
+  iges_writer_->WriteIGESFile(iges_write);
+}
