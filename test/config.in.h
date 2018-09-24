@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define TEST_CONFIG_IN_H_
 
 static const char *path_to_iges_file = "@PATH_TO_IGES_FILE@";
+static const char *path_to_iges_file_2 = "@PATH_TO_IGES_FILE_2@";
 static const char *path_to_iris_file = "@PATH_TO_IRIS_FILE@";
 static const char *path_to_xml_file = "@PATH_TO_XML_FILE@";
 

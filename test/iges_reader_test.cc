@@ -13,14 +13,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include <config.h>
-
 #include "gmock/gmock.h"
-#include "spline_generator.h"
-#include "b_spline_generator.h"
-#include "iges_1d_bspline_generator.h"
-#include "iges_2d_bspline_generator.h"
-#include "iges_1d_nurbs_generator.h"
-#include "iges_2d_nurbs_generator.h"
+#include "iges_reader.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -103,52 +97,68 @@ class A2DNurbsFromIGESFile : public Test {
     };
 
     nurbs_ = std::make_unique<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
+    b_spline_ = std::make_unique<spl::BSpline<2>>(knot_vector, degree, control_points);
+    iges_reader_ = std::make_unique<io::IGESReader>();
   }
 
  protected:
   std::unique_ptr<spl::NURBS<2>> nurbs_;
+  std::unique_ptr<spl::BSpline<2>> b_spline_;
+  std::unique_ptr<io::IGESReader> iges_reader_;
 };
 
 TEST_F(A2DNurbsFromIGESFile, Read1DBSplineFromIGESFile) { // NOLINT
-  spl::IGES1DBSplineGenerator reader = spl::IGES1DBSplineGenerator();
-  reader.ReadIGESFile(path_to_iges_file, 4);
-  std::unique_ptr<spl::BSpline<1>> spline = std::make_unique<spl::BSpline<1>>(reader);
-  ASSERT_THAT(spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
-  ASSERT_THAT(spline->Evaluate({ParamCoord{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
-  ASSERT_THAT(spline->Evaluate({ParamCoord{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
-  ASSERT_THAT(spline->Evaluate({ParamCoord{1.0}}, {0})[0], DoubleNear(-1.3353, 0.0005));
-  ASSERT_THAT(spline->Evaluate({ParamCoord{1.0}}, {1})[0], DoubleNear(0.450443, 0.0005));
-  ASSERT_THAT(spline->Evaluate({ParamCoord{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
+  auto b_spline_1d = std::any_cast<spl::BSpline<1>>(iges_reader_->ReadIGESFile(path_to_iges_file)[1]);
+  ASSERT_THAT(b_spline_1d.Evaluate({ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
+  ASSERT_THAT(b_spline_1d.Evaluate({ParamCoord{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
+  ASSERT_THAT(b_spline_1d.Evaluate({ParamCoord{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
+  ASSERT_THAT(b_spline_1d.Evaluate({ParamCoord{1.0}}, {0})[0], DoubleNear(-1.3353, 0.0005));
+  ASSERT_THAT(b_spline_1d.Evaluate({ParamCoord{1.0}}, {1})[0], DoubleNear(0.450443, 0.0005));
+  ASSERT_THAT(b_spline_1d.Evaluate({ParamCoord{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
+}
+
+TEST_F(A2DNurbsFromIGESFile, Read1DNURBSWithWeigthsOneFromIGESFile) { // NOLINT
+  auto nurbs_1d = std::any_cast<spl::NURBS<1>>(iges_reader_->ReadIGESFile(path_to_iges_file_2)[1]);
+  ASSERT_THAT(nurbs_1d.Evaluate({ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
+  ASSERT_THAT(nurbs_1d.Evaluate({ParamCoord{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
+  ASSERT_THAT(nurbs_1d.Evaluate({ParamCoord{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
+  ASSERT_THAT(nurbs_1d.Evaluate({ParamCoord{1.0}}, {0})[0], DoubleNear(-1.3353, 0.0005));
+  ASSERT_THAT(nurbs_1d.Evaluate({ParamCoord{1.0}}, {1})[0], DoubleNear(0.450443, 0.0005));
+  ASSERT_THAT(nurbs_1d.Evaluate({ParamCoord{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
 }
 
 TEST_F(A2DNurbsFromIGESFile, Read2DNURBSFromIGESFile) { // NOLINT
-  spl::IGES2DNURBSGenerator reader = spl::IGES2DNURBSGenerator();
-  reader.ReadIGESFile(path_to_iges_file, 2);
-  std::unique_ptr<spl::NURBS<2>> spline2 = std::make_unique<spl::NURBS<2>>(reader);
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0],
+  auto nurbs_2d = std::any_cast<spl::NURBS<2>>(iges_reader_->ReadIGESFile(path_to_iges_file)[0]);
+  ASSERT_THAT(nurbs_2d.Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0],
               DoubleEq(nurbs_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0]));
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0],
+  ASSERT_THAT(nurbs_2d.Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0],
               DoubleEq(nurbs_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0]));
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0],
+  ASSERT_THAT(nurbs_2d.Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0],
               DoubleEq(nurbs_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0]));
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {0})[0],
+  ASSERT_THAT(nurbs_2d.Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {0})[0],
               DoubleEq(nurbs_->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {0})[0]));
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {1})[0],
+  ASSERT_THAT(nurbs_2d.Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {1})[0],
               DoubleEq(nurbs_->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {1})[0]));
-  ASSERT_THAT(spline2->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {2})[0],
+  ASSERT_THAT(nurbs_2d.Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {2})[0],
               DoubleEq(nurbs_->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {2})[0]));
 }
 
-TEST_F(A2DNurbsFromIGESFile, ThrowIfFileCantBeOpened) { // NOLINT
-  spl::IGES1DBSplineGenerator reader1 = spl::IGES1DBSplineGenerator();
-  spl::IGES2DNURBSGenerator reader2 = spl::IGES2DNURBSGenerator();
-  ASSERT_THROW(reader1.ReadIGESFile("a", 1), std::runtime_error);
-  ASSERT_THROW(reader2.ReadIGESFile("a", 1), std::runtime_error);
+TEST_F(A2DNurbsFromIGESFile, Read2DBSplineFromIGESFile) { // NOLINT
+  auto b_spline_2d = std::any_cast<spl::BSpline<2>>(iges_reader_->ReadIGESFile(path_to_iges_file_2)[0]);
+  ASSERT_THAT(b_spline_2d.Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0]));
+  ASSERT_THAT(b_spline_2d.Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0]));
+  ASSERT_THAT(b_spline_2d.Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0]));
+  ASSERT_THAT(b_spline_2d.Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {0})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {0})[0]));
+  ASSERT_THAT(b_spline_2d.Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {1})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {1})[0]));
+  ASSERT_THAT(b_spline_2d.Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {2})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {2})[0]));
 }
 
-TEST_F(A2DNurbsFromIGESFile, ThrowIfWrongEntityType) { // NOLINT
-  spl::IGES1DBSplineGenerator reader1 = spl::IGES1DBSplineGenerator();
-  spl::IGES2DNURBSGenerator reader2 = spl::IGES2DNURBSGenerator();
-  ASSERT_THROW(reader1.ReadIGESFile(path_to_iges_file, 2), std::runtime_error);
-  ASSERT_THROW(reader2.ReadIGESFile(path_to_iges_file, 4), std::runtime_error);
+TEST_F(A2DNurbsFromIGESFile, ThrowIfFileCantBeOpened) { // NOLINT
+  ASSERT_THROW(std::vector<std::any> splines = iges_reader_->ReadIGESFile("a"), std::runtime_error);
 }
