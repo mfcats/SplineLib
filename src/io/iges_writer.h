@@ -36,7 +36,7 @@ class IGESWriter {
     std::ofstream newFile;
     newFile.open(filename);
     if (newFile.is_open()) {
-      WriteFile(newFile, GetStartSection(), GetGlobalSection(filename, ",", ";", b_spline));
+      WriteFile(newFile, GetStartSection(), GetGlobalSection(filename, ",", ";", b_spline), GetParameterData(",", ";", b_spline));
     } else {
       throw std::runtime_error("The IGES file couldn't be opened.");
     }
@@ -105,7 +105,7 @@ class IGESWriter {
                    GetString(b_spline.GetDegree(0).get()), GetString(0), GetString(0), GetString(1), GetString(0)},
                   delimiter);
 
-    std::vector<ParamCoord> knots = b_spline.GetKnots()[0];
+    auto knots = b_spline.GetKnots()[0];
     for (size_t i = 0; i < knots.size(); ++i) {
       contents += GetString(knots[i].get()) + delimiter;
     }
@@ -139,13 +139,13 @@ class IGESWriter {
   }
 
   void WriteFile(std::ofstream &file, const std::vector<std::string> &start,
-                 const std::vector<std::string> &global/*, const std::vector<std::string> &data,
-                 const std::vector<std::string> &parameter, const std::vector<std::string> &terminate*/) {
+                 const std::vector<std::string> &global/*, const std::vector<std::string> &data*/,
+                 const std::vector<std::string> &parameter/*, const std::vector<std::string> &terminate*/) {
     AppendToFile(file, start);
     AppendToFile(file, global);
-    //AppendToFile(data);
-    //AppendToFile(parameter);
-    //AppendToFile(terminate);
+    //AppendToFile(file, data);
+    AppendToFile(file, parameter);
+    //AppendToFile(file, terminate);
   }
 
   void AppendToFile(std::ofstream &file, const std::vector<std::string> &contents) {
