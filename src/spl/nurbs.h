@@ -68,7 +68,7 @@ class NURBS : public Spline<DIM> {
     return physical_space_->GetControlPoint(indices).GetValue(dimension);
   }
 
-  int GetWeight(std::array<int, DIM> indices) {
+  double GetWeight(std::array<int, DIM> indices) {
     return physical_space_->GetWeight(indices);
   }
 

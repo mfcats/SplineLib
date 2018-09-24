@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "irit_writer.h"
+#include "nurbs.h"
 
 using testing::Test;
 using testing::Ne;
@@ -83,7 +84,7 @@ TEST_F(A1DIRITWriter, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
   ASSERT_THAT(file.find("11.000000]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("3.572000]"), Ne(std::string::npos));
-  remove("bspline.itd");
+  // remove("bspline.itd");
 }
 
 class A1DIRITWriterWithTwoSplines : public A1DIRITWriter {
@@ -140,6 +141,62 @@ TEST_F(A1DIRITWriterWithTwoSplines, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("3.572000]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("-0.400000]"), Ne(std::string::npos));
+  // remove("2bsplines.itd");
+}
+
+class A1DIRITWriterWithNURBS : public A1DIRITWriterWithTwoSplines {
+ public:
+  A1DIRITWriterWithNURBS() {
+    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.25}, ParamCoord{0.5},
+                         ParamCoord{0.75}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    std::array<Degree, 1> degree = {Degree{2}};
+    std::vector<double> weights = {0.5, 0.5, 0.5, 1, 1, 1};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0, 0})),
+        baf::ControlPoint(std::vector<double>({1, 0.3})),
+        baf::ControlPoint(std::vector<double>({2, 0.5})),
+        baf::ControlPoint(std::vector<double>({0, 0.6})),
+        baf::ControlPoint(std::vector<double>({1, 0.8})),
+        baf::ControlPoint(std::vector<double>({2, 1}))
+    };
+    std::shared_ptr<spl::NURBS<1>>
+        nurbs_ptr = std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+    std::any b_spline_ = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_ptr);
+    splines.push_back(b_spline_);
+    irit_writer = std::make_unique<io::IRITWriter<1>>(splines);
+  }
+};
+
+TEST_F(A1DIRITWriterWithNURBS, IsCreated) {  // NOLINT
+  irit_writer->WriteIRITFile("nurbs.itd");
+  std::ifstream newFile;
+  newFile.open("nurbs.itd");
+  ASSERT_TRUE(newFile.is_open());
+  newFile.close();
+  remove("nurbs.itd");
+}
+
+TEST_F(A1DIRITWriterWithNURBS, CreatesCorrectFile) {  // NOLINT
+  irit_writer->WriteIRITFile("nurbs.itd");
+  std::ifstream newFile;
+  newFile.open("nurbs.itd");
+  std::string line;
+  std::string file;
+  while (getline(newFile, line)) {
+    file += line;
+  }
+  ASSERT_THAT(file.find("BSPLINE 16 4"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("BSPLINE 8 3"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CURVE"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("E2"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("E3"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("11.000000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("3.572000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("-0.400000]"), Ne(std::string::npos));
+  // remove("nurbs.itd");
 }
 
 class A2DIRITWriter : public Test {
@@ -198,5 +255,5 @@ TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
   ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("0.500000]"), Ne(std::string::npos));
-  remove("2d_bspline.itd");
+  // remove("2d_bspline.itd");
 }

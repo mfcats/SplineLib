@@ -35,10 +35,10 @@ class IRITWriter {
     if (newFile.is_open()) {
       newFile << "[OBJECT SPLINES\n";
       for (uint i = 0; i < splines_.size(); i++) {
-        std::shared_ptr<spl::BSpline<DIM>> b_spline = std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(splines_[i]);
-        newFile << "  [" + GetObjectType() + " BSPLINE " + GetNumberOfControlPoints(b_spline) + GetOrder(b_spline) +
-            GetPointType(false, b_spline) + "\n" + GetKnotVectors(b_spline) + GetControlPoints(b_spline) + "  ]\n" +
-            (i < splines_.size() - 1 ? "\n" : "]");
+        std::shared_ptr<spl::Spline<DIM>> spline = GetSpline(i);
+        newFile << "  [" + GetObjectType() + " BSPLINE " + GetNumberOfControlPoints(spline) + GetOrder(spline)
+            + GetPointType(IsRational(i), spline) + "\n" + GetKnotVectors(spline) + GetControlPoints(i, spline)
+            + "  ]\n" + (i < splines_.size() - 1 ? "\n" : "]");
       }
       newFile.close();
     } else {
@@ -47,11 +47,32 @@ class IRITWriter {
   }
 
  private:
+  std::shared_ptr<spl::Spline<DIM>> GetSpline(int i) {
+    try {
+      return std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(splines_[i]);
+    } catch (std::bad_any_cast &msg) {
+      try {
+        return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(splines_[i]);
+      } catch (std::bad_any_cast &msg) {
+        throw std::runtime_error("Input has to be a vector of pointers to b-splines or nurbs.");
+      }
+    }
+  }
+
+  bool IsRational(int i) {
+    try {
+      std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(splines_[i]);
+      return false;
+    } catch (std::bad_any_cast &msg) {
+      return true;
+    }
+  }
+
   std::string GetObjectType() {
     return DIM == 1 ? "CURVE" : (DIM == 2 ? "SURFACE" : (DIM == 3 ? "TRIVAR" : ""));
   }
 
-  std::string GetNumberOfControlPoints(std::shared_ptr<spl::BSpline<DIM>> spline) {
+  std::string GetNumberOfControlPoints(std::shared_ptr<spl::Spline<DIM>> spline) {
     std::array<int, DIM> number_of_points = spline->GetPointsPerDirection();
     std::string string;
     for (const auto &points : number_of_points) {
@@ -60,7 +81,7 @@ class IRITWriter {
     return string;
   }
 
-  std::string GetOrder(std::shared_ptr<spl::BSpline<DIM>> spline) {
+  std::string GetOrder(std::shared_ptr<spl::Spline<DIM>> spline) {
     std::string string;
     for (int i = 0; i < DIM; i++) {
       string += std::to_string(spline->GetDegree(i).get() + 1) + " ";
@@ -68,11 +89,11 @@ class IRITWriter {
     return string;
   }
 
-  std::string GetPointType(bool rational, std::shared_ptr<spl::BSpline<DIM>> spline) {
+  std::string GetPointType(bool rational, std::shared_ptr<spl::Spline<DIM>> spline) {
     return (rational ? "P" : "E") + std::to_string(spline->GetDimension());
   }
 
-  std::string GetKnotVectors(std::shared_ptr<spl::BSpline<DIM>> spline) {
+  std::string GetKnotVectors(std::shared_ptr<spl::Spline<DIM>> spline) {
     std::string string;
     for (int i = 0; i < DIM; i++) {
       string += "    [KV ";
@@ -85,14 +106,19 @@ class IRITWriter {
     return string;
   }
 
-  std::string GetControlPoints(std::shared_ptr<spl::BSpline<DIM>> spline) {
+  std::string GetControlPoints(int u, std::shared_ptr<spl::Spline<DIM>> spline) {
     std::string string;
     util::MultiIndexHandler<DIM> control_point_handler(spline->GetPointsPerDirection());
+    std::shared_ptr<spl::NURBS<DIM>> nurbs;
+    if (IsRational(u)) {
+      nurbs = std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(splines_[u]);
+    }
     for (int i = 0; i < control_point_handler.Get1DLength(); ++i, control_point_handler++) {
-      string += "    [";
+      string += "    ["
+                + (IsRational(u) ? std::to_string(nurbs->GetWeight(control_point_handler.GetIndices())) + " " : "");
       for (int j = 0; j < spline->GetDimension(); j++) {
-        string += std::to_string(spline->GetControlPoint(control_point_handler.GetIndices(), j)) +
-            (j < spline->GetDimension() - 1 ? " " : "]\n");
+        string += std::to_string(spline->GetControlPoint(control_point_handler.GetIndices(), j))
+            + (j < spline->GetDimension() - 1 ? " " : "]\n");
       }
     }
     return string;
