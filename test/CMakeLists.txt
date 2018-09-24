@@ -55,6 +55,7 @@ target_link_libraries(AcceptanceTests splinelibbaf splinelibspl splinelibutil)
 target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
 
 set(PATH_TO_IGES_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test.iges)
+set(PATH_TO_IGES_FILE_2 ${CMAKE_CURRENT_SOURCE_DIR}/test2.iges)
 set(PATH_TO_IRIS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test.itd)
 set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/spline_tank.xml)
 configure_file(config.in.h ${CMAKE_CURRENT_BINARY_DIR}/config.h)
