@@ -20,6 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <functional>
 #include <utility>
 #include <vector>
+#include <iostream>
 
 #include "b_spline.h"
 #include "spline.h"
@@ -81,7 +82,7 @@ class NURBS : public Spline<DIM> {
                                   int dimension) const override {
     return this->parameter_space_->GetBasisFunctions(indices, param_coord)
         * physical_space_->GetHomogenousControlPoint(indices).GetValue(dimension)
-        / GetEvaluatedDerivativeWeightSum(param_coord, std::array<int, DIM>{0});
+        / GetEvaluatedWeightSum(param_coord);
   }
 
   double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,
@@ -98,11 +99,11 @@ class NURBS : public Spline<DIM> {
                                             int dimension) const {
     if (derivative == std::array<int, DIM>{0}) {
       return this->parameter_space_->GetBasisFunctions(indices, param_coord)
-          * physical_space_->GetWeight(indices) / GetEvaluatedDerivativeWeightSum(param_coord, std::array<int, DIM>{0});
+          * physical_space_->GetWeight(indices) / GetEvaluatedWeightSum(param_coord);
     }
     return (GetEvaluatedDerivativeWeight(param_coord, derivative, indices)
         - GetDerivativesSum(param_coord, derivative, indices, dimension))
-        / GetEvaluatedDerivativeWeightSum(param_coord, std::array<int, DIM>{0});
+        / GetEvaluatedWeightSum(param_coord);
   }
 
   double GetDerivativesSum(std::array<ParamCoord, DIM> param_coord,
@@ -123,6 +124,18 @@ class NURBS : public Spline<DIM> {
     return sum;
   }
 
+  double GetEvaluatedWeightSum(std::array<ParamCoord, DIM> param_coord) const {
+    auto first_non_zero = this->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
+    util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
+    double sum = 0;
+    for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
+      auto indices = basisFunctionHandler.GetIndices();
+      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
+      sum += GetEvaluatedWeight(param_coord, indices);
+    }
+    return sum;
+  }
+
   double GetEvaluatedDerivativeWeightSum(std::array<ParamCoord, DIM> param_coord,
                                          std::array<int, DIM> derivative) const {
     auto first_non_zero = this->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
@@ -134,6 +147,10 @@ class NURBS : public Spline<DIM> {
       sum += GetEvaluatedDerivativeWeight(param_coord, derivative, indices);
     }
     return sum;
+  }
+
+  double GetEvaluatedWeight(std::array<ParamCoord, DIM> param_coord, std::array<int, DIM> indices) const {
+    return this->parameter_space_->GetBasisFunctions(indices, param_coord) * physical_space_->GetWeight(indices);
   }
 
   double GetEvaluatedDerivativeWeight(std::array<ParamCoord, DIM> param_coord,
