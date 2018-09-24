@@ -33,10 +33,12 @@ class IRITWriter {
     std::ofstream newFile;
     newFile.open(filename);
     if (newFile.is_open()) {
-      for (const auto &spline : splines_) {
-        std::shared_ptr<spl::BSpline<DIM>> b_spline = std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(spline);
-        newFile << "[" + GetObjectType() + " BSPLINE " + GetNumberOfControlPoints(b_spline) + GetOrder(b_spline) +
-            GetPointType(false, b_spline) + "\n" + GetKnotVectors(b_spline) + GetControlPoints(b_spline) + "]\n";
+      newFile << "[OBJECT SPLINES\n";
+      for (uint i = 0; i < splines_.size(); i++) {
+        std::shared_ptr<spl::BSpline<DIM>> b_spline = std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(splines_[i]);
+        newFile << "  [" + GetObjectType() + " BSPLINE " + GetNumberOfControlPoints(b_spline) + GetOrder(b_spline) +
+            GetPointType(false, b_spline) + "\n" + GetKnotVectors(b_spline) + GetControlPoints(b_spline) + "  ]\n" +
+            (i < splines_.size() - 1 ? "\n" : "]");
       }
       newFile.close();
     } else {
@@ -53,7 +55,7 @@ class IRITWriter {
     std::array<int, DIM> number_of_points = spline->GetPointsPerDirection();
     std::string string;
     for (const auto &points : number_of_points) {
-      string += std::to_string(points) + ' ';
+      string += std::to_string(points) + " ";
     }
     return string;
   }
@@ -73,12 +75,12 @@ class IRITWriter {
   std::string GetKnotVectors(std::shared_ptr<spl::BSpline<DIM>> spline) {
     std::string string;
     for (int i = 0; i < DIM; i++) {
-      string += "[KV ";
+      string += "    [KV ";
       std::shared_ptr<baf::KnotVector> knot_vector = spline->GetKnotVector(i);
-      for (const auto &knot : *knot_vector) {
-        string += std::to_string(knot.get()) + " ";
+      for (size_t j = 0; j < knot_vector->GetNumberOfKnots(); j++) {
+        string += std::to_string(knot_vector->GetKnot(j).get()) +
+            (j < knot_vector->GetNumberOfKnots() - 1 ? " " : "]\n");
       }
-      string += "]\n";
     }
     return string;
   }
@@ -87,11 +89,11 @@ class IRITWriter {
     std::string string;
     util::MultiIndexHandler<DIM> control_point_handler(spline->GetPointsPerDirection());
     for (int i = 0; i < control_point_handler.Get1DLength(); ++i, control_point_handler++) {
-      string += "[";
+      string += "    [";
       for (int j = 0; j < spline->GetDimension(); j++) {
-        string += std::to_string(spline->GetControlPoint(control_point_handler.GetIndices(), j)) + " ";
+        string += std::to_string(spline->GetControlPoint(control_point_handler.GetIndices(), j)) +
+            (j < spline->GetDimension() - 1 ? " " : "]\n");
       }
-      string += "]\n";
     }
     return string;
   }

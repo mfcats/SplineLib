@@ -81,8 +81,9 @@ TEST_F(A1DIRITWriter, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("CURVE"), Ne(std::string::npos));
   ASSERT_THAT(file.find("E2"), Ne(std::string::npos));
   ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("11.000000 ]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("3.572000 ]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("11.000000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("3.572000]"), Ne(std::string::npos));
+  remove("bspline.itd");
 }
 
 class A1DIRITWriterWithTwoSplines : public A1DIRITWriter {
@@ -135,10 +136,10 @@ TEST_F(A1DIRITWriterWithTwoSplines, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("E2"), Ne(std::string::npos));
   ASSERT_THAT(file.find("E3"), Ne(std::string::npos));
   ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("11.000000 ]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("1.000000 ]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("3.572000 ]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("-0.400000 ]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("11.000000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("3.572000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("-0.400000]"), Ne(std::string::npos));
 }
 
 class A2DIRITWriter : public Test {
@@ -174,18 +175,18 @@ class A2DIRITWriter : public Test {
 };
 
 TEST_F(A2DIRITWriter, IsCreated) {  // NOLINT
-  irit_writer->WriteIRITFile("2dbspline.itd");
+  irit_writer->WriteIRITFile("2d_bspline.itd");
   std::ifstream newFile;
-  newFile.open("2dbspline.itd");
+  newFile.open("2d_bspline.itd");
   ASSERT_TRUE(newFile.is_open());
   newFile.close();
-  remove("2dbspline.itd");
+  remove("2d_bspline.itd");
 }
 
 TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
-  irit_writer->WriteIRITFile("2dbspline.itd");
+  irit_writer->WriteIRITFile("2d_bspline.itd");
   std::ifstream newFile;
-  newFile.open("2dbspline.itd");
+  newFile.open("2d_bspline.itd");
   std::string line;
   std::string file;
   while (getline(newFile, line)) {
@@ -195,6 +196,7 @@ TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("SURFACE"), Ne(std::string::npos));
   ASSERT_THAT(file.find("E3"), Ne(std::string::npos));
   ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("1.000000 ]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("0.500000 ]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("0.500000]"), Ne(std::string::npos));
+  remove("2d_bspline.itd");
 }
