@@ -130,6 +130,7 @@ TEST_F(A1DIRITWriterWithTwoSplines, CreatesCorrectFile) {  // NOLINT
     file += line;
   }
   ASSERT_THAT(file.find("BSPLINE 16 4"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("BSPLINE 8 3"), Ne(std::string::npos));
   ASSERT_THAT(file.find("CURVE"), Ne(std::string::npos));
   ASSERT_THAT(file.find("E2"), Ne(std::string::npos));
   ASSERT_THAT(file.find("E3"), Ne(std::string::npos));
@@ -138,4 +139,62 @@ TEST_F(A1DIRITWriterWithTwoSplines, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("1.000000 ]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("3.572000 ]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("-0.400000 ]"), Ne(std::string::npos));
+}
+
+class A2DIRITWriter : public Test {
+ public:
+  A2DIRITWriter() {
+    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                           ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                           ParamCoord{1}, ParamCoord{1}}))};
+    std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0, 0, 0})),
+        baf::ControlPoint(std::vector<double>({0, 1, 0.3})),
+        baf::ControlPoint(std::vector<double>({0, 2, 0.5})),
+        baf::ControlPoint(std::vector<double>({1, 0, 0.6})),
+        baf::ControlPoint(std::vector<double>({1, 1, 0.8})),
+        baf::ControlPoint(std::vector<double>({1, 2, 1})),
+        baf::ControlPoint(std::vector<double>({2, 0, 0.5})),
+        baf::ControlPoint(std::vector<double>({2, 1, 0.9})),
+        baf::ControlPoint(std::vector<double>({2, 2, 0.5}))
+    };
+    std::shared_ptr<spl::BSpline<2>>
+        b_spline_ptr = std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points);
+    std::any b_spline_ = std::make_any<std::shared_ptr<spl::BSpline<2>>>(b_spline_ptr);
+    splines.push_back(b_spline_);
+    irit_writer = std::make_unique<io::IRITWriter<2>>(splines);
+  }
+
+ protected:
+  std::unique_ptr<io::IRITWriter<2>> irit_writer;
+  std::vector<std::any> splines;
+};
+
+TEST_F(A2DIRITWriter, IsCreated) {  // NOLINT
+  irit_writer->WriteIRITFile("2dbspline.itd");
+  std::ifstream newFile;
+  newFile.open("2dbspline.itd");
+  ASSERT_TRUE(newFile.is_open());
+  newFile.close();
+  remove("2dbspline.itd");
+}
+
+TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
+  irit_writer->WriteIRITFile("2dbspline.itd");
+  std::ifstream newFile;
+  newFile.open("2dbspline.itd");
+  std::string line;
+  std::string file;
+  while (getline(newFile, line)) {
+    file += line;
+  }
+  ASSERT_THAT(file.find("BSPLINE 3 3 3 3"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("SURFACE"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("E3"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("1.000000 ]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("0.500000 ]"), Ne(std::string::npos));
 }
