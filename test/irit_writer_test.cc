@@ -16,7 +16,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "irit_writer.h"
-#include "nurbs.h"
 
 using testing::Test;
 using testing::Ne;
@@ -69,6 +68,11 @@ TEST_F(A1DIRITWriter, IsCreated) {  // NOLINT
   remove("bspline.itd");
 }
 
+TEST_F(A1DIRITWriter, ThrowsExceptionForWrongInputType) {  // NOLINT
+  ASSERT_THROW(io::IRITWriter<1>({std::make_any<int>(8)}).WriteIRITFile("bspline.itd"), std::runtime_error);
+  remove("bspline.itd");
+}
+
 TEST_F(A1DIRITWriter, CreatesCorrectFile) {  // NOLINT
   irit_writer->WriteIRITFile("bspline.itd");
   std::ifstream newFile;
@@ -77,13 +81,11 @@ TEST_F(A1DIRITWriter, CreatesCorrectFile) {  // NOLINT
   while (getline(newFile, line)) {
     file += line;
   }
-  ASSERT_THAT(file.find("BSPLINE 16 4"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("CURVE"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("E2"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CURVE BSPLINE 16 4 E2"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[KV "), Ne(std::string::npos));
   ASSERT_THAT(file.find("11.000000]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("3.572000]"), Ne(std::string::npos));
-  // remove("bspline.itd");
+  ASSERT_THAT(file.find("[0.000000 3.572000]"), Ne(std::string::npos));
+  remove("bspline.itd");
 }
 
 class A1DIRITWriterWithTwoSplines : public A1DIRITWriter {
@@ -113,24 +115,21 @@ class A1DIRITWriterWithTwoSplines : public A1DIRITWriter {
 };
 
 TEST_F(A1DIRITWriterWithTwoSplines, CreatesCorrectFile) {  // NOLINT
-  irit_writer->WriteIRITFile("2bsplines.itd");
+  irit_writer->WriteIRITFile("2_bsplines.itd");
   std::ifstream newFile;
-  newFile.open("2bsplines.itd");
+  newFile.open("2_bsplines.itd");
   std::string line, file;
   while (getline(newFile, line)) {
     file += line;
   }
-  ASSERT_THAT(file.find("BSPLINE 16 4"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("BSPLINE 8 3"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("CURVE"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("E2"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("E3"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CURVE BSPLINE 16 4 E2"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CURVE BSPLINE 8 3 E3"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[KV "), Ne(std::string::npos));
   ASSERT_THAT(file.find("11.000000]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("3.572000]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("-0.400000]"), Ne(std::string::npos));
-  // remove("2bsplines.itd");
+  ASSERT_THAT(file.find("[0.000000 3.572000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[0.800000 0.300000 -0.400000]"), Ne(std::string::npos));
+  remove("2_bsplines.itd");
 }
 
 class A1DIRITWriterWithNURBS : public A1DIRITWriterWithTwoSplines {
@@ -165,18 +164,16 @@ TEST_F(A1DIRITWriterWithNURBS, CreatesCorrectFile) {  // NOLINT
   while (getline(newFile, line)) {
     file += line;
   }
-  ASSERT_THAT(file.find("BSPLINE 16 4"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("BSPLINE 8 3"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("CURVE"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("E2"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("E3"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("11.000000]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("3.572000]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("-0.400000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CURVE BSPLINE 16 4 E2"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CURVE BSPLINE 8 3 E3"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CURVE BSPLINE 6 3 P2"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[KV "), Ne(std::string::npos));
+  ASSERT_THAT(file.find(" 11.000000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find(" 1.000000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[0.000000 3.572000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[0.800000 0.300000 -0.400000]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("[0.500000 2.000000 0.500000]"), Ne(std::string::npos));
-  // remove("nurbs.itd");
+  remove("nurbs.itd");
 }
 
 class A2DIRITWriter : public Test {
@@ -219,13 +216,11 @@ TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
   while (getline(newFile, line)) {
     file += line;
   }
-  ASSERT_THAT(file.find("BSPLINE 3 3 3 3"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("SURFACE"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("E3"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("0.500000]"), Ne(std::string::npos));
-  // remove("2d_bspline.itd");
+  ASSERT_THAT(file.find("SURFACE BSPLINE 3 3 3 3 E3"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[KV "), Ne(std::string::npos));
+  ASSERT_THAT(file.find(" 1.000000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[2.000000 2.000000 0.500000]"), Ne(std::string::npos));
+  remove("2d_bspline.itd");
 }
 
 class A2DIRITWriterwithNURBS : public A2DIRITWriter {
@@ -265,11 +260,11 @@ TEST_F(A2DIRITWriterwithNURBS, CreatesCorrectFile) {  // NOLINT
   while (getline(newFile, line)) {
     file += line;
   }
-  ASSERT_THAT(file.find("BSPLINE 3 3 3 3"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("SURFACE"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("E3"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("KV"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("1.000000]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("0.500000]"), Ne(std::string::npos));
-  // remove("2d_nurbs.itd");
+  ASSERT_THAT(file.find("SURFACE BSPLINE 3 3 3 3 E3"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("SURFACE BSPLINE 3 3 3 3 P2"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[KV "), Ne(std::string::npos));
+  ASSERT_THAT(file.find(" 1.000000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[2.000000 2.000000 0.500000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[0.500000 0.000000 0.000000]"), Ne(std::string::npos));
+  remove("2d_nurbs.itd");
 }
