@@ -38,7 +38,7 @@ set(TEST_SOURCES
         xml_reader_test.cc
         basis_function_factory.cc
         element_integration_point_test.cc
-        irit_reader_test.cc)
+        irit_reader_test.cc irit_writer_test.cc)
 
 
 find_package(GMock REQUIRED)
