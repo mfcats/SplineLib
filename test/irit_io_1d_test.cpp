@@ -56,6 +56,7 @@ class A1DBSplineForIRIT {  // NOLINT
 
  protected:
   std::shared_ptr<spl::BSpline<1>> b_spline_1_;
+  virtual ~A1DBSplineForIRIT() = default;
 };
 
 class ASecond1DBSplineForIRIT {  // NOLINT
@@ -81,6 +82,7 @@ class ASecond1DBSplineForIRIT {  // NOLINT
 
  protected:
   std::shared_ptr<spl::BSpline<1>> b_spline_2_;
+  virtual ~ASecond1DBSplineForIRIT() = default;
 };
 
 class A1DNURBSForIRIT {  // NOLINT
@@ -104,6 +106,7 @@ class A1DNURBSForIRIT {  // NOLINT
 
  protected:
   std::shared_ptr<spl::NURBS<1>> nurbs_;
+  virtual ~A1DNURBSForIRIT() = default;
 };
 
 class A1DIRITReader : public Test, public A1DBSplineForIRIT, public ASecond1DBSplineForIRIT, public A1DNURBSForIRIT {
@@ -165,7 +168,9 @@ TEST_F(A1DIRITWriter, CreatesCorrectFile) {  // NOLINT
   std::ifstream newFile;
   newFile.open("1d_splines.itd");
   std::string line, file;
-  while (getline(newFile, line)) file += line;
+  while (getline(newFile, line)) {
+    file += line;
+  }
   ASSERT_THAT(file.find("CURVE BSPLINE 16 4 E2"), Ne(std::string::npos));
   ASSERT_THAT(file.find("CURVE BSPLINE 8 3 E3"), Ne(std::string::npos));
   ASSERT_THAT(file.find("CURVE BSPLINE 6 3 P2"), Ne(std::string::npos));

@@ -48,6 +48,7 @@ class A2DBSplineForIRIT {  // NOLINT
 
  protected:
   std::shared_ptr<spl::BSpline<2>> b_spline_;
+  virtual ~A2DBSplineForIRIT() = default;
 };
 
 class A2DNURBSForIRIT {  // NOLINT
@@ -76,6 +77,7 @@ class A2DNURBSForIRIT {  // NOLINT
 
  protected:
   std::shared_ptr<spl::NURBS<2>> nurbs_;
+  virtual ~A2DNURBSForIRIT() = default;
 };
 
 class A2DIRITReader : public Test, public A2DBSplineForIRIT, public A2DNURBSForIRIT {
@@ -134,7 +136,9 @@ TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
   std::ifstream newFile;
   newFile.open("2d_splines.itd");
   std::string line, file;
-  while (getline(newFile, line)) file += line;
+  while (getline(newFile, line)) {
+    file += line;
+  }
   ASSERT_THAT(file.find("SURFACE BSPLINE 3 3 3 3 E3"), Ne(std::string::npos));
   ASSERT_THAT(file.find("SURFACE BSPLINE 3 3 3 3 P2"), Ne(std::string::npos));
   ASSERT_THAT(file.find("[KV "), Ne(std::string::npos));

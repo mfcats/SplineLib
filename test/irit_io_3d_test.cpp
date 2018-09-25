@@ -49,6 +49,7 @@ class A3DBSplineForIRIT {  // NOLINT
 
  protected:
   std::shared_ptr<spl::BSpline<3>> b_spline_;
+  virtual ~A3DBSplineForIRIT() = default;
 };
 
 class A3DNURBSForIRIT {  // NOLINT
@@ -78,6 +79,7 @@ class A3DNURBSForIRIT {  // NOLINT
 
  protected:
   std::shared_ptr<spl::NURBS<3>> nurbs_;
+  virtual ~A3DNURBSForIRIT() = default;
 };
 
 class A3DIRITReader : public Test, public A3DBSplineForIRIT, public A3DNURBSForIRIT {
@@ -144,7 +146,9 @@ TEST_F(A3DIRITWriter, CreatesCorrectFile) {  // NOLINT
   std::ifstream newFile;
   newFile.open("3d_splines.itd");
   std::string line, file;
-  while (getline(newFile, line)) file += line;
+  while (getline(newFile, line)) {
+    file += line;
+  }
   ASSERT_THAT(file.find("TRIVAR BSPLINE 2 2 2 2 2 2 E3"), Ne(std::string::npos));
   ASSERT_THAT(file.find("TRIVAR BSPLINE 2 2 2 2 2 2 P3"), Ne(std::string::npos));
   ASSERT_THAT(file.find("[KV "), Ne(std::string::npos));
