@@ -20,7 +20,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+#include <iomanip>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <config.h>
 #include "spline.h"
@@ -114,9 +116,10 @@ class IGESWriter {
       contents += GetString(weights[i]) + delimiter;
     }
     std::vector<double> control_points = b_spline.GetControlPoints();
-    for (size_t i = 0; i < control_points.size(); ++i) {
-      contents += GetString(control_points[i]);
+    for (size_t i = 0; i < control_points.size() - 1; ++i) {
+      contents += GetString(control_points[i]) + delimiter;
     }
+    contents += GetString(control_points[control_points.size() - 1]);
   }
 
   void AddToContents(std::string &contents, const std::vector<std::string> &add, const std::string &delimiter) {
@@ -133,9 +136,21 @@ class IGESWriter {
     return right ? (std::string(width - str.size(), ' ') + str) : (str + std::string(width - str.size(), ' '));
   }
 
-  template<typename T>
-  std::string GetString(T value) {
-    return std::to_string(value);
+  template <typename T>
+  std::string GetString(const T value, const int precision)
+  {
+    std::ostringstream out;
+    out << std::setprecision(precision) << value;
+    return out.str();
+  }
+
+  template <typename T>
+  std::string GetString(const T value)
+  {
+    //return std::to_string(value);
+    std::ostringstream out;
+    out << value;
+    return out.str();
   }
 
   void WriteFile(std::ofstream &file, const std::vector<std::string> &start,
