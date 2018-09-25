@@ -23,7 +23,7 @@ using testing::Test;
 using testing::DoubleEq;
 using testing::Ne;
 
-class A2DBSplineForIRIT {
+class A2DBSplineForIRIT {  // NOLINT
  public:
   A2DBSplineForIRIT() {
     std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
@@ -51,7 +51,7 @@ class A2DBSplineForIRIT {
   virtual ~A2DBSplineForIRIT() = default;
 };
 
-class A2DNURBSForIRIT {
+class A2DNURBSForIRIT {  // NOLINT
  public:
   A2DNURBSForIRIT() {
     std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {

@@ -24,7 +24,7 @@ using testing::DoubleEq;
 using testing::DoubleNear;
 using testing::Ne;
 
-class A1DBSplineForIRIT {
+class A1DBSplineForIRIT {  // NOLINT
  public:
   A1DBSplineForIRIT() {
     std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
@@ -59,7 +59,7 @@ class A1DBSplineForIRIT {
   virtual ~A1DBSplineForIRIT() = default;
 };
 
-class ASecond1DBSplineForIRIT {
+class ASecond1DBSplineForIRIT {  // NOLINT
  public:
   ASecond1DBSplineForIRIT() {
     std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
@@ -85,7 +85,7 @@ class ASecond1DBSplineForIRIT {
   virtual ~ASecond1DBSplineForIRIT() = default;
 };
 
-class A1DNURBSForIRIT {
+class A1DNURBSForIRIT {  // NOLINT
  public:
   A1DNURBSForIRIT() {
     std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
