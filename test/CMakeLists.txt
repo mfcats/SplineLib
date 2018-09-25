@@ -38,8 +38,9 @@ set(TEST_SOURCES
         xml_reader_test.cc
         basis_function_factory.cc
         element_integration_point_test.cc
-        irit_io_test.cc)
-
+        irit_io_1d_test.cpp
+        irit_io_2d_test.cpp
+        irit_io_3d_test.cpp)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})

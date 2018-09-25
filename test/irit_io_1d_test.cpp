@@ -24,7 +24,7 @@ using testing::DoubleEq;
 using testing::DoubleNear;
 using testing::Ne;
 
-class A1DBSplineForIRIT {
+class A1DBSplineForIRIT {  // NOLINT
  public:
   A1DBSplineForIRIT() {
     std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
@@ -58,7 +58,7 @@ class A1DBSplineForIRIT {
   std::shared_ptr<spl::BSpline<1>> b_spline_1_;
 };
 
-class ASecond1DBSplineForIRIT {
+class ASecond1DBSplineForIRIT {  // NOLINT
  public:
   ASecond1DBSplineForIRIT() {
     std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
@@ -83,7 +83,7 @@ class ASecond1DBSplineForIRIT {
   std::shared_ptr<spl::BSpline<1>> b_spline_2_;
 };
 
-class A1DNURBSForIRIT {
+class A1DNURBSForIRIT {  // NOLINT
  public:
   A1DNURBSForIRIT() {
     std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
@@ -122,7 +122,7 @@ TEST_F(A1DIRITReader, Finds3SplinesOfDimension1) {  // NOLINT
   ASSERT_THAT(irit_reader->ReadIRITFile(path_to_iris_file).size(), 3);
 }
 
-TEST_F(A1DIRITReader, ReturnsDegree3) {  // NOLINT
+TEST_F(A1DIRITReader, ReturnsCorrectDegree) {  // NOLINT
   ASSERT_THAT(std::any_cast<spl::BSpline<1>>(irit_reader->ReadIRITFile(path_to_iris_file)[0]).GetDegree(0).get(),
               b_spline_1_->GetDegree(0).get());
   ASSERT_THAT(std::any_cast<spl::BSpline<1>>(irit_reader->ReadIRITFile(path_to_iris_file)[1]).GetDegree(0).get(),
@@ -131,7 +131,7 @@ TEST_F(A1DIRITReader, ReturnsDegree3) {  // NOLINT
               nurbs_->GetDegree(0).get());
 }
 
-TEST_F(A1DIRITReader, ReturnsSameValueAsSplineFromIRITFile) {  // NOLINT
+TEST_F(A1DIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT
   std::vector<std::any> splines_from_file = irit_reader->ReadIRITFile(path_to_iris_file);
   ASSERT_THAT(std::any_cast<spl::BSpline<1>>(splines_from_file[0]).Evaluate({ParamCoord{10.5}}, {0})[0],
               DoubleEq(b_spline_1_->Evaluate({ParamCoord{10.5}}, {0})[0]));
@@ -155,15 +155,6 @@ class A1DIRITWriter : public Test, public A1DBSplineForIRIT, public ASecond1DBSp
   std::unique_ptr<io::IRITWriter<1>> irit_writer;
 };
 
-TEST_F(A1DIRITWriter, IsCreated) {  // NOLINT
-  irit_writer->WriteIRITFile("1d_splines.itd");
-  std::ifstream newFile;
-  newFile.open("1d_splines.itd");
-  ASSERT_TRUE(newFile.is_open());
-  newFile.close();
-  remove("1d_splines.itd");
-}
-
 TEST_F(A1DIRITWriter, ThrowsExceptionForWrongInputType) {  // NOLINT
   ASSERT_THROW(io::IRITWriter<1>({std::make_any<int>(8)}).WriteIRITFile("1d_splines.itd"), std::runtime_error);
   remove("1d_splines.itd");
@@ -174,9 +165,7 @@ TEST_F(A1DIRITWriter, CreatesCorrectFile) {  // NOLINT
   std::ifstream newFile;
   newFile.open("1d_splines.itd");
   std::string line, file;
-  while (getline(newFile, line)) {
-    file += line;
-  }
+  while (getline(newFile, line)) file += line;
   ASSERT_THAT(file.find("CURVE BSPLINE 16 4 E2"), Ne(std::string::npos));
   ASSERT_THAT(file.find("CURVE BSPLINE 8 3 E3"), Ne(std::string::npos));
   ASSERT_THAT(file.find("CURVE BSPLINE 6 3 P2"), Ne(std::string::npos));
@@ -202,170 +191,4 @@ TEST_F(A1DIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) 
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.48752)}, {0})[0],
               DoubleEq(nurbs_after.Evaluate({ParamCoord(0.48752)}, {0})[0]));
   remove("1d_splines.itd");
-}
-
-class A2DBSplineForIRIT {
- public:
-  A2DBSplineForIRIT() {
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                           ParamCoord{1}, ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                           ParamCoord{1}, ParamCoord{1}}))};
-    std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0, 0, 0})),
-        baf::ControlPoint(std::vector<double>({0, 1, 0.3})),
-        baf::ControlPoint(std::vector<double>({0, 2, 0.5})),
-        baf::ControlPoint(std::vector<double>({1, 0, 0.6})),
-        baf::ControlPoint(std::vector<double>({1, 1, 0.8})),
-        baf::ControlPoint(std::vector<double>({1, 2, 1})),
-        baf::ControlPoint(std::vector<double>({2, 0, 0.5})),
-        baf::ControlPoint(std::vector<double>({2, 1, 0.9})),
-        baf::ControlPoint(std::vector<double>({2, 2, 0.5}))
-    };
-    b_spline_ = std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points);
-  }
-
- protected:
-  std::shared_ptr<spl::BSpline<2>> b_spline_;
-};
-
-class A2DNURBSForIRIT {
- public:
-  A2DNURBSForIRIT() {
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                           ParamCoord{1}, ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                           ParamCoord{1}, ParamCoord{1}}))};
-    std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
-    std::vector<double> weights = {0.5, 0.5, 0.5, 1, 1, 1, 2, 2, 2};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0, 0})),
-        baf::ControlPoint(std::vector<double>({1, 0.3})),
-        baf::ControlPoint(std::vector<double>({2, 0.5})),
-        baf::ControlPoint(std::vector<double>({0, 0.6})),
-        baf::ControlPoint(std::vector<double>({1, 0.8})),
-        baf::ControlPoint(std::vector<double>({2, 1})),
-        baf::ControlPoint(std::vector<double>({0, 0.5})),
-        baf::ControlPoint(std::vector<double>({1, 0.9})),
-        baf::ControlPoint(std::vector<double>({2, 0.5}))
-    };
-    nurbs_ = std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
-  }
-
- protected:
-  std::shared_ptr<spl::NURBS<2>> nurbs_;
-};
-
-class A2DIRITReader : public Test, public A2DBSplineForIRIT, public A2DNURBSForIRIT {
- public:
-  A2DIRITReader() : irit_reader(std::make_unique<io::IRITReader<2>>()) {}
-
- protected:
-  std::unique_ptr<io::IRITReader<2>> irit_reader;
-};
-
-TEST_F(A2DIRITReader, Finds2SplinesOfDimension2) {  // NOLINT
-  ASSERT_THAT(irit_reader->ReadIRITFile(path_to_iris_file).size(), 2);
-}
-
-TEST_F(A2DIRITReader, ReturnsCorrectDegree) {  // NOLINT
-  ASSERT_THAT(std::any_cast<spl::BSpline<2>>(irit_reader->ReadIRITFile(path_to_iris_file)[0]).GetDegree(0).get(),
-              b_spline_->GetDegree(0).get());
-  ASSERT_THAT(std::any_cast<spl::NURBS<2>>(irit_reader->ReadIRITFile(path_to_iris_file)[1]).GetDegree(0).get(),
-              nurbs_->GetDegree(0).get());
-}
-
-TEST_F(A2DIRITReader, ReturnsSameValueAsSplineFromIRITFile) {  // NOLINT
-  std::vector<std::any> splines_from_file = irit_reader->ReadIRITFile(path_to_iris_file);
-  ASSERT_THAT(std::any_cast<spl::BSpline<2>>(splines_from_file[0]).Evaluate({ParamCoord{0.5}}, {0})[0],
-              DoubleEq(b_spline_->Evaluate({ParamCoord{0.5}}, {0})[0]));
-  ASSERT_THAT(std::any_cast<spl::NURBS<2>>(splines_from_file[1]).Evaluate({ParamCoord{0.123}}, {0})[0],
-              DoubleEq(nurbs_->Evaluate({ParamCoord{0.123}}, {0})[0]));
-}
-
-class A3DBSplineForIRIT {
- public:
-  A3DBSplineForIRIT() {
-    std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vector = {
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
-    std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{1}};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0, 0, 0})),
-        baf::ControlPoint(std::vector<double>({1, 0, 0})),
-        baf::ControlPoint(std::vector<double>({0, 1, 0})),
-        baf::ControlPoint(std::vector<double>({1, 1, 0})),
-        baf::ControlPoint(std::vector<double>({0, 0, 1})),
-        baf::ControlPoint(std::vector<double>({1, 0, 1})),
-        baf::ControlPoint(std::vector<double>({0, 1, 1})),
-        baf::ControlPoint(std::vector<double>({1, 1, 1}))
-    };
-    b_spline_ = std::make_shared<spl::BSpline<3>>(knot_vector, degree, control_points);
-  }
-
- protected:
-  std::shared_ptr<spl::BSpline<3>> b_spline_;
-};
-
-class A3DNURBSForIRIT {
- public:
-  A3DNURBSForIRIT() {
-    std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vector = {
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
-    std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{1}};
-    std::vector<double> weights = {0.2, 0.3, 0.5, 0.75, 1, 1.3, 1.5, 2};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0, 0, 0})),
-        baf::ControlPoint(std::vector<double>({1, 0, 0})),
-        baf::ControlPoint(std::vector<double>({0, 1, 0})),
-        baf::ControlPoint(std::vector<double>({1, 1, 0})),
-        baf::ControlPoint(std::vector<double>({0, 0, 1})),
-        baf::ControlPoint(std::vector<double>({1, 0, 1})),
-        baf::ControlPoint(std::vector<double>({0, 1, 1})),
-        baf::ControlPoint(std::vector<double>({1, 1, 1}))
-    };
-    nurbs_ = std::make_shared<spl::NURBS<3>>(knot_vector, degree, control_points, weights);
-  }
-
- protected:
-  std::shared_ptr<spl::NURBS<3>> nurbs_;
-};
-
-class A3DIRITReader : public Test, public A3DBSplineForIRIT, public A3DNURBSForIRIT {
- public:
-  A3DIRITReader() : irit_reader(std::make_unique<io::IRITReader<3>>()) {}
-
- protected:
-  std::unique_ptr<io::IRITReader<3>> irit_reader;
-};
-
-TEST_F(A3DIRITReader, Finds2SplinesOfDimension3) {  // NOLINT
-  ASSERT_THAT(irit_reader->ReadIRITFile(path_to_iris_file).size(), 2);
-}
-
-TEST_F(A3DIRITReader, ReturnsCorrectDegree) {  // NOLINT
-  ASSERT_THAT(std::any_cast<spl::BSpline<3>>(irit_reader->ReadIRITFile(path_to_iris_file)[0]).GetDegree(0).get(),
-              b_spline_->GetDegree(0).get());
-  ASSERT_THAT(std::any_cast<spl::NURBS<3>>(irit_reader->ReadIRITFile(path_to_iris_file)[1]).GetDegree(0).get(),
-              nurbs_->GetDegree(0).get());
-}
-// Todo: test all directions
-TEST_F(A3DIRITReader, ReturnsSameValueAsSplineFromIRITFile) {  // NOLINT
-  std::vector<std::any> splines_from_file = irit_reader->ReadIRITFile(path_to_iris_file);
-  ASSERT_THAT(std::any_cast<spl::BSpline<3>>(splines_from_file[0]).Evaluate({ParamCoord{0.5}}, {0})[0],
-              DoubleEq(b_spline_->Evaluate({ParamCoord{0.5}}, {0})[0]));
-  ASSERT_THAT(std::any_cast<spl::NURBS<3>>(splines_from_file[1]).Evaluate({ParamCoord{0.123}}, {0})[0],
-              DoubleEq(nurbs_->Evaluate({ParamCoord{0.123}}, {0})[0]));
 }
