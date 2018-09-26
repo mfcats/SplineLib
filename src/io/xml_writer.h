@@ -123,4 +123,4 @@ class XMLWriter {
 };
 }  // namespace io
 
-#endif  // SRC_IO_XML_WRITER_SPLINE_H_
+#endif  // SRC_IO_XML_WRITER_H_

@@ -36,7 +36,7 @@ class IRITWriter {
     newFile.open(filename);
     if (newFile.is_open()) {
       newFile << "[OBJECT SPLINES\n";
-      for (uint i = 0; i < splines_.size(); i++) {
+      for (unsigned int i = 0; i < splines_.size(); i++) {
         WriteSpline(newFile, i);
       }
       newFile.close();
@@ -44,7 +44,7 @@ class IRITWriter {
   }
 
  private:
-  void WriteSpline(std::ofstream &file, uint spline_number) const {
+  void WriteSpline(std::ofstream &file, unsigned int spline_number) const {
     std::shared_ptr<spl::Spline<DIM>> spline = util::AnyCasts<DIM>::GetSpline(splines_[spline_number]);
     bool rational = util::AnyCasts<DIM>::IsRational(splines_[spline_number]);
     file << "  [OBJECT SPLINE" + std::to_string(spline_number + 1) + "\n    [" + GetObjectType() + " BSPLINE "
