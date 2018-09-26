@@ -130,19 +130,19 @@ TEST_F(A3DIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT
 
 class A3DIRITWriter : public Test, public A3DBSplineForIRIT, public A3DNURBSForIRIT {
  public:
-  A3DIRITWriter() {
+  A3DIRITWriter() : irit_writer_(std::make_unique<io::IRITWriter<3>>()) {
     std::any b_spline_any = std::make_any<std::shared_ptr<spl::BSpline<3>>>(b_spline_);
     std::any nurbs_any = std::make_any<std::shared_ptr<spl::NURBS<3>>>(nurbs_);
-    std::vector<std::any> splines = {b_spline_any, nurbs_any};
-    irit_writer = std::make_unique<io::IRITWriter<3>>(splines);
+    splines_ = {b_spline_any, nurbs_any};
   }
 
  protected:
-  std::unique_ptr<io::IRITWriter<3>> irit_writer;
+  std::unique_ptr<io::IRITWriter<3>> irit_writer_;
+  std::vector<std::any> splines_;
 };
 
 TEST_F(A3DIRITWriter, CreatesCorrectFile) {  // NOLINT
-  irit_writer->WriteIRITFile("3d_splines.itd");
+  irit_writer_->WriteIRITFile(splines_, "3d_splines.itd");
   std::ifstream newFile;
   newFile.open("3d_splines.itd");
   std::string line, file;
@@ -159,7 +159,7 @@ TEST_F(A3DIRITWriter, CreatesCorrectFile) {  // NOLINT
 }
 
 TEST_F(A3DIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {  // NOLINT
-  irit_writer->WriteIRITFile("3d_splines.itd");
+  irit_writer_->WriteIRITFile(splines_, "3d_splines.itd");
   std::unique_ptr<io::IRITReader<3>> irit_reader(std::make_unique<io::IRITReader<3>>());
   auto bspline_after = std::any_cast<spl::BSpline<3>>(irit_reader->ReadIRITFile("3d_splines.itd")[0]);
   auto nurbs_after = std::any_cast<spl::NURBS<3>>(irit_reader->ReadIRITFile("3d_splines.itd")[1]);

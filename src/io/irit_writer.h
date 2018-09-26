@@ -29,28 +29,30 @@ namespace io {
 template<int DIM>
 class IRITWriter {
  public:
-  explicit IRITWriter(const std::vector<std::any> &splines) : splines_(splines) {}
+  IRITWriter() = default;
 
-  void WriteIRITFile(const std::string &filename) const {
+  void WriteIRITFile(const std::vector<std::any> &splines, const std::string &filename) const {
     std::ofstream newFile;
     newFile.open(filename);
     if (newFile.is_open()) {
       newFile << "[OBJECT SPLINES\n";
-      for (unsigned int i = 0; i < splines_.size(); i++) {
-        WriteSpline(newFile, i);
+      for (unsigned int i = 0; i < splines.size(); i++) {
+        WriteSpline(newFile, splines[i], i);
+        if (i < splines.size() - 1) newFile << "\n";
       }
+      newFile << "]";
       newFile.close();
     }
   }
 
  private:
-  void WriteSpline(std::ofstream &file, unsigned int spline_number) const {
-    std::shared_ptr<spl::Spline<DIM>> spline = util::AnyCasts<DIM>::GetSpline(splines_[spline_number]);
-    bool rational = util::AnyCasts<DIM>::IsRational(splines_[spline_number]);
+  void WriteSpline(std::ofstream &file, const std::any &spline, int spline_number) const {
+    std::shared_ptr<spl::Spline<DIM>> spline_ptr = util::AnyCasts<DIM>::GetSpline(spline);
+    bool rational = util::AnyCasts<DIM>::IsRational(spline);
     file << "  [OBJECT SPLINE" + std::to_string(spline_number + 1) + "\n    [" + GetObjectType() + " BSPLINE "
-        + GetNumberOfControlPoints(spline) + GetOrder(spline) + GetPointType(rational, spline) + "\n"
-        + GetKnotVectors(spline) + GetControlPoints(spline_number, rational, spline) + "    ]\n  ]\n"
-        + (spline_number < splines_.size() - 1 ? "\n" : "]");
+        + GetNumberOfControlPoints(spline_ptr) + GetOrder(spline_ptr) + GetPointType(rational, spline_ptr) + "\n"
+        + GetKnotVectors(spline_ptr) + GetControlPoints(util::AnyCasts<DIM>::IsRational(spline), spline_ptr, spline)
+        + "    ]\n  ]\n";
   }
 
   std::string GetObjectType() const {
@@ -91,24 +93,23 @@ class IRITWriter {
     return string;
   }
 
-  std::string GetControlPoints(int spline_number, bool rational, std::shared_ptr<spl::Spline<DIM>> spline) const {
+  std::string
+  GetControlPoints(bool rational, std::shared_ptr<spl::Spline<DIM>> spline_ptr, const std::any &spline) const {
     std::string string;
-    util::MultiIndexHandler<DIM> point_handler(spline->GetPointsPerDirection());
+    util::MultiIndexHandler<DIM> point_handler(spline_ptr->GetPointsPerDirection());
     std::shared_ptr<spl::NURBS<DIM>> nurbs;
     if (rational) {
-      nurbs = std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(splines_[spline_number]);
+      nurbs = std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
     }
     for (int control_point = 0; control_point < point_handler.Get1DLength(); ++control_point, point_handler++) {
       string += "      [" + (rational ? std::to_string(nurbs->GetWeight(point_handler.GetIndices())) + " " : "");
-      for (int dimension = 0; dimension < spline->GetDimension(); dimension++) {
-        string += std::to_string(spline->GetControlPoint(point_handler.GetIndices(), dimension))
-            + (dimension < spline->GetDimension() - 1 ? " " : "]\n");
+      for (int dimension = 0; dimension < spline_ptr->GetDimension(); dimension++) {
+        string += std::to_string(spline_ptr->GetControlPoint(point_handler.GetIndices(), dimension))
+            + (dimension < spline_ptr->GetDimension() - 1 ? " " : "]\n");
       }
     }
     return string;
   }
-
-  std::vector<std::any> splines_;
 };
 }  // namespace io
 

@@ -120,19 +120,19 @@ TEST_F(A2DIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT
 
 class A2DIRITWriter : public Test, public A2DBSplineForIRIT, public A2DNURBSForIRIT {
  public:
-  A2DIRITWriter() {
+  A2DIRITWriter() : irit_writer_(std::make_unique<io::IRITWriter<2>>()) {
     std::any b_spline_any = std::make_any<std::shared_ptr<spl::BSpline<2>>>(b_spline_);
     std::any nurbs_any = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_);
-    std::vector<std::any> splines = {b_spline_any, nurbs_any};
-    irit_writer = std::make_unique<io::IRITWriter<2>>(splines);
+    splines_ = {b_spline_any, nurbs_any};
   }
 
  protected:
-  std::unique_ptr<io::IRITWriter<2>> irit_writer;
+  std::unique_ptr<io::IRITWriter<2>> irit_writer_;
+  std::vector<std::any> splines_;
 };
 
 TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
-  irit_writer->WriteIRITFile("2d_splines.itd");
+  irit_writer_->WriteIRITFile(splines_, "2d_splines.itd");
   std::ifstream newFile;
   newFile.open("2d_splines.itd");
   std::string line, file;
@@ -149,7 +149,7 @@ TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
 }
 
 TEST_F(A2DIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {  // NOLINT
-  irit_writer->WriteIRITFile("2d_splines.itd");
+  irit_writer_->WriteIRITFile(splines_, "2d_splines.itd");
   std::unique_ptr<io::IRITReader<2>> irit_reader(std::make_unique<io::IRITReader<2>>());
   auto bspline_after = std::any_cast<spl::BSpline<2>>(irit_reader->ReadIRITFile("2d_splines.itd")[0]);
   auto nurbs_after = std::any_cast<spl::NURBS<2>>(irit_reader->ReadIRITFile("2d_splines.itd")[1]);

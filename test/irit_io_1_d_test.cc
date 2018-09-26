@@ -146,25 +146,25 @@ TEST_F(A1DIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT
 
 class A1DIRITWriter : public Test, public A1DBSplineForIRIT, public ASecond1DBSplineForIRIT, public A1DNURBSForIRIT {
  public:
-  A1DIRITWriter() {
+  A1DIRITWriter() : irit_writer_(std::make_unique<io::IRITWriter<1>>()) {
     std::any b_spline_1_any = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_1_);
     std::any b_spline_2_any = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_2_);
     std::any nurbs_any = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_);
-    std::vector<std::any> splines = {b_spline_1_any, b_spline_2_any, nurbs_any};
-    irit_writer = std::make_unique<io::IRITWriter<1>>(splines);
+    splines_ = {b_spline_1_any, b_spline_2_any, nurbs_any};
   }
 
  protected:
-  std::unique_ptr<io::IRITWriter<1>> irit_writer;
+  std::unique_ptr<io::IRITWriter<1>> irit_writer_;
+  std::vector<std::any> splines_;
 };
 
 TEST_F(A1DIRITWriter, ThrowsExceptionForWrongInputType) {  // NOLINT
-  ASSERT_THROW(io::IRITWriter<1>({std::make_any<int>(8)}).WriteIRITFile("1d_splines.itd"), std::runtime_error);
+  ASSERT_THROW(io::IRITWriter<1>().WriteIRITFile({std::make_any<int>(8)}, "1d_splines.itd"), std::runtime_error);
   remove("1d_splines.itd");
 }
 
 TEST_F(A1DIRITWriter, CreatesCorrectFile) {  // NOLINT
-  irit_writer->WriteIRITFile("1d_splines.itd");
+  irit_writer_->WriteIRITFile(splines_, "1d_splines.itd");
   std::ifstream newFile;
   newFile.open("1d_splines.itd");
   std::string line, file;
@@ -184,7 +184,7 @@ TEST_F(A1DIRITWriter, CreatesCorrectFile) {  // NOLINT
 }
 
 TEST_F(A1DIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {  // NOLINT
-  irit_writer->WriteIRITFile("1d_splines.itd");
+  irit_writer_->WriteIRITFile(splines_, "1d_splines.itd");
   std::unique_ptr<io::IRITReader<1>> irit_reader(std::make_unique<io::IRITReader<1>>());
   auto bspline_1_after = std::any_cast<spl::BSpline<1>>(irit_reader->ReadIRITFile("1d_splines.itd")[0]);
   auto bspline_2_after = std::any_cast<spl::BSpline<1>>(irit_reader->ReadIRITFile("1d_splines.itd")[1]);
