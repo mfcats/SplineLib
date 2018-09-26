@@ -111,7 +111,7 @@ class IGESWriter {
     if (GetDimension(spline) == 126) {
       GetParameterData1D(contents, delimiter, spline);
     } else if (GetDimension(spline) == 128) {
-      //GetParameterData2D(contents, delimiter, spline);
+      GetParameterData2D(contents, delimiter, spline);
     }
     contents += endDelimiter;
     return GetParameterSectionLayout(contents, entityPosition, pLine);
@@ -127,23 +127,55 @@ class IGESWriter {
     return parameterData;
   }
 
-  void GetParameterData1D(std::string &contents, const std::string &delimiter, std::any spline) {
-    auto spl = std::any_cast<spl::BSpline<1>>(spline);
+  void GetParameterData1D(std::string &contents, const std::string &delimiter, const std::any &spline) {
+    std::shared_ptr<spl::Spline<1>> spl;
+    if (IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
+    if (!IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
     AddToContents(contents,
                   {GetString(126),
-                   GetString(spl.GetKnotVector(0)->GetNumberOfKnots() - spl.GetDegree(0).get() - 2),
-                   GetString(spl.GetDegree(0).get()), GetString(0), GetString(0), GetString(1), GetString(0)},
-                  delimiter);
+                   GetString(spl->GetKnotVector(0)->GetNumberOfKnots() - spl->GetDegree(0).get() - 2),
+                   GetString(spl->GetDegree(0).get()), GetString(0), GetString(0), GetString(!IsRational(spline)),
+                   GetString(0)}, delimiter);
 
-    auto knots = spl.GetKnots()[0];
+    auto knots = spl->GetKnots()[0];
     for (size_t i = 0; i < knots.size(); ++i) {
       contents += GetString(knots[i].get()) + delimiter;
     }
-    std::vector<double> weights = spl.GetWeights();
+    std::vector<double> weights = spl->GetWeights();
     for (size_t i = 0; i < weights.size(); ++i) {
       contents += GetString(weights[i]) + delimiter;
     }
-    std::vector<double> control_points = spl.GetControlPoints();
+    std::vector<double> control_points = spl->GetControlPoints();
+    for (size_t i = 0; i < control_points.size() - 1; ++i) {
+      contents += GetString(control_points[i]) + delimiter;
+    }
+    contents += GetString(control_points[control_points.size() - 1]);
+  }
+  
+  void GetParameterData2D(std::string &contents, const std::string &delimiter, const std::any &spline) {
+    std::shared_ptr<spl::Spline<2>> spl;
+    if (IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
+    if (!IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
+    AddToContents(contents,
+                  {GetString(128),
+                   GetString(spl->GetKnotVector(0)->GetNumberOfKnots() - spl->GetDegree(0).get() - 2),
+                   GetString(spl->GetKnotVector(1)->GetNumberOfKnots() - spl->GetDegree(1).get() - 2),
+                   GetString(spl->GetDegree(0).get()), GetString(spl->GetDegree(1).get()),
+                   GetString(0), GetString(0), GetString(!IsRational(spline)), GetString(0), GetString(0)},
+                   delimiter);
+    auto knots1 = spl->GetKnots()[0];
+    auto knots2 = spl->GetKnots()[1];
+    for (size_t i = 0; i < knots1.size(); ++i) {
+      contents += GetString(knots1[i].get()) + delimiter;
+    }
+    for (size_t i = 0; i < knots2.size(); ++i) {
+      contents += GetString(knots2[i].get()) + delimiter;
+    }
+    std::vector<double> weights = spl->GetWeights();
+    for (size_t i = 0; i < weights.size(); ++i) {
+      contents += GetString(weights[i]) + delimiter;
+    }
+    std::vector<double> control_points = spl->GetControlPoints();
     for (size_t i = 0; i < control_points.size() - 1; ++i) {
       contents += GetString(control_points[i]) + delimiter;
     }
@@ -182,11 +214,11 @@ class IGESWriter {
   int GetDimension(std::any spline) {
     if (IsRational(spline)) {
       try {
-        std::any_cast<spl::NURBS<1>>(spline);
+        std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
         return 126;
       } catch (std::bad_any_cast &msg) {
         try {
-          std::any_cast<spl::NURBS<2>>(spline);
+          std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
           return 128;
         } catch (std::bad_any_cast &msg) {
           throw std::runtime_error("IGES writer can only write 1D and 2D splines.");
@@ -194,11 +226,11 @@ class IGESWriter {
       }
     } else {
       try {
-        std::any_cast<spl::BSpline<1>>(spline);
+        std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
         return 126;
       } catch (std::bad_any_cast &msg) {
         try {
-          std::any_cast<spl::BSpline<2>>(spline);
+          std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
           return 128;
         } catch (std::bad_any_cast &msg) {
           throw std::runtime_error("IGES writer can only write 1D and 2D splines.");
@@ -209,11 +241,11 @@ class IGESWriter {
 
   bool IsRational(std::any spline) {
     try {
-      std::any_cast<spl::NURBS<1>>(spline);
+      std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
       return true;
     } catch (std::bad_any_cast &msg) {
       try {
-        std::any_cast<spl::NURBS<2>>(spline);
+        std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
         return true;
       } catch (std::bad_any_cast &msg) {
         return false;
@@ -280,19 +312,19 @@ class IGESWriter {
       bool isRational = IsRational(spline);
       if (dimension == 126) {
         if (isRational) {
-          auto spl = std::any_cast<spl::NURBS<1>>(spline);
-          if (highestValue < spl.GetExpansion()) highestValue = spl.GetExpansion();
+          auto spl = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
+          if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
         } else if (!isRational) {
-          auto spl = std::any_cast<spl::BSpline<1>>(spline);
-          if (highestValue < spl.GetExpansion()) highestValue = spl.GetExpansion();
+          auto spl = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
+          if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
         }
       } else if (dimension == 128) {
         if (isRational) {
-          auto spl = std::any_cast<spl::NURBS<2>>(spline);
-          if (highestValue < spl.GetExpansion()) highestValue = spl.GetExpansion();
+          auto spl = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
+          if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
         } else if (!isRational) {
-          auto spl = std::any_cast<spl::BSpline<2>>(spline);
-          if (highestValue < spl.GetExpansion()) highestValue = spl.GetExpansion();
+          auto spl = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
+          if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
         }
       }
 

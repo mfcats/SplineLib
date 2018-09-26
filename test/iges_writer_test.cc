@@ -39,12 +39,13 @@ class AnIGESFileFromSpline : public Test {
           baf::ControlPoint(std::vector<double>({5.0, 0.0}))
       };
       knot_vector_[0] = {std::make_shared<baf::KnotVector>(knot_vector[0])};
-      spl::BSplineGenerator<1> b_spline_generator(knot_vector_, degree_, control_points_);
       iges_writer_ = std::make_unique<io::IGESWriter>();
-      splines.emplace_back(std::make_any<spl::BSpline<1>>(knot_vector_, degree_, control_points_));
+      spline = std::make_shared<spl::BSpline<1>>(knot_vector_, degree_, control_points_);
+      splines.emplace_back(std::make_any<std::shared_ptr<spl::BSpline<1>>>(spline));
     }
 
     protected:
+    std::shared_ptr<spl::BSpline<1>> spline;
     std::vector<std::any> splines;
     std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_;
     std::array<Degree, 1> degree_;
