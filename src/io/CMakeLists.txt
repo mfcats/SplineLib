@@ -29,8 +29,9 @@ install(
 
 
 install(FILES
+        iges_reader.h
+        irit_reader.h
+        irit_writer.h
         xml_reader.h
-        xml_writer_spline.h
-        xml_writer_b_spline.h
-        xml_writer_nurbs.h
+        xml_writer.h
         DESTINATION "${include_install_dir}")

@@ -33,14 +33,14 @@ set(TEST_SOURCES
         parameter_space_test.cc
         physical_space_test.cc
         weighted_physical_space_test.cc
-        xml_writer_b_spline_test.cc
-        xml_writer_nurbs_test.cc
-        xml_reader_test.cc
         basis_function_factory.cc
         element_integration_point_test.cc
-        irit_io_1d_test.cpp
-        irit_io_2d_test.cpp
-        irit_io_3d_test.cpp)
+        irit_io_1_d_test.cc
+        irit_io_2_d_test.cc
+        irit_io_3_d_test.cc
+        xml_reader_test.cc
+        xml_writer_1d_test.cc
+        xml_writer_2d_test.cc)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})

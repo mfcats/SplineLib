@@ -21,8 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace util {
 class StringOperations {
  public:
-  static
-  std::vector<std::string> split(const std::string &string, char delimiter) {
+  static std::vector<std::string> split(const std::string &string, char delimiter) {
     std::stringstream ss_string(string);
     std::string current_line;
     std::string current_value;

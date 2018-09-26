@@ -34,6 +34,7 @@ class ParameterSpace {
 
   ParameterSpace(const std::array<std::shared_ptr<baf::KnotVector>, DIM> &knot_vector, std::array<Degree, DIM> degree) :
       knot_vector_(knot_vector), degree_(degree) {
+    ThrowIfKnotVectorDoesNotStartAndEndWith();
     baf::BasisFunctionFactory factory;
     for (int i = 0; i < DIM; i++) {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
@@ -160,6 +161,25 @@ class ParameterSpace {
   }
 
  private:
+  void ThrowIfKnotVectorDoesNotStartAndEndWith() {
+    for (int i = 0; i < DIM; i++) {
+      if (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) < 2 * degree_[i].get() + 2) {
+        throw std::runtime_error("There have to be at least 2p + 2 knots.");
+      }
+      for (int j = 1; j < degree_[i].get() + 1; j++) {
+        if (knot_vector_[i]->GetKnot(0).get() != knot_vector_[i]->GetKnot(j).get()) {
+          throw std::runtime_error("The first knot must have multiplicity p+1.");
+        }
+      }
+      for (int j = static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - 2;
+           j > static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 2; j--) {
+        if (knot_vector_[i]->GetLastKnot().get() != knot_vector_[i]->GetKnot(j).get()) {
+          throw std::runtime_error("The last knot must have multiplicity p+1.");
+        }
+      }
+    }
+  }
+
   std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector_;
   std::array<Degree, DIM> degree_;
   std::array<std::vector<std::shared_ptr<baf::BasisFunction>>, DIM> basis_functions_;

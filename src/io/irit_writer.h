@@ -21,6 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
+#include "any_casts.h"
 #include "b_spline.h"
 #include "nurbs.h"
 
@@ -35,7 +36,7 @@ class IRITWriter {
     newFile.open(filename);
     if (newFile.is_open()) {
       newFile << "[OBJECT SPLINES\n";
-      for (uint i = 0; i < splines_.size(); i++) {
+      for (unsigned int i = 0; i < splines_.size(); i++) {
         WriteSpline(newFile, i);
       }
       newFile.close();
@@ -43,33 +44,13 @@ class IRITWriter {
   }
 
  private:
-  void WriteSpline(std::ofstream &file, uint spline_number) const {
-    std::shared_ptr<spl::Spline<DIM>> spline = GetSpline(spline_number);
+  void WriteSpline(std::ofstream &file, unsigned int spline_number) const {
+    std::shared_ptr<spl::Spline<DIM>> spline = util::AnyCasts<DIM>::GetSpline(splines_[spline_number]);
+    bool rational = util::AnyCasts<DIM>::IsRational(splines_[spline_number]);
     file << "  [OBJECT SPLINE" + std::to_string(spline_number + 1) + "\n    [" + GetObjectType() + " BSPLINE "
-        + GetNumberOfControlPoints(spline) + GetOrder(spline) + GetPointType(IsRational(spline_number), spline) + "\n"
-        + GetKnotVectors(spline) + GetControlPoints(spline_number, IsRational(spline_number), spline) + "    ]\n  ]\n"
+        + GetNumberOfControlPoints(spline) + GetOrder(spline) + GetPointType(rational, spline) + "\n"
+        + GetKnotVectors(spline) + GetControlPoints(spline_number, rational, spline) + "    ]\n  ]\n"
         + (spline_number < splines_.size() - 1 ? "\n" : "]");
-  }
-
-  std::shared_ptr<spl::Spline<DIM>> GetSpline(int spline_number) const {
-    try {
-      return std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(splines_[spline_number]);
-    } catch (std::bad_any_cast &msg) {
-      try {
-        return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(splines_[spline_number]);
-      } catch (std::bad_any_cast &msg) {
-        throw std::runtime_error("Input has to be a vector of pointers to b-splines or nurbs.");
-      }
-    }
-  }
-
-  bool IsRational(int spline_number) const {
-    try {
-      std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(splines_[spline_number]);
-      return true;
-    } catch (std::bad_any_cast &msg) {
-      return false;
-    }
   }
 
   std::string GetObjectType() const {
