@@ -59,7 +59,11 @@ class IGESWriter {
         }
         paramStart += paramTemp.size();
       }
-      WriteFile(newFile, start, global, dataEntry, parameter);
+      std::vector<std::string> terminate = GetTerminateSection(static_cast<int>(start.size()),
+                                                               static_cast<int>(global.size()),
+                                                               static_cast<int>(dataEntry.size()),
+                                                               static_cast<int>(parameter.size()));
+      WriteFile(newFile, start, global, dataEntry, parameter, terminate);
     } else {
       throw std::runtime_error("The IGES file couldn't be opened.");
     }
@@ -169,6 +173,12 @@ class IGESWriter {
     return dataEntrySection;
   }
 
+  std::vector<std::string> GetTerminateSection(int linesS, int linesG, int linesD, int linesP) {
+    return {'S' + GetBlock(GetString(linesS), 7, true) + 'G' + GetBlock(GetString(linesG), 7, true) + 'D'
+            + GetBlock(GetString(linesD), 7, true) + 'P' + GetBlock(GetString(linesP), 7, true)
+            + GetBlock("T", 41, true) + GetBlock(GetString(1), 7, true)};
+  }
+
   int GetDimension(std::any spline) {
     if (IsRational(spline)) {
       try {
@@ -235,12 +245,12 @@ class IGESWriter {
 
   void WriteFile(std::ofstream &file, const std::vector<std::string> &start,
                  const std::vector<std::string> &global, const std::vector<std::string> &data,
-                 const std::vector<std::string> &parameter/*, const std::vector<std::string> &terminate*/) {
+                 const std::vector<std::string> &parameter, const std::vector<std::string> &terminate) {
     AppendToFile(file, start);
     AppendToFile(file, global);
     AppendToFile(file, data);
     AppendToFile(file, parameter);
-    //AppendToFile(file, terminate);
+    AppendToFile(file, terminate);
   }
 
   void AppendToFile(std::ofstream &file, const std::vector<std::string> &contents) {
