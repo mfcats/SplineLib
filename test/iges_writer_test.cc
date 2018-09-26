@@ -12,7 +12,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <any>
 #include <config.h>
+#include <vector>
 #include "gmock/gmock.h"
 #include "iges_writer.h"
 
@@ -38,12 +40,12 @@ class AnIGESFileFromSpline : public Test {
       };
       knot_vector_[0] = {std::make_shared<baf::KnotVector>(knot_vector[0])};
       spl::BSplineGenerator<1> b_spline_generator(knot_vector_, degree_, control_points_);
-      b_spline = std::make_unique<spl::BSpline<1>>(b_spline_generator);
       iges_writer_ = std::make_unique<io::IGESWriter>();
+      splines.emplace_back(std::make_any<spl::BSpline<1>>(knot_vector_, degree_, control_points_));
     }
 
     protected:
-    std::unique_ptr<spl::BSpline<1>> b_spline;
+    std::vector<std::any> splines;
     std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_;
     std::array<Degree, 1> degree_;
     std::vector<baf::ControlPoint> control_points_;
@@ -51,5 +53,5 @@ class AnIGESFileFromSpline : public Test {
   };
 
 TEST_F(AnIGESFileFromSpline, Test1) {
-  iges_writer_->WriteIGESFile(*(b_spline), iges_write);
+  iges_writer_->WriteIGESFile(splines, iges_write);
 }

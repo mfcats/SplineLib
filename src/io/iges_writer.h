@@ -27,6 +27,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <config.h>
 #include "spline.h"
 #include "b_spline.h"
+#include "nurbs.h"
 #include "multi_index_handler.h"
 
 namespace io {
@@ -34,11 +35,31 @@ class IGESWriter {
  public:
   IGESWriter() = default;
 
-  void WriteIGESFile(spl::BSpline<1> b_spline, const std::string &filename) {
+  void WriteIGESFile(std::vector<std::any> splines, const std::string &filename) {
     std::ofstream newFile;
     newFile.open(filename);
     if (newFile.is_open()) {
-      WriteFile(newFile, GetStartSection(), GetGlobalSection(filename, ",", ";", b_spline), GetParameterData(",", ";", b_spline));
+      std::vector<std::string> start = GetStartSection();
+      std::vector<std::string> global = GetGlobalSection(filename, ",", ";", splines);
+      std::vector<std::string> parameter;
+      std::vector<std::string> dataEntry;
+      int dLine = 0;
+      int pLine = 0;
+      int entityPosition = 1;
+      int paramStart = 1;
+      for (auto &spline : splines) {
+        std::vector<std::string> paramTemp = GetParameterData(",", ";", spline, entityPosition, pLine);
+        for (auto &param : paramTemp) {
+          parameter.emplace_back(param);
+        }
+        entityPosition += 2;
+        std::vector<std::string> dataTemp = GetDataEntry(paramStart, paramTemp.size(), spline, dLine);
+        for (auto &data : dataTemp) {
+          dataEntry.emplace_back(data);
+        }
+        paramStart += paramTemp.size();
+      }
+      WriteFile(newFile, start, global, dataEntry, parameter);
     } else {
       throw std::runtime_error("The IGES file couldn't be opened.");
     }
@@ -51,7 +72,7 @@ class IGESWriter {
   }
 
   std::vector<std::string> GetGlobalSection(const std::string &filename, const std::string &delimiter,
-                                            const std::string &endDelimiter, spl::BSpline<1> b_spline) {
+                                            const std::string &endDelimiter, std::vector<std::any> splines) {
     std::string contents;
     AddToContents(contents, {GetHollerithFormat(delimiter), GetHollerithFormat(endDelimiter),
                              GetHollerithFormat("unknown"), filename, GetHollerithFormat("SplineLib"),
@@ -63,7 +84,7 @@ class IGESWriter {
                              GetString(std::numeric_limits<double>::digits), GetHollerithFormat("unknown"),
                              GetString(1.0),
                              GetString(2), GetHollerithFormat("MM"), GetString(1), GetString(0.001),
-                             GetHollerithFormat(GetTime()), GetString(0.000001), GetString(GetHighestValue(b_spline)),
+                             GetHollerithFormat(GetTime()), GetString(0.000001), GetString(GetHighestValue(splines)),
                              GetHollerithFormat("unknown"), GetHollerithFormat("unknown"), GetString(11),
                              GetString(0), GetHollerithFormat(GetTime())}, delimiter);
     contents += endDelimiter;
@@ -73,7 +94,7 @@ class IGESWriter {
   std::vector<std::string> GetGlobalSectionLayout(const std::string &contents) {
     int line = 0;
     std::vector<std::string> globalSection;
-    for (unsigned long i = 0; i <= contents.size() / 72; i++) {
+    for (unsigned long i = 0; i <= (contents.size() - 1) / 72; i++) {
       globalSection.emplace_back(GetBlock(contents.substr(i * 72, 72), 72, false)
                                      + 'G' + GetBlock(GetString(++line), 7, true));
     }
@@ -81,45 +102,113 @@ class IGESWriter {
   }
 
   std::vector<std::string> GetParameterData(const std::string &delimiter, const std::string &endDelimiter,
-                                            spl::BSpline<1> b_spline) {
+                                            const std::any &spline, int entityPosition, int pLine) {
     std::string contents;
-    GetParameterData1D(contents, delimiter, b_spline);
+    if (GetDimension(spline) == 126) {
+      GetParameterData1D(contents, delimiter, spline);
+    } else if (GetDimension(spline) == 128) {
+      //GetParameterData2D(contents, delimiter, spline);
+    }
     contents += endDelimiter;
-    return GetParameterSectionLayout(contents);
+    return GetParameterSectionLayout(contents, entityPosition, pLine);
   }
 
-  std::vector<std::string> GetParameterSectionLayout(const std::string &contents) {
-    int line = 0;
+  std::vector<std::string> GetParameterSectionLayout(const std::string &contents, int entityPosition, int pLine) {
     std::vector<std::string> parameterData;
     for (unsigned long i = 0; i <= contents.size() / 64; i++) {
       parameterData.emplace_back(GetBlock(contents.substr(i * 64, 64), 64, false)
-                                     + ' ' + GetBlock(GetString(1), 7, true)
-                                     + 'P' + GetBlock(GetString(++line), 7, true));
+                                     + ' ' + GetBlock(GetString(entityPosition), 7, true)
+                                     + 'P' + GetBlock(GetString(++pLine), 7, true));
     }
     return parameterData;
   }
 
-
-  void GetParameterData1D(std::string &contents, const std::string &delimiter, spl::BSpline<1> b_spline) {
+  void GetParameterData1D(std::string &contents, const std::string &delimiter, std::any spline) {
+    auto spl = std::any_cast<spl::BSpline<1>>(spline);
     AddToContents(contents,
                   {GetString(126),
-                   GetString(b_spline.GetKnotVector(0)->GetNumberOfKnots() - b_spline.GetDegree(0).get() - 2),
-                   GetString(b_spline.GetDegree(0).get()), GetString(0), GetString(0), GetString(1), GetString(0)},
+                   GetString(spl.GetKnotVector(0)->GetNumberOfKnots() - spl.GetDegree(0).get() - 2),
+                   GetString(spl.GetDegree(0).get()), GetString(0), GetString(0), GetString(1), GetString(0)},
                   delimiter);
 
-    auto knots = b_spline.GetKnots()[0];
+    auto knots = spl.GetKnots()[0];
     for (size_t i = 0; i < knots.size(); ++i) {
       contents += GetString(knots[i].get()) + delimiter;
     }
-    std::vector<double> weights = b_spline.GetWeights();
+    std::vector<double> weights = spl.GetWeights();
     for (size_t i = 0; i < weights.size(); ++i) {
       contents += GetString(weights[i]) + delimiter;
     }
-    std::vector<double> control_points = b_spline.GetControlPoints();
+    std::vector<double> control_points = spl.GetControlPoints();
     for (size_t i = 0; i < control_points.size() - 1; ++i) {
       contents += GetString(control_points[i]) + delimiter;
     }
     contents += GetString(control_points[control_points.size() - 1]);
+  }
+
+  std::vector<std::string> GetDataEntry(int paramStart, int paramLength, const std::any &spline, int dLine) {
+    std::string contents;
+    AddToContents(contents,
+                  {GetBlock(GetString(GetDimension(spline)), 8, true), GetBlock(GetString(paramStart), 8, true),
+                   GetBlock(GetString(0), 8, true), GetBlock(GetString(0), 8, true), GetBlock(GetString(0), 8, true),
+                   GetBlock(GetString(0), 8, true), GetBlock(GetString(0), 8, true), GetBlock(GetString(0), 8, true),
+                   " 0 0 0 1", GetBlock(GetString(GetDimension(spline)), 8, true),
+                   GetBlock(GetString(0), 8, true), GetBlock(GetString(0), 8, true),
+                   GetBlock(GetString(paramLength), 8, true), GetBlock(GetString(0), 8, true),
+                   GetBlock("", 16, true), GetBlock("SPLINE", 8, true), GetBlock(GetString(0), 8, true),
+                   GetBlock(GetString(1), 8, true)},"");
+    return GetDataEntrySectionLayout(contents, dLine);
+  }
+
+  std::vector<std::string> GetDataEntrySectionLayout(const std::string &contents, int dLine) {
+    std::vector<std::string> dataEntrySection;
+    for (unsigned long i = 0; i <= (contents.size() - 1) / 72; i++) {
+      dataEntrySection.emplace_back(GetBlock(contents.substr(i * 72, 72), 72, false)
+                                     + 'D' + GetBlock(GetString(++dLine), 7, true));
+    }
+    return dataEntrySection;
+  }
+
+  int GetDimension(std::any spline) {
+    if (IsRational(spline)) {
+      try {
+        std::any_cast<spl::NURBS<1>>(spline);
+        return 126;
+      } catch (std::bad_any_cast &msg) {
+        try {
+          std::any_cast<spl::NURBS<2>>(spline);
+          return 128;
+        } catch (std::bad_any_cast &msg) {
+          throw std::runtime_error("IGES writer can only write 1D and 2D splines.");
+        }
+      }
+    } else {
+      try {
+        std::any_cast<spl::BSpline<1>>(spline);
+        return 126;
+      } catch (std::bad_any_cast &msg) {
+        try {
+          std::any_cast<spl::BSpline<2>>(spline);
+          return 128;
+        } catch (std::bad_any_cast &msg) {
+          throw std::runtime_error("IGES writer can only write 1D and 2D splines.");
+        }
+      }
+    }
+  }
+
+  bool IsRational(std::any spline) {
+    try {
+      std::any_cast<spl::NURBS<1>>(spline);
+      return true;
+    } catch (std::bad_any_cast &msg) {
+      try {
+        std::any_cast<spl::NURBS<2>>(spline);
+        return true;
+      } catch (std::bad_any_cast &msg) {
+        return false;
+      }
+    }
   }
 
   void AddToContents(std::string &contents, const std::vector<std::string> &add, const std::string &delimiter) {
@@ -137,28 +226,19 @@ class IGESWriter {
   }
 
   template <typename T>
-  std::string GetString(const T value, const int precision)
-  {
-    std::ostringstream out;
-    out << std::setprecision(precision) << value;
-    return out.str();
-  }
-
-  template <typename T>
   std::string GetString(const T value)
   {
-    //return std::to_string(value);
     std::ostringstream out;
     out << value;
     return out.str();
   }
 
   void WriteFile(std::ofstream &file, const std::vector<std::string> &start,
-                 const std::vector<std::string> &global/*, const std::vector<std::string> &data*/,
+                 const std::vector<std::string> &global, const std::vector<std::string> &data,
                  const std::vector<std::string> &parameter/*, const std::vector<std::string> &terminate*/) {
     AppendToFile(file, start);
     AppendToFile(file, global);
-    //AppendToFile(file, data);
+    AppendToFile(file, data);
     AppendToFile(file, parameter);
     //AppendToFile(file, terminate);
   }
@@ -183,8 +263,31 @@ class IGESWriter {
     return date;
   }
 
-  double GetHighestValue(spl::BSpline<1> b_spline) {
-    return b_spline.GetExpansion();
+  double GetHighestValue(std::vector<std::any> splines) {
+    double highestValue = 0;
+    for (auto &spline : splines) {
+      int dimension = GetDimension(spline);
+      bool isRational = IsRational(spline);
+      if (dimension == 126) {
+        if (isRational) {
+          auto spl = std::any_cast<spl::NURBS<1>>(spline);
+          if (highestValue < spl.GetExpansion()) highestValue = spl.GetExpansion();
+        } else if (!isRational) {
+          auto spl = std::any_cast<spl::BSpline<1>>(spline);
+          if (highestValue < spl.GetExpansion()) highestValue = spl.GetExpansion();
+        }
+      } else if (dimension == 128) {
+        if (isRational) {
+          auto spl = std::any_cast<spl::NURBS<2>>(spline);
+          if (highestValue < spl.GetExpansion()) highestValue = spl.GetExpansion();
+        } else if (!isRational) {
+          auto spl = std::any_cast<spl::BSpline<2>>(spline);
+          if (highestValue < spl.GetExpansion()) highestValue = spl.GetExpansion();
+        }
+      }
+
+    }
+    return highestValue;
   }
 };
 }
