@@ -29,14 +29,14 @@ namespace io {
 template<int DIM>
 class XMLWriter {
  public:
-  XMLWriter() {}
+  XMLWriter() = default;
 
   void WriteXMLFile(const std::vector<std::any> &splines, const char *filename) {
     pugi::xml_document doc;
     pugi::xml_node spline_list = doc.append_child("SplineList");
     spline_list.append_attribute("NumberOfSplines") = std::to_string(splines.size()).c_str();
-    for (int i = 0; i < static_cast<int>(splines.size()); i++) {
-      AddSpline(&spline_list, splines[i]);
+    for (const auto &spline : splines) {
+      AddSpline(&spline_list, spline);
     }
     doc.save_file(filename, "  ", pugi::format_indent_attributes, pugi::encoding_utf8);
   }
