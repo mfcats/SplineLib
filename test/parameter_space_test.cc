@@ -43,6 +43,24 @@ class A1DParameterSpace : public Test {
   spl::ParameterSpace<1> parameter_space;
 };
 
+TEST_F(A1DParameterSpace, ThrowsForTooShortKnotVector) {  // NOLINT
+  knot_vector_ = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                                    ParamCoord{5}, ParamCoord{5}}))};
+  ASSERT_THROW(spl::ParameterSpace<1>(knot_vector_, degree_), std::runtime_error);
+}
+
+TEST_F(A1DParameterSpace, ThrowsForMissingMultiplicityOfFirstKnot) {  // NOLINT
+  knot_vector_ = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                                     ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))};
+  ASSERT_THROW(spl::ParameterSpace<1>(knot_vector_, degree_), std::runtime_error);
+}
+
+TEST_F(A1DParameterSpace, ThrowsForMissingMultiplicityOfLastKnot) {  // NOLINT
+  knot_vector_ = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                                     ParamCoord{4}, ParamCoord{5}, ParamCoord{5}}))};
+  ASSERT_THROW(spl::ParameterSpace<1>(knot_vector_, degree_), std::runtime_error);
+}
+
 TEST_F(A1DParameterSpace, returnsCorrectDegree) {  // NOLINT
   ASSERT_THAT(parameter_space.GetDegree(0), Degree{2});
 }
