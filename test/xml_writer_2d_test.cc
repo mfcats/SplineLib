@@ -31,14 +31,17 @@ class A2DBSplineForXML {  // NOLINT
         std::make_shared<baf::KnotVector>(baf::KnotVector(
             {ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}))};
+            {ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({1.0, 0.0, 1.0})),
         baf::ControlPoint(std::vector<double>({2.0, 0.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({0.0, 1.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 1.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 1.0, 0.0}))
+        baf::ControlPoint(std::vector<double>({0.0, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 2.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 2.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 2.0, 2.0}))
     };
     b_spline_ = std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points);
   }
@@ -55,7 +58,7 @@ class A2DNURBSForXML {  // NOLINT
     std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector =
         {std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
                                                             ParamCoord{1}, ParamCoord{1}})),
-         std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
+         std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                             ParamCoord{1}, ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
@@ -63,9 +66,13 @@ class A2DNURBSForXML {  // NOLINT
         baf::ControlPoint(std::vector<double>({2.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0})),
         baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.6})),
+        baf::ControlPoint(std::vector<double>({1.0, 0.8})),
         baf::ControlPoint(std::vector<double>({2.0, 1.0}))
     };
-    std::vector<double> weights = {2.0, 1.75, 0.36, 1.0, 1.0, 0.05};
+    std::vector<double> weights = {2.0, 1.75, 0.36, 1.0, 1.0, 0.05, 1.0, 1.0, 1.0};
+
     nurbs_ = std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
   }
 
@@ -79,12 +86,13 @@ class A2DXMLWriter : public Test, public A2DBSplineForXML, public A2DNURBSForXML
   A2DXMLWriter() {
     std::any b_spline_any = std::make_any<std::shared_ptr<spl::BSpline<2>>>(b_spline_);
     std::any nurbs_any = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_);
-    std::vector<std::any> splines = {b_spline_any, nurbs_any};
-    xml_writer_ = std::make_unique<io::XMLWriter<2>>(splines);
+    splines_ = {b_spline_any, nurbs_any};
+    xml_writer_ = std::make_unique<io::XMLWriter<2>>(splines_);
   }
 
  protected:
   std::unique_ptr<io::XMLWriter<2>> xml_writer_;
+  std::vector<std::any> splines_;
 };
 
 TEST_F(A2DXMLWriter, IsCreated) {  // NOLINT
@@ -157,12 +165,10 @@ TEST_F(A2DXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) { 
   auto bspline_after = std::any_cast<spl::BSpline<2>>(xml_reader->ReadXMLFile("2d_splines.xml")[0]);
   auto nurbs_after = std::any_cast<spl::NURBS<2>>(xml_reader->ReadXMLFile("2d_splines.xml")[1]);
 
-  /* b_spline_->Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {0})[0];
-  bspline_after.Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {0})[0];
   ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {0})[0],
               DoubleEq(bspline_after.Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {0})[0]));
   ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {1})[0],
-              DoubleEq(bspline_after.Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {1})[0])); */
+              DoubleEq(bspline_after.Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {1})[0]));
 
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246)}, {0})[0],
               DoubleEq(nurbs_after.Evaluate({ParamCoord(0.13697), ParamCoord(0.33246)}, {0})[0]));
