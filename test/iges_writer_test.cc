@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 #include "gmock/gmock.h"
 #include "iges_writer.h"
+#include "iges_reader.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -51,8 +52,10 @@ class AnIGESFileFromSpline : public Test {
     std::array<Degree, 1> degree_;
     std::vector<baf::ControlPoint> control_points_;
     std::unique_ptr<io::IGESWriter> iges_writer_;
+  std::unique_ptr<io::IGESReader> iges_reader_;
   };
 
 TEST_F(AnIGESFileFromSpline, Test1) {
+  auto splines = iges_reader_->ReadIGESFile(iges_read);
   iges_writer_->WriteIGESFile(splines, iges_write);
 }

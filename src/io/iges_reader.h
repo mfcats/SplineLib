@@ -83,7 +83,7 @@ class IGESReader {
     weightsStartEnd[0] = knotsStartEnd[1] + 1;
     weightsStartEnd[1] = weightsStartEnd[0] + upperSumIndex;
     controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
-    controlPointsStartEnd[1] = controlPointsStartEnd[0] + (3 * upperSumIndex);
+    controlPointsStartEnd[1] = controlPointsStartEnd[0] + (3 * upperSumIndex) + 2;
     std::vector<ParamCoord> knots;
     for (int i = knotsStartEnd[0]; i <= knotsStartEnd[1]; ++i) {
       knots.push_back(ParamCoord{parameterData[i]});
@@ -106,9 +106,11 @@ class IGESReader {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
     if (parameterData[5] == 1) {
-      return std::make_any<spl::BSpline<1>>(knot_vector, degree, control_points);
+      auto spl = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
+      return std::make_any<std::shared_ptr<spl::BSpline<1>>>(spl);
     } else if (parameterData[5] == 0) {
-      return std::make_any<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+      auto spl = std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+      return std::make_any<std::shared_ptr<spl::NURBS<1>>>(spl);
     }
   }
 
@@ -132,7 +134,7 @@ class IGESReader {
     weightsStartEnd[0] = knotsStartEnd[1][1] + 1;
     weightsStartEnd[1] = weightsStartEnd[0] - 1 + ((1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
     controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
-    controlPointsStartEnd[1] = controlPointsStartEnd[0] - 1 + (3 * (1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
+    controlPointsStartEnd[1] = controlPointsStartEnd[0] - 1 + (3 * (1 + upperSumIndex[0]) * (1 + upperSumIndex[1])) + 2;
     std::array<std::vector<ParamCoord>, 2> knots;
     for (int i = knotsStartEnd[0][0]; i <= knotsStartEnd[0][1]; ++i) {
       knots[0].push_back(ParamCoord{parameterData[i]});
@@ -159,9 +161,11 @@ class IGESReader {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
     if (parameterData[5] == 1) {
-      return std::make_any<spl::BSpline<2>>(knot_vector, degree, control_points);
+      auto spl = std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points);
+      return std::make_any<std::shared_ptr<spl::BSpline<2>>>(spl);
     } else if (parameterData[5] == 0) {
-      return std::make_any<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
+      auto spl = std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
+      return std::make_any<std::shared_ptr<spl::NURBS<2>>>(spl);
     }
   }
 

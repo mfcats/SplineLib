@@ -119,12 +119,39 @@ class IGESWriter {
 
   std::vector<std::string> GetParameterSectionLayout(const std::string &contents, int entityPosition, int pLine) {
     std::vector<std::string> parameterData;
-    for (unsigned long i = 0; i <= contents.size() / 64; i++) {
+    /*std::vector<std::string> parameter = DelimitedStringToVector(contents);
+    for (int i = 0; i < parameter.size(); ++i) {
+      int column = 1;
+      std::string temp;
+      if ((column + parameter[i].length()) <= 64) {
+        temp.append(parameter[i]);
+        column += GetInteger(parameter[i]);
+      } else {
+        temp.append("");
+      }*/
+    for (int i = 0; i <= (contents.size() - 1) / 64; i++) {
       parameterData.emplace_back(GetBlock(contents.substr(i * 64, 64), 64, false)
                                      + ' ' + GetBlock(GetString(entityPosition), 7, true)
                                      + 'P' + GetBlock(GetString(++pLine), 7, true));
     }
     return parameterData;
+  }
+
+    int GetInteger(const std::string &string) {
+      int number = 0;
+      std::istringstream(string) >> number;
+      return number;
+    }
+
+  std::vector<std::string> DelimitedStringToVector(std::string str) {
+    std::vector<std::string> vector;
+    std::size_t found;
+    while (!str.empty()) {
+      found = str.find_first_of(',');
+      vector.push_back(str.substr(0, found));
+      str.erase(0, found + 1);
+    }
+    return vector;
   }
 
   void GetParameterData1D(std::string &contents, const std::string &delimiter, const std::any &spline) {
@@ -150,6 +177,7 @@ class IGESWriter {
       contents += GetString(control_points[i]) + delimiter;
     }
     contents += GetString(control_points[control_points.size() - 1]);
+    std::cout << std::endl << contents;
   }
   
   void GetParameterData2D(std::string &contents, const std::string &delimiter, const std::any &spline) {
@@ -254,7 +282,7 @@ class IGESWriter {
   }
 
   void AddToContents(std::string &contents, const std::vector<std::string> &add, const std::string &delimiter) {
-    for (int i = 0; i < add.size() - 1; ++i) {
+    for (int i = 0; i < add.size(); ++i) {
       contents += add[i] + delimiter;
     }
   }
