@@ -119,49 +119,12 @@ class IGESWriter {
 
   std::vector<std::string> GetParameterSectionLayout(const std::string &contents, int entityPosition, int pLine) {
     std::vector<std::string> parameterData;
-    /*std::vector<std::string> parameter = DelimitedStringToVector(contents);
-    int column = 1;
-    for (int i = 0; i < parameter.size(); ++i) {
-      std::string temp;
-      if ((column + parameter[i].length()) <= 64) {
-        temp.append(parameter[i]);
-        column += parameter[i].length();
-      } else if (column <= 64) {
-        for (int i = 0; i <= (column - 64); ++i) {
-          temp.append(" ");
-        }
-      } else {
-        column = 1;
-        for (auto &t : temp) {
-          parameterData.emplace_back(t + GetBlock(GetString(++pLine), 7, true));
-        }
-      }*/
     for (int i = 0; i <= (contents.size() - 1) / 64; i++) {
       parameterData.emplace_back(GetBlock(contents.substr(i * 64, 64), 64, false)
                                      + ' ' + GetBlock(GetString(entityPosition), 7, true)
                                      + 'P' + GetBlock(GetString(++pLine), 7, true));
     }
     return parameterData;
-  }
-
-  std::vector<std::string> DelimitedStringToVector(std::string str) {
-    std::vector<std::string> vector;
-    std::size_t found1;
-    std::size_t found2;
-    while (!str.empty()) {
-      found1 = str.find_first_of(',');
-      found2 = str.find_first_of(';');
-      if ((found1 < found2) && (found1 != 0)) {
-        vector.push_back(str.substr(0, found1));
-        str.erase(0, found1 + 1);
-      } else if ((found2 < found1) && (found2 != 0)) {
-        vector.push_back(str.substr(0, found2));
-        str.erase(0, found2 + 1);
-      } else {
-        str.erase(0, 1);
-      }
-    }
-    return vector;
   }
 
   void GetParameterData1D(std::string &contents, const std::string &delimiter, const std::any &spline) {
@@ -228,8 +191,7 @@ class IGESWriter {
                    " 0 0 0 1", GetBlock(GetString(GetDimension(spline)), 8, true),
                    GetBlock(GetString(0), 8, true), GetBlock(GetString(0), 8, true),
                    GetBlock(GetString(paramLength), 8, true), GetBlock(GetString(0), 8, true),
-                   GetBlock("", 16, true), GetBlock("SPLINE", 8, true), GetBlock(GetString(0), 8, true),
-                   GetBlock(GetString(1), 8, true)},"");
+                   GetBlock("", 16, true), GetBlock("SPLINE", 8, true), GetBlock(GetString(0), 8, true)},"");
     return GetDataEntrySectionLayout(contents, dLine);
   }
 
