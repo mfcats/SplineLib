@@ -120,14 +120,21 @@ class IGESWriter {
   std::vector<std::string> GetParameterSectionLayout(const std::string &contents, int entityPosition, int pLine) {
     std::vector<std::string> parameterData;
     /*std::vector<std::string> parameter = DelimitedStringToVector(contents);
+    int column = 1;
     for (int i = 0; i < parameter.size(); ++i) {
-      int column = 1;
       std::string temp;
       if ((column + parameter[i].length()) <= 64) {
         temp.append(parameter[i]);
-        column += GetInteger(parameter[i]);
+        column += parameter[i].length();
+      } else if (column <= 64) {
+        for (int i = 0; i <= (column - 64); ++i) {
+          temp.append(" ");
+        }
       } else {
-        temp.append("");
+        column = 1;
+        for (auto &t : temp) {
+          parameterData.emplace_back(t + GetBlock(GetString(++pLine), 7, true));
+        }
       }*/
     for (int i = 0; i <= (contents.size() - 1) / 64; i++) {
       parameterData.emplace_back(GetBlock(contents.substr(i * 64, 64), 64, false)
@@ -137,19 +144,22 @@ class IGESWriter {
     return parameterData;
   }
 
-    int GetInteger(const std::string &string) {
-      int number = 0;
-      std::istringstream(string) >> number;
-      return number;
-    }
-
   std::vector<std::string> DelimitedStringToVector(std::string str) {
     std::vector<std::string> vector;
-    std::size_t found;
+    std::size_t found1;
+    std::size_t found2;
     while (!str.empty()) {
-      found = str.find_first_of(',');
-      vector.push_back(str.substr(0, found));
-      str.erase(0, found + 1);
+      found1 = str.find_first_of(',');
+      found2 = str.find_first_of(';');
+      if ((found1 < found2) && (found1 != 0)) {
+        vector.push_back(str.substr(0, found1));
+        str.erase(0, found1 + 1);
+      } else if ((found2 < found1) && (found2 != 0)) {
+        vector.push_back(str.substr(0, found2));
+        str.erase(0, found2 + 1);
+      } else {
+        str.erase(0, 1);
+      }
     }
     return vector;
   }
@@ -177,7 +187,6 @@ class IGESWriter {
       contents += GetString(control_points[i]) + delimiter;
     }
     contents += GetString(control_points[control_points.size() - 1]);
-    std::cout << std::endl << contents;
   }
   
   void GetParameterData2D(std::string &contents, const std::string &delimiter, const std::any &spline) {
