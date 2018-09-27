@@ -127,6 +127,26 @@ class IGESWriter {
     return parameterData;
   }
 
+  std::vector<std::string> DelimitedStringToVector(std::string str) {
+    std::vector<std::string> vector;
+    std::size_t found1;
+    std::size_t found2;
+    while (!str.empty()) {
+      found1 = str.find_first_of(',');
+      found2 = str.find_first_of(';');
+      if ((found1 < found2) && (found1 != 0)) {
+        vector.push_back(str.substr(0, found1));
+        str.erase(0, found1 + 1);
+      } else if ((found2 < found1) && (found2 != 0)) {
+        vector.push_back(str.substr(0, found2));
+        str.erase(0, found2 + 1);
+      } else {
+        str.erase(0, 1);
+      }
+    }
+    return vector;
+  }
+
   void GetParameterData1D(std::string &contents, const std::string &delimiter, const std::any &spline) {
     std::shared_ptr<spl::Spline<1>> spl;
     if (IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
