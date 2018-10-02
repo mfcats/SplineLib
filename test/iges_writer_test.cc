@@ -52,7 +52,7 @@ class AnIGESFileFromSpline : public Test {
     std::array<Degree, 1> degree_;
     std::vector<baf::ControlPoint> control_points_;
     std::unique_ptr<io::IGESWriter> iges_writer_;
-  std::unique_ptr<io::IGESReader> iges_reader_;
+    std::unique_ptr<io::IGESReader> iges_reader_;
   };
 
 TEST_F(AnIGESFileFromSpline, Test1) {

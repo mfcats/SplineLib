@@ -182,17 +182,13 @@ class IGESReader {
 
   std::vector<double> ParameterSectionToVector(std::vector<std::string> parameterSection,
                                                std::array<int, 2> ParameterSectionStartEndPointers) {
-    std::vector<double> parameterSectionVector;
     int first = ParameterSectionStartEndPointers[0] - 1;
     int last = ParameterSectionStartEndPointers[1] - 1;
-    std::string tempLineEnd;
+    std::string temp;
     for (int i = first; i <= last; ++i) {
-      auto temp = DelimitedStringToVector(parameterSection[i]);
-      for (uint j = 0; j < temp.size(); ++j) {
-        parameterSectionVector.push_back(temp[j]);
-      }
+      temp.append(parameterSection[i]);
     }
-    return parameterSectionVector;
+    return DelimitedStringToVector(temp);
   }
 
   std::vector<double> DelimitedStringToVector(std::string str) {

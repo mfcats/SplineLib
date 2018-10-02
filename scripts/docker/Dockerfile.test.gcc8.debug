@@ -5,7 +5,7 @@ ADD . /code
 WORKDIR /code
 
 RUN spack repo add /code/scripts/spack-repo
-RUN spack setup -v splinelib@github build_type=Debug %gcc@7
+RUN spack setup -v splinelib@github build_type=Debug %gcc@8
 RUN mkdir /code/build-gcc7-debug
 WORKDIR /code/build-gcc7-debug
 RUN ../spconfig.py ..

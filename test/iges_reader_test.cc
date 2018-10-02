@@ -131,7 +131,9 @@ TEST_F(A2DNurbsFromIGESFile, Read1DNURBSWithWeigthsOneFromIGESFile) { // NOLINT
 }
 
 TEST_F(A2DNurbsFromIGESFile, Read2DNURBSFromIGESFile) { // NOLINT
-  auto nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_reader_->ReadIGESFile(iges_read)[0]);
+  auto splines = iges_reader_->ReadIGESFile(iges_read);
+  iges_writer_->WriteIGESFile(splines, iges_write);
+  auto nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_reader_->ReadIGESFile(iges_write)[0]);
   ASSERT_THAT(nurbs_2d->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0],
               DoubleEq(nurbs_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0]));
   ASSERT_THAT(nurbs_2d->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0],
