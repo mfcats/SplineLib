@@ -160,10 +160,10 @@ class IGESReader {
     for (int i = 0; i < 2; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
-    if (parameterData[5] == 1) {
+    if (parameterData[7] == 1) {
       auto spl = std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points);
       return std::make_any<std::shared_ptr<spl::BSpline<2>>>(spl);
-    } else if (parameterData[5] == 0) {
+    } else if (parameterData[7] == 0) {
       auto spl = std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
       return std::make_any<std::shared_ptr<spl::NURBS<2>>>(spl);
     }

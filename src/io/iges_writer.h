@@ -105,7 +105,7 @@ class IGESWriter {
   }
 
   std::vector<std::string> GetParameterData(const std::string &delimiter, const std::string &endDelimiter,
-                                            const std::any &spline, int entityPosition, int pLine) {
+                                            const std::any &spline, int entityPosition, int &pLine) {
     std::string contents;
     if (GetDimension(spline) == 126) {
       GetParameterData1D(contents, delimiter, spline);
@@ -116,7 +116,7 @@ class IGESWriter {
     return GetParameterSectionLayout(contents, entityPosition, pLine);
   }
 
-  std::vector<std::string> GetParameterSectionLayout(const std::string &contents, int entityPosition, int pLine) {
+  std::vector<std::string> GetParameterSectionLayout(const std::string &contents, int entityPosition, int &pLine) {
     std::vector<std::string> parameterData;
     for (int i = 0; i <= (contents.size() - 1) / 64; i++) {
       parameterData.emplace_back(GetBlock(contents.substr(i * 64, 64), 64, false)
@@ -126,34 +126,18 @@ class IGESWriter {
     return parameterData;
   }
 
-  std::vector<std::string> DelimitedStringToVector(std::string str) {
-    std::vector<std::string> vector;
-    std::size_t found1;
-    std::size_t found2;
-    while (!str.empty()) {
-      found1 = str.find_first_of(',');
-      found2 = str.find_first_of(';');
-      if ((found1 < found2) && (found1 != 0)) {
-        vector.push_back(str.substr(0, found1));
-        str.erase(0, found1 + 1);
-      } else if ((found2 < found1) && (found2 != 0)) {
-        vector.push_back(str.substr(0, found2));
-        str.erase(0, found2 + 1);
-      } else {
-        str.erase(0, 1);
-      }
-    }
-    return vector;
-  }
-
   void GetParameterData1D(std::string &contents, const std::string &delimiter, const std::any &spline) {
     std::shared_ptr<spl::Spline<1>> spl;
+    int isRational = 0;
     if (IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
-    if (!IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
+    if (!IsRational(spline)) {
+      spl = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
+      isRational = 1;
+    }
     AddToContents(contents,
                   {GetString(126),
                    GetString(spl->GetKnotVector(0)->GetNumberOfKnots() - spl->GetDegree(0).get() - 2),
-                   GetString(spl->GetDegree(0).get()), GetString(0), GetString(0), GetString(!IsRational(spline)),
+                   GetString(spl->GetDegree(0).get()), GetString(0), GetString(0), GetString(isRational),
                    GetString(0)}, delimiter);
 
     auto knots = spl->GetKnots()[0];
@@ -173,14 +157,18 @@ class IGESWriter {
   
   void GetParameterData2D(std::string &contents, const std::string &delimiter, const std::any &spline) {
     std::shared_ptr<spl::Spline<2>> spl;
+    int isRational = 0;
     if (IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
-    if (!IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
+    if (!IsRational(spline)) {
+      isRational = 1;
+      spl = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
+    }
     AddToContents(contents,
                   {GetString(128),
                    GetString(spl->GetKnotVector(0)->GetNumberOfKnots() - spl->GetDegree(0).get() - 2),
                    GetString(spl->GetKnotVector(1)->GetNumberOfKnots() - spl->GetDegree(1).get() - 2),
                    GetString(spl->GetDegree(0).get()), GetString(spl->GetDegree(1).get()),
-                   GetString(0), GetString(0), GetString(!IsRational(spline)), GetString(0), GetString(0)},
+                   GetString(0), GetString(0), GetString(isRational), GetString(0), GetString(0)},
                    delimiter);
     auto knots1 = spl->GetKnots()[0];
     auto knots2 = spl->GetKnots()[1];
@@ -201,7 +189,7 @@ class IGESWriter {
     contents += GetString(control_points[control_points.size() - 1]);
   }
 
-  std::vector<std::string> GetDataEntry(int paramStart, int paramLength, const std::any &spline, int dLine) {
+  std::vector<std::string> GetDataEntry(int paramStart, int paramLength, const std::any &spline, int &dLine) {
     std::string contents;
     AddToContents(contents,
                   {GetBlock(GetString(GetDimension(spline)), 8, true), GetBlock(GetString(paramStart), 8, true),
@@ -214,7 +202,7 @@ class IGESWriter {
     return GetDataEntrySectionLayout(contents, dLine);
   }
 
-  std::vector<std::string> GetDataEntrySectionLayout(const std::string &contents, int dLine) {
+  std::vector<std::string> GetDataEntrySectionLayout(const std::string &contents, int &dLine) {
     std::vector<std::string> dataEntrySection;
     for (unsigned long i = 0; i <= (contents.size() - 1) / 72; i++) {
       dataEntrySection.emplace_back(GetBlock(contents.substr(i * 72, 72), 72, false)
