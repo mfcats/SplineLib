@@ -24,6 +24,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "any_casts.h"
 #include "b_spline.h"
 #include "nurbs.h"
+#include "irit_reader.h"
 
 namespace io {
 template<int DIM>
@@ -39,6 +40,12 @@ class XMLWriter {
       AddSpline(&spline_list, spline);
     }
     doc.save_file(filename, "  ", pugi::format_indent_attributes, pugi::encoding_utf8);
+  }
+
+  void ConvertIRITFileToXMLFile(const char *input_filename, const char *output_filename) {
+    io::IRITReader<DIM> irit_reader;
+    std::vector<std::any> splines = irit_reader.ReadIRITFile(input_filename);
+    WriteXMLFile(splines, output_filename);
   }
 
  private:

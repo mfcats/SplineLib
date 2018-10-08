@@ -13,6 +13,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include <config.h>
+#include <xml_reader.h>
+#include <xml_writer.h>
 
 #include "gmock/gmock.h"
 
@@ -196,4 +198,17 @@ TEST_F(A1DIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) 
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.48752)}, {0})[0],
               DoubleEq(nurbs_after.Evaluate({ParamCoord(0.48752)}, {0})[0]));
   remove("1d_splines.itd");
+}
+
+TEST_F(A1DIRITWriter, ReturnsSameValuesBeforeAndAfterConvertingIRITToXMLFile) {  // NOLINT
+  io::XMLWriter<1> xml_writer;
+  xml_writer.ConvertIRITFileToXMLFile(path_to_iris_file, "converted_xml_file.xml");
+  io::IRITReader<1> xml_reader;
+  std::vector<std::any> splines_from_file = xml_reader.ReadIRITFile("converted_xml_file.xml");
+  ASSERT_THAT(std::any_cast<spl::BSpline<1>>(splines_from_file[0]).Evaluate({ParamCoord{10.5}}, {0})[0],
+              DoubleEq(b_spline_1_->Evaluate({ParamCoord{10.5}}, {0})[0]));
+  ASSERT_THAT(std::any_cast<spl::BSpline<1>>(splines_from_file[1]).Evaluate({ParamCoord{0.5}}, {0})[0],
+              DoubleEq(b_spline_2_->Evaluate({ParamCoord{0.5}}, {0})[0]));
+  ASSERT_THAT(std::any_cast<spl::NURBS<1>>(splines_from_file[2]).Evaluate({ParamCoord{0.123}}, {0})[0],
+              DoubleEq(nurbs_->Evaluate({ParamCoord{0.123}}, {0})[0]));
 }
