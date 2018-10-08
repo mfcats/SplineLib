@@ -22,20 +22,20 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleNear;
 
-class AnIOConverter : public Test {
+class A1DIOConverter : public Test {
  public:
-  AnIOConverter() : io_converter(std::make_unique<io::IOConverter>()) {}
+  A1DIOConverter() : io_converter(std::make_unique<io::IOConverter<1>>()) {}
 
  protected:
-  std::unique_ptr<io::IOConverter> io_converter;
+  std::unique_ptr<io::IOConverter<1>> io_converter;
 };
 
-TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConverting1DSplinesFromIGESFileToXMLFile) {  // NOLINT
+TEST_F(A1DIOConverter, ReturnsSameValueBeforeAndAfterConverting1DSplinesFromIGESFileToXMLFile) {  // NOLINT
   io::IGESReader iges_reader;
   std::vector<std::any> iges_splines = iges_reader.ReadIGESFile(path_to_iges_file);
   auto iges_spline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_splines[1]);
 
-  io_converter->Convert1DSplinesFromIGESFileToXMLFile(path_to_iges_file, "converted_xml_file_1d.xml");
+  io_converter->ConvertIGESFileToXMLFile(path_to_iges_file, "converted_xml_file_1d.xml");
   io::XMLReader<1> xml_reader_1d;
   std::vector<std::any> xml_splines = xml_reader_1d.ReadXMLFile("converted_xml_file_1d.xml");
   ASSERT_THAT(xml_splines.size(), 1);
@@ -46,12 +46,20 @@ TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConverting1DSplinesFromIGESF
   remove("converted_xml_file_1d.xml");
 }
 
-TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConverting2DSplinesFromIGESFileToXMLFile) {  // NOLINT
+class A2DIOConverter : public Test {
+ public:
+  A2DIOConverter() : io_converter(std::make_unique<io::IOConverter<2>>()) {}
+
+ protected:
+  std::unique_ptr<io::IOConverter<2>> io_converter;
+};
+
+TEST_F(A2DIOConverter, ReturnsSameValueBeforeAndAfterConverting2DSplinesFromIGESFileToXMLFile) {  // NOLINT
   io::IGESReader iges_reader;
   std::vector<std::any> iges_splines = iges_reader.ReadIGESFile(path_to_iges_file);
   auto iges_spline_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_splines[0]);
 
-  io_converter->Convert2DSplinesFromIGESFileToXMLFile(path_to_iges_file, "converted_xml_file_2d.xml");
+  io_converter->ConvertIGESFileToXMLFile(path_to_iges_file, "converted_xml_file_2d.xml");
   io::XMLReader<2> xml_reader_2d;
   std::vector<std::any> xml_splines = xml_reader_2d.ReadXMLFile("converted_xml_file_2d.xml");
   ASSERT_THAT(xml_splines.size(), 1);

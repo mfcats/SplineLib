@@ -13,12 +13,9 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(SOURCES
-        io_converter.cc)
-
-add_library(splinelibio SHARED ${SOURCES})
-target_include_directories(splinelibio PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibio splinelibspl pugixmllib)
+add_library(splinelibio INTERFACE)
+target_include_directories(splinelibio INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(splinelibio INTERFACE splinelibspl pugixmllib)
 
 install(
         TARGETS splinelibio
@@ -28,7 +25,6 @@ install(
         RUNTIME DESTINATION "${executable_install_dir}"
         INCLUDES DESTINATION "${include_install_dir}"
 )
-
 
 install(FILES
         iges_reader.h
