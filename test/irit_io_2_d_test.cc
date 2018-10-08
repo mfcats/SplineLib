@@ -93,19 +93,15 @@ TEST_F(A2DIRITReader, Finds2SplinesOfDimension2) {  // NOLINT
 }
 
 TEST_F(A2DIRITReader, ReturnsCorrectDegree) {  // NOLINT
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(irit_reader->ReadIRITFile(path_to_iris_file)[0])->GetDegree(
-      0).get(),
-              b_spline_->GetDegree(0).get());
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(irit_reader->ReadIRITFile(path_to_iris_file)[0])->GetDegree(
-      1).get(),
-              b_spline_->GetDegree(1).get());
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
+      irit_reader->ReadIRITFile(path_to_iris_file)[0])->GetDegree(0).get(), b_spline_->GetDegree(0).get());
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
+      irit_reader->ReadIRITFile(path_to_iris_file)[0])->GetDegree(1).get(), b_spline_->GetDegree(1).get());
 
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_reader->ReadIRITFile(path_to_iris_file)[1])->GetDegree(
-      0).get(),
-              nurbs_->GetDegree(0).get());
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_reader->ReadIRITFile(path_to_iris_file)[1])->GetDegree(
-      1).get(),
-              nurbs_->GetDegree(1).get());
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
+      irit_reader->ReadIRITFile(path_to_iris_file)[1])->GetDegree(0).get(), nurbs_->GetDegree(0).get());
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
+      irit_reader->ReadIRITFile(path_to_iris_file)[1])->GetDegree(1).get(), nurbs_->GetDegree(1).get());
 }
 
 TEST_F(A2DIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT

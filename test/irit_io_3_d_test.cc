@@ -95,25 +95,19 @@ TEST_F(A3DIRITReader, Finds2SplinesOfDimension3) {  // NOLINT
 }
 
 TEST_F(A3DIRITReader, ReturnsCorrectDegree) {  // NOLINT
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(irit_reader->ReadIRITFile(path_to_iris_file)[0])->GetDegree(
-      0).get(),
-              b_spline_->GetDegree(0).get());
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(irit_reader->ReadIRITFile(path_to_iris_file)[0])->GetDegree(
-      1).get(),
-              b_spline_->GetDegree(1).get());
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(irit_reader->ReadIRITFile(path_to_iris_file)[0])->GetDegree(
-      2).get(),
-              b_spline_->GetDegree(2).get());
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(
+      irit_reader->ReadIRITFile(path_to_iris_file)[0])->GetDegree(0).get(), b_spline_->GetDegree(0).get());
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(
+      irit_reader->ReadIRITFile(path_to_iris_file)[0])->GetDegree(1).get(), b_spline_->GetDegree(1).get());
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(
+      irit_reader->ReadIRITFile(path_to_iris_file)[0])->GetDegree(2).get(), b_spline_->GetDegree(2).get());
 
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(irit_reader->ReadIRITFile(path_to_iris_file)[1])->GetDegree(
-      0).get(),
-              nurbs_->GetDegree(0).get());
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(irit_reader->ReadIRITFile(path_to_iris_file)[1])->GetDegree(
-      1).get(),
-              nurbs_->GetDegree(1).get());
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(irit_reader->ReadIRITFile(path_to_iris_file)[1])->GetDegree(
-      2).get(),
-              nurbs_->GetDegree(2).get());
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(
+      irit_reader->ReadIRITFile(path_to_iris_file)[1])->GetDegree(0).get(), nurbs_->GetDegree(0).get());
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(
+      irit_reader->ReadIRITFile(path_to_iris_file)[1])->GetDegree(1).get(), nurbs_->GetDegree(1).get());
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(
+      irit_reader->ReadIRITFile(path_to_iris_file)[1])->GetDegree(2).get(), nurbs_->GetDegree(2).get());
 }
 
 TEST_F(A3DIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT
@@ -177,15 +171,12 @@ TEST_F(A3DIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) 
   auto bspline_after = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(irit_reader->ReadIRITFile("3d_splines.itd")[0]);
   auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(irit_reader->ReadIRITFile("3d_splines.itd")[1]);
 
-  ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)}, {0})[0],
-              DoubleEq(bspline_after->Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)},
-                                               {0})[0]));
-  ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)}, {1})[0],
-              DoubleEq(bspline_after->Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)},
-                                               {1})[0]));
-  ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)}, {2})[0],
-              DoubleEq(bspline_after->Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)},
-                                               {2})[0]));
+  ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.7583), ParamCoord(0.01453), ParamCoord(0.5789)}, {0})[0],
+              DoubleEq(bspline_after->Evaluate({ParamCoord(0.7583), ParamCoord(0.01453), ParamCoord(0.5789)}, {0})[0]));
+  ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.7583), ParamCoord(0.01453), ParamCoord(0.5789)}, {1})[0],
+              DoubleEq(bspline_after->Evaluate({ParamCoord(0.7583), ParamCoord(0.01453), ParamCoord(0.5789)}, {1})[0]));
+  ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.7583), ParamCoord(0.01453), ParamCoord(0.5789)}, {2})[0],
+              DoubleEq(bspline_after->Evaluate({ParamCoord(0.7583), ParamCoord(0.01453), ParamCoord(0.5789)}, {2})[0]));
 
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)}, {0})[0],
               DoubleEq(nurbs_after->Evaluate({ParamCoord(0.75839), ParamCoord(0.01453), ParamCoord(0.5789)}, {0})[0]));
