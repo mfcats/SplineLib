@@ -53,9 +53,16 @@ class XMLReader {
     std::array<Degree, DIM> degrees = GetDegrees(spline);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(spline);
     if (spline->child("wght").empty()) {
-      splines->push_back(std::make_any<spl::BSpline<DIM>>(knot_vectors, degrees, control_points));
+      splines->push_back(std::make_any<std::shared_ptr<spl::BSpline<DIM>>>(std::make_shared<spl::BSpline<DIM>>(
+          knot_vectors,
+          degrees,
+          control_points)));
     } else {
-      splines->push_back(std::make_any<spl::NURBS<DIM>>(knot_vectors, degrees, control_points, GetWeights(spline)));
+      splines->push_back(std::make_any<std::shared_ptr<spl::NURBS<DIM>>>(std::make_shared<spl::NURBS<DIM>>(knot_vectors,
+                                                                                                           degrees,
+                                                                                                           control_points,
+                                                                                                           GetWeights(
+                                                                                                               spline))));
     }
   }
 

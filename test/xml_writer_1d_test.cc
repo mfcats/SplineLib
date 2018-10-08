@@ -195,29 +195,29 @@ TEST_F(A1DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
 TEST_F(A1DXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
   xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
   std::unique_ptr<io::XMLReader<1>> xml_reader(std::make_unique<io::XMLReader<1>>());
-  auto bspline_1_after = std::any_cast<spl::BSpline<1>>(xml_reader->ReadXMLFile("1d_splines.xml")[0]);
-  auto bspline_2_after = std::any_cast<spl::BSpline<1>>(xml_reader->ReadXMLFile("1d_splines.xml")[1]);
-  auto bspline_3_after = std::any_cast<spl::BSpline<1>>(xml_reader->ReadXMLFile("1d_splines.xml")[2]);
-  auto nurbs_after = std::any_cast<spl::NURBS<1>>(xml_reader->ReadXMLFile("1d_splines.xml")[3]);
+  auto bspline_1_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[0]);
+  auto bspline_2_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[1]);
+  auto bspline_3_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[2]);
+  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[3]);
 
   ASSERT_THAT(b_spline_1_->Evaluate({ParamCoord(0.75839)}, {0})[0],
-              DoubleEq(bspline_1_after.Evaluate({ParamCoord(0.75839)}, {0})[0]));
+              DoubleEq(bspline_1_after->Evaluate({ParamCoord(0.75839)}, {0})[0]));
 
   ASSERT_THAT(b_spline_2_->Evaluate({ParamCoord(0.47681)}, {0})[0],
-              DoubleEq(bspline_2_after.Evaluate({ParamCoord(0.47681)}, {0})[0]));
+              DoubleEq(bspline_2_after->Evaluate({ParamCoord(0.47681)}, {0})[0]));
   ASSERT_THAT(b_spline_2_->Evaluate({ParamCoord(0.47681)}, {1})[0],
-              DoubleEq(bspline_2_after.Evaluate({ParamCoord(0.47681)}, {1})[0]));
+              DoubleEq(bspline_2_after->Evaluate({ParamCoord(0.47681)}, {1})[0]));
 
   ASSERT_THAT(b_spline_3_->Evaluate({ParamCoord(0.89463)}, {0})[0],
-              DoubleEq(bspline_3_after.Evaluate({ParamCoord(0.89463)}, {0})[0]));
+              DoubleEq(bspline_3_after->Evaluate({ParamCoord(0.89463)}, {0})[0]));
   ASSERT_THAT(b_spline_3_->Evaluate({ParamCoord(0.89463)}, {1})[0],
-              DoubleEq(bspline_3_after.Evaluate({ParamCoord(0.89463)}, {1})[0]));
+              DoubleEq(bspline_3_after->Evaluate({ParamCoord(0.89463)}, {1})[0]));
   ASSERT_THAT(b_spline_3_->Evaluate({ParamCoord(0.89463)}, {2})[0],
-              DoubleEq(bspline_3_after.Evaluate({ParamCoord(0.89463)}, {2})[0]));
+              DoubleEq(bspline_3_after->Evaluate({ParamCoord(0.89463)}, {2})[0]));
 
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.13697)}, {0})[0],
-              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.13697)}, {0})[0]));
+              DoubleEq(nurbs_after->Evaluate({ParamCoord(0.13697)}, {0})[0]));
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.13697)}, {1})[0],
-              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.13697)}, {1})[0]));
+              DoubleEq(nurbs_after->Evaluate({ParamCoord(0.13697)}, {1})[0]));
   remove("1d_splines.xml");
 }

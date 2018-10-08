@@ -161,17 +161,17 @@ TEST_F(A2DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
 TEST_F(A2DXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
   xml_writer_->WriteXMLFile(splines_, "2d_splines.xml");
   std::unique_ptr<io::XMLReader<2>> xml_reader(std::make_unique<io::XMLReader<2>>());
-  auto bspline_after = std::any_cast<spl::BSpline<2>>(xml_reader->ReadXMLFile("2d_splines.xml")[0]);
-  auto nurbs_after = std::any_cast<spl::NURBS<2>>(xml_reader->ReadXMLFile("2d_splines.xml")[1]);
+  auto bspline_after = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_reader->ReadXMLFile("2d_splines.xml")[0]);
+  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_reader->ReadXMLFile("2d_splines.xml")[1]);
 
   ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {0})[0],
-              DoubleEq(bspline_after.Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {0})[0]));
+              DoubleEq(bspline_after->Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {0})[0]));
   ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {1})[0],
-              DoubleEq(bspline_after.Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {1})[0]));
+              DoubleEq(bspline_after->Evaluate({ParamCoord(0.47681), ParamCoord(0.685409)}, {1})[0]));
 
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246)}, {0})[0],
-              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.13697), ParamCoord(0.33246)}, {0})[0]));
+              DoubleEq(nurbs_after->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246)}, {0})[0]));
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246)}, {1})[0],
-              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.13697), ParamCoord(0.33246)}, {1})[0]));
+              DoubleEq(nurbs_after->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246)}, {1})[0]));
   remove("2d_splines.xml");
 }

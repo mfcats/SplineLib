@@ -171,23 +171,26 @@ TEST_F(A3DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
 TEST_F(A3DXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
   xml_writer_->WriteXMLFile(splines_, "3d_splines.xml");
   std::unique_ptr<io::XMLReader<3>> xml_reader(std::make_unique<io::XMLReader<3>>());
-  auto bspline_after = std::any_cast<spl::BSpline<3>>(xml_reader->ReadXMLFile("3d_splines.xml")[0]);
-  auto nurbs_after = std::any_cast<spl::NURBS<3>>(xml_reader->ReadXMLFile("3d_splines.xml")[1]);
+  auto bspline_after = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(xml_reader->ReadXMLFile("3d_splines.xml")[0]);
+  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(xml_reader->ReadXMLFile("3d_splines.xml")[1]);
 
   ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.47681), ParamCoord(0.68409), ParamCoord(0.0157)}, {0})[0],
-              DoubleEq(bspline_after.Evaluate({ParamCoord(0.47681), ParamCoord(0.68409), ParamCoord(0.0157)}, {0})[0]));
+              DoubleEq(bspline_after->Evaluate({ParamCoord(0.47681), ParamCoord(0.68409), ParamCoord(0.0157)},
+                                               {0})[0]));
   ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.47681), ParamCoord(0.68409), ParamCoord(0.0157)}, {1})[0],
-              DoubleEq(bspline_after.Evaluate({ParamCoord(0.47681), ParamCoord(0.68409), ParamCoord(0.0157)}, {1})[0]));
+              DoubleEq(bspline_after->Evaluate({ParamCoord(0.47681), ParamCoord(0.68409), ParamCoord(0.0157)},
+                                               {1})[0]));
   ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.47681), ParamCoord(0.68409), ParamCoord(0.0157)}, {2})[0],
-              DoubleEq(bspline_after.Evaluate({ParamCoord(0.47681), ParamCoord(0.68409), ParamCoord(0.0157)}, {2})[0]));
+              DoubleEq(bspline_after->Evaluate({ParamCoord(0.47681), ParamCoord(0.68409), ParamCoord(0.0157)},
+                                               {2})[0]));
 
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {0})[0],
-              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {0})[0]));
+              DoubleEq(nurbs_after->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {0})[0]));
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {1})[0],
-              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {1})[0]));
+              DoubleEq(nurbs_after->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {1})[0]));
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {2})[0],
-              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {2})[0]));
+              DoubleEq(nurbs_after->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {2})[0]));
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {3})[0],
-              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {3})[0]));
+              DoubleEq(nurbs_after->Evaluate({ParamCoord(0.13697), ParamCoord(0.33246), ParamCoord(0.99789)}, {3})[0]));
   remove("3d_splines.xml");
 }
