@@ -24,69 +24,69 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleEq;
 
-class A2DSplineXMLReader : public Test {
+class A2DXMLReader : public Test {
  public:
-  A2DSplineXMLReader() : xml_reader(std::make_unique<io::XMLReader<2>>()) {}
+  A2DXMLReader() : xml_reader(std::make_unique<io::XMLReader<2>>()) {}
 
  protected:
   std::unique_ptr<io::XMLReader<2>> xml_reader;
 };
 
-TEST_F(A2DSplineXMLReader, ThrowsExceptionForNonExistingFile) {  // NOLINT
+TEST_F(A2DXMLReader, ThrowsExceptionForNonExistingFile) {  // NOLINT
   ASSERT_THROW(xml_reader->ReadXMLFile("test.xml"), std::runtime_error);
 }
 
-TEST_F(A2DSplineXMLReader, GetsCorrectDegreeOfFirstSplineInFirstDirection) {  // NOLINT
+TEST_F(A2DXMLReader, GetsCorrectDegreeOfFirstSplineInFirstDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
       xml_reader->ReadXMLFile(path_to_xml_file)[0])->GetDegree(0).get(), 2);
 }
 
-TEST_F(A2DSplineXMLReader, GetsCorrectDegreeOfFirstSplineInSecondDirection) {  // NOLINT
+TEST_F(A2DXMLReader, GetsCorrectDegreeOfFirstSplineInSecondDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
       xml_reader->ReadXMLFile(path_to_xml_file)[0])->GetDegree(1).get(), 2);
 }
 
-TEST_F(A2DSplineXMLReader, GetsCorrectKnotOfFirstSplineInFirstDirection) {  // NOLINT
+TEST_F(A2DXMLReader, GetsCorrectKnotOfFirstSplineInFirstDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
       xml_reader->ReadXMLFile(path_to_xml_file)[0])->GetKnotVector(0)->GetKnot(3).get(), DoubleEq(0.0625));
 }
 
-TEST_F(A2DSplineXMLReader, GetsCorrectKnotOfFirstSplineInSecondDirection) {  // NOLINT
+TEST_F(A2DXMLReader, GetsCorrectKnotOfFirstSplineInSecondDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
       xml_reader->ReadXMLFile(path_to_xml_file)[0])->GetKnotVector(1)->GetKnot(3).get(), DoubleEq(0.125));
 }
 
-TEST_F(A2DSplineXMLReader, EvaluatesFirstSplineCorrectly) {  // NOLINT
+TEST_F(A2DXMLReader, EvaluatesFirstSplineCorrectly) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
       xml_reader->ReadXMLFile(path_to_xml_file)[0])->Evaluate({ParamCoord(1), ParamCoord(1)}, {1})[0], DoubleEq(1));
 }
 
-TEST_F(A2DSplineXMLReader, GetsCorrectDegreeOfSecondSplineInFirstDirection) {  // NOLINT
+TEST_F(A2DXMLReader, GetsCorrectDegreeOfSecondSplineInFirstDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
       xml_reader->ReadXMLFile(path_to_xml_file)[1])->GetDegree(0).get(), 2);
 }
 
-TEST_F(A2DSplineXMLReader, GetsCorrectDegreeOfSecondSplineInSecondDirection) {  // NOLINT
+TEST_F(A2DXMLReader, GetsCorrectDegreeOfSecondSplineInSecondDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
       xml_reader->ReadXMLFile(path_to_xml_file)[1])->GetDegree(1).get(), 2);
 }
 
-TEST_F(A2DSplineXMLReader, GetsCorrectKnotOfSecondSplineInFirstDirection) {  // NOLINT
+TEST_F(A2DXMLReader, GetsCorrectKnotOfSecondSplineInFirstDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
       xml_reader->ReadXMLFile(path_to_xml_file)[1])->GetKnotVector(0)->GetKnot(2).get(), DoubleEq(0.0));
 }
 
-TEST_F(A2DSplineXMLReader, GetsCorrectKnotOfSecondSplineInSecondDirection) {  // NOLINT
+TEST_F(A2DXMLReader, GetsCorrectKnotOfSecondSplineInSecondDirection) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
       xml_reader->ReadXMLFile(path_to_xml_file)[1])->GetKnotVector(1)->GetKnot(2).get(), DoubleEq(0.0));
 }
 
-TEST_F(A2DSplineXMLReader, EvaluatesSecondSplineCorrectly) {  // NOLINT
+TEST_F(A2DXMLReader, EvaluatesSecondSplineCorrectly) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
       xml_reader->ReadXMLFile(path_to_xml_file)[1])->Evaluate({ParamCoord(0), ParamCoord(0)}, {0})[0], DoubleEq(-1));
 }
 
-TEST_F(A2DSplineXMLReader, ReturnsSameValuesBeforeAndAfterConvertingIRITToXMLFile) {  // NOLINT
+TEST_F(A2DXMLReader, ReturnsSameValuesBeforeAndAfterConvertingIRITToXMLFile) {  // NOLINT
   io::IRITWriter<2> irit_writer;
   irit_writer.ConvertXMLFileToIRITFile(path_to_xml_file, "converted_irit_file.itd");
   io::IRITReader<2> irit_reader;

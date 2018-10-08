@@ -53,7 +53,7 @@ class IRITReader {
  private:
   std::vector<int> GetSplinePositions(const std::vector<std::string> &entries) const {
     std::vector<int> spline_positions;
-    for (int i = 0; i < entries.size(); i++) {
+    for (auto i = 0u; i < entries.size(); i++) {
       if (entries[i] == "BSPLINE" && FitsDimension(i, entries)) spline_positions.push_back(i - 1);
     }
     return spline_positions;
