@@ -21,6 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <sstream>
 #include <string>
 #include <vector>
+
 #include "b_spline.h"
 #include "nurbs.h"
 
@@ -49,25 +50,20 @@ class IGESReader {
     std::vector<std::any> splines;
     for (int i = 0; i < directoryEntrySection.size() * 0.5; ++i) {
       int entityType = GetInteger(trim(directoryEntrySection[i * 2].substr(5, 3)));
-      if ((entityType == 126) || (entityType == 128)) {
-        splines.push_back(CreateSpline(ParameterSectionToVector(parameterDataSection,
+      if (entityType == 126) {
+        splines.push_back(Create1DSpline(ParameterSectionToVector(parameterDataSection,
                                                                 GetParameterSectionStartEndPointers(
                                                                     directoryEntrySection, i))));
+      } else if (entityType == 128) {
+        splines.push_back(Create2DSpline(ParameterSectionToVector(parameterDataSection,
+                                                                  GetParameterSectionStartEndPointers(
+                                                                      directoryEntrySection, i))));
       }
     }
     return splines;
   }
 
  private:
-  std::any CreateSpline(const std::vector<double> &parameterData) {
-    if (parameterData[0] == 126) {
-      return Create1DSpline(parameterData);
-    }
-    if (parameterData[0] == 128) {
-      return Create2DSpline(parameterData);
-    }
-  }
-
   std::any Create1DSpline(const std::vector<double> &parameterData) {
     int upperSumIndex = static_cast<int>(parameterData[1]);
     std::array<Degree, 1> degree;

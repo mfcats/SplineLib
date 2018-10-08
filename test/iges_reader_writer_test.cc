@@ -148,12 +148,12 @@ TEST_F(AnIGESReaderAndWriter, Read2DNURBSFromIGESFile) { // NOLINT
 
 TEST_F(AnIGESReaderAndWriter, Read2DBSplineFromIGESFile) { // NOLINT
   auto b_spline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(iges_reader_->ReadIGESFile(iges_read_2)[0]);
-  ASSERT_THAT(b_spline_2d->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0],
-              DoubleEq(b_spline_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {0})[0]));
-  ASSERT_THAT(b_spline_2d->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0],
-              DoubleEq(b_spline_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {1})[0]));
-  ASSERT_THAT(b_spline_2d->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0],
-              DoubleEq(b_spline_->Evaluate({ParamCoord{0.0}, ParamCoord{0.0}}, {2})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParamCoord{0.1}, ParamCoord{0.1}}, {0})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{0.1}, ParamCoord{0.1}}, {0})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParamCoord{0.1}, ParamCoord{0.1}}, {1})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{0.1}, ParamCoord{0.1}}, {1})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParamCoord{0.1}, ParamCoord{0.1}}, {2})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{0.1}, ParamCoord{0.1}}, {2})[0]));
   ASSERT_THAT(b_spline_2d->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {0})[0],
               DoubleEq(b_spline_->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {0})[0]));
   ASSERT_THAT(b_spline_2d->Evaluate({ParamCoord{1.0}, ParamCoord{1.0}}, {1})[0],

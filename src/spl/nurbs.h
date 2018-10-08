@@ -76,15 +76,15 @@ class NURBS : public Spline<DIM> {
     physical_space_ = nurbs_generator.GetWeightedPhysicalSpace();
   }
 
-  double GetExpansion() {
+  double GetExpansion() override {
     return physical_space_->GetExpansion();
   }
 
-  std::vector<double> GetControlPoints() const {
+  std::vector<double> GetControlPoints() const override {
     return physical_space_->GetControlPoints();
   }
 
-  std::vector<double> GetWeights() const {
+  std::vector<double> GetWeights() const override {
     return physical_space_->GetWeights();
   }
 
