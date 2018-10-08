@@ -13,10 +13,12 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-add_library(splinelibio INTERFACE)
-target_include_directories(splinelibio INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibio INTERFACE splinelibspl pugixmllib)
+set(SOURCES
+        io_converter.cc)
+
+add_library(splinelibio SHARED ${SOURCES})
+target_include_directories(splinelibio PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(splinelibio splinelibspl pugixmllib)
 
 install(
         TARGETS splinelibio
@@ -30,8 +32,12 @@ install(
 
 install(FILES
         iges_reader.h
+        io_converter.h
         irit_reader.h
         irit_writer.h
         xml_reader.h
         xml_writer.h
         DESTINATION "${include_install_dir}")
+
+set(SOURCES
+        square_generator.cc)

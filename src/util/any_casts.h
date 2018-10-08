@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 
 namespace util {
-template <int DIM>
+template<int DIM>
 class AnyCasts {
  public:
   static std::shared_ptr<spl::Spline<DIM>> GetSpline(std::any spline) {
@@ -32,7 +32,8 @@ class AnyCasts {
       try {
         return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
       } catch (std::bad_any_cast &msg) {
-        throw std::runtime_error("Input has to be a pointer to a b-spline or nurbs.");
+        throw std::runtime_error(
+            "Input has to be a pointer to a b-spline or nurbs of dimension " + std::to_string(DIM) + ".");
       }
     }
   }

@@ -96,7 +96,7 @@ class IGESReader {
     for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {
       controlPointCoordinates.push_back(parameterData[i]);
     }
-    for (uint i = 0; i < controlPointCoordinates.size(); i += 3) {
+    for (auto i = 0u; i < controlPointCoordinates.size(); i += 3) {
       control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
                                                   controlPointCoordinates[i + 1],
                                                   controlPointCoordinates[i + 2]}));
@@ -106,9 +106,11 @@ class IGESReader {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
     if (parameterData[5] == 1) {
-      return std::make_any<spl::BSpline<1>>(knot_vector, degree, control_points);
+      return std::make_any<std::shared_ptr<spl::BSpline<1>>>(
+          std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points));
     } else if (parameterData[5] == 0) {
-      return std::make_any<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+      return std::make_any<std::shared_ptr<spl::NURBS<1>>>(
+          std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights));
     }
   }
 
@@ -149,7 +151,7 @@ class IGESReader {
     for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {
       controlPointCoordinates.push_back(parameterData[i]);
     }
-    for (uint i = 0; i < controlPointCoordinates.size() - 2; i += 3) {
+    for (auto i = 0u; i < controlPointCoordinates.size() - 2; i += 3) {
       control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
                                                   controlPointCoordinates[i + 1],
                                                   controlPointCoordinates[i + 2]}));
@@ -159,9 +161,11 @@ class IGESReader {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
     if (parameterData[5] == 1) {
-      return std::make_any<spl::BSpline<2>>(knot_vector, degree, control_points);
+      return std::make_any<std::shared_ptr<spl::BSpline<2>>>(
+          std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points));
     } else if (parameterData[5] == 0) {
-      return std::make_any<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
+      return std::make_any<std::shared_ptr<spl::NURBS<2>>>(
+          std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights));
     }
   }
 
@@ -183,8 +187,8 @@ class IGESReader {
     int last = ParameterSectionStartEndPointers[1] - 1;
     for (int i = first; i <= last; ++i) {
       auto temp = DelimitedStringToVector(parameterSection[i]);
-      for (uint j = 0; j < temp.size(); ++j) {
-        parameterSectionVector.push_back(temp[j]);
+      for (double j : temp) {
+        parameterSectionVector.push_back(j);
       }
     }
     return parameterSectionVector;

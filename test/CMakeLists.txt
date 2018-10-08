@@ -41,7 +41,8 @@ set(TEST_SOURCES
         xml_reader_test.cc
         xml_writer_1d_test.cc
         xml_writer_2d_test.cc
-        xml_writer_3d_test.cc)
+        xml_writer_3d_test.cc
+        io_converter.cc)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
