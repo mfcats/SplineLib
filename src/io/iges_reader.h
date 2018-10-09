@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IO_IGES_READER_H_
 
 #include <any>
+#include <iomanip>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -208,15 +209,11 @@ class IGESReader {
   }
 
   int GetInteger(const std::string &string) {
-    int number = 0;
-    std::istringstream(string) >> number;
-    return number;
+    return std::stoi(string);
   }
 
   double GetDouble(const std::string &string) {
-    double number = 0;
-    std::istringstream(string) >> number;
-    return number;
+    return std::stod(string);
   }
 
   static inline std::string trim(std::string s) {

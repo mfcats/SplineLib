@@ -64,8 +64,6 @@ class IGESWriter {
                                                                static_cast<int>(dataEntry.size()),
                                                                static_cast<int>(parameter.size()));
       WriteFile(newFile, start, global, dataEntry, parameter, terminate);
-    } else {
-      throw std::runtime_error("The IGES file couldn't be opened.");
     }
     newFile.close();
   }
@@ -277,6 +275,7 @@ class IGESWriter {
   template <typename T>
   std::string GetString(const T value) {
     std::ostringstream out;
+    out.precision(18);
     out << value;
     return out.str();
   }
@@ -308,7 +307,7 @@ class IGESWriter {
     if (time.size() == 5) {
       time = '0' + time;
     }
-    return date;
+    return GetHollerithFormat(date + "." + time);
   }
 
   double GetHighestValue(std::vector<std::any> splines) {
