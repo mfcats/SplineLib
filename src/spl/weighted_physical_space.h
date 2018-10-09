@@ -52,6 +52,10 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     return weights_[first / this->dimension_];
   }
 
+  std::vector<double> GetWeights() const {
+    return weights_;
+  }
+
  private:
   std::vector<double> weights_;
 };

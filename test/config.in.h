@@ -15,8 +15,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef TEST_CONFIG_IN_H_  // NOLINT
 #define TEST_CONFIG_IN_H_
 
-static const char *path_to_iges_file = "@PATH_TO_IGES_FILE@";
-static const char *path_to_iges_file_2 = "@PATH_TO_IGES_FILE_2@";
+static const char *iges_read = "@IGES_READ@";
+static const char *iges_read_2 = "@IGES_READ_2@";
+static const char *iges_write = "@IGES_WRITE@";
 static const char *path_to_iris_file = "@PATH_TO_IRIS_FILE@";
 static const char *path_to_xml_file = "@PATH_TO_XML_FILE@";
 

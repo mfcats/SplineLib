@@ -122,6 +122,16 @@ class Spline {
     return dx_dxi * dxi_dtildexi;
   }
 
+  virtual double GetExpansion() = 0;
+
+  virtual std::vector<double> GetControlPoints() const = 0;
+
+  virtual std::vector<double> GetWeights() const = 0;
+
+  std::array<std::vector<ParamCoord>, DIM> GetKnots() const {
+    return parameter_space_->GetKnots();
+  }
+
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
     parameter_space_->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);

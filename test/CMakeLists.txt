@@ -23,7 +23,7 @@ set(TEST_SOURCES
         square_generator_test.cc
         multihandler_test.cc
         element_test.cc
-        iges_reader_test.cc
+        iges_reader_writer_test.cc
         integration_rule_test.cc
         integration_point_test.cc
         projection_curve_test.cc
@@ -55,8 +55,9 @@ target_link_libraries(AcceptanceTests splinelibbaf splinelibspl splinelibutil)
 
 target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
 
-set(PATH_TO_IGES_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test.iges)
-set(PATH_TO_IGES_FILE_2 ${CMAKE_CURRENT_SOURCE_DIR}/test2.iges)
+set(IGES_READ ${CMAKE_CURRENT_SOURCE_DIR}/read.iges)
+set(IGES_READ_2 ${CMAKE_CURRENT_SOURCE_DIR}/read2.iges)
+set(IGES_WRITE ${CMAKE_CURRENT_SOURCE_DIR}/write.iges)
 set(PATH_TO_IRIS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test.itd)
 set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/spline_tank.xml)
 configure_file(config.in.h ${CMAKE_CURRENT_BINARY_DIR}/config.h)

@@ -69,6 +69,10 @@ ParamCoord baf::KnotVector::GetKnot(size_t index) const {
 #endif
 }
 
+std::vector<ParamCoord> baf::KnotVector::GetKnots() const {
+  return knots_;
+}
+
 ParamCoord baf::KnotVector::GetLastKnot() const {
   return knots_.back();
 }
