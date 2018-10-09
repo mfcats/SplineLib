@@ -222,24 +222,14 @@ class IGESWriter {
         std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
         return 126;
       } catch (std::bad_any_cast &msg) {
-        try {
-          std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
-          return 128;
-        } catch (std::bad_any_cast &msg) {
-          throw std::runtime_error("IGES writer can only write 1D and 2D splines.");
-        }
+        return 128;
       }
     } else {
       try {
         std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
         return 126;
       } catch (std::bad_any_cast &msg) {
-        try {
-          std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
-          return 128;
-        } catch (std::bad_any_cast &msg) {
-          throw std::runtime_error("IGES writer can only write 1D and 2D splines.");
-        }
+        return 128;
       }
     }
   }
