@@ -16,8 +16,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IO_IGES_READER_H_
 
 #include <any>
-#include <iomanip>
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>

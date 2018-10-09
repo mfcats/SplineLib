@@ -17,8 +17,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "iges_reader.h"
 #include "iges_writer.h"
 
-#include <iostream>
-
 using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
