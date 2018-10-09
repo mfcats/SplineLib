@@ -82,7 +82,7 @@ class PhysicalSpace {
     return control_points_;
   }
 
-  std::vector<double> GetWeights() const {
+  virtual std::vector<double> GetWeights() const {
     std::vector<double> weights;
     int numberOfWeights = 1;
     for (int i = 0; i < DIM; ++i) {

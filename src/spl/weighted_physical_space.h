@@ -52,7 +52,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     return weights_[first / this->dimension_];
   }
 
-  std::vector<double> GetWeights() const {
+  std::vector<double> GetWeights() const override {
     return weights_;
   }
 
