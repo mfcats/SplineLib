@@ -189,12 +189,12 @@ TEST_F(A3DIRITWriter, ReturnsSameValuesBeforeAndAfterConvertingIRITToXMLFile) { 
   std::vector<std::any> spline_vector = xml_reader.ReadXMLFile("converted_xml_file.xml");
   ASSERT_THAT(spline_vector.size(), 2);
 
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline_vector[0])->Evaluate({ParamCoord{0.5}}, {0})[0],
-              DoubleEq(b_spline_->Evaluate({ParamCoord{0.5}}, {0})[0]));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline_vector[0])->Evaluate({ParamCoord{0.5}}, {1})[0],
-              DoubleEq(b_spline_->Evaluate({ParamCoord{0.5}}, {1})[0]));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline_vector[0])->Evaluate({ParamCoord{0.5}}, {2})[0],
-              DoubleEq(b_spline_->Evaluate({ParamCoord{0.5}}, {2})[0]));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline_vector[0])->Evaluate({ParamCoord{0.345}}, {0})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{0.345}}, {0})[0]));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline_vector[0])->Evaluate({ParamCoord{0.345}}, {1})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{0.345}}, {1})[0]));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline_vector[0])->Evaluate({ParamCoord{0.345}}, {2})[0],
+              DoubleEq(b_spline_->Evaluate({ParamCoord{0.345}}, {2})[0]));
 
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(spline_vector[1])->Evaluate({ParamCoord{0.123}}, {0})[0],
               DoubleEq(nurbs_->Evaluate({ParamCoord{0.123}}, {0})[0]));
