@@ -14,7 +14,8 @@
 #
 
 add_library(splinelibio INTERFACE)
-target_include_directories(splinelibio INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_include_directories(splinelibio INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_link_libraries(splinelibio INTERFACE splinelibspl pugixmllib)
 
 install(
@@ -26,6 +27,7 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
+
 install(FILES
         iges_reader.h
         io_converter.h
@@ -34,6 +36,3 @@ install(FILES
         xml_reader.h
         xml_writer.h
         DESTINATION "${include_install_dir}")
-
-set(SOURCES
-        square_generator.cc)

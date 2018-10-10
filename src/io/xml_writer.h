@@ -23,8 +23,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "any_casts.h"
 #include "b_spline.h"
-#include "nurbs.h"
 #include "irit_reader.h"
+#include "nurbs.h"
 
 namespace io {
 template<int DIM>

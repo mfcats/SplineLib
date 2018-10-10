@@ -70,6 +70,30 @@ class PhysicalSpace {
     return dimension_;
   }
 
+  double GetExpansion() {
+    double expansion = 0;
+    for (auto &cp : control_points_) {
+      if (cp > expansion) expansion = cp;
+    }
+    return expansion;
+  }
+
+  std::vector<double> GetControlPoints() const {
+    return control_points_;
+  }
+
+  virtual std::vector<double> GetWeights() const {
+    std::vector<double> weights;
+    int numberOfWeights = 1;
+    for (int i = 0; i < DIM; ++i) {
+        numberOfWeights *= number_of_points_[i];
+    }
+    for (int i = 0; i < numberOfWeights; ++i) {
+      weights.emplace_back(1.0);
+    }
+    return weights;
+  }
+
  protected:
   int dimension_;
   std::array<int, DIM> number_of_points_;
