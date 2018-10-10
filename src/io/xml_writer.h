@@ -42,12 +42,6 @@ class XMLWriter {
     doc.save_file(filename, "  ", pugi::format_indent_attributes, pugi::encoding_utf8);
   }
 
-  void ConvertIRITFileToXMLFile(const char *input_filename, const char *output_filename) {
-    io::IRITReader<DIM> irit_reader;
-    std::vector<std::any> splines = irit_reader.ReadIRITFile(input_filename);
-    WriteXMLFile(splines, output_filename);
-  }
-
  private:
   void AddSpline(pugi::xml_node *spline_list, const std::any &spline) {
     std::shared_ptr<spl::Spline<DIM>> spline_ptr = util::AnyCasts<DIM>::GetSpline(spline);

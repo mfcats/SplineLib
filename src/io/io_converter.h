@@ -18,7 +18,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "iges_reader.h"
+#include "irit_writer.h"
 #include "xml_writer.h"
+#include "iges_writer.h"
 
 namespace io {
 template<int DIM>

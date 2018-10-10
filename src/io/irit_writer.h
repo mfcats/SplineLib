@@ -46,12 +46,6 @@ class IRITWriter {
     }
   }
 
-  void ConvertXMLFileToIRITFile(const char *input_filename, const char *output_filename) {
-    io::XMLReader<DIM> xml_reader;
-    std::vector<std::any> splines = xml_reader.ReadXMLFile(input_filename);
-    WriteIRITFile(splines, output_filename);
-  }
-
  private:
   void WriteSpline(std::ofstream &file, const std::any &spline, int spline_number) const {
     std::shared_ptr<spl::Spline<DIM>> spline_ptr = util::AnyCasts<DIM>::GetSpline(spline);

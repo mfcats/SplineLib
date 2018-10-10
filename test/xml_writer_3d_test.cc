@@ -170,7 +170,7 @@ TEST_F(A3DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
 
 TEST_F(A3DXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
   xml_writer_->WriteXMLFile(splines_, "3d_splines.xml");
-  std::unique_ptr<io::XMLReader<3>> xml_reader(std::make_unique<io::XMLReader<3>>());
+  std::unique_ptr<io::XMLReader> xml_reader(std::make_unique<io::XMLReader>());
   auto bspline_after = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(xml_reader->ReadXMLFile("3d_splines.xml")[0]);
   auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(xml_reader->ReadXMLFile("3d_splines.xml")[1]);
 

@@ -160,7 +160,7 @@ TEST_F(A2DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
 
 TEST_F(A2DXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
   xml_writer_->WriteXMLFile(splines_, "2d_splines.xml");
-  std::unique_ptr<io::XMLReader<2>> xml_reader(std::make_unique<io::XMLReader<2>>());
+  std::unique_ptr<io::XMLReader> xml_reader(std::make_unique<io::XMLReader>());
   auto bspline_after = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_reader->ReadXMLFile("2d_splines.xml")[0]);
   auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_reader->ReadXMLFile("2d_splines.xml")[1]);
 

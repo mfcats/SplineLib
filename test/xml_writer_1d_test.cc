@@ -195,7 +195,7 @@ TEST_F(A1DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
 
 TEST_F(A1DXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
   xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
-  std::unique_ptr<io::XMLReader<1>> xml_reader(std::make_unique<io::XMLReader<1>>());
+  std::unique_ptr<io::XMLReader> xml_reader(std::make_unique<io::XMLReader>());
   auto bspline_1_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[0]);
   auto bspline_2_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[1]);
   auto bspline_3_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[2]);

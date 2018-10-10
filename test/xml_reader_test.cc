@@ -26,14 +26,18 @@ using testing::DoubleEq;
 
 class A2DXMLReader : public Test {
  public:
-  A2DXMLReader() : xml_reader(std::make_unique<io::XMLReader<2>>()) {}
+  A2DXMLReader() : xml_reader(std::make_unique<io::XMLReader>()) {}
 
  protected:
-  std::unique_ptr<io::XMLReader<2>> xml_reader;
+  std::unique_ptr<io::XMLReader> xml_reader;
 };
 
 TEST_F(A2DXMLReader, ThrowsExceptionForNonExistingFile) {  // NOLINT
   ASSERT_THROW(xml_reader->ReadXMLFile("test.xml"), std::runtime_error);
+}
+
+TEST_F(A2DXMLReader, FindsTwoSplines) {  // NOLINT
+  ASSERT_THAT(xml_reader->ReadXMLFile(path_to_xml_file).size(), 2);
 }
 
 TEST_F(A2DXMLReader, GetsCorrectDegreeOfFirstSplineInFirstDirection) {  // NOLINT
@@ -84,19 +88,4 @@ TEST_F(A2DXMLReader, GetsCorrectKnotOfSecondSplineInSecondDirection) {  // NOLIN
 TEST_F(A2DXMLReader, EvaluatesSecondSplineCorrectly) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
       xml_reader->ReadXMLFile(path_to_xml_file)[1])->Evaluate({ParamCoord(0), ParamCoord(0)}, {0})[0], DoubleEq(-1));
-}
-
-TEST_F(A2DXMLReader, ReturnsSameValuesBeforeAndAfterConvertingIRITToXMLFile) {  // NOLINT
-  io::IRITWriter<2> irit_writer;
-  irit_writer.ConvertXMLFileToIRITFile(path_to_xml_file, "converted_irit_file.itd");
-  io::IRITReader<2> irit_reader;
-  std::vector<std::any> spline_vector = irit_reader.ReadIRITFile("converted_irit_file.itd");
-  ASSERT_THAT(spline_vector.size(), 2);
-
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
-      spline_vector[1])->Evaluate({ParamCoord(0), ParamCoord(0)}, {0})[0], DoubleEq(-1));
-
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
-      spline_vector[0])->Evaluate({ParamCoord(1), ParamCoord(1)}, {1})[0], DoubleEq(1));
-  remove("converted_irit_file.itd");
 }
