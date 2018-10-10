@@ -122,11 +122,19 @@ class Spline {
     return dx_dxi * dxi_dtildexi;
   }
 
-  virtual double GetExpansion() = 0;
+  virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;
 
-  virtual std::vector<double> GetControlPoints() const = 0;
+  double GetExpansion() const {
+    return GetPhysicalSpace()->GetExpansion();
+  }
 
-  virtual std::vector<double> GetWeights() const = 0;
+  std::vector<double> GetControlPoints() const {
+    return GetPhysicalSpace()->GetControlPoints();
+  }
+
+  std::vector<double> GetWeights() const {
+    return GetPhysicalSpace()->GetWeights();
+  }
 
   std::array<std::vector<ParamCoord>, DIM> GetKnots() const {
     return parameter_space_->GetKnots();
