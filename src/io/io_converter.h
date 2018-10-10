@@ -37,12 +37,8 @@ class IOConverter {
           std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
           return 2;
         } catch (std::bad_any_cast &msg) {
-          try {
-            std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
-            return 2;
-          } catch (std::bad_any_cast &msg) {
-            return 0;
-          }
+          std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
+          return 2;
         }
       }
     }
