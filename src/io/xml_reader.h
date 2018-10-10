@@ -49,18 +49,15 @@ class XMLReader {
 
  private:
   void AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines) {
-    spl::ParameterSpace<DIM> parameter_space = GetParameterSpace(spline);
-    std::vector<baf::ControlPoint> control_points_ = GetControlPoints(spline);
-    std::array<int, DIM> number_of_control_points = GetNumberOfControlPoints(parameter_space);
+    std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors = GetKnotVectors(spline);
+    std::array<Degree, DIM> degrees = GetDegrees(spline);
+    std::vector<baf::ControlPoint> control_points = GetControlPoints(spline);
     if (spline->child("wght").empty()) {
-      splines->push_back(std::make_any<spl::BSpline<DIM>>(
-          parameter_space, spl::PhysicalSpace<DIM>(control_points_, number_of_control_points)));
+      splines->push_back(std::make_any<std::shared_ptr<spl::BSpline<DIM>>>(
+          std::make_shared<spl::BSpline<DIM>>(knot_vectors, degrees, control_points)));
     } else {
-      std::vector<double> weights = util::StringOperations::StringVectorToNumberVector<double>(
-          util::StringOperations::split(spline->child("wght").first_child().value(), ' '));
-      splines->push_back(std::make_any<spl::NURBS<DIM>>(
-          std::make_shared<spl::ParameterSpace<DIM>>(parameter_space),
-          std::make_shared<spl::WeightedPhysicalSpace<DIM>>(control_points_, weights, number_of_control_points)));
+      splines->push_back(std::make_any<std::shared_ptr<spl::NURBS<DIM>>>(
+          std::make_shared<spl::NURBS<DIM>>(knot_vectors, degrees, control_points, GetWeights(spline))));
     }
   }
 
@@ -82,18 +79,11 @@ class XMLReader {
     return points;
   }
 
-  std::array<int, DIM> GetNumberOfControlPoints(spl::ParameterSpace<DIM> parameter_space) {
-    std::array<int, DIM> number_of_control_points;
-    for (int i = 0; i < DIM; i++) {
-      number_of_control_points[i] =
-          parameter_space.GetKnotVector(i)->GetNumberOfKnots() - parameter_space.GetDegree(i).get() - 1;
-    }
-    return number_of_control_points;
+  std::array<Degree, DIM> GetDegrees(pugi::xml_node *spline) {
+    return StringVectorToDegreeArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
   }
 
-  spl::ParameterSpace<DIM> GetParameterSpace(pugi::xml_node *spline) {
-    std::array<Degree, DIM> degree =
-        StringVectorToDegreeArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
+  std::array<std::shared_ptr<baf::KnotVector>, DIM> GetKnotVectors(pugi::xml_node *spline) {
     std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector;
     for (int i = 0; i < DIM; i++) {
       knot_vector[i] = std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord(0.5)}));
@@ -107,7 +97,12 @@ class XMLReader {
           baf::KnotVector(util::StringOperations::StringVectorToNumberVector<ParamCoord>(
               util::StringOperations::split(child.first_child().value(), ' '))));
     }
-    return spl::ParameterSpace<DIM>(knot_vector, degree);
+    return knot_vector;
+  }
+
+  std::vector<double> GetWeights(pugi::xml_node *spline) {
+    return util::StringOperations::StringVectorToNumberVector<double>(
+        util::StringOperations::split(spline->child("wght").first_child().value(), ' '));
   }
 
   std::array<Degree, DIM> StringVectorToDegreeArray(const std::vector<std::string> &string_vector) {

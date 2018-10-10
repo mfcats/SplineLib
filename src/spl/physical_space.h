@@ -59,7 +59,7 @@ class PhysicalSpace {
   }
 
   int GetNumberOfControlPoints() {
-    return control_points_.size() / dimension_;
+    return static_cast<int>(control_points_.size()) / dimension_;
   }
 
   std::array<int, DIM> GetNumberOfPointsInEachDirection() {

@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "xml_reader.h"
+#include "config.in.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -104,21 +105,21 @@ class A1DNURBSForXML {  // NOLINT
 class A1DXMLWriter : public Test, public A1DBSplineForXMLWithSpaceDim1, public A1DBSplineForXMLWithSpaceDim2,
                      public A1DBSplineForXMLWithSpaceDim3, public A1DNURBSForXML {
  public:
-  A1DXMLWriter() {
+  A1DXMLWriter() : xml_writer_(std::make_unique<io::XMLWriter<1>>()) {
     std::any b_spline_1_any = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_1_);
     std::any b_spline_2_any = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_2_);
     std::any b_spline_3_any = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_3_);
     std::any nurbs_any = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_);
-    std::vector<std::any> splines = {b_spline_1_any, b_spline_2_any, b_spline_3_any, nurbs_any};
-    xml_writer_ = std::make_unique<io::XMLWriter<1>>(splines);
+    splines_ = {b_spline_1_any, b_spline_2_any, b_spline_3_any, nurbs_any};
   }
 
  protected:
   std::unique_ptr<io::XMLWriter<1>> xml_writer_;
+  std::vector<std::any> splines_;
 };
 
 TEST_F(A1DXMLWriter, IsCreated) {  // NOLINT
-  xml_writer_->WriteXMLFile("1d_splines.xml");
+  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
   std::ifstream newFile;
   newFile.open("1d_splines.xml");
   ASSERT_TRUE(newFile.is_open());
@@ -127,7 +128,7 @@ TEST_F(A1DXMLWriter, IsCreated) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
-  xml_writer_->WriteXMLFile("1d_splines.xml");
+  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file("1d_splines.xml");
   ASSERT_STREQ(result.description(), "No error");
@@ -135,7 +136,7 @@ TEST_F(A1DXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, CreatesSplineListWith4Entries) {  // NOLINT
-  xml_writer_->WriteXMLFile("1d_splines.xml");
+  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("1d_splines.xml");
   ASSERT_STREQ(doc.first_child().name(), "SplineList");
@@ -144,7 +145,7 @@ TEST_F(A1DXMLWriter, CreatesSplineListWith4Entries) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, Creates4SplineEntries) {  // NOLINT
-  xml_writer_->WriteXMLFile("1d_splines.xml");
+  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("1d_splines.xml");
   pugi::xml_node spline_node = doc.child("SplineList").first_child();
@@ -155,7 +156,7 @@ TEST_F(A1DXMLWriter, Creates4SplineEntries) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, CreatesNoWeightsForBSplines) {  // NOLINT
-  xml_writer_->WriteXMLFile("1d_splines.xml");
+  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("1d_splines.xml");
   pugi::xml_node spline_node = doc.child("SplineList").child("SplineEntry");
@@ -170,7 +171,7 @@ TEST_F(A1DXMLWriter, CreatesNoWeightsForBSplines) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, WritesSplineDimension1ForAllSplines) {  // NOLINT
-  xml_writer_->WriteXMLFile("1d_splines.xml");
+  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("1d_splines.xml");
   pugi::xml_node spline_node = doc.child("SplineList").child("SplineEntry");
@@ -181,7 +182,7 @@ TEST_F(A1DXMLWriter, WritesSplineDimension1ForAllSplines) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
-  xml_writer_->WriteXMLFile("1d_splines.xml");
+  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("1d_splines.xml");
   std::vector<int> space_dimensions = {1, 2, 3, 2};
@@ -193,31 +194,31 @@ TEST_F(A1DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
-  xml_writer_->WriteXMLFile("1d_splines.xml");
+  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
   std::unique_ptr<io::XMLReader<1>> xml_reader(std::make_unique<io::XMLReader<1>>());
-  auto bspline_1_after = std::any_cast<spl::BSpline<1>>(xml_reader->ReadXMLFile("1d_splines.xml")[0]);
-  auto bspline_2_after = std::any_cast<spl::BSpline<1>>(xml_reader->ReadXMLFile("1d_splines.xml")[1]);
-  auto bspline_3_after = std::any_cast<spl::BSpline<1>>(xml_reader->ReadXMLFile("1d_splines.xml")[2]);
-  auto nurbs_after = std::any_cast<spl::NURBS<1>>(xml_reader->ReadXMLFile("1d_splines.xml")[3]);
+  auto bspline_1_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[0]);
+  auto bspline_2_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[1]);
+  auto bspline_3_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[2]);
+  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[3]);
 
   ASSERT_THAT(b_spline_1_->Evaluate({ParamCoord(0.75839)}, {0})[0],
-              DoubleEq(bspline_1_after.Evaluate({ParamCoord(0.75839)}, {0})[0]));
+              DoubleEq(bspline_1_after->Evaluate({ParamCoord(0.75839)}, {0})[0]));
 
   ASSERT_THAT(b_spline_2_->Evaluate({ParamCoord(0.47681)}, {0})[0],
-              DoubleEq(bspline_2_after.Evaluate({ParamCoord(0.47681)}, {0})[0]));
+              DoubleEq(bspline_2_after->Evaluate({ParamCoord(0.47681)}, {0})[0]));
   ASSERT_THAT(b_spline_2_->Evaluate({ParamCoord(0.47681)}, {1})[0],
-              DoubleEq(bspline_2_after.Evaluate({ParamCoord(0.47681)}, {1})[0]));
+              DoubleEq(bspline_2_after->Evaluate({ParamCoord(0.47681)}, {1})[0]));
 
   ASSERT_THAT(b_spline_3_->Evaluate({ParamCoord(0.89463)}, {0})[0],
-              DoubleEq(bspline_3_after.Evaluate({ParamCoord(0.89463)}, {0})[0]));
+              DoubleEq(bspline_3_after->Evaluate({ParamCoord(0.89463)}, {0})[0]));
   ASSERT_THAT(b_spline_3_->Evaluate({ParamCoord(0.89463)}, {1})[0],
-              DoubleEq(bspline_3_after.Evaluate({ParamCoord(0.89463)}, {1})[0]));
+              DoubleEq(bspline_3_after->Evaluate({ParamCoord(0.89463)}, {1})[0]));
   ASSERT_THAT(b_spline_3_->Evaluate({ParamCoord(0.89463)}, {2})[0],
-              DoubleEq(bspline_3_after.Evaluate({ParamCoord(0.89463)}, {2})[0]));
+              DoubleEq(bspline_3_after->Evaluate({ParamCoord(0.89463)}, {2})[0]));
 
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.13697)}, {0})[0],
-              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.13697)}, {0})[0]));
+              DoubleEq(nurbs_after->Evaluate({ParamCoord(0.13697)}, {0})[0]));
   ASSERT_THAT(nurbs_->Evaluate({ParamCoord(0.13697)}, {1})[0],
-              DoubleEq(nurbs_after.Evaluate({ParamCoord(0.13697)}, {1})[0]));
+              DoubleEq(nurbs_after->Evaluate({ParamCoord(0.13697)}, {1})[0]));
   remove("1d_splines.xml");
 }

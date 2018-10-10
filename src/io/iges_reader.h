@@ -91,7 +91,7 @@ class IGESReader {
     for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {
       controlPointCoordinates.push_back(parameterData[i]);
     }
-    for (uint i = 0; i < controlPointCoordinates.size(); i += 3) {
+    for (auto i = 0u; i < controlPointCoordinates.size(); i += 3) {
       control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
                                                   controlPointCoordinates[i + 1],
                                                   controlPointCoordinates[i + 2]}));
@@ -146,7 +146,7 @@ class IGESReader {
     for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {
       controlPointCoordinates.push_back(parameterData[i]);
     }
-    for (uint i = 0; i < controlPointCoordinates.size() - 2; i += 3) {
+    for (auto i = 0u; i < controlPointCoordinates.size() - 2; i += 3) {
       control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
                                                   controlPointCoordinates[i + 1],
                                                   controlPointCoordinates[i + 2]}));

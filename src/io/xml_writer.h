@@ -23,32 +23,39 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "any_casts.h"
 #include "b_spline.h"
+#include "irit_reader.h"
 #include "nurbs.h"
 
 namespace io {
 template<int DIM>
 class XMLWriter {
  public:
-  explicit XMLWriter(const std::vector<std::any> &splines) : splines_(splines) {}
+  XMLWriter() = default;
 
-  void WriteXMLFile(const char *filename) {
+  void WriteXMLFile(const std::vector<std::any> &splines, const char *filename) {
     pugi::xml_document doc;
     pugi::xml_node spline_list = doc.append_child("SplineList");
-    spline_list.append_attribute("NumberOfSplines") = std::to_string(splines_.size()).c_str();
-    for (int i = 0; i < static_cast<int>(splines_.size()); i++) {
-      AddSpline(&spline_list, i);
+    spline_list.append_attribute("NumberOfSplines") = std::to_string(splines.size()).c_str();
+    for (const auto &spline : splines) {
+      AddSpline(&spline_list, spline);
     }
     doc.save_file(filename, "  ", pugi::format_indent_attributes, pugi::encoding_utf8);
   }
 
+  void ConvertIRITFileToXMLFile(const char *input_filename, const char *output_filename) {
+    io::IRITReader<DIM> irit_reader;
+    std::vector<std::any> splines = irit_reader.ReadIRITFile(input_filename);
+    WriteXMLFile(splines, output_filename);
+  }
+
  private:
-  void AddSpline(pugi::xml_node *spline_list, int spline_number) {
-    std::shared_ptr<spl::Spline<DIM>> spline_ptr = util::AnyCasts<DIM>::GetSpline(splines_[spline_number]);
+  void AddSpline(pugi::xml_node *spline_list, const std::any &spline) {
+    std::shared_ptr<spl::Spline<DIM>> spline_ptr = util::AnyCasts<DIM>::GetSpline(spline);
     pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
     AddSplineAttributes(&spline_node, spline_ptr);
     AddControlPointVarNames(&spline_node, spline_ptr);
     AddControlPointVars(&spline_node, spline_ptr);
-    if (util::AnyCasts<DIM>::IsRational(splines_[spline_number])) AddWeights(&spline_node, spline_number);
+    if (util::AnyCasts<DIM>::IsRational(spline)) AddWeights(&spline_node, spline);
     AddDegrees(&spline_node, spline_ptr);
     AddKnotVectors(&spline_node, spline_ptr);
   }
@@ -107,10 +114,10 @@ class XMLWriter {
     }
   }
 
-  void AddWeights(pugi::xml_node *spline_node, int spline_number) {
+  void AddWeights(pugi::xml_node *spline_node, const std::any &spline) {
     pugi::xml_node weights = spline_node->append_child("wght");
     std::string string;
-    std::shared_ptr<spl::NURBS<DIM>> nurbs = std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(splines_[spline_number]);
+    std::shared_ptr<spl::NURBS<DIM>> nurbs = std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
     util::MultiIndexHandler<DIM> weight_handler(nurbs->GetPointsPerDirection());
     for (int i = 0; i < weight_handler.Get1DLength(); ++i, weight_handler++) {
       auto indices = weight_handler.GetIndices();
@@ -118,8 +125,6 @@ class XMLWriter {
     }
     weights.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
-
-  std::vector<std::any> splines_;
 };
 }  // namespace io
 

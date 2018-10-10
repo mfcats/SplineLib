@@ -53,7 +53,7 @@ class IRITReader {
  private:
   std::vector<int> GetSplinePositions(const std::vector<std::string> &entries) const {
     std::vector<int> spline_positions;
-    for (uint i = 0; i < entries.size(); i++) {
+    for (auto i = 0u; i < entries.size(); i++) {
       if (entries[i] == "BSPLINE" && FitsDimension(i, entries)) spline_positions.push_back(i - 1);
     }
     return spline_positions;
@@ -65,10 +65,11 @@ class IRITReader {
     bool rational = IsRational(start, entries);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
     if (!rational) {
-      return std::make_any<spl::BSpline<DIM>>(knot_vector, degree, control_points);
+      return std::make_any<std::shared_ptr<spl::BSpline<DIM>>>(
+          std::make_shared<spl::BSpline<DIM>>(knot_vector, degree, control_points));
     } else {
-      std::vector<double> weights = GetWeights(start, entries);
-      return std::make_any<spl::NURBS<DIM>>(knot_vector, degree, control_points, weights);
+      return std::make_any<std::shared_ptr<spl::NURBS<DIM>>>(
+          std::make_shared<spl::NURBS<DIM>>(knot_vector, degree, control_points, GetWeights(start, entries)));
     }
   }
 
