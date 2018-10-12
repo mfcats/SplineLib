@@ -34,5 +34,7 @@ install(FILES
         irit_reader.h
         irit_writer.h
         xml_reader.h
+        xml_reader_utils.h
         xml_writer.h
+        xml_writer_utils.h
         DESTINATION "${include_install_dir}")

@@ -24,7 +24,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace io {
 template<int DIM>
-class IRITUtils {
+class IRITReaderUtils {
  public:
   static std::array<Degree, DIM> GetDegrees(int start, const std::vector<std::string> &entries) {
     std::array<Degree, DIM> degrees;

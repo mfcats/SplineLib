@@ -148,7 +148,7 @@ TEST_F(A1DIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT
 
 class A1DIRITWriter : public Test, public A1DBSplineForIRIT, public ASecond1DBSplineForIRIT, public A1DNURBSForIRIT {
  public:
-  A1DIRITWriter() : irit_writer_(std::make_unique<io::IRITWriter<1>>()) {
+  A1DIRITWriter() : irit_writer_(std::make_unique<io::IRITWriter>()) {
     std::any b_spline_1_any = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_1_);
     std::any b_spline_2_any = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_2_);
     std::any nurbs_any = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_);
@@ -156,12 +156,12 @@ class A1DIRITWriter : public Test, public A1DBSplineForIRIT, public ASecond1DBSp
   }
 
  protected:
-  std::unique_ptr<io::IRITWriter<1>> irit_writer_;
+  std::unique_ptr<io::IRITWriter> irit_writer_;
   std::vector<std::any> splines_;
 };
 
 TEST_F(A1DIRITWriter, ThrowsExceptionForWrongInputType) {  // NOLINT
-  ASSERT_THROW(io::IRITWriter<1>().WriteIRITFile({std::make_any<int>(8)}, "1d_splines.itd"), std::runtime_error);
+  ASSERT_THROW(io::IRITWriter().WriteIRITFile({std::make_any<int>(8)}, "1d_splines.itd"), std::runtime_error);
   remove("1d_splines.itd");
 }
 

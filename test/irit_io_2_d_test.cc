@@ -122,14 +122,14 @@ TEST_F(A2DIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT
 
 class A2DIRITWriter : public Test, public A2DBSplineForIRIT, public A2DNURBSForIRIT {
  public:
-  A2DIRITWriter() : irit_writer_(std::make_unique<io::IRITWriter<2>>()) {
+  A2DIRITWriter() : irit_writer_(std::make_unique<io::IRITWriter>()) {
     std::any b_spline_any = std::make_any<std::shared_ptr<spl::BSpline<2>>>(b_spline_);
     std::any nurbs_any = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_);
     splines_ = {b_spline_any, nurbs_any};
   }
 
  protected:
-  std::unique_ptr<io::IRITWriter<2>> irit_writer_;
+  std::unique_ptr<io::IRITWriter> irit_writer_;
   std::vector<std::any> splines_;
 };
 

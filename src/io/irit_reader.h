@@ -23,7 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 #include "nurbs.h"
 #include "string_operations.h"
-#include "irit_utils.h"
+#include "irit_reader_utils.h"
 
 namespace io {
 class IRITReader {
@@ -78,9 +78,10 @@ class IRITReader {
   }
 
   std::any Get1DSpline(int start, const std::vector<std::string> &entries) const {
-    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = io::IRITUtils<1>::GetKnotVectors(start, entries);
-    std::array<Degree, 1> degree = io::IRITUtils<1>::GetDegrees(start, entries);
-    bool rational = io::IRITUtils<1>::IsRational(start, entries);
+    std::array<std::shared_ptr<baf::KnotVector>, 1>
+        knot_vector = io::IRITReaderUtils<1>::GetKnotVectors(start, entries);
+    std::array<Degree, 1> degree = io::IRITReaderUtils<1>::GetDegrees(start, entries);
+    bool rational = io::IRITReaderUtils<1>::IsRational(start, entries);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
     if (!rational) {
       return std::make_any<std::shared_ptr<spl::BSpline<1>>>(
@@ -92,9 +93,10 @@ class IRITReader {
   }
 
   std::any Get2DSpline(int start, const std::vector<std::string> &entries) const {
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = io::IRITUtils<2>::GetKnotVectors(start, entries);
-    std::array<Degree, 2> degree = io::IRITUtils<2>::GetDegrees(start, entries);
-    bool rational = io::IRITUtils<2>::IsRational(start, entries);
+    std::array<std::shared_ptr<baf::KnotVector>, 2>
+        knot_vector = io::IRITReaderUtils<2>::GetKnotVectors(start, entries);
+    std::array<Degree, 2> degree = io::IRITReaderUtils<2>::GetDegrees(start, entries);
+    bool rational = io::IRITReaderUtils<2>::IsRational(start, entries);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
     if (!rational) {
       return std::make_any<std::shared_ptr<spl::BSpline<2>>>(
@@ -106,9 +108,10 @@ class IRITReader {
   }
 
   std::any Get3DSpline(int start, const std::vector<std::string> &entries) const {
-    std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vector = io::IRITUtils<3>::GetKnotVectors(start, entries);
-    std::array<Degree, 3> degree = io::IRITUtils<3>::GetDegrees(start, entries);
-    bool rational = io::IRITUtils<3>::IsRational(start, entries);
+    std::array<std::shared_ptr<baf::KnotVector>, 3>
+        knot_vector = io::IRITReaderUtils<3>::GetKnotVectors(start, entries);
+    std::array<Degree, 3> degree = io::IRITReaderUtils<3>::GetDegrees(start, entries);
+    bool rational = io::IRITReaderUtils<3>::IsRational(start, entries);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
     if (!rational) {
       return std::make_any<std::shared_ptr<spl::BSpline<3>>>(

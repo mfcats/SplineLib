@@ -132,14 +132,14 @@ TEST_F(A3DIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT
 
 class A3DIRITWriter : public Test, public A3DBSplineForIRIT, public A3DNURBSForIRIT {
  public:
-  A3DIRITWriter() : irit_writer_(std::make_unique<io::IRITWriter<3>>()) {
+  A3DIRITWriter() : irit_writer_(std::make_unique<io::IRITWriter>()) {
     std::any b_spline_any = std::make_any<std::shared_ptr<spl::BSpline<3>>>(b_spline_);
     std::any nurbs_any = std::make_any<std::shared_ptr<spl::NURBS<3>>>(nurbs_);
     splines_ = {b_spline_any, nurbs_any};
   }
 
  protected:
-  std::unique_ptr<io::IRITWriter<3>> irit_writer_;
+  std::unique_ptr<io::IRITWriter> irit_writer_;
   std::vector<std::any> splines_;
 };
 
