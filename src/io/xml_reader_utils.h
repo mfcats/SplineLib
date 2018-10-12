@@ -26,7 +26,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace io {
 template<int DIM>
-class XMLUtils {
+class XMLReaderUtils {
  public:
   static std::array<Degree, DIM> GetDegrees(pugi::xml_node *spline) {
     return StringVectorToDegreeArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));

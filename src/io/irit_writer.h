@@ -48,11 +48,11 @@ class IRITWriter {
 
  private:
   void WriteSpline(std::ofstream &file, const std::any &spline, int spline_number) const {
-    std::shared_ptr<spl::Spline<DIM>> spline_ptr = util::AnyCasts<DIM>::GetSpline(spline);
-    bool rational = util::AnyCasts<DIM>::IsRational(spline);
+    std::shared_ptr<spl::Spline<DIM>> spline_ptr = util::AnyCasts::GetSpline<DIM>(spline);
+    bool rational = util::AnyCasts::IsRational<DIM>(spline);
     file << "  [OBJECT SPLINE" + std::to_string(spline_number + 1) + "\n    [" + GetObjectType() + " BSPLINE "
         + GetNumberOfControlPoints(spline_ptr) + GetOrder(spline_ptr) + GetPointType(rational, spline_ptr) + "\n"
-        + GetKnotVectors(spline_ptr) + GetControlPoints(util::AnyCasts<DIM>::IsRational(spline), spline_ptr, spline)
+        + GetKnotVectors(spline_ptr) + GetControlPoints(util::AnyCasts::IsRational<DIM>(spline), spline_ptr, spline)
         + "    ]\n  ]\n";
   }
 
