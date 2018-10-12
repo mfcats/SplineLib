@@ -35,7 +35,7 @@ class IGESWriter {
  public:
   IGESWriter() = default;
 
-  void WriteIGESFile(std::vector<std::any> splines, const std::string &filename) {
+  void WriteFile(std::vector<std::any> splines, const std::string &filename) {
     std::ofstream newFile;
     newFile.open(filename);
     if (newFile.is_open()) {

@@ -30,7 +30,7 @@ class IRITReader {
  public:
   IRITReader() = default;
 
-  std::vector<std::any> ReadIRITFile(const char *filename) {
+  std::vector<std::any> ReadFile(const char *filename) {
     std::vector<std::any> vector_of_splines;
     std::ifstream newFile;
     newFile.open(filename);

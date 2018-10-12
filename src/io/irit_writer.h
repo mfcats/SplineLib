@@ -25,14 +25,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 #include "irit_writer_utils.h"
 #include "nurbs.h"
-#include "xml_reader.h"
 
 namespace io {
 class IRITWriter {
  public:
   IRITWriter() = default;
 
-  void WriteIRITFile(const std::vector<std::any> &splines, const std::string &filename) const {
+  void WriteFile(const std::vector<std::any> &splines, const std::string &filename) const {
     std::ofstream newFile;
     newFile.open(filename);
     if (newFile.is_open()) {

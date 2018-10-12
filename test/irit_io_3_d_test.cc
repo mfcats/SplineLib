@@ -93,27 +93,27 @@ class A3DIRITReader : public Test, public A3DBSplineForIRIT, public A3DNURBSForI
 };
 
 TEST_F(A3DIRITReader, Finds2SplinesOfDimension3) {  // NOLINT
-  ASSERT_THAT(irit_reader->ReadIRITFile(path_to_iris_file).size(), 7);
+  ASSERT_THAT(irit_reader->ReadFile(path_to_iris_file).size(), 7);
 }
 
 TEST_F(A3DIRITReader, ReturnsCorrectDegree) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(
-      irit_reader->ReadIRITFile(path_to_iris_file)[5])->GetDegree(0).get(), b_spline_->GetDegree(0).get());
+      irit_reader->ReadFile(path_to_iris_file)[5])->GetDegree(0).get(), b_spline_->GetDegree(0).get());
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(
-      irit_reader->ReadIRITFile(path_to_iris_file)[5])->GetDegree(1).get(), b_spline_->GetDegree(1).get());
+      irit_reader->ReadFile(path_to_iris_file)[5])->GetDegree(1).get(), b_spline_->GetDegree(1).get());
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(
-      irit_reader->ReadIRITFile(path_to_iris_file)[5])->GetDegree(2).get(), b_spline_->GetDegree(2).get());
+      irit_reader->ReadFile(path_to_iris_file)[5])->GetDegree(2).get(), b_spline_->GetDegree(2).get());
 
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(
-      irit_reader->ReadIRITFile(path_to_iris_file)[6])->GetDegree(0).get(), nurbs_->GetDegree(0).get());
+      irit_reader->ReadFile(path_to_iris_file)[6])->GetDegree(0).get(), nurbs_->GetDegree(0).get());
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(
-      irit_reader->ReadIRITFile(path_to_iris_file)[6])->GetDegree(1).get(), nurbs_->GetDegree(1).get());
+      irit_reader->ReadFile(path_to_iris_file)[6])->GetDegree(1).get(), nurbs_->GetDegree(1).get());
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(
-      irit_reader->ReadIRITFile(path_to_iris_file)[6])->GetDegree(2).get(), nurbs_->GetDegree(2).get());
+      irit_reader->ReadFile(path_to_iris_file)[6])->GetDegree(2).get(), nurbs_->GetDegree(2).get());
 }
 
 TEST_F(A3DIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT
-  std::vector<std::any> spline_vector = irit_reader->ReadIRITFile(path_to_iris_file);
+  std::vector<std::any> spline_vector = irit_reader->ReadFile(path_to_iris_file);
 
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline_vector[5])->Evaluate({ParamCoord{0.5}}, {0})[0],
               DoubleEq(b_spline_->Evaluate({ParamCoord{0.5}}, {0})[0]));
@@ -144,7 +144,7 @@ class A3DIRITWriter : public Test, public A3DBSplineForIRIT, public A3DNURBSForI
 };
 
 TEST_F(A3DIRITWriter, CreatesCorrectFile) {  // NOLINT
-  irit_writer_->WriteIRITFile(splines_, "3d_splines.itd");
+  irit_writer_->WriteFile(splines_, "3d_splines.itd");
   std::ifstream newFile;
   newFile.open("3d_splines.itd");
   std::string line, file;
@@ -161,10 +161,10 @@ TEST_F(A3DIRITWriter, CreatesCorrectFile) {  // NOLINT
 }
 
 TEST_F(A3DIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {  // NOLINT
-  irit_writer_->WriteIRITFile(splines_, "3d_splines.itd");
+  irit_writer_->WriteFile(splines_, "3d_splines.itd");
   std::unique_ptr<io::IRITReader> irit_reader(std::make_unique<io::IRITReader>());
-  auto bspline_after = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(irit_reader->ReadIRITFile("3d_splines.itd")[0]);
-  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(irit_reader->ReadIRITFile("3d_splines.itd")[1]);
+  auto bspline_after = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(irit_reader->ReadFile("3d_splines.itd")[0]);
+  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(irit_reader->ReadFile("3d_splines.itd")[1]);
 
   ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.7583), ParamCoord(0.01453), ParamCoord(0.5789)}, {0})[0],
               DoubleEq(bspline_after->Evaluate({ParamCoord(0.7583), ParamCoord(0.01453), ParamCoord(0.5789)}, {0})[0]));

@@ -91,23 +91,23 @@ class A2DIRITReader : public Test, public A2DBSplineForIRIT, public A2DNURBSForI
 };
 
 TEST_F(A2DIRITReader, Finds2SplinesOfDimension2) {  // NOLINT
-  ASSERT_THAT(irit_reader->ReadIRITFile(path_to_iris_file).size(), 7);
+  ASSERT_THAT(irit_reader->ReadFile(path_to_iris_file).size(), 7);
 }
 
 TEST_F(A2DIRITReader, ReturnsCorrectDegree) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
-      irit_reader->ReadIRITFile(path_to_iris_file)[2])->GetDegree(0).get(), b_spline_->GetDegree(0).get());
+      irit_reader->ReadFile(path_to_iris_file)[2])->GetDegree(0).get(), b_spline_->GetDegree(0).get());
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
-      irit_reader->ReadIRITFile(path_to_iris_file)[2])->GetDegree(1).get(), b_spline_->GetDegree(1).get());
+      irit_reader->ReadFile(path_to_iris_file)[2])->GetDegree(1).get(), b_spline_->GetDegree(1).get());
 
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
-      irit_reader->ReadIRITFile(path_to_iris_file)[4])->GetDegree(0).get(), nurbs_->GetDegree(0).get());
+      irit_reader->ReadFile(path_to_iris_file)[4])->GetDegree(0).get(), nurbs_->GetDegree(0).get());
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
-      irit_reader->ReadIRITFile(path_to_iris_file)[4])->GetDegree(1).get(), nurbs_->GetDegree(1).get());
+      irit_reader->ReadFile(path_to_iris_file)[4])->GetDegree(1).get(), nurbs_->GetDegree(1).get());
 }
 
 TEST_F(A2DIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT
-  std::vector<std::any> spline_vector = irit_reader->ReadIRITFile(path_to_iris_file);
+  std::vector<std::any> spline_vector = irit_reader->ReadFile(path_to_iris_file);
 
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline_vector[2])->Evaluate({ParamCoord{0.5}}, {0})[0],
               DoubleEq(b_spline_->Evaluate({ParamCoord{0.5}}, {0})[0]));
@@ -134,7 +134,7 @@ class A2DIRITWriter : public Test, public A2DBSplineForIRIT, public A2DNURBSForI
 };
 
 TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
-  irit_writer_->WriteIRITFile(splines_, "2d_splines.itd");
+  irit_writer_->WriteFile(splines_, "2d_splines.itd");
   std::ifstream newFile;
   newFile.open("2d_splines.itd");
   std::string line, file;
@@ -151,10 +151,10 @@ TEST_F(A2DIRITWriter, CreatesCorrectFile) {  // NOLINT
 }
 
 TEST_F(A2DIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {  // NOLINT
-  irit_writer_->WriteIRITFile(splines_, "2d_splines.itd");
+  irit_writer_->WriteFile(splines_, "2d_splines.itd");
   std::unique_ptr<io::IRITReader> irit_reader(std::make_unique<io::IRITReader>());
-  auto bspline_after = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(irit_reader->ReadIRITFile("2d_splines.itd")[0]);
-  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_reader->ReadIRITFile("2d_splines.itd")[1]);
+  auto bspline_after = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(irit_reader->ReadFile("2d_splines.itd")[0]);
+  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_reader->ReadFile("2d_splines.itd")[1]);
 
   ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.75839), ParamCoord(0.01453)}, {0})[0],
               DoubleEq(bspline_after->Evaluate({ParamCoord(0.75839), ParamCoord(0.01453)}, {0})[0]));

@@ -32,7 +32,7 @@ class XMLReader {
  public:
   XMLReader() = default;
 
-  std::vector<std::any> ReadXMLFile(const char *filename) {
+  std::vector<std::any> ReadFile(const char *filename) {
     std::vector<std::any> vector_of_splines;
     pugi::xml_document xml_document;
     pugi::xml_parse_result result = xml_document.load_file(filename);

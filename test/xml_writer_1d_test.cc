@@ -119,7 +119,7 @@ class A1DXMLWriter : public Test, public A1DBSplineForXMLWithSpaceDim1, public A
 };
 
 TEST_F(A1DXMLWriter, IsCreated) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
+  xml_writer_->WriteFile(splines_, "1d_splines.xml");
   std::ifstream newFile;
   newFile.open("1d_splines.xml");
   ASSERT_TRUE(newFile.is_open());
@@ -128,7 +128,7 @@ TEST_F(A1DXMLWriter, IsCreated) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
+  xml_writer_->WriteFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file("1d_splines.xml");
   ASSERT_STREQ(result.description(), "No error");
@@ -136,7 +136,7 @@ TEST_F(A1DXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, CreatesSplineListWith4Entries) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
+  xml_writer_->WriteFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("1d_splines.xml");
   ASSERT_STREQ(doc.first_child().name(), "SplineList");
@@ -145,7 +145,7 @@ TEST_F(A1DXMLWriter, CreatesSplineListWith4Entries) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, Creates4SplineEntries) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
+  xml_writer_->WriteFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("1d_splines.xml");
   pugi::xml_node spline_node = doc.child("SplineList").first_child();
@@ -156,7 +156,7 @@ TEST_F(A1DXMLWriter, Creates4SplineEntries) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, CreatesNoWeightsForBSplines) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
+  xml_writer_->WriteFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("1d_splines.xml");
   pugi::xml_node spline_node = doc.child("SplineList").child("SplineEntry");
@@ -171,7 +171,7 @@ TEST_F(A1DXMLWriter, CreatesNoWeightsForBSplines) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, WritesSplineDimension1ForAllSplines) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
+  xml_writer_->WriteFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("1d_splines.xml");
   pugi::xml_node spline_node = doc.child("SplineList").child("SplineEntry");
@@ -182,7 +182,7 @@ TEST_F(A1DXMLWriter, WritesSplineDimension1ForAllSplines) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
+  xml_writer_->WriteFile(splines_, "1d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("1d_splines.xml");
   std::vector<int> space_dimensions = {1, 2, 3, 2};
@@ -194,12 +194,12 @@ TEST_F(A1DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
 }
 
 TEST_F(A1DXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "1d_splines.xml");
+  xml_writer_->WriteFile(splines_, "1d_splines.xml");
   std::unique_ptr<io::XMLReader> xml_reader(std::make_unique<io::XMLReader>());
-  auto bspline_1_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[0]);
-  auto bspline_2_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[1]);
-  auto bspline_3_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[2]);
-  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(xml_reader->ReadXMLFile("1d_splines.xml")[3]);
+  auto bspline_1_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadFile("1d_splines.xml")[0]);
+  auto bspline_2_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadFile("1d_splines.xml")[1]);
+  auto bspline_3_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadFile("1d_splines.xml")[2]);
+  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(xml_reader->ReadFile("1d_splines.xml")[3]);
 
   ASSERT_THAT(b_spline_1_->Evaluate({ParamCoord(0.75839)}, {0})[0],
               DoubleEq(bspline_1_after->Evaluate({ParamCoord(0.75839)}, {0})[0]));

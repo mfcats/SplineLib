@@ -31,7 +31,7 @@ class XMLWriter {
  public:
   XMLWriter() = default;
 
-  void WriteXMLFile(const std::vector<std::any> &splines, const char *filename) {
+  void WriteFile(const std::vector<std::any> &splines, const char *filename) {
     pugi::xml_document doc;
     pugi::xml_node spline_list = doc.append_child("SplineList");
     spline_list.append_attribute("NumberOfSplines") = std::to_string(splines.size()).c_str();

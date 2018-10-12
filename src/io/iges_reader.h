@@ -29,7 +29,7 @@ class IGESReader {
  public:
   IGESReader() {}
 
-  std::vector<std::any> ReadIGESFile(const char* filename) {
+  std::vector<std::any> ReadFile(const char *filename) {
     std::ifstream newFile;
     newFile.open(filename);
     if (!newFile.good()) {

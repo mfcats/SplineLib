@@ -105,7 +105,7 @@ class A3DXMLWriter : public Test, public A3DBSplineForXML, public A3DNURBSForXML
 };
 
 TEST_F(A3DXMLWriter, IsCreated) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "3d_splines.xml");
+  xml_writer_->WriteFile(splines_, "3d_splines.xml");
   std::ifstream newFile;
   newFile.open("3d_splines.xml");
   ASSERT_TRUE(newFile.is_open());
@@ -114,7 +114,7 @@ TEST_F(A3DXMLWriter, IsCreated) {  // NOLINT
 }
 
 TEST_F(A3DXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "3d_splines.xml");
+  xml_writer_->WriteFile(splines_, "3d_splines.xml");
   pugi::xml_document doc;
   pugi::xml_parse_result result = doc.load_file("3d_splines.xml");
   ASSERT_STREQ(result.description(), "No error");
@@ -122,7 +122,7 @@ TEST_F(A3DXMLWriter, CreatesCorrectXMLFile) {  // NOLINT
 }
 
 TEST_F(A3DXMLWriter, CreatesSplineListWith2Entries) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "3d_splines.xml");
+  xml_writer_->WriteFile(splines_, "3d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("3d_splines.xml");
   ASSERT_STREQ(doc.first_child().name(), "SplineList");
@@ -131,7 +131,7 @@ TEST_F(A3DXMLWriter, CreatesSplineListWith2Entries) {  // NOLINT
 }
 
 TEST_F(A3DXMLWriter, Creates2SplineEntries) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "3d_splines.xml");
+  xml_writer_->WriteFile(splines_, "3d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("3d_splines.xml");
   ASSERT_STREQ(doc.child("SplineList").first_child().name(), "SplineEntry");
@@ -140,7 +140,7 @@ TEST_F(A3DXMLWriter, Creates2SplineEntries) {  // NOLINT
 }
 
 TEST_F(A3DXMLWriter, CreatesNoWeightsForBSpline) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "3d_splines.xml");
+  xml_writer_->WriteFile(splines_, "3d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("3d_splines.xml");
   ASSERT_STREQ(doc.child("SplineList").child("SplineEntry").child("wght").name(), "");
@@ -149,7 +149,7 @@ TEST_F(A3DXMLWriter, CreatesNoWeightsForBSpline) {  // NOLINT
 }
 
 TEST_F(A3DXMLWriter, WritesSplineDimension2ForBothSplines) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "3d_splines.xml");
+  xml_writer_->WriteFile(splines_, "3d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("3d_splines.xml");
   pugi::xml_node spline_node = doc.child("SplineList").child("SplineEntry");
@@ -160,7 +160,7 @@ TEST_F(A3DXMLWriter, WritesSplineDimension2ForBothSplines) {  // NOLINT
 }
 
 TEST_F(A3DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "3d_splines.xml");
+  xml_writer_->WriteFile(splines_, "3d_splines.xml");
   pugi::xml_document doc;
   doc.load_file("3d_splines.xml");
   ASSERT_STREQ(doc.child("SplineList").child("SplineEntry").attribute("spaceDim").value(), "3");
@@ -169,10 +169,10 @@ TEST_F(A3DXMLWriter, WritesCorrectSpaceDimensions) {  // NOLINT
 }
 
 TEST_F(A3DXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  // NOLINT
-  xml_writer_->WriteXMLFile(splines_, "3d_splines.xml");
+  xml_writer_->WriteFile(splines_, "3d_splines.xml");
   std::unique_ptr<io::XMLReader> xml_reader(std::make_unique<io::XMLReader>());
-  auto bspline_after = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(xml_reader->ReadXMLFile("3d_splines.xml")[0]);
-  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(xml_reader->ReadXMLFile("3d_splines.xml")[1]);
+  auto bspline_after = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(xml_reader->ReadFile("3d_splines.xml")[0]);
+  auto nurbs_after = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(xml_reader->ReadFile("3d_splines.xml")[1]);
 
   ASSERT_THAT(b_spline_->Evaluate({ParamCoord(0.47681), ParamCoord(0.68409), ParamCoord(0.0157)}, {0})[0],
               DoubleEq(bspline_after->Evaluate({ParamCoord(0.47681), ParamCoord(0.68409), ParamCoord(0.0157)},
