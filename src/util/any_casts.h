@@ -57,7 +57,6 @@ class AnyCasts {
                     std::any_cast<std::shared_ptr<spl::NURBS<4>>>(spline);
                     return 4;
                   } catch (std::bad_any_cast &msg) {
-
                     throw std::runtime_error(
                         "Input has to be a pointer to a b-spline or nurbs of dimension 1, 2, 3 or 4.");
                   }

@@ -15,9 +15,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IO_WRITER_H_
 #define SRC_IO_WRITER_H_
 
-#include "string_operations.h"
+#include <vector>
+
 #include "iges_writer.h"
 #include "irit_writer.h"
+#include "string_operations.h"
 #include "xml_writer.h"
 
 namespace io {
@@ -42,4 +44,4 @@ class Writer {
 };
 }  // namespace io
 
-#endif  // SRC_IO_WRITER_READER_H_
+#endif  // SRC_IO_WRITER_H_
