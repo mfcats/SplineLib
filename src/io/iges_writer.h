@@ -222,14 +222,24 @@ class IGESWriter {
         std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
         return 126;
       } catch (std::bad_any_cast &msg) {
-        return 128;
+        try {
+          std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
+          return 128;
+        } catch (std::bad_any_cast &msg) {
+          throw std::runtime_error("Only splines of dimensions 1 and 2 can be written to an IGES file.");
+        }
       }
     } else {
       try {
         std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
         return 126;
       } catch (std::bad_any_cast &msg) {
-        return 128;
+        try {
+          std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
+          return 128;
+        } catch (std::bad_any_cast &msg) {
+          throw std::runtime_error("Only splines of dimensions 1 and 2 can be written to an IGES file.");
+        }
       }
     }
   }
@@ -291,8 +301,7 @@ class IGESWriter {
     time(&timer);
     struct tm ptm;
     localtime_r(&timer, &ptm);
-    std::string
-        date = GetString((ptm.tm_year + 1900) * 10000 + (ptm.tm_mon + 1) * 100 + ptm.tm_mday);
+    std::string date = GetString((ptm.tm_year + 1900) * 10000 + (ptm.tm_mon + 1) * 100 + ptm.tm_mday);
     std::string time = GetString(ptm.tm_hour * 10000 + ptm.tm_min * 100 + ptm.tm_sec);
     if (time.size() == 5) {
       time = '0' + time;
