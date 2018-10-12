@@ -303,10 +303,10 @@ TEST_F(AnXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  
   ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.47681)}, {1})[0],
               DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.47681)}, {1})[0]));
 
-  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.47681)}, {0})[0],
-              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.47681)}, {0})[0]));
-  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.47681)}, {1})[0],
-              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.47681)}, {1})[0]));
+  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.33359)}, {0})[0],
+              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.33359)}, {0})[0]));
+  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.33359)}, {1})[0],
+              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.33359)}, {1})[0]));
 
   ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.89463)}, {0})[0],
               DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.89463)}, {0})[0]));
@@ -315,11 +315,11 @@ TEST_F(AnXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  
   ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.89463)}, {2})[0],
               DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.89463)}, {2})[0]));
 
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.89463)}, {0})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.89463)}, {0})[0]));
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.89463)}, {1})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.89463)}, {1})[0]));
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.89463)}, {2})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.89463)}, {2})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.00021)}, {0})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {0})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.00021)}, {1})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {1})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.00021)}, {2})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {2})[0]));
   remove("splines.xml");
 }
