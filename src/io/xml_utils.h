@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IO_XMLUTILS_H_
-#define SRC_IO_XMLUTILS_H_
+#ifndef SRC_IO_XML_UTILS_H_
+#define SRC_IO_XML_UTILS_H_
 
 #include <string>
 #include <vector>
@@ -60,4 +60,4 @@ class XMLUtils {
 };
 }  // namespace io
 
-#endif  // SRC_IO_XMLUTILS_H_
+#endif  // SRC_IO_XML_UTILS_H_

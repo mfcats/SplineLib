@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IO_IRITUTILS_H_
-#define SRC_IO_IRITUTILS_H_
+#ifndef SRC_IO_IRIT_UTILS_H_
+#define SRC_IO_IRIT_UTILS_H_
 
 #include <string>
 #include <vector>
@@ -55,4 +55,4 @@ class IRITUtils {
 };
 }  // namespace io
 
-#endif  // SRC_IO_IRITUTILS_H_
+#endif  // SRC_IO_IRIT_UTILS_H_
