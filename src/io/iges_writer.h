@@ -74,7 +74,7 @@ class IGESWriter {
   }
 
   std::vector<std::string> GetGlobalSection(const std::string &filename, const std::string &delimiter,
-                                            const std::string &endDelimiter, std::vector<std::any> splines) {
+                                            const std::string &endDelimiter, const std::vector<std::any> &splines) {
     std::string contents;
     AddToContents(&contents, {GetHollerithFormat(delimiter), GetHollerithFormat(endDelimiter),
                              GetHollerithFormat("unknown"), filename, GetHollerithFormat("SplineLib"),
@@ -117,7 +117,7 @@ class IGESWriter {
 
   std::vector<std::string> GetParameterSectionLayout(const std::string* contents, int entityPosition, int* pLine) {
     std::vector<std::string> parameterData;
-    for (int i = 0; i <= (contents->size() - 1) / 64; i++) {
+    for (auto i = 0u; i <= (contents->size() - 1) / 64; i++) {
       parameterData.emplace_back(GetBlock(contents->substr(i * 64, 64), 64, false)
                                      + ' ' + GetBlock(GetString(entityPosition), 7, true)
                                      + 'P' + GetBlock(GetString(++(*pLine)), 7, true));
@@ -188,7 +188,7 @@ class IGESWriter {
     contents->append(GetString(control_points[control_points.size() - 1]));
   }
 
-  std::vector<std::string> GetDataEntry(int paramStart, int paramLength, const std::any &spline, int* dLine) {
+  std::vector<std::string> GetDataEntry(int paramStart, unsigned long paramLength, const std::any &spline, int *dLine) {
     std::string contents;
     AddToContents(&contents,
                   {GetBlock(GetString(GetDimension(spline)), 8, true), GetBlock(GetString(paramStart), 8, true),
@@ -299,7 +299,7 @@ class IGESWriter {
   std::string GetTime() {
     time_t timer;
     time(&timer);
-    struct tm ptm;
+    struct tm ptm{};
     localtime_r(&timer, &ptm);
     std::string date = GetString((ptm.tm_year + 1900) * 10000 + (ptm.tm_mon + 1) * 100 + ptm.tm_mday);
     std::string time = GetString(ptm.tm_hour * 10000 + ptm.tm_min * 100 + ptm.tm_sec);
