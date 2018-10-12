@@ -14,17 +14,7 @@
 #
 
 set(SOURCES
-        square_generator.cc
-        ../io/io_converter.h
-        ../io/xml_reader_utils.h
-        ../io/xml_reader.h
-        ../io/irit_reader_utils.h
-        ../io/irit_reader.h
-        ../io/irit_writer.h
-        ../io/xml_writer.h
-        ../io/xml_writer_utils.h
-        ../io/irit_writer_utils.h
-        ../io/reader.h)
+        square_generator.cc)
 
 add_library(splinelibspl SHARED ${SOURCES})
 target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)

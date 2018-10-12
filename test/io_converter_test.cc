@@ -22,78 +22,46 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleNear;
 
-class A1DIOConverter : public Test {
+class AnIOConverter : public Test {
  public:
-  A1DIOConverter() : io_converter(std::make_unique<io::IOConverter<1>>()) {}
+  AnIOConverter() : io_converter(std::make_unique<io::IOConverter>()) {}
 
  protected:
-  std::unique_ptr<io::IOConverter<1>> io_converter;
+  std::unique_ptr<io::IOConverter> io_converter;
 };
 
-TEST_F(A1DIOConverter, ReturnsSameValueBeforeAndAfterConverting1DBSplineFromIGESFileToXMLFile) {  // NOLINT
+TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConvertingSplinesFromIGESFileToXMLFile) {  // NOLINT
   io::IGESReader iges_reader;
-  std::vector<std::any> iges_splines = iges_reader.ReadIGESFile(iges_read);
-  auto iges_spline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_splines[1]);
-  io_converter->ConvertIGESFileToXMLFile(iges_read, "converted_xml_file_1d.xml");
-  io::XMLReader<1> xml_reader_1d;
-  std::vector<std::any> xml_splines = xml_reader_1d.ReadXMLFile("converted_xml_file_1d.xml");
-  ASSERT_THAT(xml_splines.size(), 1);
-  auto xml_spline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_splines[0]);
-  ASSERT_THAT(xml_spline_1d->Evaluate({ParamCoord(0.76584)}, {0})[0],
-              DoubleNear(iges_spline_1d->Evaluate({ParamCoord(0.76584)}, {0})[0], 0.00001));
-  remove("converted_xml_file_1d.xml");
-}
+  std::vector<std::any> iges_splines_1 = iges_reader.ReadFile(iges_read);
+  std::vector<std::any> iges_splines_2 = iges_reader.ReadFile(iges_read_2);
+  auto iges_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_splines_1[0]);
+  auto iges_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_splines_1[1]);
+  auto iges_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(iges_splines_2[0]);
+  auto iges_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(iges_splines_2[1]);
+  io_converter->ConvertIGESFileToXMLFile(iges_read, "converted_xml_file_1.xml");
+  io_converter->ConvertIGESFileToXMLFile(iges_read_2, "converted_xml_file_2.xml");
+  io::XMLReader xml_reader;
+  std::vector<std::any> xml_splines_1 = xml_reader.ReadFile("converted_xml_file_1.xml");
+  std::vector<std::any> xml_splines_2 = xml_reader.ReadFile("converted_xml_file_2.xml");
+  auto xml_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_splines_1[0]);
+  auto xml_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_splines_1[1]);
+  auto xml_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_splines_2[0]);
+  auto xml_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(xml_splines_2[1]);
+  ASSERT_THAT(xml_nurbs_2d->Evaluate({ParamCoord(0.76584)}, {1})[0],
+              DoubleNear(iges_nurbs_2d->Evaluate({ParamCoord(0.76584)}, {1})[0], 0.00001));
+  ASSERT_THAT(xml_nurbs_2d->Evaluate({ParamCoord(0.76584)}, {1})[0],
+              DoubleNear(iges_nurbs_2d->Evaluate({ParamCoord(0.76584)}, {1})[0], 0.00001));
 
-TEST_F(A1DIOConverter, ReturnsSameValueBeforeAndAfterConverting1DNURBSFromIGESFileToXMLFile) {  // NOLINT
-  io::IGESReader iges_reader;
-  std::vector<std::any> iges_splines = iges_reader.ReadIGESFile(iges_read_2);
-  auto iges_spline_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(iges_splines[1]);
-  io_converter->ConvertIGESFileToXMLFile(iges_read_2, "converted_xml_file_1d.xml");
-  io::XMLReader<1> xml_reader_1d;
-  std::vector<std::any> xml_splines = xml_reader_1d.ReadXMLFile("converted_xml_file_1d.xml");
-  ASSERT_THAT(xml_splines.size(), 1);
-  auto xml_spline_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(xml_splines[0]);
-  ASSERT_THAT(xml_spline_1d->Evaluate({ParamCoord(0.76584)}, {0})[0],
-              DoubleNear(iges_spline_1d->Evaluate({ParamCoord(0.76584)}, {0})[0], 0.00001));
-  remove("converted_xml_file_1d.xml");
-}
+  ASSERT_THAT(xml_bspline_1d->Evaluate({ParamCoord(0.76584)}, {0})[0],
+              DoubleNear(iges_bspline_1d->Evaluate({ParamCoord(0.76584)}, {0})[0], 0.00001));
 
-class A2DIOConverter : public Test {
- public:
-  A2DIOConverter() : io_converter(std::make_unique<io::IOConverter<2>>()) {}
+  ASSERT_THAT(xml_bspline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0],
+              DoubleNear(iges_bspline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0], 0.00001));
+  ASSERT_THAT(xml_bspline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0],
+              DoubleNear(iges_bspline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0], 0.00001));
 
- protected:
-  std::unique_ptr<io::IOConverter<2>> io_converter;
-};
-
-TEST_F(A2DIOConverter, ReturnsSameValueBeforeAndAfterConverting2DBSplineFromIGESFileToXMLFile) {  // NOLINT
-  io::IGESReader iges_reader;
-  std::vector<std::any> iges_splines = iges_reader.ReadIGESFile(iges_read_2);
-  auto iges_spline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(iges_splines[0]);
-  io_converter->ConvertIGESFileToXMLFile(iges_read_2, "converted_xml_file_2d.xml");
-  io::XMLReader<2> xml_reader_2d;
-  std::vector<std::any> xml_splines = xml_reader_2d.ReadXMLFile("converted_xml_file_2d.xml");
-  ASSERT_THAT(xml_splines.size(), 1);
-  auto xml_spline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_splines[0]);
-  ASSERT_THAT(xml_spline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0],
-              DoubleNear(iges_spline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0], 0.00001));
-  ASSERT_THAT(xml_spline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0],
-              DoubleNear(iges_spline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0], 0.00001));
-  remove("converted_xml_file_2d.xml");
-}
-
-TEST_F(A2DIOConverter, ReturnsSameValueBeforeAndAfterConverting2DNURBSFromIGESFileToXMLFile) {  // NOLINT
-  io::IGESReader iges_reader;
-  std::vector<std::any> iges_splines = iges_reader.ReadIGESFile(iges_read);
-  auto iges_spline_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_splines[0]);
-  io_converter->ConvertIGESFileToXMLFile(iges_read, "converted_xml_file_2d.xml");
-  io::XMLReader<2> xml_reader_2d;
-  std::vector<std::any> xml_splines = xml_reader_2d.ReadXMLFile("converted_xml_file_2d.xml");
-  ASSERT_THAT(xml_splines.size(), 1);
-  auto xml_spline_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_splines[0]);
-  ASSERT_THAT(xml_spline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0],
-              DoubleNear(iges_spline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0], 0.00001));
-  ASSERT_THAT(xml_spline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0],
-              DoubleNear(iges_spline_2d->Evaluate({ParamCoord(0.76584)}, {1})[0], 0.00001));
-  remove("converted_xml_file_2d.xml");
+  ASSERT_THAT(xml_nurbs_1d->Evaluate({ParamCoord(0.76584)}, {0})[0],
+              DoubleNear(iges_nurbs_1d->Evaluate({ParamCoord(0.76584)}, {0})[0], 0.00001));
+  remove("converted_xml_file_1.xml");
+  remove("converted_xml_file_2.xml");
 }

@@ -16,25 +16,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IO_WRITER_H_
 
 #include "string_operations.h"
-#include "iges_writer.h.h"
-#include "irit_writer.h.h"
-#include "xml_writer.h.h"
+#include "iges_writer.h"
+#include "irit_writer.h"
+#include "xml_writer.h"
 
 namespace io {
 class Writer {
  public:
   Writer() = default;
 
-  virtual std::vector<std::any> WriteFile(const char *filename) {
+  virtual void WriteFile(const std::vector<std::any> &splines, const char *filename) {
     if (util::StringOperations::EndsWith(filename, ".iges")) {
       io::IGESWriter iges_writer;
-      return iges_writer.WriteFile(filename);
+      iges_writer.WriteFile(splines, filename);
     } else if (util::StringOperations::EndsWith(filename, ".itd")) {
       io::IRITWriter irit_writer;
-      return irit_writer.WriteFile(filename);
+      return irit_writer.WriteFile(splines, filename);
     } else if (util::StringOperations::EndsWith(filename, ".xml")) {
       io::XMLWriter xml_writer;
-      return xml_writer.WriteFile(filename);
+      return xml_writer.WriteFile(splines, filename);
     } else {
       throw std::runtime_error("Only files of format iges, itd and xml can be written.");
     }
