@@ -105,7 +105,7 @@ class A1DNURBSForXML {  // NOLINT
 class A1DXMLWriter : public Test, public A1DBSplineForXMLWithSpaceDim1, public A1DBSplineForXMLWithSpaceDim2,
                      public A1DBSplineForXMLWithSpaceDim3, public A1DNURBSForXML {
  public:
-  A1DXMLWriter() : xml_writer_(std::make_unique<io::XMLWriter<1>>()) {
+  A1DXMLWriter() : xml_writer_(std::make_unique<io::XMLWriter>()) {
     std::any b_spline_1_any = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_1_);
     std::any b_spline_2_any = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_2_);
     std::any b_spline_3_any = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_3_);
@@ -114,7 +114,7 @@ class A1DXMLWriter : public Test, public A1DBSplineForXMLWithSpaceDim1, public A
   }
 
  protected:
-  std::unique_ptr<io::XMLWriter<1>> xml_writer_;
+  std::unique_ptr<io::XMLWriter> xml_writer_;
   std::vector<std::any> splines_;
 };
 

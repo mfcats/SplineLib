@@ -83,14 +83,14 @@ class A2DNURBSForXML {  // NOLINT
 
 class A2DXMLWriter : public Test, public A2DBSplineForXML, public A2DNURBSForXML {
  public:
-  A2DXMLWriter() : xml_writer_(std::make_unique<io::XMLWriter<2>>()) {
+  A2DXMLWriter() : xml_writer_(std::make_unique<io::XMLWriter>()) {
     std::any b_spline_any = std::make_any<std::shared_ptr<spl::BSpline<2>>>(b_spline_);
     std::any nurbs_any = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_);
     splines_ = {b_spline_any, nurbs_any};
   }
 
  protected:
-  std::unique_ptr<io::XMLWriter<2>> xml_writer_;
+  std::unique_ptr<io::XMLWriter> xml_writer_;
   std::vector<std::any> splines_;
 };
 

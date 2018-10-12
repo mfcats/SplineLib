@@ -93,14 +93,14 @@ class A3DNURBSForXML {  // NOLINT
 
 class A3DXMLWriter : public Test, public A3DBSplineForXML, public A3DNURBSForXML {
  public:
-  A3DXMLWriter() : xml_writer_(std::make_unique<io::XMLWriter<3>>()) {
+  A3DXMLWriter() : xml_writer_(std::make_unique<io::XMLWriter>()) {
     std::any b_spline_any = std::make_any<std::shared_ptr<spl::BSpline<3>>>(b_spline_);
     std::any nurbs_any = std::make_any<std::shared_ptr<spl::NURBS<3>>>(nurbs_);
     splines_ = {b_spline_any, nurbs_any};
   }
 
  protected:
-  std::unique_ptr<io::XMLWriter<3>> xml_writer_;
+  std::unique_ptr<io::XMLWriter> xml_writer_;
   std::vector<std::any> splines_;
 };
 

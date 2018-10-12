@@ -23,11 +23,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "any_casts.h"
 #include "b_spline.h"
-#include "irit_reader.h"
 #include "nurbs.h"
+#include "xml_writer_utils.h"
 
 namespace io {
-template<int DIM>
 class XMLWriter {
  public:
   XMLWriter() = default;
@@ -43,81 +42,139 @@ class XMLWriter {
   }
 
  private:
+  int GetSplineDimension(const std::any &spline) {
+    try {
+      std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
+      return 1;
+    } catch (std::bad_any_cast &msg) {
+      try {
+        std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
+        return 1;
+      } catch (std::bad_any_cast &msg) {
+        try {
+          std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
+          return 2;
+        } catch (std::bad_any_cast &msg) {
+          try {
+            std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
+            return 2;
+          } catch (std::bad_any_cast &msg) {
+            try {
+              std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline);
+              return 3;
+            } catch (std::bad_any_cast &msg) {
+              try {
+                std::any_cast<std::shared_ptr<spl::NURBS<3>>>(spline);
+                return 3;
+              } catch (std::bad_any_cast &msg) {
+                try {
+                  std::any_cast<std::shared_ptr<spl::BSpline<4>>>(spline);
+                  return 4;
+                } catch (std::bad_any_cast &msg) {
+                  try {
+                    std::any_cast<std::shared_ptr<spl::NURBS<4>>>(spline);
+                    return 4;
+                  } catch (std::bad_any_cast &msg) {
+
+                    throw std::runtime_error(
+                        "Input has to be a pointer to a b-spline or nurbs of dimension 1, 2, 3 or 4.");
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   void AddSpline(pugi::xml_node *spline_list, const std::any &spline) {
-    std::shared_ptr<spl::Spline<DIM>> spline_ptr = util::AnyCasts<DIM>::GetSpline(spline);
+    int spline_dimension = GetSplineDimension(spline);
+    switch (spline_dimension) {
+      case 1: {
+        Add1DSpline(spline_list, spline);
+        break;
+      }
+      case 2: {
+        Add2DSpline(spline_list, spline);
+        break;
+      }
+      case 3: {
+        Add3DSpline(spline_list, spline);
+        break;
+      }
+      case 4: {
+        Add4DSpline(spline_list, spline);
+        break;
+      }
+      default: {
+        throw std::runtime_error("Only splines of dimensions 1 to 4 can be written into a xml file.");
+      }
+    }
+  }
+
+  void Add1DSpline(pugi::xml_node *spline_list, const std::any &spline) {
+    std::shared_ptr<spl::Spline<1>> spline_ptr = util::AnyCasts<1>::GetSpline(spline);
     pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
-    AddSplineAttributes(&spline_node, spline_ptr);
-    AddControlPointVarNames(&spline_node, spline_ptr);
-    AddControlPointVars(&spline_node, spline_ptr);
-    if (util::AnyCasts<DIM>::IsRational(spline)) AddWeights(&spline_node, spline);
-    AddDegrees(&spline_node, spline_ptr);
-    AddKnotVectors(&spline_node, spline_ptr);
+    AddSplineAttributes(&spline_node, 1, spline_ptr->GetDimension(), spline_ptr->GetNumberOfControlPoints());
+    AddControlPointVarNames(&spline_node, spline_ptr->GetDimension());
+    io::XMLWriterUtils<1>::AddControlPointVars(&spline_node, spline_ptr);
+    if (util::AnyCasts<1>::IsRational(spline)) io::XMLWriterUtils<1>::AddWeights(&spline_node, spline);
+    io::XMLWriterUtils<1>::AddDegrees(&spline_node, spline_ptr);
+    io::XMLWriterUtils<1>::AddKnotVectors(&spline_node, spline_ptr);
   }
 
-  void AddSplineAttributes(pugi::xml_node *spline_node, std::shared_ptr<spl::Spline<DIM>> spline_ptr) {
-    spline_node->append_attribute("splDim") = DIM;
-    spline_node->append_attribute("spaceDim") = spline_ptr->GetDimension();
-    spline_node->append_attribute("numOfCntrlPntVars") = spline_ptr->GetDimension();
-    spline_node->append_attribute("numCntrlPnts") = spline_ptr->GetNumberOfControlPoints();
+  void Add2DSpline(pugi::xml_node *spline_list, const std::any &spline) {
+    std::shared_ptr<spl::Spline<2>> spline_ptr = util::AnyCasts<2>::GetSpline(spline);
+    pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
+    AddSplineAttributes(&spline_node, 2, spline_ptr->GetDimension(), spline_ptr->GetNumberOfControlPoints());
+    AddControlPointVarNames(&spline_node, spline_ptr->GetDimension());
+    io::XMLWriterUtils<2>::AddControlPointVars(&spline_node, spline_ptr);
+    if (util::AnyCasts<2>::IsRational(spline)) io::XMLWriterUtils<2>::AddWeights(&spline_node, spline);
+    io::XMLWriterUtils<2>::AddDegrees(&spline_node, spline_ptr);
+    io::XMLWriterUtils<2>::AddKnotVectors(&spline_node, spline_ptr);
   }
 
-  void AddControlPointVarNames(pugi::xml_node *spline_node, std::shared_ptr<spl::Spline<DIM>> spline_ptr) {
+  void Add3DSpline(pugi::xml_node *spline_list, const std::any &spline) {
+    std::shared_ptr<spl::Spline<3>> spline_ptr = util::AnyCasts<3>::GetSpline(spline);
+    pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
+    AddSplineAttributes(&spline_node, 3, spline_ptr->GetDimension(), spline_ptr->GetNumberOfControlPoints());
+    AddControlPointVarNames(&spline_node, spline_ptr->GetDimension());
+    io::XMLWriterUtils<3>::AddControlPointVars(&spline_node, spline_ptr);
+    if (util::AnyCasts<3>::IsRational(spline)) io::XMLWriterUtils<3>::AddWeights(&spline_node, spline);
+    io::XMLWriterUtils<3>::AddDegrees(&spline_node, spline_ptr);
+    io::XMLWriterUtils<3>::AddKnotVectors(&spline_node, spline_ptr);
+  }
+
+  void Add4DSpline(pugi::xml_node *spline_list, const std::any &spline) {
+    std::shared_ptr<spl::Spline<4>> spline_ptr = util::AnyCasts<4>::GetSpline(spline);
+    pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
+    AddSplineAttributes(&spline_node, 4, spline_ptr->GetDimension(), spline_ptr->GetNumberOfControlPoints());
+    AddControlPointVarNames(&spline_node, spline_ptr->GetDimension());
+    io::XMLWriterUtils<4>::AddControlPointVars(&spline_node, spline_ptr);
+    if (util::AnyCasts<4>::IsRational(spline)) io::XMLWriterUtils<4>::AddWeights(&spline_node, spline);
+    io::XMLWriterUtils<4>::AddDegrees(&spline_node, spline_ptr);
+    io::XMLWriterUtils<4>::AddKnotVectors(&spline_node, spline_ptr);
+  }
+
+  void AddSplineAttributes(pugi::xml_node *spline_node, int spline_dimension, int space_dimension, int control_points) {
+    spline_node->append_attribute("splDim") = spline_dimension;
+    spline_node->append_attribute("spaceDim") = space_dimension;
+    spline_node->append_attribute("numOfCntrlPntVars") = space_dimension;
+    spline_node->append_attribute("numCntrlPnts") = control_points;
+  }
+
+  void AddControlPointVarNames(pugi::xml_node *spline_node, int space_dimension) {
     pugi::xml_node names = spline_node->append_child("cntrlPntVarNames");
-    if (spline_ptr->GetDimension() == 1) {
+    if (space_dimension == 1) {
       names.append_child(pugi::node_pcdata).set_value("\n      x\n    ");
-    } else if (spline_ptr->GetDimension() == 2) {
+    } else if (space_dimension == 2) {
       names.append_child(pugi::node_pcdata).set_value("\n      x y\n    ");
-    } else if (spline_ptr->GetDimension() == 3) {
+    } else if (space_dimension == 3) {
       names.append_child(pugi::node_pcdata).set_value("\n      x y z\n    ");
+    } else if (space_dimension == 4) {
+      names.append_child(pugi::node_pcdata).set_value("\n      x y z t\n    ");
     }
-  }
-
-  void AddControlPointVars(pugi::xml_node *spline_node, std::shared_ptr<spl::Spline<DIM>> spline_ptr) {
-    pugi::xml_node values = spline_node->append_child("cntrlPntVars");
-    std::string string;
-    util::MultiIndexHandler<DIM> point_handler(spline_ptr->GetPointsPerDirection());
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, point_handler++) {
-      auto indices = point_handler.GetIndices();
-      string += "\n      ";
-      for (int j = 0; j < spline_ptr->GetDimension(); j++) {
-        string += std::to_string(spline_ptr->GetControlPoint(indices, j)) + "  ";
-      }
-    }
-    values.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
-  }
-
-  void AddDegrees(pugi::xml_node *spline_node, std::shared_ptr<spl::Spline<DIM>> spline_ptr) {
-    pugi::xml_node degrees = spline_node->append_child("deg");
-    std::string string;
-    for (int i = 0; i < DIM; i++) {
-      string = string + "\n      " + std::to_string(spline_ptr->GetDegree(i).get());
-    }
-    degrees.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
-  }
-
-  void AddKnotVectors(pugi::xml_node *spline_node, std::shared_ptr<spl::Spline<DIM>> spline_ptr) {
-    pugi::xml_node knot_vectors = spline_node->append_child("kntVecs");
-    for (int i = 0; i < DIM; i++) {
-      pugi::xml_node knots = knot_vectors.append_child("kntVec");
-      baf::KnotVector knot_vector = *spline_ptr->GetKnotVector(i);
-      std::string string;
-      for (ParamCoord knot : knot_vector) {
-        string += "\n        " + std::to_string(knot.get());
-      }
-      knots.append_child(pugi::node_pcdata).text() = (string + "\n      ").c_str();
-    }
-  }
-
-  void AddWeights(pugi::xml_node *spline_node, const std::any &spline) {
-    pugi::xml_node weights = spline_node->append_child("wght");
-    std::string string;
-    std::shared_ptr<spl::NURBS<DIM>> nurbs = std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
-    util::MultiIndexHandler<DIM> weight_handler(nurbs->GetPointsPerDirection());
-    for (int i = 0; i < weight_handler.Get1DLength(); ++i, weight_handler++) {
-      auto indices = weight_handler.GetIndices();
-      string += "\n      " + std::to_string(nurbs->GetWeight(indices)) + "  ";
-    }
-    weights.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
 };
 }  // namespace io

@@ -69,7 +69,7 @@ class XMLReader {
         break;
       }
       default: {
-        throw std::runtime_error("Only splines of dimensions 1 to 4 can be written into a xml file.");
+        throw std::runtime_error("Only splines of dimensions 1 to 4 can be read from a xml file.");
       }
     }
   }
