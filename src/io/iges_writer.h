@@ -25,10 +25,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
-#include "spline.h"
+#include "any_casts.h"
 #include "b_spline.h"
-#include "nurbs.h"
 #include "multi_index_handler.h"
+#include "nurbs.h"
+#include "spline.h"
 
 namespace io {
 class IGESWriter {
@@ -235,31 +236,13 @@ class IGESWriter {
                 + GetBlock("T", 41, true) + GetBlock(GetString(1), 7, true)};
   }
 
-  int GetDimension(std::any spline) {
-    if (IsRational(spline)) {
-      try {
-        std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
-        return 126;
-      } catch (std::bad_any_cast &msg) {
-        try {
-          std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
-          return 128;
-        } catch (std::bad_any_cast &msg) {
-          throw std::runtime_error("Only splines of dimensions 1 or 2 can be written to an iges file.");
-        }
-      }
+  int GetDimension(const std::any &spline) {
+    if (util::AnyCasts::GetSplineDimension(spline) == 1) {
+      return 126;
+    } else if (util::AnyCasts::GetSplineDimension(spline) == 2) {
+      return 128;
     } else {
-      try {
-        std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
-        return 126;
-      } catch (std::bad_any_cast &msg) {
-        try {
-          std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
-          return 128;
-        } catch (std::bad_any_cast &msg) {
-          throw std::runtime_error("Only splines of dimensions 1 or 2 can be written to an iges file.");
-        }
-      }
+      throw std::runtime_error("Only splines of dimensions 1 or 2 can be written to an iges file.");
     }
   }
 

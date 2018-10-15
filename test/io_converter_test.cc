@@ -111,12 +111,12 @@ TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConvertingSplinesFromXMLFile
 }
 
 TEST_F(AnIOConverter, ThrowsWhenConvertingSplinesFromIRITFileToIGESFile) {  // NOLINT
-  std::vector<std::any> irit_splines = irit_reader_.ReadFile(path_to_iris_file);
+  std::vector<std::any> irit_splines = irit_reader_.ReadFile(path_to_irit_file);
   auto irit_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(irit_splines[0]);
   auto irit_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(irit_splines[1]);
   auto irit_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(irit_splines[2]);
   auto irit_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_splines[3]);
-  io_converter_->ConvertFile(path_to_iris_file, "converted_iges_file.iges");
+  io_converter_->ConvertFile(path_to_irit_file, "converted_iges_file.iges");
   std::vector<std::any> iges_splines = iges_reader_.ReadFile("converted_iges_file.iges");
   auto iges_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_splines[0]);
   auto iges_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(iges_splines[1]);
@@ -135,11 +135,11 @@ TEST_F(AnIOConverter, ThrowsWhenConvertingSplinesFromIRITFileToIGESFile) {  // N
 }
 
 TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConvertingSplinesFromIRITFileToXMLFile) {  // NOLINT
-  std::vector<std::any> irit_splines = irit_reader_.ReadFile(path_to_iris_file);
+  std::vector<std::any> irit_splines = irit_reader_.ReadFile(path_to_irit_file);
   auto irit_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(irit_splines[0]);
   auto irit_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_splines[3]);
   auto irit_nurbs_3d = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(irit_splines[5]);
-  io_converter_->ConvertFile(path_to_iris_file, "converted_xml_file.xml");
+  io_converter_->ConvertFile(path_to_irit_file, "converted_xml_file.xml");
   std::vector<std::any> xml_splines = xml_reader_.ReadFile("converted_xml_file.xml");
   auto xml_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_splines[0]);
   auto xml_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_splines[3]);

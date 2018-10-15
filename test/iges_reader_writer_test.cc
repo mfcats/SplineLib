@@ -230,16 +230,9 @@ TEST_F(AnIGESReaderAndWriter, ThrowIfFileCantBeOpened) { // NOLINT
   ASSERT_THROW(std::vector<std::any> splines = iges_reader_->ReadFile("a"), std::runtime_error);
 }
 
-TEST_F(AnIGESReaderAndWriter, ThrowsForBSplineOfDimensionThree) {  // NOLINT
+TEST_F(AnIGESReaderAndWriter, ThrowsForSplineOfDimensionThree) {  // NOLINT
   std::shared_ptr<spl::BSpline<3>> bspline_3d_;
   std::any bspline_3d_any = std::make_any<std::shared_ptr<spl::BSpline<3>>>(bspline_3d_);
-  ASSERT_THROW(iges_writer_->WriteFile({bspline_3d_any}, "3d_bspline.xml"), std::runtime_error);
-  remove("3d_bspline.xml");
-}
-
-TEST_F(AnIGESReaderAndWriter, ThrowsForNURBSfDimensionThree) {  // NOLINT
-  std::shared_ptr<spl::NURBS<3>> nurbs_3d_;
-  std::any nurbs_3d_any = std::make_any<std::shared_ptr<spl::NURBS<3>>>(nurbs_3d_);
-  ASSERT_THROW(iges_writer_->WriteFile({nurbs_3d_any}, "3d_nurbs.xml"), std::runtime_error);
-  remove("3d_nurbs.xml");
+  ASSERT_THROW(iges_writer_->WriteFile({bspline_3d_any}, "3d_spline.xml"), std::runtime_error);
+  remove("3d_spline.xml");
 }
