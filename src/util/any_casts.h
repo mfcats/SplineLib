@@ -74,12 +74,7 @@ class AnyCasts {
     try {
       return std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(spline);
     } catch (std::bad_any_cast &msg) {
-      try {
-        return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
-      } catch (std::bad_any_cast &msg) {
-        throw std::runtime_error(
-            "Input has to be a pointer to a b-spline or nurbs of dimension " + std::to_string(DIM) + ".");
-      }
+      return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
     }
   }
 

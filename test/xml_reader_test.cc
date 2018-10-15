@@ -36,8 +36,8 @@ TEST_F(AnXMLReader, ThrowsExceptionForNonExistingFile) {  // NOLINT
   ASSERT_THROW(xml_reader->ReadFile("test.xml"), std::runtime_error);
 }
 
-TEST_F(AnXMLReader, FindsTwoSplines) {  // NOLINT
-  ASSERT_THAT(xml_reader->ReadFile(path_to_xml_file).size(), 3);
+TEST_F(AnXMLReader, FindsFourSplines) {  // NOLINT
+  ASSERT_THAT(xml_reader->ReadFile(path_to_xml_file).size(), 4);
 }
 
 TEST_F(AnXMLReader, GetsCorrectDegrees) {  // NOLINT
@@ -59,6 +59,15 @@ TEST_F(AnXMLReader, GetsCorrectDegrees) {  // NOLINT
       xml_reader->ReadFile(path_to_xml_file)[2])->GetDegree(2).get(), 1);
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<4>>>(
       xml_reader->ReadFile(path_to_xml_file)[2])->GetDegree(3).get(), 1);
+
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(
+      xml_reader->ReadFile(path_to_xml_file)[3])->GetDegree(0).get(), 1);
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(
+      xml_reader->ReadFile(path_to_xml_file)[3])->GetDegree(1).get(), 1);
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(
+      xml_reader->ReadFile(path_to_xml_file)[3])->GetDegree(2).get(), 1);
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(
+      xml_reader->ReadFile(path_to_xml_file)[3])->GetDegree(3).get(), 1);
 }
 
 TEST_F(AnXMLReader, GetsCorrectKnots) {  // NOLINT
@@ -80,6 +89,15 @@ TEST_F(AnXMLReader, GetsCorrectKnots) {  // NOLINT
       xml_reader->ReadFile(path_to_xml_file)[2])->GetKnotVector(2)->GetKnot(2).get(), DoubleEq(1.0));
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<4>>>(
       xml_reader->ReadFile(path_to_xml_file)[2])->GetKnotVector(3)->GetKnot(3).get(), DoubleEq(1.0));
+
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(
+      xml_reader->ReadFile(path_to_xml_file)[3])->GetKnotVector(0)->GetKnot(2).get(), DoubleEq(1.0));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(
+      xml_reader->ReadFile(path_to_xml_file)[3])->GetKnotVector(1)->GetKnot(1).get(), DoubleEq(0.0));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(
+      xml_reader->ReadFile(path_to_xml_file)[3])->GetKnotVector(2)->GetKnot(2).get(), DoubleEq(1.0));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(
+      xml_reader->ReadFile(path_to_xml_file)[3])->GetKnotVector(3)->GetKnot(3).get(), DoubleEq(1.0));
 }
 
 TEST_F(AnXMLReader, EvaluatesSplinesCorrectly) {  // NOLINT
@@ -105,4 +123,13 @@ TEST_F(AnXMLReader, EvaluatesSplinesCorrectly) {  // NOLINT
       Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {2})[0], DoubleEq(0));
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<4>>>(xml_reader->ReadFile(path_to_xml_file)[2])->
       Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {3})[0], DoubleEq(1));
+
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->
+      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->
+      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {1})[0], DoubleEq(0.5));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->
+      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {2})[0], DoubleEq(0.2));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->
+      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {3})[0], DoubleEq(0.8));
 }
