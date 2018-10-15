@@ -69,7 +69,8 @@ class XMLReader {
         break;
       }
       default: {
-        throw std::runtime_error("Only splines of dimensions 1 to 4 can be read from a xml file.");
+        std::cout << std::endl << "Only splines of dimensions 1 to 4 can be read from an xml file. "
+                  << "Ignoring spline of different dimension." << std::endl;
       }
     }
   }
