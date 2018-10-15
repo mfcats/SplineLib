@@ -301,17 +301,17 @@ TEST_F(AnIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {
   ASSERT_THAT(b_spline_1d_->Evaluate({ParamCoord(0.75839)}, {2})[0],
               DoubleNear(bspline_1d_after->Evaluate({ParamCoord(0.75839)}, {2})[0], 0.00001));
 
-  ASSERT_THAT(nurbs_1d_->Evaluate({ParamCoord(0.13697)}, {0})[0],
-              DoubleEq(nurbs_1d_after->Evaluate({ParamCoord(0.13697)}, {0})[0]));
-  ASSERT_THAT(nurbs_1d_->Evaluate({ParamCoord(0.13697)}, {1})[0],
-              DoubleEq(nurbs_1d_after->Evaluate({ParamCoord(0.13697)}, {1})[0]));
+  ASSERT_THAT(nurbs_1d_->Evaluate({ParamCoord(0.22004)}, {0})[0],
+              DoubleEq(nurbs_1d_after->Evaluate({ParamCoord(0.22004)}, {0})[0]));
+  ASSERT_THAT(nurbs_1d_->Evaluate({ParamCoord(0.22004)}, {1})[0],
+              DoubleEq(nurbs_1d_after->Evaluate({ParamCoord(0.22004)}, {1})[0]));
 
-  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.47681)}, {0})[0],
-              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.47681)}, {0})[0]));
-  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.47681)}, {1})[0],
-              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.47681)}, {1})[0]));
-  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.47681)}, {2})[0],
-              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.47681)}, {2})[0]));
+  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.85111)}, {0})[0],
+              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.85111)}, {0})[0]));
+  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.85111)}, {1})[0],
+              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.85111)}, {1})[0]));
+  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.85111)}, {2})[0],
+              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.85111)}, {2})[0]));
 
   ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.33359)}, {0})[0],
               DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.33359)}, {0})[0]));
