@@ -149,8 +149,9 @@ class IGESWriter {
       contents->append(GetString(weights[i]) + delimiter);
     }
     std::vector<double> control_points = spl->GetControlPoints();
+    int dim = spl->GetDimension();
     for (size_t i = 0; i < control_points.size() - 1; ++i) {
-      contents->append(GetString(control_points[i]) + delimiter);
+      contents->append(GetString(Get3DControlPoints(control_points, dim)[i]) + delimiter);
     }
     contents->append(GetString(control_points[control_points.size() - 1]));
   }
@@ -172,21 +173,38 @@ class IGESWriter {
                   delimiter);
     auto knots1 = spl->GetKnots()[0];
     auto knots2 = spl->GetKnots()[1];
-    for (auto &i : knots1) {
-      contents->append(GetString(i.get()) + delimiter);
+    for (size_t i = 0; i < knots1.size(); ++i) {
+      contents->append(GetString(knots1[i].get()) + delimiter);
     }
-    for (auto &i : knots2) {
-      contents->append(GetString(i.get()) + delimiter);
+    for (size_t i = 0; i < knots2.size(); ++i) {
+      contents->append(GetString(knots2[i].get()) + delimiter);
     }
     std::vector<double> weights = spl->GetWeights();
-    for (double weight : weights) {
-      contents->append(GetString(weight) + delimiter);
+    for (size_t i = 0; i < weights.size(); ++i) {
+      contents->append(GetString(weights[i]) + delimiter);
     }
     std::vector<double> control_points = spl->GetControlPoints();
+    int dim = spl->GetDimension();
     for (size_t i = 0; i < control_points.size() - 1; ++i) {
-      contents->append(GetString(control_points[i]) + delimiter);
+      contents->append(GetString(Get3DControlPoints(control_points, dim)[i]) + delimiter);
     }
     contents->append(GetString(control_points[control_points.size() - 1]));
+  }
+
+  std::vector<double> Get3DControlPoints(std::vector<double> control_points, int dim) {
+    if (dim != 3) {
+      std::vector<double> control_points_3d;
+      for (int i = 0; i < control_points.size(); ++i) {
+        control_points_3d.emplace_back(control_points[i]);
+        if (i % dim == dim - 1) {
+          for (int j = 0; j < 3 - dim; ++j) {
+            control_points_3d.emplace_back(0);
+          }
+        }
+      }
+      return control_points_3d;
+    }
+    return control_points;
   }
 
   std::vector<std::string> GetDataEntry(int paramStart, int paramLength, const std::any &spline, int *dLine) {
