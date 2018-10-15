@@ -160,3 +160,11 @@ TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConvertingSplinesFromIRITFil
               DoubleNear(irit_nurbs_3d->Evaluate({ParamCoord(0.76584)}, {2})[0], 0.00001));
   remove("converted_xml_file.xml");
 }
+
+TEST_F(AnIOConverter, ThrowsForWrongTypeOfInputFile) {  // NOLINT
+  ASSERT_THROW(io_converter_->ConvertFile("file.txt", "file.iges"), std::runtime_error);
+}
+
+TEST_F(AnIOConverter, ThrowsForWrongTypeOfOutputFile) {  // NOLINT
+  ASSERT_THROW(io_converter_->ConvertFile(path_to_xml_file, "file.txt"), std::runtime_error);
+}
