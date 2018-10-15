@@ -330,4 +330,5 @@ TEST_F(AnIRITWriter, ThrowsForSplineOfDimensionFour) {  // NOLINT
   std::shared_ptr<spl::NURBS<4>> nurbs_4d_;
   std::any nurbs_4d_any = std::make_any<std::shared_ptr<spl::NURBS<4>>>(nurbs_4d_);
   ASSERT_THROW(irit_writer_->WriteFile({nurbs_4d_any}, "4d_spline.xml"), std::runtime_error);
+  remove("4d_spline.xml");
 }

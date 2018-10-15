@@ -141,12 +141,12 @@ class IGESWriter {
                    GetString(0)}, delimiter);
 
     auto knots = spl->GetKnots()[0];
-    for (size_t i = 0; i < knots.size(); ++i) {
-      contents->append(GetString(knots[i].get()) + delimiter);
+    for (auto &knot : knots) {
+      contents->append(GetString(knot.get()) + delimiter);
     }
     std::vector<double> weights = spl->GetWeights();
-    for (size_t i = 0; i < weights.size(); ++i) {
-      contents->append(GetString(weights[i]) + delimiter);
+    for (double weight : weights) {
+      contents->append(GetString(weight) + delimiter);
     }
     std::vector<double> control_points = spl->GetControlPoints();
     int dim = spl->GetDimension();
@@ -173,15 +173,15 @@ class IGESWriter {
                   delimiter);
     auto knots1 = spl->GetKnots()[0];
     auto knots2 = spl->GetKnots()[1];
-    for (size_t i = 0; i < knots1.size(); ++i) {
-      contents->append(GetString(knots1[i].get()) + delimiter);
+    for (auto &i : knots1) {
+      contents->append(GetString(i.get()) + delimiter);
     }
-    for (size_t i = 0; i < knots2.size(); ++i) {
-      contents->append(GetString(knots2[i].get()) + delimiter);
+    for (auto &i : knots2) {
+      contents->append(GetString(i.get()) + delimiter);
     }
     std::vector<double> weights = spl->GetWeights();
-    for (size_t i = 0; i < weights.size(); ++i) {
-      contents->append(GetString(weights[i]) + delimiter);
+    for (double weight : weights) {
+      contents->append(GetString(weight) + delimiter);
     }
     std::vector<double> control_points = spl->GetControlPoints();
     int dim = spl->GetDimension();
@@ -278,8 +278,8 @@ class IGESWriter {
   }
 
   void AddToContents(std::string *contents, const std::vector<std::string> &add, const std::string &delimiter) {
-    for (int i = 0; i < add.size(); ++i) {
-      contents->append(add[i] + delimiter);
+    for (const auto &i : add) {
+      contents->append(i + delimiter);
     }
   }
 
@@ -337,7 +337,7 @@ class IGESWriter {
         if (isRational) {
           auto spl = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
           if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
-        } else if (!isRational) {
+        } else {
           auto spl = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
           if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
         }
@@ -345,7 +345,7 @@ class IGESWriter {
         if (isRational) {
           auto spl = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
           if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
-        } else if (!isRational) {
+        } else {
           auto spl = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
           if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
         }
