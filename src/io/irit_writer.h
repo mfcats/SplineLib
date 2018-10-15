@@ -63,8 +63,7 @@ class IRITWriter {
         break;
       }
       default: {
-        std::cout << std::endl << "Only splines of dimensions 1 to 3 can be written to an irit file. "
-                  << "Ignoring spline of different dimension." << std::endl;
+        throw std::runtime_error("Only splines of dimensions 1 to 3 can be written to an irit file.");
       }
     }
     file << "    ]\n  ]\n";

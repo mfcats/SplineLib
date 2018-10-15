@@ -27,19 +27,33 @@ class Writer {
  public:
   Writer() = default;
 
-  virtual void WriteFile(const std::vector<std::any> &splines, const char *filename) {
+  virtual void WriteFile(std::vector<std::any> &splines, const char *filename) {
     if (util::StringOperations::EndsWith(filename, ".iges")) {
       io::IGESWriter iges_writer;
+      splines = GetSplinesOfCorrectDimensions(splines, 2);
       iges_writer.WriteFile(splines, filename);
     } else if (util::StringOperations::EndsWith(filename, ".itd")) {
       io::IRITWriter irit_writer;
+      splines = GetSplinesOfCorrectDimensions(splines, 3);
       return irit_writer.WriteFile(splines, filename);
     } else if (util::StringOperations::EndsWith(filename, ".xml")) {
       io::XMLWriter xml_writer;
+      splines = GetSplinesOfCorrectDimensions(splines, 4);
       return xml_writer.WriteFile(splines, filename);
     } else {
       throw std::runtime_error("Only files of format iges, itd and xml can be written.");
     }
+  }
+
+ private:
+  std::vector<std::any> GetSplinesOfCorrectDimensions(const std::vector<std::any> &splines, int max_dim) {
+    std::vector<std::any> splines_with_max_dim;
+    for (const auto &spline : splines) {
+      if (util::AnyCasts::GetSplineDimension(spline) <= max_dim) {
+        splines_with_max_dim.emplace_back(spline);
+      }
+    }
+    return splines_with_max_dim;
   }
 };
 }  // namespace io

@@ -245,8 +245,7 @@ class IGESWriter {
           std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
           return 128;
         } catch (std::bad_any_cast &msg) {
-          std::cout << std::endl << "Only splines of dimensions 1 or 2 can be written to an iges file. "
-                    << "Ignoring spline of different dimension." << std::endl;
+          throw std::runtime_error("Only splines of dimensions 1 or 2 can be written to an iges file.");
         }
       }
     } else {
@@ -258,8 +257,7 @@ class IGESWriter {
           std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
           return 128;
         } catch (std::bad_any_cast &msg) {
-          std::cout << std::endl << "Only splines of dimensions 1 or 2 can be written to an iges file. "
-                    << "Ignoring spline of different dimension." << std::endl;
+          throw std::runtime_error("Only splines of dimensions 1 or 2 can be written to an iges file.");
         }
       }
     }
