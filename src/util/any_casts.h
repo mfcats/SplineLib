@@ -78,6 +78,7 @@ class AnyCasts {
     }
   }
 
+  template<int DIM>
   static bool IsRational(std::any spline) {
     try {
       std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
