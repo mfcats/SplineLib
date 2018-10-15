@@ -351,26 +351,26 @@ TEST_F(AnXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  
   ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.47681)}, {2})[0],
               DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.47681)}, {2})[0]));
 
-  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.33359)}, {0})[0],
-              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.33359)}, {0})[0]));
-  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.33359)}, {1})[0],
-              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.33359)}, {1})[0]));
+  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.27856)}, {0})[0],
+              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.27856)}, {0})[0]));
+  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.27856)}, {1})[0],
+              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.27856)}, {1})[0]));
 
-  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.89463)}, {0})[0],
-              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.89463)}, {0})[0]));
-  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.89463)}, {1})[0],
-              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.89463)}, {1})[0]));
-  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.89463)}, {2})[0],
-              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.89463)}, {2})[0]));
+  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.78781)}, {0})[0],
+              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.78781)}, {0})[0]));
+  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.78781)}, {1})[0],
+              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.78781)}, {1})[0]));
+  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.78781)}, {2})[0],
+              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.78781)}, {2})[0]));
 
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.00021)}, {0})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {0})[0]));
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.00021)}, {1})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {1})[0]));
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.00021)}, {2})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {2})[0]));
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.00021)}, {3})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {3})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.90069)}, {0})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.90069)}, {0})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.90069)}, {1})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.90069)}, {1})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.90069)}, {2})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.90069)}, {2})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.90069)}, {3})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.90069)}, {3})[0]));
 
   ASSERT_THAT(nurbs_4d_->Evaluate({ParamCoord(0.3574)}, {0})[0],
               DoubleEq(nurbs_4d_after->Evaluate({ParamCoord(0.3574)}, {0})[0]));
