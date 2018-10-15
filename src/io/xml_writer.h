@@ -61,9 +61,7 @@ class XMLWriter {
         Add4DSpline(spline_list, spline);
         break;
       }
-      default: {
-        throw std::runtime_error("Only splines of dimensions 1 to 4 can be written to an xml file.");
-      }
+      default: {}
     }
   }
 

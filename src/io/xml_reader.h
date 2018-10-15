@@ -68,9 +68,7 @@ class XMLReader {
         splines->push_back(Get4DSpline(spline, control_points));
         break;
       }
-      default: {
-        throw std::runtime_error("Only splines of dimensions 1 to 4 can be read from an xml file.");
-      }
+      default: {}
     }
   }
 
