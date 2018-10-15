@@ -325,3 +325,9 @@ TEST_F(AnIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {
               DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {2})[0]));
   remove("splines.itd");
 }
+
+TEST_F(AnIRITWriter, ThrowsForSplineOfDimensionFour) {  // NOLINT
+  std::shared_ptr<spl::NURBS<4>> nurbs_4d_;
+  std::any nurbs_4d_any = std::make_any<std::shared_ptr<spl::NURBS<4>>>(nurbs_4d_);
+  ASSERT_THROW(irit_writer_->WriteFile({nurbs_4d_any}, "4d_spline.xml"), std::runtime_error);
+}
