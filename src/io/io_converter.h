@@ -26,8 +26,10 @@ class IOConverter {
   IOConverter() = default;
 
   void ConvertFile(const char *input_filename, const char *output_filename) {
-    std::vector<std::any> splines = (new io::Reader)->ReadFile(input_filename);
-    (new io::Writer)->WriteFile(splines, output_filename);
+    io::Reader reader;
+    std::vector<std::any> splines = reader.ReadFile(input_filename);
+    io::Writer writer;
+    writer.WriteFile(splines, output_filename);
   }
 };
 }  // namespace io
