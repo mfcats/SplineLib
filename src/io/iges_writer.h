@@ -25,17 +25,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
-#include "spline.h"
+#include "any_casts.h"
 #include "b_spline.h"
-#include "nurbs.h"
 #include "multi_index_handler.h"
+#include "nurbs.h"
+#include "spline.h"
 
 namespace io {
 class IGESWriter {
  public:
   IGESWriter() = default;
 
-  void WriteIGESFile(std::vector<std::any> splines, const std::string &filename) {
+  void WriteFile(std::vector<std::any> splines, const std::string &filename) {
     std::ofstream newFile;
     newFile.open(filename);
     if (newFile.is_open()) {
@@ -53,7 +54,8 @@ class IGESWriter {
           parameter.emplace_back(param);
         }
         entityPosition += 2;
-        std::vector<std::string> dataTemp = GetDataEntry(paramStart, paramTemp.size(), spline, &dLine);
+        std::vector<std::string>
+            dataTemp = GetDataEntry(paramStart, static_cast<int>(paramTemp.size()), spline, &dLine);
         for (auto &data : dataTemp) {
           dataEntry.emplace_back(data);
         }
@@ -74,26 +76,26 @@ class IGESWriter {
   }
 
   std::vector<std::string> GetGlobalSection(const std::string &filename, const std::string &delimiter,
-                                            const std::string &endDelimiter, std::vector<std::any> splines) {
+                                            const std::string &endDelimiter, const std::vector<std::any> &splines) {
     std::string contents;
     AddToContents(&contents, {GetHollerithFormat(delimiter), GetHollerithFormat(endDelimiter),
-                             GetHollerithFormat("unknown"), filename, GetHollerithFormat("SplineLib"),
-                             GetHollerithFormat("pre_release"),
-                             GetString(std::numeric_limits<int>::digits),
-                             GetString(std::numeric_limits<float>::max_exponent),
-                             GetString(std::numeric_limits<float>::digits),
-                             GetString(std::numeric_limits<double>::max_exponent),
-                             GetString(std::numeric_limits<double>::digits), GetHollerithFormat("unknown"),
-                             GetString(1.0),
-                             GetString(2), GetHollerithFormat("MM"), GetString(1), GetString(0.001),
-                             GetHollerithFormat(GetTime()), GetString(0.000001), GetString(GetHighestValue(splines)),
-                             GetHollerithFormat("unknown"), GetHollerithFormat("unknown"), GetString(11),
-                             GetString(0), GetHollerithFormat(GetTime())}, delimiter);
+                              GetHollerithFormat("unknown"), filename, GetHollerithFormat("SplineLib"),
+                              GetHollerithFormat("pre_release"),
+                              GetString(std::numeric_limits<int>::digits),
+                              GetString(std::numeric_limits<float>::max_exponent),
+                              GetString(std::numeric_limits<float>::digits),
+                              GetString(std::numeric_limits<double>::max_exponent),
+                              GetString(std::numeric_limits<double>::digits), GetHollerithFormat("unknown"),
+                              GetString(1.0),
+                              GetString(2), GetHollerithFormat("MM"), GetString(1), GetString(0.001),
+                              GetHollerithFormat(GetTime()), GetString(0.000001), GetString(GetHighestValue(splines)),
+                              GetHollerithFormat("unknown"), GetHollerithFormat("unknown"), GetString(11),
+                              GetString(0), GetHollerithFormat(GetTime())}, delimiter);
     contents += endDelimiter;
     return GetGlobalSectionLayout(&contents);
   }
 
-  std::vector<std::string> GetGlobalSectionLayout(const std::string* contents) {
+  std::vector<std::string> GetGlobalSectionLayout(const std::string *contents) {
     int line = 0;
     std::vector<std::string> globalSection;
     for (auto i = 0u; i <= (contents->size() - 1) / 72; ++i) {
@@ -104,7 +106,7 @@ class IGESWriter {
   }
 
   std::vector<std::string> GetParameterData(const std::string &delimiter, const std::string &endDelimiter,
-                                            const std::any &spline, int entityPosition, int* pLine) {
+                                            const std::any &spline, int entityPosition, int *pLine) {
     std::string contents;
     if (GetDimension(spline) == 126) {
       GetParameterData1D(&contents, delimiter, spline);
@@ -115,9 +117,9 @@ class IGESWriter {
     return GetParameterSectionLayout(&contents, entityPosition, pLine);
   }
 
-  std::vector<std::string> GetParameterSectionLayout(const std::string* contents, int entityPosition, int* pLine) {
+  std::vector<std::string> GetParameterSectionLayout(const std::string *contents, int entityPosition, int *pLine) {
     std::vector<std::string> parameterData;
-    for (int i = 0; i <= (contents->size() - 1) / 64; i++) {
+    for (auto i = 0u; i <= (contents->size() - 1) / 64; i++) {
       parameterData.emplace_back(GetBlock(contents->substr(i * 64, 64), 64, false)
                                      + ' ' + GetBlock(GetString(entityPosition), 7, true)
                                      + 'P' + GetBlock(GetString(++(*pLine)), 7, true));
@@ -125,7 +127,7 @@ class IGESWriter {
     return parameterData;
   }
 
-  void GetParameterData1D(std::string* contents, const std::string &delimiter, const std::any &spline) {
+  void GetParameterData1D(std::string *contents, const std::string &delimiter, const std::any &spline) {
     std::shared_ptr<spl::Spline<1>> spl;
     int isRational = 0;
     if (IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
@@ -140,21 +142,22 @@ class IGESWriter {
                    GetString(0)}, delimiter);
 
     auto knots = spl->GetKnots()[0];
-    for (size_t i = 0; i < knots.size(); ++i) {
-      contents->append(GetString(knots[i].get()) + delimiter);
+    for (auto &knot : knots) {
+      contents->append(GetString(knot.get()) + delimiter);
     }
     std::vector<double> weights = spl->GetWeights();
-    for (size_t i = 0; i < weights.size(); ++i) {
-      contents->append(GetString(weights[i]) + delimiter);
+    for (double weight : weights) {
+      contents->append(GetString(weight) + delimiter);
     }
     std::vector<double> control_points = spl->GetControlPoints();
+    int dim = spl->GetDimension();
     for (size_t i = 0; i < control_points.size() - 1; ++i) {
-      contents->append(GetString(control_points[i]) + delimiter);
+      contents->append(GetString(Get3DControlPoints(control_points, dim)[i]) + delimiter);
     }
     contents->append(GetString(control_points[control_points.size() - 1]));
   }
 
-  void GetParameterData2D(std::string* contents, const std::string &delimiter, const std::any &spline) {
+  void GetParameterData2D(std::string *contents, const std::string &delimiter, const std::any &spline) {
     std::shared_ptr<spl::Spline<2>> spl;
     int isRational = 0;
     if (IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
@@ -168,27 +171,44 @@ class IGESWriter {
                    GetString(spl->GetKnotVector(1)->GetNumberOfKnots() - spl->GetDegree(1).get() - 2),
                    GetString(spl->GetDegree(0).get()), GetString(spl->GetDegree(1).get()),
                    GetString(0), GetString(0), GetString(isRational), GetString(0), GetString(0)},
-                   delimiter);
+                  delimiter);
     auto knots1 = spl->GetKnots()[0];
     auto knots2 = spl->GetKnots()[1];
-    for (size_t i = 0; i < knots1.size(); ++i) {
-      contents->append(GetString(knots1[i].get()) + delimiter);
+    for (auto &i : knots1) {
+      contents->append(GetString(i.get()) + delimiter);
     }
-    for (size_t i = 0; i < knots2.size(); ++i) {
-      contents->append(GetString(knots2[i].get()) + delimiter);
+    for (auto &i : knots2) {
+      contents->append(GetString(i.get()) + delimiter);
     }
     std::vector<double> weights = spl->GetWeights();
-    for (size_t i = 0; i < weights.size(); ++i) {
-      contents->append(GetString(weights[i]) + delimiter);
+    for (double weight : weights) {
+      contents->append(GetString(weight) + delimiter);
     }
     std::vector<double> control_points = spl->GetControlPoints();
+    int dim = spl->GetDimension();
     for (size_t i = 0; i < control_points.size() - 1; ++i) {
-      contents->append(GetString(control_points[i]) + delimiter);
+      contents->append(GetString(Get3DControlPoints(control_points, dim)[i]) + delimiter);
     }
     contents->append(GetString(control_points[control_points.size() - 1]));
   }
 
-  std::vector<std::string> GetDataEntry(int paramStart, int paramLength, const std::any &spline, int* dLine) {
+  std::vector<double> Get3DControlPoints(std::vector<double> control_points, int dim) {
+    if (dim != 3) {
+      std::vector<double> control_points_3d;
+      for (int i = 0; i < control_points.size(); ++i) {
+        control_points_3d.emplace_back(control_points[i]);
+        if (i % dim == dim - 1) {
+          for (int j = 0; j < 3 - dim; ++j) {
+            control_points_3d.emplace_back(0);
+          }
+        }
+      }
+      return control_points_3d;
+    }
+    return control_points;
+  }
+
+  std::vector<std::string> GetDataEntry(int paramStart, int paramLength, const std::any &spline, int *dLine) {
     std::string contents;
     AddToContents(&contents,
                   {GetBlock(GetString(GetDimension(spline)), 8, true), GetBlock(GetString(paramStart), 8, true),
@@ -201,36 +221,28 @@ class IGESWriter {
     return GetDataEntrySectionLayout(&contents, dLine);
   }
 
-  std::vector<std::string> GetDataEntrySectionLayout(const std::string* contents, int* dLine) {
+  std::vector<std::string> GetDataEntrySectionLayout(const std::string *contents, int *dLine) {
     std::vector<std::string> dataEntrySection;
     for (auto i = 0u; i <= (contents->size() - 1) / 72; i++) {
       dataEntrySection.emplace_back(GetBlock(contents->substr(i * 72, 72), 72, false)
-                                     + 'D' + GetBlock(GetString(++(*dLine)), 7, true));
+                                        + 'D' + GetBlock(GetString(++(*dLine)), 7, true));
     }
     return dataEntrySection;
   }
 
   std::vector<std::string> GetTerminateSection(int linesS, int linesG, int linesD, int linesP) {
     return {'S' + GetBlock(GetString(linesS), 7, true) + 'G' + GetBlock(GetString(linesG), 7, true) + 'D'
-            + GetBlock(GetString(linesD), 7, true) + 'P' + GetBlock(GetString(linesP), 7, true)
-            + GetBlock("T", 41, true) + GetBlock(GetString(1), 7, true)};
+                + GetBlock(GetString(linesD), 7, true) + 'P' + GetBlock(GetString(linesP), 7, true)
+                + GetBlock("T", 41, true) + GetBlock(GetString(1), 7, true)};
   }
 
-  int GetDimension(std::any spline) {
-    if (IsRational(spline)) {
-      try {
-        std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
-        return 126;
-      } catch (std::bad_any_cast &msg) {
-        return 128;
-      }
+  int GetDimension(const std::any &spline) {
+    if (util::AnyCasts::GetSplineDimension(spline) == 1) {
+      return 126;
+    } else if (util::AnyCasts::GetSplineDimension(spline) == 2) {
+      return 128;
     } else {
-      try {
-        std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
-        return 126;
-      } catch (std::bad_any_cast &msg) {
-        return 128;
-      }
+      throw std::runtime_error("Only splines of dimensions 1 or 2 can be written to an iges file.");
     }
   }
 
@@ -248,9 +260,9 @@ class IGESWriter {
     }
   }
 
-  void AddToContents(std::string* contents, const std::vector<std::string> &add, const std::string &delimiter) {
-    for (int i = 0; i < add.size(); ++i) {
-      contents->append(add[i] + delimiter);
+  void AddToContents(std::string *contents, const std::vector<std::string> &add, const std::string &delimiter) {
+    for (const auto &i : add) {
+      contents->append(i + delimiter);
     }
   }
 
@@ -262,7 +274,7 @@ class IGESWriter {
     return right ? (std::string(width - str.size(), ' ') + str) : (str + std::string(width - str.size(), ' '));
   }
 
-  template <typename T>
+  template<typename T>
   std::string GetString(const T value) {
     std::ostringstream out;
     out.precision(18);
@@ -289,10 +301,9 @@ class IGESWriter {
   std::string GetTime() {
     time_t timer;
     time(&timer);
-    struct tm ptm;
+    struct tm ptm{};
     localtime_r(&timer, &ptm);
-    std::string
-        date = GetString((ptm.tm_year + 1900) * 10000 + (ptm.tm_mon + 1) * 100 + ptm.tm_mday);
+    std::string date = GetString((ptm.tm_year + 1900) * 10000 + (ptm.tm_mon + 1) * 100 + ptm.tm_mday);
     std::string time = GetString(ptm.tm_hour * 10000 + ptm.tm_min * 100 + ptm.tm_sec);
     if (time.size() == 5) {
       time = '0' + time;
@@ -309,7 +320,7 @@ class IGESWriter {
         if (isRational) {
           auto spl = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
           if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
-        } else if (!isRational) {
+        } else {
           auto spl = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
           if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
         }
@@ -317,7 +328,7 @@ class IGESWriter {
         if (isRational) {
           auto spl = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
           if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
-        } else if (!isRational) {
+        } else {
           auto spl = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
           if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
         }

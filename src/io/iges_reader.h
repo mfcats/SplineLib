@@ -27,9 +27,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace io {
 class IGESReader {
  public:
-  IGESReader() {}
+  IGESReader() = default;
 
-  std::vector<std::any> ReadIGESFile(const char* filename) {
+  std::vector<std::any> ReadFile(const char *filename) {
     std::ifstream newFile;
     newFile.open(filename);
     if (!newFile.good()) {
@@ -65,14 +65,14 @@ class IGESReader {
  private:
   std::any Create1DSpline(const std::vector<double> &parameterData) {
     int upperSumIndex = static_cast<int>(parameterData[1]);
-    std::array<Degree, 1> degree;
+    std::array<Degree, 1> degree{};
     degree[0] = Degree{static_cast<int>(parameterData[2])};
     std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
     std::vector<double> weights;
     std::vector<baf::ControlPoint> control_points;
-    std::array<int, 2> knotsStartEnd;
-    std::array<int, 2> weightsStartEnd;
-    std::array<int, 2> controlPointsStartEnd;
+    std::array<int, 2> knotsStartEnd{};
+    std::array<int, 2> weightsStartEnd{};
+    std::array<int, 2> controlPointsStartEnd{};
     knotsStartEnd[0] = 7;
     knotsStartEnd[1] = knotsStartEnd[0] + upperSumIndex + degree[0].get() + 1;
     weightsStartEnd[0] = knotsStartEnd[1] + 1;
@@ -81,7 +81,7 @@ class IGESReader {
     controlPointsStartEnd[1] = controlPointsStartEnd[0] + (3 * upperSumIndex) + 2;
     std::vector<ParamCoord> knots;
     for (int i = knotsStartEnd[0]; i <= knotsStartEnd[1]; ++i) {
-      knots.push_back(ParamCoord{parameterData[i]});
+      knots.emplace_back(parameterData[i]);
     }
     knot_vector[0] = std::make_shared<baf::KnotVector>(knots);
     for (int i = weightsStartEnd[0]; i <= weightsStartEnd[1]; ++i) {
@@ -96,9 +96,9 @@ class IGESReader {
                                                   controlPointCoordinates[i + 1],
                                                   controlPointCoordinates[i + 2]}));
     }
-    std::array<int, 1> number_of_points;
+    std::array<int, 1> number_of_points{};
     for (int i = 0; i < 1; ++i) {
-      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
+      number_of_points[i] = static_cast<int>(knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1);
     }
     if (parameterData[5] == 1) {
       auto spl = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
@@ -110,18 +110,18 @@ class IGESReader {
   }
 
   std::any Create2DSpline(const std::vector<double> &parameterData) {
-    std::array<int, 2> upperSumIndex;
+    std::array<int, 2> upperSumIndex{};
     upperSumIndex[0] = static_cast<int>(parameterData[1]);
     upperSumIndex[1] = static_cast<int>(parameterData[2]);
-    std::array<Degree, 2> degree;
+    std::array<Degree, 2> degree{};
     degree[0] = Degree{static_cast<int>(parameterData[3])};
     degree[1] = Degree{static_cast<int>(parameterData[4])};
     std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector;
     std::vector<double> weights;
     std::vector<baf::ControlPoint> control_points;
-    std::array<std::array<int, 2>, 2> knotsStartEnd;
-    std::array<int, 2> weightsStartEnd;
-    std::array<int, 2> controlPointsStartEnd;
+    std::array<std::array<int, 2>, 2> knotsStartEnd{};
+    std::array<int, 2> weightsStartEnd{};
+    std::array<int, 2> controlPointsStartEnd{};
     knotsStartEnd[0][0] = 10;
     knotsStartEnd[0][1] = knotsStartEnd[0][0] + upperSumIndex[0] + degree[0].get() + 1;
     knotsStartEnd[1][0] = knotsStartEnd[0][1] + 1;
@@ -151,9 +151,9 @@ class IGESReader {
                                                   controlPointCoordinates[i + 1],
                                                   controlPointCoordinates[i + 2]}));
     }
-    std::array<int, 2> number_of_points;
+    std::array<int, 2> number_of_points{};
     for (int i = 0; i < 2; ++i) {
-      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
+      number_of_points[i] = static_cast<int>(knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1);
     }
     if (parameterData[7] == 1) {
       auto spl = std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points);
@@ -168,7 +168,7 @@ class IGESReader {
                                                          int entityToBeRead) {
     std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead * 2].substr(8, 8));
     std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead * 2 + 1].substr(24, 8));
-    std::array<int, 2> ParameterSectionStartEndPointers;
+    std::array<int, 2> ParameterSectionStartEndPointers{};
     ParameterSectionStartEndPointers[0] = GetInteger(trim(parameterDataStartPointer));
     ParameterSectionStartEndPointers[1] =
         GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;

@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 static const char *iges_read = "@IGES_READ@";
 static const char *iges_read_2 = "@IGES_READ_2@";
-static const char *path_to_iris_file = "@PATH_TO_IRIS_FILE@";
+static const char *path_to_irit_file = "@PATH_TO_IRIS_FILE@";
 static const char *path_to_xml_file = "@PATH_TO_XML_FILE@";
 
 #endif  // TEST_CONFIG_IN_H_

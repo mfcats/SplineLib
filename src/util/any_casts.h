@@ -22,22 +22,63 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 
 namespace util {
-template<int DIM>
 class AnyCasts {
  public:
-  static std::shared_ptr<spl::Spline<DIM>> GetSpline(std::any spline) {
+  static int GetSplineDimension(const std::any &spline) {
     try {
-      return std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(spline);
+      std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
+      return 1;
     } catch (std::bad_any_cast &msg) {
       try {
-        return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
+        std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
+        return 1;
       } catch (std::bad_any_cast &msg) {
-        throw std::runtime_error(
-            "Input has to be a pointer to a b-spline or nurbs of dimension " + std::to_string(DIM) + ".");
+        try {
+          std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
+          return 2;
+        } catch (std::bad_any_cast &msg) {
+          try {
+            std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
+            return 2;
+          } catch (std::bad_any_cast &msg) {
+            try {
+              std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline);
+              return 3;
+            } catch (std::bad_any_cast &msg) {
+              try {
+                std::any_cast<std::shared_ptr<spl::NURBS<3>>>(spline);
+                return 3;
+              } catch (std::bad_any_cast &msg) {
+                try {
+                  std::any_cast<std::shared_ptr<spl::BSpline<4>>>(spline);
+                  return 4;
+                } catch (std::bad_any_cast &msg) {
+                  try {
+                    std::any_cast<std::shared_ptr<spl::NURBS<4>>>(spline);
+                    return 4;
+                  } catch (std::bad_any_cast &msg) {
+                    throw std::runtime_error(
+                        "Input has to be a pointer to a b-spline or nurbs of dimension 1, 2, 3 or 4.");
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
 
+  template<int DIM>
+  static std::shared_ptr<spl::Spline<DIM>> GetSpline(std::any spline) {
+    try {
+      return std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(spline);
+    } catch (std::bad_any_cast &msg) {
+      return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
+    }
+  }
+
+  template<int DIM>
   static bool IsRational(std::any spline) {
     try {
       std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);

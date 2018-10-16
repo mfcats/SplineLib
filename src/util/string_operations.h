@@ -43,6 +43,14 @@ class StringOperations {
     }
     return converted;
   }
+
+  static bool StartsWith(const std::string &string, const std::string &start_of_string) {
+    return string.find(start_of_string) == 0;
+  }
+
+  static bool EndsWith(const std::string &string, const std::string &end_of_string) {
+    return string.find(end_of_string) == string.length() - end_of_string.length();
+  }
 };
 }  // namespace util
 

@@ -30,9 +30,16 @@ install(
 
 install(FILES
         iges_reader.h
+        iges_writer.h
         io_converter.h
         irit_reader.h
+        irit_reader_utils.h
         irit_writer.h
+        irit_writer_utils.h
+        reader.h
         xml_reader.h
+        xml_reader_utils.h
         xml_writer.h
+        xml_writer_utils.h
+        writer.h
         DESTINATION "${include_install_dir}")

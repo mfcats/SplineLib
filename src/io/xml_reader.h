@@ -25,14 +25,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 #include "nurbs.h"
 #include "string_operations.h"
+#include "xml_reader_utils.h"
 
 namespace io {
-template<int DIM>
 class XMLReader {
  public:
   XMLReader() = default;
 
-  std::vector<std::any> ReadXMLFile(const char *filename) {
+  std::vector<std::any> ReadFile(const char *filename) {
     std::vector<std::any> vector_of_splines;
     pugi::xml_document xml_document;
     pugi::xml_parse_result result = xml_document.load_file(filename);
@@ -49,15 +49,74 @@ class XMLReader {
 
  private:
   void AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines) {
-    std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors = GetKnotVectors(spline);
-    std::array<Degree, DIM> degrees = GetDegrees(spline);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(spline);
+    int dimension = std::stoi(spline->attribute("splDim").value());
+    switch (dimension) {
+      case 1: {
+        splines->push_back(Get1DSpline(spline, control_points));
+        break;
+      }
+      case 2: {
+        splines->push_back(Get2DSpline(spline, control_points));
+        break;
+      }
+      case 3: {
+        splines->push_back(Get3DSpline(spline, control_points));
+        break;
+      }
+      case 4: {
+        splines->push_back(Get4DSpline(spline, control_points));
+        break;
+      }
+      default: {}
+    }
+  }
+
+  std::any Get1DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vectors = io::XMLReaderUtils<1>::GetKnotVectors(spline);
+    std::array<Degree, 1> degrees = io::XMLReaderUtils<1>::GetDegrees(spline);
     if (spline->child("wght").empty()) {
-      splines->push_back(std::make_any<std::shared_ptr<spl::BSpline<DIM>>>(
-          std::make_shared<spl::BSpline<DIM>>(knot_vectors, degrees, control_points)));
+      return std::make_any<std::shared_ptr<spl::BSpline<1>>>(
+          std::make_shared<spl::BSpline<1>>(knot_vectors, degrees, control_points));
     } else {
-      splines->push_back(std::make_any<std::shared_ptr<spl::NURBS<DIM>>>(
-          std::make_shared<spl::NURBS<DIM>>(knot_vectors, degrees, control_points, GetWeights(spline))));
+      return std::make_any<std::shared_ptr<spl::NURBS<1>>>(
+          std::make_shared<spl::NURBS<1>>(knot_vectors, degrees, control_points, GetWeights(spline)));
+    }
+  }
+
+  std::any Get2DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vectors = io::XMLReaderUtils<2>::GetKnotVectors(spline);
+    std::array<Degree, 2> degrees = io::XMLReaderUtils<2>::GetDegrees(spline);
+    if (spline->child("wght").empty()) {
+      return std::make_any<std::shared_ptr<spl::BSpline<2>>>(
+          std::make_shared<spl::BSpline<2>>(knot_vectors, degrees, control_points));
+    } else {
+      return std::make_any<std::shared_ptr<spl::NURBS<2>>>(
+          std::make_shared<spl::NURBS<2>>(knot_vectors, degrees, control_points, GetWeights(spline)));
+    }
+  }
+
+  std::any Get3DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+    std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vectors = io::XMLReaderUtils<3>::GetKnotVectors(spline);
+    std::array<Degree, 3> degrees = io::XMLReaderUtils<3>::GetDegrees(spline);
+    if (spline->child("wght").empty()) {
+      return std::make_any<std::shared_ptr<spl::BSpline<3>>>(
+          std::make_shared<spl::BSpline<3>>(knot_vectors, degrees, control_points));
+    } else {
+      return std::make_any<std::shared_ptr<spl::NURBS<3>>>(
+          std::make_shared<spl::NURBS<3>>(knot_vectors, degrees, control_points, GetWeights(spline)));
+    }
+  }
+
+  std::any Get4DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+    std::array<std::shared_ptr<baf::KnotVector>, 4> knot_vectors = io::XMLReaderUtils<4>::GetKnotVectors(spline);
+    std::array<Degree, 4> degrees = io::XMLReaderUtils<4>::GetDegrees(spline);
+    if (spline->child("wght").empty()) {
+      return std::make_any<std::shared_ptr<spl::BSpline<4>>>(
+          std::make_shared<spl::BSpline<4>>(knot_vectors, degrees, control_points));
+    } else {
+      return std::make_any<std::shared_ptr<spl::NURBS<4>>>(
+          std::make_shared<spl::NURBS<4>>(knot_vectors, degrees, control_points, GetWeights(spline)));
     }
   }
 
@@ -79,38 +138,9 @@ class XMLReader {
     return points;
   }
 
-  std::array<Degree, DIM> GetDegrees(pugi::xml_node *spline) {
-    return StringVectorToDegreeArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
-  }
-
-  std::array<std::shared_ptr<baf::KnotVector>, DIM> GetKnotVectors(pugi::xml_node *spline) {
-    std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector;
-    for (int i = 0; i < DIM; i++) {
-      knot_vector[i] = std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord(0.5)}));
-    }
-    for (int i = 0; i < DIM; i++) {
-      pugi::xml_node child = spline->child("kntVecs").first_child();
-      for (int j = 0; j < i; j++) {
-        child = child.next_sibling();
-      }
-      knot_vector[i] = std::make_shared<baf::KnotVector>(
-          baf::KnotVector(util::StringOperations::StringVectorToNumberVector<ParamCoord>(
-              util::StringOperations::split(child.first_child().value(), ' '))));
-    }
-    return knot_vector;
-  }
-
   std::vector<double> GetWeights(pugi::xml_node *spline) {
     return util::StringOperations::StringVectorToNumberVector<double>(
         util::StringOperations::split(spline->child("wght").first_child().value(), ' '));
-  }
-
-  std::array<Degree, DIM> StringVectorToDegreeArray(const std::vector<std::string> &string_vector) {
-    std::array<Degree, DIM> converted;
-    for (int i = 0; i < DIM; i++) {
-      converted[i] = Degree{std::stoi(string_vector[i])};
-    }
-    return converted;
   }
 
   int FindCoordinatePosition(const std::string &string) {
