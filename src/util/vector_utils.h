@@ -25,7 +25,13 @@ class VectorUtils {
  public:
   static double ComputeTwoNorm(std::vector<double> vectorA) {
     std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(), vectorA.begin(), std::multiplies<double>());
-    return sqrt(std::accumulate(vectorA.begin(), vectorA.end(), 0));
+    auto r = vectorA[0];
+    auto s = vectorA[1];
+    auto t = vectorA[2];
+    auto v = r + s;
+    auto w = v + t;
+    double u = std::accumulate(vectorA.begin(), vectorA.end(), 0);
+    return sqrt(w);
   }
 
   static std::vector<double> ComputeDifference(std::vector<double> vectorA, std::vector<double> vectorB) {
@@ -36,6 +42,19 @@ class VectorUtils {
   static double ComputeScalarProduct(std::vector<double> vectorA, std::vector<double> vectorB) {
     std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::multiplies<double>());
     return std::accumulate(vectorB.begin(), vectorB.end(), 0);
+  }
+
+  static std::vector<double> ScaleVector(std::vector<double> vectorA, double factor) {
+    std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(), std::bind1st(std::multiplies<T>(), factor));
+    return vectorA;
+  }
+
+  static std::vector<double> CrossProduct(std::vector<double> const &a, std::vector<double> const &b) {
+    std::vector<double> r(a.size());
+    r[0] = a[1] * b[2] - a[2] * b[1];
+    r[1] = a[2] * b[0] - a[0] * b[2];
+    r[2] = a[0] * b[1] - a[1] * b[0];
+    return r;
   }
 };
 }  // namespace util
