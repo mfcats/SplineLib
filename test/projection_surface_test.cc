@@ -12,13 +12,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <any>
-
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
 #include "projection.h"
-#include "writer.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -73,7 +70,7 @@ class ABSplineSurface : public Test {
 };
 
 TEST_F(ABSplineSurface, CloseToCenter) { // NOLINT
-  std::array<double, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({120, 10, 100}, b_spline_);
+  std::array<double, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({120, 10, 100}, b_spline_, {100, 100});
   ASSERT_THAT(param_coords[0], DoubleNear(0.55852, 0.00001));
   ASSERT_THAT(param_coords[1], DoubleNear(0.8614466, 0.00001));
 }

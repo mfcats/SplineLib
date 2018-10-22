@@ -26,14 +26,16 @@ template<int DIM>
 class Projection {
  public:
   static std::array<double, DIM> ProjectionOnSurface(const std::vector<double> &pointPhysicalCoords,
-                                                     std::shared_ptr<spl::Spline<DIM>> spline) {
+                                                     std::shared_ptr<spl::Spline<DIM>> spline,
+                                                     std::array<int, 2> scattering = {10, 10}) {
     double tolerance = 0.00001;
     int iteration = 0;
     std::vector<int> dimensions;
     for (auto i = 0u; i < pointPhysicalCoords.size(); ++i) {
       dimensions.emplace_back(i);
     }
-    std::array<ParamCoord, DIM> currentParamCoordGuess = FindInitialValue(pointPhysicalCoords, spline, dimensions);
+    std::array<ParamCoord, DIM>
+        currentParamCoordGuess = FindInitialValue2D(scattering, pointPhysicalCoords, spline, dimensions);
     bool converged = false;
 
     while (!converged) {
@@ -44,16 +46,7 @@ class Projection {
       std::array<double, 2> difference = GetDifferences(currentPoint, q, derivative_dir1, derivative_dir2);
       currentParamCoordGuess[0] = currentParamCoordGuess[0] + ParamCoord{difference[0]};
       currentParamCoordGuess[1] = currentParamCoordGuess[1] + ParamCoord{difference[1]};
-      if (currentParamCoordGuess[0].get() < spline->GetKnotVector(0)->GetKnot(0).get()) {
-        currentParamCoordGuess[0] = spline->GetKnotVector(0)->GetKnot(0);
-      } else if (currentParamCoordGuess[0] > spline->GetKnotVector(0)->GetLastKnot()) {
-        currentParamCoordGuess[0] = spline->GetKnotVector(0)->GetLastKnot();
-      }
-      if (currentParamCoordGuess[1].get() < spline->GetKnotVector(1)->GetKnot(0).get()) {
-        currentParamCoordGuess[1] = spline->GetKnotVector(1)->GetKnot(0);
-      } else if (currentParamCoordGuess[1] > spline->GetKnotVector(1)->GetLastKnot()) {
-        currentParamCoordGuess[1] = spline->GetKnotVector(1)->GetLastKnot();
-      }
+      CheckParametricCoordinates(currentParamCoordGuess, spline);
       if (std::abs(difference[0]) < tolerance && std::abs(difference[1]) < tolerance) {
         converged = true;
       }
@@ -89,11 +82,7 @@ class Projection {
             / util::VectorUtils<double>::ComputeScalarProduct(firstDer, firstDer);
 
         currentParamCoordGuess[0] = currentParamCoordGuess[0] + ParamCoord{delta};
-        if (currentParamCoordGuess[0].get() < spline->GetKnotVector(0)->GetKnot(0).get()) {
-          currentParamCoordGuess[0] = spline->GetKnotVector(0)->GetKnot(0);
-        } else if (currentParamCoordGuess[0] > spline->GetKnotVector(0)->GetLastKnot()) {
-          currentParamCoordGuess[0] = spline->GetKnotVector(0)->GetLastKnot();
-        }
+        CheckParametricCoordinates(currentParamCoordGuess, spline);
         if (std::abs(delta) < tolerance) {
           converged = true;
         }
@@ -132,6 +121,48 @@ class Projection {
       }
     }
     return paramCoords;
+  }
+
+  static void CheckParametricCoordinates(std::array<ParamCoord, DIM> &param_coords,
+                                         const std::shared_ptr<spl::Spline<DIM>> &spline) {
+    for (auto &coord : param_coords) {
+      if (coord < spline->GetKnotVector(0)->GetKnot(0)) {
+        coord = spline->GetKnotVector(0)->GetKnot(0);
+      } else if (coord > spline->GetKnotVector(0)->GetLastKnot()) {
+        coord = spline->GetKnotVector(0)->GetLastKnot();
+      }
+    }
+  }
+
+  static std::array<ParamCoord, 2> FindInitialValue2D(std::array<int, 2> scattering,
+                                                      const std::vector<double> &pointPhysicalCoords,
+                                                      const std::shared_ptr<spl::Spline<2>> &spline,
+                                                      const std::vector<int> &dimensions) {
+    double first_knot1 = spline->GetKnotVector(0)->GetKnot(0).get();
+    double last_knot1 = spline->GetKnotVector(0)->GetLastKnot().get();
+    double first_knot2 = spline->GetKnotVector(1)->GetKnot(0).get();
+    double last_knot2 = spline->GetKnotVector(1)->GetLastKnot().get();
+    std::array<ParamCoord, 2> param_coords = {ParamCoord(first_knot1), ParamCoord(first_knot2)};
+    std::vector<double> physical_coords =
+        spline->Evaluate({ParamCoord(first_knot1), ParamCoord(first_knot2)}, dimensions);
+    double distance = util::VectorUtils<double>::ComputeTwoNorm(util::VectorUtils<double>::ComputeDifference(
+        pointPhysicalCoords,
+        physical_coords));
+    for (int i = 1; i <= scattering[0]; ++i) {
+      for (int j = 1; j <= scattering[1]; ++j) {
+        ParamCoord coord1 = ParamCoord(i * (last_knot1 - first_knot1) / scattering[0]);
+        ParamCoord coord2 = ParamCoord(j * (last_knot2 - first_knot2) / scattering[1]);
+        physical_coords = spline->Evaluate({coord1, coord2}, dimensions);
+        double current_dist = util::VectorUtils<double>::ComputeTwoNorm(util::VectorUtils<double>::ComputeDifference(
+            pointPhysicalCoords,
+            physical_coords));
+        if (current_dist < distance) {
+          param_coords = {coord1, coord2};
+          distance = current_dist;
+        }
+      }
+    }
+    return param_coords;
   }
 
   static std::vector<double> GetQ(const std::vector<double> &projectionPoint, const std::vector<double> &currentPoint,
