@@ -27,8 +27,8 @@ class Projection {
  public:
   static std::array<double, DIM> ProjectionOnSurface(const std::vector<double> &pointPhysicalCoords,
                                                      std::unique_ptr<spl::Spline<DIM>> spline) {
-    std::array<ParamCoord, DIM> currentParamCoordGuess = {ParamCoord(0.9), ParamCoord(0.6)};
-    double tolerance = 0.0001;
+    std::array<ParamCoord, DIM> currentParamCoordGuess = {ParamCoord(0.6), ParamCoord(0.9)};
+    double tolerance = 0.00001;
     int iteration = 0;
     bool converged = false;
 
@@ -41,8 +41,11 @@ class Projection {
           normal_vector = util::VectorUtils<double>::CrossProduct(derivativeInDirection1, derivativeInDirection2);
       std::vector<double> currentPoint = spline->Evaluate(currentParamCoordGuess, {0, 1, 2});
       std::vector<double> q = GetQ(pointPhysicalCoords, currentPoint, derivativeInDirection1, derivativeInDirection2);
+      auto a = q[0];
+      auto b = q[1];
+      auto c = q[2];
       std::array<double, 2>
-          difference = GetDifferences(pointPhysicalCoords, q, derivativeInDirection1, derivativeInDirection2);
+          difference = GetDifferences(currentPoint, q, derivativeInDirection1, derivativeInDirection2);
       currentParamCoordGuess[0] = currentParamCoordGuess[0] + ParamCoord{difference[0]};
       currentParamCoordGuess[1] = currentParamCoordGuess[1] + ParamCoord{difference[1]};
       if (std::abs(difference[0]) < tolerance && std::abs(difference[1]) < tolerance) {
@@ -53,6 +56,13 @@ class Projection {
         break;
       }
     }
+    auto r = spline->Evaluate(currentParamCoordGuess, {0})[0];
+    auto s = spline->Evaluate(currentParamCoordGuess, {1})[0];
+    auto t = spline->Evaluate(currentParamCoordGuess, {2})[0];
+
+    auto u = spline->Evaluate({ParamCoord(0.8614466), ParamCoord(0.556805)}, {0})[0];
+    auto v = spline->Evaluate({ParamCoord(0.8614466), ParamCoord(0.556805)}, {1})[0];
+    auto w = spline->Evaluate({ParamCoord(0.8614466), ParamCoord(0.556805)}, {2})[0];
     return {currentParamCoordGuess[0].get(), currentParamCoordGuess[1].get()};
   }
 
@@ -127,32 +137,13 @@ class Projection {
 
   static std::vector<double> GetQ(const std::vector<double> &projectionPoint, const std::vector<double> &currentPoint,
                                   const std::vector<double> &direction1, const std::vector<double> &direction2) {
-    auto a = currentPoint[0];
-    auto b = currentPoint[1];
-    auto c = currentPoint[2];
-    auto d = direction1[0];
-    auto e = direction1[1];
-    auto f = direction1[2];
-    auto g = direction2[0];
-    auto h = direction2[1];
-    auto i = direction2[2];
     std::vector<double> normal_vector = util::VectorUtils<double>::CrossProduct(direction1, direction2);
-    auto p = normal_vector[0];
-    auto l = normal_vector[1];
-    auto r = normal_vector[2];
-    auto k = util::VectorUtils<double>::ComputeScalarProduct(currentPoint, normal_vector);
-    auto m = util::VectorUtils<double>::ComputeScalarProduct(projectionPoint, normal_vector);
-    auto n = util::VectorUtils<double>::ComputeScalarProduct(direction1, normal_vector);
-    auto o = util::VectorUtils<double>::ComputeScalarProduct(direction2, normal_vector);
-    auto s = util::VectorUtils<double>::ComputeScalarProduct(util::VectorUtils<double>::ComputeDifference(
-        projectionPoint,
-        direction1), normal_vector);
-    double abstand = util::VectorUtils<double>::ComputeScalarProduct(currentPoint, normal_vector)
-        - util::VectorUtils<double>::ComputeScalarProduct(projectionPoint, normal_vector);
     double length = util::VectorUtils<double>::ComputeTwoNorm(normal_vector);
-    std::vector<double> scaled_normal_vector = util::VectorUtils<double>::ScaleVector(normal_vector, abstand / length);
-    std::vector<double>
-        q = util::VectorUtils<double>::ComputeDifference(projectionPoint, scaled_normal_vector); // reihenfolge?
+    std::vector<double> normed_normal_vector = util::VectorUtils<double>::ScaleVector(normal_vector, 1 / length);
+    double abstand = util::VectorUtils<double>::ComputeScalarProduct(currentPoint, normed_normal_vector)
+        - util::VectorUtils<double>::ComputeScalarProduct(projectionPoint, normed_normal_vector);
+    std::vector<double> scaled_normal_vector = util::VectorUtils<double>::ScaleVector(normed_normal_vector, -abstand);
+    std::vector<double> q = util::VectorUtils<double>::ComputeDifference(projectionPoint, scaled_normal_vector);
     return q;
   }
 
@@ -161,14 +152,17 @@ class Projection {
                                               const std::vector<double> &derivativeInDirection1,
                                               const std::vector<double> &derivativeInDirection2) {
     std::vector<double> diff = util::VectorUtils<double>::ComputeDifference(q, pointPhysicalCoords);
+    double x = diff[0];
+    double y = diff[1];
+    double z = diff[2];
     double a = util::VectorUtils<double>::ComputeScalarProduct(derivativeInDirection1, derivativeInDirection1);
     double b = util::VectorUtils<double>::ComputeScalarProduct(derivativeInDirection2, derivativeInDirection1);
     double c = util::VectorUtils<double>::ComputeScalarProduct(diff, derivativeInDirection1);
     double d = util::VectorUtils<double>::ComputeScalarProduct(derivativeInDirection1, derivativeInDirection2);
     double e = util::VectorUtils<double>::ComputeScalarProduct(derivativeInDirection2, derivativeInDirection2);
     double f = util::VectorUtils<double>::ComputeScalarProduct(diff, derivativeInDirection2);
-    double delta1 = (f - d * c / a) / (e - d * b / a);
-    double delta2 = (c - b * f / e) / (a - b * d / e);
+    double delta2 = (f - d * c / a) / (e - d * b / a);
+    double delta1 = (c - b * f / e) / (a - b * d / e);
     return std::array<double, 2>{delta1, delta2};
   }
 };
