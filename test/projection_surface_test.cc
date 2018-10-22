@@ -70,31 +70,32 @@ class ABSplineSurface : public Test {
 };
 
 TEST_F(ABSplineSurface, CloseToCenter) { // NOLINT
-  std::array<double, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({120, 10, 100}, b_spline_, {100, 100});
-  ASSERT_THAT(param_coords[0], DoubleNear(0.55852, 0.00001));
-  ASSERT_THAT(param_coords[1], DoubleNear(0.8614466, 0.00001));
+  std::array<ParamCoord, 2>
+      param_coords = spl::Projection<2>::ProjectionOnSurface({120, 10, 100}, b_spline_, {100, 100});
+  ASSERT_THAT(param_coords[0].get(), DoubleNear(0.55852, 0.00001));
+  ASSERT_THAT(param_coords[1].get(), DoubleNear(0.8614466, 0.00001));
 }
 
 TEST_F(ABSplineSurface, BelowBothFirstKnots) { // NOLINT
-  std::array<double, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({-250, -200, -20}, b_spline_);
-  ASSERT_THAT(param_coords[0], DoubleEq(0));
-  ASSERT_THAT(param_coords[1], DoubleEq(0));
+  std::array<ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({-250, -200, -20}, b_spline_);
+  ASSERT_THAT(param_coords[0].get(), DoubleEq(0));
+  ASSERT_THAT(param_coords[1].get(), DoubleEq(0));
 }
 
 TEST_F(ABSplineSurface, AboveBothLastKnots) { // NOLINT
-  std::array<double, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({250, 110, -20}, b_spline_);
-  ASSERT_THAT(param_coords[0], DoubleEq(1));
-  ASSERT_THAT(param_coords[1], DoubleEq(1));
+  std::array<ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({250, 110, -20}, b_spline_);
+  ASSERT_THAT(param_coords[0].get(), DoubleEq(1));
+  ASSERT_THAT(param_coords[1].get(), DoubleEq(1));
 }
 
 TEST_F(ABSplineSurface, BelowFirstKnotOfFirstVectorAndAboveLastKnotOfSecondVector) { // NOLINT
-  std::array<double, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({220, -220, -40}, b_spline_);
-  ASSERT_THAT(param_coords[0], DoubleEq(0));
-  ASSERT_THAT(param_coords[1], DoubleEq(1));
+  std::array<ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({220, -220, -40}, b_spline_);
+  ASSERT_THAT(param_coords[0].get(), DoubleEq(0));
+  ASSERT_THAT(param_coords[1].get(), DoubleEq(1));
 }
 
 TEST_F(ABSplineSurface, AboveLastKnotOfFirstVectorAndBelowFirstKnotOfSecondVector) { // NOLINT
-  std::array<double, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({-260, 80, -30}, b_spline_);
-  ASSERT_THAT(param_coords[0], DoubleEq(1));
-  ASSERT_THAT(param_coords[1], DoubleEq(0));
+  std::array<ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({-260, 80, -30}, b_spline_);
+  ASSERT_THAT(param_coords[0].get(), DoubleEq(1));
+  ASSERT_THAT(param_coords[1].get(), DoubleEq(0));
 }

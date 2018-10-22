@@ -37,6 +37,10 @@ class VectorUtils {
     return vectorB;
   }
 
+  static T ComputeDistance(std::vector<T> vectorA, std::vector<T> vectorB) {
+    return util::VectorUtils<T>::ComputeTwoNorm(util::VectorUtils<T>::ComputeDifference(vectorA, vectorB));
+  }
+
   static T ComputeScalarProduct(std::vector<T> vectorA, std::vector<T> vectorB) {
     std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::multiplies<T>());
     return std::accumulate(vectorB.begin(), vectorB.end(), 0);

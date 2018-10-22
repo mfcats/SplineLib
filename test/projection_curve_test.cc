@@ -49,13 +49,13 @@ class ABSpline2 : public Test {
 };
 
 TEST_F(ABSpline2, CloseToCenter) { // NOLINT
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({332, 200}, b_spline)[0], DoubleNear(0.6223419238, 0.0001));
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({332, 200}, b_spline)[0].get(), DoubleNear(0.6223419238, 0.0001));
 }
 
 TEST_F(ABSpline2, RightOfLastKnot) { // NOLINT
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({800, 200}, b_spline)[0], DoubleEq(1));
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({800, 200}, b_spline)[0].get(), DoubleEq(1));
 }
 
 TEST_F(ABSpline2, LeftOfFirstKnot) { // NOLINT
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({0, 0}, b_spline)[0], DoubleEq(0));
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({0, 0}, b_spline)[0].get(), DoubleEq(0));
 }
