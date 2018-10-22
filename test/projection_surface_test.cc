@@ -32,8 +32,8 @@ class ABSplineSurface : public Test {
                           ParamCoord{1}, ParamCoord{1}}),
          baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.25}, ParamCoord{0.5},
                           ParamCoord{0.75}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
-    degree_ = {Degree{3}, Degree{3}};
-    control_points_ = {
+    std::array<Degree, 2> degree = {Degree{3}, Degree{3}};
+    std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({-236, -197, -22})),
         baf::ControlPoint(std::vector<double>({-206, -117, -22})),
         baf::ControlPoint(std::vector<double>({-216, -27, 8})),
@@ -63,22 +63,18 @@ class ABSplineSurface : public Test {
         baf::ControlPoint(std::vector<double>({214, -7, 8})),
         baf::ControlPoint(std::vector<double>({239, 102, -22}))
     };
-    knot_vector_ptr_[0] = std::make_shared<baf::KnotVector>(knot_vector[0]);
-    knot_vector_ptr_[1] = std::make_shared<baf::KnotVector>(knot_vector[1]);
-    b_spline_ = std::make_unique<spl::BSpline<2>>(knot_vector_ptr_, degree_, control_points_);
+    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector_ptr =
+        {std::make_shared<baf::KnotVector>(knot_vector[0]), std::make_shared<baf::KnotVector>(knot_vector[1])};
+    b_spline_ = std::make_unique<spl::BSpline<2>>(knot_vector_ptr, degree, control_points);
   }
 
  protected:
   std::unique_ptr<spl::Spline<2>> b_spline_;
-  std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector_ptr_;
-  std::array<Degree, 2> degree_;
-  std::vector<baf::ControlPoint> control_points_;
 };
 
 TEST_F(ABSplineSurface, CloseToCenter) { // NOLINT
-  ASSERT_THAT(spl::Projection<2>::ProjectionOnSurface({120, 10, 100}, std::move(b_spline_))[1],
-              DoubleNear(0.8614466, 0.000001));
-  b_spline_ = std::make_unique<spl::BSpline<2>>(knot_vector_ptr_, degree_, control_points_);
-  ASSERT_THAT(spl::Projection<2>::ProjectionOnSurface({120, 10, 100}, std::move(b_spline_))[0],
-              DoubleNear(0.55852, 0.000001));
+  std::array<double, 2>
+      parametric_coordinates = spl::Projection<2>::ProjectionOnSurface({120, 10, 100}, std::move(b_spline_));
+  ASSERT_THAT(parametric_coordinates[0], DoubleNear(0.55852, 0.000001));
+  ASSERT_THAT(parametric_coordinates[1], DoubleNear(0.8614466, 0.000001));
 }
