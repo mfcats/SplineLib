@@ -138,9 +138,9 @@ class IRITReader {
     for (int i = 0; i < number_of_control_points; i++) {
       std::vector<double> coordinates;
       while (!util::StringOperations::EndsWith(entries[start], "]")) {
-        coordinates.push_back(util::StringOperations::StringToDouble(io::IRITReaderUtils::trim(entries[start++])));
+        coordinates.push_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
       }
-      coordinates.push_back(util::StringOperations::StringToDouble(io::IRITReaderUtils::trim(entries[start++])));
+      coordinates.push_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
       if (rational) coordinates.erase(coordinates.begin());
       control_points.emplace_back(coordinates);
     }
@@ -152,7 +152,7 @@ class IRITReader {
     int number_of_control_points = GetNumberOfControlPoints(start, entries);
     start = GetPositionOfFirstControlPoint(start, entries);
     for (int i = 0; i < number_of_control_points; i++) {
-      weights.push_back(util::StringOperations::StringToDouble(io::IRITReaderUtils::trim(entries[start++])));
+      weights.push_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
       while (!util::StringOperations::EndsWith(entries[start++], "]")) {}
     }
     return weights;

@@ -43,7 +43,7 @@ class IRITReaderUtils {
       while (!util::StringOperations::StartsWith(entries[start++], "[KV")) {}
       std::vector<ParamCoord> knots;
       while (!util::StringOperations::StartsWith(entries[start], "[")) {
-        knots.emplace_back(util::StringOperations::StringToDouble(trim(entries[start++])));
+        knots.emplace_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
       }
       knot_vectors[i] = std::make_shared<baf::KnotVector>(knots);
     }
@@ -53,16 +53,6 @@ class IRITReaderUtils {
   template<int DIM>
   static bool IsRational(int start_of_spline, const std::vector<std::string> &entries) {
     return util::StringOperations::StartsWith(entries[start_of_spline + 2 * DIM + 2], "P");
-  }
-
-  static std::string trim(const std::string &string) {
-    if (util::StringOperations::StartsWith(string, "[")) {
-      return string.substr(1, string.length() - 1);
-    } else if (util::StringOperations::EndsWith(string, "]")) {
-      return string.substr(0, string.length() - 1);
-    } else {
-      return string;
-    }
   }
 };
 }  // namespace io

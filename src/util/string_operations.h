@@ -15,7 +15,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_UTIL_STRING_OPERATIONS_H_
 #define SRC_UTIL_STRING_OPERATIONS_H_
 
+#include <algorithm>
 #include <cmath>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -51,6 +53,16 @@ class StringOperations {
 
   static bool EndsWith(const std::string &string, const std::string &end_of_string) {
     return string.find(end_of_string) == string.length() - end_of_string.length();
+  }
+
+  static inline std::string trim(std::string s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](char ch) {
+      return !std::isspace(ch) && ch != '[';
+    }));
+    s.erase(std::find_if(s.rbegin(), s.rend(), [](char ch) {
+      return !std::isspace(ch) && ch != ']';
+    }).base(), s.end());
+    return s;
   }
 
   static double StringToDouble(std::string string) {

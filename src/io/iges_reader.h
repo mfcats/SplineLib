@@ -1,3 +1,5 @@
+#include <utility>
+
 /* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
@@ -52,8 +54,8 @@ class IGESReader {
       int entityType = std::stoi(trim(directoryEntrySection[i * 2].substr(5, 3)));
       if (entityType == 126) {
         splines.push_back(Create1DSpline(ParameterSectionToVector(parameterDataSection,
-                                                                GetParameterSectionStartEndPointers(
-                                                                    directoryEntrySection, i))));
+                                                                  GetParameterSectionStartEndPointers(
+                                                                      directoryEntrySection, i))));
       } else if (entityType == 128) {
         splines.push_back(Create2DSpline(ParameterSectionToVector(parameterDataSection,
                                                                   GetParameterSectionStartEndPointers(
@@ -208,13 +210,7 @@ class IGESReader {
   }
 
   static inline std::string trim(std::string s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
-      return !std::isspace(ch);
-    }));
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
-      return !std::isspace(ch);
-    }).base(), s.end());
-    return s;
+    return util::StringOperations::trim(std::move(s));
   }
 };
 }  // namespace io
