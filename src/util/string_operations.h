@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_UTIL_STRING_OPERATIONS_H_
 #define SRC_UTIL_STRING_OPERATIONS_H_
 
+#include <cmath>
 #include <string>
 #include <vector>
 
@@ -53,31 +54,25 @@ class StringOperations {
   }
 
   static double StringToDouble(std::string string) {
-    std::vector<int> left;
-    std::vector<int> right;
     int sign = 1;
     if (string[0] == '-') {
       sign = -1;
       string.erase(0, 1);
     }
     std::size_t found = string.find_first_of('.');
+    double result = 0;
+    double factor = string.length();
+    if (found != std::string::npos) {
+      factor = std::pow(10, found - 1);
+    }
     for (auto i = 0u; i < string.length(); ++i) {
       if (i < found) {
-        left.emplace_back(std::stoi(string.substr(i, 1)));
+        result += std::stoi(string.substr(i, 1)) * factor;
+        factor /= 10;
       } else if (i > found) {
-        right.emplace_back(std::stoi(string.substr(i, 1)));
+        result += std::stoi(string.substr(i, 1)) * factor;
+        factor /= 10;
       }
-    }
-    double result = 0;
-    double factor = 1 * (std::pow(10, left.size() - 1));
-    for (int i : left) {
-      result += i * factor;
-      factor /= 10;
-    }
-    factor = 0.1;
-    for (int i : right) {
-      result += i * factor;
-      factor /= 10;
     }
     return sign * result;
   }
