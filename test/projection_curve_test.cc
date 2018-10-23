@@ -40,25 +40,22 @@ class ABSpline2 : public Test {
         baf::ControlPoint(std::vector<double>({500, 100}))
     };
     knot_vector_ptr[0] = std::make_shared<baf::KnotVector>(knot_vector[0]);
-    b_spline = std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
+    b_spline = std::make_shared<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
   }
 
  protected:
-  std::unique_ptr<spl::Spline<1>> b_spline;
+  std::shared_ptr<spl::Spline<1>> b_spline;
   std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_ptr;
 };
 
 TEST_F(ABSpline2, CloseToCenter) { // NOLINT
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({332, 200}, std::move(b_spline))[0],
-              DoubleNear(0.6223419238, 0.0001));
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({332, 200}, b_spline)[0].get(), DoubleNear(0.6223419238, 0.0001));
 }
 
 TEST_F(ABSpline2, RightOfLastKnot) { // NOLINT
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({800, 200}, std::move(b_spline))[0],
-              DoubleEq(1));
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({800, 200}, b_spline)[0].get(), DoubleEq(1));
 }
 
 TEST_F(ABSpline2, LeftOfFirstKnot) { // NOLINT
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnSpline({0, 0}, std::move(b_spline))[0],
-              DoubleEq(0));
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({0, 0}, b_spline)[0].get(), DoubleEq(0));
 }
