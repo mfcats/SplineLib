@@ -16,7 +16,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_SPL_PARAMETER_SPACE_H_
 
 #include <sstream>
-#include <iostream>
 #include <vector>
 
 #include "basis_function.h"
@@ -86,11 +85,8 @@ class ParameterSpace {
   virtual double GetBasisFunctions(std::array<int, DIM> indices, std::array<ParamCoord, DIM> param_coord) const {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
-      std::cout << "GetBasisFunctions : param_coord[" << i << "]: " << param_coord[i].get();
-      std::cout << " , indices[" << i << "]: " << indices[i] << std::endl;
       value *= basis_functions_[i][indices[i]]->Evaluate(param_coord[i]);
     }
-    std::cout << "value : " << value << std::endl;
     return value;
   }
 
@@ -99,12 +95,8 @@ class ParameterSpace {
                                              std::array<int, DIM> derivative) const {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
-      std::cout << "GetBasisFunctionsDerivative : param_coord[" << i << "]: " << param_coord[i].get();
-      std::cout << " , indices[" << i << "]: " << indices[i];
-      std::cout << " , dervative[" << i << "] : " << derivative[i] << std::endl;
       value *= basis_functions_[i][indices[i]]->EvaluateDerivative(param_coord[i], Derivative{derivative[i]});
     }
-    std::cout << "value : " << value << std::endl;
     return value;
   }
 
@@ -153,7 +145,6 @@ class ParameterSpace {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] = GetKnotVector(i)->GetKnotSpan(param_coord[i]).get() - GetDegree(i).get();
-      std::cout << "First_non_zero[" << i << "]: " << first_non_zero[i] << std::endl;
     }
     return first_non_zero;
   }
