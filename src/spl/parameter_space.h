@@ -100,7 +100,8 @@ class ParameterSpace {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
       std::cout << "GetBasisFunctionsDerivative : param_coord[" << i << "]: " << param_coord[i].get();
-      std::cout << " , indices[" << i << "]: " << indices[i] << std::endl;
+      std::cout << " , indices[" << i << "]: " << indices[i];
+      std::cout << " , dervative[" << i << "] : " << derivative[i] << std::endl;
       value *= basis_functions_[i][indices[i]]->EvaluateDerivative(param_coord[i], Derivative{derivative[i]});
     }
     std::cout << "value : " << value << std::endl;

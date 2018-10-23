@@ -383,9 +383,255 @@ TEST_F(A2DNurbs, Returns3_1For0_4And0_6ForDerivative0And1AndDim1) { // NOLINT
               DoubleNear(3.13402, 0.00001));
 }
 
+class MockParameterSpace2 : public spl::ParameterSpace<2> {
+ public:
+  MOCK_CONST_METHOD1(GetDegree, Degree(int));
+  MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 2>, std::array<ParamCoord, 2>));
+  MOCK_CONST_METHOD3(GetBasisFunctionDerivatives,
+                     double(std::array<int, 2>, std::array<ParamCoord, 2>, std::array<int, 2>));
+  MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 2>(std::array<ParamCoord, 2>));
+  MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<ParamCoord, 2>));
+};
+
+class MockPhysicalSpace2 : public spl::PhysicalSpace<2> {
+ public:
+  MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 2>));
+ };
+
+class MockWeightedPhysicalSpace2 : public spl::WeightedPhysicalSpace<2> {
+ public:
+  MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 2>));
+  MOCK_CONST_METHOD1(GetHomogenousControlPoint, baf::ControlPoint(std::array<int, 2>));
+  MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 2>));
+};
+
+void set_get_basis_function_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace2>> &parameter_space) {
+  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}}))
+      .WillByDefault(Return(0.0));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+      .WillByDefault(Return(0.316406));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 0}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+      .WillByDefault(Return(0.210938));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 0}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+      .WillByDefault(Return(0.0351562));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 1}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+      .WillByDefault(Return(0.210938));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 1}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+      .WillByDefault(Return(0.140625));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 1}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+      .WillByDefault(Return(0.0234375));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 2}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+      .WillByDefault(Return(0.0351562));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{1, 2}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+      .WillByDefault(Return(0.0234375));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{2, 2}, std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}}))
+      .WillByDefault(Return(0.00390625));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 0}, std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}}))
+      .WillByDefault(Return(0.4225));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 1}, std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}}))
+      .WillByDefault(Return(0.455));
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 2>{0, 2}, std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}}))
+      .WillByDefault(Return(0.1225));
+}
+
+void set_basis_function_derivative1(const std::shared_ptr<NiceMock<MockParameterSpace2>> &parameter_space) {
+  //ON_CALL(*parameter_space, GetBasisFunctionDerivatives(_, _, _)).WillByDefault(Return(0.0));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{0, 0},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(0.5625));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{1, 0},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(-0.375));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{2, 0},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(-0.1875));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{0, 1},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(-0.375));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{1, 1},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(0.25));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{2, 1},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(0.125));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{0, 2},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(-0.1875));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{1, 2},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(0.125));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{2, 2},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.5}, ParamCoord{0.5}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(0.0625));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{0, 0},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(0.65));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{1, 0},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(-0.65));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{2, 0},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(-0.0));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{0, 1},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(-0.3));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{1, 1},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(0.3));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{2, 1},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(0.0));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{0, 2},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(-0.35));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{1, 2},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(0.35));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{2, 2},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(0.0));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{0, 0},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(-0.325));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{1, 0},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(0.65));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{2, 0},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(-0.325));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{0, 1},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(0.15));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{1, 1},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(-0.3));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{2, 1},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(0.15));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{0, 2},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(0.175));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{1, 2},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(-0.35));
+  ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{2, 2},
+                                                        std::array<ParamCoord, 2>{ParamCoord{0.0}, ParamCoord{0.7}},
+                                                        std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(0.175));
+}
+
+void mock_parameterSpace_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace2>> &parameter_space) {
+  set_get_basis_function_nurbs(parameter_space);
+  set_basis_function_derivative1(parameter_space);
+  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(_))
+      .WillByDefault(Return(std::array<int, 2>{0, 0}));
+  ON_CALL(*parameter_space, GetDegree(_))
+      .WillByDefault(Return(Degree{2}));
+}
+
+void mock_weights(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace2>> &w_physical_space) {
+  ON_CALL(*w_physical_space, GetWeight(_))
+      .WillByDefault(Return(1));
+}
+
+void mock_homogenous(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace2>> &w_physical_space) {
+  ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 2>{0, 0}))
+      .WillByDefault(Return(baf::ControlPoint({1.0, 2.0})));
+  ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 2>{1, 0}))
+      .WillByDefault(Return(baf::ControlPoint({2.0, 2.0})));
+  ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 2>{2, 0}))
+      .WillByDefault(Return(baf::ControlPoint({4.0, 2.0})));
+  ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 2>{0, 1}))
+      .WillByDefault(Return(baf::ControlPoint({0.0, 2.5})));
+  ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(baf::ControlPoint({3.0, 4.0})));
+  ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(baf::ControlPoint({5.0, 3.0})));
+  ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 2>{0, 2}))
+      .WillByDefault(Return(baf::ControlPoint({1.0, 4.0})));
+  ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 2>{1, 2}))
+      .WillByDefault(Return(baf::ControlPoint({3.5, 5.5})));
+  ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 2>{2, 2}))
+      .WillByDefault(Return(baf::ControlPoint({6.0, 4.0})));
+  ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 2>{0, 0}))
+      .WillByDefault(Return(baf::ControlPoint({1.0, 2.0})));
+  ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 2>{1, 0}))
+      .WillByDefault(Return(baf::ControlPoint({2.0, 2.0})));
+  ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 2>{2, 0}))
+      .WillByDefault(Return(baf::ControlPoint({4.0, 2.0})));
+  ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 2>{0, 1}))
+      .WillByDefault(Return(baf::ControlPoint({0.0, 2.5})));
+  ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(baf::ControlPoint({3.0, 4.0})));
+  ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(baf::ControlPoint({5.0, 3.0})));
+  ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 2>{0, 2}))
+      .WillByDefault(Return(baf::ControlPoint({1.0, 4.0})));
+  ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 2>{1, 2}))
+      .WillByDefault(Return(baf::ControlPoint({3.5, 5.5})));
+  ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 2>{2, 2}))
+      .WillByDefault(Return(baf::ControlPoint({6.0, 4.0})));
+}
+
+void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace2>>
+                                &w_physical_space) {
+  mock_weights(w_physical_space);
+  mock_homogenous(w_physical_space);
+}
+
+void mock_physicalSpace(const std::shared_ptr<NiceMock<MockPhysicalSpace2>> & physical_space) {
+  ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{0, 0}))
+      .WillByDefault(Return(baf::ControlPoint({1.0, 2.0})));
+  ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{1, 0}))
+      .WillByDefault(Return(baf::ControlPoint({2.0, 2.0})));
+  ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{2, 0}))
+      .WillByDefault(Return(baf::ControlPoint({4.0, 2.0})));
+  ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{0, 1}))
+      .WillByDefault(Return(baf::ControlPoint({0.0, 2.5})));
+  ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{1, 1}))
+      .WillByDefault(Return(baf::ControlPoint({3.0, 4.0})));
+  ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{2, 1}))
+      .WillByDefault(Return(baf::ControlPoint({5.0, 3.0})));
+  ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{0, 2}))
+      .WillByDefault(Return(baf::ControlPoint({1.0, 4.0})));
+  ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{1, 2}))
+      .WillByDefault(Return(baf::ControlPoint({3.5, 5.5})));
+  ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{2, 2}))
+      .WillByDefault(Return(baf::ControlPoint({6.0, 4.0})));
+}
+
 class A2DNurbsWithAllWeights1 : public Test {
  public:
-  A2DNurbsWithAllWeights1() {
+  A2DNurbsWithAllWeights1() :
+      parameter_space_m(std::make_shared<NiceMock<MockParameterSpace2>>()),
+      w_physical_space_m(std::make_shared<NiceMock<MockWeightedPhysicalSpace2>>()),
+      physical_space_m(std::make_shared<NiceMock<MockPhysicalSpace2>>()) {
     std::array<baf::KnotVector, 2> knot_vector =
         {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{2}, ParamCoord{2}, ParamCoord{2}}),
          baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{2}, ParamCoord{2}, ParamCoord{2}})};
@@ -402,29 +648,61 @@ class A2DNurbsWithAllWeights1 : public Test {
         baf::ControlPoint(std::vector<double>({3.5, 5.5})),
         baf::ControlPoint(std::vector<double>({6.0, 4.0}))
     };
+    std::array<int, 2> number_of_points = {3, 3};
     std::array<std::shared_ptr<baf::KnotVector>, 2>
         knot_vector_ptr =
         {std::make_shared<baf::KnotVector>(knot_vector[0]), std::make_shared<baf::KnotVector>(knot_vector[1])};
-    nurbs_ = std::make_unique<spl::NURBS<2>>(knot_vector_ptr, degree, control_points, weights);
-    bspline_ = std::make_unique<spl::BSpline<2>>(knot_vector_ptr, degree, control_points);
+    //nurbs_ = std::make_unique<spl::NURBS<2>>(knot_vector_ptr, degree, control_points, weights);
+    //bspline_ = std::make_unique<spl::BSpline<2>>(knot_vector_ptr, degree, control_points);
+
+    parameter_space = std::make_shared<spl::ParameterSpace<2>>(spl::ParameterSpace<2>(knot_vector_ptr, degree));
+    physical_space = std::make_shared<spl::PhysicalSpace<2>>(spl::PhysicalSpace<2>(control_points, number_of_points));
+    w_physical_space = std::make_shared<spl::WeightedPhysicalSpace<2>>(spl::WeightedPhysicalSpace<2>(control_points, weights, number_of_points));
+    /*
+    spl::NURBSGenerator<2> nurbs_generator(w_physical_space, parameter_space);
+    nurbs_ = std::make_unique<spl::NURBS<2>>(nurbs_generator);
+    spl::BSplineGenerator<2> bspline_generator(physical_space, parameter_space);
+    bspline_ = std::make_unique<spl::BSpline<2>>(bspline_generator);
+    */
+    spl::NURBSGenerator<2> nurbs_generator(w_physical_space_m, parameter_space_m);
+    nurbs_ = std::make_unique<spl::NURBS<2>>(nurbs_generator);
+    spl::BSplineGenerator<2> bspline_generator(physical_space_m, parameter_space_m);
+    bspline_ = std::make_unique<spl::BSpline<2>>(bspline_generator);
+    
   }
 
  protected:
   std::unique_ptr<spl::NURBS<2>> nurbs_;
   std::unique_ptr<spl::BSpline<2>> bspline_;
+  std::shared_ptr<spl::ParameterSpace<2>> parameter_space;
+  std::shared_ptr<spl::PhysicalSpace<2>> physical_space;
+  std::shared_ptr<spl::WeightedPhysicalSpace<2>> w_physical_space;
+  std::shared_ptr<NiceMock<MockParameterSpace2>> parameter_space_m;
+  std::shared_ptr<NiceMock<MockWeightedPhysicalSpace2>>w_physical_space_m;
+  std::shared_ptr<NiceMock<MockPhysicalSpace2>> physical_space_m;
 };
 
 TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_5And0_5AndDerivatives1And1) { // NOLINT
+  mock_weightedPhysicalSpace(w_physical_space_m);
+  mock_parameterSpace_nurbs(parameter_space_m);
+  mock_physicalSpace(physical_space_m);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}}, {0}, {1, 1})[0],
-              DoubleEq(bspline_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}}, {0}, {1, 1})[0]));
+              DoubleNear(bspline_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}}, {0}, {1, 1})[0], 0.000001));
+
 }
 
 TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_0And0_7AndDerivatives1And1) { // NOLINT
+  mock_weightedPhysicalSpace(w_physical_space_m);
+  mock_parameterSpace_nurbs(parameter_space_m);
+  mock_physicalSpace(physical_space_m);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.7}}, {0}, {1, 1})[0],
-              DoubleEq(bspline_->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.7}}, {0}, {1, 1})[0]));
+              DoubleNear(bspline_->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.7}}, {0}, {1, 1})[0], 0.000001));
 }
 
 TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_0And0_7AndDerivatives2And1) { // NOLINT
+  mock_weightedPhysicalSpace(w_physical_space_m);
+  mock_parameterSpace_nurbs(parameter_space_m);
+  mock_physicalSpace(physical_space_m);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.7}}, {0}, {2, 1})[0],
               DoubleNear(bspline_->EvaluateDerivative({ParamCoord{0.0}, ParamCoord{0.7}}, {0}, {2, 1})[0], 0.000001));
 }
