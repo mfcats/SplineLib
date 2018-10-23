@@ -1,5 +1,3 @@
-#include <utility>
-
 /* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
@@ -21,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "b_spline.h"
@@ -186,27 +185,7 @@ class IGESReader {
     for (int i = first; i <= last; ++i) {
       temp.append(parameterSection[i]);
     }
-    return DelimitedStringToVector(temp);
-  }
-
-  std::vector<double> DelimitedStringToVector(std::string str) {
-    std::vector<double> vector;
-    std::size_t found1;
-    std::size_t found2;
-    while (!str.empty()) {
-      found1 = str.find_first_of(',');
-      found2 = str.find_first_of(';');
-      if ((found1 < found2) && (found1 != 0)) {
-        vector.push_back(util::StringOperations::StringToDouble(trim(str.substr(0, found1))));
-        str.erase(0, found1 + 1);
-      } else if ((found2 < found1) && (found2 != 0)) {
-        vector.push_back(util::StringOperations::StringToDouble(trim(str.substr(0, found2))));
-        str.erase(0, found2 + 1);
-      } else {
-        str.erase(0, 1);
-      }
-    }
-    return vector;
+    return util::StringOperations::DelimitedStringToVector(temp);
   }
 
   static inline std::string trim(std::string s) {
