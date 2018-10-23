@@ -49,7 +49,7 @@ class IGESReader {
     }
     std::vector<std::any> splines;
     for (int i = 0; i < directoryEntrySection.size() * 0.5; ++i) {
-      int entityType = GetInteger(trim(directoryEntrySection[i * 2].substr(5, 3)));
+      int entityType = std::stoi(trim(directoryEntrySection[i * 2].substr(5, 3)));
       if (entityType == 126) {
         splines.push_back(Create1DSpline(ParameterSectionToVector(parameterDataSection,
                                                                 GetParameterSectionStartEndPointers(
@@ -170,9 +170,9 @@ class IGESReader {
     std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead * 2].substr(8, 8));
     std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead * 2 + 1].substr(24, 8));
     std::array<int, 2> ParameterSectionStartEndPointers{};
-    ParameterSectionStartEndPointers[0] = GetInteger(trim(parameterDataStartPointer));
+    ParameterSectionStartEndPointers[0] = std::stoi(trim(parameterDataStartPointer));
     ParameterSectionStartEndPointers[1] =
-        GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
+        std::stoi(trim(parameterDataStartPointer)) + std::stoi(trim(parameterDataLineCount)) - 1;
     return ParameterSectionStartEndPointers;
   }
 
@@ -195,24 +195,16 @@ class IGESReader {
       found1 = str.find_first_of(',');
       found2 = str.find_first_of(';');
       if ((found1 < found2) && (found1 != 0)) {
-        vector.push_back(GetDouble(str.substr(0, found1)));
+        vector.push_back(util::StringOperations::StringToDouble(trim(str.substr(0, found1))));
         str.erase(0, found1 + 1);
       } else if ((found2 < found1) && (found2 != 0)) {
-        vector.push_back(GetDouble(str.substr(0, found2)));
+        vector.push_back(util::StringOperations::StringToDouble(trim(str.substr(0, found2))));
         str.erase(0, found2 + 1);
       } else {
         str.erase(0, 1);
       }
     }
     return vector;
-  }
-
-  int GetInteger(const std::string &string) {
-    return std::stoi(string);
-  }
-
-  double GetDouble(const std::string &string) {
-    return util::StringOperations::StringToDouble(trim(string));
   }
 
   static inline std::string trim(std::string s) {
