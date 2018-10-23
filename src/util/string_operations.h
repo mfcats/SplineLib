@@ -60,7 +60,7 @@ class StringOperations {
       string.erase(0, 1);
     }
     std::size_t found = string.find_first_of('.');
-    std::size_t exponent = string.find_first_of('E');
+    std::size_t exponent = string.find_first_of("Ee");
     std::size_t end_of_number = (exponent == std::string::npos) ? string.length() - 1 : exponent - 1;
     double result = 0;
     double factor = pow(10, found != std::string::npos ? found - 1 : string.length() - 1);

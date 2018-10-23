@@ -23,6 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "nurbs.h"
+#include "string_operations.h"
 
 namespace io {
 class IGESReader {
@@ -211,7 +212,7 @@ class IGESReader {
   }
 
   double GetDouble(const std::string &string) {
-    return std::stod(string);
+    return util::StringOperations::StringToDouble(trim(string));
   }
 
   static inline std::string trim(std::string s) {
