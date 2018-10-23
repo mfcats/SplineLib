@@ -51,6 +51,36 @@ class StringOperations {
   static bool EndsWith(const std::string &string, const std::string &end_of_string) {
     return string.find(end_of_string) == string.length() - end_of_string.length();
   }
+
+  static double StringToDouble(std::string string) {
+    std::vector<int> left;
+    std::vector<int> right;
+    int sign = 1;
+    if (string[0] == '-') {
+      sign = -1;
+      string.erase(0, 1);
+    }
+    std::size_t found = string.find_first_of('.');
+    for (auto i = 0u; i < string.length(); ++i) {
+      if (i < found) {
+        left.emplace_back(std::stoi(string.substr(i, 1)));
+      } else if (i > found) {
+        right.emplace_back(std::stoi(string.substr(i, 1)));
+      }
+    }
+    double result = 0;
+    double factor = 1 * (std::pow(10, left.size() - 1));
+    for (int i : left) {
+      result += i * factor;
+      factor /= 10;
+    }
+    factor = 0.1;
+    for (int i : right) {
+      result += i * factor;
+      factor /= 10;
+    }
+    return sign * result;
+  }
 };
 }  // namespace util
 
