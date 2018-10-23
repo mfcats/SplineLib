@@ -40,7 +40,7 @@ class StringOperations {
   static std::vector<T> StringVectorToNumberVector(const std::vector<std::string> &string_vector) {
     std::vector<T> converted;
     for (const std::string &string : string_vector) {
-      converted.emplace_back(strtod(string.c_str(), nullptr));
+      converted.emplace_back(StringToDouble(string));
     }
     return converted;
   }
@@ -60,19 +60,25 @@ class StringOperations {
       string.erase(0, 1);
     }
     std::size_t found = string.find_first_of('.');
+    std::size_t exponent = string.find_first_of('E');
+    std::size_t end_of_number = (exponent == std::string::npos) ? string.length() - 1 : exponent - 1;
     double result = 0;
-    double factor = string.length();
-    if (found != std::string::npos) {
-      factor = std::pow(10, found - 1);
-    }
-    for (auto i = 0u; i < string.length(); ++i) {
-      if (i < found) {
-        result += std::stoi(string.substr(i, 1)) * factor;
-        factor /= 10;
-      } else if (i > found) {
+    double factor = pow(10, found != std::string::npos ? found - 1 : string.length() - 1);
+    for (auto i = 0u; i <= end_of_number; ++i) {
+      if (i != found) {
         result += std::stoi(string.substr(i, 1)) * factor;
         factor /= 10;
       }
+    }
+    if (exponent != std::string::npos) {
+      if (string[exponent + 1] == '-') {
+        factor = -1;
+        ++exponent;
+      } else if (string[exponent + 1] == '+') {
+        ++exponent;
+      }
+      int potency = std::stoi(string.substr(exponent + 1, string.length() - exponent));
+      result *= factor != -1 ? pow(10, potency) : 1 / pow(10, potency);
     }
     return sign * result;
   }
