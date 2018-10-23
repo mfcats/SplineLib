@@ -27,6 +27,7 @@ set(TEST_SOURCES
         integration_rule_test.cc
         integration_point_test.cc
         projection_curve_test.cc
+        projection_surface_test.cc
         nurbs_test.cc
         nurbs_2_d_test.cc
         nurbs_3_d_test.cc
