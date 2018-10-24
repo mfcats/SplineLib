@@ -19,10 +19,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "b_spline.h"
 #include "nurbs.h"
+#include "string_operations.h"
 
 namespace io {
 class IGESReader {
@@ -48,11 +50,11 @@ class IGESReader {
     }
     std::vector<std::any> splines;
     for (int i = 0; i < directoryEntrySection.size() * 0.5; ++i) {
-      int entityType = GetInteger(trim(directoryEntrySection[i * 2].substr(5, 3)));
+      int entityType = std::stoi(trim(directoryEntrySection[i * 2].substr(5, 3)));
       if (entityType == 126) {
         splines.push_back(Create1DSpline(ParameterSectionToVector(parameterDataSection,
-                                                                GetParameterSectionStartEndPointers(
-                                                                    directoryEntrySection, i))));
+                                                                  GetParameterSectionStartEndPointers(
+                                                                      directoryEntrySection, i))));
       } else if (entityType == 128) {
         splines.push_back(Create2DSpline(ParameterSectionToVector(parameterDataSection,
                                                                   GetParameterSectionStartEndPointers(
@@ -169,9 +171,9 @@ class IGESReader {
     std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead * 2].substr(8, 8));
     std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead * 2 + 1].substr(24, 8));
     std::array<int, 2> ParameterSectionStartEndPointers{};
-    ParameterSectionStartEndPointers[0] = GetInteger(trim(parameterDataStartPointer));
+    ParameterSectionStartEndPointers[0] = std::stoi(trim(parameterDataStartPointer));
     ParameterSectionStartEndPointers[1] =
-        GetInteger(trim(parameterDataStartPointer)) + GetInteger(trim(parameterDataLineCount)) - 1;
+        std::stoi(trim(parameterDataStartPointer)) + std::stoi(trim(parameterDataLineCount)) - 1;
     return ParameterSectionStartEndPointers;
   }
 
@@ -183,45 +185,11 @@ class IGESReader {
     for (int i = first; i <= last; ++i) {
       temp.append(parameterSection[i]);
     }
-    return DelimitedStringToVector(temp);
-  }
-
-  std::vector<double> DelimitedStringToVector(std::string str) {
-    std::vector<double> vector;
-    std::size_t found1;
-    std::size_t found2;
-    while (!str.empty()) {
-      found1 = str.find_first_of(',');
-      found2 = str.find_first_of(';');
-      if ((found1 < found2) && (found1 != 0)) {
-        vector.push_back(GetDouble(str.substr(0, found1)));
-        str.erase(0, found1 + 1);
-      } else if ((found2 < found1) && (found2 != 0)) {
-        vector.push_back(GetDouble(str.substr(0, found2)));
-        str.erase(0, found2 + 1);
-      } else {
-        str.erase(0, 1);
-      }
-    }
-    return vector;
-  }
-
-  int GetInteger(const std::string &string) {
-    return std::stoi(string);
-  }
-
-  double GetDouble(const std::string &string) {
-    return std::stod(string);
+    return util::StringOperations::DelimitedStringToVector(temp);
   }
 
   static inline std::string trim(std::string s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int ch) {
-      return !std::isspace(ch);
-    }));
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](int ch) {
-      return !std::isspace(ch);
-    }).base(), s.end());
-    return s;
+    return util::StringOperations::trim(std::move(s));
   }
 };
 }  // namespace io

@@ -79,9 +79,9 @@ class IRITReader {
 
   std::any Get1DSpline(int start, const std::vector<std::string> &entries) const {
     std::array<std::shared_ptr<baf::KnotVector>, 1>
-        knot_vector = io::IRITReaderUtils<1>::GetKnotVectors(start, entries);
-    std::array<Degree, 1> degree = io::IRITReaderUtils<1>::GetDegrees(start, entries);
-    bool rational = io::IRITReaderUtils<1>::IsRational(start, entries);
+        knot_vector = io::IRITReaderUtils::GetKnotVectors<1>(start, entries);
+    std::array<Degree, 1> degree = io::IRITReaderUtils::GetDegrees<1>(start, entries);
+    bool rational = io::IRITReaderUtils::IsRational<1>(start, entries);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
     if (!rational) {
       return std::make_any<std::shared_ptr<spl::BSpline<1>>>(
@@ -94,9 +94,9 @@ class IRITReader {
 
   std::any Get2DSpline(int start, const std::vector<std::string> &entries) const {
     std::array<std::shared_ptr<baf::KnotVector>, 2>
-        knot_vector = io::IRITReaderUtils<2>::GetKnotVectors(start, entries);
-    std::array<Degree, 2> degree = io::IRITReaderUtils<2>::GetDegrees(start, entries);
-    bool rational = io::IRITReaderUtils<2>::IsRational(start, entries);
+        knot_vector = io::IRITReaderUtils::GetKnotVectors<2>(start, entries);
+    std::array<Degree, 2> degree = io::IRITReaderUtils::GetDegrees<2>(start, entries);
+    bool rational = io::IRITReaderUtils::IsRational<2>(start, entries);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
     if (!rational) {
       return std::make_any<std::shared_ptr<spl::BSpline<2>>>(
@@ -109,9 +109,9 @@ class IRITReader {
 
   std::any Get3DSpline(int start, const std::vector<std::string> &entries) const {
     std::array<std::shared_ptr<baf::KnotVector>, 3>
-        knot_vector = io::IRITReaderUtils<3>::GetKnotVectors(start, entries);
-    std::array<Degree, 3> degree = io::IRITReaderUtils<3>::GetDegrees(start, entries);
-    bool rational = io::IRITReaderUtils<3>::IsRational(start, entries);
+        knot_vector = io::IRITReaderUtils::GetKnotVectors<3>(start, entries);
+    std::array<Degree, 3> degree = io::IRITReaderUtils::GetDegrees<3>(start, entries);
+    bool rational = io::IRITReaderUtils::IsRational<3>(start, entries);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
     if (!rational) {
       return std::make_any<std::shared_ptr<spl::BSpline<3>>>(
@@ -138,9 +138,9 @@ class IRITReader {
     for (int i = 0; i < number_of_control_points; i++) {
       std::vector<double> coordinates;
       while (!util::StringOperations::EndsWith(entries[start], "]")) {
-        coordinates.push_back(util::StringOperations::StringVectorToNumberVector<double>({trim(entries[start++])})[0]);
+        coordinates.push_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
       }
-      coordinates.push_back(util::StringOperations::StringVectorToNumberVector<double>({trim(entries[start++])})[0]);
+      coordinates.push_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
       if (rational) coordinates.erase(coordinates.begin());
       control_points.emplace_back(coordinates);
     }
@@ -152,29 +152,19 @@ class IRITReader {
     int number_of_control_points = GetNumberOfControlPoints(start, entries);
     start = GetPositionOfFirstControlPoint(start, entries);
     for (int i = 0; i < number_of_control_points; i++) {
-      weights.push_back(util::StringOperations::StringVectorToNumberVector<double>({trim(entries[start++])})[0]);
+      weights.push_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
       while (!util::StringOperations::EndsWith(entries[start++], "]")) {}
     }
     return weights;
   }
 
   int GetPositionOfFirstControlPoint(int start, const std::vector<std::string> &entries) const {
-    start++;
+    ++start;
     while (!util::StringOperations::StartsWith(entries[start], "[")
         || util::StringOperations::StartsWith(entries[start], "[KV")) {
-      start++;
+      ++start;
     }
     return start;
-  }
-
-  std::string trim(const std::string &string) const {
-    if (util::StringOperations::StartsWith(string, "[")) {
-      return string.substr(1, string.length() - 1);
-    } else if (util::StringOperations::EndsWith(string, "]")) {
-      return string.substr(0, string.length() - 1);
-    } else {
-      return string;
-    }
   }
 };
 }  // namespace io

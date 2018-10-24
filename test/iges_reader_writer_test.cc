@@ -220,7 +220,7 @@ TEST_F(AnIGESReaderAndWriter, Write2DBSplineToIGESFile) { // NOLINT
   ASSERT_THAT(b_spline_2d->Evaluate({ParamCoord{0.9}, ParamCoord{0.9}}, {0})[0],
               DoubleEq(b_spline_->Evaluate({ParamCoord{0.9}, ParamCoord{0.9}}, {0})[0]));
   ASSERT_THAT(b_spline_2d->Evaluate({ParamCoord{0.9}, ParamCoord{0.9}}, {1})[0],
-              DoubleEq(b_spline_->Evaluate({ParamCoord{0.9}, ParamCoord{0.9}}, {1})[0]));
+              DoubleNear(b_spline_->Evaluate({ParamCoord{0.9}, ParamCoord{0.9}}, {1})[0], 0.0001));
   ASSERT_THAT(b_spline_2d->Evaluate({ParamCoord{0.9}, ParamCoord{0.9}}, {2})[0],
               DoubleEq(b_spline_->Evaluate({ParamCoord{0.9}, ParamCoord{0.9}}, {2})[0]));
   remove("write.iges");

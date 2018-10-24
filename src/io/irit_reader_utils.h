@@ -23,9 +23,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "string_operations.h"
 
 namespace io {
-template<int DIM>
 class IRITReaderUtils {
  public:
+  template<int DIM>
   static std::array<Degree, DIM> GetDegrees(int start, const std::vector<std::string> &entries) {
     std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; i++) {
@@ -35,6 +35,7 @@ class IRITReaderUtils {
     return degrees;
   }
 
+  template<int DIM>
   static std::array<std::shared_ptr<baf::KnotVector>, DIM>
   GetKnotVectors(int start, const std::vector<std::string> &entries) {
     std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors;
@@ -42,13 +43,14 @@ class IRITReaderUtils {
       while (!util::StringOperations::StartsWith(entries[start++], "[KV")) {}
       std::vector<ParamCoord> knots;
       while (!util::StringOperations::StartsWith(entries[start], "[")) {
-        knots.emplace_back(util::StringOperations::StringVectorToNumberVector<double>({entries[start++]})[0]);
+        knots.emplace_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
       }
       knot_vectors[i] = std::make_shared<baf::KnotVector>(knots);
     }
     return knot_vectors;
   }
 
+  template<int DIM>
   static bool IsRational(int start_of_spline, const std::vector<std::string> &entries) {
     return util::StringOperations::StartsWith(entries[start_of_spline + 2 * DIM + 2], "P");
   }
