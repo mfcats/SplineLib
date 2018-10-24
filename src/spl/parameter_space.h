@@ -16,7 +16,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_SPL_PARAMETER_SPACE_H_
 
 #include <sstream>
-#include <iostream>
 #include <vector>
 
 #include "basis_function.h"
@@ -87,9 +86,7 @@ class ParameterSpace {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
       value *= basis_functions_[i][indices[i]]->Evaluate(param_coord[i]);
-      //std::cout << "indices[" << i << "] : " << indices[i] << std::endl;
     }
-    //std::cout << "Value " << value << std::endl;
     return value;
   }
 
@@ -99,16 +96,6 @@ class ParameterSpace {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
       value *= basis_functions_[i][indices[i]]->EvaluateDerivative(param_coord[i], Derivative{derivative[i]});
-
-      if (derivative[0] == 1 && derivative[1] == 2 && derivative[2] == 1) {
-        std::cout << "Derindices[" << i << "] : " << indices[i] << "\n";
-      }
-
-    }
-
-    if (derivative[0] == 1 && derivative[1] == 2 && derivative[2] == 1) {
-
-      std::cout << "DerValue " << value << "\n";
     }
     return value;
   }
