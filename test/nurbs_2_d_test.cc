@@ -36,7 +36,7 @@ class A2DNurbs : public Test {
  public:
   A2DNurbs() :
       parameter_space(std::make_shared<NiceMock<MockParameterSpace1>>()),
-      w_physical_space(std::make_shared<NiceMock<MockWeightedPhysicalSpace1>>()){
+      w_physical_space(std::make_shared<NiceMock<MockWeightedPhysicalSpace1>>()) {
     spl::NURBSGenerator<2> nurbs_generator(w_physical_space, parameter_space);
     nurbs_ = std::make_unique<spl::NURBS<2>>(nurbs_generator);
   }
@@ -167,7 +167,7 @@ class A2DNurbsWithAllWeights1 : public Test {
   std::unique_ptr<spl::NURBS<2>> nurbs_;
   std::unique_ptr<spl::BSpline<2>> bspline_;
   std::shared_ptr<NiceMock<MockParameterSpace2>> parameter_space_m;
-  std::shared_ptr<NiceMock<MockWeightedPhysicalSpace2>>w_physical_space_m;
+  std::shared_ptr<NiceMock<MockWeightedPhysicalSpace2>> w_physical_space_m;
   std::shared_ptr<NiceMock<MockPhysicalSpace2>> physical_space_m;
 };
 
@@ -177,7 +177,6 @@ TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_5And0_5AndD
   mock_physicalSpace(physical_space_m);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}}, {0}, {1, 1})[0],
               DoubleNear(bspline_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}}, {0}, {1, 1})[0], 0.000001));
-
 }
 
 TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_0And0_7AndDerivatives1And1) { // NOLINT
