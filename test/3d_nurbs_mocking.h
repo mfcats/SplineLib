@@ -227,7 +227,6 @@ void set_get_basis_function_nurbs3d(const std::shared_ptr<NiceMock<MockParameter
                                                                         ParamCoord{0.8},
                                                                         ParamCoord{0.1}}))
       .WillByDefault(Return(0.02));
-
 }
 
 void set_basis_function_derivative3d(const std::shared_ptr<NiceMock<MockParameterSpace3d>> &parameter_space) {
@@ -339,7 +338,6 @@ void mock_parameterSpace_nurbs3d(const std::shared_ptr<NiceMock<MockParameterSpa
       .WillByDefault(Return(Degree{1}));
   ON_CALL(*parameter_space, GetDegree(0))
       .WillByDefault(Return(Degree{2}));
-
 }
 
 #endif  // TEST_3D_NURBS_MOCKING_H_
