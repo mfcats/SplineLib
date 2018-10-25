@@ -29,6 +29,8 @@ class ControlPoint {
 
   double GetValue(int dimension) const;
 
+  ControlPoint operator+(const ControlPoint& control_point) const;
+
  protected:
   std::vector<double> coordinates_;
 };
