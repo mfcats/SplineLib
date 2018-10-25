@@ -24,8 +24,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace iga {
 class ConnectivityHandler {
  public:
-  explicit ConnectivityHandler(std::shared_ptr<spl::Spline<2>> spline) {
-    
+  explicit ConnectivityHandler(const std::shared_ptr<spl::Spline<2>> &spline) {
+
     SetGlobalNodePattern(spline);
     SetElementConnectivity(spline);
 
@@ -33,7 +33,7 @@ class ConnectivityHandler {
 
   }
 
-  void SetElementConnectivity(std::shared_ptr<spl::Spline<2>> spline) {
+  void SetElementConnectivity(const std::shared_ptr<spl::Spline<2>> &spline) {
     iga::ElementGenerator element_generator_(spline);
     std::array<int, 2> knot_multiplicity = {0, 0};
     for (int i = 0; i < 2; ++i) {
@@ -48,7 +48,7 @@ class ConnectivityHandler {
     }
   }
 
-  void SetGlobalNodePattern(std::shared_ptr<spl::Spline<2>> spline) {
+  void SetGlobalNodePattern(const std::shared_ptr<spl::Spline<2>> &spline) {
     int l = 0;
     for (int i = 0; i < spline->GetPointsPerDirection()[0]; ++i) {
       std::vector<int> temp;

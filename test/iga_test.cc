@@ -92,6 +92,5 @@ class IGA2D : public Test {
 
 TEST_F(IGA2D, Test1) { // NOLINT
   iga::ConnectivityHandler connectivity_handler = iga::ConnectivityHandler(nurbs_);
-
 }
 
