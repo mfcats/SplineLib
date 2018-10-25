@@ -22,7 +22,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
-using ::testing::Throw;
 using ::testing::_;
 
 /* 3-dimensional nurbs spline with following properties :
