@@ -22,11 +22,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
-using ::testing::_;
 
 /* 3-dimensional nurbs spline with following properties :
  * KnotVector = {{0, 0, 0, 1, 1, 1}, {0, 0, 1, 1}, {0, 0, 1, 1}}
- * ControlPoints = {{0, 0}, {1, 0}, {3, 0}, {-1, 0.5}, {2, 2}, {4, 1}, {0, 2}, {-1, 0.5}, {2, 2}, {4, 1}, {0, 2}, {5, 2}}
+ * ControlPoints = {{0, 0}, {1, 0}, {3, 0}, {-1, 0.5}, {2, 2}, {4, 1},
+ *                  {0, 2}, {-1, 0.5}, {2, 2}, {4, 1}, {0, 2}, {5, 2}}
  * Weights = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 */
 
