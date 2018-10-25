@@ -198,7 +198,7 @@ class Spline {
     return total_length;
   }
 
-  std::shared_ptr<ParameterSpace < DIM>> parameter_space_;
+  std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
 };
 }  //  namespace spl
 

@@ -39,20 +39,21 @@ set(TEST_SOURCES
         irit_reader_writer_test.cc
         xml_reader_test.cc
         xml_writer_test.cc
-        io_converter_test.cc)
+        io_converter_test.cc
+        iga_test.cc)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
 
 add_executable(SplineLibTests ${TEST_SOURCES})
-target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibspl splinelibutil splinelibio GMock::Main)
+target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibiga splinelibspl splinelibutil splinelibio GMock::Main)
 
 set(ACCEPTANCE_TEST_SOURCES
         acceptance_tests.cc)
 add_executable(AcceptanceTests ${ACCEPTANCE_TEST_SOURCES})
 target_link_libraries(AcceptanceTests splinelibbaf splinelibspl splinelibutil)
 
-target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
+#target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
 
 set(IGES_READ ${CMAKE_CURRENT_SOURCE_DIR}/read.iges)
 set(IGES_READ_2 ${CMAKE_CURRENT_SOURCE_DIR}/read2.iges)

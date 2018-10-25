@@ -13,10 +13,26 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-add_subdirectory(util)
-add_subdirectory(baf)
-add_subdirectory(elm)
-add_subdirectory(itg)
-add_subdirectory(spl)
-add_subdirectory(io)
-add_subdirectory(iga)
+set(SOURCES
+        element_iga.cc
+        element_generator_iga.cc)
+
+add_library(splinelibiga SHARED ${SOURCES})
+target_include_directories(splinelibiga PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(splinelibiga splinelibspl)
+
+install(
+        TARGETS splinelibiga
+        EXPORT "${targets_export_name}"
+        LIBRARY DESTINATION "${library_install_dir}"
+        ARCHIVE DESTINATION "${library_install_dir}"
+        RUNTIME DESTINATION "${executable_install_dir}"
+        INCLUDES DESTINATION "${include_install_dir}"
+)
+
+
+install(FILES
+        element_iga.h
+        element_generator_iga.h
+        DESTINATION "${include_install_dir}")
+
