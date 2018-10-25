@@ -145,7 +145,9 @@ void mock_physicalSpace3d(const std::shared_ptr<NiceMock<MockPhysicalSpace3d>> &
 }
 
 void set_get_basis_function_nurbs3d(const std::shared_ptr<NiceMock<MockParameterSpace3d>> &parameter_space) {
-  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<ParamCoord, 3>{ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<ParamCoord, 3>{ParamCoord{0.5},
+                                                                           ParamCoord{0.5},
+                                                                           ParamCoord{0.5}}))
       .WillByDefault(Return(0.0625));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 3>{1, 0, 0},
                                               std::array<ParamCoord, 3>{ParamCoord{0.5},
