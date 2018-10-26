@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEST_3D_NURBS_MOCKING_H_
-#define TEST_3D_NURBS_MOCKING_H_
+#ifndef TEST_SPL_NURBS_3D_MOCKING_H_
+#define TEST_SPL_NURBS_3D_MOCKING_H_
 
 #include <array>
 #include <numeric>
@@ -342,4 +342,4 @@ void mock_parameterSpace_nurbs3d(const std::shared_ptr<NiceMock<MockParameterSpa
       .WillByDefault(Return(Degree{2}));
 }
 
-#endif  // TEST_3D_NURBS_MOCKING_H_
+#endif  // TEST_SPL_NURBS_3D_MOCKING_H_
