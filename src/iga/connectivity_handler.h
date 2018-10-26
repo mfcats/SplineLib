@@ -25,12 +25,25 @@ namespace iga {
 class ConnectivityHandler {
  public:
   explicit ConnectivityHandler(const std::shared_ptr<spl::Spline<2>> &spline) {
-
     SetGlobalNodePattern(spline);
     SetElementConnectivity(spline);
+    SetConnectivityMatrix(spline);
+    iga::MatrixUtils::PrintMatrix(connectivity);
+  }
 
-    iga::MatrixUtils::PrintMatrix(element_global[0]);
-
+  void SetConnectivityMatrix(const std::shared_ptr<spl::Spline<2>> &spline) {
+    iga::ElementGenerator element_generator_(spline);
+    for (uint64_t i = 0; i < element_generator_.GetElementList(1).size(); ++i) {
+      for (uint64_t j = 0; j < element_generator_.GetElementList(0).size(); ++j) {
+        std::vector<int> temp;
+        for (uint64_t k = 0; k < element_global[1][i].size(); ++k) {
+          for (uint64_t l = 0; l < element_global[0][j].size(); ++l) {
+            temp.emplace_back(global_pattern[element_global[1][i][k]][element_global[0][j][l]]);
+          }
+        }
+        connectivity.emplace_back(temp);
+      }
+    }
   }
 
   void SetElementConnectivity(const std::shared_ptr<spl::Spline<2>> &spline) {
@@ -61,14 +74,9 @@ class ConnectivityHandler {
   }
 
  private:
-  // global_pattern[i][j] is the i-th row and j-th column of the matrix
-  std::vector<std::vector<int>> global_pattern;
-
-  // i-th row, j-th column -> global index of j-th control point in i-th element
+  std::vector<std::vector<int>> connectivity;
   std::array<std::vector<std::vector<int>>, 2> element_global;
-
-
-
+  std::vector<std::vector<int>> global_pattern;
 };
 }  // namespace iga
 
