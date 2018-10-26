@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "vtk_writer.h"
 
 using testing::Test;
+using testing::Ne;
 
 class A1DBNURBSVTKWriter : public Test {  // NOLINT
  public:
@@ -40,19 +41,20 @@ class A1DBNURBSVTKWriter : public Test {  // NOLINT
 
 TEST_F(A1DBNURBSVTKWriter, CreatesVTKFile) {  // NOLINT
   std::any nurbs_1d_any = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_1d_);
-  vtk_writer_->WriteFile({nurbs_1d_any}, "test.vtk", {{10}});
+  vtk_writer_->WriteFile({nurbs_1d_any}, "1d_spline.vtk", {{10}});
   std::ifstream newFile;
-  newFile.open("test.vtk");
+  newFile.open("1d_spline.vtk");
   if (!newFile.good()) {
     throw std::runtime_error("VTK file could not be opened.");
   }
-  std::string line;
-  std::cout << std::endl << std::endl;
+  std::string line, file;
   while (getline(newFile, line)) {
-    std::cout << line << std::endl;
+    file += line + "\n";
   }
-  std::cout << std::endl;
-  remove("test.vtk");
+  ASSERT_THAT(file.find("# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("DATASET POLYDATA\nPOINTS 11 double\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("LINES 10 30\n"), Ne(std::string::npos));
+  remove("1d_spline.vtk");
 }
 
 class A2DBNURBSVTKWriter : public Test {  // NOLINT
@@ -84,19 +86,21 @@ class A2DBNURBSVTKWriter : public Test {  // NOLINT
   std::unique_ptr<io::VTKWriter> vtk_writer_;
 };
 
-TEST_F(A2DBNURBSVTKWriter, CreatesVTKFile) {
+TEST_F(A2DBNURBSVTKWriter, CreatesVTKFile) {  // NOLINT
   std::any nurbs_2d_any = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_2d_);
-  vtk_writer_->WriteFile({nurbs_2d_any}, "test.vtk", {{100, 100}});
+  vtk_writer_->WriteFile({nurbs_2d_any}, "2d_spline.vtk", {{20, 20}});
   std::ifstream newFile;
-  newFile.open("test.vtk");
+  newFile.open("2d_spline.vtk");
   if (!newFile.good()) {
     throw std::runtime_error("VTK file could not be opened.");
   }
-  std::string line;
-  std::cout << std::endl << std::endl;
+  std::string line, file;
   while (getline(newFile, line)) {
-    std::cout << line << std::endl;
+    file += line + "\n";
   }
-  std::cout << std::endl;
-  remove("test.vtk");
+  ASSERT_THAT(file.find("# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("DATASET POLYDATA\nPOINTS 441 double\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("POLYGONS 400 2000\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("LINES 400 2400\n"), Ne(std::string::npos));
+  remove("2d_spline.vtk");
 }

@@ -34,7 +34,7 @@ class VTKWriter {
     newFile.open(filename);
     if (newFile.is_open()) {
       newFile << "# vtk DataFile Version 3.0" << std::endl << "Spline from Splinelib\n" << "ASCII\n\n";
-      for (int i = 0; i < splines.size(); ++i) {
+      for (auto i = 0u; i < splines.size(); ++i) {
         AddSpline(newFile, splines[i], scattering[i]);
       }
       newFile.close();
