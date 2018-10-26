@@ -24,7 +24,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace iga {
 class ElementGenerator {
  public:
-  ElementGenerator(std::shared_ptr<spl::Spline<2>> spline);
+  explicit ElementGenerator(std::shared_ptr<spl::Spline<2>> spline);
 
   std::vector<iga::Element> GetElementList(int i);
 

@@ -15,9 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "element_generator_iga.h"
 #include "spline.h"
 
-#include <iostream>
-
-iga::ElementGenerator::ElementGenerator(std::shared_ptr<spl::Spline<2>> spline) : spline_(spline) {}
+iga::ElementGenerator::ElementGenerator(std::shared_ptr<spl::Spline<2>> spl) : spline_(std::move(spl)) {}
 
 std::vector<iga::Element> iga::ElementGenerator::GetElementList(int i) {
   std::vector<iga::Element> elements;
