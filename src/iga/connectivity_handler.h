@@ -30,6 +30,10 @@ class ConnectivityHandler {
     SetConnectivityMatrix();
   }
 
+  std::vector<std::vector<int>> GetConnectivity() {
+    return connectivity;
+  }
+
   void SetConnectivityMatrix() {
     iga::ElementGenerator element_generator_(spline);
     for (uint64_t i = 0; i < element_generator_.GetElementList(1).size(); ++i) {

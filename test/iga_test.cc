@@ -102,12 +102,21 @@ class IGA2D : public Test {
   std::shared_ptr<spl::NURBS<2>> nurbs_ = std::make_shared<spl::NURBS<2>>(kv_ptr, degree, control_points, weights);
 };
 
-TEST_F(IGA2D, Test1) { // NOLINT
+TEST_F(IGA2D, TestConnectivityHandler) { // NOLINT
   iga::ConnectivityHandler connectivity_handler = iga::ConnectivityHandler(nurbs_);
+  std::vector<int> element1 = {1, 2, 3, 4, 8, 9, 10, 11, 15, 16, 17, 18, 22, 23, 24, 25};
+  std::vector<int> element2 = {4, 5, 6, 7, 11, 12, 13, 14, 18, 19, 20, 21, 25, 26, 27, 28};
+  std::vector<int> element3 = {22, 23, 24, 25, 29, 30, 31, 32, 36, 37, 38, 39, 43, 44, 45, 46};
+  std::vector<int> element4 = {25, 26, 27, 28, 32, 33, 34, 35, 39, 40, 41, 42, 46, 47, 48, 49};
+  std::vector<std::vector<int>> connectivity_matlab = {element1, element2, element3, element4};
+  std::vector<std::vector<int>> connectivity_splinelib = connectivity_handler.GetConnectivity();
+  ASSERT_EQ(connectivity_matlab.size(), connectivity_splinelib.size());
+  for (uint64_t i = 0; i < connectivity_matlab.size(); ++i) {
+    ASSERT_EQ(connectivity_matlab[i].size(), connectivity_splinelib[i].size());
+  }
+  for (uint64_t i = 0; i < connectivity_matlab.size(); ++i) {
+    for (uint64_t j = 0; j < connectivity_matlab[i].size(); ++j) {
+      ASSERT_EQ(connectivity_matlab[i][j], connectivity_splinelib[i][j]);
+    }
+  }
 }
-
-// connectivity matrix from matlab
-//  1     2     3     4     8     9    10    11    15    16    17    18    22    23    24    25
-//  4     5     6     7    11    12    13    14    18    19    20    21    25    26    27    28
-// 22    23    24    25    29    30    31    32    36    37    38    39    43    44    45    46
-// 25    26    27    28    32    33    34    35    39    40    41    42    46    47    48    49
