@@ -24,8 +24,8 @@ using testing::DoubleEq;
 class IGA2D : public Test {
  public:
   std::array<baf::KnotVector, 2> knot_vector =
-      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{0.5},
-                        ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
+      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.4}, ParamCoord{0.5},
+                        ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{0.5},
                         ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
 
@@ -104,11 +104,16 @@ class IGA2D : public Test {
 
 TEST_F(IGA2D, TestConnectivityHandler) { // NOLINT
   iga::ConnectivityHandler connectivity_handler = iga::ConnectivityHandler(nurbs_);
-  std::vector<int> element1 = {1, 2, 3, 4, 8, 9, 10, 11, 15, 16, 17, 18, 22, 23, 24, 25};
-  std::vector<int> element2 = {4, 5, 6, 7, 11, 12, 13, 14, 18, 19, 20, 21, 25, 26, 27, 28};
-  std::vector<int> element3 = {22, 23, 24, 25, 29, 30, 31, 32, 36, 37, 38, 39, 43, 44, 45, 46};
-  std::vector<int> element4 = {25, 26, 27, 28, 32, 33, 34, 35, 39, 40, 41, 42, 46, 47, 48, 49};
-  std::vector<std::vector<int>> connectivity_matlab = {element1, element2, element3, element4};
+  std::vector<int> e1 = {1, 2, 3, 4, 8, 9, 10, 11, 15, 16, 17, 18, 22, 23, 24, 25};
+  std::vector<int> e2 = {2, 3, 4, 5, 9, 10, 11, 12, 16, 17, 18, 19, 23, 24, 25, 26};
+  std::vector<int> e3 = {3, 4, 5, 6, 10, 11, 12, 13, 17, 18, 19, 20, 24, 25, 26, 27};
+  std::vector<int> e4 = {4, 5, 6, 7, 11, 12, 13, 14, 18, 19, 20, 21, 25, 26, 27, 28};
+  std::vector<int> e5 = {22, 23, 24, 25, 29, 30, 31, 32, 36, 37, 38, 39, 43, 44, 45, 46};
+  std::vector<int> e6 = {23, 24, 25, 26, 30, 31, 32, 33, 37, 38, 39, 40, 44, 45, 46, 47};
+  std::vector<int> e7 = {24, 25, 26, 27, 31, 32, 33, 34, 38, 39, 40, 41, 45, 46, 47, 48};
+  std::vector<int> e8 = {25, 26, 27, 28, 32, 33, 34, 35, 39, 40, 41, 42, 46, 47, 48, 49};
+
+  std::vector<std::vector<int>> connectivity_matlab = {e1, e2, e3, e4, e5, e6, e7, e8};
   std::vector<std::vector<int>> connectivity_splinelib = connectivity_handler.GetConnectivity();
   ASSERT_EQ(connectivity_matlab.size(), connectivity_splinelib.size());
   for (uint64_t i = 0; i < connectivity_matlab.size(); ++i) {
