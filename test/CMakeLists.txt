@@ -29,8 +29,8 @@ set(TEST_SOURCES
         spl/projection_curve_test.cc
         spl/projection_surface_test.cc
         spl/nurbs_test.cc
-        spl/nurbs_2_d_test.cc
-        spl/nurbs_3_d_test.cc
+        spl/nurbs_2d_test.cc
+        spl/nurbs_3d_test.cc
         spl/parameter_space_test.cc
         spl/physical_space_test.cc
         spl/weighted_physical_space_test.cc
