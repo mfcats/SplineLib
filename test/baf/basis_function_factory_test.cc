@@ -12,12 +12,27 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEST_CONFIG_IN_H_  // NOLINT
-#define TEST_CONFIG_IN_H_
+#include <memory>
 
-static const char *iges_read = "@IGES_READ@";
-static const char *iges_read_2 = "@IGES_READ_2@";
-static const char *path_to_irit_file = "@PATH_TO_IRIS_FILE@";
-static const char *path_to_xml_file = "@PATH_TO_XML_FILE@";
+#include "gmock/gmock.h"
 
-#endif  // TEST_CONFIG_IN_H_
+#include "basis_function_factory_test.h"
+
+using testing::Test;
+
+class ABasisFunctionFactory : public Test {
+ public:
+  ABasisFunctionFactory() : degree_{Degree{-1}},
+      knot_vector_({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
+      start_of_support_{KnotSpan{4}} {}
+
+ protected:
+  Degree degree_;
+  baf::KnotVector knot_vector_;
+  KnotSpan start_of_support_;
+  baf::BasisFunctionFactory basis_function_factory;
+};
+
+TEST_F(ABasisFunctionFactory, throwsError) { //NOLINT
+  ASSERT_THROW(basis_function_factory.CreateDynamic(knot_vector_, start_of_support_, degree_), std::runtime_error);
+}

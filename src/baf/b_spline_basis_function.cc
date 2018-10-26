@@ -14,7 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline_basis_function.h"
 
-#include "basis_function_factory.h"
+#include "basis_function_factory_test.h"
 
 baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
                                                 const Degree &degree,

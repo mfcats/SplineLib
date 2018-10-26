@@ -44,7 +44,7 @@ install(
 install(FILES
         b_spline_basis_function.h
         basis_function.h
-        basis_function_factory.h
+        basis_function_factory_test.h
         control_point.h
         knot_vector.h
         zero_degree_b_spline_basis_function.h
