@@ -24,14 +24,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace iga {
 class ConnectivityHandler {
  public:
-  explicit ConnectivityHandler(const std::shared_ptr<spl::Spline<2>> &spline) {
-    SetGlobalNodePattern(spline);
-    SetElementConnectivity(spline);
-    SetConnectivityMatrix(spline);
-    iga::MatrixUtils::PrintMatrix(connectivity);
+  explicit ConnectivityHandler(std::shared_ptr<spl::Spline<2>> spl) : spline(std::move(spl)){
+    SetGlobalNodePattern();
+    SetElementConnectivity();
+    SetConnectivityMatrix();
   }
 
-  void SetConnectivityMatrix(const std::shared_ptr<spl::Spline<2>> &spline) {
+  void SetConnectivityMatrix() {
     iga::ElementGenerator element_generator_(spline);
     for (uint64_t i = 0; i < element_generator_.GetElementList(1).size(); ++i) {
       for (uint64_t j = 0; j < element_generator_.GetElementList(0).size(); ++j) {
@@ -46,7 +45,7 @@ class ConnectivityHandler {
     }
   }
 
-  void SetElementConnectivity(const std::shared_ptr<spl::Spline<2>> &spline) {
+  void SetElementConnectivity() {
     iga::ElementGenerator element_generator_(spline);
     std::array<int, 2> knot_multiplicity = {0, 0};
     for (int i = 0; i < 2; ++i) {
@@ -61,7 +60,7 @@ class ConnectivityHandler {
     }
   }
 
-  void SetGlobalNodePattern(const std::shared_ptr<spl::Spline<2>> &spline) {
+  void SetGlobalNodePattern() {
     int l = 0;
     for (int i = 0; i < spline->GetPointsPerDirection()[0]; ++i) {
       std::vector<int> temp;
@@ -74,6 +73,7 @@ class ConnectivityHandler {
   }
 
  private:
+  std::shared_ptr<spl::Spline<2>> spline;
   std::vector<std::vector<int>> connectivity;
   std::array<std::vector<std::vector<int>>, 2> element_global;
   std::vector<std::vector<int>> global_pattern;
