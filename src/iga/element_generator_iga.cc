@@ -44,7 +44,7 @@ std::vector<int> iga::ElementGenerator::GetKnotMultiplicity(int index) {
 }
 
 std::vector<ParamCoord > iga::ElementGenerator::GetInternalKnots(int index) {
-  std::vector<ParamCoord> knots = spline_->GetKnots()[index];
+  std::vector<ParamCoord> knots = spline_->GetKnots().at(uint64_t(index));
   std::vector<ParamCoord> internal_knots;
   int degree = spline_->GetDegree(index).get();
   for (auto j = uint64_t(degree); j < knots.size() - degree; ++j) {
