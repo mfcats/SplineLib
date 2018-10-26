@@ -43,7 +43,6 @@ TEST_F(A1DElement, ReturnsCorrectNode) { // NOLINT
 
 class A1DElementGenerator : public Test {
  public:
-
   std::array<baf::KnotVector, 1> knot_vector =
       {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                         ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4},

@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "basis_function.h"
-#include "basis_function_factory_test.h"
+#include "basis_function_factory.h"
 #include "element_generator.h"
 #include "element.h"
 #include "integration_rule.h"

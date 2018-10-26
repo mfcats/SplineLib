@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEST_2D_NURBS_MOCKING_H_
-#define TEST_2D_NURBS_MOCKING_H_
+#ifndef TEST_SPL_NURBS_2D_MOCKING_H_
+#define TEST_SPL_NURBS_2D_MOCKING_H_
 
 #include <array>
 #include <numeric>
@@ -520,4 +520,4 @@ void mock_physicalSpace(const std::shared_ptr<NiceMock<MockPhysicalSpace2>> & ph
 }
 
 
-#endif  // TEST_2D_NURBS_MOCKING_H_
+#endif  // TEST_SPL_NURBS_2D_MOCKING_H_

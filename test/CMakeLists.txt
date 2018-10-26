@@ -34,7 +34,7 @@ set(TEST_SOURCES
         spl/parameter_space_test.cc
         spl/physical_space_test.cc
         spl/weighted_physical_space_test.cc
-        baf/basis_function_factory_test.cc
+        baf/basis_function_factory.cc
         element_integration_point_test.cc
         io/irit_reader_writer_test.cc
         io/xml_reader_test.cc

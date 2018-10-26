@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEST_2D_B_SPLINE_MOCKING_H_
-#define TEST_2D_B_SPLINE_MOCKING_H_
+#ifndef TEST_SPL_B_SPLINE_2D_MOCKING_H_
+#define TEST_SPL_B_SPLINE_2D_MOCKING_H_
 
 #include <array>
 #include <numeric>
@@ -362,4 +362,4 @@ void mock_2dparameterSpace(const std::shared_ptr<NiceMock<Mock2dParameterSpace>>
       .WillByDefault(Return(Degree{2}));
 }
 
-#endif  // TEST_2D_B_SPLINE_MOCKING_H_
+#endif  // TEST_SPL_B_SPLINE_2D_MOCKING_H_
