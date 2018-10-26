@@ -24,20 +24,20 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace iga {
 class ElementGenerator {
  public:
-  explicit ElementGenerator(std::shared_ptr<spl::Spline<2>> spline);
+  explicit ElementGenerator(std::shared_ptr<spl::Spline<2>> spl);
 
-  std::vector<iga::Element> GetElementList(int i);
+  std::vector<iga::Element> GetElementList(int index);
 
-  std::vector<int> GetKnotMultiplicity(int i);
+  std::vector<int> GetKnotMultiplicity(int index);
 
-  std::vector<ParamCoord> GetInternalKnots(int i);
+  std::vector<ParamCoord> GetInternalKnots(int index);
 
  private:
-  ParamCoord GetLowerElementBound(uint64_t currentKnot, int i);
+  ParamCoord GetLowerElementBound(uint64_t currentKnot, int index);
 
-  ParamCoord GetHigherElementBound(uint64_t currentKnot, int i);
+  ParamCoord GetHigherElementBound(uint64_t currentKnot, int index);
 
-  std::vector<ParamCoord> GetElementNodes(uint64_t currentKnot, int i);
+  std::vector<ParamCoord> GetElementNodes(uint64_t currentKnot, int index);
 
   std::shared_ptr<spl::Spline<2>> spline_;
 };

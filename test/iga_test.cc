@@ -19,7 +19,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "connectivity_handler.h"
 
 using testing::Test;
-using testing::DoubleEq;
 
 class IGA2D : public Test {
  public:
@@ -115,13 +114,13 @@ TEST_F(IGA2D, TestConnectivityHandler) { // NOLINT
 
   std::vector<std::vector<int>> connectivity_matlab = {e1, e2, e3, e4, e5, e6, e7, e8};
   std::vector<std::vector<int>> connectivity_splinelib = connectivity_handler.GetConnectivity();
-  ASSERT_EQ(connectivity_matlab.size(), connectivity_splinelib.size());
+  GTEST_ASSERT_EQ(connectivity_matlab.size(), connectivity_splinelib.size());
   for (uint64_t i = 0; i < connectivity_matlab.size(); ++i) {
     ASSERT_EQ(connectivity_matlab[i].size(), connectivity_splinelib[i].size());
   }
   for (uint64_t i = 0; i < connectivity_matlab.size(); ++i) {
     for (uint64_t j = 0; j < connectivity_matlab[i].size(); ++j) {
-      ASSERT_EQ(connectivity_matlab[i][j], connectivity_splinelib[i][j]);
+      GTEST_ASSERT_EQ(connectivity_matlab[i][j], connectivity_splinelib[i][j]);
     }
   }
 }

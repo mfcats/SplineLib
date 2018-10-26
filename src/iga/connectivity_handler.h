@@ -15,6 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IGA_CONNECTIVITY_HANDLER_H_
 #define SRC_IGA_CONNECTIVITY_HANDLER_H_
 
+#include <vector>
+
 #include "element_generator_iga.h"
 #include "matrix_utils.h"
 #include "spline.h"
@@ -22,7 +24,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace iga {
 class ConnectivityHandler {
  public:
-  explicit ConnectivityHandler(std::shared_ptr<spl::Spline<2>> spl) : spline(std::move(spl)){
+  explicit ConnectivityHandler(std::shared_ptr<spl::Spline<2>> spl) : spline(std::move(spl)) {
     SetGlobalNodePattern();
     SetElementConnectivity();
     SetConnectivityMatrix();
