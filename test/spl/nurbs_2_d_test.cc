@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "nurbs.h"
 #include "b_spline.h"
-#include "2d_nurbs_mocking.h"
+#include "nurbs_2d_mocking.h"
 
 using testing::Test;
 using ::testing::NiceMock;

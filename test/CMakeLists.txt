@@ -19,7 +19,7 @@ set(TEST_SOURCES
         baf/zero_degree_b_spline_basis_function_test.cc
         baf/b_spline_basis_function_test.cc
         spl/b_spline_test.cc
-        spl/2d_b_spline_test.cc
+        spl/b_spline_2d_test.cc
         spl/square_generator_test.cc
         util/multihandler_test.cc
         iga/element_test.cc
