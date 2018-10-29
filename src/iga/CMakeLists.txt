@@ -31,6 +31,8 @@ install(
 
 
 install(FILES
+        mapping_handler.h
+        basis_function_handler.h
         connectivity_handler.h
         matrix_utils.h
         DESTINATION "${include_install_dir}")

@@ -18,7 +18,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "element_generator.h"
-#include "matrix_utils.h"
 #include "spline.h"
 
 namespace iga {
