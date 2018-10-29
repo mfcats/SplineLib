@@ -15,6 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef TEST_IGA_TEST_SPLINE_H_
 #define TEST_IGA_TEST_SPLINE_H_
 
+#include <vector>
+
 #include "gmock/gmock.h"
 
 #include "nurbs.h"
