@@ -16,7 +16,7 @@
 
 set(SOURCES
         b_spline_basis_function.cc
-        basis_function.cc
+		basis_function_handler.cc
         basis_function_factory.cc
         control_point.cc
         knot_vector.cc

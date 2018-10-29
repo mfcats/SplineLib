@@ -13,16 +13,12 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(SOURCES
-        square_generator.cc
-        surface_generator.cc)
-
-add_library(splinelibspl SHARED ${SOURCES})
-target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibspl splinelibbaf)
+add_library(splinelibigaitg INTERFACE)
+target_include_directories(splinelibigaitg INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 install(
-        TARGETS splinelibspl
+        TARGETS splinelibigaitg
         EXPORT "${targets_export_name}"
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
@@ -32,16 +28,12 @@ install(
 
 
 install(FILES
-        parameter_space.h
-        physical_space.h
-        weighted_physical_space.h
-        spline.h
-        b_spline.h
-        nurbs.h
-        projection.h
-        spline_generator.h
-        b_spline_generator.h
-        square_generator.h
+        five_point_gauss_legendre.h
+        four_point_gauss_legendre.h
+        three_point_gauss_legendre.h
+        two_point_gauss_legendre.h
+        one_point_gauss_legendre.h
+        integration_point.h
+        integration_rule.h
         DESTINATION "${include_install_dir}")
-
 

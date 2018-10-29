@@ -14,15 +14,15 @@
 #
 
 set(SOURCES
-        square_generator.cc
-        surface_generator.cc)
+        element.cc
+        element_integration_point.cc)
 
-add_library(splinelibspl SHARED ${SOURCES})
-target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibspl splinelibbaf)
+add_library(splinelibigaelm SHARED ${SOURCES})
+target_include_directories(splinelibigaelm PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(splinelibigaelm PUBLIC splinelibbaf)
 
 install(
-        TARGETS splinelibspl
+        TARGETS splinelibigaelm
         EXPORT "${targets_export_name}"
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
@@ -32,16 +32,7 @@ install(
 
 
 install(FILES
-        parameter_space.h
-        physical_space.h
-        weighted_physical_space.h
-        spline.h
-        b_spline.h
-        nurbs.h
-        projection.h
-        spline_generator.h
-        b_spline_generator.h
-        square_generator.h
+        element_generator.h
+        element_integration_point.h
         DESTINATION "${include_install_dir}")
-
 
