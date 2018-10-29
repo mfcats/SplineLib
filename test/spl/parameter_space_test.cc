@@ -20,7 +20,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::Test;
 using testing::DoubleEq;
-using testing::DoubleNear;
 
 class A1DParameterSpace : public Test {
  public:

@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_BASIS_FUNCTION_H_
-#define SRC_IGA_BASIS_FUNCTION_H_
+#ifndef SRC_IGA_BASIS_FUNCTION_HANDLER_H_
+#define SRC_IGA_BASIS_FUNCTION_HANDLER_H_
 
 #include "element_integration_point.h"
 #include "spline.h"
@@ -23,11 +23,9 @@ class BasisFunctionHandler {
  public:
   explicit BasisFunctionHandler(std::shared_ptr<spl::Spline<2>> spl) : spline_(std::move(spl)) {}
 
-  
-
  private:
   std::shared_ptr<spl::Spline<2>> spline_;
 };
-}
+}  // namespace iga
 
-#endif  // SRC_IGA_BASIS_FUNCTION_H_
+#endif  // SRC_IGA_BASIS_FUNCTION_HANDLER_H_

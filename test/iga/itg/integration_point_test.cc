@@ -24,7 +24,7 @@ class A1DIntegrationPoint : public Test {
   A1DIntegrationPoint() : integration_point_({1.5}, 0.5) {}
 
  protected:
-  iga::IntegrationPoint<1> integration_point_;
+  iga::itg::IntegrationPoint<1> integration_point_;
 };
 
 TEST_F(A1DIntegrationPoint, ReturnsCorrectCoordinate) { // NOLINT
