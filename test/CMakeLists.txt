@@ -39,7 +39,8 @@ set(TEST_SOURCES
         irit_reader_writer_test.cc
         xml_reader_test.cc
         xml_writer_test.cc
-        io_converter_test.cc)
+        io_converter_test.cc
+        surface_generator_test.cc)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})

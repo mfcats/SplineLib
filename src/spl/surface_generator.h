@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace spl {
 class SurfaceGenerator : public NURBSGenerator<2> {
  public:
-  SurfaceGenerator(std::unique_ptr<NURBS<1>> nurbs_T, std::unique_ptr<NURBS<1>> nurbs_C);
+  SurfaceGenerator(std::shared_ptr<NURBS<1>> nurbs_T, std::shared_ptr<NURBS<1>> nurbs_C);
 
   std::shared_ptr<ParameterSpace<2>> JoinParameterSpaces(std::shared_ptr<ParameterSpace<1>> space_1,
       std::shared_ptr<ParameterSpace<1>> space_2) const;
