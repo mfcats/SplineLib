@@ -19,14 +19,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element.h"
 #include "named_type.h"
-#include "nurbs.h"
+#include "spline.h"
 
 namespace iga {
 namespace elm {
 template<int DIM>
 class ElementGenerator {
  public:
-  explicit ElementGenerator(std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {}
+  explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spline_(std::move(spl)) {}
 
   std::vector<iga::elm::Element> GetElementList(int dir) {
     std::vector<iga::elm::Element> elements;
@@ -77,7 +77,7 @@ class ElementGenerator {
     return {GetLowerElementBound(currentKnot, dir), GetHigherElementBound(currentKnot, dir)};
   }
 
-  std::shared_ptr<spl::NURBS<DIM>> spline_;
+  std::shared_ptr<spl::Spline<DIM>> spline_;
 };
 }  // namespace elm
 }  // namespace iga

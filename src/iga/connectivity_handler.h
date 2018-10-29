@@ -19,12 +19,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element_generator.h"
 #include "matrix_utils.h"
-#include "nurbs.h"
+#include "spline.h"
 
 namespace iga {
 class ConnectivityHandler {
  public:
-  explicit ConnectivityHandler(std::shared_ptr<spl::NURBS<2>> spl) : spline(std::move(spl)) {
+  explicit ConnectivityHandler(std::shared_ptr<spl::Spline<2>> spl) : spline(std::move(spl)) {
     SetGlobalNodePattern();
     SetElementConnectivity();
     SetConnectivityMatrix();
@@ -77,7 +77,7 @@ class ConnectivityHandler {
   }
 
  private:
-  std::shared_ptr<spl::NURBS<2>> spline;
+  std::shared_ptr<spl::Spline<2>> spline;
   std::vector<std::vector<int>> connectivity;
   std::array<std::vector<std::vector<int>>, 2> element_global;
   std::vector<std::vector<int>> global_pattern;
