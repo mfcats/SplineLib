@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IGA_BASIS_FUNCTION_HANDLER_H_
 
 #include <array>
+#include <math.h>
 #include <vector>
 
 #include "element_integration_point.h"
@@ -34,8 +35,7 @@ class BasisFunctionHandler {
     double sum = 0;
     for (int i = 0; i < basis_functions[1].size(); ++i) {
       for (int j = 0; j < basis_functions[0].size(); ++j) {
-        double temp = 0;
-        temp = basis_functions[0][j] * basis_functions[1][i] * spline_->GetWeight({j, i});
+        double temp = basis_functions[0][j] * basis_functions[1][i] * spline_->GetWeight({j, i});
         sum += temp;
         nurbs_basis_functions.emplace_back(temp);
       }
@@ -44,6 +44,42 @@ class BasisFunctionHandler {
       nurbs_basis_functions[i] = nurbs_basis_functions[i] / sum;
     }
     return nurbs_basis_functions;
+  }
+
+  std::array<std::vector<double>, 2> EvaluateAllNonZeroNURBSBasisFunctionDerivatives(
+      std::array<ParamCoord, 2> param_coord) {
+    std::vector<double> nurbs_basis_functions;
+    std::array<std::vector<double>, 2> nurbs_basis_function_derivatives;
+    std::array<std::vector<double>, 2> basis_functions;
+    std::array<std::vector<double>, 2> basis_function_derivatives;
+    basis_functions[0] = spline_->EvaluateAllNonZeroBasisFunctions(0, param_coord[0]);
+    basis_functions[1] = spline_->EvaluateAllNonZeroBasisFunctions(1, param_coord[1]);
+    basis_function_derivatives[0] = spline_->EvaluateAllNonZeroBasisFunctionDerivatives(0, param_coord[0], 1);
+    basis_function_derivatives[1] = spline_->EvaluateAllNonZeroBasisFunctionDerivatives(1, param_coord[1], 1);
+    double sum_baf = 0;
+    double sum_der_xi = 0;
+    double sum_der_eta = 0;
+    for (int i = 0; i < basis_function_derivatives[1].size(); ++i) {
+      for (int j = 0; j < basis_function_derivatives[0].size(); ++j) {
+        double temp = basis_functions[0][j] * basis_functions[1][i] * spline_->GetWeight({j, i});
+        double temp_der_xi = basis_function_derivatives[0][j] * basis_functions[1][i] * spline_->GetWeight({j, i});
+        double temp_der_eta = basis_functions[0][j] * basis_function_derivatives[1][i] * spline_->GetWeight({j, i});
+        sum_baf += temp;
+        sum_der_xi += temp_der_xi;
+        sum_der_eta += temp_der_eta;
+        nurbs_basis_functions.emplace_back(temp);
+        nurbs_basis_function_derivatives[0].emplace_back(temp_der_xi);
+        nurbs_basis_function_derivatives[1].emplace_back(temp_der_eta);
+      }
+    }
+    for (int i = 0; i < basis_functions.size(); ++i) {
+      nurbs_basis_functions[i] = nurbs_basis_functions[i] / sum_baf;
+      nurbs_basis_function_derivatives[0][i] = (nurbs_basis_function_derivatives[0][i] * sum_baf -
+          nurbs_basis_functions[i] * sum_der_xi) / pow(sum_baf, 2);
+      nurbs_basis_function_derivatives[1][i] = (nurbs_basis_function_derivatives[1][i] * sum_baf -
+          nurbs_basis_functions[i] * sum_der_eta) / pow(sum_baf, 2);
+    }
+    return nurbs_basis_function_derivatives;
   }
 
  private:
