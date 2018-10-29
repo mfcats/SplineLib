@@ -12,17 +12,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_ONE_POINT_GAUSS_LEGENDRE_IGA_H_
-#define SRC_IGA_ONE_POINT_GAUSS_LEGENDRE_IGA_H_
+#include "element.h"
 
-#include "integration_rule_iga.h"
+iga::elm::Element::Element(int dimension, const std::vector<ParamCoord> &nodes)
+    : dimension_(dimension), number_of_nodes_(static_cast<int>(nodes.size())), nodes_(nodes) {}
 
-namespace iga {
-template<int DIM>
-class OnePointGaussLegendre : public IntegrationRule<DIM> {
- public:
-  OnePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{0}, 2)}) {}
-};
-}  // namespace iga
+int iga::elm::Element::GetDimension() const {
+  return dimension_;
+}
 
-#endif  // SRC_IGA_ONE_POINT_GAUSS_LEGENDRE_IGA_H_
+int iga::elm::Element::GetNumberOfNodes() const {
+  return number_of_nodes_;
+}
+
+ParamCoord iga::elm::Element::GetNode(int number) const {
+#ifdef DEBUG
+  return nodes_.at(number);
+#else
+  return nodes_[number];
+#endif
+}

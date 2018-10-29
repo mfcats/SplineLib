@@ -12,23 +12,36 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "element_iga.h"
+#include <array>
 
-iga::Element::Element(int dimension, const std::vector<ParamCoord> &nodes)
-    : dimension_(dimension), number_of_nodes_(static_cast<int>(nodes.size())), nodes_(nodes) {}
+#ifndef SRC_IGA_INTEGRATION_POINT_H_
+#define SRC_IGA_INTEGRATION_POINT_H_
 
-int iga::Element::GetDimension() const {
-  return dimension_;
-}
+namespace iga {
+namespace itg {
+template<int DIM>
+class IntegrationPoint {
+ public:
+  IntegrationPoint(const std::array<double, DIM> &coordinates, double weight)
+      : coordinates_(coordinates), weight_(weight) {}
 
-int iga::Element::GetNumberOfNodes() const {
-  return number_of_nodes_;
-}
+  int GetDimension() const {
+    return DIM;
+  }
 
-ParamCoord iga::Element::GetNode(int number) const {
-#ifdef DEBUG
-  return nodes_.at(number);
-#else
-  return nodes_[number];
-#endif
-}
+  std::array<double, DIM> GetCoordinates() const {
+    return coordinates_;
+  }
+
+  double GetWeight() const {
+    return weight_;
+  }
+
+ private:
+  std::array<double, DIM> coordinates_;
+  double weight_;
+};
+}  // namespace itg
+}  // namespace iga
+
+#endif  // SRC_IGA_INTEGRATION_POINT_H_

@@ -13,15 +13,16 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-add_subdirectory(itg)
-add_subdirectory(elm)
+set(SOURCES
+        element.cc
+        element_integration_point.cc)
 
-add_library(splinelibiga INTERFACE)
-target_include_directories(splinelibiga INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibiga INTERFACE splinelibspl splinelibigaitg splinelibigaelm)
+add_library(splinelibigaelm SHARED ${SOURCES})
+target_include_directories(splinelibigaelm PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(splinelibigaelm PUBLIC splinelibbaf)
 
 install(
-        TARGETS splinelibiga
+        TARGETS splinelibigaelm
         EXPORT "${targets_export_name}"
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
@@ -31,8 +32,7 @@ install(
 
 
 install(FILES
-        basis_function_handler.h
-        connectivity_handler.h
-        matrix_utils.h
+        element_generator.h
+        element_integration_point.h
         DESTINATION "${include_install_dir}")
 

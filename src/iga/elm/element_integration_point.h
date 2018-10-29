@@ -12,34 +12,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <array>
+#ifndef SRC_IGA_ELEMENT_INTEGRATION_POINT_H_
+#define SRC_IGA_ELEMENT_INTEGRATION_POINT_H_
 
-#ifndef SRC_IGA_INTEGRATION_POINT_IGA_H_
-#define SRC_IGA_INTEGRATION_POINT_IGA_H_
+#include <vector>
 
 namespace iga {
-template<int DIM>
-class IntegrationPoint {
+namespace elm {
+class ElementIntegrationPoint {
  public:
-  IntegrationPoint(const std::array<double, DIM> &coordinates, double weight)
-      : coordinates_(coordinates), weight_(weight) {}
+  explicit ElementIntegrationPoint(std::vector<double> basis_functions);
 
-  int GetDimension() const {
-    return DIM;
-  }
-
-  std::array<double, DIM> GetCoordinates() const {
-    return coordinates_;
-  }
-
-  double GetWeight() const {
-    return weight_;
-  }
+  std::vector<double> GetNonZeroBasisFunctions() const;
+  int GetNumberOfNonZeroBasisFunctions() const;
+  double GetBasisFunctionValue(int firstNonZeroOffset) const;
 
  private:
-  std::array<double, DIM> coordinates_;
-  double weight_;
+  std::vector<double> non_zero_basis_functions_;
 };
+}  // namespace elm
 }  // namespace iga
 
-#endif  // SRC_IGA_INTEGRATION_POINT_IGA_H_
+#endif  // SRC_IGA_ELEMENT_INTEGRATION_POINT_H_

@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IGA_BASIS_FUNCTION_H_
 #define SRC_IGA_BASIS_FUNCTION_H_
 
-#include "element_integration_point_iga.h"
+#include "element_integration_point.h"
 #include "spline.h"
 
 namespace iga {
@@ -23,21 +23,7 @@ class BasisFunctionHandler {
  public:
   explicit BasisFunctionHandler(std::shared_ptr<spl::Spline<2>> spl) : spline_(std::move(spl)) {}
 
-  std::vector<iga::ElementIntegrationPoint>
-  EvaluateAllElementNonZeroBasisFunctions(int direction,
-                                          int element_number,
-                                          const iga::IntegrationRule<1> &rule) const {
-    iga::Element element = GetElementList(direction)[element_number];
-    std::vector<iga::ElementIntegrationPoint> element_integration_points;
-    std::vector<double> non_zero_basis_functions;
-    for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      ParamCoord integration_point =
-          ReferenceSpace2ParameterSpace(element.GetNode(1), element.GetNode(0), rule.GetCoordinate(i, 0));
-      non_zero_basis_functions = EvaluateAllNonZeroBasisFunctions(direction, ParamCoord{integration_point});
-      element_integration_points.emplace_back(iga::ElementIntegrationPoint(non_zero_basis_functions));
-    }
-    return element_integration_points;
-  }
+  
 
  private:
   std::shared_ptr<spl::Spline<2>> spline_;

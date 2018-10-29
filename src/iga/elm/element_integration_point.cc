@@ -12,22 +12,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "element_integration_point_iga.h"
+#include "element_integration_point.h"
 
 #include <vector>
 
-iga::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions)
+iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions)
     : non_zero_basis_functions_(std::move(basis_functions)) {}
 
-std::vector<double> iga::ElementIntegrationPoint::GetNonZeroBasisFunctions() const {
+std::vector<double> iga::elm::ElementIntegrationPoint::GetNonZeroBasisFunctions() const {
   return non_zero_basis_functions_;
 }
 
-int iga::ElementIntegrationPoint::GetNumberOfNonZeroBasisFunctions() const {
+int iga::elm::ElementIntegrationPoint::GetNumberOfNonZeroBasisFunctions() const {
   return static_cast<int>(non_zero_basis_functions_.size());
 }
 
-double iga::ElementIntegrationPoint::GetBasisFunctionValue(int firstNonZeroOffset) const {
+double iga::elm::ElementIntegrationPoint::GetBasisFunctionValue(int firstNonZeroOffset) const {
 #ifdef DEBUG
   return non_zero_basis_functions_.at(firstNonZeroOffset);
 #else

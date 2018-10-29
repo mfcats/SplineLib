@@ -12,31 +12,26 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_ELEMENT_IGA_H_
-#define SRC_IGA_ELEMENT_IGA_H_
+#ifndef SRC_IGA_THREE_POINT_GAUSS_LEGENDRE_H_
+#define SRC_IGA_THREE_POINT_GAUSS_LEGENDRE_H_
 
-#include <memory>
-#include <vector>
+#include <cmath>
+#include <array>
 
-#include "control_point.h"
-#include "knot_vector.h"
+#include "integration_rule.h"
 
 namespace iga {
-class Element {
+namespace itg {
+template<int DIM>
+class ThreePointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  Element(int dimension, const std::vector<ParamCoord> &nodes);
-
-  int GetDimension() const;
-
-  int GetNumberOfNodes() const;
-
-  ParamCoord GetNode(int number) const;
-
- private:
-  int dimension_;
-  int number_of_nodes_;
-  std::vector<ParamCoord> nodes_;
+  ThreePointGaussLegendre() : IntegrationRule<DIM>(
+      {IntegrationPoint<1>(std::array<double, 1>{-sqrt(3.0 / 5)}, 5.0 / 9.0),
+       IntegrationPoint<1>(std::array<double, 1>{0}, 8.0 / 9.0),
+       IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0 / 5)},
+                           5.0 / 9.0)}) {}
 };
+}  // namespace itg
 }  // namespace iga
 
-#endif  // SRC_IGA_ELEMENT_IGA_H_
+#endif  // SRC_IGA_THREE_POINT_GAUSS_LEGENDRE_H_

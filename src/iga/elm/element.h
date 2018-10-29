@@ -12,23 +12,33 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_ELEMENT_INTEGRATION_POINT_IGA_H_
-#define SRC_IGA_ELEMENT_INTEGRATION_POINT_IGA_H_
+#ifndef SRC_IGA_ELEMENT_H_
+#define SRC_IGA_ELEMENT_H_
 
+#include <memory>
 #include <vector>
 
-namespace iga {
-class ElementIntegrationPoint {
- public:
-  explicit ElementIntegrationPoint(std::vector<double> basis_functions);
+#include "control_point.h"
+#include "knot_vector.h"
 
-  std::vector<double> GetNonZeroBasisFunctions() const;
-  int GetNumberOfNonZeroBasisFunctions() const;
-  double GetBasisFunctionValue(int firstNonZeroOffset) const;
+namespace iga {
+namespace elm {
+class Element {
+ public:
+  Element(int dimension, const std::vector<ParamCoord> &nodes);
+
+  int GetDimension() const;
+
+  int GetNumberOfNodes() const;
+
+  ParamCoord GetNode(int number) const;
 
  private:
-  std::vector<double> non_zero_basis_functions_;
+  int dimension_;
+  int number_of_nodes_;
+  std::vector<ParamCoord> nodes_;
 };
+}  // namespace elm
 }  // namespace iga
 
-#endif  // SRC_IGA_ELEMENT_INTEGRATION_POINT_IGA_H_
+#endif  // SRC_IGA_ELEMENT_H_

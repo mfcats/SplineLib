@@ -12,23 +12,24 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_ELEMENT_GENERATOR_IGA_H_
-#define SRC_IGA_ELEMENT_GENERATOR_IGA_H_
+#ifndef SRC_IGA_ELEMENT_GENERATOR_H_
+#define SRC_IGA_ELEMENT_GENERATOR_H_
 
 #include <vector>
 
-#include "element_iga.h"
+#include "element.h"
 #include "named_type.h"
 #include "spline.h"
 
 namespace iga {
+namespace elm {
 template<int DIM>
 class ElementGenerator {
  public:
   explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spline_(std::move(spl)) {}
 
-  std::vector<iga::Element> GetElementList(int direction) {
-    std::vector<iga::Element> elements;
+  std::vector<iga::elm::Element> GetElementList(int direction) {
+    std::vector<iga::elm::Element> elements;
     for (uint64_t k = 0; k < spline_->GetKnotVector(direction)->GetNumberOfKnots() - spline_->GetDegree(direction).get() - 1;
          ++k) {
       if ((GetLowerElementBound(k, direction).get() - GetHigherElementBound(k, direction).get()) != 0) {
@@ -78,6 +79,7 @@ class ElementGenerator {
 
   std::shared_ptr<spl::Spline<DIM>> spline_;
 };
+}  // namespace elm
 }  // namespace iga
 
-#endif  // SRC_IGA_ELEMENT_GENERATOR_IGA_H_
+#endif  // SRC_IGA_ELEMENT_GENERATOR_H_

@@ -13,15 +13,12 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-add_subdirectory(itg)
-add_subdirectory(elm)
-
-add_library(splinelibiga INTERFACE)
-target_include_directories(splinelibiga INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibiga INTERFACE splinelibspl splinelibigaitg splinelibigaelm)
+add_library(splinelibigaitg INTERFACE)
+target_include_directories(splinelibigaitg INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 install(
-        TARGETS splinelibiga
+        TARGETS splinelibigaitg
         EXPORT "${targets_export_name}"
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
@@ -31,8 +28,12 @@ install(
 
 
 install(FILES
-        basis_function_handler.h
-        connectivity_handler.h
-        matrix_utils.h
+        five_point_gauss_legendre.h
+        four_point_gauss_legendre.h
+        three_point_gauss_legendre.h
+        two_point_gauss_legendre.h
+        one_point_gauss_legendre.h
+        integration_point.h
+        integration_rule.h
         DESTINATION "${include_install_dir}")
 

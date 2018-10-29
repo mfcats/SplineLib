@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <vector>
 
-#include "element_generator_iga.h"
+#include "element_generator.h"
 #include "matrix_utils.h"
 #include "spline.h"
 
@@ -35,7 +35,7 @@ class ConnectivityHandler {
   }
 
   void SetConnectivityMatrix() {
-    iga::ElementGenerator element_generator_(spline);
+    iga::elm::ElementGenerator element_generator_(spline);
     for (uint64_t i = 0; i < element_generator_.GetElementList(1).size(); ++i) {
       for (uint64_t j = 0; j < element_generator_.GetElementList(0).size(); ++j) {
         std::vector<int> temp;
@@ -50,7 +50,7 @@ class ConnectivityHandler {
   }
 
   void SetElementConnectivity() {
-    iga::ElementGenerator element_generator_(spline);
+    iga::elm::ElementGenerator element_generator_(spline);
     std::array<int, 2> knot_multiplicity = {0, 0};
     for (int i = 0; i < 2; ++i) {
       for (uint64_t j = 0; j < element_generator_.GetElementList(i).size(); ++j) {

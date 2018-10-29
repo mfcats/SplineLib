@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <b_spline.h>
 #include "gmock/gmock.h"
 
-#include "element_generator_iga.h"
+#include "element_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -25,7 +25,7 @@ class A1DElement : public Test {
   A1DElement() : element(1, {ParamCoord(0.5), ParamCoord(1.0)}) {}
 
  protected:
-  iga::Element element;
+  iga::elm::Element element;
 };
 
 TEST_F(A1DElement, ReturnsCorrectDimension) { // NOLINT
@@ -63,7 +63,7 @@ class A1DElementGenerator : public Test {
   A1DElementGenerator() : element_generator(b_spline) {}
 
  protected:
-  iga::ElementGenerator<1> element_generator;
+  iga::elm::ElementGenerator<1> element_generator;
 };
 
 TEST_F(A1DElementGenerator, ReturnsCorrectNumberOfElements) { // NOLINT

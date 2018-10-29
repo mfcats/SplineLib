@@ -12,15 +12,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_FOUR_POINT_GAUSS_LEGENDRE_IGA_H_
-#define SRC_IGA_FOUR_POINT_GAUSS_LEGENDRE_IGA_H_
+#ifndef SRC_IGA_FOUR_POINT_GAUSS_LEGENDRE_H_
+#define SRC_IGA_FOUR_POINT_GAUSS_LEGENDRE_H_
 
 #include <cmath>
 #include <array>
 
-#include "integration_rule_iga.h"
+#include "integration_rule.h"
 
 namespace iga {
+namespace itg {
 template<int DIM>
 class FourPointGaussLegendre : public IntegrationRule<DIM> {
  public:
@@ -36,6 +37,7 @@ class FourPointGaussLegendre : public IntegrationRule<DIM> {
                                                                            sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))},
                                                                        (18.0 - sqrt(30)) / 36)}) {}
 };
+}  // namespace itg
 }  // namespace iga
 
-#endif  // SRC_IGA_FOUR_POINT_GAUSS_LEGENDRE_IGA_H_
+#endif  // SRC_IGA_FOUR_POINT_GAUSS_LEGENDRE_H_

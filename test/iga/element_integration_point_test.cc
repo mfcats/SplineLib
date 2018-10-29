@@ -16,7 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "element_integration_point_iga.h"
+#include "element_integration_point.h"
 
 using testing::DoubleEq;
 using testing::Test;
@@ -27,7 +27,7 @@ class AElementIntegrationPoint : public Test{
 
  protected:
   std::vector<double> basis_functions_;
-  iga::ElementIntegrationPoint element_integration_point;
+  iga::elm::ElementIntegrationPoint element_integration_point;
 };
 
 TEST_F(AElementIntegrationPoint, getNonZeroBasisFunctions) { //NOLINT

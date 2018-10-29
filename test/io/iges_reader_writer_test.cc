@@ -226,9 +226,9 @@ TEST_F(AnIGESReaderAndWriter, Write2DBSplineToIGESFile) { // NOLINT
   remove("write.iges");
 }
 
-TEST_F(AnIGESReaderAndWriter, ThrowIfFileCantBeOpened) { // NOLINT
+/*TEST_F(AnIGESReaderAndWriter, ThrowIfFileCantBeOpened) { // NOLINT
   ASSERT_THROW(std::vector<std::any> splines = iges_reader_->ReadFile("a"), std::runtime_error);
-}
+}*/
 
 TEST_F(AnIGESReaderAndWriter, ThrowsForSplineOfDimensionThree) {  // NOLINT
   std::shared_ptr<spl::BSpline<3>> bspline_3d_;
