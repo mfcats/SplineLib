@@ -13,27 +13,12 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-
-set(SOURCES
-        b_spline_basis_function.cc
-		basis_function_handler.cc
-        basis_function_factory.cc
-        control_point.cc
-        knot_vector.cc
-        zero_degree_b_spline_basis_function.cc
-        )
-
-add_library(splinelibbaf SHARED ${SOURCES})
-target_include_directories(splinelibbaf PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibbaf splinelibutil)
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-	target_compile_options(splinelibbaf PUBLIC ${RUNTIME_CHECKS_DEBUG} ${WARNING_FLAGS})
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-	target_compile_options(splinelibbaf PUBLIC ${OPTIMIZATION_FLAGS} ${WARNING_FLAGS} ${PARALLELIZATION_FLAGS})
-endif ()
+add_library(splinelibigaitg INTERFACE)
+target_include_directories(splinelibigaitg INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 install(
-        TARGETS splinelibbaf
+        TARGETS splinelibigaitg
         EXPORT "${targets_export_name}"
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
@@ -41,11 +26,14 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
+
 install(FILES
-        b_spline_basis_function.h
-        basis_function.h
-        basis_function_factory.h
-        control_point.h
-        knot_vector.h
-        zero_degree_b_spline_basis_function.h
+        five_point_gauss_legendre.h
+        four_point_gauss_legendre.h
+        three_point_gauss_legendre.h
+        two_point_gauss_legendre.h
+        one_point_gauss_legendre.h
+        integration_point.h
+        integration_rule.h
         DESTINATION "${include_install_dir}")
+
