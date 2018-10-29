@@ -27,20 +27,20 @@ class ElementGenerator {
  public:
   explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spline_(std::move(spl)) {}
 
-  std::vector<iga::Element> GetElementList(int index) {
+  std::vector<iga::Element> GetElementList(int direction) {
     std::vector<iga::Element> elements;
-    for (uint64_t k = 0; k < spline_->GetKnotVector(index)->GetNumberOfKnots() - spline_->GetDegree(index).get() - 1;
+    for (uint64_t k = 0; k < spline_->GetKnotVector(direction)->GetNumberOfKnots() - spline_->GetDegree(direction).get() - 1;
          ++k) {
-      if ((GetLowerElementBound(k, index).get() - GetHigherElementBound(k, index).get()) != 0) {
-        elements.emplace_back(Element(1, GetElementNodes(k, index)));
+      if ((GetLowerElementBound(k, direction).get() - GetHigherElementBound(k, direction).get()) != 0) {
+        elements.emplace_back(Element(1, GetElementNodes(k, direction)));
       }
     }
     return elements;
   }
 
-  std::vector<int> GetKnotMultiplicity(int index) {
+  std::vector<int> GetKnotMultiplicity(int direction) {
     std::vector<int> knot_multiplicity;
-    std::vector<ParamCoord> internal_knots = GetInternalKnots(index);
+    std::vector<ParamCoord> internal_knots = GetInternalKnots(direction);
     int temp = 0;
     for (uint64_t j = 0; j < internal_knots.size() - 1; ++j) {
       if (internal_knots[j].get() == internal_knots[j + 1].get()) {
@@ -53,10 +53,10 @@ class ElementGenerator {
     return knot_multiplicity;
   }
 
-  std::vector<ParamCoord> GetInternalKnots(int index) {
-    std::vector<ParamCoord> knots = spline_->GetKnots().at(uint64_t(index));
+  std::vector<ParamCoord> GetInternalKnots(int direction) {
+    std::vector<ParamCoord> knots = spline_->GetKnots().at(uint64_t(direction));
     std::vector<ParamCoord> internal_knots;
-    int degree = spline_->GetDegree(index).get();
+    int degree = spline_->GetDegree(direction).get();
     for (auto j = uint64_t(degree); j < knots.size() - degree; ++j) {
       internal_knots.emplace_back(knots[j]);
     }
@@ -64,16 +64,16 @@ class ElementGenerator {
   }
 
  private:
-  ParamCoord GetLowerElementBound(uint64_t currentKnot, int index) {
-    return spline_->GetKnotVector(index)->GetKnots()[currentKnot];
+  ParamCoord GetLowerElementBound(uint64_t currentKnot, int direction) {
+    return spline_->GetKnotVector(direction)->GetKnots()[currentKnot];
   }
 
-  ParamCoord GetHigherElementBound(uint64_t currentKnot, int index) {
-    return spline_->GetKnotVector(index)->GetKnots()[currentKnot + 1];
+  ParamCoord GetHigherElementBound(uint64_t currentKnot, int direction) {
+    return spline_->GetKnotVector(direction)->GetKnots()[currentKnot + 1];
   }
 
-  std::vector<ParamCoord> GetElementNodes(uint64_t currentKnot, int index) {
-    return {GetLowerElementBound(currentKnot, index), GetHigherElementBound(currentKnot, index)};
+  std::vector<ParamCoord> GetElementNodes(uint64_t currentKnot, int direction) {
+    return {GetLowerElementBound(currentKnot, direction), GetHigherElementBound(currentKnot, direction)};
   }
 
   std::shared_ptr<spl::Spline<DIM>> spline_;

@@ -12,31 +12,34 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_ELM_ELEMENT_H_
-#define SRC_ELM_ELEMENT_H_
+#include <array>
 
-#include <memory>
-#include <vector>
+#ifndef SRC_IGA_INTEGRATION_POINT_IGA_H_
+#define SRC_IGA_INTEGRATION_POINT_IGA_H_
 
-#include "control_point.h"
-#include "knot_vector.h"
-
-namespace elm {
-class Element {
+namespace iga {
+template<int DIM>
+class IntegrationPoint {
  public:
-  Element(int dimension, const std::vector<ParamCoord> &nodes);
+  IntegrationPoint(const std::array<double, DIM> &coordinates, double weight)
+      : coordinates_(coordinates), weight_(weight) {}
 
-  int GetDimension() const;
+  int GetDimension() const {
+    return DIM;
+  }
 
-  int GetNumberOfNodes() const;
+  std::array<double, DIM> GetCoordinates() const {
+    return coordinates_;
+  }
 
-  ParamCoord GetNode(int number) const;
+  double GetWeight() const {
+    return weight_;
+  }
 
  private:
-  int dimension_;
-  int number_of_nodes_;
-  std::vector<ParamCoord> nodes_;
+  std::array<double, DIM> coordinates_;
+  double weight_;
 };
-}  // namespace elm
+}  // namespace iga
 
-#endif  // SRC_ELM_ELEMENT_H_
+#endif  // SRC_IGA_INTEGRATION_POINT_IGA_H_

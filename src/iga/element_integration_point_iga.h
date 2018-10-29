@@ -12,12 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_ELM_ELEMENT_INTEGRATION_POINT_H_
-#define SRC_ELM_ELEMENT_INTEGRATION_POINT_H_
+#ifndef SRC_IGA_ELEMENT_INTEGRATION_POINT_IGA_H_
+#define SRC_IGA_ELEMENT_INTEGRATION_POINT_IGA_H_
 
 #include <vector>
 
-namespace elm {
+namespace iga {
 class ElementIntegrationPoint {
  public:
   explicit ElementIntegrationPoint(std::vector<double> basis_functions);
@@ -29,6 +29,6 @@ class ElementIntegrationPoint {
  private:
   std::vector<double> non_zero_basis_functions_;
 };
-}  // namespace elm
+}  // namespace iga
 
-#endif  // SRC_ELM_ELEMENT_INTEGRATION_POINT_H_
+#endif  // SRC_IGA_ELEMENT_INTEGRATION_POINT_IGA_H_

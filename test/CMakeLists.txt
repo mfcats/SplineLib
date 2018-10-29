@@ -24,8 +24,8 @@ set(TEST_SOURCES
         util/multihandler_test.cc
         iga/element_test.cc
         io/iges_reader_writer_test.cc
-        integration_rule_test.cc
-        integration_point_test.cc
+        iga/integration_rule_test.cc
+        iga/integration_point_test.cc
         spl/projection_curve_test.cc
         spl/projection_surface_test.cc
         spl/nurbs_test.cc
@@ -35,7 +35,7 @@ set(TEST_SOURCES
         spl/physical_space_test.cc
         spl/weighted_physical_space_test.cc
         baf/basis_function_factory.cc
-        element_integration_point_test.cc
+        iga/element_integration_point_test.cc
         io/irit_reader_writer_test.cc
         io/xml_reader_test.cc
         io/xml_writer_test.cc
@@ -46,7 +46,7 @@ find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
 
 add_executable(SplineLibTests ${TEST_SOURCES})
-target_link_libraries(SplineLibTests splinelibbaf splinelibelm splinelibitg splinelibiga splinelibspl splinelibutil splinelibio GMock::Main)
+target_link_libraries(SplineLibTests splinelibbaf splinelibiga splinelibspl splinelibutil splinelibio GMock::Main)
 
 set(ACCEPTANCE_TEST_SOURCES
         acceptance_tests.cc)

@@ -23,7 +23,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "control_point.h"
-#include "integration_rule.h"
 #include "knot_vector.h"
 #include "multi_index_handler.h"
 #include "parameter_space.h"
@@ -92,36 +91,6 @@ class Spline {
   virtual int GetDimension() = 0;
   virtual double GetControlPoint(std::array<int, DIM> indices, int dimension) = 0;
 
-  std::vector<elm::Element> GetElementList() const {
-    return parameter_space_->GetElementList(0);
-  }
-
-  std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctions(
-      int element_number,
-      const itg::IntegrationRule<1> &rule) const {
-    return parameter_space_->EvaluateAllElementNonZeroBasisFunctions(0, element_number, rule);
-  }
-
-  std::vector<elm::ElementIntegrationPoint> EvaluateAllElementNonZeroBasisFunctionDerivatives(
-      int element_number,
-      const itg::IntegrationRule<1> &rule) const {
-    return ParameterSpace2PhysicalSpace(
-        parameter_space_->EvaluateAllElementNonZeroBasisFunctionDerivatives(0, element_number, rule),
-        element_number,
-        rule);
-  }
-
-  double JacobianDeterminant(int element_number, int integration_point, const itg::IntegrationRule<1> &rule) const {
-    elm::Element element = GetElementList()[element_number];
-    double dx_dxi = EvaluateDerivative({ReferenceSpace2ParameterSpace(element.GetNode(0),
-                                                                      element.GetNode(1),
-                                                                      rule.GetCoordinate(integration_point, 0))},
-                                       {0},
-                                       {1})[0];
-    double dxi_dtildexi = (element.GetNode(1) - element.GetNode(0)).get() / 2.0;
-    return dx_dxi * dxi_dtildexi;
-  }
-
   virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;
 
   double GetExpansion() const {
@@ -153,31 +122,6 @@ class Spline {
                                                     std::array<int, DIM> derivative,
                                                     std::array<int, DIM> indices,
                                                     int dimension) const = 0;
-
-  std::vector<elm::ElementIntegrationPoint> ParameterSpace2PhysicalSpace(
-      std::vector<elm::ElementIntegrationPoint> element_integration_points,
-      int element_number,
-      const itg::IntegrationRule<1> &rule) const {
-    elm::Element element = GetElementList()[element_number];
-    for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      std::vector<double> element_non_zero_basis_functions = element_integration_points[i].GetNonZeroBasisFunctions();
-      std::transform(element_non_zero_basis_functions.cbegin(),
-                     element_non_zero_basis_functions.cend(),
-                     element_non_zero_basis_functions.begin(),
-                     std::bind(std::divides<double>(), std::placeholders::_1,
-                               EvaluateDerivative(
-                                   {ReferenceSpace2ParameterSpace(element.GetNode(0),
-                                                                  element.GetNode(1),
-                                                                  rule.GetCoordinate(i, 0))}, {0}, {1})[0]));
-
-      element_integration_points[i] = elm::ElementIntegrationPoint(element_non_zero_basis_functions);
-    }
-    return element_integration_points;
-  }
-
-  ParamCoord ReferenceSpace2ParameterSpace(ParamCoord upper, ParamCoord lower, double point) const {
-    return parameter_space_->ReferenceSpace2ParameterSpace(upper, lower, point);
-  }
 
   std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
     return parameter_space_->GetArrayOfFirstNonZeroBasisFunctions(param_coord);

@@ -14,7 +14,8 @@
 #
 
 set(SOURCES
-        element_iga.cc)
+        element_iga.cc
+        element_integration_point_iga.cc)
 
 add_library(splinelibiga SHARED ${SOURCES})
 target_include_directories(splinelibiga PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)

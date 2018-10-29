@@ -12,30 +12,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#include "element_integration_point_iga.h"
 
-#include "integration_point.h"
+#include <vector>
 
-using testing::Test;
-using testing::DoubleEq;
+iga::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions)
+    : non_zero_basis_functions_(std::move(basis_functions)) {}
 
-class A1DIntegrationPoint : public Test {
- public:
-  A1DIntegrationPoint() : integration_point_({1.5}, 0.5) {}
-
- protected:
-  itg::IntegrationPoint<1> integration_point_;
-};
-
-TEST_F(A1DIntegrationPoint, ReturnsCorrectCoordinate) { // NOLINT
-  ASSERT_THAT(integration_point_.GetCoordinates().size(), 1);
-  ASSERT_THAT(integration_point_.GetCoordinates()[0], DoubleEq(1.5));
+std::vector<double> iga::ElementIntegrationPoint::GetNonZeroBasisFunctions() const {
+  return non_zero_basis_functions_;
 }
 
-TEST_F(A1DIntegrationPoint, ReturnsCorrectWeight) { // NOLINT
-  ASSERT_THAT(integration_point_.GetWeight(), DoubleEq(0.5));
+int iga::ElementIntegrationPoint::GetNumberOfNonZeroBasisFunctions() const {
+  return static_cast<int>(non_zero_basis_functions_.size());
 }
 
-TEST_F(A1DIntegrationPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(integration_point_.GetDimension(), 1);
+double iga::ElementIntegrationPoint::GetBasisFunctionValue(int firstNonZeroOffset) const {
+#ifdef DEBUG
+  return non_zero_basis_functions_.at(firstNonZeroOffset);
+#else
+  return non_zero_basis_functions_[firstNonZeroOffset];
+#endif
 }

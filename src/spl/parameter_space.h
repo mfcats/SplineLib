@@ -15,16 +15,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_PARAMETER_SPACE_H_
 #define SRC_SPL_PARAMETER_SPACE_H_
 
+#include <array>
+#include <memory>
 #include <sstream>
 #include <vector>
 
 #include "basis_function.h"
 #include "basis_function_factory.h"
-#include "element_generator.h"
-#include "element.h"
-#include "integration_rule.h"
 #include "knot_vector.h"
-#include "element_integration_point.h"
 
 namespace spl {
 template<int DIM>
@@ -98,47 +96,6 @@ class ParameterSpace {
       value *= basis_functions_[i][indices[i]]->EvaluateDerivative(param_coord[i], Derivative{derivative[i]});
     }
     return value;
-  }
-
-  std::vector<elm::ElementIntegrationPoint>
-  EvaluateAllElementNonZeroBasisFunctions(int direction,
-                                          int element_number,
-                                          const itg::IntegrationRule<1> &rule) const {
-    elm::Element element = GetElementList(direction)[element_number];
-    std::vector<elm::ElementIntegrationPoint> element_integration_points;
-    std::vector<double> non_zero_basis_functions;
-    for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      ParamCoord integration_point =
-          ReferenceSpace2ParameterSpace(element.GetNode(1), element.GetNode(0), rule.GetCoordinate(i, 0));
-      non_zero_basis_functions = EvaluateAllNonZeroBasisFunctions(direction, ParamCoord{integration_point});
-      element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_functions));
-    }
-    return element_integration_points;
-  }
-
-  std::vector<elm::ElementIntegrationPoint>
-  EvaluateAllElementNonZeroBasisFunctionDerivatives(int direction,
-                                                    int element_number,
-                                                    const itg::IntegrationRule<1> &rule) const {
-    elm::Element element = GetElementList(direction)[element_number];
-    std::vector<elm::ElementIntegrationPoint> element_integration_points;
-    std::vector<double> non_zero_basis_function_derivatives;
-    for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      ParamCoord integration_point =
-          ReferenceSpace2ParameterSpace(element.GetNode(1), element.GetNode(0), rule.GetCoordinate(i, 0));
-      non_zero_basis_function_derivatives =
-          EvaluateAllNonZeroBasisFunctionDerivatives(direction, ParamCoord{integration_point}, 1);
-      element_integration_points.emplace_back(elm::ElementIntegrationPoint(non_zero_basis_function_derivatives));
-    }
-    return element_integration_points;
-  }
-
-  std::vector<elm::Element> GetElementList(int direction) const {
-    return elm::ElementGenerator(degree_[direction].get(), *(knot_vector_[direction])).GetElementList();
-  }
-
-  ParamCoord ReferenceSpace2ParameterSpace(ParamCoord upper, ParamCoord lower, double point) const {
-    return ParamCoord{((upper - lower).get() * point + (upper + lower).get()) / 2.0};
   }
 
   virtual std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {

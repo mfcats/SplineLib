@@ -12,23 +12,24 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "element.h"
+#ifndef SRC_IGA_THREE_POINT_GAUSS_LEGENDRE_IGA_H_
+#define SRC_IGA_THREE_POINT_GAUSS_LEGENDRE_IGA_H_
 
-elm::Element::Element(int dimension, const std::vector<ParamCoord> &nodes)
-    : dimension_(dimension), number_of_nodes_(static_cast<int>(nodes.size())), nodes_(nodes) {}
+#include <cmath>
+#include <array>
 
-int elm::Element::GetDimension() const {
-  return dimension_;
-}
+#include "integration_rule_iga.h"
 
-int elm::Element::GetNumberOfNodes() const {
-  return number_of_nodes_;
-}
+namespace iga {
+template<int DIM>
+class ThreePointGaussLegendre : public IntegrationRule<DIM> {
+ public:
+  ThreePointGaussLegendre() : IntegrationRule<DIM>(
+      {IntegrationPoint<1>(std::array<double, 1>{-sqrt(3.0 / 5)}, 5.0 / 9.0),
+       IntegrationPoint<1>(std::array<double, 1>{0}, 8.0 / 9.0),
+       IntegrationPoint<1>(std::array<double, 1>{sqrt(3.0 / 5)},
+                           5.0 / 9.0)}) {}
+};
+}  // namespace iga
 
-ParamCoord elm::Element::GetNode(int number) const {
-#ifdef DEBUG
-  return nodes_.at(number);
-#else
-  return nodes_[number];
-#endif
-}
+#endif  // SRC_IGA_THREE_POINT_GAUSS_LEGENDRE_IGA_H_

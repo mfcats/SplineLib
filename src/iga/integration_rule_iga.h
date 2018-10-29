@@ -12,22 +12,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_ITG_INTEGRATION_RULE_H_
-#define SRC_ITG_INTEGRATION_RULE_H_
+#ifndef SRC_IGA_INTEGRATION_RULE_IGA_H_
+#define SRC_IGA_INTEGRATION_RULE_IGA_H_
 
 #include <cmath>
 #include <vector>
 
-#include "integration_point.h"
+#include "integration_point_iga.h"
 #include "multi_index_handler.h"
 
-namespace itg {
+namespace iga {
 template<int DIM>
 class IntegrationRule {
  public:
   virtual ~IntegrationRule() = default;
 
-  explicit IntegrationRule(const std::vector<IntegrationPoint<1>> &points) : points_(points) {}
+  explicit IntegrationRule(std::vector<IntegrationPoint<1>> points) : points_(std::move(points)) {}
 
   int GetNumberOfIntegrationPoints() const {
     return pow(points_.size(), DIM);
@@ -64,6 +64,6 @@ class IntegrationRule {
  private:
   std::vector<IntegrationPoint<1>> points_;
 };
-}  // namespace itg
+}  // namespace iga
 
-#endif  // SRC_ITG_INTEGRATION_RULE_H_
+#endif  // SRC_IGA_INTEGRATION_RULE_IGA_H_

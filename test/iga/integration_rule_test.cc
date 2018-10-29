@@ -14,13 +14,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "five_point_gauss_legendre.h"
-#include "four_point_gauss_legendre.h"
-#include "integration_rule.h"
+#include "five_point_gauss_legendre_iga.h"
+#include "four_point_gauss_legendre_iga.h"
+#include "integration_rule_iga.h"
 #include "numeric_settings.h"
-#include "one_point_gauss_legendre.h"
-#include "three_point_gauss_legendre.h"
-#include "two_point_gauss_legendre.h"
+#include "one_point_gauss_legendre_iga.h"
+#include "three_point_gauss_legendre_iga.h"
+#include "two_point_gauss_legendre_iga.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -29,15 +29,15 @@ using testing::DoubleNear;
 class A1DIntegrationRule : public Test {
  public:
   A1DIntegrationRule() {
-    rules_.emplace_back(itg::OnePointGaussLegendre<1>());
-    rules_.emplace_back(itg::TwoPointGaussLegendre<1>());
-    rules_.emplace_back(itg::ThreePointGaussLegendre<1>());
-    rules_.emplace_back(itg::FourPointGaussLegendre<1>());
-    rules_.emplace_back(itg::FivePointGaussLegendre<1>());
+    rules_.emplace_back(iga::OnePointGaussLegendre<1>());
+    rules_.emplace_back(iga::TwoPointGaussLegendre<1>());
+    rules_.emplace_back(iga::ThreePointGaussLegendre<1>());
+    rules_.emplace_back(iga::FourPointGaussLegendre<1>());
+    rules_.emplace_back(iga::FivePointGaussLegendre<1>());
   }
 
  protected:
-  std::vector<itg::IntegrationRule<1>> rules_;
+  std::vector<iga::IntegrationRule<1>> rules_;
 };
 
 TEST_F(A1DIntegrationRule, ReturnsCorrectNumberOfPoints) { // NOLINT
@@ -68,10 +68,10 @@ TEST_F(A1DIntegrationRule, ReturnsCorrectPointSum) { // NOLINT
 
 class A2DIntegrationRuleWith3Points : public Test {
  public:
-  A2DIntegrationRuleWith3Points() : rule_(itg::ThreePointGaussLegendre<2>()) {}
+  A2DIntegrationRuleWith3Points() : rule_(iga::ThreePointGaussLegendre<2>()) {}
 
  protected:
-  itg::IntegrationRule<2> rule_;
+  iga::IntegrationRule<2> rule_;
 };
 
 TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) { // NOLINT
@@ -106,9 +106,9 @@ TEST_F(A2DIntegrationRuleWith3Points, ReturnsCorrectPointSum) { // NOLINT
 }
 
 TEST(A3DIntegrationRuleWith3Points, ReturnsCorrectNumberOfPoints) { // NOLINT
-  ASSERT_THAT(itg::ThreePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 27);
+  ASSERT_THAT(iga::ThreePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 27);
 }
 
 TEST(A3DIntegrationRuleWith1Point, ReturnsCorrectNumberOfPoints) { // NOLINT
-  ASSERT_THAT(itg::OnePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 1);
+  ASSERT_THAT(iga::OnePointGaussLegendre<3>().GetNumberOfIntegrationPoints(), 1);
 }

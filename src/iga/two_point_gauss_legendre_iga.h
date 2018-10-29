@@ -12,17 +12,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_ITG_ONE_POINT_GAUSS_LEGENDRE_H_
-#define SRC_ITG_ONE_POINT_GAUSS_LEGENDRE_H_
+#ifndef SRC_IGA_TWO_POINT_GAUSS_LEGENDRE_IGA_H_
+#define SRC_IGA_TWO_POINT_GAUSS_LEGENDRE_IGA_H_
 
-#include "integration_rule.h"
+#include <cmath>
+#include <array>
 
-namespace itg {
+#include "integration_rule_iga.h"
+
+namespace iga {
 template<int DIM>
-class OnePointGaussLegendre : public IntegrationRule<DIM> {
+class TwoPointGaussLegendre : public IntegrationRule<DIM> {
  public:
-  OnePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{0}, 2)}) {}
+  TwoPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{-sqrt(1.0 / 3)}, 1),
+                                                  IntegrationPoint<1>(std::array<double, 1>{sqrt(1.0 / 3)},
+                                                                      1)}) {}
 };
-}  // namespace itg
+}  // namespace iga
 
-#endif  // SRC_ITG_ONE_POINT_GAUSS_LEGENDRE_H_
+#endif  // SRC_IGA_TWO_POINT_GAUSS_LEGENDRE_IGA_H_

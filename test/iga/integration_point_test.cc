@@ -12,25 +12,30 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "element_integration_point.h"
+#include "gmock/gmock.h"
 
-#include <vector>
+#include "integration_point_iga.h"
 
-elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions)
-    : non_zero_basis_functions_(std::move(basis_functions)) {}
+using testing::Test;
+using testing::DoubleEq;
 
-std::vector<double> elm::ElementIntegrationPoint::GetNonZeroBasisFunctions() const {
-  return non_zero_basis_functions_;
+class A1DIntegrationPoint : public Test {
+ public:
+  A1DIntegrationPoint() : integration_point_({1.5}, 0.5) {}
+
+ protected:
+  iga::IntegrationPoint<1> integration_point_;
+};
+
+TEST_F(A1DIntegrationPoint, ReturnsCorrectCoordinate) { // NOLINT
+  ASSERT_THAT(integration_point_.GetCoordinates().size(), 1);
+  ASSERT_THAT(integration_point_.GetCoordinates()[0], DoubleEq(1.5));
 }
 
-int elm::ElementIntegrationPoint::GetNumberOfNonZeroBasisFunctions() const {
-  return static_cast<int>(non_zero_basis_functions_.size());
+TEST_F(A1DIntegrationPoint, ReturnsCorrectWeight) { // NOLINT
+  ASSERT_THAT(integration_point_.GetWeight(), DoubleEq(0.5));
 }
 
-double elm::ElementIntegrationPoint::GetBasisFunctionValue(int firstNonZeroOffset) const {
-#ifdef DEBUG
-  return non_zero_basis_functions_.at(firstNonZeroOffset);
-#else
-  return non_zero_basis_functions_[firstNonZeroOffset];
-#endif
+TEST_F(A1DIntegrationPoint, ReturnsCorrectDimension) { // NOLINT
+  ASSERT_THAT(integration_point_.GetDimension(), 1);
 }
