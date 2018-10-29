@@ -15,11 +15,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IGA_BASIS_FUNCTION_HANDLER_H_
 #define SRC_IGA_BASIS_FUNCTION_HANDLER_H_
 
-#include <array>
 #include <math.h>
+#include <array>
 #include <vector>
 
 #include "element_integration_point.h"
+#include "mapping_handler.h"
 #include "nurbs.h"
 
 namespace iga {
@@ -80,6 +81,19 @@ class BasisFunctionHandler {
           nurbs_basis_functions[i] * sum_der_eta) / pow(sum_baf, 2);
     }
     return nurbs_basis_function_derivatives;
+  }
+
+  std::array<std::vector<double>, 2> GetDrDx(std::array<ParamCoord, 2> param_coord) {
+    std::array<std::vector<double>, 2> dr_dx;
+    MappingHandler mapping_handler(spline_);
+    std::array<std::vector<double>, 2> dr_dxi = EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coord);
+    for (int i = 0; i < dr_dxi[0].size(); ++i) {
+      dr_dx[0].emplace_back(dr_dxi[0][i] * mapping_handler.GetDxiDx(param_coord)[0][0]
+                            + dr_dxi[1][i] * mapping_handler.GetDxiDx(param_coord)[1][0]);
+      dr_dx[1].emplace_back(dr_dxi[0][i] * mapping_handler.GetDxiDx(param_coord)[0][1]
+                            + dr_dxi[1][i] * mapping_handler.GetDxiDx(param_coord)[1][1]);
+    }
+    return dr_dx;
   }
 
  private:

@@ -305,9 +305,6 @@ class IGESWriter {
     localtime_r(&timer, &ptm);
     std::string date = GetString((ptm.tm_year + 1900) * 10000 + (ptm.tm_mon + 1) * 100 + ptm.tm_mday);
     std::string time = GetString(ptm.tm_hour * 10000 + ptm.tm_min * 100 + ptm.tm_sec);
-    if (time.size() == 5) {
-      time = '0' + time;
-    }
     return GetHollerithFormat(date + "." + time);
   }
 
