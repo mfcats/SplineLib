@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_ELEMENT_H_
-#define SRC_IGA_ELEMENT_H_
+#ifndef SRC_IGA_ELM_ELEMENT_H_
+#define SRC_IGA_ELM_ELEMENT_H_
 
 #include <memory>
 #include <vector>
@@ -41,4 +41,4 @@ class Element {
 }  // namespace elm
 }  // namespace iga
 
-#endif  // SRC_IGA_ELEMENT_H_
+#endif  // SRC_IGA_ELM_ELEMENT_H_

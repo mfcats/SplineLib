@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_INTEGRATION_RULE_H_
-#define SRC_IGA_INTEGRATION_RULE_H_
+#ifndef SRC_IGA_ITG_INTEGRATION_RULE_H_
+#define SRC_IGA_ITG_INTEGRATION_RULE_H_
 
 #include <cmath>
 #include <vector>
@@ -68,4 +68,4 @@ class IntegrationRule {
 }  // namespace itg
 }  // namespace iga
 
-#endif  // SRC_IGA_INTEGRATION_RULE_H_
+#endif  // SRC_IGA_ITG_INTEGRATION_RULE_H_

@@ -40,7 +40,7 @@ set(TEST_SOURCES
         io/xml_reader_test.cc
         io/xml_writer_test.cc
         io/io_converter_test.cc
-        iga/iga_test.cc)
+        iga/connectivity_handler_test.cc)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})

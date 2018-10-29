@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_FIVE_POINT_GAUSS_LEGENDRE_H_
-#define SRC_IGA_FIVE_POINT_GAUSS_LEGENDRE_H_
+#ifndef SRC_IGA_ITG_FIVE_POINT_GAUSS_LEGENDRE_H_
+#define SRC_IGA_ITG_FIVE_POINT_GAUSS_LEGENDRE_H_
 
 #include <cmath>
 #include <array>
@@ -41,4 +41,4 @@ class FivePointGaussLegendre : public IntegrationRule<DIM> {
 }  // namespace itg
 }  // namespace iga
 
-#endif  // SRC_IGA_FIVE_POINT_GAUSS_LEGENDRE_H_
+#endif  // SRC_IGA_ITG_FIVE_POINT_GAUSS_LEGENDRE_H_

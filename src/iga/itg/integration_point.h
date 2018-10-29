@@ -14,8 +14,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <array>
 
-#ifndef SRC_IGA_INTEGRATION_POINT_H_
-#define SRC_IGA_INTEGRATION_POINT_H_
+#ifndef SRC_IGA_ITG_INTEGRATION_POINT_H_
+#define SRC_IGA_ITG_INTEGRATION_POINT_H_
 
 namespace iga {
 namespace itg {
@@ -44,4 +44,4 @@ class IntegrationPoint {
 }  // namespace itg
 }  // namespace iga
 
-#endif  // SRC_IGA_INTEGRATION_POINT_H_
+#endif  // SRC_IGA_ITG_INTEGRATION_POINT_H_

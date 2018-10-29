@@ -15,16 +15,38 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IGA_BASIS_FUNCTION_HANDLER_H_
 #define SRC_IGA_BASIS_FUNCTION_HANDLER_H_
 
+#include <array>
+#include <vector>
+
 #include "element_integration_point.h"
-#include "spline.h"
+#include "nurbs.h"
 
 namespace iga {
 class BasisFunctionHandler {
  public:
-  explicit BasisFunctionHandler(std::shared_ptr<spl::Spline<2>> spl) : spline_(std::move(spl)) {}
+  explicit BasisFunctionHandler(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {}
+
+  EvaluateAllNonZeroNURBSBasisFunctions(std::array<ParamCoord, 2> param_coord) {
+    std::array<std::vector<double>, 2> basis_functions;
+    basis_functions[0] = spline_->EvaluateAllNonZeroBasisFunctions(0, param_coord[0]);
+    basis_functions[1] = spline_->EvaluateAllNonZeroBasisFunctions(1, param_coord[1]);
+    std::vector<double> nurbs_basis_functions;
+    double sum = 0;
+    for (int i = 0; i < basis_functions[1].size(); ++i) {
+      for (int j = 0; j < basis_functions[0].size(); ++j) {
+        double temp = 0;
+        temp = basis_functions[0](j) * basis_functions[1](i) * spline_->GetWeight({j, i});
+        sum += temp;
+        nurbs_basis_functions.emplace_back(temp);
+      }
+    }
+    for (int i = 0; i < nurbs_basis_functions.size(); ++i) {
+      nurbs_basis_functions[i] = nurbs_basis_functions[i] / sum;
+    }
+  }
 
  private:
-  std::shared_ptr<spl::Spline<2>> spline_;
+  std::shared_ptr<spl::NURBS<2>> spline_;
 };
 }  // namespace iga
 

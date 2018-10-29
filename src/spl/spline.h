@@ -78,6 +78,16 @@ class Spline {
     return evaluated_point;
   }
 
+  std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParamCoord param_coord) const {
+    return parameter_space_->EvaluateAllNonZeroBasisFunctions(direction, param_coord);
+  }
+
+  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(int direction,
+                                                                 ParamCoord param_coord,
+                                                                 int derivative) const {
+    return parameter_space_->EvaluateAllNonZeroBasisFunctionDerivatives(direction, param_coord, derivative);
+  }
+
   Degree GetDegree(int i) const {
     return parameter_space_->GetDegree(i);
   }

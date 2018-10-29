@@ -14,14 +14,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "b_spline.h"
 #include "nurbs.h"
 #include "connectivity_handler.h"
 
 using testing::Eq;
 using testing::Test;
 
-class IGA2D : public Test {
+class AConnectivityHandler : public Test {
  public:
   std::array<baf::KnotVector, 2> knot_vector =
       {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.4}, ParamCoord{0.5},
@@ -102,7 +101,7 @@ class IGA2D : public Test {
   std::shared_ptr<spl::NURBS<2>> nurbs_ = std::make_shared<spl::NURBS<2>>(kv_ptr, degree, control_points, weights);
 };
 
-TEST_F(IGA2D, TestConnectivityHandler) { // NOLINT
+TEST_F(AConnectivityHandler, TestConnectivityHandler) { // NOLINT
   iga::ConnectivityHandler connectivity_handler = iga::ConnectivityHandler(nurbs_);
   std::vector<int> e1 = {1, 2, 3, 4, 8, 9, 10, 11, 15, 16, 17, 18, 22, 23, 24, 25};
   std::vector<int> e2 = {2, 3, 4, 5, 9, 10, 11, 12, 16, 17, 18, 19, 23, 24, 25, 26};

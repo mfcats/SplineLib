@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_ELEMENT_INTEGRATION_POINT_H_
-#define SRC_IGA_ELEMENT_INTEGRATION_POINT_H_
+#ifndef SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
+#define SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
 
 #include <vector>
 
@@ -33,4 +33,4 @@ class ElementIntegrationPoint {
 }  // namespace elm
 }  // namespace iga
 
-#endif  // SRC_IGA_ELEMENT_INTEGRATION_POINT_H_
+#endif  // SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
