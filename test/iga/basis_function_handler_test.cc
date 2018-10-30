@@ -15,9 +15,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <vector>
 
+#include <iostream>
+
 #include "gmock/gmock.h"
 
 #include "basis_function_handler.h"
+#include "element_integration_point.h"
+#include "integration_rule.h"
+#include "two_point_gauss_legendre.h"
 #include "nurbs.h"
 #include "test_spline.h"
 
@@ -66,6 +71,28 @@ TEST_F(AnIGATestSpline, TestBasisFunctionHandlerDerivativePhysical) { // NOLINT
   for (int i = 0; i < 2; ++i) {
     for (int j = 0; j < splinelib_nurbs_baf_der_phy.at(i).size(); ++j) {
       ASSERT_THAT(splinelib_nurbs_baf_der_phy.at(i).at(j), DoubleNear(matlab_nurbs_baf_der_phy.at(i).at(j), 0.00005));
+    }
+  }
+}
+
+TEST_F(AnIGATestSpline, ElementNURBSBasisFunctions) { // NOLINT
+  iga::BasisFunctionHandler basis_function_handler(nurbs_);
+  iga::itg::IntegrationRule<2> rule = iga::itg::TwoPointGaussLegendre<2>();
+  std::vector<iga::elm::ElementIntegrationPoint> splinelib_element_intg_pnts =
+      basis_function_handler.EvaluateAllElementNonZeroNURBSBasisFunctions(0, rule);
+  std::vector<double> i1 = {0.240652,0.203999,0.0434425,0.00246914,0.193447,0.163984,0.0349212,0.00198481,0.051834,
+                            0.0439395,0.0093571,0.000531828,0.00462963,0.00392451,0.000835743,4.7501e-05};
+  std::vector<double> i2 = {0.00462963,0.10015,0.257436,0.128348,0.00372152,0.080505,0.206939,0.103172,0.000997177,
+                            0.0215712,0.0554492,0.0276448,8.90643e-05,0.00192667,0.00495252,0.00246914};
+  std::vector<double> i3 = {0.00462963,0.00392451,0.000835743,4.7501e-05,0.051834,0.0439395,0.0093571,0.000531828,
+                            0.193447,0.163984,0.0349212,0.00198481,0.240652,0.203999,0.0434425,0.00246914};
+  std::vector<double> i4 = {8.90643e-05,0.00192667,0.00495252,0.00246914,0.000997177,0.0215712,0.0554492,0.0276448,
+                            0.00372152,0.080505,0.206939,0.103172,0.00462963,0.10015,0.257436,0.128348};
+  std::vector<std::vector<double>> matlab_element_intg_pnts = {i1, i2, i3, i4};
+  for (int i = 0; i < splinelib_element_intg_pnts.size(); ++i) {
+    for (int j = 0; j < splinelib_element_intg_pnts[i].GetNonZeroBasisFunctions().size(); ++j) {
+      ASSERT_THAT(splinelib_element_intg_pnts[i].GetNonZeroBasisFunctions()[j],
+          DoubleNear(matlab_element_intg_pnts[i][j], 0.00005));
     }
   }
 }
