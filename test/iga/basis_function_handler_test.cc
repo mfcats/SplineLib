@@ -120,9 +120,9 @@ TEST_F(AnIGATestSpline, ElementNURBSBasisFunctionDerivatives) { // NOLINT
   std::vector<std::vector<std::vector<double>>> matlab_element_intg_pnts = {{i1_1, i2_1, i3_1, i4_1},
                                                                             {i1_2, i2_2, i3_2, i4_2}};
   for (int i = 0; i < 2; ++i) {
-    for (int j = 0; j < splinelib_element_intg_pnts[i].size(); ++j) {
-      for (int k = 0; k < splinelib_element_intg_pnts[i][j].GetNonZeroBasisFunctions().size(); ++k) {
-        ASSERT_THAT(splinelib_element_intg_pnts[i][j].GetNonZeroBasisFunctions()[k],
+    for (int j = 0; j < splinelib_element_intg_pnts.at(i).size(); ++j) {
+      for (int k = 0; k < splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions().size(); ++k) {
+        ASSERT_THAT(splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions()[k],
                     DoubleNear(matlab_element_intg_pnts[i][j][k], 0.00005));
       }
     }
@@ -153,9 +153,9 @@ TEST_F(AnIGATestSpline, ElementIntgPntDrDx) { // NOLINT
   std::vector<std::vector<std::vector<double>>> matlab_element_intg_pnts = {{i1_1, i2_1, i3_1, i4_1},
                                                                             {i1_2, i2_2, i3_2, i4_2}};
   for (int i = 0; i < 2; ++i) {
-    for (int j = 0; j < splinelib_element_intg_pnts[i].size(); ++j) {
-      for (int k = 0; k < splinelib_element_intg_pnts[i][j].GetNonZeroBasisFunctions().size(); ++k) {
-        ASSERT_THAT(splinelib_element_intg_pnts[i][j].GetNonZeroBasisFunctions()[k],
+    for (int j = 0; j < splinelib_element_intg_pnts.at(i).size(); ++j) {
+      for (int k = 0; k < splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions().size(); ++k) {
+        ASSERT_THAT(splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions()[k],
                     DoubleNear(matlab_element_intg_pnts[i][j][k], 0.00005));
       }
     }
