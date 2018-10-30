@@ -16,7 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const nurbs_T,
                                         std::shared_ptr<spl::NURBS<1>> const nurbs_C) {
-  this->parameter_space_= JoinParameterSpaces(nurbs_T->GetParameterSpace(), nurbs_C->GetParameterSpace());
+  this->parameter_space_ = JoinParameterSpaces(nurbs_T->GetParameterSpace(), nurbs_C->GetParameterSpace());
   this->physical_space_ = JoinPhysicalSpaces(nurbs_T->GetPhysicalSpace(), nurbs_C->GetPhysicalSpace());
 }
 
@@ -30,7 +30,7 @@ std::shared_ptr<spl::ParameterSpace<2>> spl::SurfaceGenerator::JoinParameterSpac
 
 std::shared_ptr<spl::WeightedPhysicalSpace<2>> spl::SurfaceGenerator::JoinPhysicalSpaces(
     std::shared_ptr<spl::PhysicalSpace<1>> const space_1, std::shared_ptr<spl::PhysicalSpace<1>> const space_2) const {
-  std::array<int, 2> joined_number_of_points =
+  std::array<int, 2> j_number_of_points =
       {space_1->GetNumberOfControlPoints(), space_2->GetNumberOfControlPoints()};
   std::vector<baf::ControlPoint> joined_control_points;
   std::vector<double> joined_weights;
@@ -38,7 +38,7 @@ std::shared_ptr<spl::WeightedPhysicalSpace<2>> spl::SurfaceGenerator::JoinPhysic
     std::array<int, 1> index_space_2 = {i};
     for (int j = 0; j < space_1->GetNumberOfControlPoints(); ++j) {
       std::array<int, 1> index_space_1 = {j};
-      joined_control_points.emplace_back(space_1->GetControlPoint(index_space_1) +
+      j_control_points.emplace_back(space_1->GetControlPoint(index_space_1) +
                                          space_2->GetControlPoint(index_space_2));
       joined_weights.emplace_back(space_1->GetWeight(index_space_1) * space_2->GetWeight(index_space_2));
     }

@@ -118,3 +118,7 @@ TEST_F(A2DPhysicalSpace, ReturnsCorrectLastControlPointFor1DIndex) {  // NOLINT
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{5}).GetValue(0), DoubleEq(5.0));
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{5}).GetValue(1), DoubleEq(1.0));
 }
+
+TEST_F(A2DPhysicalSpace, ReturnDefaultWeight) { // NOLINT
+  ASSERT_THAT(physical_space.GetWeight(std::array<int, 2>{1,2}), DoubleEq(1.0));
+}
