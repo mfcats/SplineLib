@@ -15,8 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_NURBS_GENERATOR_H_
 #define SRC_SPL_NURBS_GENERATOR_H_
 
-#include <vector>
 #include <fpu_control.h>
+#include <vector>
 
 #include "spline_generator.h"
 #include "weighted_physical_space.h"
