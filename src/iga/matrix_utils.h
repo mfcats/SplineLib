@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IGA_MATRIX_UTILS_H_
 #define SRC_IGA_MATRIX_UTILS_H_
 
+#include <array>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -36,6 +37,20 @@ class MatrixUtils {
       }
       std::cout << std::endl;
     }
+  }
+
+  static std::array<std::array<double, 2>, 2> Get2By2Inverse(std::array<std::array<double, 2>, 2> matrix) {
+    std::array<std::array<double, 2>, 2> inverse;
+    double factor = 1 / Get2By2Determinant(matrix);
+    inverse[0][0] = factor * matrix[1][1];
+    inverse[0][1] = factor * matrix[0][1] * (-1);
+    inverse[1][0] = factor * matrix[1][0] * (-1);
+    inverse[1][1] = factor * matrix[0][0];
+    return inverse;
+  }
+
+  static double Get2By2Determinant(std::array<std::array<double, 2>, 2> matrix) {
+    return (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
   }
 };
 }  // namespace iga

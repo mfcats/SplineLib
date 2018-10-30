@@ -41,7 +41,9 @@ set(TEST_SOURCES
         io/xml_writer_test.cc
         io/io_converter_test.cc
         iga/connectivity_handler_test.cc
-		spl/surface_generator_test.cc)
+        iga/basis_function_handler_test.cc
+        iga/mapping_handler_test.cc
+	spl/surface_generator_test.cc)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
