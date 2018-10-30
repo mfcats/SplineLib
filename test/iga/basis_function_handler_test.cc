@@ -15,8 +15,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <vector>
 
-#include <iostream>
-
 #include "gmock/gmock.h"
 
 #include "basis_function_handler.h"
