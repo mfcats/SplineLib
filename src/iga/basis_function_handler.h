@@ -103,14 +103,14 @@ class BasisFunctionHandler {
 
   std::array<int, 2> Get1DElementNumbers(int element_number) {
     element_number += 1;
-    int number_of_elements_xi = int(element_generator_->GetElementList(0).size());
+    int number_of_elements_xi = static_cast<int>(element_generator_->GetElementList(0).size());
     int q = element_number / number_of_elements_xi;
     int r = element_number % number_of_elements_xi;
     std::array<int, 2> element_number_1d;
     if (r == 0) {
       element_number_1d[1] = q - 1;
       element_number_1d[0] = number_of_elements_xi - 1;
-    } else if(r != 0) {
+    } else if (r != 0) {
       element_number_1d[1] = q;
       element_number_1d[0] = r - 1;
     }
