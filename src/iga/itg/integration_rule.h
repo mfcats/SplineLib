@@ -34,6 +34,10 @@ class IntegrationRule {
     return pow(points_.size(), DIM);
   }
 
+  int GetNumberOfIntegrationPointsPerDirection() const {
+    return points_.size();
+  }
+
   double GetCoordinate(int point, int dimension) const {
 #ifdef DEBUG
     return points_.at(point).GetCoordinates().at(dimension);
