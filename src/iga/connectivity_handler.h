@@ -33,6 +33,7 @@ class ConnectivityHandler {
     return connectivity;
   }
 
+ private:
   void SetConnectivityMatrix() {
     iga::elm::ElementGenerator element_generator_(spline);
     for (uint64_t i = 0; i < element_generator_.GetElementList(1).size(); ++i) {
