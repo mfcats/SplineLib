@@ -44,9 +44,7 @@ TEST_F(A1DBNURBSVTKWriter, CreatesVTKFile) {  // NOLINT
   vtk_writer_->WriteFile({nurbs_1d_any}, "1d_spline.vtk", {{10}});
   std::ifstream newFile;
   newFile.open("1d_spline.vtk");
-  if (!newFile.good()) {
-    throw std::runtime_error("VTK file could not be opened.");
-  }
+  ASSERT_THAT(newFile.good(), true);
   std::string line, file;
   while (getline(newFile, line)) {
     file += line + "\n";
@@ -91,9 +89,7 @@ TEST_F(A2DBNURBSVTKWriter, CreatesVTKFile) {  // NOLINT
   vtk_writer_->WriteFile({nurbs_2d_any}, "2d_spline.vtk", {{20, 20}});
   std::ifstream newFile;
   newFile.open("2d_spline.vtk");
-  if (!newFile.good()) {
-    throw std::runtime_error("VTK file could not be opened.");
-  }
+  ASSERT_THAT(newFile.good(), true);
   std::string line, file;
   while (getline(newFile, line)) {
     file += line + "\n";
@@ -139,9 +135,7 @@ TEST_F(A3DBNURBSVTKWriter, CreatesVTKFile) {  // NOLINT
   vtk_writer_->WriteFile({nurbs_3d_any}, "3d_spline.vtk", {{4, 3, 2}});
   std::ifstream newFile;
   newFile.open("3d_spline.vtk");
-  if (!newFile.good()) {
-    throw std::runtime_error("VTK file could not be opened.");
-  }
+  ASSERT_THAT(newFile.good(), true);
   std::string line, file;
   while (getline(newFile, line)) {
     file += line + "\n";
