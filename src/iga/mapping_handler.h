@@ -23,10 +23,15 @@ class MappingHandler {
  public:
   explicit MappingHandler(std::shared_ptr<spl::Spline<2>> spl) : spline_(std::move(spl)) {}
 
+  std::array<std::array<double, 2>, 2> GetDxiDx(std::array<ParamCoord, 2> param_coord) const {
+    return iga::MatrixUtils::Get2By2Inverse(GetDxDxi(param_coord));
+  }
+
   double GetJacobianDeterminant(std::array<ParamCoord, 2> param_coord) const {
     return iga::MatrixUtils::Get2By2Determinant(GetDxDxitilde(param_coord));
   }
 
+ private:
   std::array<std::array<double, 2>, 2> GetDxDxitilde(std::array<ParamCoord, 2> param_coord) const {
     std::array<std::array<double, 2>, 2> dx_dxitilde;
     std::array<std::array<double, 2>, 2> dx_dxi = GetDxDxi(param_coord);
@@ -46,10 +51,6 @@ class MappingHandler {
     dx_dxi[1][0] = spline_->EvaluateDerivative(param_coord, {1}, {1, 0})[0];
     dx_dxi[1][1] = spline_->EvaluateDerivative(param_coord, {1}, {0, 1})[0];
     return dx_dxi;
-  }
-
-  std::array<std::array<double, 2>, 2> GetDxiDx(std::array<ParamCoord, 2> param_coord) const {
-    return iga::MatrixUtils::Get2By2Inverse(GetDxDxi(param_coord));
   }
 
   std::array<double, 2> GetDxiDxitilde(std::array<ParamCoord, 2> param_coord) const {
