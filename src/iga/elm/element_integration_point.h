@@ -23,12 +23,16 @@ class ElementIntegrationPoint {
  public:
   explicit ElementIntegrationPoint(std::vector<double> basis_functions);
 
+  ElementIntegrationPoint(std::vector<double> basis_functions, double weight_);
+
   std::vector<double> GetNonZeroBasisFunctions() const;
+  double GetWeight() const;
   int GetNumberOfNonZeroBasisFunctions() const;
   double GetBasisFunctionValue(int firstNonZeroOffset) const;
 
  private:
   std::vector<double> non_zero_basis_functions_;
+  double weight_;
 };
 }  // namespace elm
 }  // namespace iga
