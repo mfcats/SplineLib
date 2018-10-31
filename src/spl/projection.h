@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "b_spline.h"
+#include "element_generator.h"
 #include "knot_vector.h"
 #include "vector_utils.h"
 
@@ -81,7 +82,8 @@ class Projection {
   static std::array<ParamCoord, DIM> FindInitialValue1D(const std::vector<double> &point_phys_coords,
                                                         const std::shared_ptr<spl::Spline<DIM>> &spline,
                                                         const std::vector<int> &dimensions) {
-    std::vector<elm::Element> elements = spline->GetElementList();
+    iga::elm::ElementGenerator element_generator(spline);
+    std::vector<iga::elm::Element> elements = element_generator.GetElementList(0);
     std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
     std::vector<double> splinePhysicalCoords =
         spline->Evaluate({ParamCoord{(0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0)).get())}}, dimensions);

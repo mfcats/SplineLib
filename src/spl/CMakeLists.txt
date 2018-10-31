@@ -18,7 +18,7 @@ set(SOURCES
 
 add_library(splinelibspl SHARED ${SOURCES})
 target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibspl splinelibitg splinelibelm)
+target_link_libraries(splinelibspl splinelibbaf)
 
 install(
         TARGETS splinelibspl
