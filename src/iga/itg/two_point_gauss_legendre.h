@@ -22,12 +22,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace iga {
 namespace itg {
-template<int DIM>
-class TwoPointGaussLegendre : public IntegrationRule<DIM> {
+class TwoPointGaussLegendre : public IntegrationRule {
  public:
-  TwoPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{-sqrt(1.0 / 3)}, 1),
-                                                  IntegrationPoint<1>(std::array<double, 1>{sqrt(1.0 / 3)},
-                                                                      1)}) {}
+  TwoPointGaussLegendre() : IntegrationRule({IntegrationPoint(-sqrt(1.0 / 3), 1),
+                                             IntegrationPoint(sqrt(1.0 / 3), 1)}) {}
 };
 }  // namespace itg
 }  // namespace iga

@@ -19,18 +19,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace iga {
 namespace itg {
-template<int DIM>
 class IntegrationPoint {
  public:
-  IntegrationPoint(const std::array<double, DIM> &coordinates, double weight)
-      : coordinates_(coordinates), weight_(weight) {}
+  IntegrationPoint(double coordinate, double weight)
+      : coordinate_(coordinate), weight_(weight) {}
 
-  int GetDimension() const {
-    return DIM;
-  }
-
-  std::array<double, DIM> GetCoordinates() const {
-    return coordinates_;
+  double GetCoordinate() const {
+    return coordinate_;
   }
 
   double GetWeight() const {
@@ -38,7 +33,7 @@ class IntegrationPoint {
   }
 
  private:
-  std::array<double, DIM> coordinates_;
+  double coordinate_;
   double weight_;
 };
 }  // namespace itg

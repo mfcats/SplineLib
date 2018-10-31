@@ -19,10 +19,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace iga {
 namespace itg {
-template<int DIM>
-class OnePointGaussLegendre : public IntegrationRule<DIM> {
+class OnePointGaussLegendre : public IntegrationRule {
  public:
-  OnePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{0}, 2)}) {}
+  OnePointGaussLegendre() : IntegrationRule({IntegrationPoint(0, 2)}) {}
 };
 }  // namespace itg
 }  // namespace iga
