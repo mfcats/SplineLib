@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <vector>
 
+#include "connectivity_handler.h"
 #include "element.h"
 #include "element_generator.h"
 #include "element_integration_point.h"
@@ -81,11 +82,13 @@ class BasisFunctionHandler {
       spline_->EvaluateAllNonZeroBasisFunctions(1, param_coord[1])});
     std::vector<double> nurbs_basis_functions;
     double sum = 0;
-    for (auto &baf_eta : basis_functions[1]) {
-      for (auto &baf_xi : basis_functions[0]) {
-        double temp = baf_xi * baf_eta;               // WEIGHTS MISSING
+    int l = 0;
+    for (int i = 0; i < basis_functions[1].size(); ++i) {
+      for (int j = 0; j < basis_functions[0].size(); ++j) {
+        double temp = basis_functions[0][j] * basis_functions[1][i] * GetWeight(param_coord, l);
         sum += temp;
         nurbs_basis_functions.emplace_back(temp);
+        l += 1;
       }
     }
     for (int i = 0; i < nurbs_basis_functions.size(); ++i) {
@@ -107,17 +110,19 @@ class BasisFunctionHandler {
     double sum_baf = 0;
     double sum_der_xi = 0;
     double sum_der_eta = 0;
+    int l = 0;
     for (int i = 0; i < basis_function_derivatives[1].size(); ++i) {
       for (int j = 0; j < basis_function_derivatives[0].size(); ++j) {
-        double temp = basis_functions[0][j] * basis_functions[1][i]; // * spline_->GetWeight({j, i});
-        double temp_der_xi = basis_function_derivatives[0][j] * basis_functions[1][i]; // * spline_->GetWeight({j, i});
-        double temp_der_eta = basis_functions[0][j] * basis_function_derivatives[1][i]; // * spline_->GetWeight({j, i});
+        double temp = basis_functions[0][j] * basis_functions[1][i] * GetWeight(param_coord, l);
+        double temp_der_xi = basis_function_derivatives[0][j] * basis_functions[1][i] * GetWeight(param_coord, l);
+        double temp_der_eta = basis_functions[0][j] * basis_function_derivatives[1][i] * GetWeight(param_coord, l);
         sum_baf += temp;
         sum_der_xi += temp_der_xi;
         sum_der_eta += temp_der_eta;
         nurbs_basis_functions.emplace_back(temp);
         nurbs_basis_function_derivatives[0].emplace_back(temp_der_xi);
         nurbs_basis_function_derivatives[1].emplace_back(temp_der_eta);
+        l += 1;
       }
     }
     for (int i = 0; i < basis_functions.size(); ++i) {
@@ -142,10 +147,18 @@ class BasisFunctionHandler {
     return dr_dx;
   }
 
+  double GetWeight(std::array<ParamCoord, 2> param_coord, int local_index) const {
+    int element_number = element_generator_->GetElementNumber(param_coord);
+    iga::ConnectivityHandler ch(spline_);
+    return spline_->GetWeights()[ch.GetConnectivity()[element_number][local_index] - 1];
+  }
+
   std::array<ParamCoord, 2> Ref2ParamSpace(int element_number, iga::itg::IntegrationPoint itg_pnt_xi,
       iga::itg::IntegrationPoint itg_pnt_eta) const {
-    iga::elm::Element element_xi = element_generator_->GetElementList(0)[Get1DElementNumbers(element_number)[0]];
-    iga::elm::Element element_eta = element_generator_->GetElementList(1)[Get1DElementNumbers(element_number)[1]];
+    iga::elm::Element element_xi = element_generator_->GetElementList(0)[
+        element_generator_->Get1DElementNumbers(element_number)[0]];
+    iga::elm::Element element_eta = element_generator_->GetElementList(1)[
+        element_generator_->Get1DElementNumbers(element_number)[1]];
     ParamCoord upper_xi = element_xi.GetNode(1);
     ParamCoord lower_xi = element_xi.GetNode(0);
     ParamCoord upper_eta = element_eta.GetNode(1);
@@ -153,22 +166,6 @@ class BasisFunctionHandler {
     return std::array<ParamCoord, 2>({
       ParamCoord{((upper_xi - lower_xi).get() * itg_pnt_xi.GetCoordinate() + (upper_xi + lower_xi).get()) / 2.0},
       ParamCoord{((upper_eta - lower_eta).get() * itg_pnt_eta.GetCoordinate() + (upper_eta + lower_eta).get()) / 2.0}});
-  }
-
-  std::array<int, 2> Get1DElementNumbers(int element_number) const {
-    element_number += 1;
-    int number_of_elements_xi = static_cast<int>(element_generator_->GetElementList(0).size());
-    int q = element_number / number_of_elements_xi;
-    int r = element_number % number_of_elements_xi;
-    std::array<int, 2> element_number_1d;
-    if (r == 0) {
-      element_number_1d[1] = q - 1;
-      element_number_1d[0] = number_of_elements_xi - 1;
-    } else if (r != 0) {
-      element_number_1d[1] = q;
-      element_number_1d[0] = r - 1;
-    }
-    return element_number_1d;
   }
 
   std::shared_ptr<spl::NURBS<2>> spline_;

@@ -83,11 +83,12 @@ class ElementGenerator {
     std::vector<ParamCoord> unique_knots_xi = GetUniqueKnots(0);
     std::vector<ParamCoord> unique_knots_eta = GetUniqueKnots(1);
     for (int i = 0; i < unique_knots_xi.size(); ++i) {
-      if ((unique_knots_xi[i].get() <= param_coord[0].get()) && (unique_knots_xi[i + 1].get() > param_coord[0].get())) {
+      if ((unique_knots_xi[i].get() <= param_coord[1].get()) &&
+          (unique_knots_xi[i + 1].get() > param_coord[1].get())) {
         element_number_xi = i;
       }
     }
-    for (int i = 0; i < unique_knots_xi.size(); ++i) {
+    for (int i = 0; i < unique_knots_eta.size(); ++i) {
       if ((unique_knots_eta[i].get() <= param_coord[1].get()) &&
           (unique_knots_eta[i + 1].get() > param_coord[1].get())) {
         element_number_eta = i;

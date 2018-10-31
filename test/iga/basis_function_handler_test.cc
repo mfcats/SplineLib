@@ -15,6 +15,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <vector>
 
+#include <iostream>
+#include "connectivity_handler.h"
+#include "element_generator.h"
+#include "matrix_utils.h"
+
+
 #include "gmock/gmock.h"
 
 #include "basis_function_handler.h"
@@ -75,7 +81,7 @@ TEST_F(AnIGATestSpline, ElementNURBSBasisFunctionDerivatives) { // NOLINT
     for (int j = 0; j < splinelib_element_intg_pnts.at(i).size(); ++j) {
       for (int k = 0; k < splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions().size(); ++k) {
         ASSERT_THAT(splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions()[k],
-                    DoubleNear(matlab_element_intg_pnts[i][j][k], 0.00005));
+                    DoubleNear(matlab_element_intg_pnts[i][j][k], 0.0002));
       }
     }
   }
