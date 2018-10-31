@@ -65,7 +65,6 @@ class MappingHandler {
     return dxi_dxitilde;
   }
 
- private:
   std::shared_ptr<spl::Spline<2>> spline_;
 };
 }  // namespace iga

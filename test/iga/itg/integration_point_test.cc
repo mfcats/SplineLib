@@ -19,23 +19,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleEq;
 
-class A1DIntegrationPoint : public Test {
+class AnIntegrationPoint : public Test {
  public:
-  A1DIntegrationPoint() : integration_point_({1.5}, 0.5) {}
+  AnIntegrationPoint() : integration_point_(1.5, 0.5) {}
 
  protected:
-  iga::itg::IntegrationPoint<1> integration_point_;
+  iga::itg::IntegrationPoint integration_point_;
 };
 
-TEST_F(A1DIntegrationPoint, ReturnsCorrectCoordinate) { // NOLINT
-  ASSERT_THAT(integration_point_.GetCoordinates().size(), 1);
-  ASSERT_THAT(integration_point_.GetCoordinates()[0], DoubleEq(1.5));
+TEST_F(AnIntegrationPoint, ReturnsCorrectCoordinate) { // NOLINT
+  ASSERT_THAT(integration_point_.GetCoordinate(), DoubleEq(1.5));
 }
 
-TEST_F(A1DIntegrationPoint, ReturnsCorrectWeight) { // NOLINT
+TEST_F(AnIntegrationPoint, ReturnsCorrectWeight) { // NOLINT
   ASSERT_THAT(integration_point_.GetWeight(), DoubleEq(0.5));
-}
-
-TEST_F(A1DIntegrationPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(integration_point_.GetDimension(), 1);
 }

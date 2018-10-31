@@ -76,7 +76,6 @@ class ConnectivityHandler {
     }
   }
 
- private:
   std::shared_ptr<spl::Spline<2>> spline;
   std::vector<std::vector<int>> connectivity;
   std::array<std::vector<std::vector<int>>, 2> element_global;
