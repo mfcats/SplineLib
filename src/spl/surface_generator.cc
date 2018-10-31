@@ -29,7 +29,8 @@ std::shared_ptr<spl::ParameterSpace<2>> spl::SurfaceGenerator::JoinParameterSpac
 }
 
 std::shared_ptr<spl::WeightedPhysicalSpace<2>> spl::SurfaceGenerator::JoinPhysicalSpaces(
-    std::shared_ptr<spl::PhysicalSpace<1>> const &space_1, std::shared_ptr<spl::PhysicalSpace<1>> const &space_2) const {
+    std::shared_ptr<spl::PhysicalSpace<1>> const &space_1,
+    std::shared_ptr<spl::PhysicalSpace<1>> const &space_2) const {
   std::array<int, 2> j_number_of_points =
       {space_1->GetNumberOfControlPoints(), space_2->GetNumberOfControlPoints()};
   std::vector<baf::ControlPoint> j_control_points;
