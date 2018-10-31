@@ -36,16 +36,11 @@ class BasisFunctionHandler {
 
   std::vector<iga::elm::ElementIntegrationPoint>
   EvaluateAllElementNonZeroNURBSBasisFunctions(int element_number, const iga::itg::IntegrationRule &rule) {
-    iga::elm::Element element_xi = element_generator_->GetElementList(0)[Get1DElementNumbers(element_number)[0]];
-    iga::elm::Element element_eta = element_generator_->GetElementList(1)[Get1DElementNumbers(element_number)[1]];
     std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
-    for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      for (int j = 0; j < rule.GetNumberOfIntegrationPoints(); ++j) {
-        std::array<ParamCoord, 2> integration_point = std::array<ParamCoord, 2>(
-            {ParamCoord{Ref2ParamSpace(element_xi.GetNode(1), element_xi.GetNode(0), rule.GetCoordinate(j))},
-             ParamCoord{Ref2ParamSpace(element_eta.GetNode(1), element_eta.GetNode(0), rule.GetCoordinate(i))}});
+    for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
+      for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-          EvaluateAllNonZeroNURBSBasisFunctions(integration_point)));
+          EvaluateAllNonZeroNURBSBasisFunctions(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))));
       }
     }
     return element_integration_points;
@@ -53,50 +48,42 @@ class BasisFunctionHandler {
 
   std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2>
   EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(int element_number, const iga::itg::IntegrationRule &rule) {
-    iga::elm::Element element_xi = element_generator_->GetElementList(0)[Get1DElementNumbers(element_number)[0]];
-    iga::elm::Element element_eta = element_generator_->GetElementList(1)[Get1DElementNumbers(element_number)[1]];
     std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> element_integration_points;
-    for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      for (int j = 0; j < rule.GetNumberOfIntegrationPoints(); ++j) {
-          std::array<ParamCoord, 2> integration_point = std::array<ParamCoord, 2>(
-              {ParamCoord{Ref2ParamSpace(element_xi.GetNode(1), element_xi.GetNode(0), rule.GetCoordinate(j))},
-               ParamCoord{Ref2ParamSpace(element_eta.GetNode(1), element_eta.GetNode(0), rule.GetCoordinate(i))}});
-          element_integration_points[0].emplace_back(iga::elm::ElementIntegrationPoint(
-              EvaluateAllNonZeroNURBSBasisFunctionDerivatives(integration_point)[0]));
-          element_integration_points[1].emplace_back(iga::elm::ElementIntegrationPoint(
-              EvaluateAllNonZeroNURBSBasisFunctionDerivatives(integration_point)[1]));
+    for (auto &itg_p_eta : rule.GetIntegrationPoints()) {
+      for (auto &itg_p_xi : rule.GetIntegrationPoints()) {
+        element_integration_points[0].emplace_back(iga::elm::ElementIntegrationPoint(
+            EvaluateAllNonZeroNURBSBasisFunctionDerivatives(Ref2ParamSpace(element_number, itg_p_xi, itg_p_eta))[0]));
+        element_integration_points[1].emplace_back(iga::elm::ElementIntegrationPoint(
+            EvaluateAllNonZeroNURBSBasisFunctionDerivatives(Ref2ParamSpace(element_number, itg_p_xi, itg_p_eta))[1]));
       }
     }
     return element_integration_points;
   }
 
   std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> EvaluateDrDxAtEveryElemIntgPnt(int element_number,
-      const iga::itg::IntegrationRule &rule) {
-    iga::elm::Element element_xi = element_generator_->GetElementList(0)[Get1DElementNumbers(element_number)[0]];
-    iga::elm::Element element_eta = element_generator_->GetElementList(1)[Get1DElementNumbers(element_number)[1]];
+      const iga::itg::IntegrationRule &rule) const {
     std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> element_integration_points;
-    for (int i = 0; i < rule.GetNumberOfIntegrationPoints(); ++i) {
-      for (int j = 0; j < rule.GetNumberOfIntegrationPoints(); ++j) {
-        std::array<ParamCoord, 2> integration_point = std::array<ParamCoord, 2>(
-            {ParamCoord{Ref2ParamSpace(element_xi.GetNode(1), element_xi.GetNode(0), rule.GetCoordinate(j))},
-             ParamCoord{Ref2ParamSpace(element_eta.GetNode(1), element_eta.GetNode(0), rule.GetCoordinate(i))}});
-        element_integration_points[0].emplace_back(iga::elm::ElementIntegrationPoint(GetDrDx(integration_point)[0]));
-        element_integration_points[1].emplace_back(iga::elm::ElementIntegrationPoint(GetDrDx(integration_point)[1]));
+    for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
+      for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
+        element_integration_points[0].emplace_back(iga::elm::ElementIntegrationPoint(
+            GetDrDx(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))[0]));
+        element_integration_points[1].emplace_back(iga::elm::ElementIntegrationPoint(
+            GetDrDx(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))[1]));
       }
     }
     return element_integration_points;
   }
 
  private:
-  std::vector<double> EvaluateAllNonZeroNURBSBasisFunctions(std::array<ParamCoord, 2> param_coord) {
-    std::array<std::vector<double>, 2> basis_functions;
-    basis_functions[0] = spline_->EvaluateAllNonZeroBasisFunctions(0, param_coord[0]);
-    basis_functions[1] = spline_->EvaluateAllNonZeroBasisFunctions(1, param_coord[1]);
+  std::vector<double> EvaluateAllNonZeroNURBSBasisFunctions(std::array<ParamCoord, 2> param_coord) const {
+    std::array<std::vector<double>, 2> basis_functions = std::array<std::vector<double>, 2>({
+      spline_->EvaluateAllNonZeroBasisFunctions(0, param_coord[0]),
+      spline_->EvaluateAllNonZeroBasisFunctions(1, param_coord[1])});
     std::vector<double> nurbs_basis_functions;
     double sum = 0;
-    for (int i = 0; i < basis_functions[1].size(); ++i) {
-      for (int j = 0; j < basis_functions[0].size(); ++j) {
-        double temp = basis_functions[0][j] * basis_functions[1][i] * spline_->GetWeight({j, i});
+    for (auto &baf_eta : basis_functions[1]) {
+      for (auto &baf_xi : basis_functions[0]) {
+        double temp = baf_xi * baf_eta;               // WEIGHTS MISSING
         sum += temp;
         nurbs_basis_functions.emplace_back(temp);
       }
@@ -108,23 +95,23 @@ class BasisFunctionHandler {
   }
 
   std::array<std::vector<double>, 2> EvaluateAllNonZeroNURBSBasisFunctionDerivatives(
-      std::array<ParamCoord, 2> param_coord) {
+      std::array<ParamCoord, 2> param_coord) const {
+    std::array<std::vector<double>, 2> basis_functions = std::array<std::vector<double>, 2>({
+      spline_->EvaluateAllNonZeroBasisFunctions(0, param_coord[0]),
+      spline_->EvaluateAllNonZeroBasisFunctions(1, param_coord[1])});
+    std::array<std::vector<double>, 2> basis_function_derivatives = std::array<std::vector<double>, 2>({
+      spline_->EvaluateAllNonZeroBasisFunctionDerivatives(0, param_coord[0], 1),
+      spline_->EvaluateAllNonZeroBasisFunctionDerivatives(1, param_coord[1], 1)});
     std::vector<double> nurbs_basis_functions;
     std::array<std::vector<double>, 2> nurbs_basis_function_derivatives;
-    std::array<std::vector<double>, 2> basis_functions;
-    std::array<std::vector<double>, 2> basis_function_derivatives;
-    basis_functions[0] = spline_->EvaluateAllNonZeroBasisFunctions(0, param_coord[0]);
-    basis_functions[1] = spline_->EvaluateAllNonZeroBasisFunctions(1, param_coord[1]);
-    basis_function_derivatives[0] = spline_->EvaluateAllNonZeroBasisFunctionDerivatives(0, param_coord[0], 1);
-    basis_function_derivatives[1] = spline_->EvaluateAllNonZeroBasisFunctionDerivatives(1, param_coord[1], 1);
     double sum_baf = 0;
     double sum_der_xi = 0;
     double sum_der_eta = 0;
     for (int i = 0; i < basis_function_derivatives[1].size(); ++i) {
       for (int j = 0; j < basis_function_derivatives[0].size(); ++j) {
-        double temp = basis_functions[0][j] * basis_functions[1][i] * spline_->GetWeight({j, i});
-        double temp_der_xi = basis_function_derivatives[0][j] * basis_functions[1][i] * spline_->GetWeight({j, i});
-        double temp_der_eta = basis_functions[0][j] * basis_function_derivatives[1][i] * spline_->GetWeight({j, i});
+        double temp = basis_functions[0][j] * basis_functions[1][i]; // * spline_->GetWeight({j, i});
+        double temp_der_xi = basis_function_derivatives[0][j] * basis_functions[1][i]; // * spline_->GetWeight({j, i});
+        double temp_der_eta = basis_functions[0][j] * basis_function_derivatives[1][i]; // * spline_->GetWeight({j, i});
         sum_baf += temp;
         sum_der_xi += temp_der_xi;
         sum_der_eta += temp_der_eta;
@@ -143,7 +130,7 @@ class BasisFunctionHandler {
     return nurbs_basis_function_derivatives;
   }
 
-  std::array<std::vector<double>, 2> GetDrDx(std::array<ParamCoord, 2> param_coord) {
+  std::array<std::vector<double>, 2> GetDrDx(std::array<ParamCoord, 2> param_coord) const {
     std::array<std::vector<double>, 2> dr_dx;
     std::array<std::vector<double>, 2> dr_dxi = EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coord);
     for (int i = 0; i < dr_dxi[0].size(); ++i) {
@@ -155,11 +142,20 @@ class BasisFunctionHandler {
     return dr_dx;
   }
 
-  ParamCoord Ref2ParamSpace(ParamCoord upper, ParamCoord lower, double point) {
-    return ParamCoord{((upper - lower).get() * point + (upper + lower).get()) / 2.0};
+  std::array<ParamCoord, 2> Ref2ParamSpace(int element_number, iga::itg::IntegrationPoint itg_pnt_xi,
+      iga::itg::IntegrationPoint itg_pnt_eta) const {
+    iga::elm::Element element_xi = element_generator_->GetElementList(0)[Get1DElementNumbers(element_number)[0]];
+    iga::elm::Element element_eta = element_generator_->GetElementList(1)[Get1DElementNumbers(element_number)[1]];
+    ParamCoord upper_xi = element_xi.GetNode(1);
+    ParamCoord lower_xi = element_xi.GetNode(0);
+    ParamCoord upper_eta = element_eta.GetNode(1);
+    ParamCoord lower_eta = element_eta.GetNode(0);
+    return std::array<ParamCoord, 2>({
+      ParamCoord{((upper_xi - lower_xi).get() * itg_pnt_xi.GetCoordinate() + (upper_xi + lower_xi).get()) / 2.0},
+      ParamCoord{((upper_eta - lower_eta).get() * itg_pnt_eta.GetCoordinate() + (upper_eta + lower_eta).get()) / 2.0}});
   }
 
-  std::array<int, 2> Get1DElementNumbers(int element_number) {
+  std::array<int, 2> Get1DElementNumbers(int element_number) const {
     element_number += 1;
     int number_of_elements_xi = static_cast<int>(element_generator_->GetElementList(0).size());
     int q = element_number / number_of_elements_xi;

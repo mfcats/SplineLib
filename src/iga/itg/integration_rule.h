@@ -41,7 +41,7 @@ class IntegrationRule {
 #endif
   }
 
-  std::vector<IntegrationPoint> GetIntegrationPoints() {
+  std::vector<IntegrationPoint> GetIntegrationPoints() const {
     return points_;
   }
 
