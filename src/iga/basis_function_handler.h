@@ -41,7 +41,8 @@ class BasisFunctionHandler {
     for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
       for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-          EvaluateAllNonZeroNURBSBasisFunctions(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))));
+          EvaluateAllNonZeroNURBSBasisFunctions(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta)),
+          itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight()));
       }
     }
     return element_integration_points;
@@ -53,23 +54,27 @@ class BasisFunctionHandler {
     for (auto &itg_p_eta : rule.GetIntegrationPoints()) {
       for (auto &itg_p_xi : rule.GetIntegrationPoints()) {
         element_integration_points[0].emplace_back(iga::elm::ElementIntegrationPoint(
-            EvaluateAllNonZeroNURBSBasisFunctionDerivatives(Ref2ParamSpace(element_number, itg_p_xi, itg_p_eta))[0]));
+            EvaluateAllNonZeroNURBSBasisFunctionDerivatives(Ref2ParamSpace(element_number, itg_p_xi, itg_p_eta))[0],
+            itg_p_xi.GetWeight() * itg_p_eta.GetWeight()));
         element_integration_points[1].emplace_back(iga::elm::ElementIntegrationPoint(
-            EvaluateAllNonZeroNURBSBasisFunctionDerivatives(Ref2ParamSpace(element_number, itg_p_xi, itg_p_eta))[1]));
+            EvaluateAllNonZeroNURBSBasisFunctionDerivatives(Ref2ParamSpace(element_number, itg_p_xi, itg_p_eta))[1],
+            itg_p_xi.GetWeight() * itg_p_eta.GetWeight()));
       }
     }
     return element_integration_points;
   }
 
-  std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> EvaluateDrDxAtEveryElemIntgPnt(int element_number,
+  std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> EvaluateDrDxAtEveryElemItgPnt(int element_number,
       const iga::itg::IntegrationRule &rule) const {
     std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> element_integration_points;
     for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
       for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
         element_integration_points[0].emplace_back(iga::elm::ElementIntegrationPoint(
-            GetDrDx(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))[0]));
+            GetDrDx(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))[0],
+            itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight()));
         element_integration_points[1].emplace_back(iga::elm::ElementIntegrationPoint(
-            GetDrDx(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))[1]));
+            GetDrDx(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))[1],
+            itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight()));
       }
     }
     return element_integration_points;
