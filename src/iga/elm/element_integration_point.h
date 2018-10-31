@@ -21,7 +21,6 @@ namespace iga {
 namespace elm {
 class ElementIntegrationPoint {
  public:
-
   ElementIntegrationPoint(std::vector<double> basis_functions, double weight);
 
   std::vector<double> GetNonZeroBasisFunctions() const;
