@@ -16,9 +16,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <vector>
 
-iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions)
-    : non_zero_basis_functions_(std::move(basis_functions)) {}
-
 iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions, double weight)
     : non_zero_basis_functions_(std::move(basis_functions)), weight_(weight) {}
 

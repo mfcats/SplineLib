@@ -23,22 +23,28 @@ using testing::Test;
 
 class AElementIntegrationPoint : public Test{
  public:
-  AElementIntegrationPoint() : basis_functions_({2.3, 4.5}), element_integration_point(basis_functions_) {}
+  AElementIntegrationPoint() : basis_functions_({2.3, 4.5}), weight_(0.75),
+  element_integration_point(basis_functions_, weight_) {}
 
  protected:
   std::vector<double> basis_functions_;
+  double weight_;
   iga::elm::ElementIntegrationPoint element_integration_point;
 };
 
-TEST_F(AElementIntegrationPoint, getNonZeroBasisFunctions) { //NOLINT
+TEST_F(AElementIntegrationPoint, GetNonZeroBasisFunctions) { //NOLINT
   ASSERT_THAT(element_integration_point.GetNonZeroBasisFunctions()[0] , DoubleEq(2.3));
   ASSERT_THAT(element_integration_point.GetNonZeroBasisFunctions()[1] , DoubleEq(4.5));
 }
 
-TEST_F(AElementIntegrationPoint, size2) { //NOLINT
+TEST_F(AElementIntegrationPoint, SizeEqualsTwo) { //NOLINT
   ASSERT_THAT(element_integration_point.GetNumberOfNonZeroBasisFunctions(), 2);
 }
 
-TEST_F(AElementIntegrationPoint, valueAt0) { //NOLINT
+TEST_F(AElementIntegrationPoint, GetValueAtZero) { //NOLINT
   ASSERT_THAT(element_integration_point.GetBasisFunctionValue(1), DoubleEq(4.5));
+}
+
+TEST_F(AElementIntegrationPoint, GetWeight) { //NOLINT
+  ASSERT_THAT(element_integration_point.GetWeight(), DoubleEq(0.75));
 }
