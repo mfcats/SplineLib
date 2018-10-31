@@ -91,7 +91,7 @@ TEST_F(AnIGATestSpline, ElementIntgPntDrDx) { // NOLINT
   iga::BasisFunctionHandler basis_function_handler(nurbs_);
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
   std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> splinelib_element_intg_pnts =
-      basis_function_handler.EvaluateDrDxAtEveryElemIntgPnt(3, rule);
+      basis_function_handler.EvaluateDrDxAtEveryElemItgPnt(3, rule);
   std::vector<double> i1_1 = {-1.34519, -0.131682, 1.31117, 0.181808, -1.08667, -0.116567, 1.04981, 0.145953, -0.292604,
                               -0.034105, 0.28018, 0.0390564, -0.0262622, -0.00330256, 0.0249249, 0.00348376};
   std::vector<double> i2_1 = {-0.0678432, -0.711534, -0.986466, 1.78147, -0.0546353, -0.573719, -0.801208, 1.42231,
