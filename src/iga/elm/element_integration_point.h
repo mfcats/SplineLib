@@ -23,8 +23,6 @@ class ElementIntegrationPoint {
  public:
   ElementIntegrationPoint(std::vector<double> basis_functions, double weight);
 
-  ElementIntegrationPoint(std::vector<double> basis_functions, double weight);
-
   std::vector<double> GetNonZeroBasisFunctions() const;
   double GetWeight() const;
   int GetNumberOfNonZeroBasisFunctions() const;
