@@ -153,32 +153,32 @@ class A4DBNURBSVTKWriter : public Test {  // NOLINT
     std::array<Degree, 4> degree = {Degree{1}, Degree{1}, Degree{1}, Degree{1}};
     std::array<std::shared_ptr<baf::KnotVector>, 4> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+            {ParamCoord{0}, ParamCoord{0}, ParamCoord{2}, ParamCoord{2}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+            {ParamCoord{0}, ParamCoord{0}, ParamCoord{2}, ParamCoord{2}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+            {ParamCoord{0}, ParamCoord{0}, ParamCoord{2}, ParamCoord{2}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+            {ParamCoord{0}, ParamCoord{0}, ParamCoord{2}, ParamCoord{2}}))};
     std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 0.3, -0.1})),
-        baf::ControlPoint(std::vector<double>({0.2, 2.2, 0.2})),
-        baf::ControlPoint(std::vector<double>({1.5, 2.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({0.3, -0.1, 1.2})),
-        baf::ControlPoint(std::vector<double>({1.5, 0.1, 1.8})),
-        baf::ControlPoint(std::vector<double>({0.1, 2.2, 1.6})),
-        baf::ControlPoint(std::vector<double>({1.7, 2.0, 2.2})),
-        baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 0.3, -0.1})),
-        baf::ControlPoint(std::vector<double>({0.2, 2.2, 0.2})),
-        baf::ControlPoint(std::vector<double>({1.5, 2.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({0.3, -0.1, 1.2})),
-        baf::ControlPoint(std::vector<double>({1.5, 0.1, 1.8})),
-        baf::ControlPoint(std::vector<double>({0.1, 2.2, 1.6})),
-        baf::ControlPoint(std::vector<double>({1.7, 2.0, 2.2}))
+        baf::ControlPoint(std::vector<double>({1.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({3.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({4.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({6.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({7.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({8.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({9.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({10.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({11.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({12.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({13.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({14.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({15.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({16.0, 0.0, 0.0}))
     };
-    std::vector<double> weights = {3.0, 0.5, 1.8, 2.0, 1.8, 1.0, 0.8, 0.2, 3.0, 0.5, 1.8, 2.0, 1.8, 1.0, 0.8, 0.2};
+    std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
     nurbs_4d_ = std::make_shared<spl::NURBS<4>>(knot_vector, degree, control_points, weights);
   }
 
