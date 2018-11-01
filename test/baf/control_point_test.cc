@@ -21,10 +21,11 @@ using testing::DoubleEq;
 
 class AControlPoint : public Test {
  public:
-  AControlPoint() : control_point({1.0, 2.0}) {}
+  AControlPoint() : control_point({1.0, 2.0}), control_point_b({2.0, -1.0}) {}
 
  protected:
   baf::ControlPoint control_point;
+  baf::ControlPoint control_point_b;
 };
 
 TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
@@ -37,4 +38,8 @@ TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
 
 TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
   ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
+}
+
+TEST_F(AControlPoint, Returns3ForSum0Dimension) { // NOLINT
+  ASSERT_THAT((control_point + control_point_b).GetValue(0), DoubleEq(3.0));
 }

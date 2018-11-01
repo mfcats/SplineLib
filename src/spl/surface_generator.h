@@ -12,28 +12,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_BAF_CONTROL_POINT_H_
-#define SRC_BAF_CONTROL_POINT_H_
+#ifndef SRC_SPL_SURFACE_GENERATOR_H_
+#define SRC_SPL_SURFACE_GENERATOR_H_
 
-#include <initializer_list>
 #include <vector>
 
-namespace baf {
-class ControlPoint {
+#include "nurbs_generator.h"
+#include "nurbs.h"
+
+namespace spl {
+class SurfaceGenerator : public NURBSGenerator<2> {
  public:
-  explicit ControlPoint(std::initializer_list<double> coordinates);
+  SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T, std::shared_ptr<NURBS<1>> const &nurbs_C);
 
-  explicit ControlPoint(std::vector<double> coordinates);
+  std::shared_ptr<ParameterSpace<2>> JoinParameterSpaces(std::shared_ptr<ParameterSpace<1>> const &space_1,
+      std::shared_ptr<ParameterSpace<1>> const &space_2) const;
 
-  int GetDimension() const;
-
-  double GetValue(int dimension) const;
-
-  ControlPoint operator+(const ControlPoint& control_point) const;
-
- protected:
-  std::vector<double> coordinates_;
+  std::shared_ptr<WeightedPhysicalSpace<2>> JoinPhysicalSpaces(std::shared_ptr<PhysicalSpace<1>> const &space_1,
+      std::shared_ptr<PhysicalSpace<1>> const &space_2) const;
 };
-}  // namespace baf
+}  // namespace spl
 
-#endif  // SRC_BAF_CONTROL_POINT_H_
+#endif  // SRC_SPL_SURFACE_GENERATOR_H_
