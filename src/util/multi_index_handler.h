@@ -45,9 +45,28 @@ class MultiIndexHandler {
     return *this;
   }
 
+  MultiIndexHandler &operator--() {
+    for (int i = 0; i < DIM; ++i) {
+      if (current_multi_index_value_[i] == 0) {
+        current_multi_index_value_[i] = multi_index_length_[i] - 1;
+      } else {
+        current_multi_index_value_[i]--;
+        break;
+      }
+    }
+    return *this;
+  }
+
   MultiIndexHandler &operator+(int i) {
     for (int j = 0; j < i; ++j) {
       ++(*this);
+    }
+    return *this;
+  }
+
+  MultiIndexHandler &operator-(int i) {
+    for (int j = 0; j < i; ++j) {
+      --(*this);
     }
     return *this;
   }

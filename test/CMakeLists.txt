@@ -37,6 +37,7 @@ set(TEST_SOURCES
         baf/basis_function_factory.cc
         iga/elm/element_integration_point_test.cc
         io/irit_reader_writer_test.cc
+        io/vtk_writer_test.cc
         io/xml_reader_test.cc
         io/xml_writer_test.cc
         io/io_converter_test.cc
