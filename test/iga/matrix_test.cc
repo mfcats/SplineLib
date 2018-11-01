@@ -14,23 +14,26 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "integration_point.h"
+#include "matrix.h"
 
 using testing::Test;
 using testing::DoubleEq;
 
-class AnIntegrationPoint : public Test {
+class AMatrix : public Test {
  public:
-  AnIntegrationPoint() : integration_point_(1.5, 0.5) {}
-
- protected:
-  iga::itg::IntegrationPoint integration_point_;
+  AMatrix() = default;
 };
 
-TEST_F(AnIntegrationPoint, ReturnsCorrectCoordinate) { // NOLINT
-  ASSERT_THAT(integration_point_.GetCoordinate(), DoubleEq(1.5));
-}
-
-TEST_F(AnIntegrationPoint, ReturnsCorrectWeight) { // NOLINT
-  ASSERT_THAT(integration_point_.GetWeight(), DoubleEq(0.5));
+TEST_F(AMatrix, TestMatrix) { // NOLINT
+  iga::Matrix matA(2, 2);
+  matA.WriteToMatrix(1, 1, 2.5);
+  ASSERT_THAT(matA.GetMatrixEntry(1, 1), DoubleEq(2.5));
+  ASSERT_THAT(matA.GetMatrixEntry(0, 0), DoubleEq(0));
+  ASSERT_THAT(matA.GetMatrixEntry(0, 1), DoubleEq(0));
+  ASSERT_THAT(matA.GetMatrixEntry(1, 0), DoubleEq(0));
+  matA.AddToMatrixEntry(0, 1, 1.5);
+  ASSERT_THAT(matA.GetMatrixEntry(1, 1), DoubleEq(2.5));
+  ASSERT_THAT(matA.GetMatrixEntry(0, 0), DoubleEq(0));
+  ASSERT_THAT(matA.GetMatrixEntry(0, 1), DoubleEq(1.5));
+  ASSERT_THAT(matA.GetMatrixEntry(1, 0), DoubleEq(0));
 }

@@ -23,51 +23,30 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace iga {
 namespace itg {
-template<int DIM>
 class IntegrationRule {
  public:
   virtual ~IntegrationRule() = default;
 
-  explicit IntegrationRule(std::vector<IntegrationPoint<1>> points) : points_(std::move(points)) {}
+  explicit IntegrationRule(std::vector<IntegrationPoint> points) : points_(std::move(points)) {}
 
   int GetNumberOfIntegrationPoints() const {
-    return pow(points_.size(), DIM);
-  }
-
-  int GetNumberOfIntegrationPointsPerDirection() const {
     return points_.size();
   }
 
-  double GetCoordinate(int point, int dimension) const {
+  double GetCoordinate(int point) const {
 #ifdef DEBUG
-    return points_.at(point).GetCoordinates().at(dimension);
+    return points_.at(point).GetCoordinate();
 #else
-    return points_[point].GetCoordinates()[dimension];
+    return points_.at(point).GetCoordinate();
 #endif
   }
 
-  std::vector<IntegrationPoint<DIM>> GetIntegrationPoints() {
-    std::vector<IntegrationPoint<DIM>> integration_points;
-    std::array<int, DIM> max_dimension_points;
-    for (int i = 0; i < DIM; i++) {
-      max_dimension_points[i] = points_.size();
-    }
-    util::MultiIndexHandler<DIM> multiIndexHandler(max_dimension_points);
-    for (int i = 0; i < GetNumberOfIntegrationPoints(); i++) {
-      double weight = 1;
-      std::array<double, DIM> coordinates = {0};
-      for (int j = 0; j < DIM; j++) {
-        weight *= points_[multiIndexHandler[j]].GetWeight();
-        coordinates[j] = points_[multiIndexHandler[j]].GetCoordinates()[j];
-      }
-      ++multiIndexHandler;
-      integration_points.push_back(IntegrationPoint<DIM>(coordinates, weight));
-    }
-    return integration_points;
+  std::vector<IntegrationPoint> GetIntegrationPoints() const {
+    return points_;
   }
 
  private:
-  std::vector<IntegrationPoint<1>> points_;
+  std::vector<IntegrationPoint> points_;
 };
 }  // namespace itg
 }  // namespace iga

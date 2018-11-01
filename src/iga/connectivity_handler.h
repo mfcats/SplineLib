@@ -33,6 +33,7 @@ class ConnectivityHandler {
     return connectivity;
   }
 
+ private:
   void SetConnectivityMatrix() {
     iga::elm::ElementGenerator element_generator_(spline);
     for (uint64_t i = 0; i < element_generator_.GetElementList(1).size(); ++i) {
@@ -75,7 +76,6 @@ class ConnectivityHandler {
     }
   }
 
- private:
   std::shared_ptr<spl::Spline<2>> spline;
   std::vector<std::vector<int>> connectivity;
   std::array<std::vector<std::vector<int>>, 2> element_global;

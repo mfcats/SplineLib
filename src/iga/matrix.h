@@ -12,18 +12,43 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_ITG_ONE_POINT_GAUSS_LEGENDRE_H_
-#define SRC_IGA_ITG_ONE_POINT_GAUSS_LEGENDRE_H_
+#ifndef SRC_IGA_MATRIX_H_
+#define SRC_IGA_MATRIX_H_
 
-#include "integration_rule.h"
+#include <array>
 
 namespace iga {
-namespace itg {
-class OnePointGaussLegendre : public IntegrationRule {
+class Matrix {
  public:
-  OnePointGaussLegendre() : IntegrationRule({IntegrationPoint(0, 2)}) {}
+  explicit Matrix(int rowCount, int colCount) :  rowCount_(rowCount), colCount_(colCount) {
+    matrix_ = new double[rowCount_ * colCount_]();
+  }
+
+  ~Matrix() {
+    delete[] matrix_;
+  }
+
+  void WriteToMatrix(int row, int col, double number) {
+    matrix_[row * colCount_ + col] = number;
+  }
+
+  void AddToMatrixEntry(int row, int col, double number) {
+    matrix_[row * colCount_ + col] += number;
+  }
+
+  double GetMatrixEntry(int row, int col) {
+    return matrix_[row * colCount_ + col];
+  }
+
+  double* GetMatrix() {
+    return matrix_;
+  }
+
+ private:
+  int rowCount_;
+  int colCount_;
+  double* matrix_;
 };
-}  // namespace itg
 }  // namespace iga
 
-#endif  // SRC_IGA_ITG_ONE_POINT_GAUSS_LEGENDRE_H_
+#endif  // SRC_IGA_MATRIX_H_
