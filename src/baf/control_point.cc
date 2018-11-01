@@ -22,6 +22,15 @@ int baf::ControlPoint::GetDimension() const {
   return static_cast<int>(coordinates_.size());
 }
 
+baf::ControlPoint baf::ControlPoint::operator+(const baf::ControlPoint &control_point) const {
+  std::vector<double> coordinates_new;
+  coordinates_new.reserve(this->GetDimension());
+  for (int i = 0; i < this->GetDimension(); ++i) {
+    coordinates_new.push_back(this->GetValue(i) + control_point.GetValue(i));
+  }
+  return ControlPoint(coordinates_new);
+}
+
 double baf::ControlPoint::GetValue(int dimension) const {
 #ifdef DEBUG
   return coordinates_.at(dimension);

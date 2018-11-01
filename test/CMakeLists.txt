@@ -37,13 +37,15 @@ set(TEST_SOURCES
         baf/basis_function_factory.cc
         iga/elm/element_integration_point_test.cc
         io/irit_reader_writer_test.cc
+        io/vtk_writer_test.cc
         io/xml_reader_test.cc
         io/xml_writer_test.cc
         io/io_converter_test.cc
         iga/connectivity_handler_test.cc
         iga/basis_function_handler_test.cc
         iga/mapping_handler_test.cc
-        iga/matrix_test.cc)
+        iga/matrix_test.cc
+        spl/surface_generator_test.cc)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})

@@ -103,6 +103,10 @@ class Spline {
 
   virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;
 
+  std::shared_ptr<spl::ParameterSpace<DIM>> GetParameterSpace() const {
+    return parameter_space_;
+  }
+
   double GetExpansion() const {
     return GetPhysicalSpace()->GetExpansion();
   }

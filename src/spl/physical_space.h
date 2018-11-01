@@ -94,6 +94,10 @@ class PhysicalSpace {
     return weights;
   }
 
+  virtual double GetWeight(std::array<int, DIM> indices) const {
+    return 1.0;
+  }
+
  protected:
   int dimension_;
   std::array<int, DIM> number_of_points_;

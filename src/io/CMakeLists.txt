@@ -37,6 +37,7 @@ install(FILES
         irit_writer.h
         irit_writer_utils.h
         reader.h
+        vtk_writer.h
         xml_reader.h
         xml_reader_utils.h
         xml_writer.h
