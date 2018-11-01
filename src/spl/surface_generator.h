@@ -12,29 +12,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
-#define SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
+#ifndef SRC_SPL_SURFACE_GENERATOR_H_
+#define SRC_SPL_SURFACE_GENERATOR_H_
 
 #include <vector>
 
-namespace iga {
-namespace elm {
-class ElementIntegrationPoint {
+#include "nurbs_generator.h"
+#include "nurbs.h"
+
+namespace spl {
+class SurfaceGenerator : public NURBSGenerator<2> {
  public:
-  ElementIntegrationPoint(std::vector<double> basis_functions, double weight);
+  SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T, std::shared_ptr<NURBS<1>> const &nurbs_C);
 
-  ElementIntegrationPoint(std::vector<double> basis_functions, double weight);
+  std::shared_ptr<ParameterSpace<2>> JoinParameterSpaces(std::shared_ptr<ParameterSpace<1>> const &space_1,
+      std::shared_ptr<ParameterSpace<1>> const &space_2) const;
 
-  std::vector<double> GetNonZeroBasisFunctions() const;
-  double GetWeight() const;
-  int GetNumberOfNonZeroBasisFunctions() const;
-  double GetBasisFunctionValue(int firstNonZeroOffset) const;
-
- private:
-  std::vector<double> non_zero_basis_functions_;
-  double weight_;
+  std::shared_ptr<WeightedPhysicalSpace<2>> JoinPhysicalSpaces(std::shared_ptr<PhysicalSpace<1>> const &space_1,
+      std::shared_ptr<PhysicalSpace<1>> const &space_2) const;
 };
-}  // namespace elm
-}  // namespace iga
+}  // namespace spl
 
-#endif  // SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
+#endif  // SRC_SPL_SURFACE_GENERATOR_H_

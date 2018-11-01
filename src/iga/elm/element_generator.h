@@ -82,19 +82,19 @@ class ElementGenerator {
     int element_number_eta = 0;
     std::vector<ParamCoord> unique_knots_xi = GetUniqueKnots(0);
     std::vector<ParamCoord> unique_knots_eta = GetUniqueKnots(1);
-    for (int i = 0; i < unique_knots_xi.size(); ++i) {
+    for (int i = 0; i < unique_knots_xi.size() - 1; ++i) {
       if ((unique_knots_xi[i].get() <= param_coord[1].get()) &&
           (unique_knots_xi[i + 1].get() > param_coord[1].get())) {
         element_number_xi = i;
       }
     }
-    for (int i = 0; i < unique_knots_eta.size(); ++i) {
+    for (int i = 0; i < unique_knots_eta.size() - 1; ++i) {
       if ((unique_knots_eta[i].get() <= param_coord[1].get()) &&
           (unique_knots_eta[i + 1].get() > param_coord[1].get())) {
         element_number_eta = i;
       }
     }
-    return Get2DElementNumber(element_number_xi, element_number_eta);;
+    return Get2DElementNumber(element_number_xi, element_number_eta);
   }
 
   std::array<int, 2> Get1DElementNumbers(int element_number) {
@@ -114,8 +114,9 @@ class ElementGenerator {
   }
 
   int Get2DElementNumber(int element_number_xi, int element_number_eta) {
-    util::MultiIndexHandler<2> multi_index_handler(std::array<int, 2>({GetElementList(0).size(),
-                                                                       GetElementList(1).size()}));
+    std::array<int, 2> number_of_elements = {static_cast<int>(GetElementList(0).size()),
+                                             static_cast<int>(GetElementList(1).size())};
+    util::MultiIndexHandler<2> multi_index_handler(number_of_elements);
     multi_index_handler.SetIndices(std::array<int, 2>({element_number_xi, element_number_eta}));
     return multi_index_handler.Get1DIndex();
   }

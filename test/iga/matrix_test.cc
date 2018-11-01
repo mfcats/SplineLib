@@ -21,7 +21,7 @@ using testing::DoubleEq;
 
 class AMatrix : public Test {
  public:
-  AMatrix() {}
+  AMatrix() = default;
 };
 
 TEST_F(AMatrix, TestMatrix) { // NOLINT
