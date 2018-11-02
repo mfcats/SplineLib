@@ -68,17 +68,11 @@ class VTKWriter {
                                         const std::vector<std::vector<int>> &scattering) const {
     std::vector<int> points;
     for (auto i = 0u; i < dimensions.size(); ++i) {
-      points.push_back(dimensions[i] == 1 ? VTKWriterUtils<1>::NumberOfCells({scattering[i][0] + 1})
-                                          : (dimensions[i] == 2 ? VTKWriterUtils<2>::NumberOfCells({scattering[i][0]
-                                                                                                        + 1,
-                                                                                                    scattering[i][1]
-                                                                                                        + 1})
-                                                                : VTKWriterUtils<3>::NumberOfCells({scattering[i][0]
-                                                                                                        + 1,
-                                                                                                    scattering[i][1]
-                                                                                                        + 1,
-                                                                                                    scattering[i][2]
-                                                                                                        + 1})));
+      points.push_back(dimensions[i] == 1 ? VTKWriterUtils<1>::NumberOfCells({scattering[i][0] + 1}) :
+                       (dimensions[i] == 2 ? VTKWriterUtils<2>::NumberOfCells({scattering[i][0] + 1,
+                                                                               scattering[i][1] + 1}) :
+                        VTKWriterUtils<3>::NumberOfCells({scattering[i][0] + 1, scattering[i][1] + 1,
+                                                          scattering[i][2] + 1})));
     }
     return points;
   }
