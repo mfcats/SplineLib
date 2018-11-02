@@ -46,7 +46,8 @@ set(TEST_SOURCES
         iga/mapping_handler_test.cc
         iga/matrix_test.cc
         spl/surface_generator_test.cc
-        iga/element_integral_calculator_test.cc)
+        iga/element_integral_calculator_test.cc
+        iga/linear_equation_assembler_test.cc)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})

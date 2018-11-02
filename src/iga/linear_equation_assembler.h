@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element_integral_calculator.h"
 #include "element_generator.h"
+#include "integration_rule.h"
 #include "matrix.h"
 #include "nurbs.h"
 
@@ -26,13 +27,12 @@ class LinearEquationAssembler {
   explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
     elm_intgr_calc_ = std::make_shared<iga::ElementIntegralCalculator>(spline_);
     elm_gen_ = std::make_shared<iga::elm::ElementGenerator<2>>(spline_);
-    matrix_ = std::make_shared<iga::Matrix>(spl->GetPointsPerDirection(0), spl->GetPointsPerDirection(1));
   }
 
-  void AssembleLinearEquation() {
+  void Laplace(const iga::itg::IntegrationRule &rule, const std::shared_ptr<iga::Matrix> &matA) {
     int num_elements = static_cast<int>(elm_gen_->GetElementList(0).size() * elm_gen_->GetElementList(1).size());
-    for (int i = 0; i < num_elements; ++i) {
-
+    for (int e = 0; e < num_elements; ++e) {
+      elm_intgr_calc_->GetLaplaceElementIntegral(e, rule, matA);
     }
   }
 
@@ -40,7 +40,6 @@ class LinearEquationAssembler {
   std::shared_ptr<spl::NURBS<2>> spline_;
   std::shared_ptr<iga::ElementIntegralCalculator> elm_intgr_calc_;
   std::shared_ptr<iga::elm::ElementGenerator<2>> elm_gen_;
-  std::shared_ptr<iga::Matrix> matrix_;
 };
 }  // namespace iga
 
