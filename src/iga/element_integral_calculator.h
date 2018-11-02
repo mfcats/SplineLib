@@ -28,24 +28,21 @@ class ElementIntegralCalculator {
  public:
   explicit ElementIntegralCalculator(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
     baf_handler_ = std::make_shared<iga::BasisFunctionHandler>(spline_);
-    mapping_handler_ = std::make_shared<iga::MappingHandler>(spline_);
     iga::ConnectivityHandler connectivity_handler(spline_);
     connectivity_ = connectivity_handler.GetConnectivity();
   }
 
-  double GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule<2> &rule, iga::Matrix matA) {
+  double GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
+      const std::shared_ptr<iga::Matrix> &matA) {
     std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> elm_intgr_pnts =
-        baf_handler_->EvaluateDrDxAtEveryElemIntgPnt(element_number, rule);
-
-    std::vector<iga::itg::IntegrationPoint> intg_pnts = rule.GetIntegrationPoints();
-
-    for (auto &intg_pnt : elm_intgr_pnts[0]) {
-      for (int j = intg_pnt.GetNumberOfNonZeroBasisFunctions() - 1; j >= 0; ++j) {
-        for (int k = intg_pnt.GetNumberOfNonZeroBasisFunctions() - 1; k >= 0; ++k) {
-
-          double temp = intg_pnt * (elm_intgr_pnts[0][j]. * elm_intgr_pnts[0][k]
-              + elm_intgr_pnts[1][j] * elm_intgr_pnts[1][k]) * jac_det;
-          matA.AddToMatrixEntry(connectivity_(element_number, j), connectivity_(element_number, k), temp);
+        baf_handler_->EvaluateDrDxAtEveryElemItgPnt(element_number, rule);
+    for (int i = 0; i < elm_intgr_pnts[0].size(); ++i) {
+      for (int j = 0; j < elm_intgr_pnts[0][i].GetNumberOfNonZeroBasisFunctions(); ++j) {
+        for (int k = 0; k < elm_intgr_pnts[0][i].GetNumberOfNonZeroBasisFunctions(); ++k) {
+          double temp = (elm_intgr_pnts[0][i].GetBasisFunctionValue(j) * elm_intgr_pnts[0][i].GetBasisFunctionValue(k) +
+              elm_intgr_pnts[1][i].GetBasisFunctionValue(j) * elm_intgr_pnts[1][i].GetBasisFunctionValue(k)) *
+                  elm_intgr_pnts[0][i].GetWeight() * elm_intgr_pnts[0][i].GetJacDet();
+          matA->AddToMatrixEntry(connectivity_[element_number][j] - 1, connectivity_[element_number][k] - 1, temp);
         }
       }
     }
@@ -54,8 +51,7 @@ class ElementIntegralCalculator {
  private:
   std::shared_ptr<spl::NURBS<2>> spline_;
   std::shared_ptr<iga::BasisFunctionHandler> baf_handler_;
-  std::shared_ptr<iga::MappingHandler> mapping_handler_;
-  std::vector<std::vector<double>> connectivity_;
+  std::vector<std::vector<int>> connectivity_;
 };
 }  // namespace iga
 
