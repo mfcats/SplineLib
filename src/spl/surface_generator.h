@@ -25,11 +25,18 @@ class SurfaceGenerator : public NURBSGenerator<2> {
  public:
   SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T, std::shared_ptr<NURBS<1>> const &nurbs_C);
 
+  SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
+      std::shared_ptr<NURBS<1>> const &nurbs_C,
+      int nbInterpolations, std::vector<double> scaling);
+
   std::shared_ptr<ParameterSpace<2>> JoinParameterSpaces(std::shared_ptr<ParameterSpace<1>> const &space_1,
       std::shared_ptr<ParameterSpace<1>> const &space_2) const;
 
   std::shared_ptr<WeightedPhysicalSpace<2>> JoinPhysicalSpaces(std::shared_ptr<PhysicalSpace<1>> const &space_1,
       std::shared_ptr<PhysicalSpace<1>> const &space_2) const;
+
+  double ComputeNormal(
+      std::shared_ptr<NURBS<1>> const &nurbs, int nbInterpolations) const;
 };
 }  // namespace spl
 

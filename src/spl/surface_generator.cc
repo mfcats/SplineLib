@@ -48,4 +48,36 @@ std::shared_ptr<spl::WeightedPhysicalSpace<2>> spl::SurfaceGenerator::JoinPhysic
       j_control_points, joined_weights, j_number_of_points));
 }
 
+spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
+                                        std::shared_ptr<spl::NURBS<1>> const &nurbs_C,
+                                        int nbInterpolations, std::vector<double> scaling) {
+  double step_size = nurbs_T->GetParameterSpace()->GetKnotVector(1)->GetKnotSpan()/nbInterpolations;
+  int n = nurbs_T->GetPhysicalSpace()->GetNumberOfControlPoints();
+  int m = nurbs_C->GetPhysicalSpace()->GetNumberOfControlPoints();
+  ParamCoord inter_param_coord;
+  for (int i = 0; i < nbInterpolations; ++i) {
+    inter_param_coord = ParamCoord(step_size * i);
+    // Compute x(v), z(v), y(v) = x(v) cross z(v)
+    // Compute A(v)
+    // Compute Q_j,i = A(v) * s(v) * Q_j
+    // Compute Q_j,i = w_j(v) * w_i * Q_j,i
+    // Add to 2d-array Q
+  }
+  // Interpolate to obtain P
+  // Divide by weights
+  std::array<int, 2> j_number_of_points = {m, n};
+
+  this->parameter_space_ = std::make_shared<spl::ParameterSpace<2>(spl::ParameterSpace<2>(
+      joined_knot_vector, joined_degree));
+  this->physical_space_ = std::make_shared<spl::WeightedPhysicalSpace<2>(spl::WeightedPhysicalSpace<2>(
+      j_control_points, joined_weights, j_number_of_points));
+}
+
+double spl::SurfaceGenerator::ComputeNormal(
+    std::shared_ptr<spl::NURBS<1>> const &nurbs, ParamCoord param_coord, int direction) const {
+  std::array<double, 3> normal_values;
+  // Evaluates the formula 10.25 in the NURBS-book
+  normal_value = 1.0;
+  return normal_value;
+}
 
