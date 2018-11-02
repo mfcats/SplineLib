@@ -33,7 +33,7 @@ class VTKWriter {
     std::ofstream newFile;
     newFile.open(filename);
     if (newFile.is_open()) {
-      newFile << "# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n\n";
+      newFile << "# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n\nDATASET UNSTRUCTURED_GRID\n";
       for (auto i = 0u; i < splines.size(); ++i) {
         AddSpline(newFile, splines[i], scattering[i]);
       }
@@ -57,19 +57,18 @@ class VTKWriter {
 
   void Write1DSpline(std::ofstream &file, const std::any &spline, int scattering) const {
     std::shared_ptr<spl::Spline<1>> spline_ptr = util::AnyCasts::GetSpline<1>(spline);
-    file << "DATASET POLYDATA\n";
     WritePoints<1>(file, spline_ptr, {scattering});
-    file << "\nLINES " << scattering << " " << 3 * scattering << "\n";
+    file << "\nCELLS " << scattering << " " << 3 * scattering << "\n";
     for (int i = 0; i < scattering; ++i) {
       file << "2 " << i << " " << i + 1 << "\n";
     }
+    WriteCellTypes<1>(file, {scattering}, 3);
   }
 
   void Write2DSpline(std::ofstream &file, const std::any &spline, std::array<int, 2> scattering) const {
     std::shared_ptr<spl::Spline<2>> spline_ptr = util::AnyCasts::GetSpline<2>(spline);
-    file << "DATASET POLYDATA\n";
     WritePoints<2>(file, spline_ptr, scattering);
-    file << "\nPOLYGONS " << NumberOfCells<2>(scattering) << " " << 5 * NumberOfCells<2>(scattering) << "\n";
+    file << "\nCELLS " << NumberOfCells<2>(scattering) << " " << 5 * NumberOfCells<2>(scattering) << "\n";
     util::MultiIndexHandler<2> point_handler({scattering[0] + 1, scattering[1] + 1});
     for (int j = 0; j < scattering[0]; ++j) {
       for (int i = 0; i < scattering[1]; ++i) {
@@ -77,11 +76,11 @@ class VTKWriter {
              (scattering[0] + 1) * (j + 1) + i + 1 << " " << (scattering[0] + 1) * (j + 1) + i << "\n";
       }
     }
+    WriteCellTypes<2>(file, scattering, 9);
   }
 
   void Write3DSpline(std::ofstream &file, const std::any &spline, std::array<int, 3> scattering) const {
     std::shared_ptr<spl::Spline<3>> spline_ptr = util::AnyCasts::GetSpline<3>(spline);
-    file << "DATASET UNSTRUCTURED_GRID\n";
     WritePoints<3>(file, spline_ptr, scattering);
     file << "\nCELLS " << NumberOfCells<3>(scattering) << " " << 9 * NumberOfCells<3>(scattering) << "\n";
     util::MultiIndexHandler<3> point_handler(GetPointHandlerLength<3>(scattering));
@@ -97,54 +96,59 @@ class VTKWriter {
         point_handler - (scattering[0] + 1) * (scattering[1] + 2);
       }
     }
-    file << "\nCELL_TYPES " << NumberOfCells<3>(scattering) << "\n";
-    for (int j = 0; j < NumberOfCells<3>(scattering); ++j) {
-      file << "12\n";
-    }
+    WriteCellTypes<3>(file, scattering, 12);
   }
 
-  template<int dim>
-  int NumberOfCells(std::array<int, dim> scattering) const {
+  template<int DIM>
+  int NumberOfCells(std::array<int, DIM> scattering) const {
     int product = 1;
-    for (int i = 0; i < dim; ++i) {
+    for (int i = 0; i < DIM; ++i) {
       product *= scattering[i];
     }
     return product;
   }
 
-  template<int dim>
-  std::array<double, 2 * dim> GetEdgeKnots(std::shared_ptr<spl::Spline<dim>> spline_ptr) const {
-    std::array<double, 2 * dim> knots{};
-    for (int i = 0; i < 2 * dim; ++i) {
-      knots[i] = i < dim ? spline_ptr->GetKnotVector(i)->GetKnot(0).get()
-                         : spline_ptr->GetKnotVector(i - dim)->GetLastKnot().get();
+  template<int DIM>
+  std::array<double, 2 * DIM> GetEdgeKnots(std::shared_ptr<spl::Spline<DIM>> spline_ptr) const {
+    std::array<double, 2 * DIM> knots{};
+    for (int i = 0; i < 2 * DIM; ++i) {
+      knots[i] = i < DIM ? spline_ptr->GetKnotVector(i)->GetKnot(0).get()
+                         : spline_ptr->GetKnotVector(i - DIM)->GetLastKnot().get();
     }
     return knots;
   }
 
-  template<int dim>
-  std::array<int, dim> GetPointHandlerLength(std::array<int, dim> scattering) const {
-    for (int i = 0; i < dim; ++i) {
+  template<int DIM>
+  std::array<int, DIM> GetPointHandlerLength(std::array<int, DIM> scattering) const {
+    for (int i = 0; i < DIM; ++i) {
       ++scattering[i];
     }
     return scattering;
   }
 
-  template<int dim>
+  template<int DIM>
   void WritePoints(std::ofstream &file,
-                   std::shared_ptr<spl::Spline<dim>> spline_ptr,
-                   std::array<int, dim> scattering) const {
-    file << "POINTS " << NumberOfCells<dim>(GetPointHandlerLength<dim>(scattering)) << " double\n";
-    std::array<double, 2 * dim> knots = GetEdgeKnots<dim>(spline_ptr);
-    util::MultiIndexHandler<dim> point_handler(GetPointHandlerLength<dim>(scattering));
+                   std::shared_ptr<spl::Spline<DIM>> spline_ptr,
+                   std::array<int, DIM> scattering) const {
+    file << "POINTS " << NumberOfCells<DIM>(GetPointHandlerLength<DIM>(scattering)) << " double\n";
+    std::array<double, 2 * DIM> knots = GetEdgeKnots<DIM>(spline_ptr);
+    util::MultiIndexHandler<DIM> point_handler(GetPointHandlerLength<DIM>(scattering));
     for (int i = 0; i < point_handler.Get1DLength(); ++point_handler, ++i) {
-      std::array<ParamCoord, dim> coords{};
-      for (int j = 0; j < dim; ++j) {
-        coords[j] = ParamCoord(knots[j] + point_handler[j] * (knots[j + dim] - knots[j]) / scattering[j]);
+      std::array<ParamCoord, DIM> coords{};
+      for (int j = 0; j < DIM; ++j) {
+        coords[j] = ParamCoord(knots[j] + point_handler[j] * (knots[j + DIM] - knots[j]) / scattering[j]);
       }
       for (int k = 0; k < 3; ++k) {
         file << (k < spline_ptr->GetDimension() ? spline_ptr->Evaluate(coords, {k})[0] : 0) << (k < 2 ? " " : "\n");
       }
+    }
+  }
+
+  template<int DIM>
+  void WriteCellTypes(std::ofstream &file, std::array<int, DIM> scattering, int cell_type) const {
+    file << "\nCELL_TYPES " << NumberOfCells<DIM>(scattering) << "\n";
+    for (int j = 0; j < NumberOfCells<DIM>(scattering); ++j) {
+      file << cell_type << "\n";
     }
   }
 };

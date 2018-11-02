@@ -50,9 +50,9 @@ TEST_F(A1DBNURBSVTKWriter, CreatesVTKFile) {  // NOLINT
     file += line + "\n";
   }
   ASSERT_THAT(file.find("# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("DATASET POLYDATA\nPOINTS 11 double\n"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("LINES 10 30\n"), Ne(std::string::npos));
-  remove("1d_spline.vtk");
+  ASSERT_THAT(file.find("DATASET UNSTRUCTURED_GRID\nPOINTS 11 double\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CELLS 10 30\n"), Ne(std::string::npos));
+  // remove("1d_spline.vtk");
 }
 
 class A2DBNURBSVTKWriter : public Test {  // NOLINT
@@ -95,9 +95,9 @@ TEST_F(A2DBNURBSVTKWriter, CreatesVTKFile) {  // NOLINT
     file += line + "\n";
   }
   ASSERT_THAT(file.find("# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("DATASET POLYDATA\nPOINTS 441 double\n"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("POLYGONS 400 2000\n"), Ne(std::string::npos));
-  remove("2d_spline.vtk");
+  ASSERT_THAT(file.find("DATASET UNSTRUCTURED_GRID\nPOINTS 441 double\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CELLS 400 2000\n"), Ne(std::string::npos));
+  // remove("2d_spline.vtk");
 }
 
 class A3DBNURBSVTKWriter : public Test {  // NOLINT
@@ -144,7 +144,7 @@ TEST_F(A3DBNURBSVTKWriter, CreatesVTKFile) {  // NOLINT
   ASSERT_THAT(file.find("DATASET UNSTRUCTURED_GRID\nPOINTS 60 double\n"), Ne(std::string::npos));
   ASSERT_THAT(file.find("CELLS 24 216\n"), Ne(std::string::npos));
   ASSERT_THAT(file.find("CELL_TYPES 24\n"), Ne(std::string::npos));
-  remove("3d_spline.vtk");
+  // remove("3d_spline.vtk");
 }
 
 class A4DBNURBSVTKWriter : public Test {  // NOLINT
