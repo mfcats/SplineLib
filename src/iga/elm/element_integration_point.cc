@@ -20,7 +20,7 @@ iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> b
     : non_zero_basis_functions_(std::move(basis_functions)), weight_(weight), jac_det_(1.0) {}
 
 iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions, double weight,
-    double jac_det) : non_zero_basis_functions_(std::move(basis_functions)), weight_(weight), jac_det_(jac_det){}
+    double jac_det) : non_zero_basis_functions_(std::move(basis_functions)), weight_(weight), jac_det_(jac_det) {}
 
 std::vector<double> iga::elm::ElementIntegrationPoint::GetNonZeroBasisFunctions() const {
   return non_zero_basis_functions_;
