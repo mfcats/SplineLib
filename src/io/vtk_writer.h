@@ -44,13 +44,11 @@ class VTKWriter {
       newFile << "\nCELLS " << std::accumulate(cells.begin(), cells.end(), 0) << " "
               << GetCellEntries(dimensions, cells) << "\n";
       for (auto i = 0u; i < splines.size(); ++i) {
-        int offset = std::accumulate(points.begin(), points.begin() + i, 0);
-        AddCells(newFile, splines[i], scattering[i], offset);
+        AddCells(newFile, splines[i], scattering[i], std::accumulate(points.begin(), points.begin() + i, 0));
       }
       newFile << "\nCELL_TYPES " << std::accumulate(cells.begin(), cells.end(), 0) << "\n";
       for (auto i = 0u; i < splines.size(); ++i) {
-        int spline_dimension = util::AnyCasts::GetSplineDimension(splines[i]);
-        AddCellTypes(newFile, scattering[i], spline_dimension);
+        AddCellTypes(newFile, scattering[i], dimensions[i]);
       }
       newFile.close();
     }
