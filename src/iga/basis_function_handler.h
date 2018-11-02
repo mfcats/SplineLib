@@ -71,10 +71,12 @@ class BasisFunctionHandler {
       for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
         element_integration_points[0].emplace_back(iga::elm::ElementIntegrationPoint(
             GetDrDx(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))[0],
-            itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight()));
+            itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight(),
+            mapping_handler_->GetJacobianDeterminant(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))));
         element_integration_points[1].emplace_back(iga::elm::ElementIntegrationPoint(
             GetDrDx(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))[1],
-            itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight()));
+            itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight(),
+            mapping_handler_->GetJacobianDeterminant(Ref2ParamSpace(element_number, itg_pnt_xi, itg_pnt_eta))));
       }
     }
     return element_integration_points;
@@ -153,7 +155,7 @@ class BasisFunctionHandler {
   }
 
   double GetWeight(std::array<ParamCoord, 2> param_coord, int local_index) const {
-    int element_number = element_generator_->GetElementNumber(param_coord);
+    int element_number = element_generator_->GetElementNumberAtParamCoord(param_coord);
     iga::ConnectivityHandler ch(spline_);
     return spline_->GetWeights()[ch.GetConnectivity()[element_number][local_index] - 1];
   }

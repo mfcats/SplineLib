@@ -77,7 +77,7 @@ class ElementGenerator {
     return unique_knots;
   }
 
-  int GetElementNumber(std::array<ParamCoord, 2> param_coord) {
+  int GetElementNumberAtParamCoord(std::array<ParamCoord, 2> param_coord) {
     int element_number_xi = 0;
     int element_number_eta = 0;
     std::vector<ParamCoord> unique_knots_xi = GetUniqueKnots(0);
