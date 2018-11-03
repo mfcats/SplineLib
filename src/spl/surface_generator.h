@@ -36,7 +36,7 @@ class SurfaceGenerator : public NURBSGenerator<2> {
       std::shared_ptr<PhysicalSpace<1>> const &space_2) const;
 
   double ComputeNormal(
-      std::shared_ptr<NURBS<1>> const &nurbs, int nbInterpolations) const;
+      std::shared_ptr<spl::NURBS<1>> const &nurbs, ParamCoord param_coord, int direction) const;
 };
 }  // namespace spl
 
