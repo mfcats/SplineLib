@@ -123,6 +123,11 @@ class Spline {
     return parameter_space_->GetKnots();
   }
 
+  void InsertKnot(ParamCoord knot, int dimension) {
+    parameter_space_->InsertKnot(knot, dimension);
+    // this->AdjustControlPoints(knot);
+  }
+
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
     parameter_space_->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);

@@ -46,6 +46,7 @@ set(TEST_SOURCES
         iga/mapping_handler_test.cc
         iga/matrix_test.cc
         spl/surface_generator_test.cc
+        spl/knot_insertion_test.cc
         iga/element_integral_calculator_test.cc)
 
 find_package(GMock REQUIRED)

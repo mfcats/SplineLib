@@ -121,11 +121,15 @@ class ParameterSpace {
     std::array<std::vector<ParamCoord>, DIM> knots;
     for (int i = 0; i < DIM; ++i) {
       std::vector<ParamCoord> temp = knot_vector_[i]->GetKnots();
-      for (auto j = 0u; j < temp.size(); ++j) {
-        knots[i].emplace_back(temp[j]);
+      for (auto &j : temp) {
+        knots[i].emplace_back(j);
       }
     }
     return knots;
+  }
+
+  void InsertKnot(ParamCoord knot, int dimension) {
+    knot_vector_[dimension]->InsertKnot(knot);
   }
 
  private:
