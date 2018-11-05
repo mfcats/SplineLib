@@ -64,7 +64,7 @@ class VTKWriter {
     return dimensions;
   }
 
-  std::vector<int> GetNumberOfAllPoints(std::vector<int> &dimensions,
+  std::vector<int> GetNumberOfAllPoints(const std::vector<int> &dimensions,
                                         const std::vector<std::vector<int>> &scattering) const {
     std::vector<int> points;
     for (auto i = 0u; i < dimensions.size(); ++i) {
@@ -77,7 +77,7 @@ class VTKWriter {
     return points;
   }
 
-  std::vector<int> GetNumberOfAllCells(std::vector<int> &dimensions,
+  std::vector<int> GetNumberOfAllCells(const std::vector<int> &dimensions,
                                        const std::vector<std::vector<int>> &scattering) const {
     std::vector<int> cells;
     for (auto i = 0u; i < dimensions.size(); ++i) {
@@ -88,7 +88,7 @@ class VTKWriter {
     return cells;
   }
 
-  int GetNumberOfCellEntries(std::vector<int> &dimensions, std::vector<int> cells) const {
+  int GetNumberOfCellEntries(const std::vector<int> &dimensions, const std::vector<int> &cells) const {
     int sum = 0;
     for (auto i = 0u; i < dimensions.size(); ++i) {
       sum += cells[i] * (dimensions[i] == 1 ? 3 : (dimensions[i] == 2 ? 5 : 9));
