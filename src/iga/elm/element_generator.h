@@ -114,8 +114,9 @@ class ElementGenerator {
     std::array<int, 2> number_of_elements = {static_cast<int>(GetElementList(0).size()),
                                              static_cast<int>(GetElementList(1).size())};
     util::MultiIndexHandler<2> multi_index_handler(number_of_elements);
-    multi_index_handler.SetIndices(std::array<int, 2>({static_cast<int>(element_number_xi),
-                                                       static_cast<int>(element_number_eta)}));
+    int elm_num_xi = static_cast<int>(element_number_xi);
+    int elm_num_eta = static_cast<int>(element_number_eta);
+    multi_index_handler.SetIndices(std::array<int, 2>({elm_num_xi, elm_num_eta}));
     return multi_index_handler.Get1DIndex();
   }
 
