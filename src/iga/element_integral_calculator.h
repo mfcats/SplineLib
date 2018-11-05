@@ -12,8 +12,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_ELEMENT_INTEGRAL_CALCULATOR_H_
-#define SRC_ELEMENT_INTEGRAL_CALCULATOR_H_
+#ifndef SRC_IGA_ELEMENT_INTEGRAL_CALCULATOR_H_
+#define SRC_IGA_ELEMENT_INTEGRAL_CALCULATOR_H_
+
+#include <vector>
 
 #include "basis_function_handler.h"
 #include "connectivity_handler.h"
@@ -32,7 +34,7 @@ class ElementIntegralCalculator {
     connectivity_ = connectivity_handler.GetConnectivity();
   }
 
-  double GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
+  void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
       const std::shared_ptr<iga::Matrix> &matA) {
     std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> elm_intgr_pnts =
         baf_handler_->EvaluateDrDxAtEveryElemItgPnt(element_number, rule);
@@ -55,4 +57,4 @@ class ElementIntegralCalculator {
 };
 }  // namespace iga
 
-#endif  // SRC_ELEMENT_INTEGRAL_CALCULATOR_H_
+#endif  // SRC_IGA_ELEMENT_INTEGRAL_CALCULATOR_H_
