@@ -49,14 +49,29 @@ class A1DBSplineForKnotInsertion : public Test {  // NOLINT
 };
 
 TEST_F(A1DBSplineForKnotInsertion, InsertsKnot2_5Correctly) {  // NOLINT
-  ASSERT_THAT(bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots(), 12);
   bspline_1d_after_->InsertKnot(ParamCoord(2.5), 0);
-  ASSERT_THAT(bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots(), 12);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() + 1);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(2.5));
+  ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() + 1);
+  std::vector<baf::ControlPoint> new_control_points = {
+      baf::ControlPoint(std::vector<double>({0.0, 1.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({11.0 / 3.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({4.5, 1.0})),
+      baf::ControlPoint(std::vector<double>({29.0 / 6.0, 7.0 / 3.0})),
+      baf::ControlPoint(std::vector<double>({4.0, 4.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 4.0})),
+      baf::ControlPoint(std::vector<double>({1.3, 2.3}))
+  };
+  for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
+    for (int j = 0; j < 2; ++j) {
+      ASSERT_THAT(bspline_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
+    }
+  }
   for (int i = 0; i <= 50; ++i) {
+    std::cout << std::endl << i;
     ASSERT_THAT(bspline_1d_after_->Evaluate({ParamCoord(i / 10.0)}, {0})[0],
                 DoubleEq(bspline_1d_before_->Evaluate({ParamCoord(i / 10.0)}, {0})[0]));
   }

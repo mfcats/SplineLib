@@ -58,6 +58,26 @@ class PhysicalSpace {
     return baf::ControlPoint(coordinates);
   }
 
+  virtual void SetControlPoint(std::array<int, DIM> indices, const baf::ControlPoint &control_point) {
+    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
+    point_handler.SetIndices(indices);
+    int first = dimension_ * point_handler.Get1DIndex();
+    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
+      auto j = control_point.GetValue(coordinate);
+      auto k = first + coordinate;
+      control_points_[first + coordinate] = control_point.GetValue(coordinate);
+    }
+  }
+
+  virtual void InsertControlPoint(std::array<int, DIM> indices, const baf::ControlPoint &control_point) {
+    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
+    point_handler.SetIndices(indices);
+    int first = dimension_ * point_handler.Get1DIndex();
+    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
+      control_points_.insert(control_points_.begin() + first + coordinate, control_point.GetValue(coordinate));
+    }
+  }
+
   int GetNumberOfControlPoints() {
     return static_cast<int>(control_points_.size()) / dimension_;
   }
