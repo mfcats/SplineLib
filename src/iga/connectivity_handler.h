@@ -23,58 +23,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace iga {
 class ConnectivityHandler {
  public:
-  explicit ConnectivityHandler(std::shared_ptr<spl::Spline<2>> spl) : spline(std::move(spl)) {
-    SetGlobalNodePattern();
-    SetElementConnectivity();
-    SetConnectivityMatrix();
-  }
+  explicit ConnectivityHandler(std::shared_ptr<spl::Spline<2>> spl);
 
-  std::vector<std::vector<int>> GetConnectivity() {
-    return connectivity;
-  }
+  std::vector<std::vector<int>> GetConnectivity();
 
  private:
-  void SetConnectivityMatrix() {
-    iga::elm::ElementGenerator element_generator_(spline);
-    for (uint64_t i = 0; i < element_generator_.GetElementList(1).size(); ++i) {
-      for (uint64_t j = 0; j < element_generator_.GetElementList(0).size(); ++j) {
-        std::vector<int> temp;
-        for (uint64_t k = 0; k < element_global[1][i].size(); ++k) {
-          for (uint64_t l = 0; l < element_global[0][j].size(); ++l) {
-            temp.emplace_back(global_pattern[element_global[1][i][k]][element_global[0][j][l]]);
-          }
-        }
-        connectivity.emplace_back(temp);
-      }
-    }
-  }
+  void SetConnectivityMatrix();
 
-  void SetElementConnectivity() {
-    iga::elm::ElementGenerator element_generator_(spline);
-    std::array<int, 2> knot_multiplicity = {0, 0};
-    for (int i = 0; i < 2; ++i) {
-      for (uint64_t j = 0; j < element_generator_.GetElementList(i).size(); ++j) {
-        knot_multiplicity[i] += element_generator_.GetKnotMultiplicity(i)[j];
-        std::vector<int> temp;
-        for (int k = 1; k < spline->GetDegree(i).get() + 2; ++k) {
-          temp.emplace_back(k + j + knot_multiplicity[i] - 1);
-        }
-        element_global[i].emplace_back(temp);
-      }
-    }
-  }
+  void SetElementConnectivity();
 
-  void SetGlobalNodePattern() {
-    int l = 0;
-    for (int i = 0; i < spline->GetPointsPerDirection()[0]; ++i) {
-      std::vector<int> temp;
-      for (int j = 0; j < spline->GetPointsPerDirection()[1]; ++j) {
-        ++l;
-        temp.emplace_back(l);
-      }
-      global_pattern.emplace_back(temp);
-    }
-  }
+  void SetGlobalNodePattern();
 
   std::shared_ptr<spl::Spline<2>> spline;
   std::vector<std::vector<int>> connectivity;

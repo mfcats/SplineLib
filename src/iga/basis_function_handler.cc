@@ -155,17 +155,3 @@ double iga::BasisFunctionHandler::GetWeight(std::array<ParamCoord, 2> param_coor
   iga::ConnectivityHandler ch(spline_);
   return spline_->GetWeights()[ch.GetConnectivity()[element_number][local_index] - 1];
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

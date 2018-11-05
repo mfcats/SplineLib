@@ -14,7 +14,9 @@
 #
 
 set(SOURCES
-        basis_function_handler.cc)
+        basis_function_handler.cc
+        connectivity_handler.cc
+        mapping_handler.cc)
 
 add_subdirectory(itg)
 add_subdirectory(elm)
