@@ -33,7 +33,7 @@ class MappingHandler {
 
  private:
   std::array<std::array<double, 2>, 2> GetDxDxitilde(std::array<ParamCoord, 2> param_coord) const {
-    std::array<std::array<double, 2>, 2> dx_dxitilde;
+    std::array<std::array<double, 2>, 2> dx_dxitilde{};
     std::array<std::array<double, 2>, 2> dx_dxi = GetDxDxi(param_coord);
     std::array<double, 2> dxi_dxitilde = GetDxiDxitilde(param_coord);
     for (int i = 0; i < 2; ++i) {
@@ -45,7 +45,7 @@ class MappingHandler {
   }
 
   std::array<std::array<double, 2>, 2> GetDxDxi(std::array<ParamCoord, 2> param_coord) const {
-    std::array<std::array<double, 2>, 2> dx_dxi;
+    std::array<std::array<double, 2>, 2> dx_dxi{};
     dx_dxi[0][0] = spline_->EvaluateDerivative(param_coord, {0}, {1, 0})[0];
     dx_dxi[0][1] = spline_->EvaluateDerivative(param_coord, {0}, {0, 1})[0];
     dx_dxi[1][0] = spline_->EvaluateDerivative(param_coord, {1}, {1, 0})[0];
@@ -54,10 +54,10 @@ class MappingHandler {
   }
 
   std::array<double, 2> GetDxiDxitilde(std::array<ParamCoord, 2> param_coord) const {
-    std::array<double, 2> dxi_dxitilde;
-    std::array<int, 2> knot_span;
-    knot_span[0] = spline_->GetKnotVector(0)->GetKnotSpan(param_coord[0]).get();
-    knot_span[1] = spline_->GetKnotVector(1)->GetKnotSpan(param_coord[1]).get();
+    std::array<double, 2> dxi_dxitilde{};
+    std::array<size_t, 2> knot_span{};
+    knot_span[0] = static_cast<size_t>(spline_->GetKnotVector(0)->GetKnotSpan(param_coord[0]).get());
+    knot_span[1] = static_cast<size_t>(spline_->GetKnotVector(1)->GetKnotSpan(param_coord[1]).get());
     dxi_dxitilde[0] = (spline_->GetKnotVector(0)->GetKnot(knot_span[0] + 1).get()
         - spline_->GetKnotVector(0)->GetKnot(knot_span[0]).get()) / 2;
     dxi_dxitilde[1] = (spline_->GetKnotVector(1)->GetKnot(knot_span[1] + 1).get()
