@@ -63,8 +63,6 @@ class PhysicalSpace {
     point_handler.SetIndices(indices);
     int first = dimension_ * point_handler.Get1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      auto j = control_point.GetValue(coordinate);
-      auto k = first + coordinate;
       control_points_[first + coordinate] = control_point.GetValue(coordinate);
     }
   }
@@ -114,7 +112,7 @@ class PhysicalSpace {
     return weights;
   }
 
-  virtual double GetWeight(std::array<int, DIM> indices) const {
+  virtual double GetWeight(std::array<int, DIM>) const {
     return 1.0;
   }
 

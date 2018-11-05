@@ -71,7 +71,6 @@ TEST_F(A1DBSplineForKnotInsertion, InsertsKnot2_5Correctly) {  // NOLINT
     }
   }
   for (int i = 0; i <= 50; ++i) {
-    std::cout << std::endl << i;
     ASSERT_THAT(bspline_1d_after_->Evaluate({ParamCoord(i / 10.0)}, {0})[0],
                 DoubleEq(bspline_1d_before_->Evaluate({ParamCoord(i / 10.0)}, {0})[0]));
   }
