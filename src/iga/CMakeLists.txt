@@ -13,12 +13,15 @@
 # <http://www.gnu.org/licenses/>.
 #
 
+set(SOURCES
+        basis_function_handler.cc)
+
 add_subdirectory(itg)
 add_subdirectory(elm)
 
-add_library(splinelibiga INTERFACE)
-target_include_directories(splinelibiga INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibiga INTERFACE splinelibspl splinelibigaitg splinelibigaelm)
+add_library(splinelibiga SHARED ${SOURCES})
+target_include_directories(splinelibiga PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(splinelibiga PUBLIC splinelibspl splinelibigaitg splinelibigaelm)
 
 install(
         TARGETS splinelibiga
