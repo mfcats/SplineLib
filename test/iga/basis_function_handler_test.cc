@@ -15,6 +15,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <vector>
 
+#include <iostream>
+#include "connectivity_handler.h"
+#include "element_generator.h"
+#include "matrix_utils.h"
+
+
 #include "gmock/gmock.h"
 
 #include "basis_function_handler.h"
@@ -26,57 +32,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::DoubleNear;
 
-TEST_F(AnIGATestSpline, TestBasisFunctionHandler) { // NOLINT
-  iga::BasisFunctionHandler basis_function_handler(nurbs_);
-  std::vector<double> splinelib_nurbs_baf =
-      basis_function_handler.EvaluateAllNonZeroNURBSBasisFunctions(std::array<ParamCoord, 2>({ParamCoord{0.55},
-                                                                                              ParamCoord{0.3}}));
-  std::vector<double> matlab_nurbs_baf = {0.000667, 0.046933, 0.01608, 0.00032, 0.003, 0.2112, 0.07236, 0.00144, 0.0045,
-                                          0.3168, 0.10854, 0.00216, 0.00225, 0.1584, 0.05427, 0.00108};
-  for (int i = 0; i < splinelib_nurbs_baf.size(); ++i) {
-    ASSERT_THAT(splinelib_nurbs_baf[i], DoubleNear(matlab_nurbs_baf[i], 0.00005));
-  }
-}
-
-TEST_F(AnIGATestSpline, TestBasisFunctionHandlerDerivativeParam) { // NOLINT
-  iga::BasisFunctionHandler basis_function_handler(nurbs_);
-  std::array<std::vector<double>, 2> splinelib_nurbs_baf_der_param =
-      basis_function_handler.EvaluateAllNonZeroNURBSBasisFunctionDerivatives(
-          std::array<ParamCoord, 2>({ParamCoord{0.7364}, ParamCoord{0.3892}}));
-  std::array<std::vector<double>, 2> matlab_nurbs_baf_der_param =
-      std::array<std::vector<double>, 2>(
-          {std::vector<double>({-0.018903, -0.016112, 0.025525, 0.009490, -0.199202, -0.169791, 0.268985, 0.100008,
-                                -0.699725, -0.596412, 0.944847, 0.351291, -0.819293, -0.698326, 1.106301, 0.411319}),
-          std::vector<double>({-0.044972, -0.140697, -0.097287, -0.011683, -0.270971, -0.847739, -0.586179, -0.070393,
-                               -0.238953, -0.747572, -0.516917, -0.062076, 0.554896, 1.736009, 1.200382, 0.144152})});
-  for (int i = 0; i < 2; ++i) {
-    for (int j = 0; j < splinelib_nurbs_baf_der_param.at(i).size(); ++j) {
-      ASSERT_THAT(splinelib_nurbs_baf_der_param.at(i).at(j),
-                  DoubleNear(matlab_nurbs_baf_der_param.at(i).at(j), 0.00005));
-    }
-  }
-}
-
-TEST_F(AnIGATestSpline, TestBasisFunctionHandlerDerivativePhysical) { // NOLINT
-  iga::BasisFunctionHandler basis_function_handler(nurbs_);
-  std::array<std::vector<double>, 2> splinelib_nurbs_baf_der_phy =
-      basis_function_handler.GetDrDx(std::array<ParamCoord, 2>({ParamCoord{0.367}, ParamCoord{0.893}}));
-  std::array<std::vector<double>, 2> matlab_nurbs_baf_der_phy =
-      std::array<std::vector<double>, 2>({
-          std::vector<double>({7.281165e-05, 0.011839, 0.064344, 0.053414, 0.000462, 0.075125, 0.408316, 0.338955,
-                               0.000447, 0.072741, 0.395356, 0.328197, -0.000982, -0.159705, -0.868017, -0.720566}),
-          std::vector<double>({-0.000587, -0.021549, -0.017258, 0.038123, -0.006460, -0.236904, -0.187217, 0.422517,
-                               -0.023715, -0.868134, -0.676805, 1.560847, -0.02902, -1.060418, -0.815362, 1.921943})});
-  for (int i = 0; i < 2; ++i) {
-    for (int j = 0; j < splinelib_nurbs_baf_der_phy.at(i).size(); ++j) {
-      ASSERT_THAT(splinelib_nurbs_baf_der_phy.at(i).at(j), DoubleNear(matlab_nurbs_baf_der_phy.at(i).at(j), 0.00005));
-    }
-  }
-}
-
 TEST_F(AnIGATestSpline, ElementNURBSBasisFunctions) { // NOLINT
   iga::BasisFunctionHandler basis_function_handler(nurbs_);
-  iga::itg::IntegrationRule<2> rule = iga::itg::TwoPointGaussLegendre<2>();
+  iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
   std::vector<iga::elm::ElementIntegrationPoint> splinelib_element_intg_pnts =
       basis_function_handler.EvaluateAllElementNonZeroNURBSBasisFunctions(0, rule);
   std::vector<double> i1 = {0.240652, 0.203999, 0.0434425, 0.00246914, 0.193447, 0.163984, 0.0349212, 0.00198481,
@@ -98,7 +56,7 @@ TEST_F(AnIGATestSpline, ElementNURBSBasisFunctions) { // NOLINT
 
 TEST_F(AnIGATestSpline, ElementNURBSBasisFunctionDerivatives) { // NOLINT
   iga::BasisFunctionHandler basis_function_handler(nurbs_);
-  iga::itg::IntegrationRule<2> rule = iga::itg::TwoPointGaussLegendre<2>();
+  iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
   std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> splinelib_element_intg_pnts =
       basis_function_handler.EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(6, rule);
   std::vector<double> i1_1 = {-0.762835, -0.905235, 1.64178, 0.0262892, -0.613203, -0.727671, 1.31974, 0.0211325,
@@ -123,7 +81,7 @@ TEST_F(AnIGATestSpline, ElementNURBSBasisFunctionDerivatives) { // NOLINT
     for (int j = 0; j < splinelib_element_intg_pnts.at(i).size(); ++j) {
       for (int k = 0; k < splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions().size(); ++k) {
         ASSERT_THAT(splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions()[k],
-                    DoubleNear(matlab_element_intg_pnts[i][j][k], 0.00005));
+                    DoubleNear(matlab_element_intg_pnts[i][j][k], 0.0002));
       }
     }
   }
@@ -131,9 +89,9 @@ TEST_F(AnIGATestSpline, ElementNURBSBasisFunctionDerivatives) { // NOLINT
 
 TEST_F(AnIGATestSpline, ElementIntgPntDrDx) { // NOLINT
   iga::BasisFunctionHandler basis_function_handler(nurbs_);
-  iga::itg::IntegrationRule<2> rule = iga::itg::TwoPointGaussLegendre<2>();
+  iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
   std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> splinelib_element_intg_pnts =
-      basis_function_handler.EvaluateDrDxAtEveryElemIntgPnt(3, rule);
+      basis_function_handler.EvaluateDrDxAtEveryElemItgPnt(3, rule);
   std::vector<double> i1_1 = {-1.34519, -0.131682, 1.31117, 0.181808, -1.08667, -0.116567, 1.04981, 0.145953, -0.292604,
                               -0.034105, 0.28018, 0.0390564, -0.0262622, -0.00330256, 0.0249249, 0.00348376};
   std::vector<double> i2_1 = {-0.0678432, -0.711534, -0.986466, 1.78147, -0.0546353, -0.573719, -0.801208, 1.42231,

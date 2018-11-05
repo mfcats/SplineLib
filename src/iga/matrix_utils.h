@@ -16,9 +16,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IGA_MATRIX_UTILS_H_
 
 #include <array>
+#include <memory>
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include "matrix.h"
 
 namespace iga {
 class MatrixUtils {
@@ -30,6 +33,29 @@ class MatrixUtils {
       for (int j = 0; j < matrix[0].size(); ++j) {
         uint64_t max_length = std::to_string(matrix[matrix.size() - 1][matrix[0].size() - 1]).length();
         std::string temp = std::to_string(matrix[i][j]);
+        for (uint64_t i = 0; i < max_length - temp.length(); ++i) {
+          temp.insert(0, " ");
+        }
+        std::cout << temp << "   ";
+      }
+      std::cout << std::endl;
+    }
+  }
+
+  static void PrintMatrix(std::shared_ptr<iga::Matrix> matrix) {
+    std::cout << std::endl;
+    uint64_t max_length = 0;
+    for (int i = 0; i < matrix->GetColCount(); ++i) {
+      for (int j = 0; j < matrix->GetRowCount(); ++j) {
+        uint64_t current_length = std::to_string(matrix->GetMatrixEntry(i, j)).length();
+        if (current_length > max_length) {
+          max_length = current_length;
+        }
+      }
+    }
+    for (int i = 0; i < matrix->GetColCount(); ++i) {
+      for (int j = 0; j < matrix->GetRowCount(); ++j) {
+        std::string temp = std::to_string(matrix->GetMatrixEntry(i, j));
         for (uint64_t i = 0; i < max_length - temp.length(); ++i) {
           temp.insert(0, " ");
         }

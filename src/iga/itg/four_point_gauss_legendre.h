@@ -22,20 +22,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace iga {
 namespace itg {
-template<int DIM>
-class FourPointGaussLegendre : public IntegrationRule<DIM> {
+class FourPointGaussLegendre : public IntegrationRule {
  public:
-  FourPointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{
-      -sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))}, (18.0 - sqrt(30)) / 36),
-                                                   IntegrationPoint<1>(std::array<double, 1>{
-                                                                           -sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))},
-                                                                       (18.0 + sqrt(30)) / 36),
-                                                   IntegrationPoint<1>(std::array<double, 1>{
-                                                                           sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5))},
-                                                                       (18.0 + sqrt(30)) / 36),
-                                                   IntegrationPoint<1>(std::array<double, 1>{
-                                                                           sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5))},
-                                                                       (18.0 - sqrt(30)) / 36)}) {}
+  FourPointGaussLegendre() : IntegrationRule({
+    IntegrationPoint(-sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5)), (18.0 - sqrt(30)) / 36),
+    IntegrationPoint(-sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5)), (18.0 + sqrt(30)) / 36),
+    IntegrationPoint(sqrt(3.0 / 7 - 2.0 / 7 * sqrt(6.0 / 5)), (18.0 + sqrt(30)) / 36),
+    IntegrationPoint(sqrt(3.0 / 7 + 2.0 / 7 * sqrt(6.0 / 5)), (18.0 - sqrt(30)) / 36)}) {}
 };
 }  // namespace itg
 }  // namespace iga

@@ -22,21 +22,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace iga {
 namespace itg {
-template<int DIM>
-class FivePointGaussLegendre : public IntegrationRule<DIM> {
+class FivePointGaussLegendre : public IntegrationRule {
  public:
-  FivePointGaussLegendre() : IntegrationRule<DIM>({IntegrationPoint<1>(std::array<double, 1>{
-      -(1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7))}, (322.0 - 13 * sqrt(70)) / 900),
-                                                   IntegrationPoint<1>(std::array<double, 1>{
-                                                                           -(1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7))},
-                                                                       (322.0 + 13 * sqrt(70)) / 900),
-                                                   IntegrationPoint<1>(std::array<double, 1>{0}, 128.0 / 225),
-                                                   IntegrationPoint<1>(std::array<double, 1>{
-                                                                           (1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7))},
-                                                                       (322.0 + 13 * sqrt(70)) / 900),
-                                                   IntegrationPoint<1>(std::array<double, 1>{
-                                                                           (1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7))},
-                                                                       (322.0 - 13 * sqrt(70)) / 900)}) {}
+  FivePointGaussLegendre() : IntegrationRule({
+    IntegrationPoint(-(1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7)), (322.0 - 13 * sqrt(70)) / 900),
+    IntegrationPoint(-(1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7)), (322.0 + 13 * sqrt(70)) / 900),
+    IntegrationPoint(0, 128.0 / 225),
+    IntegrationPoint((1.0 / 3) * sqrt(5 - 2.0 * sqrt(10.0 / 7)), (322.0 + 13 * sqrt(70)) / 900),
+    IntegrationPoint((1.0 / 3) * sqrt(5 + 2.0 * sqrt(10.0 / 7)), (322.0 - 13 * sqrt(70)) / 900)}) {}
 };
 }  // namespace itg
 }  // namespace iga

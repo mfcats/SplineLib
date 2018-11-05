@@ -21,24 +21,27 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::DoubleEq;
 using testing::Test;
 
-class AElementIntegrationPoint : public Test{
+class AnElementIntegrationPoint : public Test{
  public:
-  AElementIntegrationPoint() : basis_functions_({2.3, 4.5}), element_integration_point(basis_functions_) {}
+  AnElementIntegrationPoint() : element_integration_point({2.3, 4.5}, 0.75) {}
 
  protected:
-  std::vector<double> basis_functions_;
   iga::elm::ElementIntegrationPoint element_integration_point;
 };
 
-TEST_F(AElementIntegrationPoint, getNonZeroBasisFunctions) { //NOLINT
+TEST_F(AnElementIntegrationPoint, GetNonZeroBasisFunctions) { //NOLINT
   ASSERT_THAT(element_integration_point.GetNonZeroBasisFunctions()[0] , DoubleEq(2.3));
   ASSERT_THAT(element_integration_point.GetNonZeroBasisFunctions()[1] , DoubleEq(4.5));
 }
 
-TEST_F(AElementIntegrationPoint, size2) { //NOLINT
+TEST_F(AnElementIntegrationPoint, SizeEqualsTwo) { //NOLINT
   ASSERT_THAT(element_integration_point.GetNumberOfNonZeroBasisFunctions(), 2);
 }
 
-TEST_F(AElementIntegrationPoint, valueAt0) { //NOLINT
+TEST_F(AnElementIntegrationPoint, GetValueAtZero) { //NOLINT
   ASSERT_THAT(element_integration_point.GetBasisFunctionValue(1), DoubleEq(4.5));
+}
+
+TEST_F(AnElementIntegrationPoint, GetWeight) { //NOLINT
+  ASSERT_THAT(element_integration_point.GetWeight(), DoubleEq(0.75));
 }

@@ -12,31 +12,47 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
-#define SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
+#ifndef SRC_IGA_MATRIX_H_
+#define SRC_IGA_MATRIX_H_
 
-#include <vector>
+#include <array>
 
 namespace iga {
-namespace elm {
-class ElementIntegrationPoint {
+class Matrix {
  public:
-  ElementIntegrationPoint(std::vector<double> basis_functions, double weight);
+  explicit Matrix(int rowCount, int colCount) :  rowCount_(rowCount), colCount_(colCount) {
+    matrix_ = new double[rowCount_ * colCount_]();
+  }
 
-  ElementIntegrationPoint(std::vector<double> basis_functions, double weight, double jac_det);
+  ~Matrix() {
+    delete[] matrix_;
+  }
 
-  std::vector<double> GetNonZeroBasisFunctions() const;
-  double GetWeight() const;
-  double GetJacDet() const;
-  int GetNumberOfNonZeroBasisFunctions() const;
-  double GetBasisFunctionValue(int firstNonZeroOffset) const;
+  void WriteToMatrix(int row, int col, double number) {
+    matrix_[row * colCount_ + col] = number;
+  }
+
+  void AddToMatrixEntry(int row, int col, double number) {
+    matrix_[row * colCount_ + col] += number;
+  }
+
+  double GetMatrixEntry(int row, int col) {
+    return matrix_[row * colCount_ + col];
+  }
+
+  int GetRowCount() {
+    return rowCount_;
+  }
+
+  int GetColCount() {
+    return colCount_;
+  }
 
  private:
-  std::vector<double> non_zero_basis_functions_;
-  double weight_;
-  double jac_det_;
+  int rowCount_;
+  int colCount_;
+  double* matrix_;
 };
-}  // namespace elm
 }  // namespace iga
 
-#endif  // SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
+#endif  // SRC_IGA_MATRIX_H_
