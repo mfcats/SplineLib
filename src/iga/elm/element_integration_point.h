@@ -27,7 +27,7 @@ class ElementIntegrationPoint {
 
   std::vector<double> GetNonZeroBasisFunctions() const;
   double GetWeight() const;
-  double GetJacDet() const;
+  double GetJacobianDeterminant() const;
   int GetNumberOfNonZeroBasisFunctions() const;
   double GetBasisFunctionValue(int firstNonZeroOffset) const;
 

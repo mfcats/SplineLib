@@ -94,7 +94,7 @@ class PhysicalSpace {
     return weights;
   }
 
-  virtual double GetWeight(std::array<int, DIM> indices) const {
+  virtual double GetWeight(std::array<int, DIM>) const {
     return 1.0;
   }
 

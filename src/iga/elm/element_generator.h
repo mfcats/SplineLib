@@ -68,17 +68,17 @@ class ElementGenerator {
   }
 
   int GetElementNumberAtParamCoord(std::array<ParamCoord, 2> param_coord) const {
-    int element_number_xi = 0;
-    int element_number_eta = 0;
+    uint64_t element_number_xi = 0;
+    uint64_t element_number_eta = 0;
     std::vector<ParamCoord> unique_knots_xi = GetUniqueKnots(0);
     std::vector<ParamCoord> unique_knots_eta = GetUniqueKnots(1);
-    for (int i = 0; i < unique_knots_xi.size() - 1; ++i) {
+    for (uint64_t i = 0; i < unique_knots_xi.size() - 1; ++i) {
       if ((unique_knots_xi[i].get() <= param_coord[1].get()) &&
           (unique_knots_xi[i + 1].get() > param_coord[1].get())) {
         element_number_xi = i;
       }
     }
-    for (int i = 0; i < unique_knots_eta.size() - 1; ++i) {
+    for (uint64_t i = 0; i < unique_knots_eta.size() - 1; ++i) {
       if ((unique_knots_eta[i].get() <= param_coord[1].get()) &&
           (unique_knots_eta[i + 1].get() > param_coord[1].get())) {
         element_number_eta = i;
@@ -101,7 +101,7 @@ class ElementGenerator {
   std::vector<ParamCoord> GetUniqueKnots(int dir) const {
     std::vector<ParamCoord> internal_knots = GetInternalKnots(dir);
     std::vector<ParamCoord> unique_knots;
-    for (int i = 0; i < internal_knots.size() - 1; ++i) {
+    for (uint64_t i = 0; i < internal_knots.size() - 1; ++i) {
       if (internal_knots[i].get() != internal_knots[i + 1].get()) {
         unique_knots.emplace_back(internal_knots[i]);
       }
@@ -110,11 +110,12 @@ class ElementGenerator {
     return unique_knots;
   }
 
-  int Get1DElementIndex(int element_number_xi, int element_number_eta) const {
+  int Get1DElementIndex(uint64_t element_number_xi, uint64_t element_number_eta) const {
     std::array<int, 2> number_of_elements = {static_cast<int>(GetElementList(0).size()),
                                              static_cast<int>(GetElementList(1).size())};
     util::MultiIndexHandler<2> multi_index_handler(number_of_elements);
-    multi_index_handler.SetIndices(std::array<int, 2>({element_number_xi, element_number_eta}));
+    multi_index_handler.SetIndices(std::array<int, 2>({static_cast<int>(element_number_xi),
+                                                       static_cast<int>(element_number_eta)}));
     return multi_index_handler.Get1DIndex();
   }
 

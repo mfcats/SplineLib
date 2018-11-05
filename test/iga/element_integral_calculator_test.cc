@@ -29,8 +29,8 @@ TEST_F(AnIGATestSpline, TestElementIntegralCalculator) { // NOLINT
   int n = nurbs_->GetPointsPerDirection()[0] * nurbs_->GetPointsPerDirection()[1];
   std::shared_ptr<iga::Matrix> matrix = std::make_shared<iga::Matrix>(n, n);
   elm_itg_calc.GetLaplaceElementIntegral(0, rule, matrix);
-  for (int i = 0; i < matlab_element_one_integral.size(); ++i) {
-    for (int j = 0; j < matlab_element_one_integral[0].size(); ++j) {
+  for (uint64_t i = 0; i < matlab_element_one_integral.size(); ++i) {
+    for (uint64_t j = 0; j < matlab_element_one_integral[0].size(); ++j) {
       ASSERT_THAT(matrix->GetMatrixEntry(i, j), DoubleNear(matlab_element_one_integral[i][j], 0.00005));
     }
   }

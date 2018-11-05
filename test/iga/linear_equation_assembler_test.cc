@@ -14,6 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
+#include "element_integral_calculator.h"
 #include "linear_equation_assembler.h"
 #include "matlab_test_data_2.h"
 #include "matrix.h"
@@ -24,11 +25,12 @@ using testing::DoubleNear;
 
 TEST_F(AnIGATestSpline, TestLinearEquationAssembler) { // NOLINT
   iga::LinearEquationAssembler linear_equation_assembler = iga::LinearEquationAssembler(nurbs_);
+  iga::ElementIntegralCalculator elm_itg_calc = iga::ElementIntegralCalculator(nurbs_);
   std::shared_ptr<iga::Matrix> matA = std::make_shared<iga::Matrix>(49, 49);
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
-  linear_equation_assembler.Laplace(rule, matA);
-  for (int i = 0; i < matlab_matrix_a.size(); ++i) {
-    for (int j = 0; j < matlab_matrix_a[0].size(); ++j) {
+  linear_equation_assembler.Laplace(rule, matA, elm_itg_calc);
+  for (uint64_t i = 0; i < matlab_matrix_a.size(); ++i) {
+    for (uint64_t j = 0; j < matlab_matrix_a[0].size(); ++j) {
       ASSERT_THAT(matA->GetMatrixEntry(i, j), DoubleNear(matlab_matrix_a[i][j], 0.0005));
     }
   }

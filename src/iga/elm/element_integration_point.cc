@@ -30,7 +30,7 @@ double iga::elm::ElementIntegrationPoint::GetWeight() const {
   return weight_;
 }
 
-double iga::elm::ElementIntegrationPoint::GetJacDet() const {
+double iga::elm::ElementIntegrationPoint::GetJacobianDeterminant() const {
   return jac_det_;
 }
 
