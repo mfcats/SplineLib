@@ -32,10 +32,18 @@ class BasisFunctionHandler {
  public:
   explicit BasisFunctionHandler(std::shared_ptr<spl::NURBS<2>> spl);
 
-  std::vector<iga::elm::ElementIntegrationPoint>
-  EvaluateAllElementNonZeroNURBSBasisFunctions(int element_number, const iga::itg::IntegrationRule &rule) const;
+  std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctions(
+      int element_number, const iga::itg::IntegrationRule &rule) const;
 
-  std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(
+
+
+  ///// --------
+  std::array<ParamCoord, 2> Ref2ParamSpace(int element_number, iga::itg::IntegrationPoint itg_pnt_xi,
+      iga::itg::IntegrationPoint itg_pnt_eta) const;
+  /////// -------
+
+
+    std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(
       int element_number, const iga::itg::IntegrationRule &rule) const;
 
   std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(

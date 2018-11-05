@@ -29,6 +29,38 @@ class ElementGenerator {
  public:
   explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spline_(std::move(spl)) {}
 
+  std::array<int, 2> Get1DElementNumbers(int element_number) {
+    element_number += 1;
+    int number_of_elements_xi = static_cast<int>(GetElementList(0).size());
+    int q = element_number / number_of_elements_xi;
+    int r = element_number % number_of_elements_xi;
+    std::array<int, 2> element_number_1d;
+    if (r == 0) {
+      element_number_1d[1] = q - 1;
+      element_number_1d[0] = number_of_elements_xi - 1;
+    } else if (r != 0) {
+      element_number_1d[1] = q;
+      element_number_1d[0] = r - 1;
+    }
+    return element_number_1d;
+  }
+
+  std::array<int, 2> Get2DElementIndices(int element_number) const {
+    element_number += 1;
+    int number_of_elements_xi = static_cast<int>(GetElementList(0).size());
+    int q = element_number / number_of_elements_xi;
+    int r = element_number % number_of_elements_xi;
+    std::array<int, 2> element_indices_2d; //{};
+    if (r == 0) {
+      element_indices_2d[1] = q - 1;
+      element_indices_2d[0] = number_of_elements_xi - 1;
+    } else {
+      element_indices_2d[1] = q;
+      element_indices_2d[0] = r - 1;
+    }
+    return element_indices_2d;
+  }
+
   std::vector<iga::elm::Element> GetElementList(int dir) const {
     std::vector<iga::elm::Element> elements;
     for (uint64_t k = 0; k < spline_->GetKnotVector(dir)->GetNumberOfKnots() - spline_->GetDegree(dir).get() - 1;
@@ -120,21 +152,15 @@ class ElementGenerator {
     return multi_index_handler.Get1DIndex();
   }
 
-  std::array<int, 2> Get2DElementIndices(int element_number) const {
-    element_number += 1;
-    int number_of_elements_xi = static_cast<int>(GetElementList(0).size());
-    int q = element_number / number_of_elements_xi;
-    int r = element_number % number_of_elements_xi;
-    std::array<int, 2> element_indices_2d{};
-    if (r == 0) {
-      element_indices_2d[1] = q - 1;
-      element_indices_2d[0] = number_of_elements_xi - 1;
-    } else {
-      element_indices_2d[1] = q;
-      element_indices_2d[0] = r - 1;
-    }
-    return element_indices_2d;
-  }
+
+
+
+
+
+
+
+
+
 
   ParamCoord GetLowerElementBound(uint64_t currentKnot, int dir) const {
     return spline_->GetKnotVector(dir)->GetKnots()[currentKnot];
