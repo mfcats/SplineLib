@@ -35,15 +35,15 @@ class ElementIntegralCalculator {
   }
 
   void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
-      const std::shared_ptr<iga::Matrix> &matA) {
+      const std::shared_ptr<iga::Matrix> &matA) const {
     std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> elm_intgr_pnts =
-        baf_handler_->EvaluateDrDxAtEveryElemItgPnt(element_number, rule);
-    for (int i = 0; i < elm_intgr_pnts[0].size(); ++i) {
+        baf_handler_->EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(element_number, rule);
+    for (uint64_t i = 0; i < elm_intgr_pnts[0].size(); ++i) {
       for (int j = 0; j < elm_intgr_pnts[0][i].GetNumberOfNonZeroBasisFunctions(); ++j) {
         for (int k = 0; k < elm_intgr_pnts[0][i].GetNumberOfNonZeroBasisFunctions(); ++k) {
           double temp = (elm_intgr_pnts[0][i].GetBasisFunctionValue(j) * elm_intgr_pnts[0][i].GetBasisFunctionValue(k) +
               elm_intgr_pnts[1][i].GetBasisFunctionValue(j) * elm_intgr_pnts[1][i].GetBasisFunctionValue(k)) *
-                  elm_intgr_pnts[0][i].GetWeight() * elm_intgr_pnts[0][i].GetJacDet();
+                  elm_intgr_pnts[0][i].GetWeight() * elm_intgr_pnts[0][i].GetJacobianDeterminant();
           matA->AddToMatrixEntry(connectivity_[element_number][j] - 1, connectivity_[element_number][k] - 1, temp);
         }
       }

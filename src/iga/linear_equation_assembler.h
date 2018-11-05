@@ -25,20 +25,19 @@ namespace iga {
 class LinearEquationAssembler {
  public:
   explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
-    elm_intgr_calc_ = std::make_shared<iga::ElementIntegralCalculator>(spline_);
     elm_gen_ = std::make_shared<iga::elm::ElementGenerator<2>>(spline_);
   }
 
-  void Laplace(const iga::itg::IntegrationRule &rule, const std::shared_ptr<iga::Matrix> &matA) {
+  void Laplace(const iga::itg::IntegrationRule &rule, const std::shared_ptr<iga::Matrix> &matA,
+      const iga::ElementIntegralCalculator &elm_itg_calc) const {
     int num_elements = static_cast<int>(elm_gen_->GetElementList(0).size() * elm_gen_->GetElementList(1).size());
     for (int e = 0; e < num_elements; ++e) {
-      elm_intgr_calc_->GetLaplaceElementIntegral(e, rule, matA);
+      elm_itg_calc.GetLaplaceElementIntegral(e, rule, matA);
     }
   }
 
  private:
   std::shared_ptr<spl::NURBS<2>> spline_;
-  std::shared_ptr<iga::ElementIntegralCalculator> elm_intgr_calc_;
   std::shared_ptr<iga::elm::ElementGenerator<2>> elm_gen_;
 };
 }  // namespace iga
