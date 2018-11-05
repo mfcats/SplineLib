@@ -35,10 +35,10 @@ class BasisFunctionHandler {
   std::vector<iga::elm::ElementIntegrationPoint>
   EvaluateAllElementNonZeroNURBSBasisFunctions(int element_number, const iga::itg::IntegrationRule &rule) const;
 
-  std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(
+  std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(
       int element_number, const iga::itg::IntegrationRule &rule) const;
 
-  std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(
+  std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(
       int element_number, const iga::itg::IntegrationRule &rule) const;
 
  private:

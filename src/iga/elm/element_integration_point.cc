@@ -19,9 +19,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions, double weight)
     : non_zero_basis_functions_(std::move(basis_functions)), weight_(weight) {}
 
-iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions, double weight,
-    double jac_det) : non_zero_basis_functions_(std::move(basis_functions)), weight_(weight) {
-  jac_det_.insert(jac_det);
+iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(
+    std::array<std::vector<double>, 2> basis_function_derivatives, double weight) :
+    non_zero_basis_function_derivatives_(std::move(basis_function_derivatives)), weight_(weight) {
 }
 
 iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(
@@ -38,11 +38,11 @@ std::vector<double> iga::elm::ElementIntegrationPoint::GetNonZeroBasisFunctions(
   }
 }
 
-std::array<std::vector<double>, 2> iga::elm::ElementIntegrationPoint::GetNonZeroBasisFunctionDerivatives() const {
+std::vector<double> iga::elm::ElementIntegrationPoint::GetNonZeroBasisFunctionDerivatives(int dir) const {
   if (non_zero_basis_function_derivatives_[0].empty()) {
     throw std::runtime_error("Basis function derivatives were not set.");
   } else {
-    return non_zero_basis_function_derivatives_;
+    return non_zero_basis_function_derivatives_[dir];
   }
 }
 
@@ -58,9 +58,20 @@ double iga::elm::ElementIntegrationPoint::GetJacobianDeterminant() const {
   }
 }
 
-
 int iga::elm::ElementIntegrationPoint::GetNumberOfNonZeroBasisFunctions() const {
-  return static_cast<int>(non_zero_basis_functions_.size());
+  if (non_zero_basis_functions_.empty()) {
+    throw std::runtime_error("Basis functions were not set.");
+  } else {
+    return static_cast<int>(non_zero_basis_functions_.size());
+  }
+}
+
+int iga::elm::ElementIntegrationPoint::GetNumberOfNonZeroBasisFunctionDerivatives(int dir) const {
+  if (non_zero_basis_function_derivatives_[0].empty()) {
+    throw std::runtime_error("Basis functions were not set.");
+  } else {
+    return static_cast<int>(non_zero_basis_function_derivatives_[dir].size());
+  }
 }
 
 double iga::elm::ElementIntegrationPoint::GetBasisFunctionValue(int firstNonZeroOffset) const {
@@ -68,5 +79,13 @@ double iga::elm::ElementIntegrationPoint::GetBasisFunctionValue(int firstNonZero
   return non_zero_basis_functions_.at(firstNonZeroOffset);
 #else
   return non_zero_basis_functions_[firstNonZeroOffset];
+#endif
+}
+
+double iga::elm::ElementIntegrationPoint::GetBasisFunctionDerivativeValue(int firstNonZeroOffset, int dir) const {
+#ifdef DEBUG
+  return non_zero_basis_function_derivatives_.at(dir).at(firstNonZeroOffset);
+#else
+  return non_zero_basis_function_derivatives_[dir][firstNonZeroOffset];
 #endif
 }

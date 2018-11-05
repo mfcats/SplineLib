@@ -25,16 +25,18 @@ class ElementIntegrationPoint {
  public:
   ElementIntegrationPoint(std::vector<double> basis_functions, double weight);
 
-  ElementIntegrationPoint(std::vector<double> basis_functions, double weight, double jac_det);
+  ElementIntegrationPoint(std::array<std::vector<double>, 2> basis_function_derivatives, double weight);
 
   ElementIntegrationPoint(std::array<std::vector<double>, 2> basis_function_derivatives, double weight, double jac_det);
 
   std::vector<double> GetNonZeroBasisFunctions() const;
-  std::array<std::vector<double>, 2> GetNonZeroBasisFunctionDerivatives() const;
+  std::vector<double> GetNonZeroBasisFunctionDerivatives(int dir) const;
   double GetWeight() const;
   double GetJacobianDeterminant() const;
   int GetNumberOfNonZeroBasisFunctions() const;
+  int GetNumberOfNonZeroBasisFunctionDerivatives(int dir) const;
   double GetBasisFunctionValue(int firstNonZeroOffset) const;
+  double GetBasisFunctionDerivativeValue(int firstNonZeroOffset, int dir) const;
 
  private:
   std::vector<double> non_zero_basis_functions_;

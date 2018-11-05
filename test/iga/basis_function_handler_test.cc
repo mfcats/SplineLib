@@ -57,7 +57,7 @@ TEST_F(AnIGATestSpline, ElementNURBSBasisFunctions) { // NOLINT
 TEST_F(AnIGATestSpline, ElementNURBSBasisFunctionDerivatives) { // NOLINT
   iga::BasisFunctionHandler basis_function_handler(nurbs_);
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
-  std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> splinelib_element_intg_pnts =
+  std::vector<iga::elm::ElementIntegrationPoint> splinelib_element_intg_pnts =
       basis_function_handler.EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(6, rule);
   std::vector<double> i1_1 = {-0.762835, -0.905235, 1.64178, 0.0262892, -0.613203, -0.727671, 1.31974, 0.0211325,
                               -0.164307, -0.194979, 0.353624, 0.0056624, -0.0146753, -0.0174148, 0.0315844, 0.00050575};
@@ -77,20 +77,20 @@ TEST_F(AnIGATestSpline, ElementNURBSBasisFunctionDerivatives) { // NOLINT
                               -0.00136217, -1.07464, -0.622065, -0.0339872, 0.00293507, 2.31552, 1.34036, 0.0732322};
   std::vector<std::vector<std::vector<double>>> matlab_element_intg_pnts = {{i1_1, i2_1, i3_1, i4_1},
                                                                             {i1_2, i2_2, i3_2, i4_2}};
-  for (uint64_t i = 0; i < 2; ++i) {
-    for (uint64_t j = 0; j < splinelib_element_intg_pnts.at(i).size(); ++j) {
-      for (uint64_t k = 0; k < splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions().size(); ++k) {
-        ASSERT_THAT(splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions()[k],
-                    DoubleNear(matlab_element_intg_pnts[i][j][k], 0.0002));
+  for (int i = 0; i < 2; ++i) {
+    for (uint64_t j = 0; j < splinelib_element_intg_pnts.size(); ++j) {
+      for (int k = 0; k < splinelib_element_intg_pnts[j].GetNumberOfNonZeroBasisFunctionDerivatives(i); ++k) {
+        ASSERT_THAT(splinelib_element_intg_pnts[j].GetBasisFunctionDerivativeValue(k, i),
+            DoubleNear(matlab_element_intg_pnts[i][j][k], 0.0002));
       }
     }
   }
 }
 
-TEST_F(AnIGATestSpline, ElementIntgPntDrDx) { // NOLINT
+TEST_F(AnIGATestSpline, ElementNURBSBafDersPhysical) { // NOLINT
   iga::BasisFunctionHandler basis_function_handler(nurbs_);
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
-  std::array<std::vector<iga::elm::ElementIntegrationPoint>, 2> splinelib_element_intg_pnts =
+  std::vector<iga::elm::ElementIntegrationPoint> splinelib_element_intg_pnts =
       basis_function_handler.EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(3, rule);
   std::vector<double> i1_1 = {-1.34519, -0.131682, 1.31117, 0.181808, -1.08667, -0.116567, 1.04981, 0.145953, -0.292604,
                               -0.034105, 0.28018, 0.0390564, -0.0262622, -0.00330256, 0.0249249, 0.00348376};
@@ -110,11 +110,11 @@ TEST_F(AnIGATestSpline, ElementIntgPntDrDx) { // NOLINT
                               -0.00165249, -0.0290744, -0.136529, -0.161059, 0.00356063, 0.0626466, 0.294178, 0.347033};
   std::vector<std::vector<std::vector<double>>> matlab_element_intg_pnts = {{i1_1, i2_1, i3_1, i4_1},
                                                                             {i1_2, i2_2, i3_2, i4_2}};
-  for (uint64_t i = 0; i < 2; ++i) {
-    for (uint64_t j = 0; j < splinelib_element_intg_pnts.at(i).size(); ++j) {
-      for (uint64_t k = 0; k < splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions().size(); ++k) {
-        ASSERT_THAT(splinelib_element_intg_pnts.at(i).at(j).GetNonZeroBasisFunctions()[k],
-                    DoubleNear(matlab_element_intg_pnts[i][j][k], 0.00005));
+  for (int i = 0; i < 2; ++i) {
+    for (uint64_t j = 0; j < splinelib_element_intg_pnts.size(); ++j) {
+      for (int k = 0; k < splinelib_element_intg_pnts[j].GetNumberOfNonZeroBasisFunctionDerivatives(i); ++k) {
+        ASSERT_THAT(splinelib_element_intg_pnts[j].GetBasisFunctionDerivativeValue(k, i),
+                    DoubleNear(matlab_element_intg_pnts[i][j][k], 0.0002));
       }
     }
   }
