@@ -11,7 +11,7 @@ WORKDIR /code/build-clang6-debug-valgrind
 RUN ../spconfig.py ..
 
 # Build and execute tests
-CMD make && valgrind ./test/SplineLibTests
+CMD make && valgrind --track-origins=yes ./test/SplineLibTests
 
 # Command to run a single test
 # --gtest_filter=AnIGATestSpline.ElementNURBSBasisFunctionDerivatives

@@ -17,6 +17,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <vector>
 
+#include <iostream>
+
 #include "element.h"
 #include "multi_index_handler.h"
 #include "named_type.h"
@@ -29,28 +31,15 @@ class ElementGenerator {
  public:
   explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spline_(std::move(spl)) {}
 
-  std::array<int, 2> Get1DElementNumbers(int element_number) {
-    element_number += 1;
-    int number_of_elements_xi = static_cast<int>(GetElementList(0).size());
-    int q = element_number / number_of_elements_xi;
-    int r = element_number % number_of_elements_xi;
-    std::array<int, 2> element_number_1d;
-    if (r == 0) {
-      element_number_1d[1] = q - 1;
-      element_number_1d[0] = number_of_elements_xi - 1;
-    } else if (r != 0) {
-      element_number_1d[1] = q;
-      element_number_1d[0] = r - 1;
-    }
-    return element_number_1d;
-  }
+
+
 
   std::array<int, 2> Get2DElementIndices(int element_number) const {
     element_number += 1;
     int number_of_elements_xi = static_cast<int>(GetElementList(0).size());
     int q = element_number / number_of_elements_xi;
     int r = element_number % number_of_elements_xi;
-    std::array<int, 2> element_indices_2d; //{};
+    std::array<int, 2> element_indices_2d{};
     if (r == 0) {
       element_indices_2d[1] = q - 1;
       element_indices_2d[0] = number_of_elements_xi - 1;
@@ -60,6 +49,10 @@ class ElementGenerator {
     }
     return element_indices_2d;
   }
+
+
+
+
 
   std::vector<iga::elm::Element> GetElementList(int dir) const {
     std::vector<iga::elm::Element> elements;
@@ -87,7 +80,7 @@ class ElementGenerator {
     return knot_multiplicity;
   }
 
-  std::array<ParamCoord, 2> Reference2ParameterSpace(int element_number, std::array<double, 2> param_coord) const {
+  std::array<ParamCoord, 2> Reference2ParameterSpace(int element_number, double itg_pnt_xi, double itg_pnt_eta) const {
     iga::elm::Element element_xi = GetElementList(0)[Get2DElementIndices(element_number)[0]];
     iga::elm::Element element_eta = GetElementList(1)[Get2DElementIndices(element_number)[1]];
     ParamCoord upper_xi = element_xi.GetNode(1);
@@ -95,8 +88,8 @@ class ElementGenerator {
     ParamCoord upper_eta = element_eta.GetNode(1);
     ParamCoord lower_eta = element_eta.GetNode(0);
     return std::array<ParamCoord, 2>({
-      ParamCoord{((upper_xi - lower_xi).get() * param_coord[0] + (upper_xi + lower_xi).get()) / 2.0},
-      ParamCoord{((upper_eta - lower_eta).get() * param_coord[1] + (upper_eta + lower_eta).get()) / 2.0}});
+      ParamCoord{((upper_xi - lower_xi).get() * itg_pnt_xi + (upper_xi + lower_xi).get()) / 2.0},
+      ParamCoord{((upper_eta - lower_eta).get() * itg_pnt_eta + (upper_eta + lower_eta).get()) / 2.0}});
   }
 
   int GetElementNumberAtParamCoord(std::array<ParamCoord, 2> param_coord) const {
@@ -143,14 +136,12 @@ class ElementGenerator {
   }
 
   int Get1DElementIndex(uint64_t element_number_xi, uint64_t element_number_eta) const {
-    std::array<int, 2> number_of_elements = {static_cast<int>(GetElementList(0).size()),
-                                             static_cast<int>(GetElementList(1).size())};
-    util::MultiIndexHandler<2> multi_index_handler(number_of_elements);
-    int elm_num_xi = static_cast<int>(element_number_xi);
-    int elm_num_eta = static_cast<int>(element_number_eta);
-    multi_index_handler.SetIndices(std::array<int, 2>({elm_num_xi, elm_num_eta}));
+    util::MultiIndexHandler<2> multi_index_handler({static_cast<int>(GetElementList(0).size()),
+                                                    static_cast<int>(GetElementList(1).size())});
+    multi_index_handler.SetIndices({static_cast<int>(element_number_xi), static_cast<int>(element_number_eta)});
     return multi_index_handler.Get1DIndex();
   }
+
 
 
 

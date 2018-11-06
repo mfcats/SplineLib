@@ -29,40 +29,35 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace iga {
 class BasisFunctionHandler {
- public:
-  explicit BasisFunctionHandler(std::shared_ptr<spl::NURBS<2>> spl);
+public:
+    explicit BasisFunctionHandler(std::shared_ptr<spl::NURBS<2>> spl);
 
-  std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctions(
-      int element_number, const iga::itg::IntegrationRule &rule) const;
+    std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctions(
+            int element_number, const iga::itg::IntegrationRule &rule) const;
 
-
-
-  ///// --------
-  std::array<ParamCoord, 2> Ref2ParamSpace(int element_number, iga::itg::IntegrationPoint itg_pnt_xi,
-      iga::itg::IntegrationPoint itg_pnt_eta) const;
-  /////// -------
+    std::array<ParamCoord, 2> Reference2ParameterSpace(int element_number, double itg_pnt_xi, double itg_pnt_eta) const;
 
 
     std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(
-      int element_number, const iga::itg::IntegrationRule &rule) const;
+            int element_number, const iga::itg::IntegrationRule &rule) const;
 
-  std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(
-      int element_number, const iga::itg::IntegrationRule &rule) const;
+    std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(
+            int element_number, const iga::itg::IntegrationRule &rule) const;
 
- private:
-  std::vector<double> EvaluateAllNonZeroNURBSBasisFunctions(std::array<ParamCoord, 2> param_coord) const;
+private:
+    std::vector<double> EvaluateAllNonZeroNURBSBasisFunctions(std::array<ParamCoord, 2> param_coord) const;
 
-  std::array<std::vector<double>, 2> EvaluateAllNonZeroNURBSBasisFunctionDerivatives(
-      std::array<ParamCoord, 2> param_coord) const;
+    std::array<std::vector<double>, 2> EvaluateAllNonZeroNURBSBasisFunctionDerivatives(
+            std::array<ParamCoord, 2> param_coord) const;
 
-  std::array<std::vector<double>, 2> EvaluateAllNonZeroNURBSBafDerivativesPhyiscal(
-      std::array<ParamCoord, 2> param_coord) const;
+    std::array<std::vector<double>, 2> EvaluateAllNonZeroNURBSBafDerivativesPhyiscal(
+            std::array<ParamCoord, 2> param_coord) const;
 
-  double GetWeight(std::array<ParamCoord, 2> param_coord, int local_index) const;
+    double GetWeight(std::array<ParamCoord, 2> param_coord, int local_index) const;
 
-  std::shared_ptr<spl::NURBS<2>> spline_;
-  std::shared_ptr<iga::MappingHandler> mapping_handler_;
-  std::shared_ptr<iga::elm::ElementGenerator<2>> element_generator_;
+    std::shared_ptr<spl::NURBS<2>> spline_;
+    std::shared_ptr<iga::MappingHandler> mapping_handler_;
+    std::shared_ptr<iga::elm::ElementGenerator<2>> element_generator_;
 };
 }  // namespace iga
 

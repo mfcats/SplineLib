@@ -21,7 +21,7 @@ set(TEST_SOURCES
         spl/b_spline_test.cc
         spl/b_spline_2d_test.cc
         spl/square_generator_test.cc
-        util/multihandler_test.cc
+        util/multi_index_handler_test.cc
         iga/elm/element_test.cc
         io/iges_reader_writer_test.cc
         iga/itg/integration_rule_test.cc
