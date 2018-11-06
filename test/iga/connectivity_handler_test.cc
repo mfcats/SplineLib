@@ -30,16 +30,10 @@ TEST_F(AnIGATestSpline, TestConnectivityHandler) { // NOLINT
   std::vector<int> e6 = {23, 24, 25, 26, 30, 31, 32, 33, 37, 38, 39, 40, 44, 45, 46, 47};
   std::vector<int> e7 = {24, 25, 26, 27, 31, 32, 33, 34, 38, 39, 40, 41, 45, 46, 47, 48};
   std::vector<int> e8 = {25, 26, 27, 28, 32, 33, 34, 35, 39, 40, 41, 42, 46, 47, 48, 49};
-
   std::vector<std::vector<int>> connectivity_matlab = {e1, e2, e3, e4, e5, e6, e7, e8};
-  std::vector<std::vector<int>> connectivity_splinelib = connectivity_handler.GetConnectivity();
-  ASSERT_THAT(connectivity_matlab.size(), Eq(connectivity_splinelib.size()));
-  for (uint64_t i = 0; i < connectivity_matlab.size(); ++i) {
-    ASSERT_THAT(connectivity_matlab[i].size(), Eq(connectivity_splinelib[i].size()));
-  }
   for (uint64_t i = 0; i < connectivity_matlab.size(); ++i) {
     for (uint64_t j = 0; j < connectivity_matlab[i].size(); ++j) {
-      ASSERT_THAT(connectivity_matlab[i][j], Eq(connectivity_splinelib[i][j]));
+      ASSERT_THAT(connectivity_matlab[i][j], Eq(connectivity_handler.GetGlobalIndex(i, j)));
     }
   }
 }

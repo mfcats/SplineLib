@@ -156,6 +156,6 @@ std::array<std::vector<double>, 2> iga::BasisFunctionHandler::EvaluateAllNonZero
 
 double iga::BasisFunctionHandler::GetWeight(std::array<ParamCoord, 2> param_coord, int local_index) const {
     iga::ConnectivityHandler ch(spline_);
-    return spline_->GetWeights()[
-            ch.GetConnectivity()[element_generator_->GetElementNumberAtParamCoord(param_coord)][local_index] - 1];
+    return spline_->GetWeights()[ch.GetGlobalIndex(element_generator_->GetElementNumberAtParamCoord(param_coord),
+            local_index) - 1];
 }

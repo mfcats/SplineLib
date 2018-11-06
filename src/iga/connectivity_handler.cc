@@ -20,8 +20,12 @@ iga::ConnectivityHandler::ConnectivityHandler(std::shared_ptr<spl::Spline<2>> sp
   SetConnectivityMatrix();
 }
 
-std::vector<std::vector<int>> iga::ConnectivityHandler::GetConnectivity() {
+/*std::vector<std::vector<int>> iga::ConnectivityHandler::GetConnectivity() {
   return connectivity;
+}*/
+
+int iga::ConnectivityHandler::GetGlobalIndex(int element_number, int local_index) {
+  return connectivity[element_number][local_index];
 }
 
 void iga::ConnectivityHandler::SetConnectivityMatrix() {

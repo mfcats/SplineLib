@@ -30,8 +30,7 @@ class ElementIntegralCalculator {
  public:
   explicit ElementIntegralCalculator(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
     baf_handler_ = std::make_shared<iga::BasisFunctionHandler>(spline_);
-    iga::ConnectivityHandler connectivity_handler(spline_);
-    connectivity_ = connectivity_handler.GetConnectivity();
+    connectivity_handler_ = std::make_shared<iga::ConnectivityHandler>(spline_);
   }
 
   void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
@@ -44,7 +43,8 @@ class ElementIntegralCalculator {
           double temp = (p.GetBasisFunctionDerivativeValue(j, 0) * p.GetBasisFunctionDerivativeValue(k, 0)
                         + p.GetBasisFunctionDerivativeValue(j, 1) * p.GetBasisFunctionDerivativeValue(k, 1))
                         * p.GetWeight() * p.GetJacobianDeterminant();
-          matA->AddToMatrixEntry(connectivity_[element_number][j] - 1, connectivity_[element_number][k] - 1, temp);
+          matA->AddToMatrixEntry(connectivity_handler_->GetGlobalIndex(element_number, j) - 1,
+                  connectivity_handler_->GetGlobalIndex(element_number, k) - 1, temp);
         }
       }
     }
@@ -53,7 +53,7 @@ class ElementIntegralCalculator {
  private:
   std::shared_ptr<spl::NURBS<2>> spline_;
   std::shared_ptr<iga::BasisFunctionHandler> baf_handler_;
-  std::vector<std::vector<int>> connectivity_;
+  std::shared_ptr<iga::ConnectivityHandler> connectivity_handler_;
 };
 }  // namespace iga
 
