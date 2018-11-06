@@ -25,8 +25,6 @@ class ConnectivityHandler {
  public:
   explicit ConnectivityHandler(std::shared_ptr<spl::Spline<2>> spl);
 
-  //std::vector<std::vector<int>> GetConnectivity();
-
   int GetGlobalIndex(int element_number, int local_index);
 
  private:
