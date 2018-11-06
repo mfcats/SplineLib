@@ -29,29 +29,6 @@ class ElementGenerator {
  public:
   explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spline_(std::move(spl)) {}
 
-
-
-
-  std::array<int, 2> Get2DElementIndices(int element_number) const {
-    element_number += 1;
-    int number_of_elements_xi = static_cast<int>(GetElementList(0).size());
-    int q = element_number / number_of_elements_xi;
-    int r = element_number % number_of_elements_xi;
-    std::array<int, 2> element_indices_2d{};
-    if (r == 0) {
-      element_indices_2d[1] = q - 1;
-      element_indices_2d[0] = number_of_elements_xi - 1;
-    } else {
-      element_indices_2d[1] = q;
-      element_indices_2d[0] = r - 1;
-    }
-    return element_indices_2d;
-  }
-
-
-
-
-
   std::vector<iga::elm::Element> GetElementList(int dir) const {
     std::vector<iga::elm::Element> elements;
     for (uint64_t k = 0; k < spline_->GetKnotVector(dir)->GetNumberOfKnots() - spline_->GetDegree(dir).get() - 1;
@@ -85,9 +62,8 @@ class ElementGenerator {
     ParamCoord lower_xi = element_xi.GetNode(0);
     ParamCoord upper_eta = element_eta.GetNode(1);
     ParamCoord lower_eta = element_eta.GetNode(0);
-    return std::array<ParamCoord, 2>({
-      ParamCoord{((upper_xi - lower_xi).get() * itg_pnt_xi + (upper_xi + lower_xi).get()) / 2.0},
-      ParamCoord{((upper_eta - lower_eta).get() * itg_pnt_eta + (upper_eta + lower_eta).get()) / 2.0}});
+    return {ParamCoord{((upper_xi - lower_xi).get() * itg_pnt_xi + (upper_xi + lower_xi).get()) / 2.0},
+            ParamCoord{((upper_eta - lower_eta).get() * itg_pnt_eta + (upper_eta + lower_eta).get()) / 2.0}};
   }
 
   int GetElementNumberAtParamCoord(std::array<ParamCoord, 2> param_coord) const {
@@ -140,16 +116,21 @@ class ElementGenerator {
     return multi_index_handler.Get1DIndex();
   }
 
-
-
-
-
-
-
-
-
-
-
+  std::array<int, 2> Get2DElementIndices(int element_number) const {
+    element_number += 1;
+    int number_of_elements_xi = static_cast<int>(GetElementList(0).size());
+    int q = element_number / number_of_elements_xi;
+    int r = element_number % number_of_elements_xi;
+    std::array<int, 2> element_indices_2d{};
+    if (r == 0) {
+      element_indices_2d[1] = q - 1;
+      element_indices_2d[0] = number_of_elements_xi - 1;
+    } else {
+      element_indices_2d[1] = q;
+      element_indices_2d[0] = r - 1;
+    }
+    return element_indices_2d;
+  }
 
   ParamCoord GetLowerElementBound(uint64_t currentKnot, int dir) const {
     return spline_->GetKnotVector(dir)->GetKnots()[currentKnot];

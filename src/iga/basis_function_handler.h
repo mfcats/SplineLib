@@ -35,9 +35,6 @@ public:
     std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctions(
             int element_number, const iga::itg::IntegrationRule &rule) const;
 
-    std::array<ParamCoord, 2> Reference2ParameterSpace(int element_number, double itg_pnt_xi, double itg_pnt_eta) const;
-
-
     std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(
             int element_number, const iga::itg::IntegrationRule &rule) const;
 

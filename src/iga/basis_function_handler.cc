@@ -26,8 +26,8 @@ std::vector<iga::elm::ElementIntegrationPoint> iga::BasisFunctionHandler::Evalua
   for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-          EvaluateAllNonZeroNURBSBasisFunctions(Reference2ParameterSpace(
-              element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate())),
+          EvaluateAllNonZeroNURBSBasisFunctions(element_generator_->Reference2ParameterSpace(
+                  element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate())),
           itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight()));
     }
   }
@@ -41,27 +41,12 @@ std::vector<iga::elm::ElementIntegrationPoint>
   for (auto &itg_p_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_p_xi : rule.GetIntegrationPoints()) {
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-          EvaluateAllNonZeroNURBSBasisFunctionDerivatives(/*element_generator_->*/Reference2ParameterSpace(
+          EvaluateAllNonZeroNURBSBasisFunctionDerivatives(element_generator_->Reference2ParameterSpace(
                   element_number, itg_p_xi.GetCoordinate(), itg_p_eta.GetCoordinate())),
           itg_p_xi.GetWeight() * itg_p_eta.GetWeight()));
     }
   }
   return element_integration_points;
-}
-
-std::array<ParamCoord, 2> iga::BasisFunctionHandler::Reference2ParameterSpace(int element_number, double itg_pnt_xi,
-        double itg_pnt_eta) const {
-    iga::elm::Element element_xi =
-            element_generator_->GetElementList(0)[element_generator_->Get2DElementIndices(element_number)[0]];
-    iga::elm::Element element_eta =
-            element_generator_->GetElementList(1)[element_generator_->Get2DElementIndices(element_number)[1]];
-    ParamCoord upper_xi = element_xi.GetNode(1);
-    ParamCoord lower_xi = element_xi.GetNode(0);
-    ParamCoord upper_eta = element_eta.GetNode(1);
-    ParamCoord lower_eta = element_eta.GetNode(0);
-    return std::array<ParamCoord, 2>({
-        ParamCoord{((upper_xi - lower_xi).get() * itg_pnt_xi + (upper_xi + lower_xi).get()) / 2.0},
-        ParamCoord{((upper_eta - lower_eta).get() * itg_pnt_eta + (upper_eta + lower_eta).get()) / 2.0}});
 }
 
 std::vector<iga::elm::ElementIntegrationPoint>
@@ -70,8 +55,8 @@ std::vector<iga::elm::ElementIntegrationPoint>
   std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
   for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
-      std::array<ParamCoord, 2> param_coords = Reference2ParameterSpace(
-          element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate());
+      std::array<ParamCoord, 2> param_coords = element_generator_->Reference2ParameterSpace(
+                element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate());
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
           EvaluateAllNonZeroNURBSBafDerivativesPhyiscal(param_coords), itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight(),
           mapping_handler_->GetJacobianDeterminant(param_coords)));

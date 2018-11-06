@@ -77,14 +77,9 @@ jobs:
       script: docker run -te "TERM=xterm-256color" --name acceptance splinelibtests:acceptance
 
     - stage: AcceptanceTests
-      name: Memory - GCC 8
-      install: docker build -t splinelibtests:valgrind_gcc8 -f scripts/docker/Dockerfile.test.gcc8.valgrind .
-      script: docker run -te "TERM=xterm-256color" --name valgrind_gcc8 splinelibtests:valgrind_gcc8
-
-    - stage: AcceptanceTests
-      name: Memory - Clang 6
-      install: docker build -t splinelibtests:valgrind_clang6 -f scripts/docker/Dockerfile.test.clang6.valgrind .
-      script: docker run -te "TERM=xterm-256color" --name valgrind_clang6 splinelibtests:valgrind_clang6
+      name: Memory
+      install: docker build -t splinelibtests:valgrind -f scripts/docker/Dockerfile.test.gcc8.valgrind .
+      script: docker run -te "TERM=xterm-256color" --name valgrind splinelibtests:valgrind
 
     - stage: Install
       name: Ex1
