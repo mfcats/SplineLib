@@ -68,6 +68,10 @@ class NURBS : public Spline<DIM> {
     return physical_space_->GetControlPoint(indices).GetValue(dimension);
   }
 
+  baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) {
+    return physical_space_->GetControlPoint(indices);
+  }
+
   double GetWeight(std::array<int, DIM> indices) {
     return physical_space_->GetWeight(indices);
   }

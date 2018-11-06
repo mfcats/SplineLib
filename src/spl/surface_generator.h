@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_SPL_SURFACE_GENERATOR_H_
 
 #include <vector>
+#include <cmath>
 
 #include "nurbs_generator.h"
 #include "nurbs.h"
@@ -37,6 +38,11 @@ class SurfaceGenerator : public NURBSGenerator<2> {
 
   double ComputeNormal(
       std::shared_ptr<spl::NURBS<1>> const &nurbs, ParamCoord param_coord, int direction) const;
+
+  std::array<double, 3> CrossProduct( std::vector<double> a, std::vector<double> b) const;
+
+  std::array<double, 3> CrossProduct( std::array<double, 3> a, std::array<double, 3> b) const;
+
 };
 }  // namespace spl
 

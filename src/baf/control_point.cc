@@ -31,6 +31,17 @@ baf::ControlPoint baf::ControlPoint::operator+(const baf::ControlPoint &control_
   return ControlPoint(coordinates_new);
 }
 
+baf::ControlPoint baf::ControlPoint::Transform(const baf::ControlPoint &controlPoint,
+    std::array<double, 3> x, std::array<double, 3> y, std::array<double, 3>, std::array<double, 3> o) const {
+  std::vector<double> coordinates_new = {-o[0], -o[1], -o[2]};
+  for (int i = 0; i < 3; ++i) {
+    coordinates_new[0] += x[i] * controlPoint.GetValue(i);
+    coordinates_new[1] += y[i] * controlPoint.GetValue(i);
+    coordinates_new[2] += z[i] * controlPoint.GetValue(i);
+  }
+  return ControlPoint(coordinates_new);
+}
+
 double baf::ControlPoint::GetValue(int dimension) const {
 #ifdef DEBUG
   return coordinates_.at(dimension);
