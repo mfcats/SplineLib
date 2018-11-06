@@ -17,8 +17,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <vector>
 
-#include <iostream>
-
 #include "element.h"
 #include "multi_index_handler.h"
 #include "named_type.h"
