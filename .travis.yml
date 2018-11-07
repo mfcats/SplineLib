@@ -16,7 +16,7 @@ jobs:
 
     - stage: UnitTests
       name: GCC 7 - Release
-      install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.test.gcc7.release .
+      install: docker build --no-cache -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.test.gcc7.release .
       script: docker run -te "TERM=xterm-256color" --name tests_gcc7 splinelibtests:gcc7
 
     - stage: UnitTests
