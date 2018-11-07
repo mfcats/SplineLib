@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <string>
 
-static const char* iges_read = "@IGES_READ@";
-static const char* iges_read_2 = "@IGES_READ_2@";
+static const char *iges_read = "@IGES_READ@";
+static const char *iges_read_2 = "@IGES_READ_2@";
 
 #endif  // TEST_IO_CONFIG_IGES_IN_H_

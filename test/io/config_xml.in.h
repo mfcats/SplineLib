@@ -17,6 +17,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <string>
 
-static const char* path_to_xml_file = "@PATH_TO_XML_FILE@";
+static const char *path_to_xml_file = "@PATH_TO_XML_FILE@";
 
 #endif  // TEST_IO_CONFIG_XML_IN_H_
