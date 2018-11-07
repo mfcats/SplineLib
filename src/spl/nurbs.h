@@ -93,8 +93,8 @@ class NURBS : public Spline<DIM> {
             (scaling[i - first] * cp0.GetValue(j) + (1 - scaling[i - first]) * cp1.GetValue(j)) / new_weight);
       }
       baf::ControlPoint new_cp(coordinates);
-      i != last ? physical_space_->SetControlPoint({i}, new_cp) : physical_space_->InsertControlPoint({i}, new_cp);
-      i != last ? physical_space_->SetWeight({i}, new_weight) : physical_space_->InsertWeight({i}, new_weight);
+      i != last ? (physical_space_->SetControlPoint({i}, new_cp), physical_space_->SetWeight({i}, new_weight))
+                : (physical_space_->InsertControlPoint({i}, new_cp), physical_space_->InsertWeight({i}, new_weight));
     }
   }
 
