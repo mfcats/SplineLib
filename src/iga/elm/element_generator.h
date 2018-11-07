@@ -88,7 +88,7 @@ class ElementGenerator {
 
  private:
   std::vector<ParamCoord> GetInternalKnots(int dir) const {
-    std::vector<ParamCoord> knots = spline_->GetKnots().at(uint64_t(dir));
+    std::vector<ParamCoord> knots = spline_->GetKnots()[dir];
     std::vector<ParamCoord> internal_knots;
     int degree = spline_->GetDegree(dir).get();
     for (auto j = uint64_t(degree); j < knots.size() - degree; ++j) {

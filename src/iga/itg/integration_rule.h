@@ -37,7 +37,7 @@ class IntegrationRule {
 #ifdef DEBUG
     return points_.at(point).GetCoordinate();
 #else
-    return points_.at(point).GetCoordinate();
+    return points_[point].GetCoordinate();
 #endif
   }
 
