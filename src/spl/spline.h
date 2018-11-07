@@ -123,7 +123,7 @@ class Spline {
     return parameter_space_->GetKnots();
   }
 
-  void InsertKnot(ParamCoord knot, int dimension) {
+  virtual void InsertKnot(ParamCoord knot, int dimension) {
     std::vector<double> scaling;
     KnotSpan knot_span = parameter_space_->GetKnotVector(dimension)->GetKnotSpan(knot);
     auto first = static_cast<size_t>(knot_span.get() - parameter_space_->GetDegree(dimension).get() + 1);
@@ -156,13 +156,6 @@ class Spline {
 
   std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
     return parameter_space_->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
-    std::array<int, DIM> first_non_zero;
-    for (int i = 0; i < DIM; ++i) {
-      first_non_zero[i] =
-          this->parameter_space_->GetKnotVector(i)->GetKnotSpan(param_coord[i]).get()
-              - this->parameter_space_->GetDegree(i).get();
-    }
-    return first_non_zero;
   }
 
   std::array<int, DIM> GetNumberOfBasisFunctionsToEvaluate() const {

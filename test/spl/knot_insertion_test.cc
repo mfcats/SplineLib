@@ -119,13 +119,13 @@ TEST_F(NURBSEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
       baf::ControlPoint(std::vector<double>({1.0, 2.0})),
       baf::ControlPoint(std::vector<double>({1.0, 0.0})),
       baf::ControlPoint(std::vector<double>({1.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({7.0 / 3.0, 2.0 / 3.0})),
+      baf::ControlPoint(std::vector<double>({13.0 / 9.0, 2.0 / 9.0})),
       baf::ControlPoint(std::vector<double>({5.0, 2.0})),
       baf::ControlPoint(std::vector<double>({1.0, 1.0})),
       baf::ControlPoint(std::vector<double>({1.0, 2.0})),
       baf::ControlPoint(std::vector<double>({1.3, 2.3}))
   };
-  for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
+  for (int i = 3; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
       ASSERT_THAT(nurbs_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
     }
@@ -135,11 +135,11 @@ TEST_F(NURBSEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     ASSERT_THAT(nurbs_1d_after_->GetWeight({i}), DoubleEq(new_weights[i]));
   }
-//  for (int i = 0; i <= 50; ++i) {
-//    std::array<ParamCoord, 1> param_coord{ParamCoord(i / 10.0)};
-//    ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {0})[0],
-//                DoubleEq(nurbs_1d_before_->Evaluate(param_coord, {0})[0]));
-//  }
+  for (int i = 0; i <= 50; ++i) {
+    std::array<ParamCoord, 1> param_coord{ParamCoord(i / 10.0)};
+    ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {0})[0],
+                DoubleEq(nurbs_1d_before_->Evaluate(param_coord, {0})[0]));
+  }
 }
 
 

@@ -82,16 +82,17 @@ class NURBS : public Spline<DIM> {
 
   void AdjustControlPoints(std::vector<double> scaling, int first, int last) override {
     for (int i = last; i >= first; --i) {
-      baf::ControlPoint cp0 = physical_space_->GetControlPoint({i});
-      baf::ControlPoint cp1 = physical_space_->GetControlPoint({i - 1});
+      baf::ControlPoint cp0 = physical_space_->GetHomogenousControlPoint({i});
+      baf::ControlPoint cp1 = physical_space_->GetHomogenousControlPoint({i - 1});
       double weight0 = physical_space_->GetWeight({i});
       double weight1 = physical_space_->GetWeight({i - 1});
       std::vector<double> coordinates;
+      double new_weight = scaling[i - first] * weight0 + (1 - scaling[i - first]) * weight1;
       for (int j = 0; j < cp0.GetDimension(); ++j) {
-        coordinates.push_back(scaling[i - first] * cp0.GetValue(j) + (1 - scaling[i - first]) * cp1.GetValue(j));
+        coordinates.push_back(
+            (scaling[i - first] * cp0.GetValue(j) + (1 - scaling[i - first]) * cp1.GetValue(j)) / new_weight);
       }
       baf::ControlPoint new_cp(coordinates);
-      double new_weight = scaling[i - first] * weight0 + (1 - scaling[i - first]) * weight1;
       i != last ? physical_space_->SetControlPoint({i}, new_cp) : physical_space_->InsertControlPoint({i}, new_cp);
       i != last ? physical_space_->SetWeight({i}, new_weight) : physical_space_->InsertWeight({i}, new_weight);
     }
