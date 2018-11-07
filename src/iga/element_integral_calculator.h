@@ -34,17 +34,17 @@ class ElementIntegralCalculator {
   }
 
   void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
-      const std::shared_ptr<iga::Matrix> &matA) const {
+                                 const std::shared_ptr<iga::Matrix> &matA) const {
     std::vector<iga::elm::ElementIntegrationPoint> elm_intgr_pnts =
         baf_handler_->EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(element_number, rule);
     for (auto &p : elm_intgr_pnts) {
       for (int j = 0; j < p.GetNumberOfNonZeroBasisFunctionDerivatives(1); ++j) {
         for (int k = 0; k < p.GetNumberOfNonZeroBasisFunctionDerivatives(0); ++k) {
           double temp = (p.GetBasisFunctionDerivativeValue(j, 0) * p.GetBasisFunctionDerivativeValue(k, 0)
-                        + p.GetBasisFunctionDerivativeValue(j, 1) * p.GetBasisFunctionDerivativeValue(k, 1))
-                        * p.GetWeight() * p.GetJacobianDeterminant();
+              + p.GetBasisFunctionDerivativeValue(j, 1) * p.GetBasisFunctionDerivativeValue(k, 1))
+              * p.GetWeight() * p.GetJacobianDeterminant();
           matA->AddToMatrixEntry(connectivity_handler_->GetGlobalIndex(element_number, j) - 1,
-                  connectivity_handler_->GetGlobalIndex(element_number, k) - 1, temp);
+                                 connectivity_handler_->GetGlobalIndex(element_number, k) - 1, temp);
         }
       }
     }

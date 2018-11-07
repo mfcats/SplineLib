@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace iga {
 class Matrix {
  public:
-  explicit Matrix(int rowCount, int colCount) :  rowCount_(rowCount), colCount_(colCount) {
+  explicit Matrix(int rowCount, int colCount) : rowCount_(rowCount), colCount_(colCount) {
     matrix_ = new double[rowCount_ * colCount_]();
   }
 
@@ -51,7 +51,7 @@ class Matrix {
  private:
   int rowCount_;
   int colCount_;
-  double* matrix_;
+  double *matrix_;
 };
 }  // namespace iga
 

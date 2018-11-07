@@ -27,38 +27,38 @@ std::vector<iga::elm::ElementIntegrationPoint> iga::BasisFunctionHandler::Evalua
     for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
           EvaluateAllNonZeroNURBSBasisFunctions(element_generator_->Reference2ParameterSpace(
-                  element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate())),
-          itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight()));
+              element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate())),
+              itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight()));
     }
   }
   return element_integration_points;
 }
 
 std::vector<iga::elm::ElementIntegrationPoint>
-    iga::BasisFunctionHandler::EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(int element_number,
-        const iga::itg::IntegrationRule &rule) const {
+iga::BasisFunctionHandler::EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(int element_number,
+    const iga::itg::IntegrationRule &rule) const {
   std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
   for (auto &itg_p_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_p_xi : rule.GetIntegrationPoints()) {
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
           EvaluateAllNonZeroNURBSBasisFunctionDerivatives(element_generator_->Reference2ParameterSpace(
-                  element_number, itg_p_xi.GetCoordinate(), itg_p_eta.GetCoordinate())),
-          itg_p_xi.GetWeight() * itg_p_eta.GetWeight()));
+              element_number, itg_p_xi.GetCoordinate(), itg_p_eta.GetCoordinate())),
+              itg_p_xi.GetWeight() * itg_p_eta.GetWeight()));
     }
   }
   return element_integration_points;
 }
 
 std::vector<iga::elm::ElementIntegrationPoint>
-    iga::BasisFunctionHandler::EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(int element_number,
-        const iga::itg::IntegrationRule &rule) const {
+iga::BasisFunctionHandler::EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(int element_number,
+    const iga::itg::IntegrationRule &rule) const {
   std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
   for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
       std::array<ParamCoord, 2> param_coords = element_generator_->Reference2ParameterSpace(
-                element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate());
+          element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate());
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-          EvaluateAllNonZeroNURBSBafDerivativesPhyiscal(param_coords), itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight(),
+          EvaluateAllNonZeroNURBSBafDerivativesPhysical(param_coords), itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight(),
           mapping_handler_->GetJacobianDeterminant(param_coords)));
     }
   }
@@ -81,8 +81,8 @@ std::vector<double> iga::BasisFunctionHandler::EvaluateAllNonZeroNURBSBasisFunct
       l += 1;
     }
   }
-  for (uint64_t i = 0; i < nurbs_basis_functions.size(); ++i) {
-    nurbs_basis_functions[i] = nurbs_basis_functions[i] / sum;
+  for (auto &nbaf : nurbs_basis_functions) {
+    nbaf = nbaf / sum;
   }
   return nurbs_basis_functions;
 }
@@ -125,22 +125,20 @@ std::array<std::vector<double>, 2> iga::BasisFunctionHandler::EvaluateAllNonZero
   return nurbs_basis_function_derivatives;
 }
 
-std::array<std::vector<double>, 2> iga::BasisFunctionHandler::EvaluateAllNonZeroNURBSBafDerivativesPhyiscal(
+std::array<std::vector<double>, 2> iga::BasisFunctionHandler::EvaluateAllNonZeroNURBSBafDerivativesPhysical(
     std::array<ParamCoord, 2> param_coord) const {
-  std::array<std::vector<double>, 2> nurbs_baf_ders_physical;
-  std::array<std::vector<double>, 2> nurbs_baf_ders_param =
-      EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coord);
-  for (uint64_t i = 0; i < nurbs_baf_ders_param[0].size(); ++i) {
-    nurbs_baf_ders_physical[0].emplace_back(nurbs_baf_ders_param[0][i] * mapping_handler_->GetDxiDx(param_coord)[0][0]
-                                          + nurbs_baf_ders_param[1][i] * mapping_handler_->GetDxiDx(param_coord)[1][0]);
-    nurbs_baf_ders_physical[1].emplace_back(nurbs_baf_ders_param[0][i] * mapping_handler_->GetDxiDx(param_coord)[0][1]
-                                          + nurbs_baf_ders_param[1][i] * mapping_handler_->GetDxiDx(param_coord)[1][1]);
+  std::array<std::vector<double>, 2> dr_dx;
+  std::array<std::vector<double>, 2> dr_dxi = EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coord);
+  std::array<std::array<double, 2>, 2> dxi_dx = mapping_handler_->GetDxiDx(param_coord);
+  for (uint64_t i = 0; i < dr_dxi[0].size(); ++i) {
+    dr_dx[0].emplace_back(dr_dxi[0][i] * dxi_dx[0][0] + dr_dxi[1][i] * dxi_dx[1][0]);
+    dr_dx[1].emplace_back(dr_dxi[0][i] * dxi_dx[0][1] + dr_dxi[1][i] * dxi_dx[1][1]);
   }
-  return nurbs_baf_ders_physical;
+  return dr_dx;
 }
 
 double iga::BasisFunctionHandler::GetWeight(std::array<ParamCoord, 2> param_coord, int local_index) const {
-    iga::ConnectivityHandler connectivity_handler(spline_);
-    return spline_->GetWeights()[connectivity_handler.GetGlobalIndex(element_generator_->GetElementNumberAtParamCoord(
-            param_coord), local_index) - 1];
+  iga::ConnectivityHandler connectivity_handler(spline_);
+  return spline_->GetWeights()[connectivity_handler.GetGlobalIndex(element_generator_->GetElementNumberAtParamCoord(
+      param_coord), local_index) - 1];
 }
