@@ -69,16 +69,25 @@ class BSpline : public Spline<DIM> {
     return physical_space_;
   }
 
-  void AdjustControlPoints(std::vector<double> scaling, int first, int last) override {
-    for (int i = last; i >= first; --i) {
-      baf::ControlPoint cp0 = physical_space_->GetControlPoint({i});
-      baf::ControlPoint cp1 = physical_space_->GetControlPoint({i - 1});
-      std::vector<double> coordinates;
-      for (int j = 0; j < cp0.GetDimension(); ++j) {
-        coordinates.push_back(scaling[i - first] * cp0.GetValue(j) + (1 - scaling[i - first]) * cp1.GetValue(j));
+  void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
+    for (int k = 0; k < physical_space_->GetNumberOfPointsInEachDirection()[1]; ++k) {
+      for (int i = last; i >= first; --i) {
+        std::array<int, DIM> indices0, indices1;
+        for (int j = 0; j < DIM; ++j) {
+          indices0[j] = j == dimension ? i : k;
+          indices1[j] = j == dimension ? i - 1 : k;
+        }
+        baf::ControlPoint cp0 = physical_space_->GetControlPoint(indices0);
+        baf::ControlPoint cp1 = physical_space_->GetControlPoint(indices1);
+        std::vector<double> coordinates;
+        for (int j = 0; j < cp0.GetDimension(); ++j) {
+          coordinates.push_back(scaling[i - first] * cp0.GetValue(j) + (1 - scaling[i - first]) * cp1.GetValue(j));
+        }
+        baf::ControlPoint new_cp(coordinates);
+
+        i != last ? physical_space_->SetControlPoint(indices0, new_cp) : physical_space_->InsertControlPoint(indices0,
+                                                                                                             new_cp);
       }
-      baf::ControlPoint new_cp(coordinates);
-      i != last ? physical_space_->SetControlPoint({i}, new_cp) : physical_space_->InsertControlPoint({i}, new_cp);
     }
   }
 

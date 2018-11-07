@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::Test;
 using testing::DoubleEq;
+using testing::DoubleNear;
 
 class BSplineEx5_1 : public Test {  // NOLINT
  public:
@@ -40,21 +41,21 @@ class BSplineEx5_1 : public Test {  // NOLINT
         baf::ControlPoint(std::vector<double>({2.0, 4.0})),
         baf::ControlPoint(std::vector<double>({1.3, 2.3}))
     };
-    nurbs_1d_before_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
-    nurbs_1d_after_ = std::make_shared<spl::BSpline<1>>(knot_vector_after, degree, control_points);
+    bspline_1d_before_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
+    bspline_1d_after_ = std::make_shared<spl::BSpline<1>>(knot_vector_after, degree, control_points);
   }
 
  protected:
-  std::shared_ptr<spl::BSpline<1>> nurbs_1d_before_;
-  std::shared_ptr<spl::BSpline<1>> nurbs_1d_after_;
+  std::shared_ptr<spl::BSpline<1>> bspline_1d_before_;
+  std::shared_ptr<spl::BSpline<1>> bspline_1d_after_;
 };
 
 TEST_F(BSplineEx5_1, InsertsKnot2_5Correctly) {  // NOLINT
-  nurbs_1d_after_->InsertKnot(ParamCoord(2.5), 0);
-  ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
-              nurbs_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(2.5));
-  ASSERT_THAT(nurbs_1d_after_->GetNumberOfControlPoints(), nurbs_1d_before_->GetNumberOfControlPoints() + 1);
+  bspline_1d_after_->InsertKnot(ParamCoord(2.5), 0);
+  ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
+  ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(2.5));
+  ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() + 1);
   std::vector<baf::ControlPoint> new_control_points = {
       baf::ControlPoint(std::vector<double>({0.0, 1.0})),
       baf::ControlPoint(std::vector<double>({1.0, 2.0})),
@@ -68,13 +69,13 @@ TEST_F(BSplineEx5_1, InsertsKnot2_5Correctly) {  // NOLINT
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
-      ASSERT_THAT(nurbs_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
+      ASSERT_THAT(bspline_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
     }
   }
   for (int i = 0; i <= 50; ++i) {
     std::array<ParamCoord, 1> param_coord{ParamCoord(i / 10.0)};
-    ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {0})[0],
-                DoubleEq(nurbs_1d_before_->Evaluate(param_coord, {0})[0]));
+    ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {0})[0],
+                DoubleEq(bspline_1d_before_->Evaluate(param_coord, {0})[0]));
   }
 }
 
@@ -142,4 +143,86 @@ TEST_F(NURBSEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
   }
 }
 
+class BSpline2DEx : public Test {  // NOLINT
+ public:
+  BSpline2DEx() {
+    std::array<Degree, 2> degree = {Degree{3}, Degree{2}};
+    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector_before = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                           ParamCoord{1}, ParamCoord{1}, ParamCoord{1},
+                                                           ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
+                                                           ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector_after = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                           ParamCoord{1}, ParamCoord{1}, ParamCoord{1},
+                                                           ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
+                                                           ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({5.0, 0.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 0.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 0.0, 3.0})),
+        baf::ControlPoint(std::vector<double>({-1.0, 0.0, 3.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 2.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 1.5, 2.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 3.0})),
+        baf::ControlPoint(std::vector<double>({-1.0, 1.0, 3.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 2.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 2.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 2.5, 2.0})),
+        baf::ControlPoint(std::vector<double>({-1.0, 2.5, 2.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 5.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 4.5, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 4.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({-1.0, 4.0, 2.0}))
+    };
+    bspline_2d_before_ = std::make_shared<spl::BSpline<2>>(knot_vector_before, degree, control_points);
+    bspline_2d_after_ = std::make_shared<spl::BSpline<2>>(knot_vector_after, degree, control_points);
+  }
 
+ protected:
+  std::shared_ptr<spl::BSpline<2>> bspline_2d_before_;
+  std::shared_ptr<spl::BSpline<2>> bspline_2d_after_;
+};
+
+TEST_F(BSpline2DEx, InsertsKnot2_5Correctly) {  // NOLINT
+  bspline_2d_after_->InsertKnot(ParamCoord(0.4), 0);
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
+              bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots());
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetKnot(4).get(), DoubleEq(0.4));
+  ASSERT_THAT(bspline_2d_after_->GetNumberOfControlPoints(), bspline_2d_before_->GetNumberOfControlPoints() + 4);
+  std::vector<baf::ControlPoint> new_control_points = {
+      baf::ControlPoint(std::vector<double>({5.0, 0.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({3.8, 0.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({1.6, 0.0, 2.4})),
+      baf::ControlPoint(std::vector<double>({0.2, 0.0, 3.0})),
+      baf::ControlPoint(std::vector<double>({-1.0, 0.0, 3.0})),
+      baf::ControlPoint(std::vector<double>({5.0, 2.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 1.5, 2.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 1.0, 3.0})),
+      baf::ControlPoint(std::vector<double>({-1.0, 1.0, 3.0})),
+      baf::ControlPoint(std::vector<double>({5.0, 2.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 2.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 2.5, 2.0})),
+      baf::ControlPoint(std::vector<double>({-1.0, 2.5, 2.0})),
+      baf::ControlPoint(std::vector<double>({5.0, 5.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 4.5, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 4.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({-1.0, 4.0, 2.0}))
+  };
+  for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
+    for (int j = 0; j < 2; ++j) {
+      ASSERT_THAT(bspline_2d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
+    }
+  }
+  for (int i = 0; i <= 100; ++i) {
+    for (int j = 0; i <= 100; ++i) {
+      std::array<ParamCoord, 2> param_coord{ParamCoord(i / 100.0), ParamCoord(j / 100.0)};
+      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {0})[0],
+                  DoubleNear(bspline_2d_before_->Evaluate(param_coord, {0})[0], 0.000001));
+    }
+  }
+}

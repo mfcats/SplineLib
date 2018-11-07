@@ -80,7 +80,7 @@ class NURBS : public Spline<DIM> {
     return physical_space_;
   }
 
-  void AdjustControlPoints(std::vector<double> scaling, int first, int last) override {
+  void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
     for (int i = last; i >= first; --i) {
       baf::ControlPoint cp0 = physical_space_->GetHomogenousControlPoint({i});
       baf::ControlPoint cp1 = physical_space_->GetHomogenousControlPoint({i - 1});
