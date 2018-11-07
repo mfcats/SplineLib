@@ -21,7 +21,7 @@ jobs:
 
     - stage: UnitTests
       name: GCC 7 - Debug
-      install: docker build --no-cache -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.test.gcc7.debug .
+      install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.test.gcc7.debug .
       script: docker run -te "TERM=xterm-256color" --name tests_gcc7 splinelibtests:gcc7
 
     - stage: UnitTests
@@ -85,4 +85,3 @@ jobs:
       name: Ex1
       install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
       script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
-
