@@ -12,12 +12,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEST_IO_CONFIG_IN_H_  // NOLINT
-#define TEST_IO_CONFIG_IN_H_
+#ifndef TEST_IO_CONFIG_IRIT_IN_H_  // NOLINT
+#define TEST_IO_CONFIG_IRIT_IN_H_
 
-static const char iges_read[] = "@IGES_READ@";
-static const char iges_read_2[] = "@IGES_READ_2@";
-static const char path_to_irit_file[] = "@PATH_TO_IRIT_FILE@";
-static const char path_to_xml_file[] = "@PATH_TO_XML_FILE@";
+#include <string>
 
-#endif  // TEST_IO_CONFIG_IN_H_
+static const char* path_to_irit_file = "@PATH_TO_IRIT_FILE@";
+
+#endif  // TEST_IO_CONFIG_IRIT_IN_H_

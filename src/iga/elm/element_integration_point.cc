@@ -31,19 +31,11 @@ iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(
 }
 
 std::vector<double> iga::elm::ElementIntegrationPoint::GetNonZeroBasisFunctions() const {
-  if (non_zero_basis_functions_.empty()) {
-    throw std::runtime_error("Basis functions were not set.");
-  } else {
-    return non_zero_basis_functions_;
-  }
+  return non_zero_basis_functions_;
 }
 
 std::vector<double> iga::elm::ElementIntegrationPoint::GetNonZeroBasisFunctionDerivatives(int dir) const {
-  if (non_zero_basis_function_derivatives_[0].empty()) {
-    throw std::runtime_error("Basis function derivatives were not set.");
-  } else {
-    return non_zero_basis_function_derivatives_[dir];
-  }
+  return non_zero_basis_function_derivatives_[dir];
 }
 
 double iga::elm::ElementIntegrationPoint::GetWeight() const {
@@ -51,27 +43,18 @@ double iga::elm::ElementIntegrationPoint::GetWeight() const {
 }
 
 double iga::elm::ElementIntegrationPoint::GetJacobianDeterminant() const {
-  if (jac_det_.empty()) {
-    throw std::runtime_error("Jacobian determinant was not set.");
-  } else {
+  if (!jac_det_.empty()) {
     return *jac_det_.rbegin();
   }
+  throw std::runtime_error("Jacobian determinant was not set.");
 }
 
 int iga::elm::ElementIntegrationPoint::GetNumberOfNonZeroBasisFunctions() const {
-  if (non_zero_basis_functions_.empty()) {
-    throw std::runtime_error("Basis functions were not set.");
-  } else {
-    return static_cast<int>(non_zero_basis_functions_.size());
-  }
+  return static_cast<int>(non_zero_basis_functions_.size());
 }
 
 int iga::elm::ElementIntegrationPoint::GetNumberOfNonZeroBasisFunctionDerivatives(int dir) const {
-  if (non_zero_basis_function_derivatives_[0].empty()) {
-    throw std::runtime_error("Basis functions were not set.");
-  } else {
-    return static_cast<int>(non_zero_basis_function_derivatives_[dir].size());
-  }
+  return static_cast<int>(non_zero_basis_function_derivatives_[dir].size());
 }
 
 double iga::elm::ElementIntegrationPoint::GetBasisFunctionValue(int firstNonZeroOffset) const {

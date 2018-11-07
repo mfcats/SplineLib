@@ -12,7 +12,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <config.h>
+#include <config_iges.h>
+#include <config_irit.h>
+#include <config_xml.h>
 
 #include "gmock/gmock.h"
 
@@ -45,9 +47,26 @@ TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConvertingSplinesFromIGESFil
               DoubleNear(iges_nurbs_2d->Evaluate({ParamCoord(0.34867)}, {0})[0], 0.00001));
   ASSERT_THAT(xml_nurbs_2d->Evaluate({ParamCoord(0.34867)}, {1})[0],
               DoubleNear(iges_nurbs_2d->Evaluate({ParamCoord(0.34867)}, {1})[0], 0.00001));
-
   ASSERT_THAT(xml_bspline_1d->Evaluate({ParamCoord(0.34867)}, {0})[0],
               DoubleNear(iges_bspline_1d->Evaluate({ParamCoord(0.34867)}, {0})[0], 0.00001));
+  remove("converted_irit_file.itd");
+}
+
+TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConvertingSplinesFromIGESFileToIRITFile2) {  // NOLINT
+  std::vector<std::any> iges_splines = iges_reader_.ReadFile(iges_read_2);
+  auto iges_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(iges_splines[0]);
+  auto iges_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(iges_splines[1]);
+  io_converter_->ConvertFile(iges_read_2, "converted_irit_file.itd");
+  std::vector<std::any> irit_splines = irit_reader_.ReadFile("converted_irit_file.itd");
+  auto xml_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(irit_splines[0]);
+  auto xml_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(irit_splines[1]);
+  ASSERT_THAT(xml_bspline_2d->Evaluate({ParamCoord(0.34867)}, {0})[0],
+              DoubleNear(iges_bspline_2d->Evaluate({ParamCoord(0.34867)}, {0})[0], 0.00001));
+  ASSERT_THAT(xml_bspline_2d->Evaluate({ParamCoord(0.34867)}, {1})[0],
+              DoubleNear(iges_bspline_2d->Evaluate({ParamCoord(0.34867)}, {1})[0], 0.00001));
+
+  ASSERT_THAT(xml_nurbs_1d->Evaluate({ParamCoord(0.34867)}, {0})[0],
+              DoubleNear(iges_nurbs_1d->Evaluate({ParamCoord(0.34867)}, {0})[0], 0.00001));
   remove("converted_irit_file.itd");
 }
 

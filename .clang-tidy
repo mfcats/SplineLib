@@ -1,4 +1,4 @@
-Checks: '*,-android-*,-llvm-include-order,-fuchsia-overloaded-operator,-fuchsia-default-arguments'
+Checks: '*,-android-*,-llvm-include-order,-fuchsia-overloaded-operator,-fuchsia-default-arguments,-cppcoreguidelines-pro-bounds-constant-array-index'
 FormatStyle: google
 WarningsAsErrors: '*'
 CheckOptions:
