@@ -21,12 +21,10 @@ set(SOURCES
 add_subdirectory(itg)
 add_subdirectory(elm)
 
-#find_package(Armadillo REQUIRED)
-#include_directories(${ARMADILLO_INCLUDE_DIRS})
-
+find_package(Armadillo REQUIRED)
 add_library(splinelibiga SHARED ${SOURCES})
-target_include_directories(splinelibiga PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibiga PUBLIC splinelibspl splinelibigaitg splinelibigaelm) #${ARMADILLO_LIBRARIES})
+target_include_directories(splinelibiga PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> ${ARMADILLO_INCLUDE_DIRS})
+target_link_libraries(splinelibiga PUBLIC splinelibspl splinelibigaitg splinelibigaelm ${ARMADILLO_LIBRARIES})
 
 install(
         TARGETS splinelibiga

@@ -21,16 +21,16 @@ std::array<std::array<double, 2>, 2> iga::MappingHandler::GetDxiDx(std::array<Pa
 }
 
 double iga::MappingHandler::GetJacobianDeterminant(std::array<ParamCoord, 2> param_coord) const {
-  return iga::MatrixUtils::Get2By2Determinant(GetDxDxitilde(param_coord));
+  return arma::det(GetDxDxitilde(param_coord));
 }
 
-std::array<std::array<double, 2>, 2> iga::MappingHandler::GetDxDxitilde(std::array<ParamCoord, 2> param_coord) const {
-  std::array<std::array<double, 2>, 2> dx_dxitilde{};
+arma::dmat iga::MappingHandler::GetDxDxitilde(std::array<ParamCoord, 2> param_coord) const {
+  arma::dmat dx_dxitilde(2, 2, arma::fill::zeros);
   std::array<std::array<double, 2>, 2> dx_dxi = GetDxDxi(param_coord);
   std::array<double, 2> dxi_dxitilde = GetDxiDxitilde(param_coord);
-  for (int i = 0; i < 2; ++i) {
-    for (int j = 0; j < 2; ++j) {
-      dx_dxitilde[i][j] = dx_dxi[i][j] * dxi_dxitilde[j];
+  for (uint64_t i = 0; i < 2; ++i) {
+    for (uint64_t j = 0; j < 2; ++j) {
+      dx_dxitilde(i, j) = dx_dxi[i][j] * dxi_dxitilde[j];
     }
   }
   return dx_dxitilde;

@@ -15,6 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IGA_MAPPING_HANDLER_H_
 #define SRC_IGA_MAPPING_HANDLER_H_
 
+#include <armadillo>
+
 #include "matrix_utils.h"
 #include "spline.h"
 
@@ -28,7 +30,7 @@ class MappingHandler {
   double GetJacobianDeterminant(std::array<ParamCoord, 2> param_coord) const;
 
  private:
-  std::array<std::array<double, 2>, 2> GetDxDxitilde(std::array<ParamCoord, 2> param_coord) const;
+  arma::dmat GetDxDxitilde(std::array<ParamCoord, 2> param_coord) const;
 
   std::array<std::array<double, 2>, 2> GetDxDxi(std::array<ParamCoord, 2> param_coord) const;
 
