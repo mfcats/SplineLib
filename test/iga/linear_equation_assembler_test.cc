@@ -25,10 +25,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::DoubleNear;
 
-TEST_F(AnIGATestSpline, TestLinearEquationAssembler) { // NOLINT
+TEST_F(AnIGATestSpline, TestLeftSide) { // NOLINT
   iga::LinearEquationAssembler linear_equation_assembler = iga::LinearEquationAssembler(nurbs_);
   iga::ElementIntegralCalculator elm_itg_calc = iga::ElementIntegralCalculator(nurbs_);
-  std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(49, 49, arma::fill::zeros);
+  int n = nurbs_->GetNumberOfControlPoints();
+  std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
   for (uint64_t i = 0; i < matlab_matrix_a.size(); ++i) {
@@ -37,3 +38,38 @@ TEST_F(AnIGATestSpline, TestLinearEquationAssembler) { // NOLINT
     }
   }
 }
+
+TEST_F(AnIGATestSpline, TestRightSide) { // NOLINT
+  iga::LinearEquationAssembler linear_equation_assembler = iga::LinearEquationAssembler(nurbs_);
+  iga::ElementIntegralCalculator elm_itg_calc = iga::ElementIntegralCalculator(nurbs_);
+  int n = nurbs_->GetNumberOfControlPoints();
+  std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
+  iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
+  linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
+  for (uint64_t i = 0; i < matlab_vector_b.size(); ++i) {
+      ASSERT_THAT((*vecB)(i), DoubleNear(matlab_vector_b[i], 0.0005));
+  }
+}
+
+TEST_F(AnIGATestSpline, TestEquationSystemWithBC) { // NOLINT
+  iga::LinearEquationAssembler linear_equation_assembler = iga::LinearEquationAssembler(nurbs_);
+  iga::ElementIntegralCalculator elm_itg_calc = iga::ElementIntegralCalculator(nurbs_);
+  int n = nurbs_->GetNumberOfControlPoints();
+  std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
+  iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
+  linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
+  linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
+  linear_equation_assembler.SetZeroBC(matA, vecB);
+  for (uint64_t i = 0; i < matlab_matrix_a_bc.size(); ++i) {
+    for (uint64_t j = 0; j < matlab_matrix_a_bc[0].size(); ++j) {
+      ASSERT_THAT((*matA)(i, j), DoubleNear(matlab_matrix_a_bc[i][j], 0.0005));
+    }
+  }
+  for (uint64_t i = 0; i < matlab_vector_b_bc.size(); ++i) {
+    ASSERT_THAT((*vecB)(i), DoubleNear(matlab_vector_b_bc[i], 0.0005));
+  }
+}
+

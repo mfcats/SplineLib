@@ -52,13 +52,15 @@ class ElementIntegralCalculator {
   }
 
   void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
-                                 const std::shared_ptr<arma::dvec> &vecB, const std::vector<double> &bc_cp) const {
+                                 const std::shared_ptr<arma::dvec> &vecB,
+                                 const std::shared_ptr<arma::dvec> &srcCp) const {
     std::vector<iga::elm::ElementIntegrationPoint> elm_intgr_pnts =
         baf_handler_->EvaluateAllElementNonZeroNURBSBasisFunctions(element_number, rule);
     for (auto &p : elm_intgr_pnts) {
       double bc_int_pnt = 0;
       for (int j = 0; j < p.GetNumberOfNonZeroBasisFunctions(); ++j) {
-        bc_int_pnt += p.GetBasisFunctionValue(j) * bc_cp[connectivity_handler_->GetGlobalIndex(element_number, j) - 1];
+        bc_int_pnt += p.GetBasisFunctionValue(j) *
+            (*srcCp)(static_cast<uint64_t>(connectivity_handler_->GetGlobalIndex(element_number, j) - 1));
       }
       for (int j = 0; j < p.GetNumberOfNonZeroBasisFunctions(); ++j) {
         double temp = p.GetBasisFunctionValue(j) * bc_int_pnt * p.GetWeight() * p.GetJacobianDeterminant();

@@ -37,10 +37,7 @@ double iga::elm::ElementIntegrationPoint::GetWeight() const {
 }
 
 double iga::elm::ElementIntegrationPoint::GetJacobianDeterminant() const {
-  if (!jac_det_.empty()) {
-    return *jac_det_.rbegin();
-  }
-  throw std::runtime_error("Jacobian determinant was not set.");
+  return jac_det_;
 }
 
 int iga::elm::ElementIntegrationPoint::GetNumberOfNonZeroBasisFunctions() const {

@@ -26,8 +26,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace iga {
 class LinearEquationAssembler {
  public:
-  explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<2>> spl,
-      std::vector<double> bc_cp) : spline_(std::move(spl)) , bc_cp_(std::move(bc_cp)) {
+  explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
     elm_gen_ = std::make_shared<iga::elm::ElementGenerator<2>>(spline_);
   }
 
@@ -40,10 +39,11 @@ class LinearEquationAssembler {
   }
 
   void GetRightSide(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dvec> &vecB,
-                    const iga::ElementIntegralCalculator &elm_itg_calc) const {
+                    const iga::ElementIntegralCalculator &elm_itg_calc,
+                    const std::shared_ptr<arma::dvec> &srcCp) const {
     int num_elements = static_cast<int>(elm_gen_->GetElementList(0).size() * elm_gen_->GetElementList(1).size());
     for (int e = 0; e < num_elements; ++e) {
-      elm_itg_calc.GetLaplaceElementIntegral(e, rule, vecB, bc_cp_);
+      elm_itg_calc.GetLaplaceElementIntegral(e, rule, vecB, srcCp);
     }
   }
 
@@ -62,11 +62,10 @@ class LinearEquationAssembler {
       }
     }
   }
-  
+
  private:
   std::shared_ptr<spl::NURBS<2>> spline_;
   std::shared_ptr<iga::elm::ElementGenerator<2>> elm_gen_;
-  std::vector<double> bc_cp_;
 };
 }  // namespace iga
 

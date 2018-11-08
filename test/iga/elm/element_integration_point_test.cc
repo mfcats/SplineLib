@@ -23,7 +23,7 @@ using testing::Test;
 
 class AnElementIntegrationPoint : public Test{
  public:
-  AnElementIntegrationPoint() : element_integration_point({2.3, 4.5}, 0.75) {}
+  AnElementIntegrationPoint() : element_integration_point({2.3, 4.5}, 0.75, 1.75) {}
 
  protected:
   iga::elm::ElementIntegrationPoint element_integration_point;
@@ -44,4 +44,8 @@ TEST_F(AnElementIntegrationPoint, GetValueAtZero) { //NOLINT
 
 TEST_F(AnElementIntegrationPoint, GetWeight) { //NOLINT
   ASSERT_THAT(element_integration_point.GetWeight(), DoubleEq(0.75));
+}
+
+TEST_F(AnElementIntegrationPoint, GetJacobianDeterminant) { //NOLINT
+  ASSERT_THAT(element_integration_point.GetJacobianDeterminant(), DoubleEq(1.75));
 }
