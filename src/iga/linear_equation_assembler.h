@@ -53,7 +53,7 @@ class LinearEquationAssembler {
     int m = spline_->GetPointsPerDirection()[1];
     for (int i = 0; i < n; ++i) {
       for (int j = 0; j < m; ++j) {
-        if (!((i > 0) && (j > 0) && (i < n) && (j < m))) {
+        if (!((i > 0) && (j > 0) && (i < n - 1) && (j < m - 1))) {
           (*vecB)(l) = 0;
           (*matA)(l, l) = 1;
           (*matA).row(l).fill(0);
