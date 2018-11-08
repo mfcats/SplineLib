@@ -5,8 +5,13 @@ FROM mfcats/splinelib:spack
 ADD . /spackrepo
 WORKDIR /spackrepo
 
+RUN apt-get update && apt-get install -y cmake
+
+RUN mv ./scripts/docker/packages.yaml /root/.spack/linux/packages.yaml
+
 # Install googletest versions
 RUN spack repo add /spackrepo/scripts/spack-repo
+RUN spack spec splinelib
 RUN spack setup -v splinelib@github build_type=Debug %gcc@7
 RUN spack setup -v splinelib@github build_type=Release %gcc@7
 RUN spack setup -v splinelib@github build_type=Debug %clang@6
