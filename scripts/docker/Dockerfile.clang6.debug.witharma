@@ -40,6 +40,8 @@ RUN spack clean -a
 
 CMD /bin/bash -l
 
+#
+
 ADD . /spackrepo
 WORKDIR /spackrepo
 
