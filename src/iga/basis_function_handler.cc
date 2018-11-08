@@ -26,7 +26,7 @@ std::vector<iga::elm::ElementIntegrationPoint> iga::BasisFunctionHandler::Evalua
   for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-          EvaluateAllNonZeroNURBSBasisFunctions(element_generator_->Reference2ParameterSpace(
+          EvaluateAllNonZeroNURBSBasisFunctions(mapping_handler_->Reference2ParameterSpace(
               element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate())),
               itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight()));
     }
@@ -41,7 +41,7 @@ iga::BasisFunctionHandler::EvaluateAllElementNonZeroNURBSBasisFunctionDerivative
   for (auto &itg_p_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_p_xi : rule.GetIntegrationPoints()) {
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-          EvaluateAllNonZeroNURBSBasisFunctionDerivatives(element_generator_->Reference2ParameterSpace(
+          EvaluateAllNonZeroNURBSBasisFunctionDerivatives(mapping_handler_->Reference2ParameterSpace(
               element_number, itg_p_xi.GetCoordinate(), itg_p_eta.GetCoordinate())),
               itg_p_xi.GetWeight() * itg_p_eta.GetWeight()));
     }
@@ -55,7 +55,7 @@ iga::BasisFunctionHandler::EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(
   std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
   for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
-      std::array<ParamCoord, 2> param_coords = element_generator_->Reference2ParameterSpace(
+      std::array<ParamCoord, 2> param_coords = mapping_handler_->Reference2ParameterSpace(
           element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate());
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
           EvaluateAllNonZeroNURBSBafDerivativesPhysical(param_coords), itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight(),

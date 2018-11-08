@@ -56,3 +56,16 @@ arma::dmat iga::MappingHandler::GetDxiDxitilde(std::array<ParamCoord, 2> param_c
       - spline_->GetKnotVector(1)->GetKnot(knot_span[1]).get()) / 2;
   return dxi_dxitilde;
 }
+
+std::array<ParamCoord, 2> iga::MappingHandler::Reference2ParameterSpace(int element_number, double itg_pnt_xi,
+    double itg_pnt_eta) const {
+  iga::elm::ElementGenerator elm_gen(spline_);
+  iga::elm::Element element_xi = elm_gen.GetElementList(0)[elm_gen.Get2DElementIndices(element_number)[0]];
+  iga::elm::Element element_eta = elm_gen.GetElementList(1)[elm_gen.Get2DElementIndices(element_number)[1]];
+  ParamCoord upper_xi = element_xi.GetNode(1);
+  ParamCoord lower_xi = element_xi.GetNode(0);
+  ParamCoord upper_eta = element_eta.GetNode(1);
+  ParamCoord lower_eta = element_eta.GetNode(0);
+  return {ParamCoord{((upper_xi - lower_xi).get() * itg_pnt_xi + (upper_xi + lower_xi).get()) / 2.0},
+          ParamCoord{((upper_eta - lower_eta).get() * itg_pnt_eta + (upper_eta + lower_eta).get()) / 2.0}};
+}

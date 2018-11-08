@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <armadillo>
 
+#include "element_generator.h"
 #include "matrix_utils.h"
 #include "spline.h"
 
@@ -28,6 +29,8 @@ class MappingHandler {
   arma::dmat GetDxiDx(std::array<ParamCoord, 2> param_coord) const;
 
   double GetJacobianDeterminant(std::array<ParamCoord, 2> param_coord) const;
+
+  std::array<ParamCoord, 2> Reference2ParameterSpace(int element_number, double itg_pnt_xi, double itg_pnt_eta) const;
 
  private:
   arma::dmat GetDxDxitilde(std::array<ParamCoord, 2> param_coord) const;

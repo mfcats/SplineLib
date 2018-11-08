@@ -55,17 +55,6 @@ class ElementGenerator {
     return knot_multiplicity;
   }
 
-  std::array<ParamCoord, 2> Reference2ParameterSpace(int element_number, double itg_pnt_xi, double itg_pnt_eta) const {
-    iga::elm::Element element_xi = GetElementList(0)[Get2DElementIndices(element_number)[0]];
-    iga::elm::Element element_eta = GetElementList(1)[Get2DElementIndices(element_number)[1]];
-    ParamCoord upper_xi = element_xi.GetNode(1);
-    ParamCoord lower_xi = element_xi.GetNode(0);
-    ParamCoord upper_eta = element_eta.GetNode(1);
-    ParamCoord lower_eta = element_eta.GetNode(0);
-    return {ParamCoord{((upper_xi - lower_xi).get() * itg_pnt_xi + (upper_xi + lower_xi).get()) / 2.0},
-            ParamCoord{((upper_eta - lower_eta).get() * itg_pnt_eta + (upper_eta + lower_eta).get()) / 2.0}};
-  }
-
   int GetElementNumberAtParamCoord(std::array<ParamCoord, 2> param_coord) const {
     uint64_t element_number_xi = 0;
     uint64_t element_number_eta = 0;
@@ -84,6 +73,22 @@ class ElementGenerator {
       }
     }
     return Get1DElementIndex(element_number_xi, element_number_eta);
+  }
+
+  std::array<int, 2> Get2DElementIndices(int element_number) const {
+    element_number += 1;
+    int number_of_elements_xi = static_cast<int>(GetElementList(0).size());
+    int q = element_number / number_of_elements_xi;
+    int r = element_number % number_of_elements_xi;
+    std::array<int, 2> element_indices_2d{};
+    if (r == 0) {
+      element_indices_2d[1] = q - 1;
+      element_indices_2d[0] = number_of_elements_xi - 1;
+    } else {
+      element_indices_2d[1] = q;
+      element_indices_2d[0] = r - 1;
+    }
+    return element_indices_2d;
   }
 
  private:
@@ -114,22 +119,6 @@ class ElementGenerator {
                                                     static_cast<int>(GetElementList(1).size())});
     multi_index_handler.SetIndices({static_cast<int>(element_number_xi), static_cast<int>(element_number_eta)});
     return multi_index_handler.Get1DIndex();
-  }
-
-  std::array<int, 2> Get2DElementIndices(int element_number) const {
-    element_number += 1;
-    int number_of_elements_xi = static_cast<int>(GetElementList(0).size());
-    int q = element_number / number_of_elements_xi;
-    int r = element_number % number_of_elements_xi;
-    std::array<int, 2> element_indices_2d{};
-    if (r == 0) {
-      element_indices_2d[1] = q - 1;
-      element_indices_2d[0] = number_of_elements_xi - 1;
-    } else {
-      element_indices_2d[1] = q;
-      element_indices_2d[0] = r - 1;
-    }
-    return element_indices_2d;
   }
 
   ParamCoord GetLowerElementBound(uint64_t currentKnot, int dir) const {
