@@ -25,10 +25,11 @@ std::vector<iga::elm::ElementIntegrationPoint> iga::BasisFunctionHandler::Evalua
   std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
   for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
+      std::array<ParamCoord, 2> param_coords = mapping_handler_->Reference2ParameterSpace(
+          element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate());
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-          EvaluateAllNonZeroNURBSBasisFunctions(mapping_handler_->Reference2ParameterSpace(
-              element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate())),
-              itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight()));
+          EvaluateAllNonZeroNURBSBasisFunctions(param_coords), itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight(),
+          mapping_handler_->GetJacobianDeterminant(param_coords)));
     }
   }
   return element_integration_points;
@@ -38,12 +39,13 @@ std::vector<iga::elm::ElementIntegrationPoint>
 iga::BasisFunctionHandler::EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(int element_number,
     const iga::itg::IntegrationRule &rule) const {
   std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
-  for (auto &itg_p_eta : rule.GetIntegrationPoints()) {
-    for (auto &itg_p_xi : rule.GetIntegrationPoints()) {
+  for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
+    for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
+      std::array<ParamCoord, 2> param_coords = mapping_handler_->Reference2ParameterSpace(
+          element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate());
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-          EvaluateAllNonZeroNURBSBasisFunctionDerivatives(mapping_handler_->Reference2ParameterSpace(
-              element_number, itg_p_xi.GetCoordinate(), itg_p_eta.GetCoordinate())),
-              itg_p_xi.GetWeight() * itg_p_eta.GetWeight()));
+          EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coords), itg_pnt_xi.GetWeight()
+          * itg_pnt_eta.GetWeight(), mapping_handler_->GetJacobianDeterminant(param_coords)));
     }
   }
   return element_integration_points;

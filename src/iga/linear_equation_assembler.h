@@ -26,7 +26,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace iga {
 class LinearEquationAssembler {
  public:
-  explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
+  explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<2>> spl,
+      std::vector<double> bc_cp) : spline_(std::move(spl)) , bc_cp_(std::move(bc_cp)) {
     elm_gen_ = std::make_shared<iga::elm::ElementGenerator<2>>(spline_);
   }
 
@@ -38,9 +39,34 @@ class LinearEquationAssembler {
     }
   }
 
+  void GetRightSide(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dvec> &vecB,
+                    const iga::ElementIntegralCalculator &elm_itg_calc) const {
+    int num_elements = static_cast<int>(elm_gen_->GetElementList(0).size() * elm_gen_->GetElementList(1).size());
+    for (int e = 0; e < num_elements; ++e) {
+      elm_itg_calc.GetLaplaceElementIntegral(e, rule, vecB, bc_cp_);
+    }
+  }
+
+  void SetZeroBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB) {
+    uint64_t l = 0;
+    int n = spline_->GetPointsPerDirection()[0];
+    int m = spline_->GetPointsPerDirection()[1];
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < m; ++j) {
+        if (!((i > 0) && (j > 0) && (i < n) && (j < m))) {
+          (*vecB)(l) = 0;
+          (*matA)(l, l) = 1;
+          (*matA).row(l).fill(0);
+        }
+        l += 1;
+      }
+    }
+  }
+  
  private:
   std::shared_ptr<spl::NURBS<2>> spline_;
   std::shared_ptr<iga::elm::ElementGenerator<2>> elm_gen_;
+  std::vector<double> bc_cp_;
 };
 }  // namespace iga
 

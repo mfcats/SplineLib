@@ -23,9 +23,7 @@ namespace iga {
 namespace elm {
 class ElementIntegrationPoint {
  public:
-  ElementIntegrationPoint(std::vector<double> basis_functions, double weight);
-
-  ElementIntegrationPoint(std::array<std::vector<double>, 2> basis_function_derivatives, double weight);
+  ElementIntegrationPoint(std::vector<double> basis_functions, double weight, double jac_det);
 
   ElementIntegrationPoint(std::array<std::vector<double>, 2> basis_function_derivatives, double weight, double jac_det);
 
@@ -42,7 +40,7 @@ class ElementIntegrationPoint {
   std::vector<double> non_zero_basis_functions_;
   std::array<std::vector<double>, 2> non_zero_basis_function_derivatives_;
   double weight_;
-  std::set<double> jac_det_;
+  double jac_det_;
 };
 }  // namespace elm
 }  // namespace iga
