@@ -151,3 +151,23 @@ TEST_F(AKnotVector, CanBeAssignedByIterators) { // NOLINT
   baf::KnotVector knot_vector = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
   ASSERT_THAT(knot_vector, Eq(knot_vector_));
 }
+
+TEST_F(AKnotVector, GetCorrespondingIndex0_0) { // NOLINT
+  ASSERT_THAT(knot_vector_.GetCorrespondingIndex(0), 0);
+}
+
+TEST_F(AKnotVector, GetCorrespondingIndex4_1) { // NOLINT
+  ASSERT_THAT(knot_vector_.GetCorrespondingIndex(4), 1);
+}
+
+TEST_F(AKnotVector, GetNextDiffIndex1_3) { // NOLINT
+  ASSERT_THAT(knot_vector_.GetNextDiffIndex(1), 3);
+}
+
+TEST_F(AKnotVector, GetNextDiffIndex4_5) { // NOLINT
+  ASSERT_THAT(knot_vector_.GetNextDiffIndex(4), 5);
+}
+
+TEST_F(AKnotVector, GetNextDiffIndex6_6) { // NOLINT
+  ASSERT_THAT(knot_vector_.GetNextDiffIndex(6), 6);
+}

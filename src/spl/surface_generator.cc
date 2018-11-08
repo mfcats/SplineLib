@@ -70,17 +70,24 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
 
   double norm_cross = 0.0;
   double norm_dT_v = 0.0;
+  double weight_v;
 
+  int n = nurbs_T->GetNumberOfControlPoints();
+  int m = nurbs_C->GetNumberOfControlPoints();
   std::vector<baf::ControlPoint> j_control_points;
-  std::vector<double> joined_weights;
-  joined_weights.reserve(nbInter);
+  std::vector<double> j_weights;
+  j_control_points.reserve(m * n);
+  j_weights.reserve(m * n);
+
+  v_i.reserve(nbInter);
 
   for (int i = 0; i < nbInter; ++i) {
     v_i.emplace_back(ParamCoord{i * step_size});
-    t_v = nurbs_T->Evaluate(v_i[i], dimensions);
-    dT_v = nurbs_T->EvaluateDerivative(v_i[i], dimensions, first_derivative);
-    ddT_v = nurbs_T->EvaluateDerivative(v_i[i], dimensions, second_derivative);
-    cross_product = CrossProduct(dT_v, ddT_v):
+    t_v = nurbs_T->Evaluate(std::array<ParamCoord, 1>({v_i[i]}), dimensions);
+    weight_v = nurbs_T->Evaluate(std::array<ParamCoord, 1>({v_i[i]}), std::vector<int>({3}))[0];
+    dT_v = nurbs_T->EvaluateDerivative(std::array<ParamCoord, 1>({v_i[i]}), dimensions, first_derivative);
+    ddT_v = nurbs_T->EvaluateDerivative(std::array<ParamCoord, 1>({v_i[i]}), dimensions, second_derivative);
+    cross_product = CrossProduct(dT_v, ddT_v);
     for (int j = 0; j < 3; ++j) {
       norm_cross += std::pow(cross_product[j], 2);
       norm_dT_v += std::pow(dT_v[j], 2);
@@ -94,24 +101,13 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
     }
     y_v = CrossProduct(z_v, x_v);
     for (int j = 0; j < m; ++j) {
-      baf::ControlPoint control_point_j = nurbs_C->GetControlPoint(j);
+      baf::ControlPoint control_point_j = nurbs_C->GetControlPoint(std::array<int, 1>({j}));
       j_control_points.emplace_back(control_point_j.Transform(x_v, y_v, z_v, o_v));
-    }
-    joined_weights.push_back(InterpolateWeights(nurbs_T->GetWeights(), v_i[i]));
-  }
-
-
-  for (int i = 0; i < m; ++i) {
-    std::array<int, 1> index_space_2 = {i};
-    for (int j = 0; j < n; ++j) {
-      std::array<int, 1> index_space_1 = {j};
-      joined_weights.emplace_back(nurbs_T->GetPhysicalSpace()->GetWeight(index_space_1) *
-      nurbs_C->GetPhysicalSpace()->GetWeight(index_space_2));
-      j_control_points.emplace_back(nurbs_T->GetPhysicalSpace()->GetControlPoint(index_space_1) +
-          nurbs_C->GetPhysicalSpace()->GetControlPoint(index_space_2));
+      j_weights.emplace_back(nurbs_C->GetWeight(std::array<int, 1>({j})) * weight_v);
     }
   }
-  // Divide by weights
+
+  baf::KnotVector knot_vector_t(v_i);
   std::shared_ptr<baf::KnotVector> knot_vector_t_ptr = std::make_shared<baf::KnotVector>(knot_vector_t);
   std::array<std::shared_ptr<baf::KnotVector>, 2> joined_knot_vector =
       {knot_vector_t_ptr, nurbs_C->GetParameterSpace()->GetKnotVector(0)};
@@ -120,7 +116,7 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
   this->parameter_space_ = std::make_shared<ParameterSpace<2>>(ParameterSpace<2>(
       joined_knot_vector, joined_degree));
   this->physical_space_ = std::make_shared<spl::WeightedPhysicalSpace<2>>(spl::WeightedPhysicalSpace<2>(
-      j_control_points, joined_weights, j_number_of_points));
+      j_control_points, j_weights, j_number_of_points));
 }
 
 double spl::SurfaceGenerator::ComputeNormal(
@@ -153,7 +149,7 @@ baf::KnotVector spl::SurfaceGenerator::AverageKnots(Degree degree, int nbControl
   for (int i = 1; i <= nbControlPoints - 1 - degree.get(); ++i) {
     tempParam = 0;
     for (int j = i; j < i + degree.get(); ++j) {
-      tempParam += u[j];
+      tempParam += knots[j].get();
     }
     tempParam /= degree.get();
     knots.emplace_back(ParamCoord{tempParam});
@@ -164,10 +160,5 @@ baf::KnotVector spl::SurfaceGenerator::AverageKnots(Degree degree, int nbControl
   return baf::KnotVector(knots);
 }
 
-double spl::SurfaceGenerator::InterpolateWeights(std::shared_ptr<spl::NURBS<1>> const &nurbs,
-    std::vector<ParamCoord> param_coords) {
-  
-
-}
 
 

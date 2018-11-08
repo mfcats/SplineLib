@@ -43,6 +43,7 @@ class SurfaceGenerator : public NURBSGenerator<2> {
 
   std::array<double, 3> CrossProduct( std::array<double, 3> a, std::array<double, 3> b) const;
 
+  baf::KnotVector AverageKnots(Degree degree, int nbControlPoints);
 };
 }  // namespace spl
 

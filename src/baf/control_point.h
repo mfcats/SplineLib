@@ -32,8 +32,8 @@ class ControlPoint {
 
   ControlPoint operator+(const ControlPoint& control_point) const;
 
-  ControlPoint Transform(const ControlPoint& control_point,
-      std::array<double, 3> x, std::array<double, 3> y, std::array<double, 3> z, std::array<double, 3> o) const;
+  ControlPoint Transform(std::array<double, 3> x, std::array<double, 3> y,
+      std::array<double, 3> z, std::array<double, 3> o) const;
 
  protected:
   std::vector<double> coordinates_;

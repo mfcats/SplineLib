@@ -120,7 +120,7 @@ class ParameterSpace {
   std::array<std::vector<ParamCoord>, DIM> GetKnots() const {
     std::array<std::vector<ParamCoord>, DIM> knots;
     for (int i = 0; i < DIM; ++i) {
-      std::vector<ParamCoord> temp = knot_vector_[i]->GetKnots();
+      std::vector<ParamCoord> temp = this->GetKnotVector(i)->GetKnots();
       for (auto j = 0u; j < temp.size(); ++j) {
         knots[i].emplace_back(temp[j]);
       }

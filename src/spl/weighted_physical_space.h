@@ -42,6 +42,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     for (int coordinate = 0; coordinate < this->dimension_; coordinate++) {
       coordinates.push_back(this->control_points_[first + coordinate] * weights_[first / this->dimension_]);
     }
+    coordinates.push_back(this->weights_[point_handler.Get1DIndex()]);
     return baf::ControlPoint(coordinates);
   }
 

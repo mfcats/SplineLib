@@ -66,7 +66,7 @@ class PhysicalSpace {
     return number_of_points_;
   }
 
-  int GetDimension() {
+  virtual int GetDimension() {
     return dimension_;
   }
 
