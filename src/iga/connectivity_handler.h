@@ -34,10 +34,10 @@ class ConnectivityHandler {
 
   void SetGlobalNodePattern();
 
-  std::shared_ptr<spl::Spline<2>> spline;
-  std::vector<std::vector<int>> connectivity;
-  std::array<std::vector<std::vector<int>>, 2> element_global;
-  std::vector<std::vector<int>> global_pattern;
+  std::shared_ptr<spl::Spline<2>> spline_;
+  std::vector<std::vector<int>> connectivity_;
+  std::array<std::vector<std::vector<int>>, 2> element_global_;
+  std::vector<std::vector<int>> global_pattern_;
 };
 }  // namespace iga
 
