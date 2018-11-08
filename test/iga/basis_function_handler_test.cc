@@ -81,7 +81,7 @@ TEST_F(AnIGATestSpline, ElementNURBSBasisFunctionDerivatives) { // NOLINT
     for (uint64_t j = 0; j < splinelib_element_intg_pnts.size(); ++j) {
       for (int k = 0; k < splinelib_element_intg_pnts[j].GetNumberOfNonZeroBasisFunctionDerivatives(i); ++k) {
         ASSERT_THAT(splinelib_element_intg_pnts[j].GetBasisFunctionDerivativeValue(k, i),
-            DoubleNear(matlab_element_intg_pnts[i][j][k], 0.0002));
+            DoubleNear(matlab_element_intg_pnts[i][j][k], 0.00005));
       }
     }
   }
@@ -114,7 +114,7 @@ TEST_F(AnIGATestSpline, ElementNURBSBafDersPhysical) { // NOLINT
     for (uint64_t j = 0; j < splinelib_element_intg_pnts.size(); ++j) {
       for (int k = 0; k < splinelib_element_intg_pnts[j].GetNumberOfNonZeroBasisFunctionDerivatives(i); ++k) {
         ASSERT_THAT(splinelib_element_intg_pnts[j].GetBasisFunctionDerivativeValue(k, i),
-                    DoubleNear(matlab_element_intg_pnts[i][j][k], 0.0002));
+                    DoubleNear(matlab_element_intg_pnts[i][j][k], 0.00005));
       }
     }
   }

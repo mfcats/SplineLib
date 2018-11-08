@@ -34,7 +34,7 @@ TEST_F(AnIGATestSpline, TestLeftSide) { // NOLINT
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
   for (uint64_t i = 0; i < matlab_matrix_a.size(); ++i) {
     for (uint64_t j = 0; j < matlab_matrix_a[0].size(); ++j) {
-      ASSERT_THAT((*matA)(i, j), DoubleNear(matlab_matrix_a[i][j], 0.0005));
+      ASSERT_THAT((*matA)(i, j), DoubleNear(matlab_matrix_a[i][j], 0.00005));
     }
   }
 }
@@ -48,7 +48,7 @@ TEST_F(AnIGATestSpline, TestRightSide) { // NOLINT
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
   linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
   for (uint64_t i = 0; i < matlab_vector_b.size(); ++i) {
-      ASSERT_THAT((*vecB)(i), DoubleNear(matlab_vector_b[i], 0.0005));
+      ASSERT_THAT((*vecB)(i), DoubleNear(matlab_vector_b[i], 0.00005));
   }
 }
 
@@ -65,10 +65,10 @@ TEST_F(AnIGATestSpline, TestEquationSystemWithBC) { // NOLINT
   linear_equation_assembler.SetZeroBC(matA, vecB);
   for (uint64_t i = 0; i < matlab_matrix_a_bc.size(); ++i) {
     for (uint64_t j = 0; j < matlab_matrix_a_bc[0].size(); ++j) {
-      ASSERT_THAT((*matA)(i, j), DoubleNear(matlab_matrix_a_bc[i][j], 0.0005));
+      ASSERT_THAT((*matA)(i, j), DoubleNear(matlab_matrix_a_bc[i][j], 0.00005));
     }
   }
   for (uint64_t i = 0; i < matlab_vector_b_bc.size(); ++i) {
-    ASSERT_THAT((*vecB)(i), DoubleNear(matlab_vector_b_bc[i], 0.0005));
+    ASSERT_THAT((*vecB)(i), DoubleNear(matlab_vector_b_bc[i], 0.00005));
   }
 }
