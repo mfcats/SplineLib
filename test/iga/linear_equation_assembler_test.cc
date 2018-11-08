@@ -72,3 +72,20 @@ TEST_F(AnIGATestSpline, TestEquationSystemWithBC) { // NOLINT
     ASSERT_THAT((*vecB)(i), DoubleNear(matlab_vector_b_bc[i], 0.00005));
   }
 }
+
+TEST_F(AnIGATestSpline, TestSolution) { // NOLINT
+  iga::LinearEquationAssembler linear_equation_assembler = iga::LinearEquationAssembler(nurbs_);
+  iga::ElementIntegralCalculator elm_itg_calc = iga::ElementIntegralCalculator(nurbs_);
+  int n = nurbs_->GetNumberOfControlPoints();
+  std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
+  iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
+  linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
+  linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
+  linear_equation_assembler.SetZeroBC(matA, vecB);
+  arma::dvec solution = arma::solve(*matA, *vecB);
+  for (uint64_t i = 0; i < matlab_solution.size(); ++i) {
+    ASSERT_THAT(solution(i), DoubleNear(matlab_solution[i], 0.00005));
+  }
+}
