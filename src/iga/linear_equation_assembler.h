@@ -15,6 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IGA_LINEAR_EQUATION_ASSEMBLER_H_
 #define SRC_IGA_LINEAR_EQUATION_ASSEMBLER_H_
 
+#include <armadillo>
+
 #include "element_integral_calculator.h"
 #include "element_generator.h"
 #include "integration_rule.h"
@@ -28,8 +30,8 @@ class LinearEquationAssembler {
     elm_gen_ = std::make_shared<iga::elm::ElementGenerator<2>>(spline_);
   }
 
-  void Laplace(const iga::itg::IntegrationRule &rule, const std::shared_ptr<iga::Matrix> &matA,
-               const iga::ElementIntegralCalculator &elm_itg_calc) const {
+  void GetLeftSide(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dmat> &matA,
+                   const iga::ElementIntegralCalculator &elm_itg_calc) const {
     int num_elements = static_cast<int>(elm_gen_->GetElementList(0).size() * elm_gen_->GetElementList(1).size());
     for (int e = 0; e < num_elements; ++e) {
       elm_itg_calc.GetLaplaceElementIntegral(e, rule, matA);

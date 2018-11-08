@@ -12,6 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <armadillo>
 #include <array>
 
 #include "gmock/gmock.h"
@@ -27,11 +28,11 @@ TEST_F(AnIGATestSpline, TestElementIntegralCalculator) { // NOLINT
   iga::ElementIntegralCalculator elm_itg_calc = iga::ElementIntegralCalculator(nurbs_);
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
   int n = nurbs_->GetPointsPerDirection()[0] * nurbs_->GetPointsPerDirection()[1];
-  std::shared_ptr<iga::Matrix> matrix = std::make_shared<iga::Matrix>(n, n);
-  elm_itg_calc.GetLaplaceElementIntegral(0, rule, matrix);
+  std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
+  elm_itg_calc.GetLaplaceElementIntegral(0, rule, matA);
   for (uint64_t i = 0; i < matlab_element_one_integral.size(); ++i) {
     for (uint64_t j = 0; j < matlab_element_one_integral[0].size(); ++j) {
-      ASSERT_THAT(matrix->GetMatrixEntry(i, j), DoubleNear(matlab_element_one_integral[i][j], 0.00005));
+      ASSERT_THAT((*matA)(i, j), DoubleNear(matlab_element_one_integral[i][j], 0.00005));
     }
   }
 }
