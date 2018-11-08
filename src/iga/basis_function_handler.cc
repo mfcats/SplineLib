@@ -129,10 +129,10 @@ std::array<std::vector<double>, 2> iga::BasisFunctionHandler::EvaluateAllNonZero
     std::array<ParamCoord, 2> param_coord) const {
   std::array<std::vector<double>, 2> dr_dx;
   std::array<std::vector<double>, 2> dr_dxi = EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coord);
-  std::array<std::array<double, 2>, 2> dxi_dx = mapping_handler_->GetDxiDx(param_coord);
+  arma::dmat dxi_dx = mapping_handler_->GetDxiDx(param_coord);
   for (uint64_t i = 0; i < dr_dxi[0].size(); ++i) {
-    dr_dx[0].emplace_back(dr_dxi[0][i] * dxi_dx[0][0] + dr_dxi[1][i] * dxi_dx[1][0]);
-    dr_dx[1].emplace_back(dr_dxi[0][i] * dxi_dx[0][1] + dr_dxi[1][i] * dxi_dx[1][1]);
+    dr_dx[0].emplace_back(dr_dxi[0][i] * dxi_dx(0, 0) + dr_dxi[1][i] * dxi_dx(1, 0));
+    dr_dx[1].emplace_back(dr_dxi[0][i] * dxi_dx(0, 1) + dr_dxi[1][i] * dxi_dx(1, 1));
   }
   return dr_dx;
 }

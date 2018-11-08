@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IGA_BASIS_FUNCTION_HANDLER_H_
 
 #include <math.h>
+#include <armadillo>
 #include <array>
 #include <vector>
 

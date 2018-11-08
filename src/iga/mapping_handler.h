@@ -25,16 +25,16 @@ class MappingHandler {
  public:
   explicit MappingHandler(std::shared_ptr<spl::Spline<2>> spl);
 
-  std::array<std::array<double, 2>, 2> GetDxiDx(std::array<ParamCoord, 2> param_coord) const;
+  arma::dmat GetDxiDx(std::array<ParamCoord, 2> param_coord) const;
 
   double GetJacobianDeterminant(std::array<ParamCoord, 2> param_coord) const;
 
  private:
   arma::dmat GetDxDxitilde(std::array<ParamCoord, 2> param_coord) const;
 
-  std::array<std::array<double, 2>, 2> GetDxDxi(std::array<ParamCoord, 2> param_coord) const;
+  arma::dmat GetDxDxi(std::array<ParamCoord, 2> param_coord) const;
 
-  std::array<double, 2> GetDxiDxitilde(std::array<ParamCoord, 2> param_coord) const;
+  arma::dmat GetDxiDxitilde(std::array<ParamCoord, 2> param_coord) const;
 
   std::shared_ptr<spl::Spline<2>> spline_;
 };
