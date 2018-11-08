@@ -23,14 +23,18 @@ class ElementIntegrationPoint {
  public:
   ElementIntegrationPoint(std::vector<double> basis_functions, double weight);
 
+  ElementIntegrationPoint(std::vector<double> basis_functions, double weight, double jac_det);
+
   std::vector<double> GetNonZeroBasisFunctions() const;
   double GetWeight() const;
+  double GetJacDet() const;
   int GetNumberOfNonZeroBasisFunctions() const;
   double GetBasisFunctionValue(int firstNonZeroOffset) const;
 
  private:
   std::vector<double> non_zero_basis_functions_;
   double weight_;
+  double jac_det_;
 };
 }  // namespace elm
 }  // namespace iga

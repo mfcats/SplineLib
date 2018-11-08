@@ -40,8 +40,12 @@ class Matrix {
     return matrix_[row * colCount_ + col];
   }
 
-  double* GetMatrix() {
-    return matrix_;
+  int GetRowCount() {
+    return rowCount_;
+  }
+
+  int GetColCount() {
+    return colCount_;
   }
 
  private:

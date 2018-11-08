@@ -17,7 +17,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions, double weight)
-    : non_zero_basis_functions_(std::move(basis_functions)), weight_(weight) {}
+    : non_zero_basis_functions_(std::move(basis_functions)), weight_(weight), jac_det_(1.0) {}
+
+iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions, double weight,
+    double jac_det) : non_zero_basis_functions_(std::move(basis_functions)), weight_(weight), jac_det_(jac_det) {}
 
 std::vector<double> iga::elm::ElementIntegrationPoint::GetNonZeroBasisFunctions() const {
   return non_zero_basis_functions_;
@@ -25,6 +28,10 @@ std::vector<double> iga::elm::ElementIntegrationPoint::GetNonZeroBasisFunctions(
 
 double iga::elm::ElementIntegrationPoint::GetWeight() const {
   return weight_;
+}
+
+double iga::elm::ElementIntegrationPoint::GetJacDet() const {
+  return jac_det_;
 }
 
 int iga::elm::ElementIntegrationPoint::GetNumberOfNonZeroBasisFunctions() const {
