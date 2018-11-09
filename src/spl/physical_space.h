@@ -84,6 +84,10 @@ class PhysicalSpace {
     return number_of_points_;
   }
 
+  void IncrementNumberOfPoints(int dimension) {
+    ++number_of_points_[dimension];
+  }
+
   int GetDimension() {
     return dimension_;
   }

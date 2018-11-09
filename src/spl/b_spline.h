@@ -70,7 +70,8 @@ class BSpline : public Spline<DIM> {
   }
 
   void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
-    for (int k = physical_space_->GetNumberOfPointsInEachDirection()[1] - 1; k >= 0; --k) {
+    int d = dimension == 0 ? 1 : 0;
+    for (int k = physical_space_->GetNumberOfPointsInEachDirection()[d] - 1; k >= 0; --k) {
       for (int i = last; i >= first; --i) {
         std::array<int, DIM> indices0, indices1;
         for (int j = 0; j < DIM; ++j) {
@@ -84,11 +85,11 @@ class BSpline : public Spline<DIM> {
           coordinates.push_back(scaling[i - first] * cp0.GetValue(j) + (1 - scaling[i - first]) * cp1.GetValue(j));
         }
         baf::ControlPoint new_cp(coordinates);
-
         i != last ? physical_space_->SetControlPoint(indices0, new_cp) : physical_space_->InsertControlPoint(indices0,
                                                                                                              new_cp);
       }
     }
+    physical_space_->IncrementNumberOfPoints(dimension);
   }
 
  private:
