@@ -18,7 +18,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <algorithm>
 #include <array>
 #include <functional>
-#include <iostream>
 #include <vector>
 
 #include "b_spline_generator.h"
