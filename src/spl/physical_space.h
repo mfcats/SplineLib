@@ -76,11 +76,11 @@ class PhysicalSpace {
     }
   }
 
-  int GetNumberOfControlPoints() {
+  int GetNumberOfControlPoints() const {
     return static_cast<int>(control_points_.size()) / dimension_;
   }
 
-  std::array<int, DIM> GetNumberOfPointsInEachDirection() {
+  std::array<int, DIM> GetNumberOfPointsInEachDirection() const {
     return number_of_points_;
   }
 
@@ -88,11 +88,11 @@ class PhysicalSpace {
     ++number_of_points_[dimension];
   }
 
-  int GetDimension() {
+  int GetDimension() const {
     return dimension_;
   }
 
-  double GetExpansion() {
+  double GetExpansion() const {
     double expansion = 0;
     for (auto &cp : control_points_) {
       if (cp > expansion) expansion = cp;
