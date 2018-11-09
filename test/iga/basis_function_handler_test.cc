@@ -18,8 +18,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <iostream>
 #include "connectivity_handler.h"
 #include "element_generator.h"
-#include "matrix_utils.h"
-
 
 #include "gmock/gmock.h"
 

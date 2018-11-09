@@ -19,7 +19,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "element_integral_calculator.h"
 #include "linear_equation_assembler.h"
 #include "matlab_test_data_2.h"
-#include "matrix.h"
 #include "test_spline.h"
 #include "two_point_gauss_legendre.h"
 

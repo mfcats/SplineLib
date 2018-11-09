@@ -44,7 +44,6 @@ set(TEST_SOURCES
         iga/connectivity_handler_test.cc
         iga/basis_function_handler_test.cc
         iga/mapping_handler_test.cc
-        iga/matrix_test.cc
         spl/surface_generator_test.cc
         iga/element_integral_calculator_test.cc
         iga/linear_equation_assembler_test.cc iga/elm/element_generator_test.cpp)

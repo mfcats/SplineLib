@@ -23,7 +23,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "element_integration_point.h"
 #include "integration_point.h"
 #include "mapping_handler.h"
-#include "matrix.h"
 #include "nurbs.h"
 
 namespace iga {

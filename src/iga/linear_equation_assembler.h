@@ -20,7 +20,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "element_integral_calculator.h"
 #include "element_generator.h"
 #include "integration_rule.h"
-#include "matrix.h"
 #include "nurbs.h"
 
 namespace iga {
