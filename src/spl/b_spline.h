@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <algorithm>
 #include <array>
 #include <functional>
+#include <iostream>
 #include <vector>
 
 #include "b_spline_generator.h"
@@ -70,23 +71,27 @@ class BSpline : public Spline<DIM> {
   }
 
   void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
-    int d = dimension == 0 ? 1 : 0;
-    for (int k = physical_space_->GetNumberOfPointsInEachDirection()[d] - 1; k >= 0; --k) {
-      for (int i = last; i >= first; --i) {
-        std::array<int, DIM> indices0, indices1;
-        for (int j = 0; j < DIM; ++j) {
-          indices0[j] = j == dimension ? i : k;
-          indices1[j] = j == dimension ? i - 1 : k;
-        }
+    std::array<int, DIM> number_of_points = physical_space_->GetNumberOfPointsInEachDirection();
+    for (auto &number : number_of_points) {
+      --number;
+    }
+    util::MultiIndexHandler<DIM> point_handler(physical_space_->GetNumberOfPointsInEachDirection());
+    point_handler.SetIndices(number_of_points);
+    for (int i = point_handler.Get1DLength() - 1; i >= 0; --i, --point_handler) {
+      auto current_point = point_handler.GetIndices()[dimension];
+      if (current_point <= last && point_handler.GetIndices()[dimension] >= first) {
+        std::array<int, DIM> indices0 = point_handler.GetIndices(), indices1 = indices0;
+        --indices1[dimension];
         baf::ControlPoint cp0 = physical_space_->GetControlPoint(indices0);
         baf::ControlPoint cp1 = physical_space_->GetControlPoint(indices1);
         std::vector<double> coordinates;
         for (int j = 0; j < cp0.GetDimension(); ++j) {
-          coordinates.push_back(scaling[i - first] * cp0.GetValue(j) + (1 - scaling[i - first]) * cp1.GetValue(j));
+          coordinates.push_back(scaling[current_point - first] * cp0.GetValue(j)
+                                    + (1 - scaling[current_point - first]) * cp1.GetValue(j));
         }
         baf::ControlPoint new_cp(coordinates);
-        i != last ? physical_space_->SetControlPoint(indices0, new_cp) : physical_space_->InsertControlPoint(indices0,
-                                                                                                             new_cp);
+        current_point != last ? physical_space_->SetControlPoint(indices0, new_cp)
+                              : physical_space_->InsertControlPoint(indices0, new_cp);
       }
     }
     physical_space_->IncrementNumberOfPoints(dimension);

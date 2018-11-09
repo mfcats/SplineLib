@@ -81,20 +81,35 @@ class NURBS : public Spline<DIM> {
   }
 
   void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
-    for (int i = last; i >= first; --i) {
-      baf::ControlPoint cp0 = physical_space_->GetHomogenousControlPoint({i});
-      baf::ControlPoint cp1 = physical_space_->GetHomogenousControlPoint({i - 1});
-      double weight0 = physical_space_->GetWeight({i});
-      double weight1 = physical_space_->GetWeight({i - 1});
-      std::vector<double> coordinates;
-      double new_weight = scaling[i - first] * weight0 + (1 - scaling[i - first]) * weight1;
-      for (int j = 0; j < cp0.GetDimension(); ++j) {
-        coordinates.push_back(
-            (scaling[i - first] * cp0.GetValue(j) + (1 - scaling[i - first]) * cp1.GetValue(j)) / new_weight);
+    std::array<int, DIM> number_of_points = physical_space_->GetNumberOfPointsInEachDirection();
+    for (auto &number : number_of_points) {
+      --number;
+    }
+    util::MultiIndexHandler<DIM> point_handler(physical_space_->GetNumberOfPointsInEachDirection());
+    point_handler.SetIndices(number_of_points);
+    for (int i = point_handler.Get1DLength() - 1; i >= 0; --i, --point_handler) {
+      auto current_point = point_handler.GetIndices()[dimension];
+      if (current_point <= last && point_handler.GetIndices()[dimension] >= first) {
+        std::array<int, DIM> indices0 = point_handler.GetIndices(), indices1 = indices0;
+        --indices1[dimension];
+        baf::ControlPoint cp0 = physical_space_->GetHomogenousControlPoint(indices0);
+        baf::ControlPoint cp1 = physical_space_->GetHomogenousControlPoint(indices1);
+        double weight0 = physical_space_->GetWeight(indices0);
+        double weight1 = physical_space_->GetWeight(indices1);
+        double new_weight = scaling[i - first] * weight0 + (1 - scaling[i - first]) * weight1;
+        std::vector<double> coordinates;
+        for (int j = 0; j < cp0.GetDimension(); ++j) {
+          coordinates.push_back((scaling[current_point - first] * cp0.GetValue(j)
+              + (1 - scaling[current_point - first]) * cp1.GetValue(j)) / new_weight);
+        }
+        baf::ControlPoint new_cp(coordinates);
+        current_point != last ? (physical_space_->SetControlPoint(indices0,
+                                                                  new_cp), physical_space_->SetWeight(indices0,
+                                                                                                      new_weight))
+                              : (physical_space_->InsertControlPoint(indices0, new_cp), physical_space_->InsertWeight(
+            indices0,
+            new_weight));
       }
-      baf::ControlPoint new_cp(coordinates);
-      i != last ? (physical_space_->SetControlPoint({i}, new_cp), physical_space_->SetWeight({i}, new_weight))
-                : (physical_space_->InsertControlPoint({i}, new_cp), physical_space_->InsertWeight({i}, new_weight));
     }
   }
 
