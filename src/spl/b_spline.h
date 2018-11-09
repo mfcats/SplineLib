@@ -70,7 +70,7 @@ class BSpline : public Spline<DIM> {
   }
 
   void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
-    for (int k = 0; k < physical_space_->GetNumberOfPointsInEachDirection()[1]; ++k) {
+    for (int k = physical_space_->GetNumberOfPointsInEachDirection()[1] - 1; k >= 0; --k) {
       for (int i = last; i >= first; --i) {
         std::array<int, DIM> indices0, indices1;
         for (int j = 0; j < DIM; ++j) {
