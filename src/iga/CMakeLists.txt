@@ -18,7 +18,7 @@ set(SOURCES
         connectivity_handler.cc
         mapping_handler.cc
         element_integral_calculator.cc
-        linear_equation_assembler.cc)
+        linear_equation_assembler.cc solution_spline.h solution_spline.cc)
 
 add_subdirectory(itg)
 add_subdirectory(elm)
