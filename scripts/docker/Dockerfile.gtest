@@ -1,5 +1,5 @@
 # Build on top of spack
-FROM mfcats/splinelib:spack
+FROM christophsusen/spack
 
 # Add code directory
 ADD . /spackrepo

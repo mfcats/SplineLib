@@ -28,45 +28,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace iga {
 class ElementIntegralCalculator {
  public:
-  explicit ElementIntegralCalculator(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
-    baf_handler_ = std::make_shared<iga::BasisFunctionHandler>(spline_);
-    connectivity_handler_ = std::make_shared<iga::ConnectivityHandler>(spline_);
-  }
+  explicit ElementIntegralCalculator(std::shared_ptr<spl::NURBS<2>> spl);
 
   void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
-                                 const std::shared_ptr<arma::dmat> &matA) const {
-    std::vector<iga::elm::ElementIntegrationPoint> elm_intgr_pnts =
-        baf_handler_->EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(element_number, rule);
-    for (auto &p : elm_intgr_pnts) {
-      for (int j = 0; j < p.GetNumberOfNonZeroBasisFunctionDerivatives(1); ++j) {
-        for (int k = 0; k < p.GetNumberOfNonZeroBasisFunctionDerivatives(0); ++k) {
-          double temp = (p.GetBasisFunctionDerivativeValue(j, 0) * p.GetBasisFunctionDerivativeValue(k, 0)
-              + p.GetBasisFunctionDerivativeValue(j, 1) * p.GetBasisFunctionDerivativeValue(k, 1))
-              * p.GetWeight() * p.GetJacobianDeterminant();
-          (*matA)(static_cast<uint64_t>(connectivity_handler_->GetGlobalIndex(element_number, j) - 1),
-                  static_cast<uint64_t>(connectivity_handler_->GetGlobalIndex(element_number, k) - 1)) += temp;
-        }
-      }
-    }
-  }
+                                 const std::shared_ptr<arma::dmat> &matA) const;
 
   void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
                                  const std::shared_ptr<arma::dvec> &vecB,
-                                 const std::shared_ptr<arma::dvec> &srcCp) const {
-    std::vector<iga::elm::ElementIntegrationPoint> elm_intgr_pnts =
-        baf_handler_->EvaluateAllElementNonZeroNURBSBasisFunctions(element_number, rule);
-    for (auto &p : elm_intgr_pnts) {
-      double bc_int_pnt = 0;
-      for (int j = 0; j < p.GetNumberOfNonZeroBasisFunctions(); ++j) {
-        bc_int_pnt += p.GetBasisFunctionValue(j) *
-            (*srcCp)(static_cast<uint64_t>(connectivity_handler_->GetGlobalIndex(element_number, j) - 1));
-      }
-      for (int j = 0; j < p.GetNumberOfNonZeroBasisFunctions(); ++j) {
-        double temp = p.GetBasisFunctionValue(j) * bc_int_pnt * p.GetWeight() * p.GetJacobianDeterminant();
-        (*vecB)(static_cast<uint64_t>(connectivity_handler_->GetGlobalIndex(element_number, j) - 1)) += temp;
-      }
-    }
-  }
+                                 const std::shared_ptr<arma::dvec> &srcCp) const;
 
  private:
   std::shared_ptr<spl::NURBS<2>> spline_;
