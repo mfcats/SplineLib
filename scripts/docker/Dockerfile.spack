@@ -49,4 +49,3 @@ RUN spack clean -a
 
 # startup
 CMD /bin/bash -l
-

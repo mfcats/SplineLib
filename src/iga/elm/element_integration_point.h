@@ -15,24 +15,30 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
 #define SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
 
+#include <array>
+#include <set>
 #include <vector>
 
 namespace iga {
 namespace elm {
 class ElementIntegrationPoint {
  public:
-  ElementIntegrationPoint(std::vector<double> basis_functions, double weight);
-
   ElementIntegrationPoint(std::vector<double> basis_functions, double weight, double jac_det);
 
+  ElementIntegrationPoint(std::array<std::vector<double>, 2> basis_function_derivatives, double weight, double jac_det);
+
   std::vector<double> GetNonZeroBasisFunctions() const;
+  std::vector<double> GetNonZeroBasisFunctionDerivatives(int dir) const;
   double GetWeight() const;
-  double GetJacDet() const;
+  double GetJacobianDeterminant() const;
   int GetNumberOfNonZeroBasisFunctions() const;
+  int GetNumberOfNonZeroBasisFunctionDerivatives(int dir) const;
   double GetBasisFunctionValue(int firstNonZeroOffset) const;
+  double GetBasisFunctionDerivativeValue(int firstNonZeroOffset, int dir) const;
 
  private:
   std::vector<double> non_zero_basis_functions_;
+  std::array<std::vector<double>, 2> non_zero_basis_function_derivatives_;
   double weight_;
   double jac_det_;
 };

@@ -21,7 +21,7 @@ set(TEST_SOURCES
         spl/b_spline_test.cc
         spl/b_spline_2d_test.cc
         spl/square_generator_test.cc
-        util/multihandler_test.cc
+        util/multi_index_handler_test.cc
         iga/elm/element_test.cc
         io/iges_reader_writer_test.cc
         iga/itg/integration_rule_test.cc
@@ -44,9 +44,11 @@ set(TEST_SOURCES
         iga/connectivity_handler_test.cc
         iga/basis_function_handler_test.cc
         iga/mapping_handler_test.cc
-        iga/matrix_test.cc
         spl/surface_generator_test.cc
-        iga/element_integral_calculator_test.cc)
+        iga/element_integral_calculator_test.cc
+        iga/linear_equation_assembler_test.cc
+        iga/elm/element_generator_test.cc
+        iga/test_solution_spline.cc iga/matlab_test_data_2.h)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
@@ -65,5 +67,7 @@ set(IGES_READ ${CMAKE_CURRENT_SOURCE_DIR}/io/test_files/read.iges)
 set(IGES_READ_2 ${CMAKE_CURRENT_SOURCE_DIR}/io/test_files/read2.iges)
 set(PATH_TO_IRIT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/io/test_files/test.itd)
 set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/io/test_files/spline_tank.xml)
-configure_file(io/config.in.h ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file(io/config_irit.in.h ${CMAKE_CURRENT_BINARY_DIR}/config_irit.h)
+configure_file(io/config_xml.in.h ${CMAKE_CURRENT_BINARY_DIR}/config_xml.h)
+configure_file(io/config_iges.in.h ${CMAKE_CURRENT_BINARY_DIR}/config_iges.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
