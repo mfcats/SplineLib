@@ -458,4 +458,9 @@ TEST_F(NURBS3DEx, InsertsKnot0_4InFirstAndKnot0_7InSecondDirectionCorrectly) {  
       }
     }
   }
+  io::IRITWriter irit_writer;
+  std::any spline_before = std::make_any<std::shared_ptr<spl::NURBS<3>>>(nurbs_3d_before_);
+  irit_writer.WriteFile({spline_before}, "before.irit");
+  std::any spline_after = std::make_any<std::shared_ptr<spl::NURBS<3>>>(nurbs_3d_after_);
+  irit_writer.WriteFile({spline_after}, "after.irit");
 }

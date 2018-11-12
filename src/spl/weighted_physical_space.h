@@ -65,13 +65,6 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     weights_.emplace_back(0.0);
   }
 
-  void InsertWeight(std::array<int, DIM> indices, double weight) {
-    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);
-    point_handler.SetIndices(indices);
-    int first = point_handler.Get1DIndex();
-    weights_.insert(weights_.begin() + first, weight);
-  }
-
   std::vector<double> GetWeights() const override {
     return weights_;
   }

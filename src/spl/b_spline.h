@@ -84,26 +84,8 @@ class BSpline : public Spline<DIM> {
     }
     for (int i = point_handler.Get1DLength() - 1; i >= 0; --i, --point_handler) {
       auto current_point = point_handler.GetIndices()[dimension];
-      std::vector<double> coordinates;
       std::array<int, DIM> indices = point_handler.GetIndices();
-      baf::ControlPoint new_cp({});
-      if (current_point > last) {
-        --indices[dimension];
-        new_cp = physical_space_->GetControlPoint(indices);
-        ++indices[dimension];
-      } else if (current_point >= first) {
-        std::array<int, DIM> indices1 = indices;
-        --indices1[dimension];
-        baf::ControlPoint cp0 = physical_space_->GetControlPoint(indices);
-        baf::ControlPoint cp1 = physical_space_->GetControlPoint(indices1);
-        for (int j = 0; j < cp0.GetDimension(); ++j) {
-          coordinates.push_back(scaling[current_point - first] * cp0.GetValue(j)
-                                    + (1 - scaling[current_point - first]) * cp1.GetValue(j));
-        }
-        new_cp = baf::ControlPoint(coordinates);
-      } else {
-        new_cp = physical_space_->GetControlPoint(indices);
-      }
+      baf::ControlPoint new_cp = GetNewControlPoint(indices, dimension, scaling, current_point, first, last);
       physical_space_->SetControlPoint(indices, new_cp, dimension);
     }
     physical_space_->IncrementNumberOfPoints(dimension);
@@ -123,6 +105,27 @@ class BSpline : public Spline<DIM> {
                                             int dimension) const override {
     return this->parameter_space_->GetBasisFunctionDerivatives(indices, param_coord, derivative)
         * physical_space_->GetControlPoint(indices).GetValue(dimension);
+  }
+
+  baf::ControlPoint GetNewControlPoint(std::array<int, DIM> indices, int dimension, std::vector<double> scaling,
+                                       int current_point, int first, int last) {
+    if (current_point > last) {
+      --indices[dimension];
+      return physical_space_->GetControlPoint(indices);
+    } else if (current_point >= first) {
+      std::vector<double> coordinates;
+      std::array<int, DIM> indices1 = indices;
+      --indices1[dimension];
+      baf::ControlPoint cp0 = physical_space_->GetControlPoint(indices);
+      baf::ControlPoint cp1 = physical_space_->GetControlPoint(indices1);
+      for (int j = 0; j < cp0.GetDimension(); ++j) {
+        coordinates.push_back(scaling[current_point - first] * cp0.GetValue(j)
+                                  + (1 - scaling[current_point - first]) * cp1.GetValue(j));
+      }
+      return baf::ControlPoint(coordinates);
+    } else {
+      return physical_space_->GetControlPoint(indices);
+    }
   }
 
   std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
