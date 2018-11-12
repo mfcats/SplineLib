@@ -98,30 +98,8 @@ class NURBS : public Spline<DIM> {
       auto current_point = point_handler.GetIndices()[dimension];
       std::vector<double> coordinates;
       std::array<int, DIM> indices = point_handler.GetIndices();
-      baf::ControlPoint new_cp({});
-      double new_weight;
-      if (current_point > last) {
-        --indices[dimension];
-        new_cp = physical_space_->GetControlPoint(indices);
-        new_weight = physical_space_->GetWeight(indices);
-        ++indices[dimension];
-      } else if (current_point >= first) {
-        std::array<int, DIM> indices1 = indices;
-        --indices1[dimension];
-        baf::ControlPoint cp0 = physical_space_->GetHomogenousControlPoint(indices);
-        baf::ControlPoint cp1 = physical_space_->GetHomogenousControlPoint(indices1);
-        double weight0 = physical_space_->GetWeight(indices);
-        double weight1 = physical_space_->GetWeight(indices1);
-        new_weight = scaling[current_point - first] * weight0 + (1 - scaling[current_point - first]) * weight1;
-        for (int j = 0; j < cp0.GetDimension(); ++j) {
-          coordinates.push_back((scaling[current_point - first] * cp0.GetValue(j)
-              + (1 - scaling[current_point - first]) * cp1.GetValue(j)) / new_weight);
-        }
-        new_cp = baf::ControlPoint(coordinates);
-      } else {
-        new_cp = physical_space_->GetControlPoint(indices);
-        new_weight = physical_space_->GetWeight(indices);
-      }
+      baf::ControlPoint new_cp = GetNewControlPoint(indices, dimension, scaling, current_point, first, last);
+      double new_weight = GetNewWeight(indices, dimension, scaling, current_point, first, last);
       physical_space_->SetControlPoint(indices, new_cp, dimension);
       physical_space_->SetWeight(indices, new_weight, dimension);
     }
@@ -232,6 +210,43 @@ class NURBS : public Spline<DIM> {
       bc *= binomialCoefficient(numbers[i], subsets[i]);
     }
     return bc;
+  }
+
+  baf::ControlPoint GetNewControlPoint(std::array<int, DIM> indices, int dimension, std::vector<double> scaling,
+                                       int current_point, int first, int last) {
+    if (current_point > last) {
+      --indices[dimension];
+      return physical_space_->GetControlPoint(indices);
+    } else if (current_point >= first) {
+      std::vector<double> coordinates;
+      std::array<int, DIM> indices1 = indices;
+      --indices1[dimension];
+      baf::ControlPoint cp0 = physical_space_->GetControlPoint(indices);
+      baf::ControlPoint cp1 = physical_space_->GetControlPoint(indices1);
+      for (int j = 0; j < cp0.GetDimension(); ++j) {
+        coordinates.push_back(scaling[current_point - first] * cp0.GetValue(j)
+                                  + (1 - scaling[current_point - first]) * cp1.GetValue(j));
+      }
+      return baf::ControlPoint(coordinates);
+    } else {
+      return physical_space_->GetControlPoint(indices);
+    }
+  }
+
+  double GetNewWeight(std::array<int, DIM> indices, int dimension, std::vector<double> scaling,
+                      int current_point, int first, int last) {
+    if (current_point > last) {
+      return physical_space_->GetWeight(indices);
+    } else if (current_point >= first) {
+      std::array<int, DIM> indices1 = indices;
+      --indices1[dimension];
+      double weight0 = physical_space_->GetWeight(indices);
+      double weight1 = physical_space_->GetWeight(indices1);
+      return scaling[current_point - first] * weight0 + (1 - scaling[current_point - first]) * weight1;
+
+    } else {
+      return physical_space_->GetWeight(indices);
+    }
   }
 
   std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_;
