@@ -129,9 +129,9 @@ class Spline {
     auto first = static_cast<size_t>(knot_span.get() - parameter_space_->GetDegree(dimension).get() + 1);
     auto last = static_cast<size_t>(knot_span.get());
     for (size_t i = first; i <= last; ++i) {
-      ParamCoord low_knot = parameter_space_->GetKnotVector(0)->GetKnot(i);
-      ParamCoord
-          upper_knot = parameter_space_->GetKnotVector(0)->GetKnot(i + parameter_space_->GetDegree(dimension).get());
+      ParamCoord low_knot = parameter_space_->GetKnotVector(dimension)->GetKnot(i);
+      ParamCoord upper_knot =
+          parameter_space_->GetKnotVector(dimension)->GetKnot(i + parameter_space_->GetDegree(dimension).get());
       scaling.emplace_back((knot.get() - low_knot.get()) / (upper_knot.get() - low_knot.get()));
     }
     this->AdjustControlPoints(scaling, static_cast<int>(first), static_cast<int>(last), dimension);

@@ -357,15 +357,21 @@ class BSpline3DEx : public Test {  // NOLINT
 
 TEST_F(BSpline3DEx, InsertsKnot0_4InFirstAndKnot0_7InSecondDirectionCorrectly) {  // NOLINT
   bspline_3d_after_->InsertKnot(ParamCoord(0.4), 0);
+  bspline_3d_after_->InsertKnot(ParamCoord(0.99), 1);
+  bspline_3d_after_->InsertKnot(ParamCoord(0.01), 2);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_3d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(1)->GetNumberOfKnots(),
-              bspline_3d_before_->GetKnotVector(1)->GetNumberOfKnots());
+              bspline_3d_before_->GetKnotVector(1)->GetNumberOfKnots() + 1);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
+              bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() + 1);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(0)->GetKnot(3).get(), DoubleEq(0.4));
-  ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() + 6);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(1)->GetKnot(2).get(), DoubleEq(0.99));
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(3).get(), DoubleEq(0.01));
+  ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() + 30);
   ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[0], bspline_3d_before_->GetPointsPerDirection()[0] + 1);
-  ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[1], bspline_3d_before_->GetPointsPerDirection()[1]);
-  ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[2], bspline_3d_before_->GetPointsPerDirection()[2]);
+  ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[1], bspline_3d_before_->GetPointsPerDirection()[1] + 1);
+  ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[2], bspline_3d_before_->GetPointsPerDirection()[2] + 1);
   double s = 20;
   for (int i = 0; i <= s; ++i) {
     for (int j = 0; j <= s; ++j) {
