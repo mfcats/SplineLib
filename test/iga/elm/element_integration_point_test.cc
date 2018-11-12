@@ -49,3 +49,19 @@ TEST_F(AnElementIntegrationPoint, GetWeight) { //NOLINT
 TEST_F(AnElementIntegrationPoint, GetJacobianDeterminant) { //NOLINT
   ASSERT_THAT(element_integration_point.GetJacobianDeterminant(), DoubleEq(1.75));
 }
+
+class AnElementIntegrationPointWithDerivatives : public Test{
+ public:
+  std::array<std::vector<double>, 2> baf_ders = {std::vector<double>({2.3, 4.5}), std::vector<double>({3.2, 5.4})};
+  AnElementIntegrationPointWithDerivatives() : element_integration_point(baf_ders, 0.75, 1.75) {}
+
+ protected:
+  iga::elm::ElementIntegrationPoint element_integration_point;
+};
+
+TEST_F(AnElementIntegrationPointWithDerivatives, GetNonZeroBasisFunctionDerivatives) { //NOLINT
+  ASSERT_THAT(element_integration_point.GetNonZeroBasisFunctionDerivatives(0)[0] , DoubleEq(2.3));
+  ASSERT_THAT(element_integration_point.GetNonZeroBasisFunctionDerivatives(0)[1] , DoubleEq(4.5));
+  ASSERT_THAT(element_integration_point.GetNonZeroBasisFunctionDerivatives(1)[0] , DoubleEq(3.2));
+  ASSERT_THAT(element_integration_point.GetNonZeroBasisFunctionDerivatives(1)[1] , DoubleEq(5.4));
+}
