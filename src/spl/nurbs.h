@@ -112,7 +112,7 @@ class NURBS : public Spline<DIM> {
         baf::ControlPoint cp1 = physical_space_->GetHomogenousControlPoint(indices1);
         double weight0 = physical_space_->GetWeight(indices);
         double weight1 = physical_space_->GetWeight(indices1);
-        new_weight = scaling[i - first] * weight0 + (1 - scaling[i - first]) * weight1;
+        new_weight = scaling[current_point - first] * weight0 + (1 - scaling[current_point - first]) * weight1;
         for (int j = 0; j < cp0.GetDimension(); ++j) {
           coordinates.push_back((scaling[current_point - first] * cp0.GetValue(j)
               + (1 - scaling[current_point - first]) * cp1.GetValue(j)) / new_weight);
