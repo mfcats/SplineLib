@@ -24,8 +24,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "test_spline.h"
 #include "two_point_gauss_legendre.h"
 
-using testing::DoubleNear;
-
 TEST_F(AnIGATestSpline, TestSolutionSpline) { // NOLINT
   iga::LinearEquationAssembler linear_equation_assembler = iga::LinearEquationAssembler(nurbs_);
   iga::ElementIntegralCalculator elm_itg_calc = iga::ElementIntegralCalculator(nurbs_);
