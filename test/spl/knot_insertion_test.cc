@@ -234,11 +234,6 @@ TEST_F(BSpline2DEx, InsertsKnot0_4InFirstDirectionCorrectly) {  // NOLINT
                   DoubleNear(bspline_2d_before_->Evaluate(param_coord, {0})[0], 0.000001));
     }
   }
-  io::IRITWriter irit_writer;
-  std::any spline_before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_before_);
-  irit_writer.WriteFile({spline_before}, "before.irit");
-  std::any spline_after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_after_);
-  irit_writer.WriteFile({spline_after}, "after.irit");
 }
 
 TEST_F(BSpline2DEx, InsertsKnot0_7InSecondDirectionCorrectly) {  // NOLINT
@@ -278,7 +273,6 @@ TEST_F(BSpline2DEx, InsertsKnot0_7InSecondDirectionCorrectly) {  // NOLINT
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 3; ++j) {
-      std::cout << "i = " << i << ", j = " << j << std::endl;
       ASSERT_THAT(bspline_2d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
     }
   }
@@ -289,11 +283,6 @@ TEST_F(BSpline2DEx, InsertsKnot0_7InSecondDirectionCorrectly) {  // NOLINT
                   DoubleNear(bspline_2d_before_->Evaluate(param_coord, {0})[0], 0.000001));
     }
   }
-  io::IRITWriter irit_writer;
-  std::any spline_before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_before_);
-  irit_writer.WriteFile({spline_before}, "before.irit");
-  std::any spline_after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_after_);
-  irit_writer.WriteFile({spline_after}, "after.irit");
 }
 
 TEST_F(BSpline2DEx, InsertsKnot0_4InFirstAndKnot0_7InSecondDirectionCorrectly) {  // NOLINT
@@ -357,13 +346,13 @@ class BSpline3DEx : public Test {  // NOLINT
     };
     std::vector<double>
         weights = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
-    bspline_3d_before_ = std::make_shared<spl::NURBS<3>>(knot_vector_before, degree, control_points, weights);
-    bspline_3d_after_ = std::make_shared<spl::NURBS<3>>(knot_vector_after, degree, control_points, weights);
+    bspline_3d_before_ = std::make_shared<spl::BSpline<3>>(knot_vector_before, degree, control_points);
+    bspline_3d_after_ = std::make_shared<spl::BSpline<3>>(knot_vector_after, degree, control_points);
   }
 
  protected:
-  std::shared_ptr<spl::NURBS<3>> bspline_3d_before_;
-  std::shared_ptr<spl::NURBS<3>> bspline_3d_after_;
+  std::shared_ptr<spl::BSpline<3>> bspline_3d_before_;
+  std::shared_ptr<spl::BSpline<3>> bspline_3d_after_;
 };
 
 TEST_F(BSpline3DEx, InsertsKnot0_4InFirstAndKnot0_7InSecondDirectionCorrectly) {  // NOLINT
@@ -374,15 +363,16 @@ TEST_F(BSpline3DEx, InsertsKnot0_4InFirstAndKnot0_7InSecondDirectionCorrectly) {
               bspline_3d_before_->GetKnotVector(1)->GetNumberOfKnots());
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(0)->GetKnot(3).get(), DoubleEq(0.4));
   ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() + 6);
-//  ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[0], bspline_3d_before_->GetPointsPerDirection()[0] + 1);
+  ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[0], bspline_3d_before_->GetPointsPerDirection()[0] + 1);
   ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[1], bspline_3d_before_->GetPointsPerDirection()[1]);
   ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[2], bspline_3d_before_->GetPointsPerDirection()[2]);
-  for (int i = 0; i <= 100; ++i) {
-    for (int j = 0; j <= 100; ++j) {
-      for (int k = 0; k <= 100; ++k) {
-        std::array<ParamCoord, 3> param_coord{ParamCoord(i / 100.0), ParamCoord(j / 100.0), ParamCoord(k / 100.0)};
+  double s = 20;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      for (int k = 0; k <= s; ++k) {
+        std::array<ParamCoord, 3> param_coord{ParamCoord(i / s), ParamCoord(j / s), ParamCoord(k / s)};
         ASSERT_THAT(bspline_3d_after_->Evaluate(param_coord, {0})[0],
-                    DoubleEq(bspline_3d_before_->Evaluate(param_coord, {0})[0]));
+                    DoubleNear(bspline_3d_before_->Evaluate(param_coord, {0})[0], 0.000001));
       }
     }
   }

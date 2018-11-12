@@ -64,20 +64,11 @@ class PhysicalSpace {
     point_handler.SetIndices(indices);
     int first = dimension_ * point_handler.Get1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      auto p = control_point.GetValue(coordinate);
       control_points_[first + coordinate] = control_point.GetValue(coordinate);
     }
     --number_of_points_[dimension];
   }
 
-  virtual void InsertControlPoint(std::array<int, DIM> indices, const baf::ControlPoint &control_point) {
-    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
-    point_handler.SetIndices(indices);
-    int first = dimension_ * point_handler.Get1DIndex();
-    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      control_points_.insert(control_points_.begin() + first + coordinate, control_point.GetValue(coordinate));
-    }
-  }
   void AddControlPoint() {
     for (int i = 0; i < dimension_; ++i) {
       control_points_.emplace_back(0.0);
