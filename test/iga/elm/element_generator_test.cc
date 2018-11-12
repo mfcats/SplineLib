@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 
 class A1DElementGenerator : public Test {
-public:
+ public:
     std::array<baf::KnotVector, 1> knot_vector =
             {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                               ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4},
@@ -40,7 +40,7 @@ public:
 
     A1DElementGenerator() : element_generator(b_spline) {}
 
-protected:
+ protected:
     iga::elm::ElementGenerator<1> element_generator;
 };
 
