@@ -20,7 +20,7 @@ RUN make install
 RUN mkdir /code/example/build
 WORKDIR /code/example/build
 
-RUN spack load splinelib && spack load cmake && cmake ../
+RUN spack load splinelibsplinelib@github build_type=Release %gcc@8 && cmake ../
 RUN make
 
 CMD spack load splinelib && ./ex1
