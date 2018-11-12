@@ -12,23 +12,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_SOLUTION_SPLINE_H_
-#define SRC_IGA_SOLUTION_SPLINE_H_
-
 #include <armadillo>
 
-#include "nurbs.h"
+#include "gmock/gmock.h"
+#include "solution_vtk_writer.h"
+#include "test_spline.h"
 
-namespace iga {
-class SolutionSpline {
- public:
-    SolutionSpline(const std::shared_ptr<spl::NURBS<2>> &spl, const arma::dvec &solution);
-
-    std::shared_ptr<spl::NURBS<2>> GetSolutionSpline();
-
- private:
-  std::shared_ptr<spl::NURBS<2>> solution_spl_;
-};
-}  // namespace iga
-
-#endif  // SRC_IGA_SOLUTION_SPLINE_H_
+TEST_F(AnIGATestSpline, TestSolutionVTKWriter) { // NOLINT
+  linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
+  linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
+  linear_equation_assembler.SetZeroBC(matA, vecB);
+  arma::dvec solution = arma::solve(*matA, *vecB);
+  iga::SolutionVTKWriter solution_vtk_writer;
+  solution_vtk_writer.WriteSolutionToVTK(nurbs_, solution, {{10, 10}}, "solution.vtk");
+  remove("solution.vtk");
+}
