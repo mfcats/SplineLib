@@ -18,7 +18,8 @@ set(SOURCES
         connectivity_handler.cc
         mapping_handler.cc
         element_integral_calculator.cc
-        linear_equation_assembler.cc solution_spline.h solution_spline.cc)
+        linear_equation_assembler.cc
+        solution_spline.cc)
 
 add_subdirectory(itg)
 add_subdirectory(elm)
@@ -42,6 +43,7 @@ install(FILES
         mapping_handler.h
         basis_function_handler.h
         connectivity_handler.h
-        matrix_utils.h
+        element_integral_calculator.h
+        linear_equation_assembler.h
+        solution_spline.h
         DESTINATION "${include_install_dir}")
-
