@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "gmock/gmock.h"
+#include "basis_function_handler.h"
 #include "linear_equation_assembler.h"
 #include "nurbs.h"
 #include "two_point_gauss_legendre.h"
@@ -111,6 +112,7 @@ class AnIGATestSpline : public Test {
   std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
+  iga::BasisFunctionHandler basis_function_handler = iga::BasisFunctionHandler(nurbs_);
 };
 
 #endif  // TEST_IGA_TEST_SPLINE_H_

@@ -17,10 +17,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 #include "iges_writer.h"
-#include "linear_equation_assembler.h"
 #include "solution_spline.h"
 #include "test_spline.h"
-#include "two_point_gauss_legendre.h"
 
 TEST_F(AnIGATestSpline, TestSolutionSpline) { // NOLINT
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
