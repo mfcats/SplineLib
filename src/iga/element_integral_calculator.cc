@@ -14,7 +14,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element_integral_calculator.h"
 
-iga::ElementIntegralCalculator::ElementIntegralCalculator(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
+iga::ElementIntegralCalculator::ElementIntegralCalculator(
+    std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
   baf_handler_ = std::make_shared<iga::BasisFunctionHandler>(spline_);
   connectivity_handler_ = std::make_shared<iga::ConnectivityHandler>(spline_);
 }

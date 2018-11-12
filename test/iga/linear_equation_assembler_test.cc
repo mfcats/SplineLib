@@ -12,10 +12,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
-
 #include <armadillo>
 
+#include "gmock/gmock.h"
 #include "element_integral_calculator.h"
 #include "linear_equation_assembler.h"
 #include "matlab_test_data_2.h"

@@ -12,11 +12,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
-
 #include <any>
 #include <armadillo>
 
+#include "gmock/gmock.h"
 #include "iges_writer.h"
 #include "linear_equation_assembler.h"
 #include "nurbs.h"

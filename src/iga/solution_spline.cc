@@ -12,6 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <vector>
+
 #include "solution_spline.h"
 
 iga::SolutionSpline::SolutionSpline(const std::shared_ptr<spl::NURBS<2>> &spl, const arma::dvec &solution) {
