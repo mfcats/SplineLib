@@ -18,8 +18,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "gmock/gmock.h"
-
+#include "linear_equation_assembler.h"
 #include "nurbs.h"
+#include "two_point_gauss_legendre.h"
 
 using testing::Test;
 
@@ -102,6 +103,14 @@ class AnIGATestSpline : public Test {
   std::array<std::shared_ptr<baf::KnotVector>, 2> kv_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0]),
                                                             std::make_shared<baf::KnotVector>(knot_vector[1])};
   std::shared_ptr<spl::NURBS<2>> nurbs_ = std::make_shared<spl::NURBS<2>>(kv_ptr, degree, control_points, weights);
+
+  iga::LinearEquationAssembler linear_equation_assembler = iga::LinearEquationAssembler(nurbs_);
+  iga::ElementIntegralCalculator elm_itg_calc = iga::ElementIntegralCalculator(nurbs_);
+  int n = nurbs_->GetNumberOfControlPoints();
+  std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
+  iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
 };
 
 #endif  // TEST_IGA_TEST_SPLINE_H_

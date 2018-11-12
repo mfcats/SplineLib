@@ -18,19 +18,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 #include "iges_writer.h"
 #include "linear_equation_assembler.h"
-#include "nurbs.h"
 #include "solution_spline.h"
 #include "test_spline.h"
 #include "two_point_gauss_legendre.h"
 
 TEST_F(AnIGATestSpline, TestSolutionSpline) { // NOLINT
-  iga::LinearEquationAssembler linear_equation_assembler = iga::LinearEquationAssembler(nurbs_);
-  iga::ElementIntegralCalculator elm_itg_calc = iga::ElementIntegralCalculator(nurbs_);
-  int n = nurbs_->GetNumberOfControlPoints();
-  std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
-  std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
-  std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
-  iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
   linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
   linear_equation_assembler.SetZeroBC(matA, vecB);

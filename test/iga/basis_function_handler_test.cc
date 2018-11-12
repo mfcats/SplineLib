@@ -15,24 +15,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <vector>
 
-#include <iostream>
+#include "gmock/gmock.h"
 #include "connectivity_handler.h"
 #include "element_generator.h"
-
-#include "gmock/gmock.h"
-
 #include "basis_function_handler.h"
-#include "element_integration_point.h"
-#include "integration_rule.h"
-#include "two_point_gauss_legendre.h"
-#include "nurbs.h"
 #include "test_spline.h"
 
 using testing::DoubleNear;
 
 TEST_F(AnIGATestSpline, ElementNURBSBasisFunctions) { // NOLINT
   iga::BasisFunctionHandler basis_function_handler(nurbs_);
-  iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
   std::vector<iga::elm::ElementIntegrationPoint> splinelib_element_intg_pnts =
       basis_function_handler.EvaluateAllElementNonZeroNURBSBasisFunctions(0, rule);
   std::vector<double> i1 = {0.240652, 0.203999, 0.0434425, 0.00246914, 0.193447, 0.163984, 0.0349212, 0.00198481,

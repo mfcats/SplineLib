@@ -15,7 +15,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "mapping_handler.h"
-#include "nurbs.h"
 #include "test_spline.h"
 
 using testing::DoubleNear;
