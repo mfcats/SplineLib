@@ -115,3 +115,11 @@ TEST_F(ASurface, ReturnCorrectControlPoints) { // NOLINT
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({1, 4}), 1), DoubleEq(-1));
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({0, 3}), 2), DoubleEq(1));
 }
+
+TEST_F(ASurface, ContsructorWithScaling) { // NOLINT
+  std::vector<double> scaling = {1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0};
+  spl::SurfaceGenerator surfaceGeneratorScaled = spl::SurfaceGenerator(nurbs1, nurbs2, 10, scaling);
+  std::unique_ptr<spl::NURBS<2>> nurbsJoinedScaled = std::make_unique<spl::NURBS<2>>(surfaceGeneratorScaled);
+  ASSERT_THAT(nurbsJoinedScaled->GetDimension(), 3);
+  ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(0)->GetNumberOfKnots(), 12);
+}

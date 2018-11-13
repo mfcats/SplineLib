@@ -29,6 +29,23 @@ baf::KnotVector::KnotVector(std::initializer_list<ParamCoord> knots) noexcept : 
 
 baf::KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<ParamCoord>(begin,
                                                                                                              end)) {}
+baf::KnotVector::KnotVector(std::vector<ParamCoord> coords, Degree degree, int nbControlPoints) {
+  for (int i = 0; i <= degree.get(); ++i) {
+    knots_.emplace_back(ParamCoord{0.0});
+  }
+  double curParamCoord;
+  for (int i = 1; i <= nbControlPoints - 1 - degree.get(); ++i) {
+    curParamCoord = 0;
+    for (int j = i; j < i + degree.get(); ++j) {
+      curParamCoord += coords[j].get();
+    }
+    curParamCoord /= degree.get();
+    knots_.emplace_back(ParamCoord{curParamCoord});
+  }
+  for (int i = 0; i <= degree.get(); ++i) {
+    knots_.emplace_back(coords[coords.size()-1]);
+  }
+}
 
 baf::KnotVector baf::KnotVector::operator-(const baf::KnotVector &rhs) const {
   std::vector<ParamCoord> differences(GetNumberOfKnots(), ParamCoord{0.0});

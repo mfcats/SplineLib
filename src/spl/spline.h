@@ -97,7 +97,7 @@ class Spline {
   }
 
   double GetKnotVectorRange(int direction) const {
-    return parameter_space_->GetKnotVector(direction)->GetLastKnot().get();
+    return parameter_space_->GetKnotVectorRange(direction);
   }
 
   virtual int GetNumberOfControlPoints() = 0;

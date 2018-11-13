@@ -128,6 +128,10 @@ class ParameterSpace {
     return knots;
   }
 
+  double GetKnotVectorRange(int direction) const {
+    return GetKnotVector(direction)->GetLastKnot().get() - GetKnotVector(direction)->GetKnot(0).get();
+  }
+
  private:
   void ThrowIfKnotVectorDoesNotStartAndEndWith() {
     for (int i = 0; i < DIM; i++) {

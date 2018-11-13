@@ -151,3 +151,25 @@ TEST_F(AKnotVector, CanBeAssignedByIterators) { // NOLINT
   baf::KnotVector knot_vector = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
   ASSERT_THAT(knot_vector, Eq(knot_vector_));
 }
+
+TEST_F(AKnotVector, CanBeAveraged) { // NOLINT
+  std::vector<ParamCoord> coords = {ParamCoord(0.0), ParamCoord(5.0/17.0), ParamCoord(9.0/17.0),
+                                    ParamCoord(14.0/17.0), ParamCoord(1.0)};
+  Degree degreeTest(3);
+  int nbControlPoints = 5;
+  baf::KnotVector knot_vector = baf::KnotVector(coords, degreeTest, nbControlPoints);
+  ASSERT_THAT(knot_vector.GetKnot(4).get(), DoubleEq(28.0/51.0));
+  ASSERT_THAT(knot_vector.GetKnot(5).get(), DoubleEq(1.0));
+  ASSERT_THAT(knot_vector.GetKnot(1).get(), DoubleEq(0.0));
+}
+
+TEST_F(AKnotVector, CanBeAveragedLen2) { // NOLINT
+  std::vector<ParamCoord> coords = {ParamCoord(0.0), ParamCoord(10.0/17.0), ParamCoord(18.0/17.0),
+                                    ParamCoord(28.0/17.0), ParamCoord(2.0)};
+  Degree degreeTest(3);
+  int nbControlPoints = 5;
+  baf::KnotVector knot_vector = baf::KnotVector(coords, degreeTest, nbControlPoints);
+  ASSERT_THAT(knot_vector.GetKnot(4).get(), DoubleEq(56.0/51.0));
+  ASSERT_THAT(knot_vector.GetKnot(5).get(), DoubleEq(2.0));
+  ASSERT_THAT(knot_vector.GetKnot(1).get(), DoubleEq(0.0));
+}
