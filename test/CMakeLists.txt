@@ -49,7 +49,7 @@ set(TEST_SOURCES
         iga/element_integral_calculator_test.cc
         iga/linear_equation_assembler_test.cc
         iga/elm/element_generator_test.cc
-        iga/test_solution_spline.cc
+        iga/solution_vtk_writer_test.cc 
         iga/matlab_test_data_2.h)
 
 find_package(GMock REQUIRED)

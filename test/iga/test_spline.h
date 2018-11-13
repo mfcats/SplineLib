@@ -22,6 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "linear_equation_assembler.h"
 #include "nurbs.h"
 #include "two_point_gauss_legendre.h"
+#include "three_point_gauss_legendre.h"
 
 using testing::Test;
 
@@ -113,6 +114,67 @@ class AnIGATestSpline : public Test {
   std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
   iga::BasisFunctionHandler basis_function_handler = iga::BasisFunctionHandler(nurbs_);
+};
+
+class AnIGATestSpline2 : public Test {
+ public:
+  std::array<baf::KnotVector, 2> knot_vector =
+      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.33}, ParamCoord{0.66},
+                        ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
+       baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.33}, ParamCoord{0.66},
+                        ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
+
+  std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
+
+  std::vector<double> weights = {1, 1, 1, 1, 1,
+                                 1, 1, 1, 1, 1,
+                                 1, 1, 1, 1, 1,
+                                 1, 1, 1, 1, 1,
+                                 1, 1, 1, 1, 1};
+
+  std::vector<baf::ControlPoint> control_points = {
+      baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({0.5, 0.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 0.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.5, 0.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 0.0, 0.0})),
+
+      baf::ControlPoint(std::vector<double>({0.0, 0.25, 0.0})),
+      baf::ControlPoint(std::vector<double>({0.5, 0.25, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 0.25, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.5, 0.25, 0.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 0.25, 0.0})),
+
+      baf::ControlPoint(std::vector<double>({0.0, 0.5, 0.0})),
+      baf::ControlPoint(std::vector<double>({0.5, 0.5, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 0.5, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.5, 0.5, 0.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 0.5, 0.0})),
+
+      baf::ControlPoint(std::vector<double>({0.0, 0.75, 0.0})),
+      baf::ControlPoint(std::vector<double>({0.5, 0.75, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 0.75, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.5, 0.75, 0.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 0.75, 0.0})),
+
+      baf::ControlPoint(std::vector<double>({0.0, 1.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({0.5, 1.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({1.5, 1.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 1.0, 0.0})),
+  };
+
+  std::array<std::shared_ptr<baf::KnotVector>, 2> kv_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0]),
+                                                            std::make_shared<baf::KnotVector>(knot_vector[1])};
+  std::shared_ptr<spl::NURBS<2>> nurbs_ = std::make_shared<spl::NURBS<2>>(kv_ptr, degree, control_points, weights);
+
+  iga::LinearEquationAssembler linear_equation_assembler = iga::LinearEquationAssembler(nurbs_);
+  iga::ElementIntegralCalculator elm_itg_calc = iga::ElementIntegralCalculator(nurbs_);
+  int n = nurbs_->GetNumberOfControlPoints();
+  std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::zeros);
+  iga::itg::IntegrationRule rule = iga::itg::ThreePointGaussLegendre();
 };
 
 #endif  // TEST_IGA_TEST_SPLINE_H_

@@ -12,22 +12,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <any>
+#ifndef SRC_IGA_SOLUTION_VTK_WRITER_H_
+#define SRC_IGA_SOLUTION_VTK_WRITER_H_
+
 #include <armadillo>
+#include <fstream>
+#include <string>
+#include <vector>
 
-#include "gmock/gmock.h"
-#include "iges_writer.h"
-#include "solution_spline.h"
-#include "test_spline.h"
+#include "nurbs.h"
+#include "vtk_writer.h"
 
-TEST_F(AnIGATestSpline, TestSolutionSpline) { // NOLINT
-  linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
-  linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
-  linear_equation_assembler.SetZeroBC(matA, vecB);
-  arma::dvec solution = arma::solve(*matA, *vecB);
-  iga::SolutionSpline sol_spl(nurbs_, solution);
-  std::any sol_spl_ = std::make_any<std::shared_ptr<spl::NURBS<2>>>(sol_spl.GetSolutionSpline());
-  io::IGESWriter iges_writer;
-  iges_writer.WriteFile({sol_spl_}, "solution_spline.iges");
-  remove("solution_spline.iges");
-}
+namespace iga {
+class SolutionVTKWriter {
+ public:
+    SolutionVTKWriter();
+
+    void WriteSolutionToVTK(const std::shared_ptr<spl::NURBS<2>> &spl, const arma::dvec &solution,
+                            const std::vector<std::vector<int>> &scattering, const std::string &filename);
+};
+}  // namespace iga
+
+#endif  // SRC_IGA_SOLUTION_VTK_WRITER_H_
