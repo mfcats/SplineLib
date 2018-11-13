@@ -53,3 +53,30 @@ void iga::LinearEquationAssembler::SetZeroBC(const std::shared_ptr<arma::dmat> &
     }
   }
 }
+
+void iga::LinearEquationAssembler::SetLinearBC(const std::shared_ptr<arma::dmat> &matA,
+                                               const std::shared_ptr<arma::dvec> &vecB) {
+  uint64_t l = 0;
+  uint64_t k = 0;
+  int n = spline_->GetPointsPerDirection()[0];
+  int m = spline_->GetPointsPerDirection()[1];
+  for (int j = 0; j < m; ++j) {
+    for (int i = 0; i < n; ++i) {
+      if (i == 0) {
+        (*vecB)(l) = 0;
+        (*matA).row(l).fill(0);
+        (*matA)(l, l) = 1;
+      } else if (i == n - 1) {
+        (*vecB)(l) = 1;
+        (*matA).row(l).fill(0);
+        (*matA)(l, l) = 1;
+      } else if ((j == 0) || (j == m - 1)) {
+        (*vecB)(l) = 0 + ((1.0 - 0.0) / (2.0 - 0.0)) * (spline_->GetControlPoints()[k] - 0.0);
+        (*matA).row(l).fill(0);
+        (*matA)(l, l) = 1;
+      }
+      l += 1;
+      k += 3;
+    }
+  }
+}

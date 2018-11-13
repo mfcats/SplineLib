@@ -36,6 +36,8 @@ class LinearEquationAssembler {
 
   void SetZeroBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB);
 
+  void SetLinearBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB);
+
  private:
   std::shared_ptr<spl::NURBS<2>> spline_;
   std::shared_ptr<iga::elm::ElementGenerator<2>> elm_gen_;
