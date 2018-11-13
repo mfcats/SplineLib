@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 #include "solution_vtk_writer.h"
 #include "test_spline.h"
-#include "four_point_gauss_legendre.h"
+//#include "four_point_gauss_legendre.h"
 
 TEST_F(AnIGATestSpline, TestSolutionVTKWriter) { // NOLINT
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
