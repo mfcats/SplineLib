@@ -58,19 +58,50 @@ class PhysicalSpace {
     return baf::ControlPoint(coordinates);
   }
 
-  int GetNumberOfControlPoints() {
+  virtual void SetControlPoint(std::array<int, DIM> indices, const baf::ControlPoint &control_point, int dimension) {
+    ++number_of_points_[dimension];
+    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
+    point_handler.SetIndices(indices);
+    int first = dimension_ * point_handler.Get1DIndex();
+    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
+      control_points_[first + coordinate] = control_point.GetValue(coordinate);
+    }
+    --number_of_points_[dimension];
+  }
+
+  void AddControlPoints(int number) {
+    for (int i = 0; i < number; ++i) {
+      for (int j = 0; j < dimension_; ++j) {
+        control_points_.emplace_back(0.0);
+      }
+    }
+  }
+
+  int GetNumberOfControlPoints() const {
     return static_cast<int>(control_points_.size()) / dimension_;
   }
 
-  std::array<int, DIM> GetNumberOfPointsInEachDirection() {
+  std::array<int, DIM> GetNumberOfPointsInEachDirection() const {
     return number_of_points_;
   }
 
-  int GetDimension() {
+  std::array<int, DIM> GetMaximumPointIndexInEachDirection() const {
+    std::array<int, DIM> maximum_index = number_of_points_;
+    for (auto &index : maximum_index) {
+      --index;
+    }
+    return maximum_index;
+  }
+
+  void IncrementNumberOfPoints(int dimension) {
+    ++number_of_points_[dimension];
+  }
+
+  int GetDimension() const {
     return dimension_;
   }
 
-  double GetExpansion() {
+  double GetExpansion() const {
     double expansion = 0;
     for (auto &cp : control_points_) {
       if (cp > expansion) expansion = cp;

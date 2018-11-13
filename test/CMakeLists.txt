@@ -45,6 +45,7 @@ set(TEST_SOURCES
         iga/basis_function_handler_test.cc
         iga/mapping_handler_test.cc
         spl/surface_generator_test.cc
+        spl/knot_insertion_test.cc
         iga/element_integral_calculator_test.cc
         iga/linear_equation_assembler_test.cc
         iga/elm/element_generator_test.cc
