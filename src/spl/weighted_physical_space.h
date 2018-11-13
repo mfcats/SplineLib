@@ -61,8 +61,10 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     --this->number_of_points_[dimension];
   }
 
-  void Addweight() {
-    weights_.emplace_back(0.0);
+  void AddWeights(int number) {
+    for (int i = 0; i < number; ++i) {
+      weights_.emplace_back(0.0);
+    }
   }
 
   std::vector<double> GetWeights() const override {

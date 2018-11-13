@@ -69,9 +69,11 @@ class PhysicalSpace {
     --number_of_points_[dimension];
   }
 
-  void AddControlPoint() {
-    for (int i = 0; i < dimension_; ++i) {
-      control_points_.emplace_back(0.0);
+  void AddControlPoints(int number) {
+    for (int i = 0; i < number; ++i) {
+      for (int j = 0; j < dimension_; ++j) {
+        control_points_.emplace_back(0.0);
+      }
     }
   }
 
@@ -81,6 +83,14 @@ class PhysicalSpace {
 
   std::array<int, DIM> GetNumberOfPointsInEachDirection() const {
     return number_of_points_;
+  }
+
+  std::array<int, DIM> GetMaximumPointIndexInEachDirection() const {
+    std::array<int, DIM> maximum_index = number_of_points_;
+    for (auto &index : maximum_index) {
+      --index;
+    }
+    return maximum_index;
   }
 
   void IncrementNumberOfPoints(int dimension) {
