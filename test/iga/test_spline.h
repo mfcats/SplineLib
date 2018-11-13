@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "linear_equation_assembler.h"
 #include "nurbs.h"
 #include "two_point_gauss_legendre.h"
-#include "four_point_gauss_legendre.h"
+#include "three_point_gauss_legendre.h"
 
 using testing::Test;
 
@@ -119,114 +119,48 @@ class AnIGATestSpline : public Test {
 class AnIGATestSpline2 : public Test {
  public:
   std::array<baf::KnotVector, 2> knot_vector =
-      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.15}, ParamCoord{0.3},
-                        ParamCoord{0.45}, ParamCoord{0.55}, ParamCoord{0.7}, ParamCoord{0.85}, ParamCoord{1},
-                        ParamCoord{1}, ParamCoord{1}}),
-       baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.15}, ParamCoord{0.3},
-                        ParamCoord{0.45}, ParamCoord{0.55}, ParamCoord{0.7}, ParamCoord{0.85}, ParamCoord{1},
-                        ParamCoord{1}, ParamCoord{1}})};
+      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.33}, ParamCoord{0.66},
+                        ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
+       baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.33}, ParamCoord{0.66},
+                        ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
 
   std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
 
-  std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                 1, 1, 1, 1, 1, 1, 1, 1, 1};
+  std::vector<double> weights = {1, 1, 1, 1, 1,
+                                 1, 1, 1, 1, 1,
+                                 1, 1, 1, 1, 1,
+                                 1, 1, 1, 1, 1,
+                                 1, 1, 1, 1, 1};
 
   std::vector<baf::ControlPoint> control_points = {
       baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.25, 0.0, 0.0})),
       baf::ControlPoint(std::vector<double>({0.5, 0.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.75, 0.0, 0.0})),
       baf::ControlPoint(std::vector<double>({1.0, 0.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.25, 0.0, 0.0})),
       baf::ControlPoint(std::vector<double>({1.5, 0.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.75, 0.0, 0.0})),
       baf::ControlPoint(std::vector<double>({2.0, 0.0, 0.0})),
 
-      baf::ControlPoint(std::vector<double>({0.0, 0.125, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.25, 0.125, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.5, 0.125, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.75, 0.125, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.0, 0.125, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.25, 0.125, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.5, 0.125, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.75, 0.125, 0.0})),
-      baf::ControlPoint(std::vector<double>({2.0, 0.125, 0.0})),
-
       baf::ControlPoint(std::vector<double>({0.0, 0.25, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.25, 0.25, 0.0})),
       baf::ControlPoint(std::vector<double>({0.5, 0.25, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.75, 0.25, 0.0})),
       baf::ControlPoint(std::vector<double>({1.0, 0.25, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.25, 0.25, 0.0})),
       baf::ControlPoint(std::vector<double>({1.5, 0.25, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.75, 0.25, 0.0})),
       baf::ControlPoint(std::vector<double>({2.0, 0.25, 0.0})),
 
-      baf::ControlPoint(std::vector<double>({0.0, 0.375, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.25, 0.375, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.5, 0.375, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.75, 0.375, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.0, 0.375, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.25, 0.375, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.5, 0.375, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.75, 0.375, 0.0})),
-      baf::ControlPoint(std::vector<double>({2.0, 0.375, 0.0})),
-
       baf::ControlPoint(std::vector<double>({0.0, 0.5, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.25, 0.5, 0.0})),
       baf::ControlPoint(std::vector<double>({0.5, 0.5, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.75, 0.5, 0.0})),
       baf::ControlPoint(std::vector<double>({1.0, 0.5, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.25, 0.5, 0.0})),
       baf::ControlPoint(std::vector<double>({1.5, 0.5, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.75, 0.5, 0.0})),
       baf::ControlPoint(std::vector<double>({2.0, 0.5, 0.0})),
 
-      baf::ControlPoint(std::vector<double>({0.0, 0.625, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.25, 0.625, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.5, 0.625, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.75, 0.625, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.0, 0.625, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.25, 0.625, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.5, 0.625, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.75, 0.625, 0.0})),
-      baf::ControlPoint(std::vector<double>({2.0, 0.625, 0.0})),
-
       baf::ControlPoint(std::vector<double>({0.0, 0.75, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.25, 0.75, 0.0})),
       baf::ControlPoint(std::vector<double>({0.5, 0.75, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.75, 0.75, 0.0})),
       baf::ControlPoint(std::vector<double>({1.0, 0.75, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.25, 0.75, 0.0})),
       baf::ControlPoint(std::vector<double>({1.5, 0.75, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.75, 0.75, 0.0})),
       baf::ControlPoint(std::vector<double>({2.0, 0.75, 0.0})),
 
-      baf::ControlPoint(std::vector<double>({0.0, 0.875, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.25, 0.875, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.5, 0.875, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.75, 0.875, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.0, 0.875, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.25, 0.875, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.5, 0.875, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.75, 0.875, 0.0})),
-      baf::ControlPoint(std::vector<double>({2.0, 0.875, 0.0})),
-
       baf::ControlPoint(std::vector<double>({0.0, 1.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.25, 1.0, 0.0})),
       baf::ControlPoint(std::vector<double>({0.5, 1.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.75, 1.0, 0.0})),
       baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.25, 1.0, 0.0})),
       baf::ControlPoint(std::vector<double>({1.5, 1.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({1.75, 1.0, 0.0})),
       baf::ControlPoint(std::vector<double>({2.0, 1.0, 0.0})),
   };
 
@@ -240,7 +174,7 @@ class AnIGATestSpline2 : public Test {
   std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::zeros);
-  iga::itg::IntegrationRule rule = iga::itg::FourPointGaussLegendre();
+  iga::itg::IntegrationRule rule = iga::itg::ThreePointGaussLegendre();
 };
 
 #endif  // TEST_IGA_TEST_SPLINE_H_
