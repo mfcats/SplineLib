@@ -12,20 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <armadillo>
-#include <array>
+#ifndef TEST_IO_CONFIG_IGES_IN_H_  // NOLINT
+#define TEST_IO_CONFIG_IGES_IN_H_
 
-#include "gmock/gmock.h"
-#include "matlab_test_data.h"
-#include "test_spline.h"
+#include <string>
 
-using testing::DoubleNear;
+static const char *iges_read = "@IGES_READ@";
+static const char *iges_read_2 = "@IGES_READ_2@";
 
-TEST_F(AnIGATestSpline, TestElementIntegralCalculator) { // NOLINT
-  elm_itg_calc.GetLaplaceElementIntegral(0, rule, matA);
-  for (uint64_t i = 0; i < matlab_element_one_integral.size(); ++i) {
-    for (uint64_t j = 0; j < matlab_element_one_integral[0].size(); ++j) {
-      ASSERT_THAT((*matA)(i, j), DoubleNear(matlab_element_one_integral[i][j], 0.00005));
-    }
-  }
-}
+#endif  // TEST_IO_CONFIG_IGES_IN_H_

@@ -3,17 +3,17 @@ sudo: required
 dist: trusty
 
 services:
-  - docker
+- docker
 
 stages:
-  - UnitTests
-  - Lint
-  - AcceptanceTests
-  - Install
+- UnitTests
+- Lint
+- AcceptanceTests
+- Install
 
 jobs:
   include:
-
+  
     - stage: UnitTests
       name: GCC 7 - Release
       install: docker build -t splinelibtests:gcc7 -f scripts/docker/Dockerfile.test.gcc7.release .
@@ -85,4 +85,3 @@ jobs:
       name: Ex1
       install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
       script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
-

@@ -1,4 +1,4 @@
-FROM mfcats/splinelib:spack
+FROM christophsusen/spack
 
 # Add current directory as working directory to docker
 ADD . /code

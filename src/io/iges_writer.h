@@ -195,9 +195,9 @@ class IGESWriter {
   std::vector<double> Get3DControlPoints(std::vector<double> control_points, int dim) {
     if (dim != 3) {
       std::vector<double> control_points_3d;
-      for (int i = 0; i < control_points.size(); ++i) {
+      for (uint64_t i = 0; i < control_points.size(); ++i) {
         control_points_3d.emplace_back(control_points[i]);
-        if (i % dim == dim - 1) {
+        if (static_cast<int>(i % dim) == dim - 1) {
           for (int j = 0; j < 3 - dim; ++j) {
             control_points_3d.emplace_back(0);
           }

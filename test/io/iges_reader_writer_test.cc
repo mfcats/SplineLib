@@ -12,7 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <config.h>
+#include <config_iges.h>
 #include "gmock/gmock.h"
 #include "iges_reader.h"
 #include "iges_writer.h"

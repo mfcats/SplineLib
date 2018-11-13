@@ -12,20 +12,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <any>
 #include <armadillo>
-#include <array>
 
 #include "gmock/gmock.h"
-#include "matlab_test_data.h"
+#include "iges_writer.h"
+#include "solution_spline.h"
 #include "test_spline.h"
 
-using testing::DoubleNear;
-
-TEST_F(AnIGATestSpline, TestElementIntegralCalculator) { // NOLINT
-  elm_itg_calc.GetLaplaceElementIntegral(0, rule, matA);
-  for (uint64_t i = 0; i < matlab_element_one_integral.size(); ++i) {
-    for (uint64_t j = 0; j < matlab_element_one_integral[0].size(); ++j) {
-      ASSERT_THAT((*matA)(i, j), DoubleNear(matlab_element_one_integral[i][j], 0.00005));
-    }
-  }
+TEST_F(AnIGATestSpline, TestSolutionSpline) { // NOLINT
+  linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
+  linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
+  linear_equation_assembler.SetZeroBC(matA, vecB);
+  arma::dvec solution = arma::solve(*matA, *vecB);
+  iga::SolutionSpline sol_spl(nurbs_, solution);
+  std::any sol_spl_ = std::make_any<std::shared_ptr<spl::NURBS<2>>>(sol_spl.GetSolutionSpline());
+  io::IGESWriter iges_writer;
+  iges_writer.WriteFile({sol_spl_}, "solution_spline.iges");
+  remove("solution_spline.iges");
 }

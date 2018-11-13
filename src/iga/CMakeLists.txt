@@ -13,12 +13,21 @@
 # <http://www.gnu.org/licenses/>.
 #
 
+set(SOURCES
+        basis_function_handler.cc
+        connectivity_handler.cc
+        mapping_handler.cc
+        element_integral_calculator.cc
+        linear_equation_assembler.cc
+        solution_spline.cc)
+
 add_subdirectory(itg)
 add_subdirectory(elm)
 
-add_library(splinelibiga INTERFACE)
-target_include_directories(splinelibiga INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibiga INTERFACE splinelibspl splinelibigaitg splinelibigaelm)
+find_package(Armadillo REQUIRED)
+add_library(splinelibiga SHARED ${SOURCES})
+target_include_directories(splinelibiga PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> ${ARMADILLO_INCLUDE_DIRS})
+target_link_libraries(splinelibiga PUBLIC splinelibspl splinelibigaitg splinelibigaelm ${ARMADILLO_LIBRARIES})
 
 install(
         TARGETS splinelibiga
@@ -34,6 +43,7 @@ install(FILES
         mapping_handler.h
         basis_function_handler.h
         connectivity_handler.h
-        matrix_utils.h
+        element_integral_calculator.h
+        linear_equation_assembler.h
+        solution_spline.h
         DESTINATION "${include_install_dir}")
-
