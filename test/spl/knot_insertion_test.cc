@@ -353,7 +353,7 @@ class BSpline3DEx : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<3>> bspline_3d_after_;
 };
 
-TEST_F(BSpline3DEx, InsertsKnot0_4InFirstAndKnot0_7InSecondDirectionCorrectly) {  // NOLINT
+TEST_F(BSpline3DEx, InsertsKnot0_4InFirst_Knot0_99InSecond_Knot0_01InThirdDirectionCorrectly) {  // NOLINT
   bspline_3d_after_->InsertKnot(ParamCoord(0.4), 0);
   bspline_3d_after_->InsertKnot(ParamCoord(0.99), 1);
   bspline_3d_after_->InsertKnot(ParamCoord(0.01), 2);
@@ -421,7 +421,7 @@ class NURBS3DEx : public Test {  // NOLINT
         baf::ControlPoint(std::vector<double>({2.0, 1.0, 2.0}))
     };
     std::vector<double>
-        weights = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+        weights = {0.3, 0.5, 0.8, 1.0, 0.9, 1.1, 2.0, 1.5, 1.4, 1.9, 2.2, 2.1, 3.0, 3.1, 4.0, 2.9, 3.8, 4.2};
     nurbs_3d_before_ = std::make_shared<spl::NURBS<3>>(knot_vector_before, degree, control_points, weights);
     nurbs_3d_after_ = std::make_shared<spl::NURBS<3>>(knot_vector_after, degree, control_points, weights);
   }
@@ -431,7 +431,7 @@ class NURBS3DEx : public Test {  // NOLINT
   std::shared_ptr<spl::NURBS<3>> nurbs_3d_after_;
 };
 
-TEST_F(NURBS3DEx, InsertsKnot0_4InFirstAndKnot0_7InSecondDirectionCorrectly) {  // NOLINT
+TEST_F(NURBS3DEx, InsertsKnot0_4InFirst_Knot0_99InSecond_Knot0_01InThirdDirectionCorrectly) {  // NOLINT
   nurbs_3d_after_->InsertKnot(ParamCoord(0.4), 0);
   nurbs_3d_after_->InsertKnot(ParamCoord(0.99), 1);
   nurbs_3d_after_->InsertKnot(ParamCoord(0.01), 2);
@@ -448,7 +448,7 @@ TEST_F(NURBS3DEx, InsertsKnot0_4InFirstAndKnot0_7InSecondDirectionCorrectly) {  
   ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[0], nurbs_3d_before_->GetPointsPerDirection()[0] + 1);
   ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[1], nurbs_3d_before_->GetPointsPerDirection()[1] + 1);
   ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[2], nurbs_3d_before_->GetPointsPerDirection()[2] + 1);
-  double s = 20;
+  double s = 15;
   for (int i = 0; i <= s; ++i) {
     for (int j = 0; j <= s; ++j) {
       for (int k = 0; k <= s; ++k) {
@@ -458,9 +458,4 @@ TEST_F(NURBS3DEx, InsertsKnot0_4InFirstAndKnot0_7InSecondDirectionCorrectly) {  
       }
     }
   }
-  io::IRITWriter irit_writer;
-  std::any spline_before = std::make_any<std::shared_ptr<spl::NURBS<3>>>(nurbs_3d_before_);
-  irit_writer.WriteFile({spline_before}, "before.irit");
-  std::any spline_after = std::make_any<std::shared_ptr<spl::NURBS<3>>>(nurbs_3d_after_);
-  irit_writer.WriteFile({spline_after}, "after.irit");
 }

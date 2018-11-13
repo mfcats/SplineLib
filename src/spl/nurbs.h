@@ -221,11 +221,12 @@ class NURBS : public Spline<DIM> {
       std::vector<double> coordinates;
       std::array<int, DIM> indices1 = indices;
       --indices1[dimension];
-      baf::ControlPoint cp0 = physical_space_->GetControlPoint(indices);
-      baf::ControlPoint cp1 = physical_space_->GetControlPoint(indices1);
+      baf::ControlPoint cp0 = physical_space_->GetHomogenousControlPoint(indices);
+      baf::ControlPoint cp1 = physical_space_->GetHomogenousControlPoint(indices1);
+      double new_weight = GetNewWeight(indices, dimension, scaling, current_point, first, last);
       for (int j = 0; j < cp0.GetDimension(); ++j) {
-        coordinates.push_back(scaling[current_point - first] * cp0.GetValue(j)
-                                  + (1 - scaling[current_point - first]) * cp1.GetValue(j));
+        coordinates.push_back((scaling[current_point - first] * cp0.GetValue(j)
+            + (1 - scaling[current_point - first]) * cp1.GetValue(j)) / new_weight);
       }
       return baf::ControlPoint(coordinates);
     } else {
@@ -236,6 +237,7 @@ class NURBS : public Spline<DIM> {
   double GetNewWeight(std::array<int, DIM> indices, int dimension, std::vector<double> scaling,
                       int current_point, int first, int last) {
     if (current_point > last) {
+      --indices[dimension];
       return physical_space_->GetWeight(indices);
     } else if (current_point >= first) {
       std::array<int, DIM> indices1 = indices;
