@@ -71,6 +71,11 @@ class ASurface : public Test {
 
       spl::SurfaceGenerator surfaceGenerator = spl::SurfaceGenerator(nurbs1, nurbs2);
       nurbsJoined = std::make_unique<spl::NURBS<2>>(surfaceGenerator);
+      std::vector<std::array<double, 3>> scaling = {{1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0},
+          {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5},
+          {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}};
+      spl::SurfaceGenerator surfaceGeneratorScaled = spl::SurfaceGenerator(nurbs1, nurbs2, 10, scaling);
+      nurbsJoinedScaled = std::make_unique<spl::NURBS<2>>(surfaceGeneratorScaled);
   }
 
  protected:
@@ -89,6 +94,7 @@ class ASurface : public Test {
   std::shared_ptr<spl::NURBS<1>> nurbs1;
   std::shared_ptr<spl::NURBS<1>> nurbs2;
   std::unique_ptr<spl::NURBS<2>> nurbsJoined;
+  std::unique_ptr<spl::NURBS<2>> nurbsJoinedScaled;
 };
 
 TEST_F(ASurface, ReturnsCorrectDimension) { // NOLINT
@@ -116,10 +122,19 @@ TEST_F(ASurface, ReturnCorrectControlPoints) { // NOLINT
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({0, 3}), 2), DoubleEq(1));
 }
 
-TEST_F(ASurface, ContsructorWithScaling) { // NOLINT
-  std::vector<double> scaling = {1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 1.0, 1.0};
-  spl::SurfaceGenerator surfaceGeneratorScaled = spl::SurfaceGenerator(nurbs1, nurbs2, 10, scaling);
-  std::unique_ptr<spl::NURBS<2>> nurbsJoinedScaled = std::make_unique<spl::NURBS<2>>(surfaceGeneratorScaled);
+TEST_F(ASurface, ReturnsCorrectDiemnsionScaled) { // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetDimension(), 3);
+}
+
+TEST_F(ASurface, ReturnsCorrectNumberOfKnotsFirstDimension) { // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(0)->GetNumberOfKnots(), 12);
+}
+
+TEST_F(ASurface, ReturnsCorrectNumberOfControlPoints) { // NOLINT
+  ASSERT_THAT(nurbsJoinedScaled->GetNumberOfControlPoints(), 90);
+}
+
+TEST_F(ASurface, RetursCorrectControlPoint) {
+  ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({1, 4}), 1), DoubleEq(-1));
+  ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({5, 4}), 1), DoubleEq(-0.5));
 }

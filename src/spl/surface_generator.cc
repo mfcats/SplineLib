@@ -13,6 +13,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "surface_generator.h"
+#include <iostream>
 
 spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
                                         std::shared_ptr<spl::NURBS<1>> const &nurbs_C) {
@@ -50,8 +51,7 @@ std::shared_ptr<spl::WeightedPhysicalSpace<2>> spl::SurfaceGenerator::JoinPhysic
 
 spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
                                         std::shared_ptr<spl::NURBS<1>> const &nurbs_C,
-                                        int nbInter, std::vector<double> scaling) {
-  // ToDo: stepsize, weighting function
+                                        int nbInter, std::vector<std::array<double, 3>> scaling) {
   double step_size = nurbs_T->GetKnotVectorRange(0)/(nbInter-1);
   std::vector<ParamCoord> v_i;
   std::vector<double> dT_v;
@@ -61,24 +61,17 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
   const std::vector<int> dimensions = {0, 1, 2};
   std::array<int, 1> first_derivative = {1};
   std::array<int, 1> second_derivative = {2};
-
-  std::array<double, 3> b_v = {0.0, 1.0, 0.0};
+  std::array<double, 3> b_v = {0.0, 0.0, 1.0};
   std::array<double, 3> prev_b_v;
   std::array<double, 3> x_v;
   std::array<double, 3> y_v;
   std::array<double, 3> z_v;
   std::array<double, 3> o_v;
-
-  double norm_cross;
   double norm_dT_v;
   double weight_v;
-
-  int n = nurbs_T->GetNumberOfControlPoints();
   int m = nurbs_C->GetNumberOfControlPoints();
-  std::vector<baf::ControlPoint> j_control_points;
-  std::vector<double> j_weights;
-  j_control_points.reserve(m * n);
-  j_weights.reserve(m * n);
+  std::vector<baf::ControlPoint> j_control_points(nbInter * m, baf::ControlPoint({0.0, 0.0, 0.0}));
+  std::vector<double> j_weights(nbInter * m, 0.0);
 
   v_i.reserve(nbInter);
 
@@ -94,6 +87,7 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
     norm_dT_v = 0.0;
     for (int j = 0; j < 3; ++j) {
       norm_dT_v += std::pow(dT_v[j], 2);
+      o_v[j] = t_v[j];
     }
     norm_dT_v = std::sqrt(norm_dT_v);
     for (int j = 0; j < 3; ++j) {
@@ -102,12 +96,12 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
     }
     y_v = CrossProduct(z_v, x_v);
     for (int j = 0; j < m; ++j) {
+      int indexControlPoint = j * nbInter + i;
       baf::ControlPoint control_point_j = nurbs_C->GetControlPoint(std::array<int, 1>({j}));
-      j_control_points.emplace_back(control_point_j.Transform(x_v, y_v, z_v, o_v));
-      j_weights.emplace_back(nurbs_C->GetWeight(std::array<int, 1>({j})) * weight_v);
+      j_control_points[indexControlPoint] = control_point_j.Transform(x_v, y_v, z_v, o_v, scaling[i]);
+      j_weights[indexControlPoint] = nurbs_C->GetWeight(std::array<int, 1>({j})) * weight_v;
     }
   }
-
   baf::KnotVector knot_vector_t(v_i, nurbs_T->GetDegree(0), nbInter);
   std::shared_ptr<baf::KnotVector> knot_vector_t_ptr = std::make_shared<baf::KnotVector>(knot_vector_t);
   std::array<std::shared_ptr<baf::KnotVector>, 2> joined_knot_vector =
