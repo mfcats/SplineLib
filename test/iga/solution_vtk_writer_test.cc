@@ -31,7 +31,7 @@ TEST_F(AnIGATestSpline, TestSolutionVTKWriter) { // NOLINT
 
 /*TEST_F(AnIGATestSpline, TestSolutionVTKWriterRefined) { // NOLINT
   std::shared_ptr<spl::NURBS<2>> nurbs_refined = nurbs_;
-  std::vector<double> knots_to_add =   {0.48, 0.49, 0.51, 0.52};
+  std::vector<double> knots_to_add = {0.48, 0.49, 0.51, 0.52};
   for (auto &knot : knots_to_add) {
     nurbs_refined->InsertKnot(ParamCoord(knot), 0);
     nurbs_refined->InsertKnot(ParamCoord(knot), 1);

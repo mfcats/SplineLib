@@ -458,4 +458,5 @@ TEST_F(NURBS3DEx, InsertsKnot0_4InFirst_Knot0_99InSecond_Knot0_01InThirdDirectio
       }
     }
   }
+  ASSERT_THAT(nurbs_3d_after_->GetNumberOfControlPoints(), nurbs_3d_after_->GetWeights().size());
 }
