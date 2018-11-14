@@ -12,20 +12,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#ifndef SRC_IGA_SOLUTION_VTK_WRITER_H_
+#define SRC_IGA_SOLUTION_VTK_WRITER_H_
+
 #include <armadillo>
-#include <array>
+#include <fstream>
+#include <string>
+#include <vector>
 
-#include "gmock/gmock.h"
-#include "matlab_test_data.h"
-#include "test_spline.h"
+#include "nurbs.h"
+#include "vtk_writer.h"
 
-using testing::DoubleNear;
+namespace iga {
+class SolutionVTKWriter {
+ public:
+    SolutionVTKWriter();
 
-TEST_F(AnIGATestSpline, TestElementIntegralCalculator) { // NOLINT
-  elm_itg_calc.GetLaplaceElementIntegral(0, rule, matA);
-  for (uint64_t i = 0; i < matlab_element_one_integral.size(); ++i) {
-    for (uint64_t j = 0; j < matlab_element_one_integral[0].size(); ++j) {
-      ASSERT_THAT((*matA)(i, j), DoubleNear(matlab_element_one_integral[i][j], 0.00005));
-    }
-  }
-}
+    void WriteSolutionToVTK(const std::shared_ptr<spl::NURBS<2>> &spl, const arma::dvec &solution,
+                            const std::vector<std::vector<int>> &scattering, const std::string &filename);
+};
+}  // namespace iga
+
+#endif  // SRC_IGA_SOLUTION_VTK_WRITER_H_

@@ -12,28 +12,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "gmock/gmock.h"
+#ifndef SRC_IGA_SOLUTION_SPLINE_H_
+#define SRC_IGA_SOLUTION_SPLINE_H_
 
-#include "matrix.h"
+#include <armadillo>
 
-using testing::Test;
-using testing::DoubleEq;
+#include "nurbs.h"
 
-class AMatrix : public Test {
+namespace iga {
+class SolutionSpline {
  public:
-  AMatrix() = default;
-};
+    SolutionSpline(const std::shared_ptr<spl::NURBS<2>> &spl, const arma::dvec &solution);
 
-TEST_F(AMatrix, TestMatrix) { // NOLINT
-  iga::Matrix matA(2, 2);
-  matA.WriteToMatrix(1, 1, 2.5);
-  ASSERT_THAT(matA.GetMatrixEntry(1, 1), DoubleEq(2.5));
-  ASSERT_THAT(matA.GetMatrixEntry(0, 0), DoubleEq(0));
-  ASSERT_THAT(matA.GetMatrixEntry(0, 1), DoubleEq(0));
-  ASSERT_THAT(matA.GetMatrixEntry(1, 0), DoubleEq(0));
-  matA.AddToMatrixEntry(0, 1, 1.5);
-  ASSERT_THAT(matA.GetMatrixEntry(1, 1), DoubleEq(2.5));
-  ASSERT_THAT(matA.GetMatrixEntry(0, 0), DoubleEq(0));
-  ASSERT_THAT(matA.GetMatrixEntry(0, 1), DoubleEq(1.5));
-  ASSERT_THAT(matA.GetMatrixEntry(1, 0), DoubleEq(0));
-}
+    std::shared_ptr<spl::NURBS<2>> GetSolutionSpline();
+
+ private:
+  std::shared_ptr<spl::NURBS<2>> solution_spl_;
+};
+}  // namespace iga
+
+#endif  // SRC_IGA_SOLUTION_SPLINE_H_

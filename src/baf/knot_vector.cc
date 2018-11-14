@@ -101,6 +101,10 @@ KnotSpan baf::KnotVector::GetKnotSpan(ParamCoord param_coord) const {
   return KnotSpan{static_cast<int>(std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1)};
 }
 
+size_t baf::KnotVector::GetNumberOfKnots() const {
+  return knots_.size();
+}
+
 baf::KnotVector::ConstKnotIterator baf::KnotVector::begin() const {
   return knots_.begin();
 }
@@ -125,6 +129,7 @@ bool baf::KnotVector::IsLastKnot(const ParamCoord &param_coord) const {
   return util::NumericSettings<double>::AreEqual(param_coord.get(), knots_.back().get());
 }
 
-size_t baf::KnotVector::GetNumberOfKnots() const {
-  return knots_.size();
+void baf::KnotVector::InsertKnot(const ParamCoord &param_coord) {
+  KnotSpan knot_span = GetKnotSpan(param_coord);
+  knots_.insert(knots_.begin() + knot_span.get() + 1, param_coord);
 }
