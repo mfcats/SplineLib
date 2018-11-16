@@ -12,12 +12,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <nurbs.h>
-#include <vtk_writer.h>
-#include <irit_writer.h>
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
+#include "nurbs.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -117,6 +115,7 @@ TEST_F(NURBSEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
               nurbs_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(2.0));
   ASSERT_THAT(nurbs_1d_after_->GetNumberOfControlPoints(), nurbs_1d_before_->GetNumberOfControlPoints() + 1);
+  ASSERT_THAT(nurbs_1d_after_->GetWeights().size(), nurbs_1d_after_->GetNumberOfControlPoints());
   std::vector<baf::ControlPoint> new_control_points = {
       baf::ControlPoint(std::vector<double>({0.0, 1.0})),
       baf::ControlPoint(std::vector<double>({1.0, 2.0})),
@@ -445,6 +444,7 @@ TEST_F(NURBS3DEx, InsertsKnot0_4InFirst_Knot0_99InSecond_Knot0_01InThirdDirectio
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(1)->GetKnot(2).get(), DoubleEq(0.99));
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetKnot(3).get(), DoubleEq(0.01));
   ASSERT_THAT(nurbs_3d_after_->GetNumberOfControlPoints(), nurbs_3d_before_->GetNumberOfControlPoints() + 30);
+  ASSERT_THAT(nurbs_3d_after_->GetWeights().size(), nurbs_3d_after_->GetNumberOfControlPoints());
   ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[0], nurbs_3d_before_->GetPointsPerDirection()[0] + 1);
   ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[1], nurbs_3d_before_->GetPointsPerDirection()[1] + 1);
   ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[2], nurbs_3d_before_->GetPointsPerDirection()[2] + 1);

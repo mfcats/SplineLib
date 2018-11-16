@@ -87,8 +87,9 @@ class NURBS : public Spline<DIM> {
     std::array<int, DIM> maximum_point_index = physical_space_->GetMaximumPointIndexInEachDirection();
     ++maximum_point_index[dimension];
     point_handler.SetIndices(maximum_point_index);
-    physical_space_->AddControlPoints(physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension]);
-    physical_space_->AddWeights(physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension]);
+    int new_points = physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension];
+    physical_space_->AddControlPoints(new_points);
+    physical_space_->AddWeights(new_points);
     for (int i = point_handler.Get1DLength() - 1; i >= 0; --i, --point_handler) {
       auto current_point = point_handler.GetIndices()[dimension];
       std::array<int, DIM> indices = point_handler.GetIndices();

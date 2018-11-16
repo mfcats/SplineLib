@@ -138,6 +138,12 @@ class Spline {
     parameter_space_->InsertKnot(knot, dimension);
   }
 
+  void RefineKnots(std::vector<ParamCoord> new_knots, int dimension) {
+    for (const auto &knot : new_knots) {
+      this->InsertKnot(knot, dimension);
+    }
+  }
+
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
 
  protected:
