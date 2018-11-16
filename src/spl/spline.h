@@ -144,6 +144,40 @@ class Spline {
     }
   }
 
+  std::array<std::shared_ptr<spl::Spline<DIM>>, 2> SudivideSpline(ParamCoord param_coord, int dimension) {
+    for (int i = 0; i <= parameter_space_->GetDegree(dimension); ++i) {
+      this->InsertKnot(param_coord, dimension);
+    }
+    auto knot_span = parameter_space_->GetKnotVector(dimension)->GetKnotSpan(param_coord);
+    auto knots = parameter_space_->GetKnots();
+    std::vector<ParamCoord> knots1, knots2;
+    for (int i = 0; i <= knot_span; ++i) {
+      knots1.emplace_back(knots[i]);
+    }
+    for (int i = knot_span - parameter_space_->GetDegree(dimension); i < knots.size(); ++i) {
+      knots2.emplace_back(knots[i]);
+    }
+    std::shared_ptr<baf::KnotVector> knot_vector1 = std::make_shared<baf::KnotVector>(baf::KnotVector(knots1));
+    std::shared_ptr<baf::KnotVector> knot_vector2 = std::make_shared<baf::KnotVector>(baf::KnotVector(knots2));
+    std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors_1;
+    std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors_2;
+    for (int i = 0; i < DIM; ++i) {
+      knot_vectors_1[i] = parameter_space_->GetKnotVector(i);
+      knot_vectors_2[i] = parameter_space_->GetKnotVector(i);
+    }
+    knot_vectors_1[dimension] = knot_vector1;
+    knot_vectors_2[dimension] = knot_vector2;
+    std::array<int, DIM> degrees;
+    for (int i = 0; i < DIM; ++i) {
+      degrees[i] = GetDegree(i);
+    }
+    spl::Spline<DIM> spline1 = spl::Spline(knot_vectors_1, degrees);
+    spl::Spline<DIM> spline2 = spl::Spline(knot_vectors_2, degrees);
+    std::shared_ptr<spl::Spline<DIM>> spline_ptr1 = std::make_shared<spl::Spline<DIM>>(spline1);
+    std::shared_ptr<spl::Spline<DIM>> spline_ptr2 = std::make_shared<spl::Spline<DIM>>(spline2);
+    return {spline_ptr1, spline_ptr2};
+  }
+
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
 
  protected:
