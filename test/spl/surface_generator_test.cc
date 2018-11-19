@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "numeric_settings.h"
+#include "vtk_writer.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -70,12 +71,12 @@ class ASurface : public Test {
       nurbs2 = std::make_shared<spl::NURBS<1>>(nurbs_generator2);
 
       spl::SurfaceGenerator surfaceGenerator = spl::SurfaceGenerator(nurbs1, nurbs2);
-      nurbsJoined = std::make_unique<spl::NURBS<2>>(surfaceGenerator);
+      nurbsJoined = std::make_shared<spl::NURBS<2>>(surfaceGenerator);
       std::vector<std::array<double, 3>> scaling = {{1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0},
-          {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5},
+          {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5},
           {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}};
-      spl::SurfaceGenerator surfaceGeneratorScaled = spl::SurfaceGenerator(nurbs1, nurbs2, 10, scaling);
-      nurbsJoinedScaled = std::make_unique<spl::NURBS<2>>(surfaceGeneratorScaled);
+      spl::SurfaceGenerator surfaceGeneratorScaled = spl::SurfaceGenerator(nurbs1, nurbs2, 11, scaling);
+      nurbsJoinedScaled = std::make_shared<spl::NURBS<2>>(surfaceGeneratorScaled);
   }
 
  protected:
@@ -93,8 +94,8 @@ class ASurface : public Test {
   std::shared_ptr<spl::WeightedPhysicalSpace<1>> w_physical_space2;
   std::shared_ptr<spl::NURBS<1>> nurbs1;
   std::shared_ptr<spl::NURBS<1>> nurbs2;
-  std::unique_ptr<spl::NURBS<2>> nurbsJoined;
-  std::unique_ptr<spl::NURBS<2>> nurbsJoinedScaled;
+  std::shared_ptr<spl::NURBS<2>> nurbsJoined;
+  std::shared_ptr<spl::NURBS<2>> nurbsJoinedScaled;
 };
 
 TEST_F(ASurface, ReturnsCorrectDimension) { // NOLINT
@@ -127,14 +128,125 @@ TEST_F(ASurface, ReturnsCorrectDiemnsionScaled) { // NOLINT
 }
 
 TEST_F(ASurface, ReturnsCorrectNumberOfKnotsFirstDimension) { // NOLINT
-  ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(0)->GetNumberOfKnots(), 12);
+  ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(0)->GetNumberOfKnots(), 13);
 }
 
 TEST_F(ASurface, ReturnsCorrectNumberOfControlPoints) { // NOLINT
-  ASSERT_THAT(nurbsJoinedScaled->GetNumberOfControlPoints(), 90);
+  ASSERT_THAT(nurbsJoinedScaled->GetNumberOfControlPoints(), 100);
 }
 
 TEST_F(ASurface, RetursCorrectControlPoint) {
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({1, 4}), 1), DoubleEq(-1));
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({5, 4}), 1), DoubleEq(-0.5));
 }
+
+TEST_F(ASurface, ReturnCorrectControlPoint_0Dim) {
+  ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({1, 4}), 0), DoubleEq(0.1));
+  ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({5, 4}), 0), DoubleEq(0.5));
+}
+
+TEST_F(ASurface, ReturnCorrectVTK ) { // NOLINT
+  std::vector<std::vector<int>> scattering_({{30, 30}});
+  std::unique_ptr<io::VTKWriter> vtk_writer_(std::make_unique<io::VTKWriter>());
+  std::vector<std::any> splines;
+  std::any nurbsJoinedScaled_any = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbsJoinedScaled);
+  splines = {nurbsJoinedScaled_any};
+  vtk_writer_->WriteFile(splines, "splines.vtk", scattering_);
+}
+
+class AComplexSurface : public Test {
+ public:
+  AComplexSurface() :
+      degree1_{Degree{2}},
+      degree2_{Degree{2}},
+      knot_vector1_{
+          std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                             ParamCoord{0.2}, ParamCoord{0.4}, ParamCoord{0.6},
+                                                             ParamCoord{0.8}, ParamCoord{1}, ParamCoord{1},
+                                                             ParamCoord{1}}))},
+      knot_vector2_{
+          std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                             ParamCoord{0.25}, ParamCoord{0.25},
+                                                             ParamCoord{0.5}, ParamCoord{0.5},
+                                                             ParamCoord{0.75}, ParamCoord{0.75},
+                                                             ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))},
+      parameter_space1(std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(knot_vector1_, degree1_))),
+      parameter_space2(std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(knot_vector2_, degree2_))) {
+    control_points1 = {
+        baf::ControlPoint(std::vector<double>({2.0, 0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 1.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 2.0}))
+    };
+    control_points2 = {
+        baf::ControlPoint(std::vector<double>({0.0, 0.1, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.1, 0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, -0.1, 0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, -0.1, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, -0.1, -0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, -0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.1, -0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.1, 0.0})),
+    };
+    weights1_ = {1, 0.5, 0.5, 0.5, 0.5, 0.5, 1};
+    weights2_ = {1, 0.70710, 1, 0.70710, 1, 0.70710, 1, 0.70710, 1};
+    w_physical_space1 = std::make_shared<spl::WeightedPhysicalSpace<1>>(spl::WeightedPhysicalSpace<1>(control_points1,
+                                                                                                      weights1_,
+                                                                                                      {7}));
+    w_physical_space2 = std::make_shared<spl::WeightedPhysicalSpace<1>>(spl::WeightedPhysicalSpace<1>(control_points2,
+                                                                                                      weights2_,
+                                                                                                      {9}));
+
+    spl::NURBSGenerator<1> nurbs_generator1(w_physical_space1, parameter_space1);
+    spl::NURBSGenerator<1> nurbs_generator2(w_physical_space2, parameter_space2);
+    nurbs1 = std::make_shared<spl::NURBS<1>>(nurbs_generator1);
+    nurbs2 = std::make_shared<spl::NURBS<1>>(nurbs_generator2);
+    int nbInter = 101;
+
+    /*
+    std::vector<std::array<double, 3>> scaling = {{1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0},
+                                                  {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0},
+                                                  {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}};
+                                                  */
+    std::vector<std::array<double, 3>> scaling(nbInter, {1.0, 1.0, 1.0});
+    spl::SurfaceGenerator surfaceGeneratorScaled = spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling);
+    nurbsJoinedScaled = std::make_shared<spl::NURBS<2>>(surfaceGeneratorScaled);
+  }
+
+ protected:
+  std::array<Degree, 1> degree1_;
+  std::array<Degree, 1> degree2_;
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector1_;
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector2_;
+  std::shared_ptr<spl::ParameterSpace<1>> parameter_space1;
+  std::shared_ptr<spl::ParameterSpace<1>> parameter_space2;
+  std::vector<baf::ControlPoint> control_points1;
+  std::vector<baf::ControlPoint> control_points2;
+  std::vector<double> weights1_;
+  std::vector<double> weights2_;
+  std::shared_ptr<spl::WeightedPhysicalSpace<1>> w_physical_space1;
+  std::shared_ptr<spl::WeightedPhysicalSpace<1>> w_physical_space2;
+  std::shared_ptr<spl::NURBS<1>> nurbs1;
+  std::shared_ptr<spl::NURBS<1>> nurbs2;
+  std::shared_ptr<spl::NURBS<2>> nurbsJoinedScaled;
+};
+
+TEST_F(AComplexSurface, ReturnsCorrectKnotVectorSize) { // NOLINT
+  ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(1)->GetNumberOfKnots(), 12);
+  ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(0)->GetNumberOfKnots(), 13);
+}
+
+TEST_F(AComplexSurface, ReturnCorrectVTK ) { // NOLINT
+  std::vector<std::vector<int>> scattering_({{50, 50}});
+  std::unique_ptr<io::VTKWriter> vtk_writer_(std::make_unique<io::VTKWriter>());
+  std::vector<std::any> splines;
+  std::any nurbsJoinedScaled_any = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbsJoinedScaled);
+  splines = {nurbsJoinedScaled_any};
+  remove("splines.vtk");
+  vtk_writer_->WriteFile(splines, "splines.vtk", scattering_);
+}
+

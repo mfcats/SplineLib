@@ -110,8 +110,7 @@ class NURBS : public Spline<DIM> {
     if (GetDimension() == dimension) {
       return this->parameter_space_->GetBasisFunctions(indices, param_coord)
           * physical_space_->GetHomogenousControlPoint(indices).GetValue(dimension);
-    }
-    else {
+    } else {
       return this->parameter_space_->GetBasisFunctions(indices, param_coord)
           * physical_space_->GetHomogenousControlPoint(indices).GetValue(dimension)
           / GetEvaluatedWeightSum(param_coord);

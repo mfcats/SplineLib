@@ -52,7 +52,7 @@ std::shared_ptr<spl::WeightedPhysicalSpace<2>> spl::SurfaceGenerator::JoinPhysic
 spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
                                         std::shared_ptr<spl::NURBS<1>> const &nurbs_C,
                                         int nbInter, std::vector<std::array<double, 3>> scaling) {
-  double step_size = nurbs_T->GetKnotVectorRange(0)/(nbInter-1);
+  double step_size = nurbs_T->GetKnotVectorRange(0) / (nbInter-1);
   std::vector<ParamCoord> v_i;
   std::vector<double> dT_v;
   std::vector<double> ddT_v;
@@ -61,44 +61,33 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
   const std::vector<int> dimensions = {0, 1, 2};
   std::array<int, 1> first_derivative = {1};
   std::array<int, 1> second_derivative = {2};
-  std::array<double, 3> b_v = {0.0, 0.0, 1.0};
-  std::array<double, 3> prev_b_v;
-  std::array<double, 3> x_v;
-  std::array<double, 3> y_v;
-  std::array<double, 3> z_v;
-  std::array<double, 3> o_v;
-  double norm_dT_v;
+  std::array<std::array<double, 4>, 4> transMatrix({std::array<double, 4>({0.0, 0.0, 0.0, 0.0}),
+                                                    std::array<double, 4>({0.0, 0.0, 0.0, 0.0}),
+                                                    std::array<double, 4>({0.0, 0.0, 1.0, 0.0}),
+                                                    std::array<double, 4>({0.0, 0.0, 0.0, 1.0})});
   double weight_v;
   int m = nurbs_C->GetNumberOfControlPoints();
   std::vector<baf::ControlPoint> j_control_points(nbInter * m, baf::ControlPoint({0.0, 0.0, 0.0}));
   std::vector<double> j_weights(nbInter * m, 0.0);
-
   v_i.reserve(nbInter);
-
   for (int i = 0; i < nbInter; ++i) {
-    v_i.emplace_back(ParamCoord{i * step_size});
+    std::cout << "Inter : " << i << std::endl;
+    if (i == 39) {
+      std::cout << "Hello " << std::endl;
+    }
+    v_i.push_back(ParamCoord{i * step_size});
     t_v = nurbs_T->Evaluate(std::array<ParamCoord, 1>({v_i[i]}), dimensions);
     weight_v = nurbs_T->Evaluate(std::array<ParamCoord, 1>({v_i[i]}), std::vector<int>({3}))[0];
     dT_v = nurbs_T->EvaluateDerivative(std::array<ParamCoord, 1>({v_i[i]}), dimensions, first_derivative);
+    //std::cout << "dT_v : " << dT_v[0] << "|" << dT_v[1] << "|" << dT_v[2] << "|" << std::endl;
     ddT_v = nurbs_T->EvaluateDerivative(std::array<ParamCoord, 1>({v_i[i]}), dimensions, second_derivative);
-
-    prev_b_v = b_v;
-    b_v = ComputeNormal(t_v, dT_v, ddT_v, prev_b_v);
-    norm_dT_v = 0.0;
-    for (int j = 0; j < 3; ++j) {
-      norm_dT_v += std::pow(dT_v[j], 2);
-      o_v[j] = t_v[j];
-    }
-    norm_dT_v = std::sqrt(norm_dT_v);
-    for (int j = 0; j < 3; ++j) {
-      x_v[j] = dT_v[j]/norm_dT_v;
-      z_v[j] = b_v[j];
-    }
-    y_v = CrossProduct(z_v, x_v);
+    //std::cout << "ddT_v : " << ddT_v[0] << "|" << ddT_v[1] << "|" << ddT_v[2] << "|" << std::endl;
+    transMatrix = GetTransformation(t_v, dT_v, ddT_v,
+        std::array<double, 3>({transMatrix[0][2], transMatrix[1][2], transMatrix[2][2]}));
     for (int j = 0; j < m; ++j) {
       int indexControlPoint = j * nbInter + i;
       baf::ControlPoint control_point_j = nurbs_C->GetControlPoint(std::array<int, 1>({j}));
-      j_control_points[indexControlPoint] = control_point_j.Transform(x_v, y_v, z_v, o_v, scaling[i]);
+      j_control_points[indexControlPoint] = control_point_j.Transform(transMatrix, scaling[i]);
       j_weights[indexControlPoint] = nurbs_C->GetWeight(std::array<int, 1>({j})) * weight_v;
     }
   }
@@ -107,21 +96,22 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
   std::array<std::shared_ptr<baf::KnotVector>, 2> joined_knot_vector =
       {knot_vector_t_ptr, nurbs_C->GetParameterSpace()->GetKnotVector(0)};
   std::array<int, 2> j_number_of_points = {nbInter, m};
-  std::array<Degree, 2> joined_degree = {nurbs_T->GetParameterSpace()->GetDegree(0), nurbs_C->GetParameterSpace()->GetDegree(0)};
+  std::array<Degree, 2> joined_degree = {nurbs_T->GetParameterSpace()->GetDegree(0),
+                                         nurbs_C->GetParameterSpace()->GetDegree(0)};
   this->parameter_space_ = std::make_shared<ParameterSpace<2>>(ParameterSpace<2>(
       joined_knot_vector, joined_degree));
   this->physical_space_ = std::make_shared<spl::WeightedPhysicalSpace<2>>(spl::WeightedPhysicalSpace<2>(
       j_control_points, j_weights, j_number_of_points));
 }
 
-std::array<double, 3> spl::SurfaceGenerator::CrossProduct( std::vector<double> a, std::vector<double> b) const {
+std::array<double, 3> spl::SurfaceGenerator::CrossProduct(std::vector<double> a, std::vector<double> b) const {
   std::array<double, 3> result = {a[1] * b[2] - a[2] * b[1],
                                   a[2] * b[0] - a[0] * b[2],
                                   a[0] * b[1] - a[1] * b[0]};
   return result;
 }
 
-std::array<double, 3> spl::SurfaceGenerator::CrossProduct( std::array<double, 3> a, std::array<double, 3> b) const {
+std::array<double, 3> spl::SurfaceGenerator::CrossProduct(std::array<double, 3> a, std::array<double, 3> b) const {
   std::array<double, 3> result = {a[1] * b[2] - a[2] * b[1],
                                   a[2] * b[0] - a[0] * b[2],
                                   a[0] * b[1] - a[1] * b[0]};
@@ -131,23 +121,25 @@ std::array<double, 3> spl::SurfaceGenerator::CrossProduct( std::array<double, 3>
 double spl::SurfaceGenerator::ComputeNorm(std::vector<double> a) {
   double norm = 0.0;
   for (int i = 0; i < a.size(); ++i) {
-    norm += a[i];
+    norm += std::pow(a[i], 2);
   }
-  return norm;
+  return std::sqrt(norm);
 }
 
 double spl::SurfaceGenerator::ComputeNorm(std::array<double, 3> a) {
   double norm = 0.0;
   for (int i = 0; i < 3; ++i) {
-    norm += a[i];
+    norm += std::pow(a[i], 2);
   }
-  return norm;
+  return std::sqrt(norm);
 }
 
 std::array<double, 3> spl::SurfaceGenerator::ComputeNormal(std::vector<double> T, std::vector<double> dT,
     std::vector<double> ddT, std::array<double, 3> previous) {
   std::array<double, 3> crossProduct = CrossProduct(dT, ddT);
   double norm_cross = ComputeNorm(crossProduct);
+  //std::cout << "crossProduct : " << crossProduct[0] << "|" << crossProduct[1] << "|" << crossProduct[2] << "|" << std::endl;
+  //std::cout << "norm(crossProduct) : " << norm_cross << std::endl;
   if (norm_cross > 0.0) {
     for (int i = 0; i < 3; ++i) {
       crossProduct[i] /= norm_cross;
@@ -170,6 +162,33 @@ std::array<double, 3> spl::SurfaceGenerator::ComputeNormal(std::vector<double> T
     crossProduct[i] /= norm_cross;
   }
   return crossProduct;
+}
+
+std::array<std::array<double, 4>, 4> spl::SurfaceGenerator::GetTransformation(std::vector<double> t,
+    std::vector<double> dT, std::vector<double> ddT, std::array<double, 3> prev_z) {
+  std::array<std::array<double, 4>, 4> transformation({std::array<double, 4>({0.0, 0.0, 0.0, 0.0}),
+                                                       std::array<double, 4>({0.0, 0.0, 0.0, 0.0}),
+                                                       std::array<double, 4>({0.0, 0.0, 0.0, 0.0}),
+                                                       std::array<double, 4>({0.0, 0.0, 0.0, 1.0})});
+  std::array<double, 3> z = ComputeNormal(t, dT, ddT, prev_z);
+  std::cout << "z-axes : " << z[0] << "|" << z[1] << "|" << z[2] << "|" << std::endl;
+  double norm_dT = 0.0;
+  for (int j = 0; j < 3; ++j) {
+    norm_dT += std::pow(dT[j], 2);
+    transformation[j][3] = t[j];
+  }
+  norm_dT = std::sqrt(norm_dT);
+  for (int j = 0; j < 3; ++j) {
+    transformation[j][0] = dT[j]/norm_dT;
+    transformation[j][2] = z[j];
+  }
+  std::array<double, 3> x({transformation[0][0], transformation[1][0], transformation[2][0]});
+  //std::cout << "x-axes : " << x[0] << "|" << x[1] << "|" << x[2] << "|" << std::endl;
+  std::array<double, 3> y = CrossProduct(z, x);
+  for (int i = 0; i < 3; ++i) {
+    transformation[i][1] = y[i];
+  }
+  return transformation;
 }
 
 

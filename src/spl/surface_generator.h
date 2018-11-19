@@ -46,7 +46,10 @@ class SurfaceGenerator : public NURBSGenerator<2> {
 
   std::array<double, 3> ComputeNormal(std::vector<double> T, std::vector<double> dT,
                                       std::vector<double> ddT, std::array<double, 3> previous);
+
+  std::array<std::array<double, 4>, 4> GetTransformation(std::vector<double> t,
+      std::vector<double> dT, std::vector<double> ddT, std::array<double, 3> prev_z);
 };
-} // namespace spl
+}  // namespace spl
 
 #endif  // SRC_SPL_SURFACE_GENERATOR_H_
