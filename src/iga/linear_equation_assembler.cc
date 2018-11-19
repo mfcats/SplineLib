@@ -54,7 +54,8 @@ void iga::LinearEquationAssembler::SetZeroBC(const std::shared_ptr<arma::dmat> &
   }
 }
 
-void iga::LinearEquationAssembler::SetLinearBC(const std::shared_ptr<arma::dmat> &matA,
+// Only used for test case in test/solution_vtk_writer_examples.cc which is currently commented out.
+/*void iga::LinearEquationAssembler::SetLinearBC(const std::shared_ptr<arma::dmat> &matA,
                                                const std::shared_ptr<arma::dvec> &vecB) {
   uint64_t l = 0;
   uint64_t k = 0;
@@ -79,4 +80,4 @@ void iga::LinearEquationAssembler::SetLinearBC(const std::shared_ptr<arma::dmat>
       k += 3;
     }
   }
-}
+}*/
