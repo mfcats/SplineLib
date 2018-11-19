@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 #include "solution_vtk_writer.h"
 #include "test_spline.h"
-//#include "four_point_gauss_legendre.h"
+#include "four_point_gauss_legendre.h"
 
 TEST_F(AnIGATestSpline, TestSolutionVTKWriter) { // NOLINT
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
@@ -29,7 +29,7 @@ TEST_F(AnIGATestSpline, TestSolutionVTKWriter) { // NOLINT
   remove("solution.vtk");
 }
 
-/*TEST_F(AnIGATestSpline, TestSolutionVTKWriterRefined) { // NOLINT
+TEST_F(AnIGATestSpline, TestSolutionVTKWriterRefined) { // NOLINT
   std::shared_ptr<spl::NURBS<2>> nurbs_refined = nurbs_;
   std::vector<double> knots_to_add = {0.48, 0.49, 0.51, 0.52};
   for (auto &knot : knots_to_add) {
@@ -48,9 +48,9 @@ TEST_F(AnIGATestSpline, TestSolutionVTKWriter) { // NOLINT
   linear_equation_assembler_ref.SetZeroBC(matA_ref, vecB_ref);
   arma::dvec solution_ref = arma::solve(*matA_ref, *vecB_ref);
   iga::SolutionVTKWriter solution_vtk_writer;
-  solution_vtk_writer.WriteSolutionToVTK(nurbs_refined, solution_ref, {{30, 30}},
-      "/Users/christophsusen/Desktop/solution_refined.vtk");
-}*/
+  solution_vtk_writer.WriteSolutionToVTK(nurbs_refined, solution_ref, {{30, 30}}, "solution_refined.vtk");
+  remove("solution_refined.vtk");
+}
 
 TEST_F(AnIGATestSpline2, TestSolutionVTKWriter) { // NOLINT
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
