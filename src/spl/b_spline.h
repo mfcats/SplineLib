@@ -86,7 +86,43 @@ class BSpline : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
+  std::array<std::any, 2>
+  GetSubdividedSpline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors_1,
+                      std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors_2,
+                      int dimension, std::array<Degree, DIM> degrees) override {
+    int first1 = 0;
+    int length1 = knot_vectors_1[dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
+    int first2 = length1;
+    int length2 = knot_vectors_2[dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
+    std::vector<baf::ControlPoint> points1 = GetSplittedControlPoints(first1, length1, dimension);
+    std::vector<baf::ControlPoint> points2 = GetSplittedControlPoints(first2, length2, dimension);
+    spl::BSpline<DIM> spline1(knot_vectors_1, degrees, points1);
+    spl::BSpline<DIM> spline2(knot_vectors_2, degrees, points2);
+    std::shared_ptr<spl::BSpline<DIM>> spline_ptr1 = std::make_shared<spl::BSpline<DIM>>(spline1);
+    std::shared_ptr<spl::BSpline<DIM>> spline_ptr2 = std::make_shared<spl::BSpline<DIM>>(spline2);
+    std::any spline_any1 = std::make_any<std::shared_ptr<spl::BSpline<DIM>>>(spline_ptr1);
+    std::any spline_any2 = std::make_any<std::shared_ptr<spl::BSpline<DIM>>>(spline_ptr2);
+    return {spline_any1, spline_any2};
+  }
+
  private:
+  std::vector<baf::ControlPoint> GetSplittedControlPoints(int first, int length, int dimension) {
+    std::vector<baf::ControlPoint> points;
+    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
+    point_handler_length[dimension] = length;
+    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      auto indices = point_handler.GetIndices();
+      indices[dimension] += first;
+      std::vector<double> coordinates;
+      for (int j = 0; j < this->GetDimension(); ++j) {
+        coordinates.push_back(this->GetControlPoint(indices, j));
+      }
+      points.emplace_back(coordinates);
+    }
+    return points;
+  }
+
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,
                                   int dimension) const override {

@@ -101,6 +101,17 @@ class NURBS : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
+  std::array<std::any, 2>
+  GetSubdividedSpline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors_1,
+                      std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors_2,
+                      int, std::array<Degree, DIM> degrees) override {
+    spl::NURBS<DIM> spline1(knot_vectors_1, degrees, {this->GetNewControlPoint({0}, 0, {0}, 0, 0, 0)}, {0.0});
+    spl::NURBS<DIM> spline2(knot_vectors_2, degrees, {this->GetNewControlPoint({0}, 0, {0}, 0, 0, 0)}, {0.0});
+    std::shared_ptr<spl::NURBS<DIM>> spline_ptr1 = std::make_shared<spl::NURBS<DIM>>(spline1);
+    std::shared_ptr<spl::NURBS<DIM>> spline_ptr2 = std::make_shared<spl::NURBS<DIM>>(spline2);
+    return {spline_ptr1, spline_ptr2};
+  }
+
  private:
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,
