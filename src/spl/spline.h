@@ -127,15 +127,15 @@ class Spline {
     KnotSpan knot_span = parameter_space_->GetKnotVector(dimension)->GetKnotSpan(knot);
     Degree degree = parameter_space_->GetDegree(dimension);
     for (int i = 1; i <= multiplicity; ++i) {
-      auto last = static_cast<size_t>(knot_span.get());
-      auto first = static_cast<size_t>(knot_span.get() - degree.get() + i);
+      auto last = knot_span.get() - parameter_space_->GetKnotVector(dimension)->GetMultiplicity(knot);
+      auto first = knot_span.get() - degree.get() + i;
       std::vector<double> scaling;
-      for (size_t j = first; j <= last; ++j) {
+      for (auto j = static_cast<size_t>(first); j <= last; ++j) {
         ParamCoord low_knot = parameter_space_->GetKnotVector(dimension)->GetKnot(j);
         ParamCoord upper_knot = parameter_space_->GetKnotVector(dimension)->GetKnot(j + degree.get() - i + 1);
         scaling.emplace_back((knot.get() - low_knot.get()) / (upper_knot.get() - low_knot.get()));
       }
-      this->AdjustControlPoints(scaling, static_cast<int>(first), static_cast<int>(last), dimension);
+      this->AdjustControlPoints(scaling, first, static_cast<int>(last), dimension);
     }
     for (int i = 0; i < multiplicity; ++i) {
       parameter_space_->InsertKnot(knot, dimension);
