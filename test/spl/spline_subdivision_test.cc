@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "nurbs.h"
-#include "irit_writer.h"
+#include "random_b_spline_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -182,6 +182,44 @@ TEST_F(NURBSFig5_9, IsSubdividedAtKnot0_4InSecondDirection) {  // NOLINT
       if (j / 100.0 >= 0.4) {
         ASSERT_THAT(spline2->Evaluate(param_coord, {0})[0],
                     DoubleNear(nurbs_2d_->Evaluate(param_coord, {0})[0], 0.000001));
+      }
+    }
+  }
+}
+
+class Random3DBSpline : public Test {  // NOLINT
+ public:
+  Random3DBSpline() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
+    std::array<std::array<ParamCoord, 2>, 3> param_coord_limits = {limits, limits, limits};
+    spl::RandomBSplineGenerator<3> spline_generator(param_coord_limits, {Degree(2), Degree(3), Degree(5)}, 3);
+    spl::BSpline<3> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
+    b_spline_3d_ = std::make_shared<spl::BSpline<3>>(b_spline);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<3>> b_spline_3d_;
+};
+
+TEST_F(Random3DBSpline, IsSubdividedAtKnot0_4InSecondDirection) {  // NOLINT
+  auto splines = b_spline_3d_->SudivideSpline(ParamCoord{0.4}, 1);
+  auto spline1 = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(splines[0]);
+  auto spline2 = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(splines[1]);
+  ASSERT_THAT(spline1->GetKnotVector(1)->GetNumberOfKnots(), 8);
+  ASSERT_THAT(spline2->GetKnotVector(1)->GetNumberOfKnots(), 8);
+  double s = 25;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      for (int k = 0; k <= s; ++k) {
+        std::array<ParamCoord, 3> param_coord{ParamCoord(i / s), ParamCoord(j / s), ParamCoord(k / s)};
+        if (j / s <= 0.4) {
+          ASSERT_THAT(spline1->Evaluate(param_coord, {0})[0],
+                      DoubleNear(b_spline_3d_->Evaluate(param_coord, {0})[0], 0.000001));
+        }
+        if (j / s >= 0.4) {
+          ASSERT_THAT(spline2->Evaluate(param_coord, {0})[0],
+                      DoubleNear(b_spline_3d_->Evaluate(param_coord, {0})[0], 0.000001));
+        }
       }
     }
   }

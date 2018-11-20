@@ -14,8 +14,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element_integration_point.h"
 
-#include <vector>
-
 iga::elm::ElementIntegrationPoint::ElementIntegrationPoint(std::vector<double> basis_functions, double weight,
     double jac_det) : non_zero_basis_functions_(std::move(basis_functions)), weight_(weight), jac_det_(jac_det) {}
 
