@@ -102,24 +102,21 @@ class NURBS : public Spline<DIM> {
   }
 
   std::array<std::any, 2>
-  GetSubdividedSpline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors_1,
-                      std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors_2,
+  GetSubdividedSpline(std::array<std::array<std::shared_ptr<baf::KnotVector>, DIM>, 2> knot_vectors,
                       int dimension, std::array<Degree, DIM> degrees) override {
-    int first1 = 0;
-    int length1 = knot_vectors_1[dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
-    int first2 = length1;
-    int length2 = knot_vectors_2[dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
-    std::vector<baf::ControlPoint> points1 = GetSplittedControlPoints(first1, length1, dimension);
-    std::vector<baf::ControlPoint> points2 = GetSplittedControlPoints(first2, length2, dimension);
-    std::vector<double> weights1 = GetSplittedWeights(first1, length1, dimension);
-    std::vector<double> weights2 = GetSplittedWeights(first2, length2, dimension);
-    spl::NURBS<DIM> spline1(knot_vectors_1, degrees, points1, weights1);
-    spl::NURBS<DIM> spline2(knot_vectors_2, degrees, points2, weights2);
-    std::shared_ptr<spl::NURBS<DIM>> spline_ptr1 = std::make_shared<spl::NURBS<DIM>>(spline1);
-    std::shared_ptr<spl::NURBS<DIM>> spline_ptr2 = std::make_shared<spl::NURBS<DIM>>(spline2);
-    std::any spline_any1 = std::make_any<std::shared_ptr<spl::NURBS<DIM>>>(spline_ptr1);
-    std::any spline_any2 = std::make_any<std::shared_ptr<spl::NURBS<DIM>>>(spline_ptr2);
-    return {spline_any1, spline_any2};
+    std::array<std::any, 2> subdivided_splines;
+    int first = 0;
+    for (int i = 0; i < 2; ++i) {
+      int length = knot_vectors[i][dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
+      std::vector<baf::ControlPoint> points = GetSplittedControlPoints(first, length, dimension);
+      std::vector<double> weights = GetSplittedWeights(first, length, dimension);
+      spl::NURBS<DIM> spline(knot_vectors[i], degrees, points, weights);
+      std::shared_ptr<spl::NURBS<DIM>> spline_ptr = std::make_shared<spl::NURBS<DIM>>(spline);
+      std::any spline_any = std::make_any<std::shared_ptr<spl::NURBS<DIM>>>(spline_ptr);
+      subdivided_splines[i] = spline_any;
+      first = length;
+    }
+    return subdivided_splines;
   }
 
  private:

@@ -173,13 +173,12 @@ parameter_space) {
     for (int i = 0; i < DIM; ++i) {
       degrees[i] = GetDegree(i);
     }
-    return this->GetSubdividedSpline(new_knot_vectors[0], new_knot_vectors[1], dimension, degrees);
+    return this->GetSubdividedSpline(new_knot_vectors, dimension, degrees);
   }
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
   virtual std::array<std::any, 2>
-  GetSubdividedSpline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors_1,
-                      std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors_2,
+  GetSubdividedSpline(std::array<std::array<std::shared_ptr<baf::KnotVector>, DIM>, 2> knot_vectors,
                       int dimension, std::array<Degree, DIM> degrees) = 0;
 
  protected:
