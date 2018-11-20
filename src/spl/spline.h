@@ -158,7 +158,7 @@ parameter_space) {
     auto knots = GetKnots();
     std::array<int, 2> first_knot = {0, knot_span - GetDegree(dimension).get()};
     std::array<int, 2> last_knot = {knot_span + 1, knots[dimension].size()};
-    std::array<std::array<std::shared_ptr<baf::KnotVector>, DIM>, 2> new_knot_vectors;
+    std::array<KnotVectors<DIM>, 2> new_knot_vectors;
     for (int i = 0; i < 2; ++i) {
       for (int j = 0; j < DIM; ++j) {
         new_knot_vectors[i][j] = GetKnotVector(j);
@@ -177,9 +177,8 @@ parameter_space) {
   }
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
-  virtual std::array<std::any, 2>
-  GetSubdividedSpline(std::array<std::array<std::shared_ptr<baf::KnotVector>, DIM>, 2> knot_vectors,
-                      int dimension, std::array<Degree, DIM> degrees) = 0;
+  virtual std::array<std::any, 2> GetSubdividedSpline(std::array<KnotVectors<DIM>, 2> knot_vectors,
+                                                      int dimension, std::array<Degree, DIM> degrees) = 0;
 
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {

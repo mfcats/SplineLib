@@ -101,9 +101,9 @@ class NURBS : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
-  std::array<std::any, 2>
-  GetSubdividedSpline(std::array<std::array<std::shared_ptr<baf::KnotVector>, DIM>, 2> knot_vectors,
-                      int dimension, std::array<Degree, DIM> degrees) override {
+  std::array<std::any, 2> GetSubdividedSpline(std::array<KnotVectors<DIM>, 2> knot_vectors,
+                                              int dimension,
+                                              std::array<Degree, DIM> degrees) override {
     std::array<std::any, 2> subdivided_splines;
     int first = 0;
     for (int i = 0; i < 2; ++i) {

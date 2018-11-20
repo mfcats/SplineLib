@@ -32,6 +32,7 @@ install(
 
 
 install(FILES
+        alias.h
         parameter_space.h
         physical_space.h
         weighted_physical_space.h
