@@ -86,16 +86,19 @@ class BSpline : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
-  std::array<std::any, 2> GetSubdividedSpline(std::array<KnotVectors<DIM>, 2> knot_vectors, int dimension,
-                                              std::array<Degree, DIM> degrees) const override {
-    std::array<std::any, 2> subdivided_splines;
+  std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> SudivideSpline(ParamCoord param_coord, int dimension) {
+    this->InsertKnot(param_coord, dimension,
+                     this->GetDegree(dimension).get() + 1
+                         - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
+    std::array<KnotVectors<DIM>, 2> new_knot_vectors = this->GetSplittedKnotVectors(param_coord, dimension);
+    std::array<Degree, DIM> degrees = this->parameter_space_->GetDegrees();
+    std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> subdivided_splines;
     int first = 0;
     for (int i = 0; i < 2; ++i) {
-      int length = knot_vectors[i][dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
+      int length = new_knot_vectors[i][dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
       std::vector<baf::ControlPoint> points = physical_space_->GetSplittedControlPoints(first, length, dimension);
-      spl::BSpline<DIM> spline(knot_vectors[i], degrees, points);
-      std::shared_ptr<spl::BSpline<DIM>> spline_ptr = std::make_shared<spl::BSpline<DIM>>(spline);
-      subdivided_splines[i] = std::make_any<std::shared_ptr<spl::BSpline<DIM>>>(spline_ptr);
+      spl::BSpline<DIM> spline(new_knot_vectors[i], degrees, points);
+      subdivided_splines[i] = std::make_shared<spl::BSpline<DIM>>(spline);
       first = length;
     }
     return subdivided_splines;

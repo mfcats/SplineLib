@@ -150,20 +150,7 @@ parameter_space) {
     }
   }
 
-  std::array<std::any, 2> SudivideSpline(ParamCoord param_coord, int dimension) {
-    this->InsertKnot(param_coord, dimension,
-                     GetDegree(dimension).get() + 1 - GetKnotVector(dimension)->GetMultiplicity(param_coord));
-    std::array<KnotVectors<DIM>, 2> new_knot_vectors = GetSplittedKnotVectors(param_coord, dimension);
-    std::array<Degree, DIM> degrees;
-    for (int i = 0; i < DIM; ++i) {
-      degrees[i] = GetDegree(i);
-    }
-    return this->GetSubdividedSpline(new_knot_vectors, dimension, degrees);
-  }
-
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
-  virtual std::array<std::any, 2> GetSubdividedSpline(std::array<KnotVectors<DIM>, 2> knot_vectors,
-                                                      int dimension, std::array<Degree, DIM> degrees) const = 0;
 
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {

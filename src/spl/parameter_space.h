@@ -77,6 +77,10 @@ class ParameterSpace {
     return degree_[direction];
   }
 
+  std::array<Degree, DIM> GetDegrees() const {
+    return degree_;
+  }
+
   std::shared_ptr<baf::KnotVector> GetKnotVector(int direction) const {
     return knot_vector_[direction];
   }
