@@ -12,12 +12,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <any>
 #include "gmock/gmock.h"
+#include <any>
 
-#include "b_spline.h"
-#include "nurbs.h"
 #include "random_b_spline_generator.h"
+#include "random_nurbs_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -216,6 +215,41 @@ TEST_F(Random3DBSpline, IsSubdividedAtKnot0_4InSecondDirection) {  // NOLINT
         if (j / s >= 0.4) {
           ASSERT_THAT(spline2->Evaluate(param_coord, {0})[0],
                       DoubleNear(b_spline_3d_->Evaluate(param_coord, {0})[0], 0.000001));
+        }
+      }
+    }
+  }
+}
+
+class Random3DNURBS : public Test {  // NOLINT
+ public:
+  Random3DNURBS() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
+    spl::RandomNURBSGenerator<3> spline_generator(limits, 10, 3);
+    spl::NURBS<3> nurbs(spline_generator.GetParameterSpace(), spline_generator.GetWeightedPhysicalSpace());
+    nurbs_3d_ = std::make_shared<spl::NURBS<3>>(nurbs);
+  }
+
+ protected:
+  std::shared_ptr<spl::NURBS<3>> nurbs_3d_;
+};
+
+TEST_F(Random3DNURBS, IsSubdividedAtKnot0_9InThirdDirection) {  // NOLINT
+  auto splines = nurbs_3d_->SudivideSpline(ParamCoord{0.9}, 2);
+  auto spline1 = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(splines[0]);
+  auto spline2 = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(splines[1]);
+  double s = 5;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      for (int k = 0; k <= s; ++k) {
+        std::array<ParamCoord, 3> param_coord{ParamCoord(i / s), ParamCoord(j / s), ParamCoord(k / s)};
+        if (k / s <= 0.9) {
+          ASSERT_THAT(spline1->Evaluate(param_coord, {0})[0],
+                      DoubleNear(nurbs_3d_->Evaluate(param_coord, {0})[0], 0.000001));
+        }
+        if (k / s >= 0.9) {
+          ASSERT_THAT(spline2->Evaluate(param_coord, {0})[0],
+                      DoubleNear(nurbs_3d_->Evaluate(param_coord, {0})[0], 0.000001));
         }
       }
     }

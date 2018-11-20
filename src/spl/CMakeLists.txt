@@ -33,16 +33,20 @@ install(
 
 install(FILES
         alias.h
+        b_spline.h
+        b_spline_generator.h
+        nurbs.h
+        nurbs_generator.h
         parameter_space.h
         physical_space.h
-        weighted_physical_space.h
-        spline.h
-        b_spline.h
-        nurbs.h
         projection.h
+        random_b_spline_generator.h
+        random_nurbs_generator.h
+        spline.h
         spline_generator.h
-        b_spline_generator.h
         square_generator.h
+        surface_generator.h
+        weighted_physical_space.h
         DESTINATION "${include_install_dir}")
 
 
