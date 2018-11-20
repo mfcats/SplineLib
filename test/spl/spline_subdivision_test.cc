@@ -191,8 +191,7 @@ class Random3DBSpline : public Test {  // NOLINT
  public:
   Random3DBSpline() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
-    std::array<std::array<ParamCoord, 2>, 3> param_coord_limits = {limits, limits, limits};
-    spl::RandomBSplineGenerator<3> spline_generator(param_coord_limits, {Degree(2), Degree(3), Degree(5)}, 3);
+    spl::RandomBSplineGenerator<3> spline_generator(limits, 10, 3);
     spl::BSpline<3> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
     b_spline_3d_ = std::make_shared<spl::BSpline<3>>(b_spline);
   }
@@ -205,9 +204,7 @@ TEST_F(Random3DBSpline, IsSubdividedAtKnot0_4InSecondDirection) {  // NOLINT
   auto splines = b_spline_3d_->SudivideSpline(ParamCoord{0.4}, 1);
   auto spline1 = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(splines[0]);
   auto spline2 = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(splines[1]);
-  ASSERT_THAT(spline1->GetKnotVector(1)->GetNumberOfKnots(), 8);
-  ASSERT_THAT(spline2->GetKnotVector(1)->GetNumberOfKnots(), 8);
-  double s = 25;
+  double s = 15;
   for (int i = 0; i <= s; ++i) {
     for (int j = 0; j <= s; ++j) {
       for (int k = 0; k <= s; ++k) {
