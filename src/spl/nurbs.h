@@ -108,7 +108,7 @@ class NURBS : public Spline<DIM> {
     int first = 0;
     for (int i = 0; i < 2; ++i) {
       int length = knot_vectors[i][dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
-      std::vector<baf::ControlPoint> points = GetSplittedControlPoints(first, length, dimension);
+      std::vector<baf::ControlPoint> points = physical_space_->GetSplittedControlPoints(first, length, dimension);
       std::vector<double> weights = GetSplittedWeights(first, length, dimension);
       spl::NURBS<DIM> spline(knot_vectors[i], degrees, points, weights);
       std::shared_ptr<spl::NURBS<DIM>> spline_ptr = std::make_shared<spl::NURBS<DIM>>(spline);
@@ -120,23 +120,6 @@ class NURBS : public Spline<DIM> {
   }
 
  private:
-  std::vector<baf::ControlPoint> GetSplittedControlPoints(int first, int length, int dimension) {
-    std::vector<baf::ControlPoint> points;
-    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
-    point_handler_length[dimension] = length;
-    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      auto indices = point_handler.GetIndices();
-      indices[dimension] += first;
-      std::vector<double> coordinates;
-      for (int j = 0; j < this->GetDimension(); ++j) {
-        coordinates.push_back(this->GetControlPoint(indices, j));
-      }
-      points.emplace_back(coordinates);
-    }
-    return points;
-  }
-
   std::vector<double> GetSplittedWeights(int first, int length, int dimension) {
     std::vector<double> weights;
     std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();

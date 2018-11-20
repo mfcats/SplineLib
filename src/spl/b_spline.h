@@ -93,7 +93,7 @@ class BSpline : public Spline<DIM> {
     int first = 0;
     for (int i = 0; i < 2; ++i) {
       int length = knot_vectors[i][dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
-      std::vector<baf::ControlPoint> points = GetSplittedControlPoints(first, length, dimension);
+      std::vector<baf::ControlPoint> points = physical_space_->GetSplittedControlPoints(first, length, dimension);
       spl::BSpline<DIM> spline(knot_vectors[i], degrees, points);
       std::shared_ptr<spl::BSpline<DIM>> spline_ptr = std::make_shared<spl::BSpline<DIM>>(spline);
       std::any spline_any = std::make_any<std::shared_ptr<spl::BSpline<DIM>>>(spline_ptr);
@@ -104,23 +104,6 @@ class BSpline : public Spline<DIM> {
   }
 
  private:
-  std::vector<baf::ControlPoint> GetSplittedControlPoints(int first, int length, int dimension) {
-    std::vector<baf::ControlPoint> points;
-    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
-    point_handler_length[dimension] = length;
-    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      auto indices = point_handler.GetIndices();
-      indices[dimension] += first;
-      std::vector<double> coordinates;
-      for (int j = 0; j < this->GetDimension(); ++j) {
-        coordinates.push_back(this->GetControlPoint(indices, j));
-      }
-      points.emplace_back(coordinates);
-    }
-    return points;
-  }
-
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,
                                   int dimension) const override {

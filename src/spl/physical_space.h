@@ -129,6 +129,19 @@ class PhysicalSpace {
     return 1.0;
   }
 
+  std::vector<baf::ControlPoint> GetSplittedControlPoints(int first, int length, int dimension) {
+    std::vector<baf::ControlPoint> points;
+    std::array<int, DIM> point_handler_length = GetNumberOfPointsInEachDirection();
+    point_handler_length[dimension] = length;
+    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      auto indices = point_handler.GetIndices();
+      indices[dimension] += first;
+      points.emplace_back(GetControlPoint(indices));
+    }
+    return points;
+  }
+
  protected:
   int dimension_;
   std::array<int, DIM> number_of_points_;
