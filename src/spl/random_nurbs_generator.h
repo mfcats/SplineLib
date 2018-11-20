@@ -107,4 +107,4 @@ class RandomNURBSGenerator : public NURBSGenerator<DIM> {
 };
 }  // namespace spl
 
-#endif  // SRC_SPL_RANDOM_B_SPLINE_GENERATOR_H_
+#endif  // SRC_SPL_RANDOM_NURBS_GENERATOR_H_
