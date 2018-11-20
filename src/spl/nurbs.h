@@ -109,30 +109,16 @@ class NURBS : public Spline<DIM> {
     for (int i = 0; i < 2; ++i) {
       int length = knot_vectors[i][dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
       std::vector<baf::ControlPoint> points = physical_space_->GetSplittedControlPoints(first, length, dimension);
-      std::vector<double> weights = GetSplittedWeights(first, length, dimension);
+      std::vector<double> weights = physical_space_->GetSplittedWeights(first, length, dimension);
       spl::NURBS<DIM> spline(knot_vectors[i], degrees, points, weights);
       std::shared_ptr<spl::NURBS<DIM>> spline_ptr = std::make_shared<spl::NURBS<DIM>>(spline);
-      std::any spline_any = std::make_any<std::shared_ptr<spl::NURBS<DIM>>>(spline_ptr);
-      subdivided_splines[i] = spline_any;
+      subdivided_splines[i] = std::make_any<std::shared_ptr<spl::NURBS<DIM>>>(spline_ptr);
       first = length;
     }
     return subdivided_splines;
   }
 
  private:
-  std::vector<double> GetSplittedWeights(int first, int length, int dimension) {
-    std::vector<double> weights;
-    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
-    point_handler_length[dimension] = length;
-    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      auto indices = point_handler.GetIndices();
-      indices[dimension] += first;
-      weights.emplace_back(this->GetWeight(indices));
-    }
-    return weights;
-  }
-
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,
                                   int dimension) const override {

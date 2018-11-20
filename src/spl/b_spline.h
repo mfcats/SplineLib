@@ -96,8 +96,7 @@ class BSpline : public Spline<DIM> {
       std::vector<baf::ControlPoint> points = physical_space_->GetSplittedControlPoints(first, length, dimension);
       spl::BSpline<DIM> spline(knot_vectors[i], degrees, points);
       std::shared_ptr<spl::BSpline<DIM>> spline_ptr = std::make_shared<spl::BSpline<DIM>>(spline);
-      std::any spline_any = std::make_any<std::shared_ptr<spl::BSpline<DIM>>>(spline_ptr);
-      subdivided_splines[i] = spline_any;
+      subdivided_splines[i] = std::make_any<std::shared_ptr<spl::BSpline<DIM>>>(spline_ptr);
       first = length;
     }
     return subdivided_splines;
