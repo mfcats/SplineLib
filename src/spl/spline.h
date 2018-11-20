@@ -153,21 +153,7 @@ parameter_space) {
   std::array<std::any, 2> SudivideSpline(ParamCoord param_coord, int dimension) {
     this->InsertKnot(param_coord, dimension,
                      GetDegree(dimension).get() + 1 - GetKnotVector(dimension)->GetMultiplicity(param_coord));
-    auto knot_span = GetKnotVector(dimension)->GetKnotSpan(param_coord).get();
-    auto knots = GetKnots();
-    std::array<int, 2> first_knot = {0, knot_span - GetDegree(dimension).get()};
-    std::array<int, 2> last_knot = {knot_span + 1, knots[dimension].size()};
-    std::array<KnotVectors<DIM>, 2> new_knot_vectors;
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < DIM; ++j) {
-        new_knot_vectors[i][j] = GetKnotVector(j);
-      }
-      std::array<std::vector<ParamCoord>, 2> new_knots;
-      for (int j = first_knot[i]; j < last_knot[i]; ++j) {
-        new_knots[i].push_back(knots[dimension][j]);
-      }
-      new_knot_vectors[i][dimension] = std::make_shared<baf::KnotVector>(baf::KnotVector(new_knots[i]));
-    }
+    std::array<KnotVectors<DIM>, 2> new_knot_vectors = GetSplittedKnotVectors(param_coord, dimension);
     std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; ++i) {
       degrees[i] = GetDegree(i);
@@ -177,7 +163,7 @@ parameter_space) {
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
   virtual std::array<std::any, 2> GetSubdividedSpline(std::array<KnotVectors<DIM>, 2> knot_vectors,
-                                                      int dimension, std::array<Degree, DIM> degrees) = 0;
+                                                      int dimension, std::array<Degree, DIM> degrees) const = 0;
 
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
@@ -203,6 +189,25 @@ parameter_space) {
       total_length[i] = parameter_space_->GetDegree(i).get() + 1;
     }
     return total_length;
+  }
+
+  std::array<KnotVectors<DIM>, 2> GetSplittedKnotVectors(ParamCoord param_coord, int dimension) const {
+    auto knot_span = GetKnotVector(dimension)->GetKnotSpan(param_coord).get();
+    auto knots = GetKnots();
+    std::array<int, 2> first_knot = {0, knot_span - GetDegree(dimension).get()};
+    std::array<int, 2> last_knot = {knot_span + 1, static_cast<int>(knots[dimension].size())};
+    std::array<KnotVectors<DIM>, 2> new_knot_vectors;
+    for (int i = 0; i < 2; ++i) {
+      for (int j = 0; j < DIM; ++j) {
+        new_knot_vectors[i][j] = GetKnotVector(j);
+      }
+      std::array<std::vector<ParamCoord>, 2> new_knots;
+      for (int j = first_knot[i]; j < last_knot[i]; ++j) {
+        new_knots[i].push_back(knots[dimension][j]);
+      }
+      new_knot_vectors[i][dimension] = std::make_shared<baf::KnotVector>(baf::KnotVector(new_knots[i]));
+    }
+    return new_knot_vectors;
   }
 
   std::shared_ptr<ParameterSpace < DIM>> parameter_space_;

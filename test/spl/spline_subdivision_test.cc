@@ -90,9 +90,9 @@ TEST_F(BSplineFig5_9, IsSubdividedAtKnot0_3InFirstDirection) {  // NOLINT
   }
 }
 
-class Random1DBSpline : public Test {  // NOLINT
+class Random1DBSplineToSplit : public Test {  // NOLINT
  public:
-  Random1DBSpline() {
+  Random1DBSplineToSplit() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
     spl::RandomBSplineGenerator<1> spline_generator(limits, 10, 2);
     spl::BSpline<1> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
@@ -103,7 +103,7 @@ class Random1DBSpline : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> b_spline_1d_;
 };
 
-TEST_F(Random1DBSpline, IsSubdividedAtKnot0_25) {  // NOLINT
+TEST_F(Random1DBSplineToSplit, IsSubdividedAtKnot0_25) {  // NOLINT
   auto splines = b_spline_1d_->SudivideSpline(ParamCoord{0.25}, 0);
   auto spline1 = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(splines[0]);
   auto spline2 = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(splines[1]);
@@ -121,9 +121,9 @@ TEST_F(Random1DBSpline, IsSubdividedAtKnot0_25) {  // NOLINT
   }
 }
 
-class Random1DNURBS : public Test {  // NOLINT
+class Random1DNURBSToSplit : public Test {  // NOLINT
  public:
-  Random1DNURBS() {
+  Random1DNURBSToSplit() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
     spl::RandomNURBSGenerator<1> spline_generator(limits, 10, 3);
     spl::NURBS<1> nurbs(spline_generator.GetParameterSpace(), spline_generator.GetWeightedPhysicalSpace());
@@ -134,7 +134,7 @@ class Random1DNURBS : public Test {  // NOLINT
   std::shared_ptr<spl::NURBS<1>> nurbs_1d_;
 };
 
-TEST_F(Random1DNURBS, IsSubdividedAtKnot0_99) {  // NOLINT
+TEST_F(Random1DNURBSToSplit, IsSubdividedAtKnot0_99) {  // NOLINT
   auto splines = nurbs_1d_->SudivideSpline(ParamCoord{0.99}, 0);
   auto spline1 = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(splines[0]);
   auto spline2 = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(splines[1]);
@@ -152,9 +152,9 @@ TEST_F(Random1DNURBS, IsSubdividedAtKnot0_99) {  // NOLINT
   }
 }
 
-class Random2DBSpline : public Test {  // NOLINT
+class Random2DBSplineToSplit : public Test {  // NOLINT
  public:
-  Random2DBSpline() {
+  Random2DBSplineToSplit() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
     spl::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
     spl::BSpline<2> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
@@ -165,7 +165,7 @@ class Random2DBSpline : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<2>> b_spline_2d_;
 };
 
-TEST_F(Random2DBSpline, IsSubdividedAtKnot0_1InFirstDirection) {  // NOLINT
+TEST_F(Random2DBSplineToSplit, IsSubdividedAtKnot0_1InFirstDirection) {  // NOLINT
   auto splines = b_spline_2d_->SudivideSpline(ParamCoord{0.1}, 0);
   auto spline1 = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(splines[0]);
   auto spline2 = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(splines[1]);
@@ -185,9 +185,9 @@ TEST_F(Random2DBSpline, IsSubdividedAtKnot0_1InFirstDirection) {  // NOLINT
   }
 }
 
-class Random2DNURBS : public Test {  // NOLINT
+class Random2DNURBSToSplit : public Test {  // NOLINT
  public:
-  Random2DNURBS() {
+  Random2DNURBSToSplit() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
     spl::RandomNURBSGenerator<2> spline_generator(limits, 10, 3);
     spl::NURBS<2> nurbs(spline_generator.GetParameterSpace(), spline_generator.GetWeightedPhysicalSpace());
@@ -198,7 +198,7 @@ class Random2DNURBS : public Test {  // NOLINT
   std::shared_ptr<spl::NURBS<2>> nurbs_2d_;
 };
 
-TEST_F(Random2DNURBS, IsSubdividedAtKnot0_5InSecondDirection) {  // NOLINT
+TEST_F(Random2DNURBSToSplit, IsSubdividedAtKnot0_5InSecondDirection) {  // NOLINT
   auto splines = nurbs_2d_->SudivideSpline(ParamCoord{0.5}, 1);
   auto spline1 = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(splines[0]);
   auto spline2 = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(splines[1]);
@@ -218,9 +218,9 @@ TEST_F(Random2DNURBS, IsSubdividedAtKnot0_5InSecondDirection) {  // NOLINT
   }
 }
 
-class Random3DBSpline : public Test {  // NOLINT
+class Random3DBSplineToSplit : public Test {  // NOLINT
  public:
-  Random3DBSpline() {
+  Random3DBSplineToSplit() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
     spl::RandomBSplineGenerator<3> spline_generator(limits, 10, 3);
     spl::BSpline<3> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
@@ -231,7 +231,7 @@ class Random3DBSpline : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<3>> b_spline_3d_;
 };
 
-TEST_F(Random3DBSpline, IsSubdividedAtKnot0_4InSecondDirection) {  // NOLINT
+TEST_F(Random3DBSplineToSplit, IsSubdividedAtKnot0_4InSecondDirection) {  // NOLINT
   auto splines = b_spline_3d_->SudivideSpline(ParamCoord{0.4}, 1);
   auto spline1 = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(splines[0]);
   auto spline2 = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(splines[1]);
@@ -254,9 +254,9 @@ TEST_F(Random3DBSpline, IsSubdividedAtKnot0_4InSecondDirection) {  // NOLINT
   }
 }
 
-class Random3DNURBS : public Test {  // NOLINT
+class Random3DNURBSToSplit : public Test {  // NOLINT
  public:
-  Random3DNURBS() {
+  Random3DNURBSToSplit() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
     spl::RandomNURBSGenerator<3> spline_generator(limits, 10, 3);
     spl::NURBS<3> nurbs(spline_generator.GetParameterSpace(), spline_generator.GetWeightedPhysicalSpace());
@@ -267,7 +267,7 @@ class Random3DNURBS : public Test {  // NOLINT
   std::shared_ptr<spl::NURBS<3>> nurbs_3d_;
 };
 
-TEST_F(Random3DNURBS, IsSubdividedAtKnot0_9InThirdDirection) {  // NOLINT
+TEST_F(Random3DNURBSToSplit, IsSubdividedAtKnot0_9InThirdDirection) {  // NOLINT
   auto splines = nurbs_3d_->SudivideSpline(ParamCoord{0.9}, 2);
   auto spline1 = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(splines[0]);
   auto spline2 = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(splines[1]);
