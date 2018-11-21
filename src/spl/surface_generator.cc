@@ -13,7 +13,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "surface_generator.h"
-#include <iostream>
 
 spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
                                         std::shared_ptr<spl::NURBS<1>> const &nurbs_C) {
@@ -57,7 +56,6 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
   std::vector<double> dT_v;
   std::vector<double> ddT_v;
   std::vector<double> t_v;
-  std::array<double, 3> cross_product;
   const std::vector<int> dimensions = {0, 1, 2};
   std::array<int, 1> first_derivative = {1};
   std::array<int, 1> second_derivative = {2};
@@ -71,17 +69,11 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
   std::vector<double> j_weights(nbInter * m, 0.0);
   v_i.reserve(nbInter);
   for (int i = 0; i < nbInter; ++i) {
-    std::cout << "Inter : " << i << std::endl;
-    if (i == 39) {
-      std::cout << "Hello " << std::endl;
-    }
     v_i.push_back(ParamCoord{i * step_size});
     t_v = nurbs_T->Evaluate(std::array<ParamCoord, 1>({v_i[i]}), dimensions);
     weight_v = nurbs_T->Evaluate(std::array<ParamCoord, 1>({v_i[i]}), std::vector<int>({3}))[0];
     dT_v = nurbs_T->EvaluateDerivative(std::array<ParamCoord, 1>({v_i[i]}), dimensions, first_derivative);
-    //std::cout << "dT_v : " << dT_v[0] << "|" << dT_v[1] << "|" << dT_v[2] << "|" << std::endl;
     ddT_v = nurbs_T->EvaluateDerivative(std::array<ParamCoord, 1>({v_i[i]}), dimensions, second_derivative);
-    //std::cout << "ddT_v : " << ddT_v[0] << "|" << ddT_v[1] << "|" << ddT_v[2] << "|" << std::endl;
     transMatrix = GetTransformation(t_v, dT_v, ddT_v,
         std::array<double, 3>({transMatrix[0][2], transMatrix[1][2], transMatrix[2][2]}));
     for (int j = 0; j < m; ++j) {
@@ -138,8 +130,6 @@ std::array<double, 3> spl::SurfaceGenerator::ComputeNormal(std::vector<double> T
     std::vector<double> ddT, std::array<double, 3> previous) {
   std::array<double, 3> crossProduct = CrossProduct(dT, ddT);
   double norm_cross = ComputeNorm(crossProduct);
-  //std::cout << "crossProduct : " << crossProduct[0] << "|" << crossProduct[1] << "|" << crossProduct[2] << "|" << std::endl;
-  //std::cout << "norm(crossProduct) : " << norm_cross << std::endl;
   if (norm_cross > 0.0) {
     for (int i = 0; i < 3; ++i) {
       crossProduct[i] /= norm_cross;
@@ -171,7 +161,6 @@ std::array<std::array<double, 4>, 4> spl::SurfaceGenerator::GetTransformation(st
                                                        std::array<double, 4>({0.0, 0.0, 0.0, 0.0}),
                                                        std::array<double, 4>({0.0, 0.0, 0.0, 1.0})});
   std::array<double, 3> z = ComputeNormal(t, dT, ddT, prev_z);
-  std::cout << "z-axes : " << z[0] << "|" << z[1] << "|" << z[2] << "|" << std::endl;
   double norm_dT = 0.0;
   for (int j = 0; j < 3; ++j) {
     norm_dT += std::pow(dT[j], 2);
@@ -183,7 +172,6 @@ std::array<std::array<double, 4>, 4> spl::SurfaceGenerator::GetTransformation(st
     transformation[j][2] = z[j];
   }
   std::array<double, 3> x({transformation[0][0], transformation[1][0], transformation[2][0]});
-  //std::cout << "x-axes : " << x[0] << "|" << x[1] << "|" << x[2] << "|" << std::endl;
   std::array<double, 3> y = CrossProduct(z, x);
   for (int i = 0; i < 3; ++i) {
     transformation[i][1] = y[i];
