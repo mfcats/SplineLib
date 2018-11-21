@@ -77,7 +77,7 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
     dT_v = nurbs_T->EvaluateDerivative(std::array<ParamCoord, 1>({v_i[i]}), dimensions, first_derivative);
     ddT_v = nurbs_T->EvaluateDerivative(std::array<ParamCoord, 1>({v_i[i]}), dimensions, second_derivative);
     transMatrix = GetTransformation(t_v, dT_v, ddT_v,
-        std::array<double, 3>({transMatrix[0][2], transMatrix[1][2], transMatrix[2][2]}));
+        std::array<double, 3>({transMatrix[0][2], transMatrix[1][2], transMatrix[2][2]}), i);
     for (int j = 0; j < m; ++j) {
       int indexControlPoint = j * nbInter + i;
       baf::ControlPoint control_point_j = nurbs_C->GetControlPoint(std::array<int, 1>({j}));
@@ -112,6 +112,22 @@ std::array<double, 3> spl::SurfaceGenerator::CrossProduct(std::array<double, 3> 
   return result;
 }
 
+double spl::SurfaceGenerator::DotProduct(std::array<double, 3> a, std::array<double, 3> b) const {
+  double dotProduct = 0.0;
+  for (int i = 0; i < 3; ++i) {
+    dotProduct += a[i] * b[i];
+  }
+  return dotProduct;
+}
+
+double spl::SurfaceGenerator::DotProduct(std::array<double, 3> a, std::vector<double> b) const {
+  double dotProduct = 0.0;
+  for (int i = 0; i < 3; ++i) {
+    dotProduct += a[i] * b[i];
+  }
+  return dotProduct;
+}
+
 double spl::SurfaceGenerator::ComputeNorm(std::vector<double> a) {
   double norm = 0.0;
   for (double i : a) {
@@ -129,12 +145,17 @@ double spl::SurfaceGenerator::ComputeNorm(std::array<double, 3> a) {
 }
 
 std::array<double, 3> spl::SurfaceGenerator::ComputeNormal(std::vector<double> T, std::vector<double> dT,
-    std::vector<double> ddT, std::array<double, 3> previous) {
+    std::vector<double> ddT, std::array<double, 3> previous, int index) {
   std::array<double, 3> crossProduct = CrossProduct(dT, std::move(ddT));
   double norm_cross = ComputeNorm(crossProduct);
   if (norm_cross > 0.0) {
     for (int i = 0; i < 3; ++i) {
       crossProduct[i] /= norm_cross;
+    }
+    if (DotProduct(crossProduct, previous) == 0.0 && index != 0) {
+      throw std::runtime_error(
+          "The swept surface is discontinous due to a rotation."
+          "Consider increasing the degree of the trajectory NURBS.");
     }
     return crossProduct;
   }
@@ -142,10 +163,7 @@ std::array<double, 3> spl::SurfaceGenerator::ComputeNormal(std::vector<double> T
   for (int i = 0; i < 3; ++i) {
     dT[i] /= norm_dT;
   }
-  double product = 0.0;
-  for (int i = 0; i < 3; ++i) {
-    product += previous[i] * T[i];
-  }
+  double product = DotProduct(previous, T);
   for (int i = 0; i < 3; ++i) {
     crossProduct[i] = previous[i] - product * T[i];
   }
@@ -157,12 +175,12 @@ std::array<double, 3> spl::SurfaceGenerator::ComputeNormal(std::vector<double> T
 }
 
 std::array<std::array<double, 4>, 4> spl::SurfaceGenerator::GetTransformation(std::vector<double> t,
-    std::vector<double> dT, std::vector<double> ddT, std::array<double, 3> prev_z) {
+    std::vector<double> dT, std::vector<double> ddT, std::array<double, 3> prev_z, int index) {
   std::array<std::array<double, 4>, 4> transformation({std::array<double, 4>({0.0, 0.0, 0.0, 0.0}),
                                                        std::array<double, 4>({0.0, 0.0, 0.0, 0.0}),
                                                        std::array<double, 4>({0.0, 0.0, 0.0, 0.0}),
                                                        std::array<double, 4>({0.0, 0.0, 0.0, 1.0})});
-  std::array<double, 3> z = ComputeNormal(t, dT, ddT, prev_z);
+  std::array<double, 3> z = ComputeNormal(t, dT, std::move(ddT), prev_z, index);
   double norm_dT = 0.0;
   for (int j = 0; j < 3; ++j) {
     norm_dT += std::pow(dT[j], 2);

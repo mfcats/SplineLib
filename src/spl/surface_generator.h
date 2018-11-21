@@ -40,15 +40,19 @@ class SurfaceGenerator : public NURBSGenerator<2> {
 
   std::array<double, 3> CrossProduct(std::array<double, 3> a, std::array<double, 3> b) const;
 
+  double DotProduct(std::array<double, 3> a, std::array<double, 3> b) const;
+
+  double DotProduct(std::array<double, 3> a, std::vector<double> b) const;
+
   double ComputeNorm(std::vector<double> a);
 
   double ComputeNorm(std::array<double, 3> a);
 
   std::array<double, 3> ComputeNormal(std::vector<double> T, std::vector<double> dT,
-                                      std::vector<double> ddT, std::array<double, 3> previous);
+                                      std::vector<double> ddT, std::array<double, 3> previous, int index);
 
   std::array<std::array<double, 4>, 4> GetTransformation(std::vector<double> t,
-      std::vector<double> dT, std::vector<double> ddT, std::array<double, 3> prev_z);
+      std::vector<double> dT, std::vector<double> ddT, std::array<double, 3> prev_z, int index);
 };
 }  // namespace spl
 
