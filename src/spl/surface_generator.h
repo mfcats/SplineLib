@@ -28,7 +28,7 @@ class SurfaceGenerator : public NURBSGenerator<2> {
 
   SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
                    std::shared_ptr<NURBS<1>> const &nurbs_C,
-                   int nbInterpolations, std::vector<std::array<double, 3>> scaling);
+                   int nbInter, std::vector<std::array<double, 3>> scaling);
 
   std::shared_ptr<ParameterSpace<2>> JoinParameterSpaces(std::shared_ptr<ParameterSpace<1>> const &space_1,
                                                          std::shared_ptr<ParameterSpace<1>> const &space_2) const;

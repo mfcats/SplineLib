@@ -1,3 +1,5 @@
+#include <utility>
+
 /* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
@@ -69,7 +71,7 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
   std::vector<double> j_weights(nbInter * m, 0.0);
   v_i.reserve(nbInter);
   for (int i = 0; i < nbInter; ++i) {
-    v_i.push_back(ParamCoord{i * step_size});
+    v_i.emplace_back(ParamCoord{i * step_size});
     t_v = nurbs_T->Evaluate(std::array<ParamCoord, 1>({v_i[i]}), dimensions);
     weight_v = nurbs_T->Evaluate(std::array<ParamCoord, 1>({v_i[i]}), std::vector<int>({3}))[0];
     dT_v = nurbs_T->EvaluateDerivative(std::array<ParamCoord, 1>({v_i[i]}), dimensions, first_derivative);
@@ -112,23 +114,23 @@ std::array<double, 3> spl::SurfaceGenerator::CrossProduct(std::array<double, 3> 
 
 double spl::SurfaceGenerator::ComputeNorm(std::vector<double> a) {
   double norm = 0.0;
-  for (int i = 0; i < a.size(); ++i) {
-    norm += std::pow(a[i], 2);
+  for (double i : a) {
+    norm += std::pow(i, 2);
   }
   return std::sqrt(norm);
 }
 
 double spl::SurfaceGenerator::ComputeNorm(std::array<double, 3> a) {
   double norm = 0.0;
-  for (int i = 0; i < 3; ++i) {
-    norm += std::pow(a[i], 2);
+  for (double i : a) {
+    norm += std::pow(i, 2);
   }
   return std::sqrt(norm);
 }
 
 std::array<double, 3> spl::SurfaceGenerator::ComputeNormal(std::vector<double> T, std::vector<double> dT,
     std::vector<double> ddT, std::array<double, 3> previous) {
-  std::array<double, 3> crossProduct = CrossProduct(dT, ddT);
+  std::array<double, 3> crossProduct = CrossProduct(dT, std::move(ddT));
   double norm_cross = ComputeNorm(crossProduct);
   if (norm_cross > 0.0) {
     for (int i = 0; i < 3; ++i) {

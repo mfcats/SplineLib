@@ -156,7 +156,7 @@ TEST_F(ASurface, CompareBothMethods_nbControlPoints) { // NOLINT
   ASSERT_THAT(nurbsJoined->GetNumberOfControlPoints(), nurbsJoinedScaledCmp->GetNumberOfControlPoints());
 }
 
-TEST_F(ASurface, CompareBothMethods_nbKnots) {
+TEST_F(ASurface, CompareBothMethods_nbKnots) { // NOLINT
   ASSERT_THAT(nurbsJoined->GetKnotVector(0)->GetNumberOfKnots(),
       nurbsJoinedScaledCmp->GetKnotVector(0)->GetNumberOfKnots());
 }
@@ -189,8 +189,8 @@ class AComplexSurface : public Test {
       knot_vector1_{
           std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                              ParamCoord{0.25}, ParamCoord{0.5},
-                                                             ParamCoord{0.75},
-                                                             ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))},
+                                                             ParamCoord{0.75}, ParamCoord{1}, ParamCoord{1},
+                                                             ParamCoord{1}, ParamCoord{1}}))},
       knot_vector2_{
           std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                              ParamCoord{0.25}, ParamCoord{0.25},
@@ -237,7 +237,7 @@ class AComplexSurface : public Test {
     spl::SurfaceGenerator surfaceGenerator = spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling);
     nurbsJoined = std::make_shared<spl::NURBS<2>>(surfaceGenerator);
     double fct;
-    for(int i = 50; i < 90; ++i) {
+    for (int i = 50; i < 90; ++i) {
       fct = i < 70 ? (1 - 0.04 * (i - 50)) : (1 - 0.04 * (90 - i));
       scaling[i] = {fct, fct, fct};
     }
