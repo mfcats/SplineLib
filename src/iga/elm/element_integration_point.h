@@ -16,7 +16,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IGA_ELM_ELEMENT_INTEGRATION_POINT_H_
 
 #include <array>
-#include <set>
 #include <vector>
 
 namespace iga {

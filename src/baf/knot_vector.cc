@@ -84,6 +84,10 @@ KnotSpan baf::KnotVector::GetKnotSpan(ParamCoord param_coord) const {
   return KnotSpan{static_cast<int>(std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1)};
 }
 
+size_t baf::KnotVector::GetMultiplicity(ParamCoord param_coord) const {
+  return static_cast<size_t>(std::count(knots_.begin(), knots_.end(), param_coord));
+}
+
 size_t baf::KnotVector::GetNumberOfKnots() const {
   return knots_.size();
 }
