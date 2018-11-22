@@ -154,7 +154,7 @@ std::array<double, 3> spl::SurfaceGenerator::ComputeNormal(std::vector<double> T
     }
     if (DotProduct(crossProduct, previous) == 0.0 && index != 0) {
       throw std::runtime_error(
-          "The swept surface is discontinous due to a rotation."
+          "The swept surface is discontinous due to a rotation. "
           "Consider increasing the degree of the trajectory NURBS.");
     }
     return crossProduct;
