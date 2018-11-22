@@ -316,3 +316,80 @@ TEST_F(AComplexSurface, ReturnCorrectControlPointScaled_77_1) { // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({77, 1}), 2), DoubleNear(0.645199, 0.00001));
 }
 
+class AComplexSurface2 : public Test {
+ public:
+  AComplexSurface2() :
+      degree1_{Degree{2}},
+      degree2_{Degree{2}},
+      knot_vector1_{
+          std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                             ParamCoord{0.2}, ParamCoord{0.4},
+                                                             ParamCoord{0.6}, ParamCoord{0.8}, ParamCoord{1},
+                                                             ParamCoord{1}, ParamCoord{1}}))},
+      knot_vector2_{
+          std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                             ParamCoord{0.25}, ParamCoord{0.25},
+                                                             ParamCoord{0.5}, ParamCoord{0.5},
+                                                             ParamCoord{0.75}, ParamCoord{0.75},
+                                                             ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))},
+      parameter_space1(std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(knot_vector1_, degree1_))),
+      parameter_space2(std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(knot_vector2_, degree2_))) {
+    control_points1 = {
+        baf::ControlPoint(std::vector<double>({2.0, 0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 0.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 1.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 2.0}))
+    };
+    control_points2 = {
+        baf::ControlPoint(std::vector<double>({0.0, 0.15, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.15, 0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, -0.15, 0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, -0.15, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, -0.15, -0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.0, -0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.15, -0.1})),
+        baf::ControlPoint(std::vector<double>({0.0, 0.15, 0.0})),
+    };
+    weights1_ = {1, 0.5, 0.5, 0.5, 0.5, 0.5, 1};
+    weights2_ = {1, 0.70710, 1, 0.70710, 1, 0.70710, 1, 0.70710, 1};
+    w_physical_space1 = std::make_shared<spl::WeightedPhysicalSpace<1>>(spl::WeightedPhysicalSpace<1>(control_points1,
+                                                                                                      weights1_,
+                                                                                                      {7}));
+    w_physical_space2 = std::make_shared<spl::WeightedPhysicalSpace<1>>(spl::WeightedPhysicalSpace<1>(control_points2,
+                                                                                                      weights2_,
+                                                                                                      {9}));
+
+    spl::NURBSGenerator<1> nurbs_generator1(w_physical_space1, parameter_space1);
+    spl::NURBSGenerator<1> nurbs_generator2(w_physical_space2, parameter_space2);
+    nurbs1 = std::make_shared<spl::NURBS<1>>(nurbs_generator1);
+    nurbs2 = std::make_shared<spl::NURBS<1>>(nurbs_generator2);
+    nbInter = 101;
+  }
+
+ protected:
+  std::array<Degree, 1> degree1_;
+  std::array<Degree, 1> degree2_;
+  int nbInter;
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector1_;
+  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector2_;
+  std::shared_ptr<spl::ParameterSpace<1>> parameter_space1;
+  std::shared_ptr<spl::ParameterSpace<1>> parameter_space2;
+  std::vector<baf::ControlPoint> control_points1;
+  std::vector<baf::ControlPoint> control_points2;
+  std::vector<double> weights1_;
+  std::vector<double> weights2_;
+  std::shared_ptr<spl::WeightedPhysicalSpace<1>> w_physical_space1;
+  std::shared_ptr<spl::WeightedPhysicalSpace<1>> w_physical_space2;
+  std::shared_ptr<spl::NURBS<1>> nurbs1;
+  std::shared_ptr<spl::NURBS<1>> nurbs2;
+};
+
+TEST_F(AComplexSurface2, ThrowExceptionIfDegreeTooLow) { // NOLINT
+  std::vector<std::array<double, 3>> scaling(nbInter, {1.0, 1.0, 1.0});
+  ASSERT_THROW(spl::SurfaceGenerator surfaceGenerator = spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling), std::runtime_error);
+}
+
