@@ -20,6 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <sstream>
 #include <vector>
 
+#include "alias.h"
 #include "basis_function.h"
 #include "basis_function_factory.h"
 #include "knot_vector.h"
@@ -74,6 +75,10 @@ class ParameterSpace {
 
   virtual Degree GetDegree(int direction) const {
     return degree_[direction];
+  }
+
+  std::array<Degree, DIM> GetDegrees() const {
+    return degree_;
   }
 
   std::shared_ptr<baf::KnotVector> GetKnotVector(int direction) const {
@@ -166,7 +171,7 @@ class ParameterSpace {
     }
   }
 
-  std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector_;
+  KnotVectors<DIM> knot_vector_;
   std::array<Degree, DIM> degree_;
   std::array<std::vector<std::shared_ptr<baf::BasisFunction>>, DIM> basis_functions_;
 };

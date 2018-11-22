@@ -72,6 +72,19 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     return weights_;
   }
 
+  std::vector<double> GetSplittedWeights(int first, int length, int dimension) {
+    std::vector<double> weights;
+    std::array<int, DIM> point_handler_length = this->GetNumberOfPointsInEachDirection();
+    point_handler_length[dimension] = length;
+    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      auto indices = point_handler.GetIndices();
+      indices[dimension] += first;
+      weights.emplace_back(GetWeight(indices));
+    }
+    return weights;
+  }
+
  private:
   std::vector<double> weights_;
 };
