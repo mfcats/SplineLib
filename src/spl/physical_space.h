@@ -117,7 +117,7 @@ class PhysicalSpace {
     std::vector<double> weights;
     int numberOfWeights = 1;
     for (int i = 0; i < DIM; ++i) {
-        numberOfWeights *= number_of_points_[i];
+      numberOfWeights *= number_of_points_[i];
     }
     for (int i = 0; i < numberOfWeights; ++i) {
       weights.emplace_back(1.0);
