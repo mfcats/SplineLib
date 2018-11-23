@@ -22,21 +22,14 @@ class Random {
  public:
   template<class T>
   static T GetBinomialRandom(double min, double max, double distance) {
-    std::default_random_engine generator;
+    static std::default_random_engine generator;
     std::binomial_distribution<int> distribution(static_cast<int>((max - min) / distance), 0.5);
     return distribution(generator) * distance + min;
   }
 
   template<class T>
-  static T GetUniformRandom(double min, double max, double distance) {
-    std::default_random_engine generator;
-    std::uniform_int_distribution<int> distribution(static_cast<int>(min / distance), static_cast<int>(max / distance));
-    return distribution(generator) * distance;
-  }
-
-  template<class T>
   static T GetUniformRandom(double min, double max) {
-    std::default_random_engine generator;
+    static std::default_random_engine generator;
     std::uniform_real_distribution<double> distribution(min, max);
     return distribution(generator);
   }
