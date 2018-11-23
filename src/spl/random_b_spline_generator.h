@@ -42,8 +42,6 @@ class RandomBSplineGenerator : public BSplineGenerator<DIM> {
 
  private:
   std::array<Degree, DIM> GetRandomDegrees(int max_degree) {
-    std::default_random_engine generator;
-    std::binomial_distribution<int> distribution(max_degree, 0.5);
     std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; ++i) {
       degrees[i] = Degree{util::Random::GetBinomialRandom<int>(0, max_degree, 1)};

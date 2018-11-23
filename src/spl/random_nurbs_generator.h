@@ -42,9 +42,7 @@ class RandomNURBSGenerator : public NURBSGenerator<DIM> {
   }
 
  private:
-  std::array<Degree, DIM> GetRandomDegrees(int max_degree) const {
-    std::default_random_engine generator;
-    std::binomial_distribution<int> distribution(max_degree, 0.5);
+  std::array<Degree, DIM> GetRandomDegrees(int max_degree) {
     std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; ++i) {
       degrees[i] = Degree{util::Random::GetBinomialRandom<int>(0, max_degree, 1)};
@@ -53,7 +51,7 @@ class RandomNURBSGenerator : public NURBSGenerator<DIM> {
   }
 
   KnotVectors<DIM> GetRandomKnotVectors(std::array<ParamCoord, 2> param_coord_limits,
-                                        const std::array<Degree, DIM> &degrees) const {
+                                        const std::array<Degree, DIM> &degrees) {
     KnotVectors<DIM> knot_vectors;
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
@@ -76,8 +74,7 @@ class RandomNURBSGenerator : public NURBSGenerator<DIM> {
     return knot_vectors;
   }
 
-  std::vector<baf::ControlPoint> GetRandomControlPoints(int dimension,
-                                                        const std::array<int, DIM> &number_of_points) const {
+  std::vector<baf::ControlPoint> GetRandomControlPoints(int dimension, const std::array<int, DIM> &number_of_points) {
     std::vector<baf::ControlPoint> control_points;
     util::MultiIndexHandler<DIM> point_handler(number_of_points);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
@@ -90,7 +87,7 @@ class RandomNURBSGenerator : public NURBSGenerator<DIM> {
     return control_points;
   }
 
-  std::vector<double> GetRandomWeights(const std::array<int, DIM> &number_of_points) const {
+  std::vector<double> GetRandomWeights(const std::array<int, DIM> &number_of_points) {
     std::vector<double> weights;
     util::MultiIndexHandler<DIM> point_handler(number_of_points);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {

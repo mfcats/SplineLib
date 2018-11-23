@@ -47,7 +47,8 @@ set(TEST_SOURCES
         spl/surface_generator_test.cc
         spl/knot_insertion_test.cc
         spl/spline_subdivision_test.cc
-        spl/random_spline_generator_test.cc
+        spl/random_b_spline_generator_test.cc
+        spl/random_nurbs_generator_test.cc
         iga/element_integral_calculator_test.cc
         iga/linear_equation_assembler_test.cc
         iga/elm/element_generator_test.cc
