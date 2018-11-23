@@ -63,27 +63,25 @@ class BSplineFig5_9 : public Test {  // NOLINT
 
 TEST_F(BSplineFig5_9, IsSubdividedAtKnot0_3InFirstDirection) {  // NOLINT
   auto splines = bspline_2d_->SudivideSpline(ParamCoord{0.7}, 0);
-  auto spline1 = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(splines[0]);
-  auto spline2 = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(splines[1]);
-  ASSERT_THAT(spline1->GetKnotVector(0)->GetNumberOfKnots(), 8);
-  ASSERT_THAT(spline2->GetKnotVector(0)->GetNumberOfKnots(), 8);
-  ASSERT_THAT(spline1->GetKnotVector(0)->GetKnot(0).get(), DoubleEq(0));
-  ASSERT_THAT(spline1->GetKnotVector(0)->GetKnot(3).get(), DoubleEq(0));
-  ASSERT_THAT(spline1->GetKnotVector(0)->GetKnot(4).get(), DoubleEq(0.7));
-  ASSERT_THAT(spline1->GetKnotVector(0)->GetKnot(7).get(), DoubleEq(0.7));
-  ASSERT_THAT(spline2->GetKnotVector(0)->GetKnot(0).get(), DoubleEq(0.7));
-  ASSERT_THAT(spline2->GetKnotVector(0)->GetKnot(3).get(), DoubleEq(0.7));
-  ASSERT_THAT(spline2->GetKnotVector(0)->GetKnot(4).get(), DoubleEq(1));
-  ASSERT_THAT(spline2->GetKnotVector(0)->GetKnot(7).get(), DoubleEq(1));
+  ASSERT_THAT(splines[0]->GetKnotVector(0)->GetNumberOfKnots(), 8);
+  ASSERT_THAT(splines[1]->GetKnotVector(0)->GetNumberOfKnots(), 8);
+  ASSERT_THAT(splines[0]->GetKnotVector(0)->GetKnot(0).get(), DoubleEq(0));
+  ASSERT_THAT(splines[0]->GetKnotVector(0)->GetKnot(3).get(), DoubleEq(0));
+  ASSERT_THAT(splines[0]->GetKnotVector(0)->GetKnot(4).get(), DoubleEq(0.7));
+  ASSERT_THAT(splines[0]->GetKnotVector(0)->GetKnot(7).get(), DoubleEq(0.7));
+  ASSERT_THAT(splines[1]->GetKnotVector(0)->GetKnot(0).get(), DoubleEq(0.7));
+  ASSERT_THAT(splines[1]->GetKnotVector(0)->GetKnot(3).get(), DoubleEq(0.7));
+  ASSERT_THAT(splines[1]->GetKnotVector(0)->GetKnot(4).get(), DoubleEq(1));
+  ASSERT_THAT(splines[1]->GetKnotVector(0)->GetKnot(7).get(), DoubleEq(1));
   for (int i = 0; i <= 100; ++i) {
     for (int j = 0; j <= 100; ++j) {
       std::array<ParamCoord, 2> param_coord{ParamCoord(i / 100.0), ParamCoord(j / 100.0)};
       if (i / 100.0 <= 0.7) {
-        ASSERT_THAT(spline1->Evaluate(param_coord, {0})[0],
+        ASSERT_THAT(splines[0]->Evaluate(param_coord, {0})[0],
                     DoubleNear(bspline_2d_->Evaluate(param_coord, {0})[0], 0.000001));
       }
       if (i / 100.0 >= 0.7) {
-        ASSERT_THAT(spline2->Evaluate(param_coord, {0})[0],
+        ASSERT_THAT(splines[1]->Evaluate(param_coord, {0})[0],
                     DoubleNear(bspline_2d_->Evaluate(param_coord, {0})[0], 0.000001));
       }
     }
@@ -105,17 +103,15 @@ class Random1DBSplineToSplit : public Test {  // NOLINT
 
 TEST_F(Random1DBSplineToSplit, IsSubdividedAtKnot0_25) {  // NOLINT
   auto splines = b_spline_1d_->SudivideSpline(ParamCoord{0.25}, 0);
-  auto spline1 = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(splines[0]);
-  auto spline2 = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(splines[1]);
   double eval_points = 100;
   for (int i = 0; i <= eval_points; ++i) {
     std::array<ParamCoord, 1> param_coord{ParamCoord(i / eval_points)};
     if (i / eval_points <= 0.25) {
-      ASSERT_THAT(spline1->Evaluate(param_coord, {0})[0],
+      ASSERT_THAT(splines[0]->Evaluate(param_coord, {0})[0],
                   DoubleNear(b_spline_1d_->Evaluate(param_coord, {0})[0], 0.000001));
     }
     if (i / eval_points >= 0.25) {
-      ASSERT_THAT(spline2->Evaluate(param_coord, {0})[0],
+      ASSERT_THAT(splines[1]->Evaluate(param_coord, {0})[0],
                   DoubleNear(b_spline_1d_->Evaluate(param_coord, {0})[0], 0.000001));
     }
   }
@@ -136,17 +132,15 @@ class Random1DNURBSToSplit : public Test {  // NOLINT
 
 TEST_F(Random1DNURBSToSplit, IsSubdividedAtKnot0_99) {  // NOLINT
   auto splines = nurbs_1d_->SudivideSpline(ParamCoord{0.99}, 0);
-  auto spline1 = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(splines[0]);
-  auto spline2 = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(splines[1]);
   double eval_points = 100;
   for (int i = 0; i <= eval_points; ++i) {
     std::array<ParamCoord, 1> param_coord{ParamCoord(i / eval_points)};
     if (i / eval_points <= 0.99) {
-      ASSERT_THAT(spline1->Evaluate(param_coord, {0})[0],
+      ASSERT_THAT(splines[0]->Evaluate(param_coord, {0})[0],
                   DoubleNear(nurbs_1d_->Evaluate(param_coord, {0})[0], 0.000001));
     }
     if (i / eval_points >= 0.99) {
-      ASSERT_THAT(spline2->Evaluate(param_coord, {0})[0],
+      ASSERT_THAT(splines[1]->Evaluate(param_coord, {0})[0],
                   DoubleNear(nurbs_1d_->Evaluate(param_coord, {0})[0], 0.000001));
     }
   }
@@ -167,18 +161,16 @@ class Random2DBSplineToSplit : public Test {  // NOLINT
 
 TEST_F(Random2DBSplineToSplit, IsSubdividedAtKnot0_1InFirstDirection) {  // NOLINT
   auto splines = b_spline_2d_->SudivideSpline(ParamCoord{0.1}, 0);
-  auto spline1 = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(splines[0]);
-  auto spline2 = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(splines[1]);
   double eval_points = 25;
   for (int i = 0; i <= eval_points; ++i) {
     for (int j = 0; j <= eval_points; ++j) {
       std::array<ParamCoord, 2> param_coord{ParamCoord(i / eval_points), ParamCoord(j / eval_points)};
       if (i / eval_points <= 0.1) {
-        ASSERT_THAT(spline1->Evaluate(param_coord, {0})[0],
+        ASSERT_THAT(splines[0]->Evaluate(param_coord, {0})[0],
                     DoubleNear(b_spline_2d_->Evaluate(param_coord, {0})[0], 0.000001));
       }
       if (i / eval_points >= 0.1) {
-        ASSERT_THAT(spline2->Evaluate(param_coord, {0})[0],
+        ASSERT_THAT(splines[1]->Evaluate(param_coord, {0})[0],
                     DoubleNear(b_spline_2d_->Evaluate(param_coord, {0})[0], 0.000001));
       }
     }
@@ -200,18 +192,16 @@ class Random2DNURBSToSplit : public Test {  // NOLINT
 
 TEST_F(Random2DNURBSToSplit, IsSubdividedAtKnot0_5InSecondDirection) {  // NOLINT
   auto splines = nurbs_2d_->SudivideSpline(ParamCoord{0.5}, 1);
-  auto spline1 = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(splines[0]);
-  auto spline2 = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(splines[1]);
   double eval_points = 25;
   for (int i = 0; i <= eval_points; ++i) {
     for (int j = 0; j <= eval_points; ++j) {
       std::array<ParamCoord, 2> param_coord{ParamCoord(i / eval_points), ParamCoord(j / eval_points)};
       if (j / eval_points <= 0.5) {
-        ASSERT_THAT(spline1->Evaluate(param_coord, {0})[0],
+        ASSERT_THAT(splines[0]->Evaluate(param_coord, {0})[0],
                     DoubleNear(nurbs_2d_->Evaluate(param_coord, {0})[0], 0.000001));
       }
       if (j / eval_points >= 0.5) {
-        ASSERT_THAT(spline2->Evaluate(param_coord, {0})[0],
+        ASSERT_THAT(splines[1]->Evaluate(param_coord, {0})[0],
                     DoubleNear(nurbs_2d_->Evaluate(param_coord, {0})[0], 0.000001));
       }
     }
@@ -233,8 +223,6 @@ class Random3DBSplineToSplit : public Test {  // NOLINT
 
 TEST_F(Random3DBSplineToSplit, IsSubdividedAtKnot0_4InSecondDirection) {  // NOLINT
   auto splines = b_spline_3d_->SudivideSpline(ParamCoord{0.4}, 1);
-  auto spline1 = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(splines[0]);
-  auto spline2 = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(splines[1]);
   double eval_points = 15;
   for (int i = 0; i <= eval_points; ++i) {
     for (int j = 0; j <= eval_points; ++j) {
@@ -242,11 +230,11 @@ TEST_F(Random3DBSplineToSplit, IsSubdividedAtKnot0_4InSecondDirection) {  // NOL
         std::array<ParamCoord, 3>
             param_coord{ParamCoord(i / eval_points), ParamCoord(j / eval_points), ParamCoord(k / eval_points)};
         if (j / eval_points <= 0.4) {
-          ASSERT_THAT(spline1->Evaluate(param_coord, {0})[0],
+          ASSERT_THAT(splines[0]->Evaluate(param_coord, {0})[0],
                       DoubleNear(b_spline_3d_->Evaluate(param_coord, {0})[0], 0.000001));
         }
         if (j / eval_points >= 0.4) {
-          ASSERT_THAT(spline2->Evaluate(param_coord, {0})[0],
+          ASSERT_THAT(splines[1]->Evaluate(param_coord, {0})[0],
                       DoubleNear(b_spline_3d_->Evaluate(param_coord, {0})[0], 0.000001));
         }
       }
@@ -269,19 +257,17 @@ class Random3DNURBSToSplit : public Test {  // NOLINT
 
 TEST_F(Random3DNURBSToSplit, IsSubdividedAtKnot0_9InThirdDirection) {  // NOLINT
   auto splines = nurbs_3d_->SudivideSpline(ParamCoord{0.9}, 2);
-  auto spline1 = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(splines[0]);
-  auto spline2 = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(splines[1]);
   double s = 5;
   for (int i = 0; i <= s; ++i) {
     for (int j = 0; j <= s; ++j) {
       for (int k = 0; k <= s; ++k) {
         std::array<ParamCoord, 3> param_coord{ParamCoord(i / s), ParamCoord(j / s), ParamCoord(k / s)};
         if (k / s <= 0.9) {
-          ASSERT_THAT(spline1->Evaluate(param_coord, {0})[0],
+          ASSERT_THAT(splines[0]->Evaluate(param_coord, {0})[0],
                       DoubleNear(nurbs_3d_->Evaluate(param_coord, {0})[0], 0.000001));
         }
         if (k / s >= 0.9) {
-          ASSERT_THAT(spline2->Evaluate(param_coord, {0})[0],
+          ASSERT_THAT(splines[1]->Evaluate(param_coord, {0})[0],
                       DoubleNear(nurbs_3d_->Evaluate(param_coord, {0})[0], 0.000001));
         }
       }

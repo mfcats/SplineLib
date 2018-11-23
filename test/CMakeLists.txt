@@ -46,11 +46,11 @@ set(TEST_SOURCES
         iga/mapping_handler_test.cc
         spl/surface_generator_test.cc
         spl/knot_insertion_test.cc
+        spl/spline_subdivision_test.cc
         iga/element_integral_calculator_test.cc
         iga/linear_equation_assembler_test.cc
         iga/elm/element_generator_test.cc
-        iga/solution_vtk_writer_test.cc 
-        iga/matlab_test_data_2.h)
+        iga/solution_vtk_writer_test.cc)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
