@@ -16,6 +16,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "nurbs.h"
+#include "random_b_spline_generator.h"
+#include "random_nurbs_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -144,42 +146,13 @@ TEST_F(NURBSEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
   }
 }
 
-class BSpline2DEx : public Test {  // NOLINT
+class Random2DBSplineForKnotInsertion : public Test {  // NOLINT
  public:
-  BSpline2DEx() {
-    std::array<Degree, 2> degree = {Degree{3}, Degree{2}};
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector_before = {
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                           ParamCoord{1}, ParamCoord{1}, ParamCoord{1},
-                                                           ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
-                                                           ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector_after = {
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                           ParamCoord{1}, ParamCoord{1}, ParamCoord{1},
-                                                           ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
-                                                           ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({5.0, 0.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 0.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 0.0, 3.0})),
-        baf::ControlPoint(std::vector<double>({-1.0, 0.0, 3.0})),
-        baf::ControlPoint(std::vector<double>({5.0, 2.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 1.5, 2.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 1.0, 3.0})),
-        baf::ControlPoint(std::vector<double>({-1.0, 1.0, 3.0})),
-        baf::ControlPoint(std::vector<double>({5.0, 2.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 2.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 2.5, 2.0})),
-        baf::ControlPoint(std::vector<double>({-1.0, 2.5, 2.0})),
-        baf::ControlPoint(std::vector<double>({5.0, 5.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 4.5, 0.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 4.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({-1.0, 4.0, 2.0}))
-    };
-    bspline_2d_before_ = std::make_shared<spl::BSpline<2>>(knot_vector_before, degree, control_points);
-    bspline_2d_after_ = std::make_shared<spl::BSpline<2>>(knot_vector_after, degree, control_points);
+  Random2DBSplineForKnotInsertion() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
+    spl::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
+    spl::BSpline<2> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
+    bspline_2d_before_ = std::make_shared<spl::BSpline<2>>(b_spline);
   }
 
  protected:
@@ -187,7 +160,7 @@ class BSpline2DEx : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<2>> bspline_2d_after_;
 };
 
-TEST_F(BSpline2DEx, InsertsKnot0_4InFirstDirectionCorrectly) {  // NOLINT
+TEST_F(Random2DBSplineForKnotInsertion, InsertsKnot0_4InFirstDirectionCorrectly) {  // NOLINT
   bspline_2d_after_->InsertKnot(ParamCoord(0.4), 0);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
