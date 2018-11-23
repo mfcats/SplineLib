@@ -16,10 +16,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_SPL_RANDOM_B_SPLINE_GENERATOR_H_
 
 #include <memory>
-#include <random>
 #include <vector>
 
 #include "b_spline_generator.h"
+#include "random.h"
 
 namespace spl {
 template<int DIM>
@@ -46,7 +46,7 @@ class RandomBSplineGenerator : public BSplineGenerator<DIM> {
     std::binomial_distribution<int> distribution(max_degree, 0.5);
     std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; ++i) {
-      degrees[i] = Degree{GetRandom<int>(0, max_degree, 1)};
+      degrees[i] = Degree{util::Random::GetBinomialRandom<int>(0, max_degree, 1)};
     }
     return degrees;
   }
@@ -56,7 +56,7 @@ class RandomBSplineGenerator : public BSplineGenerator<DIM> {
     KnotVectors<DIM> knot_vectors;
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
-      number_of_points[i] = GetRandom<int>(2 * degrees[i].get() + 2, 4 * degrees[i].get(), 1);
+      number_of_points[i] = util::Random::GetBinomialRandom<int>(2 * degrees[i].get() + 2, 4 * degrees[i].get(), 1);
     }
     std::array<std::vector<ParamCoord>, DIM> param_coord_vectors;
     for (int i = 0; i < DIM; ++i) {
@@ -81,18 +81,11 @@ class RandomBSplineGenerator : public BSplineGenerator<DIM> {
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
       std::vector<double> coordinates;
       for (int j = 0; j < dimension; ++j) {
-        coordinates.push_back(GetRandom<double>(-5, 5, 0.01));
+        coordinates.push_back(util::Random::GetBinomialRandom<double>(-5, 5, 0.01));
       }
       control_points.emplace_back(coordinates);
     }
     return control_points;
-  }
-
-  template<class T>
-  T GetRandom(int min, int max, double distance) {
-    std::default_random_engine generator;
-    std::binomial_distribution<int> distribution(static_cast<int>((max - min) / distance), 0.5);
-    return distribution(generator) * distance + min;
   }
 };
 }  // namespace spl
