@@ -390,6 +390,7 @@ class AComplexSurface2 : public Test {
 
 TEST_F(AComplexSurface2, ThrowExceptionIfDegreeTooLow) { // NOLINT
   std::vector<std::array<double, 3>> scaling(nbInter, {1.0, 1.0, 1.0});
-  ASSERT_THROW(spl::SurfaceGenerator surfaceGenerator = spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling), std::runtime_error);
+  ASSERT_THROW(spl::SurfaceGenerator surfaceGenerator =
+      spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling), std::runtime_error);
 }
 
