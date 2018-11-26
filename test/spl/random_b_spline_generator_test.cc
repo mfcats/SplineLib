@@ -19,18 +19,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::Test;
 using testing::DoubleEq;
-using testing::DoubleNear;
 
 class A1DRandomBSplineGenerator : public Test {  // NOLINT
  public:
-  A1DRandomBSplineGenerator() : b_spline_generator_({ParamCoord{0.5}, ParamCoord{2.75}}, 10, 2),
-                                limits_({ParamCoord{0.5}, ParamCoord{2.75}}), max_degree_(10), dimension_(2) {}
+  A1DRandomBSplineGenerator() {
+    b_spline_generator_ = spl::RandomBSplineGenerator<1>(limits_, max_degree_, dimension_);
+  }
 
  protected:
   spl::RandomBSplineGenerator<1> b_spline_generator_;
-  const std::array<ParamCoord, 2> limits_;
-  const int max_degree_;
-  const int dimension_;
+  const std::array<ParamCoord, 2> limits_{{ParamCoord{0.5}, ParamCoord{2.75}}};
+  const int max_degree_{10};
+  const int dimension_{2};
 };
 
 TEST_F(A1DRandomBSplineGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
@@ -49,14 +49,15 @@ TEST_F(A1DRandomBSplineGenerator, RegardsPhysicalDimension) {  // NOLINT
 
 class A2DRandomBSplineGenerator : public Test {  // NOLINT
  public:
-  A2DRandomBSplineGenerator() : b_spline_generator_({ParamCoord{0.0}, ParamCoord{10.0}}, 8, 3),
-                                limits_({ParamCoord{0.0}, ParamCoord{10.0}}), max_degree_(8), dimension_(3) {}
+  A2DRandomBSplineGenerator() {
+    b_spline_generator_ = spl::RandomBSplineGenerator<2>(limits_, max_degree_, dimension_);
+  }
 
  protected:
   spl::RandomBSplineGenerator<2> b_spline_generator_;
-  const std::array<ParamCoord, 2> limits_;
-  const int max_degree_;
-  const int dimension_;
+  const std::array<ParamCoord, 2> limits_{{ParamCoord{0.0}, ParamCoord{10.0}}};
+  const int max_degree_{8};
+  const int dimension_{3};
 };
 
 TEST_F(A2DRandomBSplineGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
@@ -79,14 +80,15 @@ TEST_F(A2DRandomBSplineGenerator, RegardsPhysicalDimension) {  // NOLINT
 
 class A3DRandomBSplineGenerator : public Test {  // NOLINT
  public:
-  A3DRandomBSplineGenerator() : b_spline_generator_({ParamCoord{2.0}, ParamCoord{3.0}}, 20, 4),
-                                limits_({ParamCoord{2.0}, ParamCoord{3.0}}), max_degree_(20), dimension_(4) {}
+  A3DRandomBSplineGenerator() {
+    b_spline_generator_ = spl::RandomBSplineGenerator<3>(limits_, max_degree_, dimension_);
+  }
 
  protected:
   spl::RandomBSplineGenerator<3> b_spline_generator_;
-  const std::array<ParamCoord, 2> limits_;
-  const int max_degree_;
-  const int dimension_;
+  const std::array<ParamCoord, 2> limits_{{ParamCoord{2.0}, ParamCoord{3.0}}};
+  const int max_degree_{20};
+  const int dimension_{4};
 };
 
 TEST_F(A3DRandomBSplineGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
