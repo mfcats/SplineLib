@@ -44,6 +44,16 @@ class NURBS : public Spline<DIM> {
                                                                                               number_of_points));
   }
 
+  explicit NURBS(NURBSGenerator<DIM> nurbs_generator) : Spline<DIM>(nurbs_generator.GetParameterSpace()) {
+    physical_space_ = nurbs_generator.GetWeightedPhysicalSpace();
+  }
+
+  NURBS(const NURBS<DIM> &nurbs)
+      : Spline<DIM>(std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(*nurbs.GetParameterSpace()))) {
+    WeightedPhysicalSpace<DIM> weighted_physical_space(*nurbs.physical_space_);
+    physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(weighted_physical_space);
+  }
+
   virtual ~NURBS() = default;
 
   NURBS(std::shared_ptr<ParameterSpace<DIM>> parameter_space,
@@ -72,13 +82,13 @@ class NURBS : public Spline<DIM> {
     return physical_space_->GetWeight(indices);
   }
 
-  explicit NURBS(NURBSGenerator<DIM> nurbs_generator) : Spline<DIM>(nurbs_generator.GetParameterSpace()) {
-    physical_space_ = nurbs_generator.GetWeightedPhysicalSpace();
-  }
-
   std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const override {
     return physical_space_;
   }
+
+//  std::shared_ptr<spl::WeightedPhysicalSpace<DIM>> GetWeightedPhysicalSpace() const {
+//    return physical_space_;
+//  }
 
   void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
     std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
