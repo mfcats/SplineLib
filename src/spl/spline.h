@@ -40,6 +40,10 @@ class Spline {
   explicit Spline(std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
     parameter_space_ = parameter_space;
   }
+  Spline(const Spline<DIM> &spline) {
+    ParameterSpace<DIM> parameter_space(*spline.GetParameterSpace());
+    parameter_space_ = std::make_shared<ParameterSpace<DIM>>(parameter_space);
+  }
 
   virtual std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord,
                                        const std::vector<int> &dimensions) const {

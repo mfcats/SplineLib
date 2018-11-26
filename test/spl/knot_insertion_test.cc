@@ -292,10 +292,10 @@ TEST_F(Random3DNURBSForKnotInsertion, InsertsKnot0_4InFirst_Knot0_99InSecond_Kno
   ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[0], nurbs_3d_before_->GetPointsPerDirection()[0] + 1);
   ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[1], nurbs_3d_before_->GetPointsPerDirection()[1] + 1);
   ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[2], nurbs_3d_before_->GetPointsPerDirection()[2] + 1);
-  ParamCoord coord1 = ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-  ParamCoord coord2 = ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-  ParamCoord coord3 = ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-  std::array<ParamCoord, 3> param_coord{coord1, coord2, coord3};
+  std::array<ParamCoord, 3> param_coord{};
+  for (int i = 0; i < 3; ++i) {
+    param_coord[i] = ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+  }
   for (int l = 0; l < 3; ++l) {
     ASSERT_THAT(nurbs_3d_after_->Evaluate(param_coord, {l})[0],
                 DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {l})[0], 0.000001));

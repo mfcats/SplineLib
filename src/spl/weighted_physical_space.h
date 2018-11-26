@@ -34,12 +34,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     }
   }
 
-  WeightedPhysicalSpace(const WeightedPhysicalSpace &physical_space) {
-    for (int i = 0; i < DIM; ++i) {
-      this->number_of_points_[i] = physical_space.number_of_points_[i];
-    }
-    this->dimension_ = physical_space.dimension_;
-    this->control_points_ = physical_space.control_points_;
+  WeightedPhysicalSpace(const WeightedPhysicalSpace &physical_space) : PhysicalSpace<DIM>(physical_space) {
     this->weights_ = physical_space.weights_;
   }
 
