@@ -62,8 +62,11 @@ class RandomNURBSGenerator : public NURBSGenerator<DIM> {
       for (int j = 0; j < degrees[i].get() + 1; ++j) {
         param_coord_vectors[i].push_back(param_coord_limits[0]);
       }
-      for (int j = 0; j < number_of_points[i] - 2 * degrees[i].get() - 2; ++j) {
-        param_coord_vectors[i].push_back(ParamCoord((param_coord_limits[1].get() - param_coord_limits[1].get()) / 2));
+      int number = number_of_points[i] - 2 * degrees[i].get() - 2;
+      for (int j = 1; j <= number; ++j) {
+        double coord = (param_coord_limits[1].get() - param_coord_limits[0].get()) / (number + 1) * j
+            + param_coord_limits[0].get();
+        param_coord_vectors[i].push_back(ParamCoord(coord));
       }
       for (int j = 0; j < degrees[i].get() + 1; ++j) {
         param_coord_vectors[i].push_back(param_coord_limits[1]);

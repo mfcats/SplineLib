@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::Test;
 using testing::DoubleEq;
+using testing::DoubleNear;
 
 class A1DRandomNURBSGenerator : public Test {  // NOLINT
  public:
@@ -33,10 +34,22 @@ class A1DRandomNURBSGenerator : public Test {  // NOLINT
   const int dimension_{2};
 };
 
-TEST_F(A1DRandomNURBSGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
-  ASSERT_THAT(nurbs_generator_.GetParameterSpace()->GetKnotVector(0)->GetKnot(0).get(), DoubleEq(limits_[0].get()));
-  ASSERT_THAT(nurbs_generator_.GetParameterSpace()->GetKnotVector(0)->GetLastKnot().get(),
-              DoubleEq(limits_[1].get()));
+TEST_F(A1DRandomNURBSGenerator, CreatesCorrectKnots) {  // NOLINT
+  spl::ParameterSpace<1> parameter_space = *nurbs_generator_.GetParameterSpace();
+  size_t degree = static_cast<size_t>(parameter_space.GetDegree(0).get());
+  baf::KnotVector knot_vector = *parameter_space.GetKnotVector(0);
+  size_t i = 0;
+  for (; i < degree + 1; ++i) {
+    ASSERT_THAT(knot_vector.GetKnot(i).get(), DoubleEq(limits_[0].get()));
+  }
+  for (; i < knot_vector.GetNumberOfKnots() - degree - 1; ++i) {
+    ASSERT_THAT(knot_vector.GetKnot(i).get() - knot_vector.GetKnot(i - 1).get(),
+                DoubleNear((limits_[1].get() - limits_[0].get()) / (knot_vector.GetNumberOfKnots() - 2 * degree - 1),
+                           0.00000001));
+  }
+  for (; i < knot_vector.GetNumberOfKnots(); ++i) {
+    ASSERT_THAT(knot_vector.GetKnot(i).get(), DoubleEq(limits_[1].get()));
+  }
 }
 
 TEST_F(A1DRandomNURBSGenerator, RegardsMaximalDegree) {  // NOLINT
