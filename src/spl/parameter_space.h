@@ -43,6 +43,21 @@ class ParameterSpace {
     }
   }
 
+  ParameterSpace(const ParameterSpace<DIM> &parameter_space) {
+    degree_ = parameter_space.GetDegrees();
+    for (int i = 0; i < DIM; ++i) {
+      baf::KnotVector knot_vector = *(parameter_space.GetKnotVector(i));
+      knot_vector_[i] = std::make_shared<baf::KnotVector>(knot_vector);
+    }
+    baf::BasisFunctionFactory factory;
+    for (int i = 0; i < DIM; i++) {
+      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
+      for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
+        basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
+      }
+    }
+  }
+
   virtual ~ParameterSpace() = default;
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParamCoord param_coord) const {

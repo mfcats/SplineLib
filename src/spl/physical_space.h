@@ -47,6 +47,13 @@ class PhysicalSpace {
     }
   }
 
+  PhysicalSpace(const PhysicalSpace &physical_space)
+      : dimension_(physical_space.dimension_), control_points_(physical_space.control_points_) {
+    for (int i = 0; i < DIM; ++i) {
+      number_of_points_[i] = physical_space.number_of_points_[i];
+    }
+  }
+
   virtual baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const {
     std::vector<double> coordinates;
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
