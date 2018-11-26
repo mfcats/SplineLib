@@ -149,7 +149,7 @@ TEST_F(NURBSEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
 class Random2DBSplineForKnotInsertion : public Test {  // NOLINT
  public:
   Random2DBSplineForKnotInsertion() {
-    std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
     spl::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
     spl::BSpline<2> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
     bspline_2d_before_ = std::make_shared<spl::BSpline<2>>(b_spline);
@@ -169,13 +169,15 @@ TEST_F(Random2DBSplineForKnotInsertion, InsertsKnot0_4InFirstDirectionCorrectly)
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots());
   ASSERT_THAT(bspline_2d_after_->GetPointsPerDirection()[0], bspline_2d_before_->GetPointsPerDirection()[0] + 1);
-//  for (int i = 0; i <= 100; ++i) {
-//    for (int j = 0; j <= 100; ++j) {
-//      std::array<ParamCoord, 2> param_coord{ParamCoord(i / 100.0), ParamCoord(j / 100.0)};
-//      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {0})[0],
-//                  DoubleNear(bspline_2d_before_->Evaluate(param_coord, {0})[0], 0.000001));
-//    }
-//  }
+  double steps = 50;
+  for (int i = 0; i <= steps; ++i) {
+    ParamCoord coord2 = ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+    std::array<ParamCoord, 2> param_coord{ParamCoord(i / steps), coord2};
+    for (int j = 0; j < 2; ++j) {
+      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {j})[0],
+                  DoubleNear(bspline_2d_before_->Evaluate(param_coord, {j})[0], 0.000001));
+    }
+  }
 }
 
 TEST_F(Random2DBSplineForKnotInsertion, InsertsKnot0_7InSecondDirectionCorrectly) {  // NOLINT
@@ -185,13 +187,15 @@ TEST_F(Random2DBSplineForKnotInsertion, InsertsKnot0_7InSecondDirectionCorrectly
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() + 1);
   ASSERT_THAT(bspline_2d_after_->GetPointsPerDirection()[1], bspline_2d_before_->GetPointsPerDirection()[1] + 1);
-//  for (int i = 0; i <= 100; ++i) {
-//    for (int j = 0; j <= 100; ++j) {
-//      std::array<ParamCoord, 2> param_coord{ParamCoord(i / 100.0), ParamCoord(j / 100.0)};
-//      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {0})[0],
-//                  DoubleNear(bspline_2d_before_->Evaluate(param_coord, {0})[0], 0.000001));
-//    }
-//  }
+  double steps = 50;
+  for (int i = 0; i <= steps; ++i) {
+    ParamCoord coord1 = ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+    std::array<ParamCoord, 2> param_coord{coord1, ParamCoord(i / steps)};
+    for (int j = 0; j < 2; ++j) {
+      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {j})[0],
+                  DoubleNear(bspline_2d_before_->Evaluate(param_coord, {j})[0], 0.000001));
+    }
+  }
 }
 
 TEST_F(Random2DBSplineForKnotInsertion, InsertsKnot0_4InFirstAndKnot0_7InSecondDirectionCorrectly) {  // NOLINT
@@ -203,13 +207,16 @@ TEST_F(Random2DBSplineForKnotInsertion, InsertsKnot0_4InFirstAndKnot0_7InSecondD
               bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() + 1);
   ASSERT_THAT(bspline_2d_after_->GetPointsPerDirection()[0], bspline_2d_before_->GetPointsPerDirection()[0] + 1);
   ASSERT_THAT(bspline_2d_after_->GetPointsPerDirection()[1], bspline_2d_before_->GetPointsPerDirection()[1] + 1);
-//  for (int i = 0; i <= 100; ++i) {
-//    for (int j = 0; j <= 100; ++j) {
-//      std::array<ParamCoord, 2> param_coord{ParamCoord(i / 100.0), ParamCoord(j / 100.0)};
-//      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {0})[0],
-//                  DoubleNear(bspline_2d_before_->Evaluate(param_coord, {0})[0], 0.000001));
-//    }
-//  }
+  double steps = 10;
+  for (int i = 0; i <= steps; ++i) {
+    for (int j = 0; j <= steps; ++j) {
+      std::array<ParamCoord, 2> param_coord{ParamCoord(i / steps), ParamCoord(j / steps)};
+      for (int k = 0; k < 2; ++k) {
+        ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {k})[0],
+                    DoubleNear(bspline_2d_before_->Evaluate(param_coord, {k})[0], 0.000001));
+      }
+    }
+  }
 }
 
 class BSpline3DEx : public Test {  // NOLINT

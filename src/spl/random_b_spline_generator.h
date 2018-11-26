@@ -62,7 +62,7 @@ class RandomBSplineGenerator : public BSplineGenerator<DIM> {
         param_coord_vectors[i].push_back(param_coord_limits[0]);
       }
       for (int j = 0; j < number_of_points[i] - 2 * degrees[i].get() - 2; ++j) {
-        param_coord_vectors[i].push_back(ParamCoord((param_coord_limits[1].get() - param_coord_limits[1].get()) / 2));
+        param_coord_vectors[i].push_back(ParamCoord((param_coord_limits[1].get() - param_coord_limits[0].get()) / 2.0));
       }
       for (int j = 0; j < degrees[i].get() + 1; ++j) {
         param_coord_vectors[i].push_back(param_coord_limits[1]);
