@@ -69,7 +69,7 @@ class IGESReader {
     int upperSumIndex = static_cast<int>(parameterData[1]);
     std::array<Degree, 1> degree{};
     degree[0] = Degree{static_cast<int>(parameterData[2])};
-    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector;
+    KnotVectors<1> knot_vector;
     std::vector<double> weights;
     std::vector<baf::ControlPoint> control_points;
     std::array<int, 2> knotsStartEnd{};
@@ -118,7 +118,7 @@ class IGESReader {
     std::array<Degree, 2> degree{};
     degree[0] = Degree{static_cast<int>(parameterData[3])};
     degree[1] = Degree{static_cast<int>(parameterData[4])};
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector;
+    KnotVectors<2> knot_vector;
     std::vector<double> weights;
     std::vector<baf::ControlPoint> control_points;
     std::array<std::array<int, 2>, 2> knotsStartEnd{};

@@ -78,8 +78,7 @@ class IRITReader {
   }
 
   std::any Get1DSpline(int start, const std::vector<std::string> &entries) const {
-    std::array<std::shared_ptr<baf::KnotVector>, 1>
-        knot_vector = io::IRITReaderUtils::GetKnotVectors<1>(start, entries);
+    KnotVectors<1> knot_vector = io::IRITReaderUtils::GetKnotVectors<1>(start, entries);
     std::array<Degree, 1> degree = io::IRITReaderUtils::GetDegrees<1>(start, entries);
     bool rational = io::IRITReaderUtils::IsRational<1>(start, entries);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
@@ -93,8 +92,7 @@ class IRITReader {
   }
 
   std::any Get2DSpline(int start, const std::vector<std::string> &entries) const {
-    std::array<std::shared_ptr<baf::KnotVector>, 2>
-        knot_vector = io::IRITReaderUtils::GetKnotVectors<2>(start, entries);
+    KnotVectors<2> knot_vector = io::IRITReaderUtils::GetKnotVectors<2>(start, entries);
     std::array<Degree, 2> degree = io::IRITReaderUtils::GetDegrees<2>(start, entries);
     bool rational = io::IRITReaderUtils::IsRational<2>(start, entries);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
@@ -108,8 +106,7 @@ class IRITReader {
   }
 
   std::any Get3DSpline(int start, const std::vector<std::string> &entries) const {
-    std::array<std::shared_ptr<baf::KnotVector>, 3>
-        knot_vector = io::IRITReaderUtils::GetKnotVectors<3>(start, entries);
+    KnotVectors<3> knot_vector = io::IRITReaderUtils::GetKnotVectors<3>(start, entries);
     std::array<Degree, 3> degree = io::IRITReaderUtils::GetDegrees<3>(start, entries);
     bool rational = io::IRITReaderUtils::IsRational<3>(start, entries);
     std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);

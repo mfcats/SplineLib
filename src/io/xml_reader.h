@@ -73,7 +73,7 @@ class XMLReader {
   }
 
   std::any Get1DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
-    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vectors = io::XMLReaderUtils<1>::GetKnotVectors(spline);
+    KnotVectors<1> knot_vectors = io::XMLReaderUtils<1>::GetKnotVectors(spline);
     std::array<Degree, 1> degrees = io::XMLReaderUtils<1>::GetDegrees(spline);
     if (spline->child("wght").empty()) {
       return std::make_any<std::shared_ptr<spl::BSpline<1>>>(
@@ -85,7 +85,7 @@ class XMLReader {
   }
 
   std::any Get2DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vectors = io::XMLReaderUtils<2>::GetKnotVectors(spline);
+    KnotVectors<2> knot_vectors = io::XMLReaderUtils<2>::GetKnotVectors(spline);
     std::array<Degree, 2> degrees = io::XMLReaderUtils<2>::GetDegrees(spline);
     if (spline->child("wght").empty()) {
       return std::make_any<std::shared_ptr<spl::BSpline<2>>>(
@@ -97,7 +97,7 @@ class XMLReader {
   }
 
   std::any Get3DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
-    std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vectors = io::XMLReaderUtils<3>::GetKnotVectors(spline);
+    KnotVectors<3> knot_vectors = io::XMLReaderUtils<3>::GetKnotVectors(spline);
     std::array<Degree, 3> degrees = io::XMLReaderUtils<3>::GetDegrees(spline);
     if (spline->child("wght").empty()) {
       return std::make_any<std::shared_ptr<spl::BSpline<3>>>(
@@ -109,7 +109,7 @@ class XMLReader {
   }
 
   std::any Get4DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
-    std::array<std::shared_ptr<baf::KnotVector>, 4> knot_vectors = io::XMLReaderUtils<4>::GetKnotVectors(spline);
+    KnotVectors<4> knot_vectors = io::XMLReaderUtils<4>::GetKnotVectors(spline);
     std::array<Degree, 4> degrees = io::XMLReaderUtils<4>::GetDegrees(spline);
     if (spline->child("wght").empty()) {
       return std::make_any<std::shared_ptr<spl::BSpline<4>>>(

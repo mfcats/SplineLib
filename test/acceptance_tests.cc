@@ -31,7 +31,7 @@ std::unique_ptr<spl::BSpline<1>> GenerateSpline() {
       baf::ControlPoint(std::vector<double>({4.0, 1.5})),
       baf::ControlPoint(std::vector<double>({4.0, 0.0}))
   };
-  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_ptr = {
+  KnotVectors<1> knot_vector_ptr = {
       std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                          ParamCoord{2}, ParamCoord{3},
                                                          ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5},

@@ -32,8 +32,8 @@ class XMLReaderUtils {
     return StringVectorToDegreeArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
   }
 
-  static std::array<std::shared_ptr<baf::KnotVector>, DIM> GetKnotVectors(pugi::xml_node *spline) {
-    std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector;
+  static KnotVectors<DIM> GetKnotVectors(pugi::xml_node *spline) {
+    KnotVectors<DIM> knot_vector;
     for (int i = 0; i < DIM; i++) {
       knot_vector[i] = std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord(0.5)}));
     }
