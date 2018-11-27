@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <initializer_list>
 #include <vector>
+#include <array>
 
 namespace baf {
 class ControlPoint {
@@ -30,6 +31,8 @@ class ControlPoint {
   double GetValue(int dimension) const;
 
   ControlPoint operator+(const ControlPoint& control_point) const;
+
+  ControlPoint Transform(std::array<std::array<double, 4>, 4> TransMatrix, std::array<double, 3> scaling) const;
 
  protected:
   std::vector<double> coordinates_;

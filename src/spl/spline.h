@@ -100,9 +100,13 @@ class Spline {
     return parameter_space_->GetKnotVector(i);
   }
 
+  double GetKnotVectorRange(int direction) const {
+    return parameter_space_->GetKnotVectorRange(direction);
+  }
+
   virtual int GetNumberOfControlPoints() = 0;
   virtual std::array<int, DIM> GetPointsPerDirection() = 0;
-  virtual int GetDimension() = 0;
+  virtual int GetDimension() const = 0;
   virtual double GetControlPoint(std::array<int, DIM> indices, int dimension) = 0;
 
   virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;

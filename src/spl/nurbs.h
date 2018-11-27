@@ -20,7 +20,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <functional>
 #include <utility>
 #include <vector>
-#include <iostream>
 
 #include "b_spline.h"
 #include "spline.h"
@@ -61,12 +60,16 @@ class NURBS : public Spline<DIM> {
     return physical_space_->GetNumberOfPointsInEachDirection();
   }
 
-  int GetDimension() override {
+  int GetDimension() const override {
     return physical_space_->GetDimension();
   }
 
   double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
     return physical_space_->GetControlPoint(indices).GetValue(dimension);
+  }
+
+  baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) {
+    return physical_space_->GetControlPoint(indices);
   }
 
   double GetWeight(std::array<int, DIM> indices) {
@@ -125,9 +128,14 @@ class NURBS : public Spline<DIM> {
   double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,
                                   int dimension) const override {
-    return this->parameter_space_->GetBasisFunctions(indices, param_coord)
-        * physical_space_->GetHomogenousControlPoint(indices).GetValue(dimension)
-        / GetEvaluatedWeightSum(param_coord);
+    if (GetDimension() == dimension) {
+      return this->parameter_space_->GetBasisFunctions(indices, param_coord)
+          * physical_space_->GetHomogenousControlPoint(indices).GetValue(dimension);
+    } else {
+      return this->parameter_space_->GetBasisFunctions(indices, param_coord)
+          * physical_space_->GetHomogenousControlPoint(indices).GetValue(dimension)
+          / GetEvaluatedWeightSum(param_coord);
+    }
   }
 
   double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,

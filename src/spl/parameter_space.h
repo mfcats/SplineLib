@@ -148,6 +148,11 @@ class ParameterSpace {
     return knots;
   }
 
+  double GetKnotVectorRange(int direction) const {
+    return GetKnotVector(direction)->GetLastKnot().get() - GetKnotVector(direction)->GetKnot(0).get();
+  }
+
+
   void InsertKnot(ParamCoord knot, int dimension) {
     knot_vector_[dimension]->InsertKnot(knot);
     for (int i = 0; i < DIM; i++) {

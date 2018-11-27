@@ -37,6 +37,7 @@ class MockWeightedPhysicalSpace14111 : public spl::WeightedPhysicalSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
   MOCK_CONST_METHOD1(GetHomogenousControlPoint, baf::ControlPoint(std::array<int, 1>));
+  MOCK_CONST_METHOD0(GetDimension, int());
 };
 
 void mock_weights(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace14111>> &w_physical_space) {
@@ -47,18 +48,21 @@ void mock_weights(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace14111>
 }
 
 void mock_homogenous(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace14111>> &w_physical_space) {
+  ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{0}))
+      .WillByDefault(Return(baf::ControlPoint({0.0, 0.0, 1.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{1}))
-      .WillByDefault(Return(baf::ControlPoint({4.0, 4.0})));
+      .WillByDefault(Return(baf::ControlPoint({4.0, 4.0, 4.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{2}))
-      .WillByDefault(Return(baf::ControlPoint({3.0, 2.0})));
+      .WillByDefault(Return(baf::ControlPoint({3.0, 2.0, 1.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{3}))
-      .WillByDefault(Return(baf::ControlPoint({4.0, 1.0})));
+      .WillByDefault(Return(baf::ControlPoint({4.0, 1.0, 1.0})));
 }
 
 void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace14111>>
                                 &w_physical_space) {
   mock_weights(w_physical_space);
   mock_homogenous(w_physical_space);
+  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(2));
 }
 
 void set_get_basis_function_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace14111>> &parameter_space) {
@@ -109,6 +113,12 @@ TEST_F(NurbsEx4_1, Returns1_2For1AndDim1) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {1})[0], DoubleNear(1.2, util::NumericSettings<double>::kEpsilon()));
 }
 
+TEST_F(NurbsEx4_1, Returns1For1AndWeight) { // NOLINT
+  mock_parameterSpace_nurbs(parameter_space);
+  mock_weightedPhysicalSpace(w_physical_space);
+  ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {2})[0], DoubleNear(2.5, util::NumericSettings<double>::kEpsilon()));
+}
+
 class MockParameterSpace1009 : public spl::ParameterSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetDegree, Degree(int));
@@ -121,6 +131,7 @@ class MockWeightedPhysicalSpace1009 : public spl::WeightedPhysicalSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
   MOCK_CONST_METHOD1(GetHomogenousControlPoint, baf::ControlPoint(std::array<int, 1>));
+  MOCK_CONST_METHOD0(GetDimension, int());
 };
 
 void mock_weights(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace1009>> &w_physical_space) {
@@ -142,25 +153,26 @@ void mock_weights(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace1009>>
 
 void mock_homogenous(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace1009>> &w_physical_space) {
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{0}))
-      .WillByDefault(Return(baf::ControlPoint({0.5, 3.0, 1.0})));
+      .WillByDefault(Return(baf::ControlPoint({0.5, 3.0, 1.0, 1.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{1}))
-      .WillByDefault(Return(baf::ControlPoint({1.35, 4.95, 3.6})));
+      .WillByDefault(Return(baf::ControlPoint({1.35, 4.95, 3.6, 0.9})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{2}))
-      .WillByDefault(Return(baf::ControlPoint({3.15, 3.85, 0.07})));
+      .WillByDefault(Return(baf::ControlPoint({3.15, 3.85, 0.07, 0.7})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{3}))
-      .WillByDefault(Return(baf::ControlPoint({1.5, 0.75, 1.0})));
+      .WillByDefault(Return(baf::ControlPoint({1.5, 0.75, 1.0, 0.5})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{4}))
-      .WillByDefault(Return(baf::ControlPoint({6.0, 1.2, 2.8})));
+      .WillByDefault(Return(baf::ControlPoint({6.0, 1.2, 2.8, 0.8})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{5}))
-      .WillByDefault(Return(baf::ControlPoint({7.2, 4.8, 6.36})));
+      .WillByDefault(Return(baf::ControlPoint({7.2, 4.8, 6.36, 1.2})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{6}))
-      .WillByDefault(Return(baf::ControlPoint({17.0, 9.0, 0.0})));
+      .WillByDefault(Return(baf::ControlPoint({17.0, 9.0, 0.0, 2.0})));
 }
 
 void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace1009>>
                                 &w_physical_space) {
   mock_weights(w_physical_space);
   mock_homogenous(w_physical_space);
+  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(3));
 }
 
 void set_throw_method(const std::shared_ptr<NiceMock<MockParameterSpace1009>> &parameter_space) {
@@ -246,16 +258,20 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForFirstKnot) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleNear(0.5, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {1})[0], DoubleNear(3.0, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {2})[0], DoubleNear(1.0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.0}}, {3})[0], DoubleNear(1.0, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(ANurbs, ReturnsCorrectCurvePointForInnerKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.25}}, {0})[0],
-              DoubleNear(2.8125, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.25}}, {1})[0], DoubleNear(5.5, util::NumericSettings<double>::kEpsilon()));
+      DoubleNear(2.8125, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.25}}, {1})[0],
+      DoubleNear(5.5, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.25}}, {2})[0],
-              DoubleNear(2.29375, util::NumericSettings<double>::kEpsilon()));
+      DoubleNear(2.29375, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParamCoord{0.25}}, {3})[0],
+      DoubleNear(0.8, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(ANurbs, ReturnsCorrectCurvePointForValueBetweenTwoKnots) { // NOLINT
@@ -265,6 +281,7 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForValueBetweenTwoKnots) { // NOLINT
               DoubleNear(3.625, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0 / 3.0}}, {1})[0], DoubleNear(5.34848, 0.000005));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0 / 3.0}}, {2})[0], DoubleNear(1.23561, 0.000005));
+  ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0 / 3.0}}, {3})[0], DoubleNear(0.73333, 0.000005));
 }
 
 TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) { // NOLINT
@@ -273,6 +290,7 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {0})[0], DoubleNear(8.5, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {1})[0], DoubleNear(4.5, util::NumericSettings<double>::kEpsilon()));
   ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {2})[0], DoubleNear(0.0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParamCoord{1.0}}, {3})[0], DoubleNear(2.0, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(ANurbs, ThrowsExceptionForEvaluationAt1_2) { // NOLINT
@@ -299,6 +317,7 @@ class MockWeightedPhysicalSpace112 : public spl::WeightedPhysicalSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 1>));
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
+  MOCK_METHOD0(GetDimension, int());
 };
 
 void mock_weights(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace112>> &w_physical_space) {
@@ -312,11 +331,12 @@ void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysi
                                 &w_physical_space) {
   mock_weights(w_physical_space);
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 1>{0}))
-      .WillByDefault(Return(baf::ControlPoint({1.0, 0.0})));
+      .WillByDefault(Return(baf::ControlPoint({1.0, 0.0, 1.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 1>{1}))
-      .WillByDefault(Return(baf::ControlPoint({1.0, 1.0})));
+      .WillByDefault(Return(baf::ControlPoint({1.0, 1.0, 1.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 1>{2}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 1.0})));
+      .WillByDefault(Return(baf::ControlPoint({0.0, 1.0, 2.0})));
+  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(2));
 }
 
 void set_get_basis_function_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace112>> &parameter_space) {

@@ -25,6 +25,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using ParamCoord = util::NamedType<double, struct ParamCoordParameter>;
 using KnotSpan = util::NamedType<int, struct KnotSpanParameter>;
+using Degree = util::NamedType<int, struct DegreeParameter>;
 
 namespace baf {
 
@@ -39,6 +40,7 @@ class KnotVector {
   explicit KnotVector(std::vector<ParamCoord> knots);
   KnotVector(std::initializer_list<ParamCoord> knots) noexcept;
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
+  KnotVector(std::vector<ParamCoord> coords, Degree degree, int nbControlPoints);
 
   virtual ~KnotVector() = default;
 

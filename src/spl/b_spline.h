@@ -56,7 +56,7 @@ class BSpline : public Spline<DIM> {
     return physical_space_->GetNumberOfPointsInEachDirection();
   }
 
-  int GetDimension() override {
+  int GetDimension() const override {
     return physical_space_->GetDimension();
   }
 

@@ -52,7 +52,8 @@ set(TEST_SOURCES
         iga/element_integral_calculator_test.cc
         iga/linear_equation_assembler_test.cc
         iga/elm/element_generator_test.cc
-        iga/solution_vtk_writer_test.cc)
+        iga/solution_vtk_writer_test.cc 
+        iga/solution_vtk_writer_examples.cc)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})

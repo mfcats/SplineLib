@@ -36,7 +36,8 @@ class LinearEquationAssembler {
 
   void SetZeroBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB);
 
-  void SetLinearBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB);
+  // Only used for test case in test/solution_vtk_writer_examples.cc which is currently commented out.
+  // void SetLinearBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB);
 
  private:
   std::shared_ptr<spl::NURBS<2>> spline_;

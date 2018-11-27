@@ -31,6 +31,17 @@ baf::ControlPoint baf::ControlPoint::operator+(const baf::ControlPoint &control_
   return ControlPoint(coordinates_new);
 }
 
+baf::ControlPoint baf::ControlPoint::Transform(std::array<std::array<double, 4>, 4> TransMatrix,
+    std::array<double, 3> scaling) const {
+  std::vector<double> coordinates_new = {TransMatrix[0][3], TransMatrix[1][3], TransMatrix[2][3]};
+  for (int i = 0; i < 3; ++i) {
+    for (int j = 0; j < 3; ++j) {
+      coordinates_new[j] += TransMatrix[j][i] * scaling[i] * GetValue(i);
+    }
+  }
+  return ControlPoint(coordinates_new);
+}
+
 double baf::ControlPoint::GetValue(int dimension) const {
 #ifdef DEBUG
   return coordinates_.at(dimension);
