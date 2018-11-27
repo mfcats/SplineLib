@@ -220,32 +220,3 @@ TEST_F(Random3DBSplineToSplit, IsSubdividedAtKnot0_4InSecondDirection) {  // NOL
     }
   }
 }
-
-class Random3DNURBSToSplit : public Test {  // NOLINT
- public:
-  Random3DNURBSToSplit() {
-    std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
-    spl::RandomNURBSGenerator<3> spline_generator(limits, 10, 3);
-    spl::NURBS<3> nurbs(spline_generator.GetParameterSpace(), spline_generator.GetWeightedPhysicalSpace());
-    nurbs_3d_ = std::make_shared<spl::NURBS<3>>(nurbs);
-  }
-
- protected:
-  std::shared_ptr<spl::NURBS<3>> nurbs_3d_;
-};
-
-TEST_F(Random3DNURBSToSplit, IsSubdividedAtKnot0_9InThirdDirection) {  // NOLINT
-  auto splines = nurbs_3d_->SudivideSpline(ParamCoord{0.9}, 2);
-  double steps = 5;
-  for (int i = 0; i <= steps; ++i) {
-    ParamCoord coord1 = ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-    ParamCoord coord2 = ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-    std::array<ParamCoord, 3> param_coord{coord1, coord2, ParamCoord(i / steps)};
-    int spline_number = i / steps >= 0.9 ? 1 : 0;
-    std::vector<double> evaluated_splitted_spline = splines[spline_number]->Evaluate(param_coord, {0, 1, 2});
-    std::vector<double> original_spline = nurbs_3d_->Evaluate(param_coord, {0, 1, 2});
-    for (int j = 0; j < 3; ++j) {
-      ASSERT_THAT(evaluated_splitted_spline[j], DoubleNear(original_spline[j], 0.000001));
-    }
-  }
-}

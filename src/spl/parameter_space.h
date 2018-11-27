@@ -31,8 +31,8 @@ class ParameterSpace {
  public:
   ParameterSpace() = default;
 
-  ParameterSpace(const std::array<std::shared_ptr<baf::KnotVector>, DIM> &knot_vector, std::array<Degree, DIM> degree) :
-      knot_vector_(knot_vector), degree_(degree) {
+  ParameterSpace(const KnotVectors<DIM> &knot_vector, std::array<Degree, DIM> degree)
+      : knot_vector_(knot_vector), degree_(degree) {
     ThrowIfKnotVectorDoesNotStartAndEndWith();
     baf::BasisFunctionFactory factory;
     for (int i = 0; i < DIM; i++) {

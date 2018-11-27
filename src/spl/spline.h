@@ -34,7 +34,7 @@ class Spline {
  public:
   virtual ~Spline() = default;
   Spline() = default;
-  Spline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector, std::array<Degree, DIM> degree) {
+  Spline(KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree) {
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
   }
   explicit Spline(std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
