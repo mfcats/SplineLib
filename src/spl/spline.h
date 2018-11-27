@@ -184,25 +184,6 @@ class Spline {
     return total_length;
   }
 
-  std::array<KnotVectors<DIM>, 2> GetSplittedKnotVectors(ParamCoord param_coord, int dimension) const {
-    auto knot_span = GetKnotVector(dimension)->GetKnotSpan(param_coord).get();
-    auto knots = GetKnots();
-    std::array<int, 2> first_knot = {0, knot_span - GetDegree(dimension).get()};
-    std::array<int, 2> last_knot = {knot_span + 1, static_cast<int>(knots[dimension].size())};
-    std::array<KnotVectors<DIM>, 2> new_knot_vectors;
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < DIM; ++j) {
-        new_knot_vectors[i][j] = GetKnotVector(j);
-      }
-      std::array<std::vector<ParamCoord>, 2> new_knots;
-      for (int j = first_knot[i]; j < last_knot[i]; ++j) {
-        new_knots[i].push_back(knots[dimension][j]);
-      }
-      new_knot_vectors[i][dimension] = std::make_shared<baf::KnotVector>(baf::KnotVector(new_knots[i]));
-    }
-    return new_knot_vectors;
-  }
-
   std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
 };
 }  //  namespace spl

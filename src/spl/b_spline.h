@@ -89,7 +89,8 @@ class BSpline : public Spline<DIM> {
     this->InsertKnot(param_coord, dimension,
                      this->GetDegree(dimension).get() + 1
                          - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
-    std::array<KnotVectors<DIM>, 2> new_knot_vectors = this->GetSplittedKnotVectors(param_coord, dimension);
+    std::array<KnotVectors<DIM>, 2>
+        new_knot_vectors = this->parameter_space_->GetSplittedKnotVectors(param_coord, dimension);
     std::array<Degree, DIM> degrees = this->parameter_space_->GetDegrees();
     std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> subdivided_splines;
     int first = 0;
