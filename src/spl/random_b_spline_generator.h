@@ -29,11 +29,11 @@ class RandomBSplineGenerator : public BSplineGenerator<DIM> {
   virtual ~RandomBSplineGenerator() = default;
 
   RandomBSplineGenerator(std::array<ParamCoord, 2> coord_limits, int max_degree, int dimension) {
-      std::array<Degree, DIM> degrees = RandomSplineUtils<DIM>::GetRandomDegrees(max_degree);
-      KnotVectors<DIM> knot_vectors = RandomSplineUtils<DIM>::GetRandomKnotVectors(coord_limits, degrees);
-      std::array<int, DIM> number_of_points = RandomSplineUtils<DIM>::GetNumberOfPoints(degrees, knot_vectors);
-      std::vector<baf::ControlPoint>
-          control_points = RandomSplineUtils<DIM>::GetRandomControlPoints(dimension, number_of_points);
+    std::array<Degree, DIM> degrees = RandomSplineUtils<DIM>::GetRandomDegrees(max_degree);
+    KnotVectors<DIM> knot_vectors = RandomSplineUtils<DIM>::GetRandomKnotVectors(coord_limits, degrees);
+    std::array<int, DIM> number_of_points = RandomSplineUtils<DIM>::GetNumberOfPoints(degrees, knot_vectors);
+    std::vector<baf::ControlPoint>
+        control_points = RandomSplineUtils<DIM>::GetRandomControlPoints(dimension, number_of_points);
     this->physical_space_ = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
     this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(knot_vectors, degrees);
   }
