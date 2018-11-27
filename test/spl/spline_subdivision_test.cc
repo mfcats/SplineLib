@@ -27,7 +27,7 @@ class BSplineFig5_9 : public Test {  // NOLINT
  public:
   BSplineFig5_9() {
     std::array<Degree, 2> degree = {Degree{3}, Degree{2}};
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
+    KnotVectors<2> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                            ParamCoord{1}, ParamCoord{1}, ParamCoord{1},
                                                            ParamCoord{1}})),

@@ -45,7 +45,7 @@ class ABSpline2 : public Test {
 
  protected:
   std::shared_ptr<spl::Spline<1>> b_spline;
-  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_ptr;
+  KnotVectors<1> knot_vector_ptr;
 };
 
 TEST_F(ABSpline2, CloseToCenter) { // NOLINT

@@ -60,7 +60,7 @@ class ABSplineSurface : public Test {
         baf::ControlPoint(std::vector<double>({214, -7, 8})),
         baf::ControlPoint(std::vector<double>({239, 102, -22}))
     };
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector_ptr =
+    KnotVectors<2> knot_vector_ptr =
         {std::make_shared<baf::KnotVector>(knot_vector[0]), std::make_shared<baf::KnotVector>(knot_vector[1])};
     b_spline_ = std::make_shared<spl::BSpline<2>>(knot_vector_ptr, degree, control_points);
   }
