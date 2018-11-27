@@ -44,6 +44,7 @@ class MockWeightedPhysicalSpace1 : public spl::WeightedPhysicalSpace<2> {
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 2>));
   MOCK_CONST_METHOD1(GetHomogenousControlPoint, baf::ControlPoint(std::array<int, 2>));
   MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 2>));
+  MOCK_CONST_METHOD0(GetDimension, int());
 };
 
 void set_get_basis_function_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace1>> &parameter_space) {
@@ -259,6 +260,7 @@ void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysi
                                 &w_physical_space) {
   mock_weights(w_physical_space);
   mock_homogenous(w_physical_space);
+  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(2));
 }
 class MockParameterSpace2 : public spl::ParameterSpace<2> {
  public:
@@ -280,6 +282,7 @@ class MockWeightedPhysicalSpace2 : public spl::WeightedPhysicalSpace<2> {
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 2>));
   MOCK_CONST_METHOD1(GetHomogenousControlPoint, baf::ControlPoint(std::array<int, 2>));
   MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 2>));
+  MOCK_CONST_METHOD0(GetDimension, int());
 };
 
 void set_get_basis_function_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace2>> &parameter_space) {
@@ -491,6 +494,7 @@ void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysi
                                 &w_physical_space) {
   mock_weights(w_physical_space);
   mock_homogenous(w_physical_space);
+  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(2));
 }
 
 void mock_physicalSpace(const std::shared_ptr<NiceMock<MockPhysicalSpace2>> & physical_space) {

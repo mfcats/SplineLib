@@ -176,6 +176,10 @@ TEST_F(A3DParameterSpace, returns2_0ForFourthKnotOfThirdKnotVector) {  // NOLINT
   ASSERT_THAT((*parameter_space.GetKnotVector(2))[3].get(), DoubleEq(2.0));
 }
 
+TEST_F(A3DParameterSpace, returns3_0ForKnotVectorRangeThirdDimension) { // NOLINT
+  ASSERT_THAT(parameter_space.GetKnotVectorRange(2), DoubleEq(3.0));
+}
+
 TEST_F(A3DParameterSpace, returnsCorrectBasisFunctionValue) {  // NOLINT
   ASSERT_THAT(parameter_space.GetBasisFunctions({1, 1, 1}, {ParamCoord(0.5), ParamCoord(0.5), ParamCoord(0.25)}),
               DoubleEq(0.125));
