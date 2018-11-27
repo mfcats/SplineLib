@@ -24,7 +24,7 @@ using testing::DoubleNear;
 class AnIGESReaderAndWriter : public Test {
  public:
   AnIGESReaderAndWriter() {
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector =
+    KnotVectors<2> knot_vector =
         {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
                                                             ParamCoord{0.25},
                                                             ParamCoord{0.25}, ParamCoord{0.5}, ParamCoord{0.5},

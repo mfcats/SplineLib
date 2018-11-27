@@ -23,7 +23,7 @@ class A1DBNURBSForVTKWriter {  // NOLINT
  public:
   A1DBNURBSForVTKWriter() {
     std::array<Degree, 1> degree = {Degree{1}};
-    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
+    KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({4.0, -1.0})),
@@ -42,7 +42,7 @@ class A2DBNURBSForVTKWriter {  // NOLINT
  public:
   A2DBNURBSForVTKWriter() {
     std::array<Degree, 2> degree = {Degree{1}, Degree{1}};
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
+    KnotVectors<2> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector(
             {ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
@@ -70,7 +70,7 @@ class A3DBNURBSForVTKWriter {  // NOLINT
  public:
   A3DBNURBSForVTKWriter() {
     std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{1}};
-    std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vector = {
+    KnotVectors<3> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector(
             {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(

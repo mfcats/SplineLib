@@ -29,7 +29,7 @@ using testing::Ne;
 class A1DBSplineForIRIT {  // NOLINT
  public:
   A1DBSplineForIRIT() {
-    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
+    KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.16666666666667},
                          ParamCoord{0.33333333333333}, ParamCoord{0.5}, ParamCoord{0.66666666666667},
                          ParamCoord{0.83333333333333}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
@@ -55,7 +55,7 @@ class A1DBSplineForIRIT {  // NOLINT
 class A1DNURBSForIRIT {  // NOLINT
  public:
   A1DNURBSForIRIT() {
-    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
+    KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.25}, ParamCoord{0.5},
                          ParamCoord{0.75}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
     std::array<Degree, 1> degree = {Degree{2}};
@@ -79,7 +79,7 @@ class A1DNURBSForIRIT {  // NOLINT
 class A2DBSplineForIRIT {  // NOLINT
  public:
   A2DBSplineForIRIT() {
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
+    KnotVectors<2> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                            ParamCoord{1}, ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
@@ -107,7 +107,7 @@ class A2DBSplineForIRIT {  // NOLINT
 class A2DNURBSForIRIT {  // NOLINT
  public:
   A2DNURBSForIRIT() {
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
+    KnotVectors<2> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                            ParamCoord{1}, ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
@@ -136,7 +136,7 @@ class A2DNURBSForIRIT {  // NOLINT
 class A3DBSplineForIRIT {  // NOLINT
  public:
   A3DBSplineForIRIT() {
-    std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vector = {
+    KnotVectors<3> knot_vector = {
         std::make_shared<baf::KnotVector>(
             baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(
@@ -165,7 +165,7 @@ class A3DBSplineForIRIT {  // NOLINT
 class A3DNURBSForIRIT {  // NOLINT
  public:
   A3DNURBSForIRIT() {
-    std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vector = {
+    KnotVectors<3> knot_vector = {
         std::make_shared<baf::KnotVector>(
             baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(

@@ -27,7 +27,7 @@ class A1DBSplineForXML {  // NOLINT
  public:
   A1DBSplineForXML() {
     std::array<Degree, 1> degree = {Degree{1}};
-    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector = {std::make_shared<baf::KnotVector>(
+    KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0})),
@@ -46,7 +46,7 @@ class A1DNURBSForXML {  // NOLINT
  public:
   A1DNURBSForXML() {
     std::array<Degree, 1> degree = {Degree{1}};
-    std::array<std::shared_ptr<baf::KnotVector>, 1>
+    KnotVectors<1>
         knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
                                                                           ParamCoord{1}, ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
@@ -67,7 +67,7 @@ class A2DBSplineForXML {  // NOLINT
  public:
   A2DBSplineForXML() {
     std::array<Degree, 2> degree = {Degree{1}, Degree{2}};
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {
+    KnotVectors<2> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector(
             {ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
@@ -95,7 +95,7 @@ class A2DNURBSForXML {  // NOLINT
  public:
   A2DNURBSForXML() {
     std::array<Degree, 2> degree = {Degree{1}, Degree{2}};
-    std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector =
+    KnotVectors<2> knot_vector =
         {std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
                                                             ParamCoord{1}, ParamCoord{1}})),
          std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
@@ -125,7 +125,7 @@ class A3DBSplineForXML {  // NOLINT
  public:
   A3DBSplineForXML() {
     std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{2}};
-    std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vector = {
+    KnotVectors<3> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector(
             {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
@@ -158,7 +158,7 @@ class A3DNURBSForXML {  // NOLINT
  public:
   A3DNURBSForXML() {
     std::array<Degree, 3> degree = {Degree{1}, Degree{2}, Degree{1}};
-    std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vector =
+    KnotVectors<3> knot_vector =
         {std::make_unique<baf::KnotVector>(baf::KnotVector(
             {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
          std::make_unique<baf::KnotVector>(baf::KnotVector(
@@ -193,7 +193,7 @@ class A4DNURBSForXML {  // NOLINT
  public:
   A4DNURBSForXML() {
     std::array<Degree, 4> degree = {Degree{1}, Degree{1}, Degree{1}, Degree{1}};
-    std::array<std::shared_ptr<baf::KnotVector>, 4> knot_vector =
+    KnotVectors<4> knot_vector =
         {std::make_unique<baf::KnotVector>(baf::KnotVector(
             {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
          std::make_unique<baf::KnotVector>(baf::KnotVector(
