@@ -42,6 +42,7 @@ install(FILES
         projection.h
         random_b_spline_generator.h
         random_nurbs_generator.h
+        random_spline_utils.h
         spline.h
         spline_generator.h
         square_generator.h
