@@ -91,7 +91,7 @@ class Random1DBSplineToSplit : public Test {  // NOLINT
   Random1DBSplineToSplit() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
     spl::RandomBSplineGenerator<1> spline_generator(limits, 10, 2);
-    spl::BSpline<1> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
+    spl::BSpline<1> b_spline(spline_generator);
     b_spline_1d_ = std::make_shared<spl::BSpline<1>>(b_spline);
   }
 
@@ -116,7 +116,7 @@ class Random1DNURBSToSplit : public Test {  // NOLINT
   Random1DNURBSToSplit() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
     spl::RandomNURBSGenerator<1> spline_generator(limits, 10, 3);
-    spl::NURBS<1> nurbs(spline_generator.GetParameterSpace(), spline_generator.GetWeightedPhysicalSpace());
+    spl::NURBS<1> nurbs(spline_generator);
     nurbs_1d_ = std::make_shared<spl::NURBS<1>>(nurbs);
   }
 
@@ -141,7 +141,7 @@ class Random2DBSplineToSplit : public Test {  // NOLINT
   Random2DBSplineToSplit() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
     spl::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
-    spl::BSpline<2> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
+    spl::BSpline<2> b_spline(spline_generator);
     b_spline_2d_ = std::make_shared<spl::BSpline<2>>(b_spline);
   }
 
@@ -169,7 +169,7 @@ class Random2DNURBSToSplit : public Test {  // NOLINT
   Random2DNURBSToSplit() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
     spl::RandomNURBSGenerator<2> spline_generator(limits, 10, 3);
-    spl::NURBS<2> nurbs(spline_generator.GetParameterSpace(), spline_generator.GetWeightedPhysicalSpace());
+    spl::NURBS<2> nurbs(spline_generator);
     nurbs_2d_ = std::make_shared<spl::NURBS<2>>(nurbs);
   }
 
@@ -197,7 +197,7 @@ class Random3DBSplineToSplit : public Test {  // NOLINT
   Random3DBSplineToSplit() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0}, ParamCoord{1}};
     spl::RandomBSplineGenerator<3> spline_generator(limits, 10, 3);
-    spl::BSpline<3> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
+    spl::BSpline<3> b_spline(spline_generator);
     b_spline_3d_ = std::make_shared<spl::BSpline<3>>(b_spline);
   }
 

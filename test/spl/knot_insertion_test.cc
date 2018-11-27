@@ -30,9 +30,6 @@ class BSplineEx5_1 : public Test {  // NOLINT
     KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2},
                          ParamCoord{3}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))};
-    KnotVectors<1> knot_vector_after = {std::make_shared<baf::KnotVector>(
-        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2},
-                         ParamCoord{3}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 1.0})),
         baf::ControlPoint(std::vector<double>({1.0, 2.0})),
@@ -44,7 +41,8 @@ class BSplineEx5_1 : public Test {  // NOLINT
         baf::ControlPoint(std::vector<double>({1.3, 2.3}))
     };
     bspline_1d_before_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
-    bspline_1d_after_ = std::make_shared<spl::BSpline<1>>(knot_vector_after, degree, control_points);
+    spl::BSpline<1> b_spline_after(*bspline_1d_before_);
+    bspline_1d_after_ = std::make_shared<spl::BSpline<1>>(b_spline_after);
   }
 
  protected:
@@ -103,7 +101,8 @@ class NURBSEx5_2 : public Test {  // NOLINT
     };
     std::vector<double> weights = {1.0, 1.0, 2.0, 4.0, 1.0, 4.0, 2.0, 1.0};
     nurbs_1d_before_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
-    nurbs_1d_after_ = std::make_shared<spl::NURBS<1>>(knot_vector_after, degree, control_points, weights);
+    spl::NURBS<1> nurbs_after(*nurbs_1d_before_);
+    nurbs_1d_after_ = std::make_shared<spl::NURBS<1>>(nurbs_after);
   }
 
  protected:
@@ -151,7 +150,7 @@ class Random2DBSplineForKnotInsertion : public Test {  // NOLINT
   Random2DBSplineForKnotInsertion() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
     spl::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
-    spl::BSpline<2> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
+    spl::BSpline<2> b_spline(spline_generator);
     bspline_2d_before_ = std::make_shared<spl::BSpline<2>>(b_spline);
     spl::BSpline<2> b_spline_after(b_spline);
     bspline_2d_after_ = std::make_shared<spl::BSpline<2>>(b_spline_after);
@@ -224,7 +223,7 @@ class Random3DBSplineForKnotInsertion : public Test {  // NOLINT
   Random3DBSplineForKnotInsertion() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
     spl::RandomBSplineGenerator<3> spline_generator(limits, 10, 4);
-    spl::BSpline<3> b_spline(*spline_generator.GetParameterSpace(), *spline_generator.GetPhysicalSpace());
+    spl::BSpline<3> b_spline(spline_generator);
     bspline_3d_before_ = std::make_shared<spl::BSpline<3>>(b_spline);
     spl::BSpline<3> b_spline_after(b_spline);
     bspline_3d_after_ = std::make_shared<spl::BSpline<3>>(b_spline_after);
@@ -267,7 +266,7 @@ class Random3DNURBSForKnotInsertion : public Test {  // NOLINT
   Random3DNURBSForKnotInsertion() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
     spl::RandomNURBSGenerator<3> spline_generator(limits, 10, 4);
-    spl::NURBS<3> nurbs(spline_generator.GetParameterSpace(), spline_generator.GetWeightedPhysicalSpace());
+    spl::NURBS<3> nurbs(spline_generator);
     nurbs_3d_before_ = std::make_shared<spl::NURBS<3>>(nurbs);
     spl::NURBS<3> nurbs_after(nurbs);
     nurbs_3d_after_ = std::make_shared<spl::NURBS<3>>(nurbs_after);

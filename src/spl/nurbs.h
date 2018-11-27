@@ -53,12 +53,6 @@ class NURBS : public Spline<DIM> {
 
   virtual ~NURBS() = default;
 
-  NURBS(std::shared_ptr<ParameterSpace<DIM>> parameter_space,
-        std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space) :
-      physical_space_(physical_space) {
-    this->parameter_space_ = parameter_space;
-  }
-
   int GetNumberOfControlPoints() override {
     return physical_space_->GetNumberOfControlPoints();
   }

@@ -48,11 +48,6 @@ class BSpline : public Spline<DIM> {
 
   virtual ~BSpline() = default;
 
-  BSpline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space)
-      : Spline<DIM>(std::make_shared<spl::ParameterSpace<DIM>>(parameter_space)),
-        physical_space_(std::make_shared<spl::PhysicalSpace<DIM>>(physical_space)) {
-  }
-
   int GetNumberOfControlPoints() override {
     return physical_space_->GetNumberOfControlPoints();
   }
