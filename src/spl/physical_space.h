@@ -97,7 +97,7 @@ class PhysicalSpace {
     ++number_of_points_[dimension];
   }
 
-  int GetDimension() const {
+  virtual int GetDimension() const {
     return dimension_;
   }
 
