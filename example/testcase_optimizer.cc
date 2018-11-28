@@ -39,10 +39,11 @@ void createVTKFromControlPoints(std::vector<baf::ControlPoint> control_points, s
 }
 
 int main(int argc, char* argv[]) {
-  if (argc != 11) {
+  if (argc != 3) {
     throw std::runtime_error("Exactly 10 coordinates of control points are required for the splinecreation");
   }
   std::vector<baf::ControlPoint> control_points;
+  control_points.emplace_back(baf::ControlPoint({-1.0, 0.0}));
   double x, y;
   for (int i = 2; i < argc; i += 2) {
     x = atof(argv[i-1]);
@@ -50,6 +51,7 @@ int main(int argc, char* argv[]) {
     std::cout << x << ", " << y << std::endl;
     control_points.emplace_back(baf::ControlPoint({x, y}));
   }
+  control_points.emplace_back(baf::ControlPoint({1.0, 0.0}));
   std::string fileName = "optimized_Form.vtk";
   createVTKFromControlPoints(control_points, fileName);
   return 0;
