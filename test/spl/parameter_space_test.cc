@@ -25,15 +25,14 @@ class A1DParameterSpace : public Test {
  public:
   A1DParameterSpace() :
       degree_{Degree{2}},
-      knot_vector_{
-          std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                             ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4},
-                                                             ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))},
+      knot_vector_{std::make_shared<baf::KnotVector>(
+          baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
+                           ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))},
       parameter_space(spl::ParameterSpace<1>(knot_vector_, degree_)) {}
 
  protected:
   std::array<Degree, 1> degree_;
-  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_;
+  KnotVectors<1> knot_vector_;
   spl::ParameterSpace<1> parameter_space;
 };
 
@@ -102,7 +101,7 @@ class A2DParameterSpace : public Test {
 
  protected:
   std::array<Degree, 2> degree_;
-  std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector_;
+  KnotVectors<2> knot_vector_;
   spl::ParameterSpace<2> parameter_space;
 };
 
@@ -148,7 +147,7 @@ class A3DParameterSpace : public Test {
 
  protected:
   std::array<Degree, 3> degree_;
-  std::array<std::shared_ptr<baf::KnotVector>, 3> knot_vector_;
+  KnotVectors<3> knot_vector_;
   spl::ParameterSpace<3> parameter_space;
 };
 

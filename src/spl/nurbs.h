@@ -30,26 +30,27 @@ namespace spl {
 template<int DIM>
 class NURBS : public Spline<DIM> {
  public:
-  NURBS(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
-        std::array<Degree, DIM> degree,
-        const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) : Spline<DIM>(knot_vector,
-                                                                                                         degree) {
+  NURBS(KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree,
+        const std::vector<baf::ControlPoint> &control_points,
+        std::vector<double> weights) : Spline<DIM>(knot_vector, degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
-    physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(WeightedPhysicalSpace<DIM>(control_points,
-                                                                                              weights,
-                                                                                              number_of_points));
+    physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(
+        WeightedPhysicalSpace<DIM>(control_points, weights, number_of_points));
+  }
+
+  explicit NURBS(NURBSGenerator<DIM> nurbs_generator) : Spline<DIM>(nurbs_generator.GetParameterSpace()) {
+    physical_space_ = nurbs_generator.GetWeightedPhysicalSpace();
+  }
+
+  NURBS(const NURBS<DIM> &nurbs) : Spline<DIM>(nurbs) {
+    WeightedPhysicalSpace<DIM> weighted_physical_space(*nurbs.physical_space_);
+    physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(weighted_physical_space);
   }
 
   virtual ~NURBS() = default;
-
-  NURBS(std::shared_ptr<ParameterSpace<DIM>> parameter_space,
-        std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space) :
-      physical_space_(physical_space) {
-    this->parameter_space_ = parameter_space;
-  }
 
   int GetNumberOfControlPoints() override {
     return physical_space_->GetNumberOfControlPoints();
@@ -75,13 +76,13 @@ class NURBS : public Spline<DIM> {
     return physical_space_->GetWeight(indices);
   }
 
-  explicit NURBS(NURBSGenerator<DIM> nurbs_generator) : Spline<DIM>(nurbs_generator.GetParameterSpace()) {
-    physical_space_ = nurbs_generator.GetWeightedPhysicalSpace();
-  }
-
   std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const override {
     return physical_space_;
   }
+
+//  std::shared_ptr<spl::WeightedPhysicalSpace<DIM>> GetWeightedPhysicalSpace() const {
+//    return physical_space_;
+//  }
 
   void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
     std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
@@ -108,7 +109,8 @@ class NURBS : public Spline<DIM> {
     this->InsertKnot(param_coord, dimension,
                      this->GetDegree(dimension).get() + 1
                          - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
-    std::array<KnotVectors<DIM>, 2> new_knot_vectors = this->GetSplittedKnotVectors(param_coord, dimension);
+    std::array<KnotVectors<DIM>, 2>
+        new_knot_vectors = this->parameter_space_->GetSplittedKnotVectors(param_coord, dimension);
     std::array<Degree, DIM> degrees = this->parameter_space_->GetDegrees();
     std::array<std::shared_ptr<spl::NURBS<DIM>>, 2> subdivided_splines;
     int first = 0;

@@ -27,7 +27,7 @@ class PhysicalSpace {
  public:
   PhysicalSpace() = default;
   virtual ~PhysicalSpace() = default;
-  explicit PhysicalSpace(const std::vector<baf::ControlPoint> &control_points, std::array<int, DIM> number_of_points)
+  PhysicalSpace(const std::vector<baf::ControlPoint> &control_points, std::array<int, DIM> number_of_points)
       : dimension_(control_points[0].GetDimension()), number_of_points_(number_of_points) {
     uint64_t total_number_of_points = 1;
     for (int dim = 0; dim < DIM; dim++) {
@@ -44,6 +44,13 @@ class PhysicalSpace {
       for (int i = 0; i < dimension_; ++i) {
         control_points_.emplace_back(cp.GetValue(i));
       }
+    }
+  }
+
+  PhysicalSpace(const PhysicalSpace &physical_space)
+      : dimension_(physical_space.dimension_), control_points_(physical_space.control_points_) {
+    for (int i = 0; i < DIM; ++i) {
+      number_of_points_[i] = physical_space.number_of_points_[i];
     }
   }
 
@@ -117,7 +124,7 @@ class PhysicalSpace {
     std::vector<double> weights;
     int numberOfWeights = 1;
     for (int i = 0; i < DIM; ++i) {
-        numberOfWeights *= number_of_points_[i];
+      numberOfWeights *= number_of_points_[i];
     }
     for (int i = 0; i < numberOfWeights; ++i) {
       weights.emplace_back(1.0);

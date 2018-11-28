@@ -35,7 +35,7 @@ class A1DElementGenerator : public Test {
             baf::ControlPoint(std::vector<double>({5.0, 0.0, 0.0})),
             baf::ControlPoint(std::vector<double>({6.0, 0.0, 0.0})),
             baf::ControlPoint(std::vector<double>({7.0, 0.0, 0.0}))};
-    std::array<std::shared_ptr<baf::KnotVector>, 1> kv_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
+  KnotVectors<1> kv_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
     std::shared_ptr<spl::BSpline<1>> b_spline = std::make_shared<spl::BSpline<1>>(kv_ptr, degree, control_points);
 
     A1DElementGenerator() : element_generator(b_spline) {}

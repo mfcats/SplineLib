@@ -28,8 +28,7 @@ namespace spl {
 template<int DIM>
 class BSpline : public Spline<DIM> {
  public:
-  BSpline(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
-          std::array<Degree, DIM> degree,
+  BSpline(KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree,
           const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
@@ -42,12 +41,12 @@ class BSpline : public Spline<DIM> {
     physical_space_ = b_spline_generator.GetPhysicalSpace();
   }
 
-  virtual ~BSpline() = default;
-
-  BSpline(ParameterSpace<DIM> parameter_space, PhysicalSpace<DIM> physical_space)
-      : Spline<DIM>(std::make_shared<spl::ParameterSpace<DIM>>(parameter_space)),
-        physical_space_(std::make_shared<spl::PhysicalSpace<DIM>>(physical_space)) {
+  BSpline(const BSpline<DIM> &bspline) : Spline<DIM>(bspline) {
+    PhysicalSpace<DIM> physical_space(*bspline.GetPhysicalSpace());
+    physical_space_ = std::make_shared<PhysicalSpace<DIM>>(physical_space);
   }
+
+  virtual ~BSpline() = default;
 
   int GetNumberOfControlPoints() override {
     return physical_space_->GetNumberOfControlPoints();
@@ -90,7 +89,8 @@ class BSpline : public Spline<DIM> {
     this->InsertKnot(param_coord, dimension,
                      this->GetDegree(dimension).get() + 1
                          - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
-    std::array<KnotVectors<DIM>, 2> new_knot_vectors = this->GetSplittedKnotVectors(param_coord, dimension);
+    std::array<KnotVectors<DIM>, 2>
+        new_knot_vectors = this->parameter_space_->GetSplittedKnotVectors(param_coord, dimension);
     std::array<Degree, DIM> degrees = this->parameter_space_->GetDegrees();
     std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> subdivided_splines;
     int first = 0;

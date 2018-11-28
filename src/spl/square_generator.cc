@@ -13,14 +13,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 spl::SquareGenerator::SquareGenerator() : degree_(Degree{2}), number_of_knots_(6) {}
 
 spl::SquareGenerator::SquareGenerator(Degree degree, u_int64_t number_of_knots) : degree_(degree),
-                                                                                  number_of_knots_(number_of_knots)
-{}
+                                                                                  number_of_knots_(number_of_knots) {}
 
 
 std::unique_ptr<spl::BSpline<2>> spl::SquareGenerator::CreateSquare() const {
-  auto parameter_space = GenerateParameterSpace();
-  auto physical_space = GeneratePhysicalSpace();
-  return std::make_unique<BSpline<2>>(parameter_space, physical_space);
+  auto parameter_space = std::make_shared<spl::ParameterSpace<2>>(GenerateParameterSpace());
+  auto physical_space = std::make_shared<spl::PhysicalSpace<2>>(GeneratePhysicalSpace());
+  spl::BSplineGenerator<2> spline_generator(physical_space, parameter_space);
+  return std::make_unique<BSpline<2>>(spline_generator);
 }
 
 spl::ParameterSpace<2> spl::SquareGenerator::GenerateParameterSpace() const {

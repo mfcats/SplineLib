@@ -36,9 +36,8 @@ class IRITReaderUtils {
   }
 
   template<int DIM>
-  static std::array<std::shared_ptr<baf::KnotVector>, DIM>
-  GetKnotVectors(int start, const std::vector<std::string> &entries) {
-    std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vectors;
+  static KnotVectors<DIM> GetKnotVectors(int start, const std::vector<std::string> &entries) {
+    KnotVectors<DIM> knot_vectors;
     for (int i = 0; i < DIM; i++) {
       while (!util::StringOperations::StartsWith(entries[start++], "[KV")) {}
       std::vector<ParamCoord> knots;

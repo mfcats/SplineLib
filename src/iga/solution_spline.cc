@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "solution_spline.h"
 
 iga::SolutionSpline::SolutionSpline(const std::shared_ptr<spl::NURBS<2>> &spl, const arma::dvec &solution) {
-  std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vector = {spl->GetKnotVector(0), spl->GetKnotVector(1)};
+  KnotVectors<2> knot_vector = {spl->GetKnotVector(0), spl->GetKnotVector(1)};
   std::array<Degree, 2> degree = {spl->GetDegree(0), spl->GetDegree(1)};
   std::vector<double> weights = spl->GetWeights();
   std::vector<baf::ControlPoint> control_points;

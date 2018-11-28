@@ -27,8 +27,7 @@ class NURBSGenerator : public SplineGenerator<DIM> {
   NURBSGenerator() = default;
   virtual ~NURBSGenerator() = default;
 
-  NURBSGenerator(std::array<std::shared_ptr<baf::KnotVector>, DIM> knot_vector,
-                 std::array<Degree, DIM> degree,
+  NURBSGenerator(KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree,
                  const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {

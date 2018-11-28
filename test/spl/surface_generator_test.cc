@@ -88,8 +88,8 @@ class ASurface : public Test {
   int nbInter, nbInterCmp;
   std::array<Degree, 1> degree1_;
   std::array<Degree, 1> degree2_;
-  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector1_;
-  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector2_;
+  KnotVectors<1> knot_vector1_;
+  KnotVectors<1> knot_vector2_;
   std::shared_ptr<spl::ParameterSpace<1>> parameter_space1;
   std::shared_ptr<spl::ParameterSpace<1>> parameter_space2;
   std::vector<baf::ControlPoint> control_points1;

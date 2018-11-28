@@ -34,6 +34,10 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     }
   }
 
+  WeightedPhysicalSpace(const WeightedPhysicalSpace &physical_space) : PhysicalSpace<DIM>(physical_space) {
+    this->weights_ = physical_space.weights_;
+  }
+
   virtual baf::ControlPoint GetHomogenousControlPoint(std::array<int, DIM> indices) const {
     std::vector<double> coordinates;
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);

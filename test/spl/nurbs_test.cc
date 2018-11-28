@@ -497,7 +497,7 @@ TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtLastKnot) {
 class ANURBSWithSplineGenerator : public Test {
  public:
   ANURBSWithSplineGenerator() {
-    std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector =
+    KnotVectors<1> knot_vector =
         {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
                                                             ParamCoord{2}, ParamCoord{3},
                                                             ParamCoord{3}, ParamCoord{3}}))};

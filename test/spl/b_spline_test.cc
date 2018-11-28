@@ -262,7 +262,7 @@ class ABSplineWithSplineGenerator : public Test {
 
  protected:
   std::unique_ptr<spl::BSpline<1>> b_spline;
-  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_;
+  KnotVectors<1> knot_vector_;
   std::array<Degree, 1> degree_;
   std::vector<baf::ControlPoint> control_points_;
 };

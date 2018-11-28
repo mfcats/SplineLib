@@ -12,31 +12,28 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_SPLINE_GENERATOR_H_
-#define SRC_SPL_SPLINE_GENERATOR_H_
+#ifndef SRC_UTIL_RANDOM_H_
+#define SRC_UTIL_RANDOM_H_
 
-#include "parameter_space.h"
-#include "physical_space.h"
-#include "weighted_physical_space.h"
+#include <random>
 
-namespace spl {
-template<int DIM>
-class SplineGenerator {
+namespace util {
+class Random {
  public:
-  SplineGenerator() = default;
-  virtual ~SplineGenerator() = default;
-
-  SplineGenerator(KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree) {
-    parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
+  template<class T>
+  static T GetBinomialRandom(double min, double max, double distance) {
+    static std::default_random_engine generator;
+    std::binomial_distribution<int> distribution(static_cast<int>((max - min) / distance), 0.5);
+    return distribution(generator) * distance + min;
   }
 
-  std::shared_ptr<ParameterSpace<DIM>> GetParameterSpace() {
-    return parameter_space_;
+  template<class T>
+  static T GetUniformRandom(double min, double max) {
+    static std::default_random_engine generator;
+    std::uniform_real_distribution<double> distribution(min, max);
+    return distribution(generator);
   }
-
- protected:
-  std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
 };
-}  // namespace spl
+}  // namespace util
 
-#endif  // SRC_SPL_SPLINE_GENERATOR_H_
+#endif  // SRC_UTIL_RANDOM_H_
