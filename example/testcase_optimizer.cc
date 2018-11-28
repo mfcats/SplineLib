@@ -26,7 +26,6 @@ void createVTKFromControlPoints(std::vector<baf::ControlPoint> control_points, s
   std::array<Degree, 1> degree = {Degree{2}};
   std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_ptr = {
       std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                         ParamCoord{0.333}, ParamCoord{0.667},
                                                          ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
   spl::BSpline<1> b_spline(knot_vector_ptr, degree, control_points);
   std::shared_ptr<spl::BSpline<1>> b_spline_ptr = std::make_shared<spl::BSpline<1>>(b_spline);
