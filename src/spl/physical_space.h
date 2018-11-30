@@ -84,7 +84,7 @@ class PhysicalSpace {
     }
   }
 
-  int GetNumberOfControlPoints() const {
+  virtual int GetNumberOfControlPoints() const {
     return static_cast<int>(control_points_.size()) / dimension_;
   }
 

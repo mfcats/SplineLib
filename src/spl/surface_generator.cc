@@ -15,9 +15,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "surface_generator.h"
+#include <iostream>
 
 spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
                                         std::shared_ptr<spl::NURBS<1>> const &nurbs_C) {
+  std::cout << nurbs_C->GetPhysicalSpace()->GetNumberOfControlPoints() << std::endl;
   this->parameter_space_ = JoinParameterSpaces(nurbs_T->GetParameterSpace(), nurbs_C->GetParameterSpace());
   this->physical_space_ = JoinPhysicalSpaces(nurbs_T->GetPhysicalSpace(), nurbs_C->GetPhysicalSpace());
 }
@@ -33,6 +35,7 @@ std::shared_ptr<spl::ParameterSpace<2>> spl::SurfaceGenerator::JoinParameterSpac
 std::shared_ptr<spl::WeightedPhysicalSpace<2>> spl::SurfaceGenerator::JoinPhysicalSpaces(
     std::shared_ptr<spl::PhysicalSpace<1>> const &space_1,
     std::shared_ptr<spl::PhysicalSpace<1>> const &space_2) const {
+  std::cout << space_2->GetNumberOfControlPoints() << std::endl;
   std::array<int, 2> j_number_of_points =
       {space_1->GetNumberOfControlPoints(), space_2->GetNumberOfControlPoints()};
   std::vector<baf::ControlPoint> j_control_points;
