@@ -156,7 +156,25 @@ class Spline {
     }
   }
 
+  void RemoveKnot(ParamCoord knot, int dimension, size_t multiplicity = 1) {
+    KnotSpan knot_span = GetKnotVector(dimension)->GetKnotSpan(knot);
+    Degree degree = GetDegree(dimension);
+    auto last = knot_span.get() - GetKnotVector(dimension)->GetMultiplicity(knot);
+    auto first = knot_span.get() - degree.get();
+    std::vector<double> scaling;
+    for (auto j = static_cast<size_t>(first); j <= last; ++j) {
+      ParamCoord low_knot = GetKnotVector(dimension)->GetKnot(j);
+      ParamCoord upper_knot = GetKnotVector(dimension)->GetKnot(j + degree.get() + 1);
+      scaling.emplace_back((knot.get() - low_knot.get()) / (upper_knot.get() - low_knot.get()));
+    }
+    this->RemoveControlPoints(scaling, first, static_cast<int>(last), dimension);
+    for (size_t i = 0; i < multiplicity; ++i) {
+      parameter_space_->RemoveKnot(knot, dimension);
+    }
+  }
+
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
+  virtual void RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
 
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {

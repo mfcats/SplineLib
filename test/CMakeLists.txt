@@ -46,6 +46,7 @@ set(TEST_SOURCES
         iga/mapping_handler_test.cc
         spl/surface_generator_test.cc
         spl/knot_insertion_test.cc
+        spl/knot_removal_test.cc
         spl/spline_subdivision_test.cc
         spl/random_b_spline_generator_test.cc
         spl/random_nurbs_generator_test.cc

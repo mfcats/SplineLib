@@ -68,6 +68,7 @@ class KnotVector {
   virtual bool IsInKnotVectorRange(const ParamCoord &param_coord) const;
   virtual bool IsLastKnot(const ParamCoord &param_coord) const;
   void InsertKnot(const ParamCoord &param_coord);
+  void RemoveKnot(const ParamCoord &param_coord);
 
  private:
   std::vector<ParamCoord> knots_;

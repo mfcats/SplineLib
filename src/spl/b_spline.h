@@ -85,6 +85,23 @@ class BSpline : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
+  void RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
+    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
+    ++point_handler_length[dimension];
+    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    std::array<int, DIM> maximum_point_index = physical_space_->GetMaximumPointIndexInEachDirection();
+    ++maximum_point_index[dimension];
+    point_handler.SetIndices(maximum_point_index);
+    physical_space_->RemoveControlPoints(physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension]);
+    for (int i = point_handler.Get1DLength() - 1; i >= 0; --i, --point_handler) {
+      auto current_point = point_handler.GetIndices()[dimension];
+      std::array<int, DIM> indices = point_handler.GetIndices();
+      baf::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling, current_point, first, last);
+      physical_space_->SetControlPoint(indices, new_control_point, dimension);
+    }
+    physical_space_->IncrementNumberOfPoints(dimension);
+  }
+
   std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> SudivideSpline(ParamCoord param_coord, int dimension) {
     this->InsertKnot(param_coord, dimension,
                      this->GetDegree(dimension).get() + 1

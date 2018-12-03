@@ -105,6 +105,10 @@ class NURBS : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
+  void RemoveControlPoints(std::vector<double> /*scaling*/, int /*first*/, int /*last*/, int /*dimension*/) {
+
+  }
+
   std::array<std::shared_ptr<spl::NURBS<DIM>>, 2> SudivideSpline(ParamCoord param_coord, int dimension) {
     this->InsertKnot(param_coord, dimension,
                      this->GetDegree(dimension).get() + 1
