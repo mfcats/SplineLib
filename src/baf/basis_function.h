@@ -36,11 +36,11 @@ class BasisFunction {
  protected:
   BasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support);
 
-  Degree GetDegree() const;
-
   virtual double EvaluateOnSupport(const ParamCoord &param_coord) const = 0;
 
   virtual double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const = 0;
+
+  Degree GetDegree() const;
 
   ParamCoord GetStartKnot() const;
   ParamCoord GetEndKnot() const;
