@@ -21,7 +21,7 @@ baf::ZeroDegBSplBasFnc::ZeroDegBSplBasFnc(const baf::KnotVector &knot_vector,
     BasisFunction(knot_vector, Degree{0}, start_of_support) {}
 
 double baf::ZeroDegBSplBasFnc::EvaluateOnSupport(const ParamCoord /*param_coord*/&) const {
-  return util::NumericSettings<double>::AreEqual(GetStartKnot().get(), GetEndKnot().get()) ? 0.0 : 1.0;
+  return 1.0;
 }
 
 double baf::ZeroDegBSplBasFnc::EvaluateDerivativeOnSupport(const ParamCoord /*param_coord*/&,
