@@ -21,6 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "nurbs.h"
+#include "solution_spline.h"
 #include "vtk_writer.h"
 
 namespace iga {
