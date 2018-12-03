@@ -16,8 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "numeric_settings.h"
 
-baf::ZeroDegBSplBasFnc::ZeroDegBSplBasFnc(const baf::KnotVector &knot_vector,
-                                          const KnotSpan &start_of_support) :
+baf::ZeroDegBSplBasFnc::ZeroDegBSplBasFnc(const baf::KnotVector &knot_vector, const KnotSpan &start_of_support) :
     BasisFunction(knot_vector, Degree{0}, start_of_support) {}
 
 double baf::ZeroDegBSplBasFnc::EvaluateOnSupport(const ParamCoord /*param_coord*/&) const {
