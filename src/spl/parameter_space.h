@@ -166,7 +166,7 @@ class ParameterSpace {
     }
   }
 
-  std::array<KnotVectors<DIM>, 2> GetSplittedKnotVectors(ParamCoord param_coord, int dimension) const {
+  std::array<KnotVectors<DIM>, 2> GetDividedKnotVectors(ParamCoord param_coord, int dimension) const {
     auto knot_span = GetKnotVector(dimension)->GetKnotSpan(param_coord).get();
     auto knots = GetKnots();
     std::array<int, 2> first_knot = {0, knot_span - GetDegree(dimension).get()};

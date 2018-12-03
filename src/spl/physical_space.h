@@ -136,7 +136,7 @@ class PhysicalSpace {
     return 1.0;
   }
 
-  std::vector<baf::ControlPoint> GetSplittedControlPoints(int first, int length, int dimension) {
+  std::vector<baf::ControlPoint> GetDividedControlPoints(int first, int length, int dimension) {
     std::vector<baf::ControlPoint> points;
     std::array<int, DIM> point_handler_length = GetNumberOfPointsInEachDirection();
     point_handler_length[dimension] = length;

@@ -76,7 +76,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     return weights_;
   }
 
-  std::vector<double> GetSplittedWeights(int first, int length, int dimension) {
+  std::vector<double> GetDividedWeights(int first, int length, int dimension) {
     std::vector<double> weights;
     std::array<int, DIM> point_handler_length = this->GetNumberOfPointsInEachDirection();
     point_handler_length[dimension] = length;
