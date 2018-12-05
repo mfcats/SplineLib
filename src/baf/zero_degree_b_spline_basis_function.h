@@ -26,10 +26,6 @@ class ZeroDegBSplBasFnc : public baf::BasisFunction {
  protected:
   double EvaluateOnSupport(const ParamCoord &param_coord) const override;
   double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const override;
-
- private:
-  ParamCoord start_knot_;
-  ParamCoord end_knot_;
 };
 }  // namespace baf
 

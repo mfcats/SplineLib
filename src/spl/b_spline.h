@@ -90,13 +90,13 @@ class BSpline : public Spline<DIM> {
                      this->GetDegree(dimension).get() + 1
                          - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
     std::array<KnotVectors<DIM>, 2>
-        new_knot_vectors = this->parameter_space_->GetSplittedKnotVectors(param_coord, dimension);
+        new_knot_vectors = this->parameter_space_->GetDividedKnotVectors(param_coord, dimension);
     std::array<Degree, DIM> degrees = this->parameter_space_->GetDegrees();
     std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> subdivided_splines;
     int first = 0;
     for (int i = 0; i < 2; ++i) {
       int length = new_knot_vectors[i][dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
-      std::vector<baf::ControlPoint> points = physical_space_->GetSplittedControlPoints(first, length, dimension);
+      std::vector<baf::ControlPoint> points = physical_space_->GetDividedControlPoints(first, length, dimension);
       spl::BSpline<DIM> spline(new_knot_vectors[i], degrees, points);
       subdivided_splines[i] = std::make_shared<spl::BSpline<DIM>>(spline);
       first = length;
