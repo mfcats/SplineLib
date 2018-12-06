@@ -130,7 +130,7 @@ void mock_parameterSpaceSection(const std::shared_ptr<NiceMock<MockParameterSpac
       .WillByDefault(Return(Degree{2}));
   ON_CALL(*parameter_space, GetKnotVector(0))
       .WillByDefault(Return(std::make_shared<baf::KnotVector>(
-                baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.0}, 
+                baf::KnotVector({ParamCoord{0.0}, ParamCoord{0.0}, ParamCoord{0.0},
                                  ParamCoord{0.25}, ParamCoord{0.25}, ParamCoord{0.5}, ParamCoord{0.5},
                                  ParamCoord{0.75}, ParamCoord{0.75}, ParamCoord{1.0}, ParamCoord{1.0},
                                  ParamCoord{1.0}}))));
