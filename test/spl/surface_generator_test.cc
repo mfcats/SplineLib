@@ -35,14 +35,12 @@ class MockParameterSpaceSection : public spl::ParameterSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetDegree, Degree(int));
   MOCK_CONST_METHOD1(GetKnotVector, std::shared_ptr<baf::KnotVector>(int));
-  MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<ParamCoord, 1>));
 };
 
 class MockWeightedPhysicalSpaceSection: public spl::WeightedPhysicalSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
   MOCK_CONST_METHOD0(GetNumberOfControlPoints, int());
-  MOCK_CONST_METHOD1(GetHomogenousControlPoint, baf::ControlPoint(std::array<int, 1>));
   MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 1>));
   MOCK_CONST_METHOD0(GetDimension, int());
 };
