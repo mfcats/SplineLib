@@ -52,7 +52,6 @@ class ConnectivityHandler {
         knot_mult_sum[i] += elm_gen_->GetKnotMultiplicity(i)[j];
       }
     }
-
     std::array<int, DIM> global_indices{};
     for (int i = 0; i < DIM; ++i) {
       global_indices[i] = mult_ind_handl_baf[i] + mult_ind_handl_elm[i] + knot_mult_sum[i];
