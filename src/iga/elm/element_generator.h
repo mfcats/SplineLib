@@ -63,16 +63,10 @@ class ElementGenerator {
   }
 
   int GetElementNumberAtParamCoord(std::array<ParamCoord, DIM> param_coords) const {
-    std::array<std::vector<ParamCoord>, DIM> unique_knots{};
     std::array<int, DIM> element_indices{};
     for (int i = 0; i < DIM; ++i) {
-      unique_knots[i] = GetUniqueKnots(i);
-      for (uint64_t j = 0; j < unique_knots[i].size() - 1; ++j) {
-        if ((unique_knots[i][j].get() <= param_coords[i].get()) &&
-            (unique_knots[i][j + 1].get() > param_coords[i].get())) {
-          element_indices[i] = static_cast<int>(j);
-        }
-      }
+      baf::KnotVector unique_kv(GetUniqueKnots(i));
+      element_indices[i] = unique_kv.GetKnotSpan(param_coords[i]).get();
     }
     return Get1DElementIndex(element_indices);
   }
