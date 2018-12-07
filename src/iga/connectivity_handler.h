@@ -26,54 +26,48 @@ template<int DIM>
 class ConnectivityHandler {
  public:
   explicit ConnectivityHandler(std::shared_ptr<spl::Spline<DIM>> spl) : spline_(std::move(spl)) {
-    elm_gen_ = std::make_shared<iga::elm::ElementGenerator<2>>(spline_);
-    SetConnectivityForParametricDirections();
-    SetConnectivityMatrix();
+    elm_gen_ = std::make_shared<iga::elm::ElementGenerator<DIM>>(spline_);
   }
 
   int GetGlobalIndex(int element_number, int local_index) {
-    return connectivity_[element_number][local_index];
+    std::array<int, DIM> global_indices = GetGlobalIndicesPerParametricDirection(element_number, local_index);
+    for (auto &a : global_indices) {
+    }
+    return Get1DGlobalIndex(GetGlobalIndicesPerParametricDirection(element_number, local_index));
   }
 
  private:
-  void SetConnectivityMatrix() {
-    for (uint64_t i = 0; i < elm_gen_->GetElementList(1).size(); ++i) {
-      for (uint64_t j = 0; j < elm_gen_->GetElementList(0).size(); ++j) {
-        std::vector<int> temp;
-        for (uint64_t k = 0; k < global_param_[1][i].size(); ++k) {
-          for (uint64_t l = 0; l < global_param_[0][j].size(); ++l) {
-            temp.emplace_back(Get1DGlobalIndex({global_param_[0][j][l], global_param_[1][i][k]}));
-          }
-        }
-        connectivity_.emplace_back(temp);
-      }
-    }
-  }
-
-  void SetConnectivityForParametricDirections() {
-    std::array<int, DIM> knot_multiplicity_sum{};
+  std::array<int, DIM> GetGlobalIndicesPerParametricDirection(int elm_num, int local_index) {
+    util::MultiIndexHandler<DIM> mult_ind_handl_elm(elm_gen_->GetNumberOfElements());
+    mult_ind_handl_elm = mult_ind_handl_elm + elm_num;
+    std::array<int, DIM> num_non_zero_baf{};
     for (int i = 0; i < DIM; ++i) {
-      for (uint64_t j = 0; j < elm_gen_->GetElementList(i).size(); ++j) {
-        knot_multiplicity_sum[i] += elm_gen_->GetKnotMultiplicity(i)[j];
-        std::vector<int> temp;
-        for (int k = 1; k < spline_->GetDegree(i).get() + 2; ++k) {
-          temp.emplace_back(k + j + knot_multiplicity_sum[i] - 1);
-        }
-        global_param_[i].emplace_back(temp);
+      num_non_zero_baf[i] = spline_->GetDegree(i).get() + 1;
+    }
+    util::MultiIndexHandler<DIM> mult_ind_handl_baf(num_non_zero_baf);
+    mult_ind_handl_baf = mult_ind_handl_baf + local_index;
+    std::array<int, DIM> knot_mult_sum{};
+    for (int i = 0; i < DIM; ++i) {
+      for (int j = 0; j <= mult_ind_handl_elm[i]; ++j) {
+        knot_mult_sum[i] += elm_gen_->GetKnotMultiplicity(i)[j];
       }
     }
+
+    std::array<int, DIM> global_indices{};
+    for (int i = 0; i < DIM; ++i) {
+      global_indices[i] = mult_ind_handl_baf[i] + mult_ind_handl_elm[i] + knot_mult_sum[i];
+    }
+    return global_indices;
   }
 
   int Get1DGlobalIndex(std::array<int, DIM> global_indices) {
-    util::MultiIndexHandler<DIM> mult_ind_handl(spline_->GetPointsPerDirection());
-    mult_ind_handl.SetIndices(global_indices);
-    return mult_ind_handl.Get1DIndex() + 1;
+    util::MultiIndexHandler<DIM> mult_ind_handl_cp(spline_->GetPointsPerDirection());
+    mult_ind_handl_cp.SetIndices(global_indices);
+    return mult_ind_handl_cp.Get1DIndex() + 1;
   }
 
   std::shared_ptr<spl::Spline<DIM>> spline_;
   std::shared_ptr<iga::elm::ElementGenerator<DIM>> elm_gen_;
-  std::vector<std::vector<int>> connectivity_;
-  std::array<std::vector<std::vector<int>>, DIM> global_param_;
 };
 }  // namespace iga
 

@@ -40,6 +40,14 @@ class ElementGenerator {
     return elements;
   }
 
+  std::array<int, DIM> GetNumberOfElements() {
+    std::array<int, DIM> num_elms{};
+    for (int i = 0; i < DIM; ++i) {
+      num_elms[i] = GetElementList(i).size();
+    }
+    return num_elms;
+  }
+
   std::vector<int> GetKnotMultiplicity(int dir) const {
     std::vector<int> knot_multiplicity;
     std::vector<ParamCoord> internal_knots = GetInternalKnots(dir);

@@ -35,3 +35,8 @@ TEST_F(AnIGATestSpline, TestConnectivityHandler) { // NOLINT
     }
   }
 }
+
+TEST_F(AnIGATestSpline3, TestConnectivityHandler) { // NOLINT
+  iga::ConnectivityHandler<3> connectivity_handler = iga::ConnectivityHandler<3>(nurbs_);
+     ASSERT_THAT(connectivity_handler.GetGlobalIndex(15, 10), Eq(284));
+}
