@@ -62,24 +62,19 @@ class ElementGenerator {
     return knot_multiplicity;
   }
 
-  int GetElementNumberAtParamCoord(std::array<ParamCoord, 2> param_coord) const {
-    int element_number_xi = 0;
-    int element_number_eta = 0;
-    std::vector<ParamCoord> unique_knots_xi = GetUniqueKnots(0);
-    std::vector<ParamCoord> unique_knots_eta = GetUniqueKnots(1);
-    for (uint64_t i = 0; i < unique_knots_xi.size() - 1; ++i) {
-      if ((unique_knots_xi[i].get() <= param_coord[0].get()) &&
-          (unique_knots_xi[i + 1].get() > param_coord[0].get())) {
-        element_number_xi = static_cast<int>(i);
+  int GetElementNumberAtParamCoord(std::array<ParamCoord, DIM> param_coords) const {
+    std::array<std::vector<ParamCoord>, DIM> unique_knots{};
+    std::array<int, DIM> element_indices{};
+    for (int i = 0; i < DIM; ++i) {
+      unique_knots[i] = GetUniqueKnots(i);
+      for (uint64_t j = 0; j < unique_knots[i].size() - 1; ++j) {
+        if ((unique_knots[i][j].get() <= param_coords[i].get()) &&
+            (unique_knots[i][j + 1].get() > param_coords[i].get())) {
+          element_indices[i] = static_cast<int>(j);
+        }
       }
     }
-    for (uint64_t i = 0; i < unique_knots_eta.size() - 1; ++i) {
-      if ((unique_knots_eta[i].get() <= param_coord[1].get()) &&
-          (unique_knots_eta[i + 1].get() > param_coord[1].get())) {
-        element_number_eta = static_cast<int>(i);
-      }
-    }
-    return Get1DElementIndex({element_number_xi, element_number_eta});
+    return Get1DElementIndex(element_indices);
   }
 
   std::array<int, DIM> Get2DElementIndices(int elm_num) const {
@@ -91,12 +86,10 @@ class ElementGenerator {
  private:
   std::vector<ParamCoord> GetInternalKnots(int dir) const {
     std::vector<ParamCoord> knots = spl_->GetKnots()[dir];
-    std::vector<ParamCoord> internal_knots;
-    int degree = spl_->GetDegree(dir).get();
-    for (auto j = uint64_t(degree); j < knots.size() - degree; ++j) {
-      internal_knots.emplace_back(knots[j]);
-    }
-    return internal_knots;
+    auto first = knots.begin() + spl_->GetDegree(dir).get();
+    auto last = knots.end() - spl_->GetDegree(dir).get();
+    std::vector<ParamCoord> internal_knots_(first, last);
+    return internal_knots_;
   }
 
   std::vector<ParamCoord> GetUniqueKnots(int dir) const {
