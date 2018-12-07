@@ -30,9 +30,6 @@ class ConnectivityHandler {
   }
 
   int GetGlobalIndex(int element_number, int local_index) {
-    std::array<int, DIM> global_indices = GetGlobalIndicesPerParametricDirection(element_number, local_index);
-    for (auto &a : global_indices) {
-    }
     return Get1DGlobalIndex(GetGlobalIndicesPerParametricDirection(element_number, local_index));
   }
 
