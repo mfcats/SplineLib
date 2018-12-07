@@ -71,9 +71,9 @@ class ElementGenerator {
     return Get1DElementIndex(element_indices);
   }
 
-  std::array<int, DIM> Get2DElementIndices(int elm_num) const {
+  std::array<int, DIM> Get2DElementIndices(int element_index) const {
     util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumberOfElements());
-    mult_ind_handl_elm = mult_ind_handl_elm + elm_num;
+    mult_ind_handl_elm = mult_ind_handl_elm + element_index;
     return mult_ind_handl_elm.GetIndices();
   }
 
