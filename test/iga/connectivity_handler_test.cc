@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Eq;
 
 TEST_F(AnIGATestSpline, TestConnectivityHandler) { // NOLINT
-  iga::ConnectivityHandler connectivity_handler = iga::ConnectivityHandler(nurbs_);
+  iga::ConnectivityHandler<2> connectivity_handler = iga::ConnectivityHandler<2>(nurbs_);
   std::vector<int> e1 = {1, 2, 3, 4, 8, 9, 10, 11, 15, 16, 17, 18, 22, 23, 24, 25};
   std::vector<int> e2 = {2, 3, 4, 5, 9, 10, 11, 12, 16, 17, 18, 19, 23, 24, 25, 26};
   std::vector<int> e3 = {3, 4, 5, 6, 10, 11, 12, 13, 17, 18, 19, 20, 24, 25, 26, 27};
@@ -31,7 +31,7 @@ TEST_F(AnIGATestSpline, TestConnectivityHandler) { // NOLINT
   std::vector<std::vector<int>> connectivity_matlab = {e1, e2, e3, e4, e5, e6, e7, e8};
   for (uint64_t i = 0; i < connectivity_matlab.size(); ++i) {
     for (uint64_t j = 0; j < connectivity_matlab[i].size(); ++j) {
-      ASSERT_THAT(connectivity_matlab[i][j], Eq(connectivity_handler.GetGlobalIndex(i, j)));
+      ASSERT_THAT(connectivity_handler.GetGlobalIndex(i, j), Eq(connectivity_matlab[i][j]));
     }
   }
 }

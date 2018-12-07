@@ -15,7 +15,6 @@
 
 set(SOURCES
         basis_function_handler.cc
-        connectivity_handler.cc
         mapping_handler.cc
         element_integral_calculator.cc
         linear_equation_assembler.cc
