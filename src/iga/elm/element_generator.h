@@ -19,7 +19,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element.h"
 #include "multi_index_handler.h"
-#include "named_type.h"
 #include "spline.h"
 
 namespace iga {
@@ -27,22 +26,25 @@ namespace elm {
 template<int DIM>
 class ElementGenerator {
  public:
-  explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spl_(std::move(spl)) {}
-
-  std::vector<iga::elm::Element> GetElementList(int dir) const {
-    std::vector<iga::elm::Element> elements;
-    for (uint64_t k = 0; k < spl_->GetKnotVector(dir)->GetNumberOfKnots() - spl_->GetDegree(dir).get() - 1; ++k) {
-      if ((GetLowerElementBound(k, dir).get() - GetHigherElementBound(k, dir).get()) != 0) {
-        elements.emplace_back(Element(1, GetElementNodes(k, dir)));
+  explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spl_(std::move(spl)) {
+    for (int i = 0; i < DIM; ++i) {
+      for (uint64_t j = 0; j < spl_->GetKnotVector(i)->GetNumberOfKnots() - spl_->GetDegree(i).get() - 1; ++j) {
+        if ((spl_->GetKnotVector(i)->GetKnot(j).get() - spl_->GetKnotVector(i)->GetKnot(j + 1).get()) != 0) {
+          elements_[i].emplace_back(Element(1, {spl_->GetKnotVector(i)->GetKnot(j),
+                                                spl_->GetKnotVector(i)->GetKnot(j + 1)}));
+        }
       }
     }
-    return elements;
+  }
+
+  std::vector<iga::elm::Element> GetElementList(int dir) const {
+    return elements_[dir];
   }
 
   std::array<int, DIM> GetNumberOfElements() const {
     std::array<int, DIM> num_elms{};
     for (int i = 0; i < DIM; ++i) {
-      num_elms[i] = GetElementList(i).size();
+      num_elms[i] = elements_[i].size();
     }
     return num_elms;
   }
@@ -71,7 +73,7 @@ class ElementGenerator {
     return Get1DElementIndex(element_indices);
   }
 
-  std::array<int, DIM> Get2DElementIndices(int element_index) const {
+  std::array<int, DIM> GetElementIndices(int element_index) const {
     util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumberOfElements());
     mult_ind_handl_elm = mult_ind_handl_elm + element_index;
     return mult_ind_handl_elm.GetIndices();
@@ -88,14 +90,8 @@ class ElementGenerator {
 
   std::vector<ParamCoord> GetUniqueKnots(int dir) const {
     std::vector<ParamCoord> internal_knots = GetInternalKnots(dir);
-    std::vector<ParamCoord> unique_knots;
-    for (uint64_t i = 0; i < internal_knots.size() - 1; ++i) {
-      if (internal_knots[i].get() != internal_knots[i + 1].get()) {
-        unique_knots.emplace_back(internal_knots[i]);
-      }
-    }
-    unique_knots.emplace_back(internal_knots[internal_knots.size() - 1]);
-    return unique_knots;
+    internal_knots.erase(unique(internal_knots.begin(), internal_knots.end()), internal_knots.end());
+    return internal_knots;
   }
 
   int Get1DElementIndex(std::array<int, DIM> element_indices) const {
@@ -104,19 +100,8 @@ class ElementGenerator {
     return mult_ind_handl_elm.Get1DIndex();
   }
 
-  ParamCoord GetLowerElementBound(uint64_t currentKnot, int dir) const {
-    return spl_->GetKnotVector(dir)->GetKnots()[currentKnot];
-  }
-
-  ParamCoord GetHigherElementBound(uint64_t currentKnot, int dir) const {
-    return spl_->GetKnotVector(dir)->GetKnots()[currentKnot + 1];
-  }
-
-  std::vector<ParamCoord> GetElementNodes(uint64_t currentKnot, int dir) const {
-    return {GetLowerElementBound(currentKnot, dir), GetHigherElementBound(currentKnot, dir)};
-  }
-
   std::shared_ptr<spl::Spline<DIM>> spl_;
+  std::array<std::vector<iga::elm::Element>, DIM> elements_;
 };
 }  // namespace elm
 }  // namespace iga
