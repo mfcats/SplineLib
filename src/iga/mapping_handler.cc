@@ -59,7 +59,7 @@ arma::dmat iga::MappingHandler::GetDxiDxitilde(std::array<ParamCoord, 2> param_c
 
 std::array<ParamCoord, 2> iga::MappingHandler::Reference2ParameterSpace(int element_number, double itg_pnt_xi,
     double itg_pnt_eta) const {
-  iga::elm::ElementGenerator elm_gen(spline_);
+  iga::elm::ElementGenerator<2> elm_gen(spline_);
   iga::elm::Element element_xi = elm_gen.GetElementList(0)[elm_gen.GetElementIndices(element_number)[0]];
   iga::elm::Element element_eta = elm_gen.GetElementList(1)[elm_gen.GetElementIndices(element_number)[1]];
   ParamCoord upper_xi = element_xi.GetNode(1);
