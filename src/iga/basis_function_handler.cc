@@ -26,7 +26,7 @@ std::vector<iga::elm::ElementIntegrationPoint> iga::BasisFunctionHandler::Evalua
   for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
       std::array<ParamCoord, 2> param_coords = mapping_handler_->Reference2ParameterSpace(
-          element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate());
+          element_number, {itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate()});
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
           EvaluateAllNonZeroNURBSBasisFunctions(param_coords), itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight(),
           mapping_handler_->GetJacobianDeterminant(param_coords)));
@@ -42,7 +42,7 @@ iga::BasisFunctionHandler::EvaluateAllElementNonZeroNURBSBasisFunctionDerivative
   for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
       std::array<ParamCoord, 2> param_coords = mapping_handler_->Reference2ParameterSpace(
-          element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate());
+          element_number, {itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate()});
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
           EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coords), itg_pnt_xi.GetWeight()
           * itg_pnt_eta.GetWeight(), mapping_handler_->GetJacobianDeterminant(param_coords)));
@@ -58,7 +58,7 @@ iga::BasisFunctionHandler::EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(
   for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
     for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
       std::array<ParamCoord, 2> param_coords = mapping_handler_->Reference2ParameterSpace(
-          element_number, itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate());
+          element_number, {itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate()});
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
           EvaluateAllNonZeroNURBSBafDerivativesPhysical(param_coords), itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight(),
           mapping_handler_->GetJacobianDeterminant(param_coords)));
