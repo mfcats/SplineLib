@@ -43,15 +43,10 @@ class ConnectivityHandler {
     }
     util::MultiIndexHandler<DIM> mult_ind_handl_baf(num_non_zero_baf);
     mult_ind_handl_baf = mult_ind_handl_baf + local_index;
-    std::array<int, DIM> knot_mult_sum{};
-    for (int i = 0; i < DIM; ++i) {
-      for (int j = 0; j <= mult_ind_handl_elm[i]; ++j) {
-        knot_mult_sum[i] += elm_gen_->GetKnotMultiplicity(i)[j];
-      }
-    }
+    std::array<int, DIM> knot_mult_index_shift = elm_gen_->GetKnotMultiplicityIndexShift(elm_num);
     std::array<int, DIM> global_indices{};
     for (int i = 0; i < DIM; ++i) {
-      global_indices[i] = mult_ind_handl_baf[i] + mult_ind_handl_elm[i] + knot_mult_sum[i];
+      global_indices[i] = mult_ind_handl_baf[i] + mult_ind_handl_elm[i] + knot_mult_index_shift[i];
     }
     return global_indices;
   }

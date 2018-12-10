@@ -49,25 +49,24 @@ class ElementGenerator {
     return num_elms;
   }
 
-  std::vector<int> GetKnotMultiplicity(int dir) const {
-    std::vector<int> knot_multiplicity;
-    std::vector<ParamCoord> internal_knots = GetInternalKnots(dir);
-    int temp = 0;
-    for (uint64_t j = 0; j < internal_knots.size() - 1; ++j) {
-      if (internal_knots[j].get() == internal_knots[j + 1].get()) {
-        temp += 1;
-      } else if ((internal_knots[j].get() != internal_knots[j + 1].get()) || (j == internal_knots.size() - 2)) {
-        knot_multiplicity.emplace_back(temp);
-        temp = 0;
-      }
+  std::array<int, DIM> GetKnotMultiplicityIndexShift(int elm_num) const {
+    std::array<int, DIM> index_shift{};
+    std::array<std::vector<ParamCoord>, DIM> internal = GetInternalKnots();
+    std::array<std::vector<ParamCoord>, DIM> unique = GetUniqueKnots();
+    for (int i = 0; i < DIM; ++i) {
+      ParamCoord lower_bound = unique[i][GetElementIndices(elm_num)[i]];
+      internal[i].erase(
+          std::find(internal[i].rbegin(), internal[i].rend(), lower_bound).base(), internal[i].rbegin().base());
+      unique[i].erase(std::find(unique[i].rbegin(), unique[i].rend(), lower_bound).base(), unique[i].rbegin().base());
+      index_shift[i] = internal[i].size() - unique[i].size();
     }
-    return knot_multiplicity;
+    return index_shift;
   }
 
   int GetElementNumberAtParamCoord(std::array<ParamCoord, DIM> param_coords) const {
     std::array<int, DIM> element_indices{};
     for (int i = 0; i < DIM; ++i) {
-      baf::KnotVector unique_kv(GetUniqueKnots(i));
+      baf::KnotVector unique_kv(GetUniqueKnots()[i]);
       element_indices[i] = unique_kv.GetKnotSpan(param_coords[i]).get();
     }
     return Get1DElementIndex(element_indices);
@@ -80,17 +79,22 @@ class ElementGenerator {
   }
 
  private:
-  std::vector<ParamCoord> GetInternalKnots(int dir) const {
-    std::vector<ParamCoord> knots = spl_->GetKnots()[dir];
-    auto first = knots.begin() + spl_->GetDegree(dir).get();
-    auto last = knots.end() - spl_->GetDegree(dir).get();
-    std::vector<ParamCoord> internal_knots_(first, last);
-    return internal_knots_;
+  std::array<std::vector<ParamCoord>, DIM> GetInternalKnots() const {
+    std::array<std::vector<ParamCoord>, DIM> internal_knots;
+    for (int i = 0; i < DIM; ++i) {
+      std::vector<ParamCoord> knots = spl_->GetKnots()[i];
+      auto first = knots.begin() + spl_->GetDegree(i).get();
+      auto last = knots.end() - spl_->GetDegree(i).get();
+      internal_knots[i] = std::vector<ParamCoord>(first, last);
+    }
+    return internal_knots;
   }
 
-  std::vector<ParamCoord> GetUniqueKnots(int dir) const {
-    std::vector<ParamCoord> internal_knots = GetInternalKnots(dir);
-    internal_knots.erase(unique(internal_knots.begin(), internal_knots.end()), internal_knots.end());
+  std::array<std::vector<ParamCoord>, DIM> GetUniqueKnots() const {
+    std::array<std::vector<ParamCoord>, DIM> internal_knots = GetInternalKnots();
+    for (int i = 0; i < DIM; ++i) {
+      internal_knots[i].erase(unique(internal_knots[i].begin(), internal_knots[i].end()), internal_knots[i].end());
+    }
     return internal_knots;
   }
 
