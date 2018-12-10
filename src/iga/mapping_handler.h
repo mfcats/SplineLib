@@ -34,29 +34,20 @@ class MappingHandler {
     return arma::det(GetDxDxitilde(param_coord));
   }
 
-  std::array<ParamCoord, DIM> Reference2ParameterSpace(int element_number, std::array<double, DIM> itg_pnt) const {
+  std::array<ParamCoord, DIM> Reference2ParameterSpace(int element_number, std::array<double, DIM> itg_pnts) const {
     iga::elm::ElementGenerator<DIM> elm_gen(spline_);
-    iga::elm::Element element_xi = elm_gen.GetElementList(0)[elm_gen.GetElementIndices(element_number)[0]];
-    iga::elm::Element element_eta = elm_gen.GetElementList(1)[elm_gen.GetElementIndices(element_number)[1]];
-    ParamCoord upper_xi = element_xi.GetNode(1);
-    ParamCoord lower_xi = element_xi.GetNode(0);
-    ParamCoord upper_eta = element_eta.GetNode(1);
-    ParamCoord lower_eta = element_eta.GetNode(0);
-    return {ParamCoord{((upper_xi - lower_xi).get() * itg_pnt[0] + (upper_xi + lower_xi).get()) / 2.0},
-            ParamCoord{((upper_eta - lower_eta).get() * itg_pnt[1] + (upper_eta + lower_eta).get()) / 2.0}};
+    std::array<ParamCoord, DIM> param_coords{};
+    for (int i = 0; i < DIM; ++i) {
+      iga::elm::Element elm = elm_gen.GetElementList(i)[elm_gen.GetElementIndices(element_number)[i]];
+      param_coords[i] = ParamCoord{((elm.GetNode(1) - elm.GetNode(0)).get() * itg_pnts[i]
+                                   + (elm.GetNode(1) + elm.GetNode(0)).get()) / 2.0};
+    }
+    return param_coords;
   }
 
  private:
   arma::dmat GetDxDxitilde(std::array<ParamCoord, DIM> param_coord) const {
-    arma::dmat dx_dxitilde(static_cast<uint64_t>(DIM), static_cast<uint64_t>(DIM), arma::fill::zeros);
-    arma::dmat dx_dxi = GetDxDxi(param_coord);
-    arma::dmat dxi_dxitilde = GetDxiDxitilde(param_coord);
-    for (uint64_t i = 0; i < 2; ++i) {
-      for (uint64_t j = 0; j < 2; ++j) {
-        dx_dxitilde(i, j) = dx_dxi(i, j) * dxi_dxitilde(j, j);
-      }
-    }
-    return dx_dxitilde;
+    return GetDxDxi(param_coord) * GetDxiDxitilde(param_coord);
   }
 
   arma::dmat GetDxDxi(std::array<ParamCoord, DIM> param_coord) const {
