@@ -163,7 +163,7 @@ class Spline {
     auto first = knot_span.get() - degree.get();
     std::vector<double> scaling1;
     std::vector<double> scaling2;
-    for (auto i = static_cast<size_t>(first), j = last; j - i > 0; ++i, --j) {
+    for (int i = first, j = last; j - i > 0; ++i, --j) {
       ParamCoord low_knot = GetKnotVector(dimension)->GetKnot(i);
       ParamCoord upper_knot = GetKnotVector(dimension)->GetKnot(i + degree.get() + 1);
       scaling1.emplace_back((knot.get() - low_knot.get()) / (upper_knot.get() - low_knot.get()));

@@ -75,23 +75,24 @@ TEST_F(BSplineFig5_26, RemovesKnot1_0Correctly) {  // NOLINT
                 DoubleEq(bspline_1d_before_->Evaluate(param_coord, {0})[0]));
   }
 
-//  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0);
-//  ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
-//              bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 2);
-//  ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(5).get(), DoubleEq(2));
-//  ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() - 2);
-//  new_control_points = {
-//      baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-//      baf::ControlPoint(std::vector<double>({0.0, 1.5})),
-//      baf::ControlPoint(std::vector<double>({2.0, 2.5})),
-//      baf::ControlPoint(std::vector<double>({4.0, 1.5})),
-//      baf::ControlPoint(std::vector<double>({4.0, 0.0}))
-//  };
-//  for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
-//    for (int j = 0; j < 2; ++j) {
-//      ASSERT_THAT(bspline_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
-//    }
-//  }
+  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0);
+  ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 2);
+  ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(5).get(), DoubleEq(2));
+  ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() - 2);
+  new_control_points.erase(new_control_points.begin(), new_control_points.end());
+  new_control_points = {
+      baf::ControlPoint(std::vector<double>({0.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({0.0, 1.5})),
+      baf::ControlPoint(std::vector<double>({2.0, 2.5})),
+      baf::ControlPoint(std::vector<double>({4.0, 1.5})),
+      baf::ControlPoint(std::vector<double>({4.0, 0.0}))
+  };
+  for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
+    for (int j = 0; j < 2; ++j) {
+      ASSERT_THAT(bspline_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
+    }
+  }
 //  for (int i = 0; i <= s; ++i) {
 //    std::array<ParamCoord, 1> param_coord{ParamCoord(i / s)};
 //    ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {0})[0],
