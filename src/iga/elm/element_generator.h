@@ -78,6 +78,12 @@ class ElementGenerator {
     return mult_ind_handl_elm.GetIndices();
   }
 
+  int Get1DElementIndex(std::array<int, DIM> element_indices) const {
+    util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumberOfElements());
+    mult_ind_handl_elm.SetIndices(element_indices);
+    return mult_ind_handl_elm.Get1DIndex();
+  }
+
  private:
   std::array<std::vector<ParamCoord>, DIM> GetInternalKnots() const {
     std::array<std::vector<ParamCoord>, DIM> internal_knots;
@@ -96,12 +102,6 @@ class ElementGenerator {
       internal_knots[i].erase(unique(internal_knots[i].begin(), internal_knots[i].end()), internal_knots[i].end());
     }
     return internal_knots;
-  }
-
-  int Get1DElementIndex(std::array<int, DIM> element_indices) const {
-    util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumberOfElements());
-    mult_ind_handl_elm.SetIndices(element_indices);
-    return mult_ind_handl_elm.Get1DIndex();
   }
 
   std::shared_ptr<spl::Spline<DIM>> spl_;
