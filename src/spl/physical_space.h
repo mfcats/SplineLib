@@ -76,6 +76,17 @@ class PhysicalSpace {
     --number_of_points_[dimension];
   }
 
+  virtual void SetControlPoint2(std::array<int, DIM> indices, const baf::ControlPoint &control_point, int dimension) {
+    --number_of_points_[dimension];
+    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
+    point_handler.SetIndices(indices);
+    int first = dimension_ * point_handler.Get1DIndex();
+    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
+      control_points_[first + coordinate] = control_point.GetValue(coordinate);
+    }
+    ++number_of_points_[dimension];
+  }
+
   void AddControlPoints(int number) {
     for (int i = 0; i < number; ++i) {
       for (int j = 0; j < dimension_; ++j) {
@@ -106,6 +117,10 @@ class PhysicalSpace {
 
   void IncrementNumberOfPoints(int dimension) {
     ++number_of_points_[dimension];
+  }
+
+  void DecrementNumberOfPoints(int dimension) {
+    --number_of_points_[dimension];
   }
 
   virtual int GetDimension() const {
