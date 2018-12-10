@@ -54,7 +54,7 @@ class BasisFunctionHandler {
   double GetWeight(std::array<ParamCoord, 2> param_coord, int local_index) const;
 
   std::shared_ptr<spl::NURBS<2>> spline_;
-  std::shared_ptr<iga::MappingHandler> mapping_handler_;
+  std::shared_ptr<iga::MappingHandler<2>> mapping_handler_;
   std::shared_ptr<iga::elm::ElementGenerator<2>> element_generator_;
 };
 }  // namespace iga

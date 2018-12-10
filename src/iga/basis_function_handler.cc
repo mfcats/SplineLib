@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "basis_function_handler.h"
 
 iga::BasisFunctionHandler::BasisFunctionHandler(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
-  mapping_handler_ = std::make_shared<iga::MappingHandler>(spline_);
+  mapping_handler_ = std::make_shared<iga::MappingHandler<2>>(spline_);
   element_generator_ = std::make_shared<iga::elm::ElementGenerator<2>>(spline_);
 }
 
