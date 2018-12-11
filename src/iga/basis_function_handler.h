@@ -26,15 +26,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "element_integration_point.h"
 #include "integration_rule.h"
 #include "mapping_handler.h"
+#include "multi_index_handler.h"
 #include "nurbs.h"
 
 namespace iga {
 template<int DIM>
 class BasisFunctionHandler {
  public:
-  explicit BasisFunctionHandler(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
-    mapping_handler_ = std::make_shared<iga::MappingHandler<2>>(spline_);
-    element_generator_ = std::make_shared<iga::elm::ElementGenerator<2>>(spline_);
+  explicit BasisFunctionHandler(std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {
+    mapping_handler_ = std::make_shared<iga::MappingHandler<DIM>>(spline_);
+    element_generator_ = std::make_shared<iga::elm::ElementGenerator<DIM>>(spline_);
   }
 
   std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctions(
@@ -83,20 +84,25 @@ class BasisFunctionHandler {
   }
 
  private:
-  std::vector<double> EvaluateAllNonZeroNURBSBasisFunctions(std::array<ParamCoord, 2> param_coord) const {
-    std::array<std::vector<double>, 2> basis_functions = std::array<std::vector<double>, 2>({
-      spline_->EvaluateAllNonZeroBasisFunctions(0, param_coord[0]),
-      spline_->EvaluateAllNonZeroBasisFunctions(1, param_coord[1])});
+  std::vector<double> EvaluateAllNonZeroNURBSBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
+    std::array<std::vector<double>, DIM> basis_functions{};
+    std::array<int, DIM> num_baf{};
+    for (int i = 0; i < DIM; ++i) {
+      basis_functions[i] = spline_->EvaluateAllNonZeroBasisFunctions(i, param_coord[i]);
+      num_baf[i] = basis_functions[i].size();
+    }
     std::vector<double> nurbs_basis_functions;
     double sum = 0;
-    int l = 0;
-    for (uint64_t i = 0; i < basis_functions[1].size(); ++i) {
-      for (uint64_t j = 0; j < basis_functions[0].size(); ++j) {
-        double temp = basis_functions[0][j] * basis_functions[1][i] * GetWeight(param_coord, l);
-        sum += temp;
-        nurbs_basis_functions.emplace_back(temp);
-        l += 1;
+    util::MultiIndexHandler<DIM> mih(num_baf);
+    while (true) {
+      double temp = 1;
+      for (int i = 0; i < DIM; ++i) {
+        temp *= basis_functions[i][mih[i]];
       }
+      nurbs_basis_functions.emplace_back(temp * GetWeight(param_coord, mih.Get1DIndex()));
+      sum += temp * GetWeight(param_coord, mih.Get1DIndex());
+      if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;
+      ++mih;
     }
     for (auto &nbaf : nurbs_basis_functions) {
       nbaf = nbaf / sum;
@@ -142,28 +148,28 @@ class BasisFunctionHandler {
     return nurbs_basis_function_derivatives;
   }
 
-  std::array<std::vector<double>, 2> EvaluateAllNonZeroNURBSBafDerivativesPhysical(
-      std::array<ParamCoord, 2> param_coord) const {
-    std::array<std::vector<double>, 2> dr_dx;
-    std::array<std::vector<double>, 2> dr_dxi = EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coord);
+  std::array<std::vector<double>, DIM> EvaluateAllNonZeroNURBSBafDerivativesPhysical(
+      std::array<ParamCoord, DIM> param_coord) const {
+    std::array<std::vector<double>, DIM> dr_dx;
+    std::array<std::vector<double>, DIM> dr_dxi = EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coord);
     arma::dmat dxi_dx = mapping_handler_->GetDxiDx(param_coord);
-    for (uint64_t i = 0; i < dr_dxi[0].size(); ++i) {
-      dr_dx[0].emplace_back(dr_dxi[0][i] * dxi_dx(0, 0) + dr_dxi[1][i] * dxi_dx(1, 0));
-      dr_dx[1].emplace_back(dr_dxi[0][i] * dxi_dx(0, 1) + dr_dxi[1][i] * dxi_dx(1, 1));
+    for (uint64_t j = 0; j < dr_dxi[0].size(); ++j) {
+      dr_dx[0].emplace_back(dr_dxi[0][j] * dxi_dx(0, 0) + dr_dxi[1][j] * dxi_dx(1, 0));
+      dr_dx[1].emplace_back(dr_dxi[0][j] * dxi_dx(0, 1) + dr_dxi[1][j] * dxi_dx(1, 1));
     }
     return dr_dx;
   }
 
 
-  double GetWeight(std::array<ParamCoord, 2> param_coord, int local_index) const {
-    iga::ConnectivityHandler<2> connectivity_handler(spline_);
+  double GetWeight(std::array<ParamCoord, DIM> param_coord, int local_index) const {
+    iga::ConnectivityHandler<DIM> connectivity_handler(spline_);
     return spline_->GetWeights()[connectivity_handler.GetGlobalIndex(element_generator_->GetElementNumberAtParamCoord(
         param_coord), local_index) - 1];
   }
 
-  std::shared_ptr<spl::NURBS<2>> spline_;
-  std::shared_ptr<iga::MappingHandler<2>> mapping_handler_;
-  std::shared_ptr<iga::elm::ElementGenerator<2>> element_generator_;
+  std::shared_ptr<spl::NURBS<DIM>> spline_;
+  std::shared_ptr<iga::MappingHandler<DIM>> mapping_handler_;
+  std::shared_ptr<iga::elm::ElementGenerator<DIM>> element_generator_;
 };
 }  // namespace iga
 
