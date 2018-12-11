@@ -14,7 +14,6 @@
 #
 
 set(SOURCES
-        basis_function_handler.cc
         element_integral_calculator.cc
         linear_equation_assembler.cc
         solution_spline.cc

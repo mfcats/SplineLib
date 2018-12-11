@@ -113,7 +113,7 @@ class AnIGATestSpline : public Test {
   std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
-  iga::BasisFunctionHandler basis_function_handler = iga::BasisFunctionHandler(nurbs_);
+  iga::BasisFunctionHandler<2> basis_function_handler = iga::BasisFunctionHandler<2>(nurbs_);
 };
 
 class AnIGATestSpline2 : public Test {

@@ -39,7 +39,7 @@ class ElementIntegralCalculator {
 
  private:
   std::shared_ptr<spl::NURBS<2>> spline_;
-  std::shared_ptr<iga::BasisFunctionHandler> baf_handler_;
+  std::shared_ptr<iga::BasisFunctionHandler<2>> baf_handler_;
   std::shared_ptr<iga::ConnectivityHandler<2>> connectivity_handler_;
 };
 }  // namespace iga
