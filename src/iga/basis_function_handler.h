@@ -125,7 +125,7 @@ class BasisFunctionHandler {
     std::vector<double> nurbs_basis_functions;
     std::array<std::vector<double>, DIM> nurbs_basis_function_derivatives;
     double sum_baf = 0;
-    std::array<double, DIM> sum_baf_ders;
+    std::array<double, DIM> sum_baf_ders{};
     util::MultiIndexHandler<DIM> mih(num_baf);
     while (true) {
       double temp = 1;
@@ -134,8 +134,8 @@ class BasisFunctionHandler {
       for (int i = 0; i < DIM; ++i) {
         temp *= basis_functions[i][mih[i]];
         for (int j = 0; j < DIM; ++j) {
-          if (i == j) temp_ders[i] *= basis_function_derivatives[j][mih[i]];
-          if (i != j) temp_ders[i] *= basis_functions[i][mih[i]];
+          if (i == j) temp_ders[i] *= basis_function_derivatives[j][mih[j]];
+          if (i != j) temp_ders[i] *= basis_functions[j][mih[j]];
         }
       }
       nurbs_basis_functions.emplace_back(temp * GetWeight(param_coord, mih.Get1DIndex()));
@@ -157,44 +157,6 @@ class BasisFunctionHandler {
     return nurbs_basis_function_derivatives;
   }
 
-  /*std::array<std::vector<double>, DIM> EvaluateAllNonZeroNURBSBasisFunctionDerivatives(
-      std::array<ParamCoord, DIM> param_coord) const {
-    std::array<std::vector<double>, 2> basis_functions = std::array<std::vector<double>, 2>({
-      spline_->EvaluateAllNonZeroBasisFunctions(0, param_coord[0]),
-      spline_->EvaluateAllNonZeroBasisFunctions(1, param_coord[1])});
-    std::array<std::vector<double>, 2> basis_function_derivatives = std::array<std::vector<double>, 2>({
-      spline_->EvaluateAllNonZeroBasisFunctionDerivatives(0, param_coord[0], 1),
-      spline_->EvaluateAllNonZeroBasisFunctionDerivatives(1, param_coord[1], 1)});
-    std::vector<double> nurbs_basis_functions;
-    std::array<std::vector<double>, 2> nurbs_basis_function_derivatives;
-    double sum_baf = 0;
-    double sum_der_xi = 0;
-    double sum_der_eta = 0;
-    int l = 0;
-    for (uint64_t i = 0; i < basis_function_derivatives[1].size(); ++i) {
-      for (uint64_t j = 0; j < basis_function_derivatives[0].size(); ++j) {
-        double temp = basis_functions[0][j] * basis_functions[1][i] * GetWeight(param_coord, l);
-        double temp_der_xi = basis_function_derivatives[0][j] * basis_functions[1][i] * GetWeight(param_coord, l);
-        double temp_der_eta = basis_functions[0][j] * basis_function_derivatives[1][i] * GetWeight(param_coord, l);
-        sum_baf += temp;
-        sum_der_xi += temp_der_xi;
-        sum_der_eta += temp_der_eta;
-        nurbs_basis_functions.emplace_back(temp);
-        nurbs_basis_function_derivatives[0].emplace_back(temp_der_xi);
-        nurbs_basis_function_derivatives[1].emplace_back(temp_der_eta);
-        l += 1;
-      }
-    }
-    for (uint64_t i = 0; i < basis_functions.size(); ++i) {
-      nurbs_basis_functions[i] = nurbs_basis_functions[i] / sum_baf;
-      nurbs_basis_function_derivatives[0][i] = (nurbs_basis_function_derivatives[0][i] * sum_baf -
-          nurbs_basis_functions[i] * sum_der_xi) / pow(sum_baf, 2);
-      nurbs_basis_function_derivatives[1][i] = (nurbs_basis_function_derivatives[1][i] * sum_baf -
-          nurbs_basis_functions[i] * sum_der_eta) / pow(sum_baf, 2);
-    }
-    return nurbs_basis_function_derivatives;
-  }*/
-
   std::array<std::vector<double>, DIM> EvaluateAllNonZeroNURBSBafDerivativesPhysical(
       std::array<ParamCoord, DIM> param_coord) const {
     std::array<std::vector<double>, DIM> dr_dx;
@@ -206,7 +168,6 @@ class BasisFunctionHandler {
     }
     return dr_dx;
   }
-
 
   double GetWeight(std::array<ParamCoord, DIM> param_coord, int local_index) const {
     iga::ConnectivityHandler<DIM> connectivity_handler(spline_);
