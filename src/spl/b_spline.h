@@ -85,11 +85,7 @@ class BSpline : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
-  void RemoveControlPoints(std::vector<double> scaling1,
-                           std::vector<double> scaling2,
-                           int first,
-                           int last,
-                           int dimension) override {
+  void RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
     std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
     --point_handler_length[dimension];
     util::MultiIndexHandler<DIM> point_handler1(point_handler_length);
@@ -99,7 +95,7 @@ class BSpline : public Spline<DIM> {
     point_handler2.SetIndices(maximum_point_index);
     int removed = physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension];
     std::vector<double> control_points_removed;
-    for (int i = 0; i < physical_space_->GetNumberOfControlPoints() - removed; ++i) {
+    for (int i = 0; i < (physical_space_->GetNumberOfControlPoints() - removed) * GetDimension(); ++i) {
       control_points_removed.emplace_back(0);
     }
     for (int i = 0; i < first; ++i) {
@@ -115,7 +111,9 @@ class BSpline : public Spline<DIM> {
       }
       --point_handler2;
     }
-    for (int i = point_handler1.Get1DIndex(), j = point_handler2.Get1DIndex() - 1; j - i > 0;
+    auto f = point_handler1.Get1DIndex();
+    auto g = point_handler2.Get1DIndex();
+    for (int i = point_handler1.Get1DIndex(), j = point_handler2.Get1DIndex(); j - i >= 0;
          ++i, --j, ++point_handler1, --point_handler2) {
       auto current_point1 = point_handler1.GetIndices()[dimension];
       std::array<int, DIM> indices1 = point_handler1.GetIndices();
@@ -124,37 +122,36 @@ class BSpline : public Spline<DIM> {
       std::array<int, DIM> indices2 = point_handler2.GetIndices();
 
       std::array<int, DIM> upper_indices = indices1;
-      ++upper_indices[dimension];
-      baf::ControlPoint upper_control_point = physical_space_->GetControlPoint(upper_indices);
-      baf::ControlPoint lower_control_point = physical_space_->GetControlPoint(indices1);
+      --upper_indices[dimension];
+      baf::ControlPoint upper_control_point = physical_space_->GetControlPoint(indices1);
+      baf::ControlPoint lower_control_point = physical_space_->GetControlPoint(upper_indices);
       for (int k = 0; k < upper_control_point.GetDimension(); ++k) {
         int a = point_handler1.Get1DIndex() * upper_control_point.GetDimension() + k;
-        double b =
-            (upper_control_point.GetValue(k) - (1 - scaling1[current_point1 - first]) * lower_control_point.GetValue(k))
-                / scaling1[current_point1 - first];
-//        control_points_removed[a] = b;
-//        control_points_removed[point_handler1.Get1DIndex() * upper_control_point.GetDimension() + k] =
-//            (upper_control_point.GetValue(k) - (1 - scaling1[current_point1 - first]) * lower_control_point.GetValue(k))
-//                / scaling1[current_point1 - first];
+        double b = (upper_control_point.GetValue(k) -
+            (1 - scaling[current_point1 - first]) * lower_control_point.GetValue(k)) / scaling[current_point1 - first];
+        control_points_removed[a] = b;
       }
 
       upper_indices = indices2;
       ++upper_indices[dimension];
       upper_control_point = physical_space_->GetControlPoint(upper_indices);
-      lower_control_point = physical_space_->GetControlPoint(indices1);
+      ++upper_indices[dimension];
+      lower_control_point = physical_space_->GetControlPoint(upper_indices);
       for (int k = 0; k < upper_control_point.GetDimension(); ++k) {
-
+        int a = point_handler2.Get1DIndex() * upper_control_point.GetDimension() + k;
+        double b = (upper_control_point.GetValue(k) - scaling[current_point2 - first] * lower_control_point.GetValue(k))
+            / (1 - scaling[current_point2 - first]);
+        control_points_removed[a] = b;
       }
-      // physical_space_->SetControlPoint(indices, new_control_point, dimension);
     }
+
     physical_space_->RemoveControlPoints(physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension]);
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
-    for (int i = 0; i < physical_space_->GetNumberOfControlPoints() - removed; ++i, ++point_handler) {
+    auto h = physical_space_->GetNumberOfControlPoints();
+    for (int i = 0; i < physical_space_->GetNumberOfControlPoints(); ++i, ++point_handler) {
       std::vector<double> coordinates(GetDimension(), 0);
       for (int j = 0; j < GetDimension(); ++j) {
-        auto r = i * GetDimension() + j;
-        auto y = control_points_removed[r];
-        coordinates[j] = y;
+        coordinates[j] = control_points_removed[i * GetDimension() + j];
       }
       baf::ControlPoint cp(coordinates);
       physical_space_->SetControlPoint2(point_handler.GetIndices(), cp, dimension);
