@@ -96,7 +96,7 @@ class ParameterSpace {
     return degree_;
   }
 
-  std::shared_ptr<baf::KnotVector> GetKnotVector(int direction) const {
+  virtual std::shared_ptr<baf::KnotVector> GetKnotVector(int direction) const {
     return knot_vector_[direction];
   }
 
