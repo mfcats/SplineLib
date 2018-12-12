@@ -76,8 +76,8 @@ class BasisFunctionHandler {
         std::array<ParamCoord, 2> param_coords = mapping_handler_->Reference2ParameterSpace(
             element_number, {itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate()});
         element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-            EvaluateAllNonZeroNURBSBafDerivativesPhysical(param_coords), itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight(),
-            mapping_handler_->GetJacobianDeterminant(param_coords)));
+            EvaluateAllNonZeroNURBSBafDerivativesPhysical(param_coords), itg_pnt_xi.GetWeight()
+            * itg_pnt_eta.GetWeight(), mapping_handler_->GetJacobianDeterminant(param_coords)));
       }
     }
     return element_integration_points;
