@@ -96,8 +96,6 @@ class BasisFunctionHandler {
 
   std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(
       int element_number, const iga::itg::IntegrationRule &rule) const {
-
-
     std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
     std::array<std::vector<iga::itg::IntegrationPoint>, DIM> itg_pnts{};
     std::array<int, DIM> num_itg_pnts{};
