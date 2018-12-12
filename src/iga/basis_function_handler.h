@@ -162,9 +162,14 @@ class BasisFunctionHandler {
     std::array<std::vector<double>, DIM> dr_dx;
     std::array<std::vector<double>, DIM> dr_dxi = EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coord);
     arma::dmat dxi_dx = mapping_handler_->GetDxiDx(param_coord);
-    for (uint64_t j = 0; j < dr_dxi[0].size(); ++j) {
-      dr_dx[0].emplace_back(dr_dxi[0][j] * dxi_dx(0, 0) + dr_dxi[1][j] * dxi_dx(1, 0));
-      dr_dx[1].emplace_back(dr_dxi[0][j] * dxi_dx(0, 1) + dr_dxi[1][j] * dxi_dx(1, 1));
+    for (int i = 0; i < DIM; ++i) {
+      for (uint64_t j = 0; j < dr_dxi[i].size(); ++j) {
+        double temp = 0;
+        for (int k = 0; k < DIM; ++k) {
+          temp += dr_dxi[k][j] * dxi_dx(static_cast<uint64_t>(k), static_cast<uint64_t>(i));
+        }
+        dr_dx[i].emplace_back(temp);
+      }
     }
     return dr_dx;
   }
