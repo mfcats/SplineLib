@@ -41,14 +41,27 @@ class BasisFunctionHandler {
   std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctions(
       int element_number, const iga::itg::IntegrationRule &rule) const {
     std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
-    for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
-      for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
-        std::array<ParamCoord, 2> param_coords = mapping_handler_->Reference2ParameterSpace(
-            element_number, {itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate()});
-        element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-            EvaluateAllNonZeroNURBSBasisFunctions(param_coords), itg_pnt_xi.GetWeight() * itg_pnt_eta.GetWeight(),
-            mapping_handler_->GetJacobianDeterminant(param_coords)));
+    std::array<std::vector<iga::itg::IntegrationPoint>, DIM> itg_pnts{};
+    std::array<int, DIM> num_itg_pnts{};
+    for (int i = 0; i < DIM; ++i) {
+      itg_pnts[i] = rule.GetIntegrationPoints();
+      num_itg_pnts[i] = rule.GetNumberOfIntegrationPoints();
+    }
+    util::MultiIndexHandler<DIM> mih(num_itg_pnts);
+    while (true) {
+      std::array<double, DIM> itg_pnt_coords{};
+      double itg_pnt_weight = 1;
+      for (int i = 0; i < DIM; ++i) {
+        itg_pnt_coords[i] = itg_pnts[i][mih[i]].GetCoordinate();
+        itg_pnt_weight *= itg_pnts[i][mih[i]].GetWeight();
       }
+      std::array<ParamCoord, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
+          element_number, itg_pnt_coords);
+      element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
+          EvaluateAllNonZeroNURBSBasisFunctions(param_coords), itg_pnt_weight,
+          mapping_handler_->GetJacobianDeterminant(param_coords)));
+      if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;
+      ++mih;
     }
     return element_integration_points;
   }
@@ -56,29 +69,57 @@ class BasisFunctionHandler {
   std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(
       int element_number, const iga::itg::IntegrationRule &rule) const {
     std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
-    for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
-      for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
-        std::array<ParamCoord, 2> param_coords = mapping_handler_->Reference2ParameterSpace(
-            element_number, {itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate()});
-        element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-            EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coords), itg_pnt_xi.GetWeight()
-                * itg_pnt_eta.GetWeight(), mapping_handler_->GetJacobianDeterminant(param_coords)));
+    std::array<std::vector<iga::itg::IntegrationPoint>, DIM> itg_pnts{};
+    std::array<int, DIM> num_itg_pnts{};
+    for (int i = 0; i < DIM; ++i) {
+      itg_pnts[i] = rule.GetIntegrationPoints();
+      num_itg_pnts[i] = rule.GetNumberOfIntegrationPoints();
+    }
+    util::MultiIndexHandler<DIM> mih(num_itg_pnts);
+    while (true) {
+      std::array<double, DIM> itg_pnt_coords{};
+      double itg_pnt_weight = 1;
+      for (int i = 0; i < DIM; ++i) {
+        itg_pnt_coords[i] = itg_pnts[i][mih[i]].GetCoordinate();
+        itg_pnt_weight *= itg_pnts[i][mih[i]].GetWeight();
       }
+      std::array<ParamCoord, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
+          element_number, itg_pnt_coords);
+      element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
+          EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coords), itg_pnt_weight,
+          mapping_handler_->GetJacobianDeterminant(param_coords)));
+      if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;
+      ++mih;
     }
     return element_integration_points;
   }
 
   std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(
       int element_number, const iga::itg::IntegrationRule &rule) const {
+
+
     std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
-    for (auto &itg_pnt_eta : rule.GetIntegrationPoints()) {
-      for (auto &itg_pnt_xi : rule.GetIntegrationPoints()) {
-        std::array<ParamCoord, 2> param_coords = mapping_handler_->Reference2ParameterSpace(
-            element_number, {itg_pnt_xi.GetCoordinate(), itg_pnt_eta.GetCoordinate()});
-        element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
-            EvaluateAllNonZeroNURBSBafDerivativesPhysical(param_coords), itg_pnt_xi.GetWeight()
-            * itg_pnt_eta.GetWeight(), mapping_handler_->GetJacobianDeterminant(param_coords)));
+    std::array<std::vector<iga::itg::IntegrationPoint>, DIM> itg_pnts{};
+    std::array<int, DIM> num_itg_pnts{};
+    for (int i = 0; i < DIM; ++i) {
+      itg_pnts[i] = rule.GetIntegrationPoints();
+      num_itg_pnts[i] = rule.GetNumberOfIntegrationPoints();
+    }
+    util::MultiIndexHandler<DIM> mih(num_itg_pnts);
+    while (true) {
+      std::array<double, DIM> itg_pnt_coords{};
+      double itg_pnt_weight = 1;
+      for (int i = 0; i < DIM; ++i) {
+        itg_pnt_coords[i] = itg_pnts[i][mih[i]].GetCoordinate();
+        itg_pnt_weight *= itg_pnts[i][mih[i]].GetWeight();
       }
+      std::array<ParamCoord, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
+          element_number, itg_pnt_coords);
+      element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
+          EvaluateAllNonZeroNURBSBafDerivativesPhysical(param_coords), itg_pnt_weight,
+          mapping_handler_->GetJacobianDeterminant(param_coords)));
+      if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;
+      ++mih;
     }
     return element_integration_points;
   }
