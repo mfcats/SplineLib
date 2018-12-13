@@ -13,18 +13,13 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(SOURCES
-        solution_spline.cc
-        solution_vtk_writer.cc)
-
-
 add_subdirectory(itg)
 add_subdirectory(elm)
 
 find_package(Armadillo REQUIRED)
-add_library(splinelibiga SHARED ${SOURCES})
-target_include_directories(splinelibiga PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> ${ARMADILLO_INCLUDE_DIRS})
-target_link_libraries(splinelibiga PUBLIC splinelibspl splinelibigaitg splinelibigaelm splinelibio ${ARMADILLO_LIBRARIES})
+add_library(splinelibiga INTERFACE)
+target_include_directories(splinelibiga INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> ${ARMADILLO_INCLUDE_DIRS})
+target_link_libraries(splinelibiga INTERFACE splinelibspl splinelibigaitg splinelibigaelm splinelibio ${ARMADILLO_LIBRARIES})
 
 
 install(
