@@ -29,14 +29,12 @@ namespace iga {
 template<int DIM>
 class ElementIntegralCalculator {
  public:
-  explicit ElementIntegralCalculator(
-      std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {
+  explicit ElementIntegralCalculator(std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {
     baf_handler_ = std::make_shared<iga::BasisFunctionHandler<DIM>>(spline_);
     connectivity_handler_ = std::make_shared<iga::ConnectivityHandler<DIM>>(spline_);
   }
 
-  void GetLaplaceElementIntegral(int element_number,
-      const iga::itg::IntegrationRule &rule,
+  void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
       const std::shared_ptr<arma::dmat> &matA) const {
     std::vector<iga::elm::ElementIntegrationPoint> elm_intgr_pnts =
         baf_handler_->EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(element_number, rule);
@@ -53,10 +51,8 @@ class ElementIntegralCalculator {
     }
   }
 
-  void GetLaplaceElementIntegral(int element_number,
-      const iga::itg::IntegrationRule &rule,
-      const std::shared_ptr<arma::dvec> &vecB,
-      const std::shared_ptr<arma::dvec> &srcCp) const {
+  void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
+      const std::shared_ptr<arma::dvec> &vecB, const std::shared_ptr<arma::dvec> &srcCp) const {
     std::vector<iga::elm::ElementIntegrationPoint> elm_intgr_pnts =
         baf_handler_->EvaluateAllElementNonZeroNURBSBasisFunctions(element_number, rule);
     for (auto &p : elm_intgr_pnts) {
