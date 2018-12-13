@@ -23,7 +23,7 @@ TEST_F(AnIGATestSpline, TestSolutionVTKWriter) { // NOLINT
   linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
   linear_equation_assembler.SetZeroBC(matA, vecB);
   arma::dvec solution = arma::solve(*matA, *vecB);
-  iga::SolutionVTKWriter solution_vtk_writer;
+  iga::SolutionVTKWriter<2> solution_vtk_writer;
   solution_vtk_writer.WriteSolutionToVTK(nurbs_, solution, {{10, 10}}, "solution.vtk");
   remove("solution.vtk");
 }

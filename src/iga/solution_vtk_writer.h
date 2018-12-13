@@ -20,33 +20,41 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
+#include "multi_index_handler.h"
 #include "nurbs.h"
 #include "solution_spline.h"
 #include "vtk_writer.h"
 
 namespace iga {
+template<int DIM>
 class SolutionVTKWriter {
  public:
   SolutionVTKWriter() = default;
 
-  void WriteSolutionToVTK(const std::shared_ptr<spl::NURBS<2>> &spl, const arma::dvec &solution,
+  void WriteSolutionToVTK(const std::shared_ptr<spl::NURBS<DIM>> &spl, const arma::dvec &solution,
       const std::vector<std::vector<int>> &scattering, const std::string &filename) {
-    iga::SolutionSpline sol_spl(spl, solution);
-    std::shared_ptr<spl::NURBS<2>> solution_spl = sol_spl.GetSolutionSpline();
-    double dxi = (spl->GetKnots()[0][spl->GetKnots()[0].size() - 1] - spl->GetKnots()[0][0]).get() / scattering[0][0];
-    double deta = (spl->GetKnots()[1][spl->GetKnots()[1].size() - 1] - spl->GetKnots()[1][0]).get() / scattering[0][1];
+    iga::SolutionSpline<DIM> sol_spl(spl, solution);
+    std::shared_ptr<spl::NURBS<DIM>> solution_spl = sol_spl.GetSolutionSpline();
+    std::vector<double> dxi;
+    std::array<int, DIM> num_pnts{};
+    for (int i = 0; i < DIM; ++i) {
+      dxi.emplace_back(
+          (spl->GetKnots()[i][spl->GetKnots()[i].size() - 1] - spl->GetKnots()[i][0]).get() / scattering[0][i]);
+      num_pnts[i] = scattering[0][i] + 1;
+    }
     std::vector<double> point_data;
-    std::array<ParamCoord, 2> param_coords = {spl->GetKnots()[0][0], spl->GetKnots()[1][0]};
-    for (int j = 0; j <= scattering[0][1]; ++j) {
-      for (int i = 0; i <= scattering[0][0]; ++i) {
-        point_data.emplace_back(solution_spl->Evaluate(param_coords, {2})[0]);
-        param_coords[0] = param_coords[0] + ParamCoord{dxi};
+    util::MultiIndexHandler<DIM> mih(num_pnts);
+    while (true) {
+      std::array<ParamCoord, DIM> param_coords{};
+      for (int i = 0; i < DIM; ++i) {
+        param_coords[i] = spl->GetKnots()[i][0] + ParamCoord{mih[i] * dxi[i]};
       }
-      param_coords[1] = param_coords[1] + ParamCoord{deta};
-      param_coords[0] = spl->GetKnots()[0][0];
+      point_data.emplace_back(solution_spl->Evaluate(param_coords, {DIM + 1})[0]);
+      if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;
+      ++mih;
     }
     io::VTKWriter vtk_writer;
-    std::vector<std::any> splines = {std::make_any<std::shared_ptr<spl::NURBS<2>>>(spl)};
+    std::vector<std::any> splines = {std::make_any<std::shared_ptr<spl::NURBS<DIM>>>(spl)};
     vtk_writer.WriteFile(splines, filename, scattering);
     std::ofstream newFile;
     newFile.open(filename, std::ofstream::out | std::ofstream::app);

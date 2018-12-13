@@ -37,7 +37,7 @@ class SolutionSpline {
         temp.emplace_back(cp[j]);
       }
       temp.emplace_back(solution(l));
-      control_points.emplace_back(temp);
+      control_points.emplace_back(baf::ControlPoint(temp));
       l += 1;
     }
     solution_spl_ = std::make_shared<spl::NURBS<DIM>>(knot_vector, degree, control_points, weights);
