@@ -25,18 +25,19 @@ namespace iga {
 namespace elm {
 class Element {
  public:
-  Element(int dimension, const std::vector<ParamCoord> &nodes);
 
-  int GetDimension() const;
+  explicit Element(const std::array<ParamCoord, 2> &nodes) : nodes_(nodes) {}
 
-  int GetNumberOfNodes() const;
+  ParamCoord GetLowerBound() const {
+    return nodes_[0];
+  }
 
-  ParamCoord GetNode(int number) const;
+  ParamCoord GetUpperBound() const {
+    return nodes_[1];
+  }
 
  private:
-  int dimension_;
-  int number_of_nodes_;
-  std::vector<ParamCoord> nodes_;
+  std::array<ParamCoord, 2> nodes_;
 };
 }  // namespace elm
 }  // namespace iga

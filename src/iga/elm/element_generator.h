@@ -30,8 +30,8 @@ class ElementGenerator {
     for (int i = 0; i < DIM; ++i) {
       for (uint64_t j = 0; j < spl_->GetKnotVector(i)->GetNumberOfKnots() - spl_->GetDegree(i).get() - 1; ++j) {
         if ((spl_->GetKnotVector(i)->GetKnot(j).get() - spl_->GetKnotVector(i)->GetKnot(j + 1).get()) != 0) {
-          elements_[i].emplace_back(Element(1, {spl_->GetKnotVector(i)->GetKnot(j),
-                                                spl_->GetKnotVector(i)->GetKnot(j + 1)}));
+          elements_[i].emplace_back(Element({spl_->GetKnotVector(i)->GetKnot(j),
+                                             spl_->GetKnotVector(i)->GetKnot(j + 1)}));
         }
       }
     }

@@ -14,7 +14,6 @@
 #
 
 set(SOURCES
-        element.cc
         element_integration_point.cc)
 
 add_library(splinelibigaelm SHARED ${SOURCES})

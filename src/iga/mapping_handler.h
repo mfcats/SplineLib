@@ -39,8 +39,8 @@ class MappingHandler {
     std::array<ParamCoord, DIM> param_coords{};
     for (int i = 0; i < DIM; ++i) {
       iga::elm::Element elm = elm_gen.GetElementList(i)[elm_gen.GetElementIndices(element_number)[i]];
-      param_coords[i] = ParamCoord{((elm.GetNode(1) - elm.GetNode(0)).get() * itg_pnts[i]
-                                   + (elm.GetNode(1) + elm.GetNode(0)).get()) / 2.0};
+      param_coords[i] = ParamCoord{((elm.GetUpperBound() - elm.GetLowerBound()).get() * itg_pnts[i]
+                                   + (elm.GetUpperBound() + elm.GetLowerBound()).get()) / 2.0};
     }
     return param_coords;
   }
