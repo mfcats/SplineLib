@@ -26,7 +26,7 @@ class AnElementIntegrationPoint : public Test{
   AnElementIntegrationPoint() : element_integration_point({2.3, 4.5}, 0.75, 1.75) {}
 
  protected:
-  iga::elm::ElementIntegrationPoint element_integration_point;
+  iga::elm::ElementIntegrationPoint<1> element_integration_point;
 };
 
 TEST_F(AnElementIntegrationPoint, GetNonZeroBasisFunctions) { //NOLINT
@@ -56,7 +56,7 @@ class AnElementIntegrationPointWithDerivatives : public Test{
   AnElementIntegrationPointWithDerivatives() : element_integration_point(baf_ders, 0.75, 1.75) {}
 
  protected:
-  iga::elm::ElementIntegrationPoint element_integration_point;
+  iga::elm::ElementIntegrationPoint<2> element_integration_point;
 };
 
 TEST_F(AnElementIntegrationPointWithDerivatives, GetNonZeroBasisFunctionDerivatives) { //NOLINT

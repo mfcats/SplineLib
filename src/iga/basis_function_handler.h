@@ -38,9 +38,9 @@ class BasisFunctionHandler {
     element_generator_ = std::make_shared<iga::elm::ElementGenerator<DIM>>(spline_);
   }
 
-  std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctions(
+  std::vector<iga::elm::ElementIntegrationPoint<DIM>> EvaluateAllElementNonZeroNURBSBasisFunctions(
       int element_number, const iga::itg::IntegrationRule &rule) const {
-    std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
+    std::vector<iga::elm::ElementIntegrationPoint<DIM>> element_integration_points;
     std::array<std::vector<iga::itg::IntegrationPoint>, DIM> itg_pnts{};
     std::array<int, DIM> num_itg_pnts{};
     for (int i = 0; i < DIM; ++i) {
@@ -57,7 +57,7 @@ class BasisFunctionHandler {
       }
       std::array<ParamCoord, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
           element_number, itg_pnt_coords);
-      element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
+      element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint<DIM>(
           EvaluateAllNonZeroNURBSBasisFunctions(param_coords), itg_pnt_weight,
           mapping_handler_->GetJacobianDeterminant(param_coords)));
       if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;
@@ -66,9 +66,9 @@ class BasisFunctionHandler {
     return element_integration_points;
   }
 
-  std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(
+  std::vector<iga::elm::ElementIntegrationPoint<DIM>> EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(
       int element_number, const iga::itg::IntegrationRule &rule) const {
-    std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
+    std::vector<iga::elm::ElementIntegrationPoint<DIM>> element_integration_points;
     std::array<std::vector<iga::itg::IntegrationPoint>, DIM> itg_pnts{};
     std::array<int, DIM> num_itg_pnts{};
     for (int i = 0; i < DIM; ++i) {
@@ -85,7 +85,7 @@ class BasisFunctionHandler {
       }
       std::array<ParamCoord, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
           element_number, itg_pnt_coords);
-      element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
+      element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint<DIM>(
           EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coords), itg_pnt_weight,
           mapping_handler_->GetJacobianDeterminant(param_coords)));
       if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;
@@ -94,9 +94,9 @@ class BasisFunctionHandler {
     return element_integration_points;
   }
 
-  std::vector<iga::elm::ElementIntegrationPoint> EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(
+  std::vector<iga::elm::ElementIntegrationPoint<DIM>> EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(
       int element_number, const iga::itg::IntegrationRule &rule) const {
-    std::vector<iga::elm::ElementIntegrationPoint> element_integration_points;
+    std::vector<iga::elm::ElementIntegrationPoint<DIM>> element_integration_points;
     std::array<std::vector<iga::itg::IntegrationPoint>, DIM> itg_pnts{};
     std::array<int, DIM> num_itg_pnts{};
     for (int i = 0; i < DIM; ++i) {
@@ -113,7 +113,7 @@ class BasisFunctionHandler {
       }
       std::array<ParamCoord, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
           element_number, itg_pnt_coords);
-      element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint(
+      element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint<DIM>(
           EvaluateAllNonZeroNURBSBafDerivativesPhysical(param_coords), itg_pnt_weight,
           mapping_handler_->GetJacobianDeterminant(param_coords)));
       if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;

@@ -36,7 +36,7 @@ class ElementIntegralCalculator {
 
   void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
       const std::shared_ptr<arma::dmat> &matA) const {
-    std::vector<iga::elm::ElementIntegrationPoint> elm_intgr_pnts =
+    std::vector<iga::elm::ElementIntegrationPoint<DIM>> elm_intgr_pnts =
         baf_handler_->EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(element_number, rule);
     for (auto &p : elm_intgr_pnts) {
       for (int j = 0; j < p.GetNumberOfNonZeroBasisFunctionDerivatives(1); ++j) {
@@ -53,7 +53,7 @@ class ElementIntegralCalculator {
 
   void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
       const std::shared_ptr<arma::dvec> &vecB, const std::shared_ptr<arma::dvec> &srcCp) const {
-    std::vector<iga::elm::ElementIntegrationPoint> elm_intgr_pnts =
+    std::vector<iga::elm::ElementIntegrationPoint<DIM>> elm_intgr_pnts =
         baf_handler_->EvaluateAllElementNonZeroNURBSBasisFunctions(element_number, rule);
     for (auto &p : elm_intgr_pnts) {
       double bc_int_pnt = 0;

@@ -13,12 +13,9 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(SOURCES
-        element_integration_point.cc)
-
-add_library(splinelibigaelm SHARED ${SOURCES})
-target_include_directories(splinelibigaelm PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibigaelm PUBLIC splinelibbaf)
+add_library(splinelibigaelm INTERFACE)
+target_include_directories(splinelibigaelm INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(splinelibigaelm INTERFACE splinelibbaf)
 
 install(
         TARGETS splinelibigaelm
