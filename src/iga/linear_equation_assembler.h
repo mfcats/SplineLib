@@ -28,10 +28,10 @@ class LinearEquationAssembler {
   explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<2>> spl);
 
   void GetLeftSide(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dmat> &matA,
-                   const iga::ElementIntegralCalculator &elm_itg_calc) const;
+                   const iga::ElementIntegralCalculator<2> &elm_itg_calc) const;
 
   void GetRightSide(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dvec> &vecB,
-                    const iga::ElementIntegralCalculator &elm_itg_calc,
+                    const iga::ElementIntegralCalculator<2> &elm_itg_calc,
                     const std::shared_ptr<arma::dvec> &srcCp) const;
 
   void SetZeroBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB);

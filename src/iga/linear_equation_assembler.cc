@@ -20,7 +20,7 @@ iga::LinearEquationAssembler::LinearEquationAssembler(std::shared_ptr<spl::NURBS
 
 void iga::LinearEquationAssembler::GetLeftSide(const iga::itg::IntegrationRule &rule,
                                                const std::shared_ptr<arma::dmat> &matA,
-                                               const iga::ElementIntegralCalculator &elm_itg_calc) const {
+                                               const iga::ElementIntegralCalculator<2> &elm_itg_calc) const {
   int num_elements = (elm_gen_->GetNumberOfElements()[0] * elm_gen_->GetNumberOfElements()[1]);
   for (int e = 0; e < num_elements; ++e) {
     elm_itg_calc.GetLaplaceElementIntegral(e, rule, matA);
@@ -29,7 +29,7 @@ void iga::LinearEquationAssembler::GetLeftSide(const iga::itg::IntegrationRule &
 
 void iga::LinearEquationAssembler::GetRightSide(const iga::itg::IntegrationRule &rule,
                                                 const std::shared_ptr<arma::dvec> &vecB,
-                                                const iga::ElementIntegralCalculator &elm_itg_calc,
+                                                const iga::ElementIntegralCalculator<2> &elm_itg_calc,
                                                 const std::shared_ptr<arma::dvec> &srcCp) const {
   int num_elements = (elm_gen_->GetNumberOfElements()[0] * elm_gen_->GetNumberOfElements()[1]);
   for (int e = 0; e < num_elements; ++e) {
