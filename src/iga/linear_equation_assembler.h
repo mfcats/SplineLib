@@ -20,45 +20,47 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "element_integral_calculator.h"
 #include "element_generator.h"
 #include "integration_rule.h"
+#include "multi_index_handler.h"
 #include "nurbs.h"
 
 namespace iga {
 template<int DIM>
 class LinearEquationAssembler {
  public:
-  explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
-    elm_gen_ = std::make_shared<iga::elm::ElementGenerator<2>>(spline_);
+  explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {
+    elm_gen_ = std::make_shared<iga::elm::ElementGenerator<DIM>>(spline_);
   }
 
   void GetLeftSide(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dmat> &matA,
-      const iga::ElementIntegralCalculator<2> &elm_itg_calc) const {
-    int num_elements = (elm_gen_->GetNumberOfElements()[0] * elm_gen_->GetNumberOfElements()[1]);
-    for (int e = 0; e < num_elements; ++e) {
+      const iga::ElementIntegralCalculator<DIM> &elm_itg_calc) const {
+    for (int e = 0; e < elm_gen_->GetNumberOfElements(); ++e) {
       elm_itg_calc.GetLaplaceElementIntegral(e, rule, matA);
     }
   }
 
   void GetRightSide(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dvec> &vecB,
-      const iga::ElementIntegralCalculator<2> &elm_itg_calc, const std::shared_ptr<arma::dvec> &srcCp) const {
-    int num_elements = (elm_gen_->GetNumberOfElements()[0] * elm_gen_->GetNumberOfElements()[1]);
-    for (int e = 0; e < num_elements; ++e) {
+      const iga::ElementIntegralCalculator<DIM> &elm_itg_calc, const std::shared_ptr<arma::dvec> &srcCp) const {
+    for (int e = 0; e < elm_gen_->GetNumberOfElements(); ++e) {
       elm_itg_calc.GetLaplaceElementIntegral(e, rule, vecB, srcCp);
     }
   }
 
   void SetZeroBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB) {
-    uint64_t l = 0;
-    int n = spline_->GetPointsPerDirection()[0];
-    int m = spline_->GetPointsPerDirection()[1];
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < m; ++j) {
-        if (!((i > 0) && (j > 0) && (i < n - 1) && (j < m - 1))) {
-          (*vecB)(l) = 0;
-          (*matA).row(l).fill(0);
-          (*matA)(l, l) = 1;
+    util::MultiIndexHandler<DIM> mih(spline_->GetPointsPerDirection());
+    while (true) {
+      bool on_boundary = false;
+      for (int i = 0; i < DIM; ++i) {
+        if (!((mih[i] > 0) && (mih.GetDifferenceIndices()[i] > 0))) {
+          on_boundary = true;
         }
-        l += 1;
       }
+      if (on_boundary) {
+        (*vecB)(static_cast<uint64_t>(mih.Get1DIndex())) = 0;
+        (*matA).row(static_cast<uint64_t>(mih.Get1DIndex())).fill(0);
+        (*matA)(static_cast<uint64_t>(mih.Get1DIndex()), static_cast<uint64_t>(mih.Get1DIndex())) = 1;
+      }
+      if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;
+      ++mih;
     }
   }
 
@@ -92,8 +94,8 @@ class LinearEquationAssembler {
   */
 
  private:
-  std::shared_ptr<spl::NURBS<2>> spline_;
-  std::shared_ptr<iga::elm::ElementGenerator<2>> elm_gen_;
+  std::shared_ptr<spl::NURBS<DIM>> spline_;
+  std::shared_ptr<iga::elm::ElementGenerator<DIM>> elm_gen_;
 };
 }  // namespace iga
 

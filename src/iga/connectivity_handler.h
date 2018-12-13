@@ -35,7 +35,7 @@ class ConnectivityHandler {
 
  private:
   std::array<int, DIM> GetGlobalIndicesPerParametricDirection(int elm_num, int local_index) {
-    util::MultiIndexHandler<DIM> mult_ind_handl_elm(elm_gen_->GetNumberOfElements());
+    util::MultiIndexHandler<DIM> mult_ind_handl_elm(elm_gen_->GetNumElementsPerParamDir());
     mult_ind_handl_elm = mult_ind_handl_elm + elm_num;
     std::array<int, DIM> num_non_zero_baf{};
     for (int i = 0; i < DIM; ++i) {

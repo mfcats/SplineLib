@@ -41,10 +41,18 @@ class ElementGenerator {
     return elements_[dir];
   }
 
-  std::array<int, DIM> GetNumberOfElements() const {
+  std::array<int, DIM> GetNumElementsPerParamDir() const {
     std::array<int, DIM> num_elms{};
     for (int i = 0; i < DIM; ++i) {
       num_elms[i] = elements_[i].size();
+    }
+    return num_elms;
+  }
+
+  int GetNumberOfElements() const {
+    int num_elms = 1;
+    for (int i = 0; i < DIM; ++i) {
+      num_elms *= elements_[i].size();
     }
     return num_elms;
   }
@@ -73,13 +81,13 @@ class ElementGenerator {
   }
 
   std::array<int, DIM> GetElementIndices(int element_index) const {
-    util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumberOfElements());
+    util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumElementsPerParamDir());
     mult_ind_handl_elm = mult_ind_handl_elm + element_index;
     return mult_ind_handl_elm.GetIndices();
   }
 
   int Get1DElementIndex(std::array<int, DIM> element_indices) const {
-    util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumberOfElements());
+    util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumElementsPerParamDir());
     mult_ind_handl_elm.SetIndices(element_indices);
     return mult_ind_handl_elm.Get1DIndex();
   }
