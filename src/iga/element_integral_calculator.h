@@ -39,11 +39,13 @@ class ElementIntegralCalculator {
     std::vector<iga::elm::ElementIntegrationPoint<DIM>> elm_intgr_pnts =
         baf_handler_->EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(element_number, rule);
     for (auto &p : elm_intgr_pnts) {
-      for (int j = 0; j < p.GetNumberOfNonZeroBasisFunctionDerivatives(1); ++j) {
+      for (int j = 0; j < p.GetNumberOfNonZeroBasisFunctionDerivatives(0); ++j) {
         for (int k = 0; k < p.GetNumberOfNonZeroBasisFunctionDerivatives(0); ++k) {
-          double temp = (p.GetBasisFunctionDerivativeValue(j, 0) * p.GetBasisFunctionDerivativeValue(k, 0)
-              + p.GetBasisFunctionDerivativeValue(j, 1) * p.GetBasisFunctionDerivativeValue(k, 1))
-              * p.GetWeight() * p.GetJacobianDeterminant();
+          double temp = 0;
+          for (int i = 0; i < DIM; ++i) {
+            temp += p.GetBasisFunctionDerivativeValue(j, i) * p.GetBasisFunctionDerivativeValue(k, i);
+          }
+          temp *= p.GetWeight() * p.GetJacobianDeterminant();
           (*matA)(static_cast<uint64_t>(connectivity_handler_->GetGlobalIndex(element_number, j) - 1),
                   static_cast<uint64_t>(connectivity_handler_->GetGlobalIndex(element_number, k) - 1)) += temp;
         }
