@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IGA_SOLUTION_SPLINE_H_
 
 #include <armadillo>
+#include <vector>
 
 #include "nurbs.h"
 

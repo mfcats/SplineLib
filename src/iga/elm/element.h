@@ -25,7 +25,6 @@ namespace iga {
 namespace elm {
 class Element {
  public:
-
   explicit Element(const std::array<ParamCoord, 2> &nodes) : nodes_(nodes) {}
 
   ParamCoord GetLowerBound() const {
