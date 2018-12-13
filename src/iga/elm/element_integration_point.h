@@ -55,19 +55,11 @@ class ElementIntegrationPoint {
   }
 
   double GetBasisFunctionValue(int firstNonZeroOffset) const {
-#ifdef DEBUG
-    return non_zero_basis_functions_.at(firstNonZeroOffset);
-#else
     return non_zero_basis_functions_[firstNonZeroOffset];
-#endif
   }
 
   double GetBasisFunctionDerivativeValue(int firstNonZeroOffset, int dir) const {
-#ifdef DEBUG
-    return non_zero_basis_function_derivatives_.at(dir).at(firstNonZeroOffset);
-#else
     return non_zero_basis_function_derivatives_[dir][firstNonZeroOffset];
-#endif
   }
 
  private:
