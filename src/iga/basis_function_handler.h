@@ -152,7 +152,7 @@ class BasisFunctionHandler {
   std::array<std::vector<double>, DIM> EvaluateAllNonZeroNURBSBasisFunctionDerivatives(
       std::array<ParamCoord, DIM> param_coord) const {
     std::array<std::vector<double>, DIM> basis_functions{};
-    std::array<std::vector<double>, 2> basis_function_derivatives{};
+    std::array<std::vector<double>, DIM> basis_function_derivatives{};
     std::array<int, DIM> num_baf{};
     std::array<int, DIM> num_baf_ders{};
     for (int i = 0; i < DIM; ++i) {
