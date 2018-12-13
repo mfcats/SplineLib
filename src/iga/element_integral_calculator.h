@@ -30,9 +30,9 @@ template<int DIM>
 class ElementIntegralCalculator {
  public:
   explicit ElementIntegralCalculator(
-      std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {
-    baf_handler_ = std::make_shared<iga::BasisFunctionHandler<2>>(spline_);
-    connectivity_handler_ = std::make_shared<iga::ConnectivityHandler<2>>(spline_);
+      std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {
+    baf_handler_ = std::make_shared<iga::BasisFunctionHandler<DIM>>(spline_);
+    connectivity_handler_ = std::make_shared<iga::ConnectivityHandler<DIM>>(spline_);
   }
 
   void GetLaplaceElementIntegral(int element_number,
@@ -73,9 +73,9 @@ class ElementIntegralCalculator {
   }
 
  private:
-  std::shared_ptr<spl::NURBS<2>> spline_;
-  std::shared_ptr<iga::BasisFunctionHandler<2>> baf_handler_;
-  std::shared_ptr<iga::ConnectivityHandler<2>> connectivity_handler_;
+  std::shared_ptr<spl::NURBS<DIM>> spline_;
+  std::shared_ptr<iga::BasisFunctionHandler<DIM>> baf_handler_;
+  std::shared_ptr<iga::ConnectivityHandler<DIM>> connectivity_handler_;
 };
 }  // namespace iga
 
