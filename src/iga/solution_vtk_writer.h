@@ -35,6 +35,7 @@ class SolutionVTKWriter {
       const std::vector<std::vector<int>> &scattering, const std::string &filename) {
     iga::SolutionSpline<DIM> sol_spl(spl, solution);
     std::shared_ptr<spl::NURBS<DIM>> solution_spl = sol_spl.GetSolutionSpline();
+    int cp_dim = spl->GetDimension();
     std::vector<double> dxi;
     std::array<int, DIM> num_pnts{};
     for (int i = 0; i < DIM; ++i) {
@@ -49,7 +50,7 @@ class SolutionVTKWriter {
       for (int i = 0; i < DIM; ++i) {
         param_coords[i] = spl->GetKnots()[i][0] + ParamCoord{mih[i] * dxi[i]};
       }
-      point_data.emplace_back(solution_spl->Evaluate(param_coords, {DIM + 1})[0]);
+      point_data.emplace_back(solution_spl->Evaluate(param_coords, {cp_dim})[0]);
       if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;
       ++mih;
     }

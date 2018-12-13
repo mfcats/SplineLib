@@ -34,7 +34,7 @@ class SolutionSpline {
     for (uint64_t i = 0; i < cp.size() - (cp_dim - 1); i += cp_dim) {
       std::vector<double> temp;
       for (int j = 0; j < cp_dim; ++j) {
-        temp.emplace_back(cp[j]);
+        temp.emplace_back(cp[i + j]);
       }
       temp.emplace_back(solution(l));
       control_points.emplace_back(baf::ControlPoint(temp));
