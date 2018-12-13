@@ -23,6 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 
 namespace iga {
+template<int DIM>
 class LinearEquationAssembler {
  public:
   explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<2>> spl) : spline_(std::move(spl)) {

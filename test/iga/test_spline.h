@@ -106,7 +106,7 @@ class AnIGATestSpline : public Test {
                                                             std::make_shared<baf::KnotVector>(knot_vector[1])};
   std::shared_ptr<spl::NURBS<2>> nurbs_ = std::make_shared<spl::NURBS<2>>(kv_ptr, degree, control_points, weights);
 
-  iga::LinearEquationAssembler linear_equation_assembler = iga::LinearEquationAssembler(nurbs_);
+  iga::LinearEquationAssembler<2> linear_equation_assembler = iga::LinearEquationAssembler<2>(nurbs_);
   iga::ElementIntegralCalculator<2> elm_itg_calc = iga::ElementIntegralCalculator<2>(nurbs_);
   int n = nurbs_->GetNumberOfControlPoints();
   std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
@@ -168,7 +168,7 @@ class AnIGATestSpline2 : public Test {
                                                             std::make_shared<baf::KnotVector>(knot_vector[1])};
   std::shared_ptr<spl::NURBS<2>> nurbs_ = std::make_shared<spl::NURBS<2>>(kv_ptr, degree, control_points, weights);
 
-  iga::LinearEquationAssembler linear_equation_assembler = iga::LinearEquationAssembler(nurbs_);
+  iga::LinearEquationAssembler<2> linear_equation_assembler = iga::LinearEquationAssembler<2>(nurbs_);
   iga::ElementIntegralCalculator<2> elm_itg_calc = iga::ElementIntegralCalculator<2>(nurbs_);
   int n = nurbs_->GetNumberOfControlPoints();
   std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
