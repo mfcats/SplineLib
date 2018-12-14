@@ -41,20 +41,31 @@ class ALine : public Test {
   std::array<std::shared_ptr<baf::KnotVector>, 1> kv_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0])};
   std::shared_ptr<spl::NURBS<1>> nurbs_ = std::make_shared<spl::NURBS<1>>(kv_ptr, degree, control_points, weights);
 
+  iga::BDFHandler<1> bdf_handler = iga::BDFHandler<1>(nurbs_);
   iga::LinearEquationAssembler<1> linear_equation_assembler = iga::LinearEquationAssembler<1>(nurbs_);
   iga::ElementIntegralCalculator<1> elm_itg_calc = iga::ElementIntegralCalculator<1>(nurbs_);
   int n = nurbs_->GetNumberOfControlPoints();
-  std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
-  std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
+  std::shared_ptr<arma::dmat> matA1 = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
+  std::shared_ptr<arma::dmat> matA2 = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> vecB1 = std::make_shared<arma::dvec>(n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> vecB2 = std::make_shared<arma::dvec>(n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
   iga::itg::IntegrationRule rule = iga::itg::FourPointGaussLegendre();
+  iga::SolutionVTKWriter<1> solution_vtk_writer;
 };
 
 /*TEST_F(ALine, Test) { // NOLINT
-  linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
-  linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
-  linear_equation_assembler.SetZeroBC(matA, vecB);
-  arma::dvec solution = arma::solve(*matA, *vecB);
-  iga::SolutionVTKWriter<1> solution_vtk_writer;
-  solution_vtk_writer.WriteSolutionToVTK(nurbs_, solution, {{10}}, "/Users/christophsusen/Desktop/solution.vtk");
+  std::shared_ptr<arma::dvec> u_prev = std::make_shared<arma::dvec>(n, arma::fill::zeros);
+  linear_equation_assembler.GetLeftSide(rule, matA1, elm_itg_calc);
+  bdf_handler.GetMatrix(rule, matA2, 0.05);
+  linear_equation_assembler.GetRightSide(rule, vecB1, elm_itg_calc, srcCp);
+  (*matA1) = (*matA1) + (*matA2);
+  for (int i = 0; i < 100; ++i) {
+    (*vecB1) = (*vecB1) + (*matA1) * (*u_prev);
+    linear_equation_assembler.SetZeroBC(matA1, vecB1);
+    arma::dvec solution = arma::solve(*matA1, *vecB1);
+    (*u_prev) = solution;
+    solution_vtk_writer.WriteSolutionToVTK(nurbs_, solution, {{10}},
+        "/Users/christophsusen/Desktop/line/solution_" + std::to_string(i) + ".vtk");
+  }
 }*/
