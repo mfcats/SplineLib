@@ -39,4 +39,6 @@ install(FILES
         element_integral_calculator.h
         linear_equation_assembler.h
         solution_vtk_writer.h
+        solution_spline.h
+        bdf_handler.h
         DESTINATION "${include_install_dir}")
