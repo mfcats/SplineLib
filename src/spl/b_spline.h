@@ -123,7 +123,6 @@ class BSpline : public Spline<DIM> {
     for (auto g : temp) {
       std::cout << g << "  ";
     }
-    std::cout << std::endl;
 
     for (int m = 0; m < first; ++m) {
       for (int n = 0; n < GetDimension(); ++n) {
@@ -136,11 +135,6 @@ class BSpline : public Spline<DIM> {
             physical_space_->GetControlPoints()[(m) * GetDimension() + n];
       }
     }
-    std::cout << std::endl;
-    for (auto g : control_points_removed) {
-      std::cout << g << "  ";
-    }
-    std::cout << std::endl;
 
     int k = 0;
     for (; k < ii * GetDimension(); ++k) {
@@ -149,11 +143,6 @@ class BSpline : public Spline<DIM> {
     for (k += GetDimension(); k < temp.size(); ++k) {
       control_points_removed[k - GetDimension() + off * GetDimension()] = temp[k];
     }
-    std::cout << std::endl;
-    for (auto g : control_points_removed) {
-      std::cout << g << "  ";
-    }
-    std::cout << std::endl;
 
     physical_space_->RemoveControlPoints(physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension]);
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
