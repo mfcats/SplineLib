@@ -24,6 +24,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline_generator.h"
 #include "spline.h"
 #include "spline_generator.h"
+#include "vector_utils.h"
 
 namespace spl {
 template<int DIM>
@@ -86,14 +87,11 @@ class BSpline : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
-  void RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
+  void RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
     std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
     --point_handler_length[dimension];
-//    util::MultiIndexHandler<DIM> point_handler1(point_handler_length);
-//    util::MultiIndexHandler<DIM> point_handler2(point_handler_length);
     std::array<int, DIM> maximum_point_index = physical_space_->GetMaximumPointIndexInEachDirection();
     --maximum_point_index[dimension];
-//    point_handler2.SetIndices(maximum_point_index);
     int removed = physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension];
     std::vector<double>
         control_points_removed((physical_space_->GetNumberOfControlPoints() - removed) * GetDimension(), 0);
@@ -119,11 +117,27 @@ class BSpline : public Spline<DIM> {
       }
       ++i, ++ii, --j, --jj;
     }
-    std::cout << std::endl;
-    for (auto g : temp) {
-      std::cout << g << "  ";
+    bool remflag = false;
+    if (j - i <= 0) {
+      std::vector<double> temp1(GetDimension(), 0), temp2(GetDimension(), 0);
+      for (int k = 0; k < GetDimension(); ++k) {
+        temp1[k] = temp[(ii - 1) * GetDimension() + k];
+        temp2[k] = temp[(jj + 1) * GetDimension() + k];
+      }
+      if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
+        remflag = true;
+      } else {
+        double alfi = scaling[i - first];
+        for (int k = 0; k < GetDimension(); ++k) {
+          temp1[k] = physical_space_->GetControlPoints()[i * GetDimension() + k];
+          temp2[k] = alfi * temp[(ii + 1) * GetDimension() + k] + (1 - alfi) * temp[(ii - 1) * GetDimension() + k];
+        }
+        if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
+          remflag = true;
+        }
+      }
     }
-
+    if (!remflag) return;
     for (int m = 0; m < first; ++m) {
       for (int n = 0; n < GetDimension(); ++n) {
         control_points_removed[m * GetDimension() + n] = physical_space_->GetControlPoints()[m * GetDimension() + n];

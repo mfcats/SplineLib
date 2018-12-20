@@ -108,7 +108,8 @@ class NURBS : public Spline<DIM> {
   void RemoveControlPoints(std::vector<double> /*scaling1*/,
                            int /*first*/,
                            int /*last*/,
-                           int /*dimension*/) {
+                           int /*dimension*/,
+                           double /*tolerance*/) {
 
   }
 

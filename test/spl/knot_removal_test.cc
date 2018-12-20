@@ -50,7 +50,7 @@ class BSplineFig5_26 : public Test {  // NOLINT
 };
 
 TEST_F(BSplineFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
-  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0);
+  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.1);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(2));
@@ -73,12 +73,14 @@ TEST_F(BSplineFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
     std::array<ParamCoord, 1> param_coord{ParamCoord(2 * i / s)};
     ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {0})[0],
                 DoubleEq(bspline_1d_before_->Evaluate(param_coord, {0})[0]));
+    ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {1})[0],
+                DoubleEq(bspline_1d_before_->Evaluate(param_coord, {1})[0]));
   }
 }
 
 TEST_F(BSplineFig5_26, RemovesKnot1_0CorrectlyTwoTimes) {  // NOLINT
-  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0);
-  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0);
+  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.1);
+  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.1);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 2);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(5).get(), DoubleEq(2));
@@ -100,13 +102,15 @@ TEST_F(BSplineFig5_26, RemovesKnot1_0CorrectlyTwoTimes) {  // NOLINT
     std::array<ParamCoord, 1> param_coord{ParamCoord(2 * i / s)};
     ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {0})[0],
                 DoubleEq(bspline_1d_before_->Evaluate(param_coord, {0})[0]));
+    ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {1})[0],
+                DoubleEq(bspline_1d_before_->Evaluate(param_coord, {1})[0]));
   }
 }
 
 TEST_F(BSplineFig5_26, RemovesKnot1_0CorrectlyThreeTimes) {  // NOLINT
-  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0);
-  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0);
-  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0);
+  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.1);
+  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.1);
+  bspline_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.5);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 3);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(4).get(), DoubleEq(2));
@@ -127,6 +131,8 @@ TEST_F(BSplineFig5_26, RemovesKnot1_0CorrectlyThreeTimes) {  // NOLINT
     std::array<ParamCoord, 1> param_coord{ParamCoord(2 * i / s)};
     ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {0})[0],
                 DoubleEq(bspline_1d_before_->Evaluate(param_coord, {0})[0]));
+    ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {1})[0],
+                DoubleNear(bspline_1d_before_->Evaluate(param_coord, {1})[0], 0.5));
   }
 }
 
@@ -162,7 +168,7 @@ class BSplineFig5_27 : public Test {  // NOLINT
 };
 
 TEST_F(BSplineFig5_27, RemovesKnot0_3Correctly) {  // NOLINT
-  bspline_1d_after_->RemoveKnot(ParamCoord(0.3), 0);
+  bspline_1d_after_->RemoveKnot(ParamCoord(0.3), 0, 0.15);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(4).get(), DoubleEq(0.5));
@@ -188,5 +194,7 @@ TEST_F(BSplineFig5_27, RemovesKnot0_3Correctly) {  // NOLINT
     std::array<ParamCoord, 1> param_coord{ParamCoord(i / s)};
     ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {0})[0],
                 DoubleNear(bspline_1d_before_->Evaluate(param_coord, {0})[0], 0.02));
+    ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {1})[0],
+                DoubleNear(bspline_1d_before_->Evaluate(param_coord, {1})[0], 0.1));
   }
 }
