@@ -56,7 +56,7 @@ class ALine : public Test {
   iga::SolutionVTKWriter<1> solution_vtk_writer;
 };
 
-/*TEST_F(ALine, Test) { // NOLINT
+TEST_F(ALine, Test) { // NOLINT
   std::shared_ptr<arma::dvec> u_prev = std::make_shared<arma::dvec>(n, arma::fill::zeros);
   linear_equation_assembler.GetLeftSide(rule, matA1, elm_itg_calc);
   bdf_handler.GetMatrix(rule, matA2, 0.5);
@@ -64,7 +64,7 @@ class ALine : public Test {
   (*matA1) = (*matA1) + (*matA2);
   solution_vtk_writer.WriteSolutionToVTK(nurbs_, solution, {{10}},
                                          "/Users/christophsusen/Desktop/line/solution_0.vtk");
-  for (int i = 1; i < 1000; ++i) {
+  for (int i = 1; i < 50; ++i) {
     (*vecB2) = (*vecB1) + (*matA2) * (*u_prev);
     linear_equation_assembler.SetZeroBC(matA1, vecB2);
     solution = arma::solve(*matA1, *vecB2);
@@ -72,7 +72,7 @@ class ALine : public Test {
     solution_vtk_writer.WriteSolutionToVTK(nurbs_, solution, {{10}},
         "/Users/christophsusen/Desktop/line/solution_" + std::to_string(i) + ".vtk");
   }
-}*/
+}
 
 class ASquare2 : public Test {
  public:
