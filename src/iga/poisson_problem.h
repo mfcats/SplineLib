@@ -30,7 +30,6 @@ class PoissonProblem {
   spline_(std::move(spl)), num_cp_(spline_->GetNumberOfControlPoints()), rule_(rule) {
     linear_equation_assembler_ = std::make_shared<iga::LinearEquationAssembler<DIM>>(spline_);
     elm_itg_calc_ = std::make_shared<iga::ElementIntegralCalculator<DIM>>(spline_);
-    bdf_handler_ = std::make_shared<iga::BDFHandler<DIM>>(spline_);
     matA_ = std::make_shared<arma::dmat>(num_cp_, num_cp_, arma::fill::zeros);
     vecB_ = std::make_shared<arma::dvec>(num_cp_, arma::fill::zeros);
     srcCp_ = std::make_shared<arma::dvec>(num_cp_, arma::fill::ones);
@@ -44,15 +43,16 @@ class PoissonProblem {
   }
 
   std::vector<std::shared_ptr<arma::dvec>> GetUnsteadyStateSolution(double dt, double tEnd) { // int DirichletBC, int constSrc
+    iga::BDFHandler bdf_handler(spline_, rule_);
     std::vector<std::shared_ptr<arma::dvec>> solutions;
     int timeSteps = static_cast<int>(tEnd / dt);
     std::shared_ptr<arma::dvec> uprev = std::make_shared<arma::dvec>(static_cast<uint64_t>(num_cp_), arma::fill::zeros);
     solutions.emplace_back(uprev);
     linear_equation_assembler_->GetLeftSide(rule_, matA_, *elm_itg_calc_);
     linear_equation_assembler_->GetRightSide(rule_, vecB_, *elm_itg_calc_, srcCp_);
-    auto left = bdf_handler_->GetBDF1LeftSide(rule_, matA_, dt);
+    auto left = bdf_handler.GetBDF1LeftSide(matA_, dt);
     for (int i = 1; i <= timeSteps; ++i) {
-      auto right = bdf_handler_->GetBDF1RightSide(rule_, vecB_, uprev, dt);
+      auto right = bdf_handler.GetBDF1RightSide(vecB_, uprev, dt);
       linear_equation_assembler_->SetZeroBC(left, right);
       uprev = std::make_shared<arma::dvec>(arma::solve(*left, *right));
       solutions.emplace_back(uprev);
@@ -64,7 +64,6 @@ class PoissonProblem {
   std::shared_ptr<spl::NURBS<DIM>> spline_;
   std::shared_ptr<iga::LinearEquationAssembler<DIM>> linear_equation_assembler_;
   std::shared_ptr<iga::ElementIntegralCalculator<DIM>> elm_itg_calc_;
-  std::shared_ptr<iga::BDFHandler<DIM>> bdf_handler_;
   iga::itg::IntegrationRule rule_;
   std::shared_ptr<arma::dmat> matA_;
   std::shared_ptr<arma::dvec> vecB_;
