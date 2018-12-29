@@ -24,6 +24,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "solution_vtk_writer.h"
 
 using testing::Test;
+using testing::DoubleNear;
 
 class ALine : public Test {
  public:
@@ -53,16 +54,23 @@ class ALine : public Test {
 
 TEST_F(ALine, Test) { // NOLINT
   iga::itg::IntegrationRule rule = iga::itg::FourPointGaussLegendre();
-  iga::SolutionVTKWriter<1> solution_vtk_writer;
+
   iga::PoissonProblem<1> poisson_problem(nurbs_, rule);
-  auto solutions = poisson_problem.GetUnsteadyStateSolution(0.5, 25);
-  for (uint64_t i = 0; i < solutions.size(); ++i) {
-    solution_vtk_writer.WriteSolutionToVTK(nurbs_, *(solutions[i]), {{30}},
-        "/Users/christophsusen/Desktop/line/solution_" + std::to_string(i) + ".vtk");
+  auto solutions = poisson_problem.GetUnsteadyStateSolution(0.5, 100);
+  auto steady_solution = poisson_problem.GetSteadyStateSolution();
+  for (uint64_t i = 0; i < steady_solution.size(); ++i) {
+    ASSERT_THAT((*solutions[solutions.size() - 1])(i), DoubleNear(steady_solution(i), 0.0005));
   }
+  
+  // Code to write all time steps to vtk files.
+  /*iga::SolutionVTKWriter<1> solution_vtk_writer;
+  for (uint64_t i = 0; i < solutions.size(); ++i) {
+  solution_vtk_writer.WriteSolutionToVTK(nurbs_, *(solutions[i]), {{30}},
+      "/Users/christophsusen/Desktop/line/solution_" + std::to_string(i) + ".vtk");
+}*/
 }
 
-class ASquarePlate : public Test {
+/*class ASquarePlate : public Test {
  public:
   std::array<baf::KnotVector, 2> knot_vector =
       {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.4}, ParamCoord{0.5},
@@ -147,4 +155,4 @@ TEST_F(ASquarePlate, Test2) { // NOLINT
     solution_vtk_writer.WriteSolutionToVTK(nurbs_, *(solutions[i]), {{30, 30}},
         "/Users/christophsusen/Desktop/square/solution_" + std::to_string(i) + ".vtk");
   }
-}
+}*/
