@@ -41,4 +41,5 @@ install(FILES
         solution_vtk_writer.h
         solution_spline.h
         bdf_handler.h
+        poisson_problem.h
         DESTINATION "${include_install_dir}")
