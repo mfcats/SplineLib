@@ -46,9 +46,23 @@ class LinearEquationAssembler {
   }
 
   /*void GetRightSideNeumann(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dvec> &vecBn,
-      const iga::ElementIntegralCalculator<DIM> &elm_itg_calc, const std::shared_ptr<arma::dvec> &NeumannCp) const {}*/
+      const std::shared_ptr<arma::dvec> &NeumannCp) const {
+    std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, DIM * 2> boundary_splines = GetBoundarySplines();
+    for (int i = 0; i < boundary_splines.size(); ++i) {
+      iga::elm::ElementGenerator<DIM - 1> elm_gen(boundary_splines[i]);
+      iga::BasisFunctionHandler<DIM - 1> baf_handler(boundary_splines[i]);
+      iga::ConnectivityHandler<DIM - 1> connectivity_handler(boundary_splines[i]);
+      for (int e = 0; e < elm_gen.GetNumberOfElements(); ++e) {
+        std::vector<iga::elm::ElementIntegrationPoint<DIM>> elm_intgr_pnts =
+            baf_handler.EvaluateAllElementNonZeroNURBSBasisFunctions(e, rule);
 
-  // Creates splines with physical dimensionality DIM - 1 for each boundary.
+        // elm_int = baf * jac_det * weight * neumann_bc
+        // connectivity between indices on boundary spline and on domain spline needed
+
+      }
+    }
+  }*/
+
   std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, DIM * 2> GetBoundarySplines() {
     std::array<int, DIM> points_per_dir = spline_->GetPointsPerDirection();
     std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, DIM * 2> boundary_splines;
