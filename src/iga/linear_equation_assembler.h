@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IGA_LINEAR_EQUATION_ASSEMBLER_H_
 
 #include <armadillo>
+#include <vector>
 
 #include "element_integral_calculator.h"
 #include "element_generator.h"
