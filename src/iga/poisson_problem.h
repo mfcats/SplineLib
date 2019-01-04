@@ -12,10 +12,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IGA_POISSON_H_
-#define SRC_IGA_POISSON_H_
+#ifndef SRC_IGA_POISSON_PROBLEM_H_
+#define SRC_IGA_POISSON_PROBLEM_H_
 
 #include <armadillo>
+#include <vector>
 
 #include "bdf_handler.h"
 #include "linear_equation_assembler.h"
@@ -35,14 +36,14 @@ class PoissonProblem {
     srcCp_ = std::make_shared<arma::dvec>(num_cp_, arma::fill::ones);
   }
 
-  arma::dvec GetSteadyStateSolution() { // int DirichletBC, int constSrc {
+  arma::dvec GetSteadyStateSolution() {
     linear_equation_assembler_->GetLeftSide(rule_, matA_, *elm_itg_calc_);
     linear_equation_assembler_->GetRightSide(rule_, vecB_, *elm_itg_calc_, srcCp_);
     linear_equation_assembler_->SetZeroBC(matA_, vecB_);
     return arma::solve(*matA_, *vecB_);
   }
 
-  std::vector<std::shared_ptr<arma::dvec>> GetUnsteadyStateSolution(double dt, double tEnd) { // int DirichletBC, int constSrc
+  std::vector<std::shared_ptr<arma::dvec>> GetUnsteadyStateSolution(double dt, double tEnd) {
     iga::BDFHandler bdf_handler(spline_, rule_);
     std::vector<std::shared_ptr<arma::dvec>> solutions;
     int timeSteps = static_cast<int>(tEnd / dt);
@@ -70,6 +71,6 @@ class PoissonProblem {
   std::shared_ptr<arma::dvec> srcCp_;
   int num_cp_;
 };
-}
+}  // namespace iga
 
-#endif  // SRC_IGA_POISSON_H_
+#endif  // SRC_IGA_POISSON_PROBLEM_H_

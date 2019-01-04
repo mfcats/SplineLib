@@ -15,6 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IGA_BDF_HANDLER_H_
 #define SRC_IGA_BDF_HANDLER_H_
 
+#include <vector>
+
 #include "linear_equation_assembler.h"
 
 namespace iga {
@@ -66,6 +68,6 @@ class BDFHandler {
   std::shared_ptr<iga::BasisFunctionHandler<DIM>> baf_handler_;
   std::shared_ptr<arma::dmat> time_discr_mat_;
 };
-}
+}  // namespace iga
 
 #endif  // SRC_IGA_BDF_HANDLER_H_
