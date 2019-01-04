@@ -35,7 +35,7 @@ class PoissonProblem {
     srcCp_ = std::make_shared<arma::dvec>(num_cp_, arma::fill::ones);
   }
 
-  arma::dvec GetSteadyStateSolution() { // int DirichletBC, int constSrc) {
+  arma::dvec GetSteadyStateSolution() { // int DirichletBC, int constSrc {
     linear_equation_assembler_->GetLeftSide(rule_, matA_, *elm_itg_calc_);
     linear_equation_assembler_->GetRightSide(rule_, vecB_, *elm_itg_calc_, srcCp_);
     linear_equation_assembler_->SetZeroBC(matA_, vecB_);

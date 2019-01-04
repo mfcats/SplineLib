@@ -61,7 +61,7 @@ TEST_F(ALine, Test) { // NOLINT
   for (uint64_t i = 0; i < steady_solution.size(); ++i) {
     ASSERT_THAT((*solutions[solutions.size() - 1])(i), DoubleNear(steady_solution(i), 0.0005));
   }
-  
+
   // Code to write all time steps to vtk files.
   /*iga::SolutionVTKWriter<1> solution_vtk_writer;
   for (uint64_t i = 0; i < solutions.size(); ++i) {
