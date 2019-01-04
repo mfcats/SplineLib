@@ -156,3 +156,14 @@ TEST_F(ASquarePlate, Test2) { // NOLINT
         "/Users/christophsusen/Desktop/square/solution_" + std::to_string(i) + ".vtk");
   }
 }*/
+
+/*TEST_F(ASquarePlate, Test3) { // NOLINT
+  io::VTKWriter vtk_writer;
+  iga::LinearEquationAssembler<2> lin_eq_assem(nurbs_);
+  std::array<std::shared_ptr<spl::NURBS<1>>, 4> boundary_splines = lin_eq_assem.GetBoundarySplines();
+  for (uint64_t i = 0; i < boundary_splines.size(); ++i) {
+    auto spl = std::make_any<std::shared_ptr<spl::NURBS<1>>>(boundary_splines[i]);
+    vtk_writer.WriteFile({spl}, "/Users/christophsusen/Desktop/boundary_spline/spline_" + std::to_string(i) + ".vtk",
+                         {{30}, {30, 30}, {30, 30, 30}});
+  }
+}*/

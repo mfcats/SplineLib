@@ -45,6 +45,46 @@ class LinearEquationAssembler {
     }
   }
 
+  /*void GetRightSideNeumann(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dvec> &vecBn,
+      const iga::ElementIntegralCalculator<DIM> &elm_itg_calc, const std::shared_ptr<arma::dvec> &NeumannCp) const {}*/
+
+  // Creates splines with physical dimensionality DIM - 1 for each boundary.
+  std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, DIM * 2> GetBoundarySplines() {
+    std::array<int, DIM> points_per_dir = spline_->GetPointsPerDirection();
+    std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, DIM * 2> boundary_splines;
+    int l = 0;
+    for (int i = 0; i < DIM; ++i) {
+      std::array<Degree, DIM - 1> degree;
+      std::array<std::shared_ptr<baf::KnotVector>, DIM - 1> kv_ptr;
+      int m = 0;
+      for (int j = 0; j < DIM; ++j) {
+        if (j != i) {
+          kv_ptr[m] = spline_->GetKnotVector(m);
+          degree[m] = spline_->GetDegree(m);
+          ++m;
+        }
+      }
+        std::array<std::vector<baf::ControlPoint>, 2> control_points;
+        std::array<std::vector<double>, 2> weights;
+        util::MultiIndexHandler<DIM> mih(points_per_dir);
+        for (int k = 0; k < mih.Get1DLength(); ++k) {
+          if (mih[i] == 0) {
+            control_points[0].emplace_back(spline_->GetControlPoint(mih.GetIndices()));
+            weights[0].emplace_back(spline_->GetWeight(mih.GetIndices()));
+          }
+          if (mih[i] == points_per_dir[i] - 1) {
+            control_points[1].emplace_back(spline_->GetControlPoint(mih.GetIndices()));
+            weights[1].emplace_back(spline_->GetWeight(mih.GetIndices()));
+          }
+          ++mih;
+        }
+        boundary_splines[l] = std::make_shared<spl::NURBS<DIM - 1>>(kv_ptr, degree, control_points[0], weights[0]);
+        boundary_splines[l + 1] = std::make_shared<spl::NURBS<DIM - 1>>(kv_ptr, degree, control_points[1], weights[1]);
+        l += 2;
+    }
+    return boundary_splines;
+  }
+
   void SetZeroBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB) {
     util::MultiIndexHandler<DIM> mih(spline_->GetPointsPerDirection());
     while (true) {
