@@ -46,28 +46,39 @@ class LinearEquationAssembler {
     }
   }
 
-  /*void GetRightSideNeumann(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dvec> &vecBn,
-      const std::shared_ptr<arma::dvec> &NeumannCp) const {
-    std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, DIM * 2> boundary_splines = GetBoundarySplines();
+  void GetRightSideNeumann(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dvec> &vecB,
+      const std::array<std::array<std::shared_ptr<arma::dvec>, 2>, DIM> &NeumannCp) const {
+    std::array<std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, 2>, DIM> boundary_splines = GetBoundarySplines();
+    std::array<std::array<std::vector<int>, 2>, DIM> boundary_spline_connectivity = GetBoundarySplineConnectivity();
     for (int i = 0; i < boundary_splines.size(); ++i) {
-      iga::elm::ElementGenerator<DIM - 1> elm_gen(boundary_splines[i]);
-      iga::BasisFunctionHandler<DIM - 1> baf_handler(boundary_splines[i]);
-      iga::ConnectivityHandler<DIM - 1> connectivity_handler(boundary_splines[i]);
-      for (int e = 0; e < elm_gen.GetNumberOfElements(); ++e) {
-        std::vector<iga::elm::ElementIntegrationPoint<DIM>> elm_intgr_pnts =
-            baf_handler.EvaluateAllElementNonZeroNURBSBasisFunctions(e, rule);
-
-        // elm_int = baf * jac_det * weight * neumann_bc
-        // connectivity between indices on boundary spline and on domain spline needed
-
+      for (int j = 0; j < boundary_splines[i].size(); ++j) {
+        iga::elm::ElementGenerator<DIM - 1> elm_gen(boundary_splines[i][j]);
+        iga::BasisFunctionHandler<DIM - 1> baf_handler(boundary_splines[i][j]);
+        iga::ConnectivityHandler<DIM - 1> connectivity_handler(boundary_splines[i][j]);
+        for (int e = 0; e < elm_gen.GetNumberOfElements(); ++e) {
+          std::vector<iga::elm::ElementIntegrationPoint<DIM - 1>> elm_intgr_pnts =
+              baf_handler.EvaluateAllElementNonZeroNURBSBasisFunctions(e, rule);
+          for (auto &p : elm_intgr_pnts) {
+            double bc_int_pnt = 0;
+            for (int l = 0; l < p.GetNumberOfNonZeroBasisFunctions(); ++l) {
+              bc_int_pnt += p.GetBasisFunctionValue(l) *
+                  (*(NeumannCp[i][j]))(static_cast<uint64_t>(connectivity_handler.GetGlobalIndex(e, l) - 1));
+            }
+            for (int k = 0; k < p.GetNumberOfNonZeroBasisFunctions(); ++k) {
+              double temp = p.GetBasisFunctionValue(k) * (-1) * bc_int_pnt * p.GetWeight() * p.GetJacobianDeterminant();
+              (*vecB)(static_cast<uint64_t>(
+                          boundary_spline_connectivity[i][j][connectivity_handler.GetGlobalIndex(e, k) - 1])) += temp;
+            }
+          }
+        }
       }
     }
-  }*/
+  }
 
-  std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, DIM * 2> GetBoundarySplines() {
+  std::array<std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, 2>, DIM> GetBoundarySplines() const {
     std::array<int, DIM> points_per_dir = spline_->GetPointsPerDirection();
-    std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, DIM * 2> boundary_splines;
-    int l = 0;
+    std::array<std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, 2>, DIM> boundary_splines;
+    std::array<std::array<std::vector<int>, 2>, DIM> boundary_spline_connectivity = GetBoundarySplineConnectivity();
     for (int i = 0; i < DIM; ++i) {
       std::array<Degree, DIM - 1> degree;
       std::array<std::shared_ptr<baf::KnotVector>, DIM - 1> kv_ptr;
@@ -79,25 +90,37 @@ class LinearEquationAssembler {
           ++m;
         }
       }
-        std::array<std::vector<baf::ControlPoint>, 2> control_points;
-        std::array<std::vector<double>, 2> weights;
-        util::MultiIndexHandler<DIM> mih(points_per_dir);
-        for (int k = 0; k < mih.Get1DLength(); ++k) {
-          if (mih[i] == 0) {
-            control_points[0].emplace_back(spline_->GetControlPoint(mih.GetIndices()));
-            weights[0].emplace_back(spline_->GetWeight(mih.GetIndices()));
-          }
-          if (mih[i] == points_per_dir[i] - 1) {
-            control_points[1].emplace_back(spline_->GetControlPoint(mih.GetIndices()));
-            weights[1].emplace_back(spline_->GetWeight(mih.GetIndices()));
-          }
-          ++mih;
+      std::array<std::vector<baf::ControlPoint>, 2> control_points;
+      std::array<std::vector<double>, 2> weights;
+      util::MultiIndexHandler<DIM> mih(points_per_dir);
+      for (int k = 0; k < boundary_spline_connectivity[i].size(); ++k) {
+        for (int n = 0; n < boundary_spline_connectivity[i][k].size(); ++n) {
+          mih.Set1DIndex(boundary_spline_connectivity[i][k][n]);
+          control_points[k].emplace_back(spline_->GetControlPoint(mih.GetIndices()));
+          weights[k].emplace_back(spline_->GetWeight(mih.GetIndices()));
         }
-        boundary_splines[l] = std::make_shared<spl::NURBS<DIM - 1>>(kv_ptr, degree, control_points[0], weights[0]);
-        boundary_splines[l + 1] = std::make_shared<spl::NURBS<DIM - 1>>(kv_ptr, degree, control_points[1], weights[1]);
-        l += 2;
+        boundary_splines[i][k] = std::make_shared<spl::NURBS<DIM - 1>>(kv_ptr, degree, control_points[k], weights[k]);
+      }
     }
     return boundary_splines;
+  }
+
+  std::array<std::array<std::vector<int>, 2>, DIM> GetBoundarySplineConnectivity() const {
+    std::array<int, DIM> points_per_dir = spline_->GetPointsPerDirection();
+    std::array<std::array<std::vector<int>, 2>, DIM> boundary_spl_connectivity;
+    for (int i = 0; i < DIM; ++i) {
+      util::MultiIndexHandler<DIM> mih(points_per_dir);
+      for (int k = 0; k < mih.Get1DLength(); ++k) {
+        if (mih[i] == 0) {
+          boundary_spl_connectivity[i][0].emplace_back(mih.Get1DIndex());
+        }
+        if (mih[i] == points_per_dir[i] - 1) {
+          boundary_spl_connectivity[i][1].emplace_back(mih.Get1DIndex());
+        }
+        ++mih;
+      }
+    }
+    return boundary_spl_connectivity;
   }
 
   void SetZeroBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB) {

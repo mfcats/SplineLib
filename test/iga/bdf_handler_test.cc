@@ -22,6 +22,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 #include "poisson_problem.h"
 #include "solution_vtk_writer.h"
+#include "five_point_gauss_legendre.h"
+
+#include <iostream>
 
 using testing::Test;
 using testing::DoubleNear;
@@ -54,7 +57,6 @@ class ALine : public Test {
 
 TEST_F(ALine, Test) { // NOLINT
   iga::itg::IntegrationRule rule = iga::itg::FourPointGaussLegendre();
-
   iga::PoissonProblem<1> poisson_problem(nurbs_, rule);
   auto solutions = poisson_problem.GetUnsteadyStateSolution(0.5, 100);
   auto steady_solution = poisson_problem.GetSteadyStateSolution();
@@ -70,7 +72,7 @@ TEST_F(ALine, Test) { // NOLINT
 }*/
 }
 
-/*class ASquarePlate : public Test {
+class ASquarePlate : public Test {
  public:
   std::array<baf::KnotVector, 2> knot_vector =
       {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.4}, ParamCoord{0.5},
@@ -146,7 +148,7 @@ TEST_F(ALine, Test) { // NOLINT
   std::shared_ptr<spl::NURBS<2>> nurbs_ = std::make_shared<spl::NURBS<2>>(kv_ptr, degree, control_points, weights);
 };
 
-TEST_F(ASquarePlate, Test2) { // NOLINT
+/*TEST_F(ASquarePlate, Test2) { // NOLINT
   iga::itg::IntegrationRule rule = iga::itg::FourPointGaussLegendre();
   iga::SolutionVTKWriter<2> solution_vtk_writer;
   iga::PoissonProblem<2> poisson_problem(nurbs_, rule);
@@ -160,10 +162,54 @@ TEST_F(ASquarePlate, Test2) { // NOLINT
 /*TEST_F(ASquarePlate, Test3) { // NOLINT
   io::VTKWriter vtk_writer;
   iga::LinearEquationAssembler<2> lin_eq_assem(nurbs_);
-  std::array<std::shared_ptr<spl::NURBS<1>>, 4> boundary_splines = lin_eq_assem.GetBoundarySplines();
+  std::array<std::array<std::shared_ptr<spl::NURBS<1>>, 2>, 2> boundary_splines = lin_eq_assem.GetBoundarySplines();
+  int l = 0;
   for (uint64_t i = 0; i < boundary_splines.size(); ++i) {
-    auto spl = std::make_any<std::shared_ptr<spl::NURBS<1>>>(boundary_splines[i]);
-    vtk_writer.WriteFile({spl}, "/Users/christophsusen/Desktop/boundary_spline/spline_" + std::to_string(i) + ".vtk",
-                         {{30}, {30, 30}, {30, 30, 30}});
+    for (uint64_t j = 0; j < boundary_splines[i].size(); ++j) {
+      auto spl = std::make_any<std::shared_ptr<spl::NURBS<1>>>(boundary_splines[i][j]);
+      vtk_writer.WriteFile({spl}, "/Users/christophsusen/Desktop/boundary_spline/spline_" + std::to_string(l) + ".vtk",
+          {{30}, {30, 30}, {30, 30, 30}});
+      ++l;
+    }
   }
+}*/
+
+/*TEST_F(ASquarePlate, Test4) { // NOLINT
+  iga::LinearEquationAssembler<2> linear_equation_assembler(nurbs_);
+  iga::ElementIntegralCalculator<2> elm_itg_calc = iga::ElementIntegralCalculator<2>(nurbs_);
+  iga::itg::IntegrationRule rule = iga::itg::FivePointGaussLegendre();
+  int n = nurbs_->GetNumberOfControlPoints();
+
+  std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
+  std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
+
+  int m = nurbs_->GetPointsPerDirection()[0];
+
+  auto a = std::make_shared<arma::dvec>(m, arma::fill::ones);
+  auto b = std::make_shared<arma::dvec>(m, arma::fill::ones);
+  auto c = std::make_shared<arma::dvec>(m, arma::fill::ones);
+  auto d = std::make_shared<arma::dvec>(m, arma::fill::ones);
+
+  std::array<std::shared_ptr<arma::dvec>, 2> e = {a, b};
+  std::array<std::shared_ptr<arma::dvec>, 2> f = {c, d};
+
+  std::array<std::array<std::shared_ptr<arma::dvec>, 2>, 2> NeumannCp = {e, f};
+
+  // linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
+  // linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
+
+
+  // linear_equation_assembler.SetZeroBC(matA, vecB);
+  linear_equation_assembler.GetRightSideNeumann(rule, vecB, NeumannCp);
+
+  /*for (uint64_t i = 0; i < (*vecB).size(); ++i) {
+    std::cout << std::endl << (*vecB)(i);
+  }*/
+
+  // arma::dvec solution = arma::solve(*matA, *vecB);
+
+  // iga::SolutionVTKWriter<2> solution_vtk_writer;
+
+  // solution_vtk_writer.WriteSolutionToVTK(nurbs_, solution, {{30, 30}}, "/Users/christophsusen/Desktop/solution.vtk");
 }*/
