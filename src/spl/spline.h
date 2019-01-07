@@ -178,10 +178,7 @@ class Spline {
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
   virtual bool RemoveControlPoints(std::vector<double> scaling1,
-                                   int first,
-                                   int last,
-                                   int dimension,
-                                   double tolerance) = 0;
+                                   int first, int last, int dimension, double tolerance) = 0;
 
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
