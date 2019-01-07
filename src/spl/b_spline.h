@@ -87,36 +87,15 @@ class BSpline : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
-  void RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
+  bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
     std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
     --point_handler_length[dimension];
     std::array<int, DIM> maximum_point_index = physical_space_->GetMaximumPointIndexInEachDirection();
     --maximum_point_index[dimension];
-    int removed = physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension];
-    std::vector<double>
-        control_points_removed((physical_space_->GetNumberOfControlPoints() - removed) * GetDimension(), 0);
 
-    int off = first - 1;
-    std::vector<double> temp((last + 2 - off) * GetDimension(), 0);
-    for (int i = 0; i < GetDimension(); ++i) {
-      temp[0 + i] = physical_space_->GetControlPoints()[(first - 1) * GetDimension() + i];
-      temp[(last + 1 - off) * GetDimension() + i] =
-          physical_space_->GetControlPoints()[(last + 1) * GetDimension() + i];
-    }
+    int off = first - 1, i = first, j = last, ii = 1, jj = last - off;
+    std::vector<double> temp = GetTemporaryNewControlPoints(scaling, first, last, off, i, j, ii, jj);
 
-    int i = first, j = last, ii = 1, jj = last - off;
-    while (j - i > 0) {
-      double alfi = scaling[i - first];
-      double alfj = scaling[j - first];
-      for (int k = 0; k < GetDimension(); ++k) {
-        temp[ii * GetDimension() + k] = (physical_space_->GetControlPoints()[i * GetDimension() + k]
-            - (1 - alfi) * temp[(ii - 1) * GetDimension() + k]) / alfi;
-        temp[jj * GetDimension() + k] =
-            (physical_space_->GetControlPoints()[j * GetDimension() + k] - alfj * temp[(jj + 1) * GetDimension() + k])
-                / (1 - alfj);
-      }
-      ++i, ++ii, --j, --jj;
-    }
     bool remflag = false;
     if (j - i <= 0) {
       std::vector<double> temp1(GetDimension(), 0), temp2(GetDimension(), 0);
@@ -137,38 +116,37 @@ class BSpline : public Spline<DIM> {
         }
       }
     }
-    if (!remflag) return;
-    for (int m = 0; m < first; ++m) {
-      for (int n = 0; n < GetDimension(); ++n) {
-        control_points_removed[m * GetDimension() + n] = physical_space_->GetControlPoints()[m * GetDimension() + n];
-      }
-    }
-    for (int m = physical_space_->GetNumberOfControlPoints() - 1; m >= last; --m) {
+    if (!remflag) return false;
+
+    for (int m = last + 1; m <= physical_space_->GetNumberOfControlPoints() - 1; ++m) {
+      std::vector<double> coordinates(GetDimension(), 0);
       for (int n = GetDimension() - 1; n >= 0; --n) {
-        control_points_removed[(m - 1) * GetDimension() + n] =
-            physical_space_->GetControlPoints()[(m) * GetDimension() + n];
+        coordinates[n] = physical_space_->GetControlPoints()[(m) * GetDimension() + n];
       }
+      baf::ControlPoint cp(coordinates);
+      physical_space_->SetControlPoint2({m - 1}, cp, dimension);
     }
 
-    int k = 0;
-    for (; k < ii * GetDimension(); ++k) {
-      control_points_removed[k + off * GetDimension()] = temp[k];
+    for (int k = 1; k < ii; ++k) {
+      std::vector<double> coordinates(GetDimension(), 0);
+      for (int l = 0; l < GetDimension(); ++l) {
+        coordinates[l] = temp[(k) * GetDimension() + l];
+      }
+      baf::ControlPoint cp(coordinates);
+      physical_space_->SetControlPoint2({k + off}, cp, dimension);
     }
-    for (k += GetDimension(); k < temp.size(); ++k) {
-      control_points_removed[k - GetDimension() + off * GetDimension()] = temp[k];
+    for (int k = ii + 1; k * GetDimension() < temp.size(); ++k) {
+      std::vector<double> coordinates(GetDimension(), 0);
+      for (int l = 0; l < GetDimension(); ++l) {
+        coordinates[l] = temp[k * GetDimension() + l];
+      }
+      baf::ControlPoint cp(coordinates);
+      physical_space_->SetControlPoint2({k - 1 + off}, cp, dimension);
     }
 
     physical_space_->RemoveControlPoints(physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension]);
-    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
-    for (int m = 0; m < physical_space_->GetNumberOfControlPoints(); ++m, ++point_handler) {
-      std::vector<double> coordinates(GetDimension(), 0);
-      for (int l = 0; l < GetDimension(); ++l) {
-        coordinates[l] = control_points_removed[m * GetDimension() + l];
-      }
-      baf::ControlPoint cp(coordinates);
-      physical_space_->SetControlPoint2(point_handler.GetIndices(), cp, dimension);
-    }
     physical_space_->DecrementNumberOfPoints(dimension);
+    return true;
   }
 
   std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> SudivideSpline(ParamCoord param_coord, int dimension) {
@@ -225,6 +203,36 @@ class BSpline : public Spline<DIM> {
     } else {
       return physical_space_->GetControlPoint(indices);
     }
+  }
+
+  std::vector<double> GetTemporaryNewControlPoints(std::vector<double> scaling,
+                                                   int first,
+                                                   int last,
+                                                   int &off,
+                                                   int &i,
+                                                   int &j,
+                                                   int &ii,
+                                                   int &jj) const {
+    std::vector<double> temp((last + 2 - off) * GetDimension(), 0);
+    for (int k = 0; k < GetDimension(); ++k) {
+      temp[0 + k] = physical_space_->GetControlPoints()[(first - 1) * GetDimension() + k];
+      temp[(last + 1 - off) * GetDimension() + k] =
+          physical_space_->GetControlPoints()[(last + 1) * GetDimension() + k];
+    }
+
+    while (j - i > 0) {
+      double alfi = scaling[i - first];
+      double alfj = scaling[j - first];
+      for (int k = 0; k < GetDimension(); ++k) {
+        temp[ii * GetDimension() + k] = (physical_space_->GetControlPoints()[i * GetDimension() + k]
+            - (1 - alfi) * temp[(ii - 1) * GetDimension() + k]) / alfi;
+        temp[jj * GetDimension() + k] =
+            (physical_space_->GetControlPoints()[j * GetDimension() + k] - alfj * temp[(jj + 1) * GetDimension() + k])
+                / (1 - alfj);
+      }
+      ++i, ++ii, --j, --jj;
+    }
+    return temp;
   }
 
   std::shared_ptr<PhysicalSpace<DIM>> physical_space_;

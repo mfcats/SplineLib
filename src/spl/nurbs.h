@@ -105,7 +105,7 @@ class NURBS : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
-  void RemoveControlPoints(std::vector<double> /*scaling1*/,
+  bool RemoveControlPoints(std::vector<double> /*scaling1*/,
                            int /*first*/,
                            int /*last*/,
                            int /*dimension*/,
