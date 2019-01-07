@@ -18,13 +18,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <armadillo>
 
 #include "element_generator.h"
-#include "spline.h"
+#include "nurbs.h"
 
 namespace iga {
 template<int DIM>
 class MappingHandler {
  public:
-  explicit MappingHandler(std::shared_ptr<spl::Spline<DIM>> spl) : spline_(std::move(spl)) {}
+  explicit MappingHandler(std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {}
 
   arma::dmat GetDxiDx(std::array<ParamCoord, DIM> param_coord) const {
     return GetDxDxi(param_coord).i();
@@ -75,7 +75,7 @@ class MappingHandler {
     return dxi_dxitilde;
   }
 
-  std::shared_ptr<spl::Spline<DIM>> spline_;
+  std::shared_ptr<spl::NURBS<DIM>> spline_;
 };
 }  // namespace iga
 
