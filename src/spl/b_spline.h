@@ -88,62 +88,14 @@ class BSpline : public Spline<DIM> {
   }
 
   bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
-    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
-    --point_handler_length[dimension];
-    std::array<int, DIM> maximum_point_index = physical_space_->GetMaximumPointIndexInEachDirection();
-    --maximum_point_index[dimension];
-
     int off = first - 1, i = first, j = last, ii = 1, jj = last - off;
     std::vector<double> temp = GetTemporaryNewControlPoints(scaling, first, last, off, i, j, ii, jj);
-
-    bool remflag = false;
-    if (j - i <= 0) {
-      std::vector<double> temp1(GetDimension(), 0), temp2(GetDimension(), 0);
-      for (int k = 0; k < GetDimension(); ++k) {
-        temp1[k] = temp[(ii - 1) * GetDimension() + k];
-        temp2[k] = temp[(jj + 1) * GetDimension() + k];
-      }
-      if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
-        remflag = true;
-      } else {
-        double alfi = scaling[i - first];
-        for (int k = 0; k < GetDimension(); ++k) {
-          temp1[k] = physical_space_->GetControlPoints()[i * GetDimension() + k];
-          temp2[k] = alfi * temp[(ii + 1) * GetDimension() + k] + (1 - alfi) * temp[(ii - 1) * GetDimension() + k];
-        }
-        if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
-          remflag = true;
-        }
-      }
+    if (!IsKnotRemovable(scaling[ii - 1], temp, tolerance, i, ii, jj)) {
+      return false;
     }
-    if (!remflag) return false;
-
-    for (int m = last + 1; m <= physical_space_->GetNumberOfControlPoints() - 1; ++m) {
-      std::vector<double> coordinates(GetDimension(), 0);
-      for (int n = GetDimension() - 1; n >= 0; --n) {
-        coordinates[n] = physical_space_->GetControlPoints()[(m) * GetDimension() + n];
-      }
-      baf::ControlPoint cp(coordinates);
-      physical_space_->SetControlPoint2({m - 1}, cp, dimension);
-    }
-
-    for (int k = 1; k < ii; ++k) {
-      std::vector<double> coordinates(GetDimension(), 0);
-      for (int l = 0; l < GetDimension(); ++l) {
-        coordinates[l] = temp[(k) * GetDimension() + l];
-      }
-      baf::ControlPoint cp(coordinates);
-      physical_space_->SetControlPoint2({k + off}, cp, dimension);
-    }
-    for (int k = ii + 1; k * GetDimension() < temp.size(); ++k) {
-      std::vector<double> coordinates(GetDimension(), 0);
-      for (int l = 0; l < GetDimension(); ++l) {
-        coordinates[l] = temp[k * GetDimension() + l];
-      }
-      baf::ControlPoint cp(coordinates);
-      physical_space_->SetControlPoint2({k - 1 + off}, cp, dimension);
-    }
-
+    SetNewControlPoint(temp, last, ii, off, dimension);
+    std::array<int, DIM> maximum_point_index = physical_space_->GetMaximumPointIndexInEachDirection();
+    --maximum_point_index[dimension];
     physical_space_->RemoveControlPoints(physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension]);
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
@@ -205,21 +157,37 @@ class BSpline : public Spline<DIM> {
     }
   }
 
-  std::vector<double> GetTemporaryNewControlPoints(std::vector<double> scaling,
-                                                   int first,
-                                                   int last,
-                                                   int &off,
-                                                   int &i,
-                                                   int &j,
-                                                   int &ii,
-                                                   int &jj) const {
+  void SetNewControlPoint(std::vector<double> temp, int last, int ii, int off, int dimension) {
+    std::vector<double> coordinates(GetDimension(), 0);
+    int index = 0;
+    for (int k = 1; k * GetDimension() < static_cast<int>(temp.size()); ++k) {
+      if (k != ii) {
+        for (int l = 0; l < GetDimension(); ++l) {
+          coordinates[l] = temp[k * GetDimension() + l];
+        }
+        index = k < ii ? k + off : k + off - 1;
+        baf::ControlPoint cp(coordinates);
+        physical_space_->SetControlPoint2({index}, cp, dimension);
+      }
+    }
+    for (int k = last + 1; k < physical_space_->GetNumberOfControlPoints(); ++k) {
+      for (int l = 0; l < GetDimension(); ++l) {
+        coordinates[l] = physical_space_->GetControlPoints()[k * GetDimension() + l];
+      }
+      index = k - 1;
+      baf::ControlPoint cp(coordinates);
+      physical_space_->SetControlPoint2({index}, cp, dimension);
+    }
+  }
+
+  std::vector<double> GetTemporaryNewControlPoints(std::vector<double> scaling, int first, int last,
+                                                   int &off, int &i, int &j, int &ii, int &jj) const {
     std::vector<double> temp((last + 2 - off) * GetDimension(), 0);
     for (int k = 0; k < GetDimension(); ++k) {
       temp[0 + k] = physical_space_->GetControlPoints()[(first - 1) * GetDimension() + k];
       temp[(last + 1 - off) * GetDimension() + k] =
           physical_space_->GetControlPoints()[(last + 1) * GetDimension() + k];
     }
-
     while (j - i > 0) {
       double alfi = scaling[i - first];
       double alfj = scaling[j - first];
@@ -233,6 +201,27 @@ class BSpline : public Spline<DIM> {
       ++i, ++ii, --j, --jj;
     }
     return temp;
+  }
+
+  bool IsKnotRemovable(double alfi, std::vector<double> temp, double tolerance, int i, int ii, int jj) const {
+    std::vector<double> temp1(GetDimension() + 1, 1);
+    std::vector<double> temp2(GetDimension() + 1, 1);
+    for (int k = 0; k < GetDimension(); ++k) {
+      temp1[k] = temp[(ii - 1) * GetDimension() + k];
+      temp2[k] = temp[(jj + 1) * GetDimension() + k];
+    }
+    if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
+      return true;
+    } else {
+      for (int k = 0; k < GetDimension(); ++k) {
+        temp1[k] = physical_space_->GetControlPoints()[i * GetDimension() + k];
+        temp2[k] = alfi * temp[(ii + 1) * GetDimension() + k] + (1 - alfi) * temp[(ii - 1) * GetDimension() + k];
+      }
+      if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
+        return true;
+      }
+    }
+    return false;
   }
 
   std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
