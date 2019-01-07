@@ -19,13 +19,16 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCES ex1.cc)
 set(OPTIMIZER testcase_optimizer.cc)
+set(IO io_conversion.cc)
 
 
 find_package(SplineLib REQUIRED)
 
 add_executable(ex1 ${SOURCES})
 add_executable(TestcaseOptimizer ${OPTIMIZER})
+add_executable(IoConverter ${IO})
 
 target_link_libraries(ex1 SplineLib::splinelibspl)
 target_link_libraries(TestcaseOptimizer SplineLib::splinelibspl SplineLib::splinelibutil SplineLib::splinelibio)
+target_link_libraries(IoConverter SplineLib::splinelibspl SplineLib::splinelibutil SplineLib::splinelibio)
 
