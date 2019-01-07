@@ -63,6 +63,23 @@ class MappingHandler {
     return dx_dxi;
   }
 
+  // Function that should work for different dimensionality of physical and parametric space.
+  // Resulting matrix is not square! How should that case be handled???
+
+  /*arma::dmat GetDxDxi(std::array<ParamCoord, DIM> param_coord) const {
+    int cp_dim = spline_->GetDimension();
+    arma::dmat dx_dxi(static_cast<uint64_t>(cp_dim), static_cast<uint64_t>(DIM), arma::fill::zeros);
+    for (int i = 0; i < cp_dim; ++i) {
+      for (int j = 0; j < DIM; ++j) {
+        std::array<int, DIM> derivative{};
+        derivative[j] = 1;
+        dx_dxi(static_cast<uint64_t>(i), static_cast<uint64_t>(j)) =
+            spline_->EvaluateDerivative(param_coord, {i}, derivative)[0];
+      }
+    }
+    return dx_dxi;
+  }*/
+
   arma::dmat GetDxiDxitilde(std::array<ParamCoord, DIM> param_coord) const {
     arma::dmat dxi_dxitilde(static_cast<uint64_t>(DIM), static_cast<uint64_t>(DIM), arma::fill::zeros);
     std::array<size_t, DIM> knot_span{};
