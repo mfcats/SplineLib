@@ -20,6 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "iges_writer.h"
 #include "irit_writer.h"
 #include "string_operations.h"
+#include "vtk_writer.h"
 #include "xml_writer.h"
 
 namespace io {
@@ -36,12 +37,16 @@ class Writer {
       io::IRITWriter irit_writer;
       std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimensions(splines, 3);
       return irit_writer.WriteFile(splines_with_max_dim, filename);
+    } else if (util::StringOperations::EndsWith(filename, ".vtk")) {
+      io::VTKWriter vtk_writer;
+      std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimensions(splines, 3);
+      return vtk_writer.WriteFile(splines_with_max_dim, filename, {{10}, {10}, {10}});
     } else if (util::StringOperations::EndsWith(filename, ".xml")) {
       io::XMLWriter xml_writer;
       std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimensions(splines, 4);
       return xml_writer.WriteFile(splines_with_max_dim, filename);
     } else {
-      throw std::runtime_error("Only files of format iges, itd and xml can be written.");
+      throw std::runtime_error("Only files of format iges, itd, vtk and xml can be written.");
     }
   }
 
