@@ -72,7 +72,7 @@ TEST_F(ALine, Test) { // NOLINT
 }*/
 }
 
-class ASquarePlate : public Test {
+/*class ASquarePlate : public Test {
  public:
   std::array<baf::KnotVector, 2> knot_vector =
       {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.4}, ParamCoord{0.5},
@@ -146,7 +146,7 @@ class ASquarePlate : public Test {
   std::array<std::shared_ptr<baf::KnotVector>, 2> kv_ptr = {std::make_shared<baf::KnotVector>(knot_vector[0]),
                                                             std::make_shared<baf::KnotVector>(knot_vector[1])};
   std::shared_ptr<spl::NURBS<2>> nurbs_ = std::make_shared<spl::NURBS<2>>(kv_ptr, degree, control_points, weights);
-};
+};*/
 
 /*TEST_F(ASquarePlate, Test2) { // NOLINT
   iga::itg::IntegrationRule rule = iga::itg::FourPointGaussLegendre();
@@ -179,37 +179,36 @@ class ASquarePlate : public Test {
   iga::ElementIntegralCalculator<2> elm_itg_calc = iga::ElementIntegralCalculator<2>(nurbs_);
   iga::itg::IntegrationRule rule = iga::itg::FivePointGaussLegendre();
   int n = nurbs_->GetNumberOfControlPoints();
-
   std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
 
   int m = nurbs_->GetPointsPerDirection()[0];
-
   auto a = std::make_shared<arma::dvec>(m, arma::fill::ones);
   auto b = std::make_shared<arma::dvec>(m, arma::fill::ones);
+  *b *= (-1);
   auto c = std::make_shared<arma::dvec>(m, arma::fill::ones);
   auto d = std::make_shared<arma::dvec>(m, arma::fill::ones);
-
+  *d *= (-1);
   std::array<std::shared_ptr<arma::dvec>, 2> e = {a, b};
   std::array<std::shared_ptr<arma::dvec>, 2> f = {c, d};
-
   std::array<std::array<std::shared_ptr<arma::dvec>, 2>, 2> NeumannCp = {e, f};
 
-  // linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
-  // linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
-
-
-  // linear_equation_assembler.SetZeroBC(matA, vecB);
-  linear_equation_assembler.GetRightSideNeumann(rule, vecB, NeumannCp);
-
-  /*for (uint64_t i = 0; i < (*vecB).size(); ++i) {
-    std::cout << std::endl << (*vecB)(i);
-  }*/
-
-  // arma::dvec solution = arma::solve(*matA, *vecB);
-
-  // iga::SolutionVTKWriter<2> solution_vtk_writer;
-
-  // solution_vtk_writer.WriteSolutionToVTK(nurbs_, solution, {{30, 30}}, "/Users/christophsusen/Desktop/solution.vtk");
+  iga::SolutionVTKWriter<2> solution_vtk_writer;
+  iga::BDFHandler bdf_handler(nurbs_, rule);
+  std::vector<std::shared_ptr<arma::dvec>> solutions;
+  int timeSteps = 50;
+  double dt = 0.1;
+  std::shared_ptr<arma::dvec> uprev = std::make_shared<arma::dvec>(static_cast<uint64_t>(n), arma::fill::zeros);
+  solutions.emplace_back(uprev);
+  linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
+  auto left = bdf_handler.GetBDF1LeftSide(matA, dt);
+  for (int i = 1; i <= timeSteps; ++i) {
+    auto right = bdf_handler.GetBDF1RightSide(vecB, uprev, dt);
+    linear_equation_assembler.GetRightSideNeumann(rule, vecB, NeumannCp);
+    uprev = std::make_shared<arma::dvec>(arma::solve(*left, *right));
+    solutions.emplace_back(uprev);
+    solution_vtk_writer.WriteSolutionToVTK(nurbs_, *solutions[i], {{30, 30}},
+        "/Users/christophsusen/Desktop/solutions/solution_" + std::to_string(i) + ".vtk");
+  }
 }*/
