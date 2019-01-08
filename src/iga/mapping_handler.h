@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IGA_MAPPING_HANDLER_H_
 
 #include <armadillo>
+#include <math.h>
 
 #include "element_generator.h"
 #include "nurbs.h"
@@ -27,11 +28,13 @@ class MappingHandler {
   explicit MappingHandler(std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {}
 
   arma::dmat GetDxiDx(std::array<ParamCoord, DIM> param_coord) const {
-    return GetDxDxi(param_coord).i();
+    return arma::pinv(GetDxDxi(param_coord));
   }
 
   double GetJacobianDeterminant(std::array<ParamCoord, DIM> param_coord) const {
-    return arma::det(GetDxDxitilde(param_coord));
+    return pow(arma::det(GetDxDxitilde(param_coord).t() * GetDxDxitilde(param_coord)), 0.5);
+    // old:
+    // return GetDxDxitilde(param_coord).i();
   }
 
   std::array<ParamCoord, DIM> Reference2ParameterSpace(int element_number, std::array<double, DIM> itg_pnts) const {
@@ -51,22 +54,6 @@ class MappingHandler {
   }
 
   arma::dmat GetDxDxi(std::array<ParamCoord, DIM> param_coord) const {
-    arma::dmat dx_dxi(static_cast<uint64_t>(DIM), static_cast<uint64_t>(DIM), arma::fill::zeros);
-    for (int i = 0; i < DIM; ++i) {
-      for (int j = 0; j < DIM; ++j) {
-        std::array<int, DIM> derivative{};
-        derivative[j] = 1;
-        dx_dxi(static_cast<uint64_t>(i), static_cast<uint64_t>(j)) =
-            spline_->EvaluateDerivative(param_coord, {i}, derivative)[0];
-      }
-    }
-    return dx_dxi;
-  }
-
-  // Function that should work for different dimensionality of physical and parametric space.
-  // Resulting matrix is not square! How should that case be handled???
-
-  /*arma::dmat GetDxDxi(std::array<ParamCoord, DIM> param_coord) const {
     int cp_dim = spline_->GetDimension();
     arma::dmat dx_dxi(static_cast<uint64_t>(cp_dim), static_cast<uint64_t>(DIM), arma::fill::zeros);
     for (int i = 0; i < cp_dim; ++i) {
@@ -78,7 +65,7 @@ class MappingHandler {
       }
     }
     return dx_dxi;
-  }*/
+  }
 
   arma::dmat GetDxiDxitilde(std::array<ParamCoord, DIM> param_coord) const {
     arma::dmat dxi_dxitilde(static_cast<uint64_t>(DIM), static_cast<uint64_t>(DIM), arma::fill::zeros);

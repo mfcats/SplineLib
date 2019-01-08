@@ -65,7 +65,7 @@ class LinearEquationAssembler {
                   (*(NeumannCp[i][j]))(static_cast<uint64_t>(connectivity_handler.GetGlobalIndex(e, l) - 1));
             }
             for (int k = 0; k < p.GetNumberOfNonZeroBasisFunctions(); ++k) {
-              double temp = p.GetBasisFunctionValue(k) * (-1) * bc_int_pnt * p.GetWeight() * p.GetJacobianDeterminant();
+              double temp = p.GetBasisFunctionValue(k) * bc_int_pnt * p.GetWeight() * p.GetJacobianDeterminant();
               (*vecB)(static_cast<uint64_t>(
                           boundary_spline_connectivity[i][j][connectivity_handler.GetGlobalIndex(e, k) - 1])) += temp;
             }
