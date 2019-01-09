@@ -280,7 +280,7 @@ TEST_F(AnIRITWriter, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("[KV "), Ne(std::string::npos));
   ASSERT_THAT(file.find(" 1.000000]"), Ne(std::string::npos));
   ASSERT_THAT(file.find("[0.800000 0.300000 -0.400000]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("[0.500000 2.000000 0.500000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[0.500000 1.000000 0.250000]"), Ne(std::string::npos));
   remove("splines.itd");
 }
 
@@ -331,7 +331,7 @@ TEST_F(AnIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {
               DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {1})[0]));
   ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.00021)}, {2})[0],
               DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {2})[0]));
-  // remove("splines.itd");
+  remove("splines.itd");
 }
 
 TEST_F(AnIRITWriter, ThrowsForSplineOfDimensionFour) {  // NOLINT
