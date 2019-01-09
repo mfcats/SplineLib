@@ -81,48 +81,42 @@ class IRITReader {
     KnotVectors<1> knot_vector = io::IRITReaderUtils::GetKnotVectors<1>(start, entries);
     std::array<Degree, 1> degree = io::IRITReaderUtils::GetDegrees<1>(start, entries);
     bool rational = io::IRITReaderUtils::IsRational<1>(start, entries);
-    std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
+    auto weights = GetWeights(start, entries, rational);
+    std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
     if (!rational) {
       return std::make_any<std::shared_ptr<spl::BSpline<1>>>(
           std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points));
-    } else {
-      auto weights = GetWeights(start, entries);
-      return std::make_any<std::shared_ptr<spl::NURBS<1>>>(
-          std::make_shared<spl::NURBS<1>>(knot_vector, degree,
-                                          GetEuclidianControlPoints(control_points, weights), weights));
     }
+    return std::make_any<std::shared_ptr<spl::NURBS<1>>>(
+        std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights));
   }
 
   std::any Get2DSpline(int start, const std::vector<std::string> &entries) const {
     KnotVectors<2> knot_vector = io::IRITReaderUtils::GetKnotVectors<2>(start, entries);
     std::array<Degree, 2> degree = io::IRITReaderUtils::GetDegrees<2>(start, entries);
     bool rational = io::IRITReaderUtils::IsRational<2>(start, entries);
-    std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
+    auto weights = GetWeights(start, entries, rational);
+    std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
     if (!rational) {
       return std::make_any<std::shared_ptr<spl::BSpline<2>>>(
           std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points));
-    } else {
-      auto weights = GetWeights(start, entries);
-      return std::make_any<std::shared_ptr<spl::NURBS<2>>>(
-          std::make_shared<spl::NURBS<2>>(knot_vector, degree,
-                                          GetEuclidianControlPoints(control_points, weights), weights));
     }
+    return std::make_any<std::shared_ptr<spl::NURBS<2>>>(
+        std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights));
   }
 
   std::any Get3DSpline(int start, const std::vector<std::string> &entries) const {
     KnotVectors<3> knot_vector = io::IRITReaderUtils::GetKnotVectors<3>(start, entries);
     std::array<Degree, 3> degree = io::IRITReaderUtils::GetDegrees<3>(start, entries);
     bool rational = io::IRITReaderUtils::IsRational<3>(start, entries);
-    std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational);
+    auto weights = GetWeights(start, entries, rational);
+    std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
     if (!rational) {
       return std::make_any<std::shared_ptr<spl::BSpline<3>>>(
           std::make_shared<spl::BSpline<3>>(knot_vector, degree, control_points));
-    } else {
-      auto weights = GetWeights(start, entries);
-      return std::make_any<std::shared_ptr<spl::NURBS<3>>>(
-          std::make_shared<spl::NURBS<3>>(knot_vector, degree,
-                                          GetEuclidianControlPoints(control_points, weights), weights));
     }
+    return std::make_any<std::shared_ptr<spl::NURBS<3>>>(
+        std::make_shared<spl::NURBS<3>>(knot_vector, degree, control_points, weights));
   }
 
   static int GetNumberOfControlPoints(int start, const std::vector<std::string> &entries) {
@@ -133,46 +127,36 @@ class IRITReader {
     return total_number_of_points;
   }
 
-  std::vector<baf::ControlPoint>
-  GetControlPoints(int start, const std::vector<std::string> &entries, bool rational) const {
+  std::vector<baf::ControlPoint> GetControlPoints(int start, const std::vector<std::string> &entries,
+                                                  bool rational, std::vector<double> weights) const {
     std::vector<baf::ControlPoint> control_points;
     int number_of_control_points = GetNumberOfControlPoints(start, entries);
     start = GetPositionOfFirstControlPoint(start, entries);
     for (int i = 0; i < number_of_control_points; i++) {
       std::vector<double> coordinates;
       while (!util::StringOperations::EndsWith(entries[start], "]")) {
-        coordinates.push_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
+        coordinates.push_back(
+            util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])) / weights[i]);
       }
-      coordinates.push_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
+      coordinates.push_back(
+          util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])) / weights[i]);
       if (rational) coordinates.erase(coordinates.begin());
       control_points.emplace_back(coordinates);
     }
     return control_points;
   }
 
-  std::vector<double> GetWeights(int start, const std::vector<std::string> &entries) const {
-    std::vector<double> weights;
+  std::vector<double> GetWeights(int start, const std::vector<std::string> &entries, bool rational) const {
     int number_of_control_points = GetNumberOfControlPoints(start, entries);
-    start = GetPositionOfFirstControlPoint(start, entries);
-    for (int i = 0; i < number_of_control_points; i++) {
-      weights.push_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
-      while (!util::StringOperations::EndsWith(entries[start++], "]")) {}
+    std::vector<double> weights(static_cast<unsigned long>(number_of_control_points), 1.0);
+    if (rational) {
+      start = GetPositionOfFirstControlPoint(start, entries);
+      for (int i = 0; i < number_of_control_points; i++) {
+        weights[i] = util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++]));
+        while (!util::StringOperations::EndsWith(entries[start++], "]")) {}
+      }
     }
     return weights;
-  }
-
-  std::vector<baf::ControlPoint>
-  GetEuclidianControlPoints(std::vector<baf::ControlPoint> homogeneous_points, std::vector<double> weights) const {
-    std::vector<baf::ControlPoint> control_points;
-    for (auto i = 0u; i < homogeneous_points.size(); ++i) {
-      std::vector<double> coordinates;
-      for (int j = 0; j < homogeneous_points[0].GetDimension(); ++j) {
-        coordinates.push_back(homogeneous_points[i].GetValue(j) / weights[i]);
-      }
-      baf::ControlPoint point(coordinates);
-      control_points.push_back(point);
-    }
-    return control_points;
   }
 
   int GetPositionOfFirstControlPoint(int start, const std::vector<std::string> &entries) const {
