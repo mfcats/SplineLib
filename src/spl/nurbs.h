@@ -110,40 +110,11 @@ class NURBS : public Spline<DIM> {
     std::vector<double> temp_w = GetTemporaryNewWeights(scaling, first, last, off, i, j);
     i = first, j = last;
     std::vector<double> temp = GetTemporaryNewControlPoints(scaling, temp_w, first, last, off, i, j);
-    std::cout << std::endl;
-    for (const auto &c : temp) {
-      std::cout << c << "  ";
-    }
-    std::cout << std::endl;
-    for (const auto &c : temp_w) {
-      std::cout << c << "  ";
-    }
     if (!IsKnotRemovable(scaling[i - off - 1], temp, temp_w, tolerance, i, j, off)) {
       return false;
     }
-    auto a = physical_space_->GetControlPoints();
-    auto b = physical_space_->GetWeights();
-    std::cout << std::endl;
-    for (const auto &c : a) {
-      std::cout << c << "  ";
-    }
-    std::cout << std::endl;
-    for (const auto &c : b) {
-      std::cout << c << "  ";
-    }
     SetNewControlPoints(temp, last, i - off, off, dimension);
     SetNewWeights(temp_w, last, i - off, off, dimension);
-    a = physical_space_->GetControlPoints();
-    b = physical_space_->GetWeights();
-    std::cout << std::endl;
-    for (const auto &c : a) {
-      std::cout << c << "  ";
-    }
-    std::cout << std::endl;
-    for (const auto &c : b) {
-      std::cout << c << "  ";
-    }
-    std::cout << std::endl;
     std::array<int, DIM> maximum_point_index = physical_space_->GetMaximumPointIndexInEachDirection();
     --maximum_point_index[dimension];
     physical_space_->RemoveControlPoints(physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension]);
@@ -363,9 +334,9 @@ class NURBS : public Spline<DIM> {
                                                    int last, int &off, int &i, int &j) const {
     std::vector<double> temp((last + 2 - off) * GetDimension(), 0);
     for (int k = 0; k < GetDimension(); ++k) {
-      temp[0 + k] = physical_space_->GetHomogenousControlPoint({first - 1}).GetValue(k);
+      temp[0 + k] = physical_space_->GetControlPoint({first - 1}).GetValue(k);
       temp[(last + 1 - off) * GetDimension() + k] =
-          physical_space_->GetHomogenousControlPoint({last + 1}).GetValue(k);
+          physical_space_->GetControlPoint({last + 1}).GetValue(k);
     }
     while (j - i > 0) {
       double alfi = scaling[i - first];
@@ -383,20 +354,14 @@ class NURBS : public Spline<DIM> {
     return temp;
   }
 
-  std::vector<double> GetTemporaryNewWeights(std::vector<double> scaling,
-                                             int first,
-                                             int last,
-                                             int &off,
-                                             int &i,
-                                             int &j) const {
+  std::vector<double>
+  GetTemporaryNewWeights(std::vector<double> scaling, int first, int last, int &off, int &i, int &j) const {
     std::vector<double> temp(last + 2 - off, 0);
     temp[0] = physical_space_->GetWeights()[first - 1];
     temp[last + 1 - off] = physical_space_->GetWeights()[last + 1];
     while (j - i > 0) {
       double alfi = scaling[i - first];
       double alfj = scaling[j - first];
-      auto a = (physical_space_->GetWeights()[i] - (1 - alfi) * temp[i - off - 1]) / alfi;
-      auto b = (physical_space_->GetWeights()[j] - alfj * temp[j - off + 1]) / (1 - alfj);
       temp[i - off] = (physical_space_->GetWeights()[i] - (1 - alfi) * temp[i - off - 1]) / alfi;
       temp[j - off] = (physical_space_->GetWeights()[j] - alfj * temp[j - off + 1]) / (1 - alfj);
       ++i, --j;
@@ -404,24 +369,13 @@ class NURBS : public Spline<DIM> {
     return temp;
   }
 
-  bool IsKnotRemovable(double alfi,
-                       std::vector<double> temp,
-                       std::vector<double> temp_w,
-                       double tolerance,
-                       int i,
-                       int j,
-                       int off) const {
+  bool IsKnotRemovable(double alfi, std::vector<double> temp, std::vector<double> temp_w, double tolerance,
+                       int i, int j, int off) const {
     std::vector<double> temp1(GetDimension() + 1, temp_w[i - off - 1]);
     std::vector<double> temp2(GetDimension() + 1, temp_w[j - off + 1]);
     for (int k = 0; k < GetDimension(); ++k) {
       temp1[k] = temp[(i - off - 1) * GetDimension() + k] * temp_w[i - off - 1];
       temp2[k] = temp[(j - off + 1) * GetDimension() + k] * temp_w[j - off + 1];
-    }
-    for (const auto &p : temp1) {
-      int x = 0;
-    }
-    for (const auto &p : temp2) {
-      int x = 0;
     }
     auto a = util::VectorUtils<double>::ComputeDistance(temp1, temp2);
     if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
@@ -434,18 +388,12 @@ class NURBS : public Spline<DIM> {
         temp2[k] = (alfi * temp[(i - off + 1) * GetDimension() + k] * temp_w[i - off + 1]
             + (1 - alfi) * temp[(i - off - 1) * GetDimension() + k] * temp_w[i - off - 1]);
       }
-      for (const auto &p : temp1) {
-        int x = 0;
-      }
-      for (const auto &p : temp2) {
-        int x = 0;
-      }
       auto b = util::VectorUtils<double>::ComputeDistance(temp1, temp2);
       if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
         return true;
       }
     }
-    return true; // false;
+    return true; //false;
   }
 
   std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_;
