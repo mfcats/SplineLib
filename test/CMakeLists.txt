@@ -56,6 +56,9 @@ set(TEST_SOURCES
 #        iga/solution_vtk_writer_test.cc
 #        iga/solution_vtk_writer_examples.cc)
 
+set(MAX_SOURCES
+  spl/surface_generator_test)
+
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
 
@@ -63,12 +66,16 @@ add_executable(SplineLibTests ${TEST_SOURCES})
 #target_link_libraries(SplineLibTests splinelibbaf splinelibiga splinelibspl splinelibutil splinelibio GMock::Main)
 target_link_libraries(SplineLibTests splinelibbaf splinelibspl splinelibutil splinelibio GMock::Main)
 
+add_executable(MaxTest ${MAX_SOURCES})
+target_link_libraries(MaxTest splinelibbaf splinelibiga splinelibspl splinelibutil splinelibio GMock::Main)
+
 set(ACCEPTANCE_TEST_SOURCES
         acceptance_tests.cc)
 add_executable(AcceptanceTests ${ACCEPTANCE_TEST_SOURCES})
 target_link_libraries(AcceptanceTests splinelibbaf splinelibspl splinelibutil)
 
 target_compile_definitions(SplineLibTests PRIVATE GTEST_HAS_PTHREAD=0)
+target_compile_definitions(MaxTest PRIVATE GTEST_HAS_PTHREAD=0)
 
 set(IGES_READ ${CMAKE_CURRENT_SOURCE_DIR}/io/test_files/read.iges)
 set(IGES_READ_2 ${CMAKE_CURRENT_SOURCE_DIR}/io/test_files/read2.iges)
