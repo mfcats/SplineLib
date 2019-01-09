@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 #include "random_b_spline_generator.h"
 #include "random_nurbs_generator.h"
+#include "irit_writer.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -76,6 +77,11 @@ TEST_F(BSplineFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
     ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {1})[0],
                 DoubleEq(bspline_1d_before_->Evaluate(param_coord, {1})[0]));
   }
+  std::any spline_before = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_);
+  std::any spline_after = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_after_);
+  std::vector<std::any> splines = {spline_before, spline_after};
+  io::IRITWriter iritWriter;
+  iritWriter.WriteFile(splines, "test2.itd");
 }
 
 TEST_F(BSplineFig5_26, RemovesKnot1_0CorrectlyTwoTimes) {  // NOLINT
@@ -235,11 +241,11 @@ TEST_F(NURBSFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
   ASSERT_THAT(nurbs_1d_after_->GetNumberOfControlPoints(), nurbs_1d_before_->GetNumberOfControlPoints() - 1);
   std::vector<baf::ControlPoint> new_control_points = {
       baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.0, 1.5})),
-      baf::ControlPoint(std::vector<double>({1.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({0.0, 3.0})),
+      baf::ControlPoint(std::vector<double>({0.25, 0.5})),
       baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-      baf::ControlPoint(std::vector<double>({4.0, 1.5})),
-      baf::ControlPoint(std::vector<double>({4.0, 0.0}))
+      baf::ControlPoint(std::vector<double>({8.0, 3.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 0.0}))
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
@@ -250,10 +256,48 @@ TEST_F(NURBSFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
   for (int i = 0; i <= s; ++i) {
     std::array<ParamCoord, 1> param_coord{ParamCoord(2 * i / s)};
     ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {0})[0],
-                DoubleEq(nurbs_1d_before_->Evaluate(param_coord, {0})[0]));
+                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {0})[0], 0.3));
     ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {1})[0],
-                DoubleEq(nurbs_1d_before_->Evaluate(param_coord, {1})[0]));
+                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {1})[0], 0.3));
+    std::cout << param_coord[0].get() << ": "
+              << nurbs_1d_after_->Evaluate(param_coord, {0})[0] - nurbs_1d_before_->Evaluate(param_coord, {0})[0]
+              << "  "
+              << nurbs_1d_after_->Evaluate(param_coord, {1})[0] - nurbs_1d_before_->Evaluate(param_coord, {1})[0]
+              << std::endl;
   }
+  std::any spline_before = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_1d_before_);
+  std::any spline_after = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_1d_after_);
+  std::vector<std::any> splines = {spline_before, spline_after};
+  io::IRITWriter iritWriter;
+  iritWriter.WriteFile(splines, "test.itd");
+
+  std::array<Degree, 1> degree = {Degree{3}};
+  KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
+      baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.25}, ParamCoord{0.5},
+                       ParamCoord{0.75}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+  std::vector<baf::ControlPoint> control_points = {
+      baf::ControlPoint(std::vector<double>({0.0, 0.0})),
+      baf::ControlPoint(std::vector<double>({1, 4})),
+      baf::ControlPoint(std::vector<double>({5, 4.5})),
+      baf::ControlPoint(std::vector<double>({3, -2.5})),
+      baf::ControlPoint(std::vector<double>({9, -2.5})),
+      baf::ControlPoint(std::vector<double>({8, 2.5})),
+      baf::ControlPoint(std::vector<double>({11, 3}))
+  };
+  std::vector<double> weights_1 = {1, 1, 1, 1, 1, 1, 1};
+  std::shared_ptr<spl::NURBS<1>>
+      nurbs_1 = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights_1);
+  std::any spline_1 = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_1);
+  std::vector<double> weights_0_3 = {1, 1, 1, 0.3, 1, 1, 1};
+  std::shared_ptr<spl::NURBS<1>>
+      nurbs_0_3 = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights_0_3);
+  std::any spline_0_3 = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_0_3);
+  std::vector<double> weights_3 = {1, 1, 1, 3, 1, 1, 1};
+  std::shared_ptr<spl::NURBS<1>>
+      nurbs_3 = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights_3);
+  std::any spline_3 = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_3);
+  std::vector<std::any> splines_test = {spline_1, spline_0_3, spline_3};
+  iritWriter.WriteFile(splines_test, "test_homo.itd");
 }
 
 class NURBSFig5_27 : public Test {  // NOLINT

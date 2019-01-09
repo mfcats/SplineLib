@@ -414,8 +414,8 @@ class NURBS : public Spline<DIM> {
     std::vector<double> temp1(GetDimension() + 1, temp_w[i - off - 1]);
     std::vector<double> temp2(GetDimension() + 1, temp_w[j - off + 1]);
     for (int k = 0; k < GetDimension(); ++k) {
-      temp1[k] = temp[(i - off - 1) * GetDimension() + k] / temp_w[i - off - 1];
-      temp2[k] = temp[(j - off + 1) * GetDimension() + k] / temp_w[j - off + 1];
+      temp1[k] = temp[(i - off - 1) * GetDimension() + k] * temp_w[i - off - 1];
+      temp2[k] = temp[(j - off + 1) * GetDimension() + k] * temp_w[j - off + 1];
     }
     for (const auto &p : temp1) {
       int x = 0;
@@ -427,11 +427,12 @@ class NURBS : public Spline<DIM> {
     if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
       return true;
     } else {
+      temp1[GetDimension()] = physical_space_->GetWeights()[i];
+      temp2[GetDimension()] = alfi * temp_w[i - off + 1] + (1 - alfi) * temp_w[i - off - 1];
       for (int k = 0; k < GetDimension(); ++k) {
         temp1[k] = physical_space_->GetControlPoints()[i * GetDimension() + k] * physical_space_->GetWeights()[i];
-        temp2[k] =
-            (alfi * temp[(i - off + 1) * GetDimension() + k] + (1 - alfi) * temp[(i - off - 1) * GetDimension() + k]) *
-                (alfi * temp_w[i - off + 1] + (1 - alfi) / temp_w[i - off - 1]);
+        temp2[k] = (alfi * temp[(i - off + 1) * GetDimension() + k] * temp_w[i - off + 1]
+            + (1 - alfi) * temp[(i - off - 1) * GetDimension() + k] * temp_w[i - off - 1]);
       }
       for (const auto &p : temp1) {
         int x = 0;
