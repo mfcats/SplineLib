@@ -28,7 +28,9 @@ class MappingHandler {
   explicit MappingHandler(std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {}
 
   arma::dmat GetDxiDx(std::array<ParamCoord, DIM> param_coord) const {
-    return arma::pinv(GetDxDxi(param_coord));
+    arma::dmat dx_dxi_sq = GetDxDxi(param_coord).submat(0, 0, static_cast<uint64_t>(DIM - 1),
+        static_cast<uint64_t>(DIM - 1));
+    return dx_dxi_sq.i();
   }
 
   double GetJacobianDeterminant(std::array<ParamCoord, DIM> param_coord) const {
