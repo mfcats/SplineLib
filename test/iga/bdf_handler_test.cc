@@ -24,8 +24,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "solution_vtk_writer.h"
 #include "five_point_gauss_legendre.h"
 
-#include <iostream>
-
 using testing::Test;
 using testing::DoubleNear;
 
