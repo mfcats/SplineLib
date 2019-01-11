@@ -33,8 +33,6 @@ class MappingHandler {
 
   double GetJacobianDeterminant(std::array<ParamCoord, DIM> param_coord) const {
     return pow(abs(arma::det(GetDxDxitilde(param_coord).t() * GetDxDxitilde(param_coord))), 0.5);
-    // old:
-    // return GetDxDxitilde(param_coord).i();
   }
 
   std::array<ParamCoord, DIM> Reference2ParameterSpace(int element_number, std::array<double, DIM> itg_pnts) const {
