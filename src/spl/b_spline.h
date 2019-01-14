@@ -89,8 +89,9 @@ class BSpline : public Spline<DIM> {
 
   bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
     int off = first - 1, i = first, j = last;
-    std::vector<double> temp = GetTemporaryNewControlPoints(scaling, first, last, off, i, j);
-    if (!IsKnotRemovable(scaling[i - off - 1], temp, tolerance, i, j, off)) {
+    std::vector<double> temp = GetTemporaryNewControlPoints(scaling, first, last, off, i, j, dimension);
+    IsKnotRemovable(0.5, temp, tolerance, i, j, off, dimension);
+    if (!IsKnotRemovable(scaling[i - off - 1], temp, tolerance, i, j, off, dimension)) {
       return false;
     }
     SetNewControlPoint(temp, last, i - off, off, dimension);
@@ -181,46 +182,74 @@ class BSpline : public Spline<DIM> {
   }
 
   std::vector<double> GetTemporaryNewControlPoints(std::vector<double> scaling, int first, int last,
-                                                   int &off, int &i, int &j) const {
-    std::vector<double> temp((last + 2 - off) * GetDimension(), 0);
-    for (int k = 0; k < GetDimension(); ++k) {
-      temp[0 + k] = physical_space_->GetControlPoints()[(first - 1) * GetDimension() + k];
-      temp[(last + 1 - off) * GetDimension() + k] =
-          physical_space_->GetControlPoints()[(last + 1) * GetDimension() + k];
-    }
-    while (j - i > 0) {
-      double alfi = scaling[i - first];
-      double alfj = scaling[j - first];
-      for (int k = 0; k < GetDimension(); ++k) {
-        temp[(i - off) * GetDimension() + k] = (physical_space_->GetControlPoints()[i * GetDimension() + k]
-            - (1 - alfi) * temp[(i - off - 1) * GetDimension() + k]) / alfi;
-        temp[(j - off) * GetDimension() + k] =
-            (physical_space_->GetControlPoints()[j * GetDimension() + k]
-                - alfj * temp[(j - off + 1) * GetDimension() + k])
-                / (1 - alfj);
+                                                   int &off, int &i, int &j, int dimension) const {
+    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
+    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    int new_control_points =
+        physical_space_->GetNumberOfControlPoints() / physical_space_->GetNumberOfPointsInEachDirection()[dimension];
+    std::vector<double> temp(new_control_points * GetDimension() * (last - first + 3), 0);
+
+    for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
+      if (point_handler.GetIndices()[dimension] == first - 1) {
+        for (int k = 0; k < GetDimension(); ++k) {
+          int index =
+              point_handler.Get1DIndex() / point_handler_length[dimension] * GetDimension() * (last - first + 3);
+          temp[index + k] = physical_space_->GetControlPoint(point_handler.GetIndices()).GetValue(k);
+        }
+      } else if (point_handler.GetIndices()[dimension] == last + 1) {
+        for (int k = 0; k < GetDimension(); ++k) {
+          int index =
+              point_handler.Get1DIndex() / point_handler_length[dimension] * GetDimension() * (last - first + 3);
+          temp[index + (last + 1 - off) * GetDimension() + k] =
+              physical_space_->GetControlPoint(point_handler.GetIndices()).GetValue(k);
+        }
       }
+    }
+    std::cout << std::endl;
+    for (const auto &cp : temp) {
+      std::cout << cp << "  ";
+    }
+    std::cout << std::endl;
+    while (j - i > 0) {
+//      double alfi = scaling[i - first];
+//      double alfj = scaling[j - first];
+//      for (int k = 0; k < GetDimension(); ++k) {
+//        temp[(i - off) * GetDimension() + k] = (physical_space_->GetControlPoints()[i * GetDimension() + k]
+//            - (1 - alfi) * temp[(i - off - 1) * GetDimension() + k]) / alfi;
+//        temp[(j - off) * GetDimension() + k] =
+//            (physical_space_->GetControlPoints()[j * GetDimension() + k]
+//                - alfj * temp[(j - off + 1) * GetDimension() + k])
+//                / (1 - alfj);
+//      }
       ++i, --j;
     }
     return temp;
   }
 
-  bool IsKnotRemovable(double alfi, std::vector<double> temp, double tolerance, int i, int j, int off) const {
-    std::vector<double> temp1(GetDimension() + 1, 1);
-    std::vector<double> temp2(GetDimension() + 1, 1);
-    for (int k = 0; k < GetDimension(); ++k) {
-      temp1[k] = temp[(i - off - 1) * GetDimension() + k];
-      temp2[k] = temp[(j - off + 1) * GetDimension() + k];
-    }
-    if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
-      return true;
-    } else {
+  bool IsKnotRemovable(double alfi, std::vector<double> temp, double tolerance,
+                       int i, int j, int off, int dimension) const {
+    int new_control_points =
+        physical_space_->GetNumberOfControlPoints() / physical_space_->GetNumberOfPointsInEachDirection()[dimension];
+    size_t temp_length = temp.size() / new_control_points;
+    for (int l = 0; l < new_control_points; ++l) {
+      std::vector<double> current_temp(temp.begin() + l * temp_length, temp.begin() + l * (temp_length + 1));
+      std::vector<double> temp1(GetDimension() + 1, 1);
+      std::vector<double> temp2(GetDimension() + 1, 1);
       for (int k = 0; k < GetDimension(); ++k) {
-        temp1[k] = physical_space_->GetControlPoints()[i * GetDimension() + k];
-        temp2[k] =
-            alfi * temp[(i - off + 1) * GetDimension() + k] + (1 - alfi) * temp[(i - off - 1) * GetDimension() + k];
+        temp1[k] = current_temp[(i - off - 1) * GetDimension() + k];
+        temp2[k] = current_temp[(j - off + 1) * GetDimension() + k];
       }
       if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
         return true;
+      } else {
+        for (int k = 0; k < GetDimension(); ++k) {
+          temp1[k] = physical_space_->GetControlPoints()[i * GetDimension() + k];
+          temp2[k] = alfi * current_temp[(i - off + 1) * GetDimension() + k]
+              + (1 - alfi) * current_temp[(i - off - 1) * GetDimension() + k];
+        }
+        if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
+          return true;
+        }
       }
     }
     return false;
