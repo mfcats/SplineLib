@@ -164,38 +164,24 @@ class BSpline : public Spline<DIM> {
     for (int m = 0; m < point_handler.Get1DLength(); ++m, ++point_handler) {
       int k_index = point_handler.GetIndices()[dimension];
       int k = k_index - off;
-      if (k_index <= off && k < 1) {
-        auto indices = point_handler.GetIndices();
-        indices[dimension] = k_index;
-        physical_space_->SetControlPoint2(indices,
-                                          physical_space_->GetControlPoint(point_handler.GetIndices()),
-                                          dimension);
-      }
       if (k >= 1 && k != ii && k < last - off + 2) {
         for (int l = 0; l < GetDimension(); ++l) {
           coordinates[l] = temp[(count * (last - off + 2) + k) * GetDimension() + l];
         }
         count++;
         auto indices = point_handler.GetIndices();
-        int index = k < ii ? k + off : k + off - 1;
-        indices[dimension] = index;
+        indices[dimension] = k < ii ? k + off : k + off - 1;
         baf::ControlPoint cp(coordinates);
         physical_space_->SetControlPoint2(indices, cp, dimension);
       }
-      if (k_index >= last + 1 && k_index < physical_space_->GetNumberOfPointsInEachDirection()[dimension]) {
+      if ((k_index <= off && k < 1)
+          || (k_index >= last + 1 && k_index < physical_space_->GetNumberOfPointsInEachDirection()[dimension])) {
         auto indices = point_handler.GetIndices();
-        indices[dimension] = k_index - 1;
+        indices[dimension] = k_index <= off ? k_index : k_index - 1;
         physical_space_->SetControlPoint2(indices,
                                           physical_space_->GetControlPoint(point_handler.GetIndices()),
                                           dimension);
       }
-//    std::cout << std::endl;
-//    for (int i = 0; i < physical_space_->GetControlPoints().size(); ++i) {
-//      std::cout << physical_space_->GetControlPoints()[i] << "  ";
-//      if ((i / 3 + 1) % 7 + (i + 1) % 3 == 0) std::cout << std::endl;
-//      else if ((i + 1) % 3 == 0) std::cout << "|  ";
-//    }
-//    std::cout << std::endl;
     }
   }
 
