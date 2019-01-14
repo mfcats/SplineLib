@@ -258,20 +258,16 @@ class BSpline : public Spline<DIM> {
         temp1[k] = current_temp[(i - off - 1) * GetDimension() + k];
         temp2[k] = current_temp[(j - off + 1) * GetDimension() + k];
       }
-      auto a = util::VectorUtils<double>::ComputeDistance(temp1, temp2);
       if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
         for (int k = 0; k < GetDimension(); ++k) {
           auto indices = point_handler.GetIndices();
           indices[dimension] = i;
-          temp1[k] =
-              physical_space_->GetControlPoint(indices).GetValue(k); // physical_space_->GetControlPoints()[i * GetDimension() + k]; ???
-          auto c = temp1[k];
+          temp1[k] = physical_space_->GetControlPoint(indices).GetValue(k);
           temp2[k] = alfi * current_temp[(i - off + 1) * GetDimension() + k]
               + (1 - alfi) * current_temp[(i - off - 1) * GetDimension() + k];
         }
-        auto b = util::VectorUtils<double>::ComputeDistance(temp1, temp2);
         if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
-          // return false;
+          return false;
         }
       }
     }
