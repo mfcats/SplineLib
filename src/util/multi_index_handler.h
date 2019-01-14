@@ -35,7 +35,7 @@ class MultiIndexHandler {
 
   MultiIndexHandler &operator++() {
     for (int i = 0; i < DIM; ++i) {
-      if (current_multi_index_value_[i] == multi_index_length_[i] - 1) {
+      if (current_multi_index_value_[i] == multi_index_length_[i] - 1 || multi_index_length_[i] == 0) {
         current_multi_index_value_[i] = 0;
       } else {
         current_multi_index_value_[i]++;
