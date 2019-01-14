@@ -393,37 +393,23 @@ class BSpline2DFig5_28 : public Test {  // NOLINT
 };
 
 TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
+  bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 0, 0.5);
   std::any spline = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_before_);
+  std::any spline2 = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_after_);
   io::IRITWriter writer;
-  writer.WriteFile({spline}, "surface.itd");
-  bspline_2d_after_->RemoveKnot(ParamCoord(1), 0, 0.3);
-//  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
-//              bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
-//  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(0.7));
-//  ASSERT_THAT(bspline_2d_after_->GetNumberOfControlPoints(), bspline_2d_before_->GetNumberOfControlPoints() - 6);
-//  std::vector<baf::ControlPoint> new_control_points = {
-//      baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-//      baf::ControlPoint(std::vector<double>({0.0, 1.5})),
-//      baf::ControlPoint(std::vector<double>({1.0, 2.0})),
-//      baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-//      baf::ControlPoint(std::vector<double>({4.0, 1.5})),
-//      baf::ControlPoint(std::vector<double>({4.0, 0.0}))
-//  };
-//  for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
-//    for (int j = 0; j < 2; ++j) {
-//      ASSERT_THAT(bspline_2d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
-//    }
-//  }
-//  double s = 50;
-//  for (int i = 0; i <= s; ++i) {
-//    for (int j = 0; j <= s; ++j) {
-//      std::array<ParamCoord, 2> param_coord{ParamCoord(2 * i / s), ParamCoord(2 * j / s)};
-//      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {0})[0],
-//                  DoubleEq(bspline_2d_before_->Evaluate(param_coord, {0})[0]));
-//      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {1})[0],
-//                  DoubleEq(bspline_2d_before_->Evaluate(param_coord, {1})[0]));
-//      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {2})[0],
-//                  DoubleEq(bspline_2d_before_->Evaluate(param_coord, {2})[0]));
-//    }
-//  }
+  writer.WriteFile({spline, spline2}, "surface.itd");
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(0.7));
+  ASSERT_THAT(bspline_2d_after_->GetNumberOfControlPoints(), bspline_2d_before_->GetNumberOfControlPoints() - 6);
+  double s = 50;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      std::array<ParamCoord, 2> param_coord{ParamCoord(i / s), ParamCoord(j / s)};
+      for (int k = 0; k < bspline_2d_after_->GetDimension(); ++k) {
+        ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {k})[0],
+                    DoubleNear(bspline_2d_before_->Evaluate(param_coord, {k})[0], 0.072));
+      }
+    }
+  }
 }
