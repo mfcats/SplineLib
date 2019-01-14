@@ -318,7 +318,7 @@ class NURBS : public Spline<DIM> {
 
   void SetNewWeights(std::vector<double> temp, int last, int ii, int off, int dimension) {
     int index = 0;
-    for (int k = 1; k * GetDimension() < static_cast<int>(temp.size()); ++k) {
+    for (int k = 1; k < static_cast<int>(temp.size()); ++k) {
       if (k != ii) {
         index = k < ii ? k + off : k + off - 1;
         physical_space_->SetWeight2({index}, temp[k], dimension);
@@ -328,6 +328,7 @@ class NURBS : public Spline<DIM> {
       index = k - 1;
       physical_space_->SetWeight2({index}, physical_space_->GetWeights()[k], dimension);
     }
+    auto weights = physical_space_->GetWeights();
   }
 
   std::vector<double> GetTemporaryNewControlPoints(std::vector<double> scaling, std::vector<double> temp_w, int first,
@@ -347,7 +348,7 @@ class NURBS : public Spline<DIM> {
         temp[(j - off) * GetDimension() + k] =
             (physical_space_->GetHomogenousControlPoint({j}).GetValue(k)
                 - alfj * temp[(j - off + 1) * GetDimension() + k])
-                / (1 - alfj) / temp_w[i - off];
+                / (1 - alfj) / temp_w[j - off];
       }
       ++i, --j;
     }
