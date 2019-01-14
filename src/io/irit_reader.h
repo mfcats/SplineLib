@@ -147,11 +147,11 @@ class IRITReader {
   }
 
   std::vector<double> GetWeights(int start, const std::vector<std::string> &entries, bool rational) const {
-    int number_of_control_points = GetNumberOfControlPoints(start, entries);
-    std::vector<double> weights(static_cast<unsigned long>(number_of_control_points), 1.0);
+    auto number_of_control_points = static_cast<size_t>(GetNumberOfControlPoints(start, entries));
+    std::vector<double> weights(number_of_control_points, 1.0);
     if (rational) {
       start = GetPositionOfFirstControlPoint(start, entries);
-      for (int i = 0; i < number_of_control_points; i++) {
+      for (auto i = 0u; i < number_of_control_points; i++) {
         weights[i] = util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++]));
         while (!util::StringOperations::EndsWith(entries[start++], "]")) {}
       }
