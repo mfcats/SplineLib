@@ -97,6 +97,7 @@ TEST_F(BSplineFig5_26, RemovesKnot1_0CorrectlyTwoTimes) {  // NOLINT
       ASSERT_THAT(bspline_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
     }
   }
+  std::cout << std::endl;
   double s = 50;
   for (int i = 0; i <= s; ++i) {
     std::array<ParamCoord, 1> param_coord{ParamCoord(2 * i / s)};
@@ -331,11 +332,6 @@ TEST_F(NURBSFig5_27, RemovesKnot0_3Correctly) {  // NOLINT
 //                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {0})[0], 0.02));
 //    ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {1})[0],
 //                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {1})[0], 0.1));
-    std::cout << "i = " << i << " --> u = 0: "
-              << nurbs_1d_after_->Evaluate(param_coord, {0})[0] - nurbs_1d_before_->Evaluate(param_coord, {0})[0];
-    std::cout << ", u = 1: "
-              << nurbs_1d_after_->Evaluate(param_coord, {1})[0] - nurbs_1d_before_->Evaluate(param_coord, {1})[0]
-              << std::endl;
   }
 }
 
