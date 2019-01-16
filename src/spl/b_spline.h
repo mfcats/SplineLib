@@ -165,7 +165,6 @@ class BSpline : public Spline<DIM> {
       int k_index = point_handler.GetIndices()[dimension];
       int k = k_index - off;
       if (k >= 1 && k != ii && k < last - off + 2) {
-        std::cout << std::endl;
         for (int l = 0; l < GetDimension(); ++l) {
           coordinates[l] = temp[(count * (last - off + 2) + k) * GetDimension() + l];
         }
@@ -213,17 +212,25 @@ class BSpline : public Spline<DIM> {
     while (j - i > 0) {
       point_handler.SetIndices({0});
       for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
-        double alfi = scaling[i - first];
-        double alfj = scaling[j - first];
-        for (int k = 0; k < GetDimension(); ++k) {
-          int index =
-              point_handler.Get1DIndex() / point_handler_length[dimension] * GetDimension() * (last - first + 3);
-          temp[index + (i - off) * GetDimension() + k] = (physical_space_->GetControlPoints()[i * GetDimension() + k]
-              - (1 - alfi) * temp[(i - off - 1) * GetDimension() + k]) / alfi;
-          temp[index + (j - off) * GetDimension() + k] =
-              (physical_space_->GetControlPoints()[j * GetDimension() + k]
-                  - alfj * temp[(j - off + 1) * GetDimension() + k])
-                  / (1 - alfj);
+        if (point_handler.GetIndices()[dimension] == i) {
+          double alfi = scaling[i - first];
+          for (int k = 0; k < GetDimension(); ++k) {
+            int index =
+                point_handler.Get1DIndex() / point_handler_length[dimension] * GetDimension() * (last - first + 3);
+            temp[index + (i - off) * GetDimension() + k] =
+                (physical_space_->GetControlPoint(point_handler.GetIndices()).GetValue(k)
+                    - (1 - alfi) * temp[index + (i - off - 1) * GetDimension() + k]) / alfi;
+          }
+        }
+        if (point_handler.GetIndices()[dimension] == j) {
+          double alfj = scaling[j - first];
+          for (int k = 0; k < GetDimension(); ++k) {
+            int index =
+                point_handler.Get1DIndex() / point_handler_length[dimension] * GetDimension() * (last - first + 3);
+            temp[index + (j - off) * GetDimension() + k] =
+                (physical_space_->GetControlPoint(point_handler.GetIndices()).GetValue(k)
+                    - alfj * temp[index + (j - off + 1) * GetDimension() + k]) / (1 - alfj);
+          }
         }
       }
       ++i, --j;

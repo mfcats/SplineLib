@@ -200,10 +200,6 @@ TEST_F(BSplineFig5_27, RemovesKnot0_3Correctly) {  // NOLINT
     ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {1})[0],
                 DoubleNear(bspline_1d_before_->Evaluate(param_coord, {1})[0], 0.1));
   }
-  std::any spline_before = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_);
-  std::any spline_after = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_after_);
-  io::IRITWriter iritWriter;
-  iritWriter.WriteFile({spline_before, spline_after}, "bsplines.itd");
 }
 
 class NURBSFig5_26 : public Test {  // NOLINT
@@ -302,11 +298,6 @@ TEST_F(NURBSFig5_27, RemovesKnot0_3Correctly) {  // NOLINT
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetKnot(4).get(), DoubleEq(0.5));
   ASSERT_THAT(nurbs_1d_after_->GetNumberOfControlPoints(), nurbs_1d_before_->GetNumberOfControlPoints() - 1);
 
-  std::any spline_before = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_1d_before_);
-  std::any spline_after = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_1d_after_);
-  io::IRITWriter iritWriter;
-  iritWriter.WriteFile({spline_before, spline_after}, "nurbs.itd");
-
   std::vector<baf::ControlPoint> new_control_points = {
       baf::ControlPoint(std::vector<double>({0.1, 0.0})),
       baf::ControlPoint(std::vector<double>({-0.4, 5.0})),
@@ -401,6 +392,25 @@ TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
       for (int k = 0; k < bspline_2d_after_->GetDimension(); ++k) {
         ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {k})[0],
                     DoubleNear(bspline_2d_before_->Evaluate(param_coord, {k})[0], 0.075));
+      }
+    }
+  }
+}
+
+TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
+  bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 0, 0.12, 2);
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() - 2);
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetKnot(5).get(), DoubleEq(0.7));
+  ASSERT_THAT(bspline_2d_after_->GetNumberOfControlPoints(), bspline_2d_before_->GetNumberOfControlPoints() - 12);
+  auto a = bspline_2d_after_->GetControlPoints();
+  double s = 50;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      std::array<ParamCoord, 2> param_coord{ParamCoord(i / s), ParamCoord(j / s)};
+      for (int k = 0; k < bspline_2d_after_->GetDimension(); ++k) {
+        ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {k})[0],
+                    DoubleNear(bspline_2d_before_->Evaluate(param_coord, {k})[0], 0.12));
       }
     }
   }
