@@ -90,6 +90,7 @@ class BSpline : public Spline<DIM> {
   bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
     int off = first - 1, i = first, j = last;
     std::vector<double> temp = GetTemporaryNewControlPoints(scaling, first, last, off, i, j, dimension);
+    i += (j - i) / 2, j -= (j - i) / 2;
     if (!IsKnotRemovable(scaling[i - off - 1], temp, tolerance, i, j, off, dimension)) {
       return false;
     }
@@ -184,7 +185,7 @@ class BSpline : public Spline<DIM> {
   }
 
   std::vector<double> GetTemporaryNewControlPoints(std::vector<double> scaling, int first, int last,
-                                                   int &off, int &i, int &j, int dimension) const {
+                                                   int off, int i, int j, int dimension) const {
     std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
     int new_control_points =

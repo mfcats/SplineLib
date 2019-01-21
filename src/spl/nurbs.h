@@ -105,11 +105,11 @@ class NURBS : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
-  bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) {
+  bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
     int off = first - 1, i = first, j = last;
     std::vector<double> temp_w = GetTemporaryNewWeights(scaling, first, last, off, i, j);
-    i = first, j = last;
     std::vector<double> temp = GetTemporaryNewControlPoints(scaling, temp_w, first, last, off, i, j);
+    i += (j - i) / 2, j -= (j - i) / 2;
     if (!IsKnotRemovable(scaling[i - off - 1], temp, temp_w, tolerance, i, j, off)) {
       return false;
     }
@@ -332,7 +332,7 @@ class NURBS : public Spline<DIM> {
   }
 
   std::vector<double> GetTemporaryNewControlPoints(std::vector<double> scaling, std::vector<double> temp_w, int first,
-                                                   int last, int &off, int &i, int &j) const {
+                                                   int last, int off, int i, int j) const {
     std::vector<double> temp((last + 2 - off) * GetDimension(), 0);
     for (int k = 0; k < GetDimension(); ++k) {
       temp[0 + k] = physical_space_->GetControlPoint({first - 1}).GetValue(k);
@@ -356,7 +356,7 @@ class NURBS : public Spline<DIM> {
   }
 
   std::vector<double>
-  GetTemporaryNewWeights(std::vector<double> scaling, int first, int last, int &off, int &i, int &j) const {
+  GetTemporaryNewWeights(std::vector<double> scaling, int first, int last, int off, int i, int j) const {
     std::vector<double> temp(last + 2 - off, 0);
     temp[0] = physical_space_->GetWeights()[first - 1];
     temp[last + 1 - off] = physical_space_->GetWeights()[last + 1];
@@ -394,7 +394,7 @@ class NURBS : public Spline<DIM> {
         return true;
       }
     }
-    return true; //false;
+    return true;  // false;
   }
 
   std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_;

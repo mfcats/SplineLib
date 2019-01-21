@@ -316,14 +316,14 @@ TEST_F(NURBSFig5_27, RemovesKnot0_3Correctly) {  // NOLINT
     }
     ASSERT_THAT(nurbs_1d_after_->GetWeight({i}), DoubleEq(new_weights[i]));
   }
-  double s = 50.0;
-  for (int i = 0; i <= s; ++i) {
-    std::array<ParamCoord, 1> param_coord{ParamCoord(i / s)};
+//  double s = 50.0;
+//  for (int i = 0; i <= s; ++i) {
+//    std::array<ParamCoord, 1> param_coord{ParamCoord(i / s)};
 //    ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {0})[0],
 //                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {0})[0], 0.02));
 //    ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {1})[0],
 //                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {1})[0], 0.1));
-  }
+//  }
 }
 
 class BSpline2DFig5_28 : public Test {  // NOLINT
