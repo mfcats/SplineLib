@@ -178,7 +178,7 @@ class Spline {
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
   virtual bool RemoveControlPoints(std::vector<double>, int, int, int, double) {
-    return true;
+    return false;
   }
 
  protected:

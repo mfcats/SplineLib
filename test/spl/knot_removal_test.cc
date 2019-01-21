@@ -314,3 +314,34 @@ TEST_F(A3DBSplineToRemoveKnotInDirection2, RemovesKnot0_3CorrectlyTwoTimes) {  /
     }
   }
 }
+
+class NURBSFig5_26 : public Test {  // NOLINT
+ public:
+  NURBSFig5_26() {
+    std::array<Degree, 1> degree = {Degree{3}};
+    KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1},
+                         ParamCoord{1}, ParamCoord{2}, ParamCoord{2}, ParamCoord{2}, ParamCoord{2}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 1.5})),
+        baf::ControlPoint(std::vector<double>({1.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({4.0, 1.5})),
+        baf::ControlPoint(std::vector<double>({4.0, 0.0}))
+    };
+    std::vector<double> weights = {10, 0.5, 4, 2, 1, 0.5, 4};
+    nurbs_1d_before_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
+    spl::NURBS<1> nurbs_after(*nurbs_1d_before_);
+    nurbs_1d_after_ = std::make_shared<spl::NURBS<1>>(nurbs_after);
+  }
+
+ protected:
+  std::shared_ptr<spl::NURBS<1>> nurbs_1d_before_;
+  std::shared_ptr<spl::NURBS<1>> nurbs_1d_after_;
+};
+
+TEST_F(NURBSFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
+  ASSERT_FALSE(nurbs_1d_after_->RemoveKnot(ParamCoord(1), 0, 2));
+}
