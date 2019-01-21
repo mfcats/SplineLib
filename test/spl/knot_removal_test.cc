@@ -381,6 +381,12 @@ class BSpline2DFig5_28 : public Test {  // NOLINT
 
 TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
   bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 0, 0.075);
+  auto a = bspline_2d_after_->GetControlPoints();
+  std::cout << std::endl;
+  for (const auto &t : a) {
+    std::cout << t << "  ";
+  }
+  std::cout << std::endl;
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(0.7));
@@ -399,11 +405,137 @@ TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
 
 TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
   bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 0, 0.12, 2);
+  auto a = bspline_2d_after_->GetControlPoints();
+  std::cout << std::endl;
+  for (const auto &t : a) {
+    std::cout << t << "  ";
+  }
+  std::cout << std::endl;
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() - 2);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetKnot(5).get(), DoubleEq(0.7));
   ASSERT_THAT(bspline_2d_after_->GetNumberOfControlPoints(), bspline_2d_before_->GetNumberOfControlPoints() - 12);
+  double s = 50;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      std::array<ParamCoord, 2> param_coord{ParamCoord(i / s), ParamCoord(j / s)};
+      for (int k = 0; k < bspline_2d_after_->GetDimension(); ++k) {
+        ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {k})[0],
+                    DoubleNear(bspline_2d_before_->Evaluate(param_coord, {k})[0], 0.12));
+      }
+    }
+  }
+}
+
+class BSpline2DFig5_28b : public Test {  // NOLINT
+ public:
+  BSpline2DFig5_28b() {
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0, 1, 4})), baf::ControlPoint(std::vector<double>({1, 1, 4.5})),
+        baf::ControlPoint(std::vector<double>({2.5, 1, 3.5})), baf::ControlPoint(std::vector<double>({3.5, 1, 2.5})),
+        baf::ControlPoint(std::vector<double>({5, 1, 2})), baf::ControlPoint(std::vector<double>({6.5, 1, 2.5})),
+
+        baf::ControlPoint(std::vector<double>({0, 1.5, 3.9})), baf::ControlPoint(std::vector<double>({1, 1.5, 4.4})),
+        baf::ControlPoint(std::vector<double>({2.5, 1.5, 3.4})),
+        baf::ControlPoint(std::vector<double>({3.5, 1.5, 2.4})),
+        baf::ControlPoint(std::vector<double>({5, 1.5, 1.9})), baf::ControlPoint(std::vector<double>({6.5, 1.5, 2.4})),
+
+        baf::ControlPoint(std::vector<double>({0, 2, 3.8})), baf::ControlPoint(std::vector<double>({1, 2, 4.3})),
+        baf::ControlPoint(std::vector<double>({2.5, 2, 3.3})), baf::ControlPoint(std::vector<double>({3.5, 2, 2.3})),
+        baf::ControlPoint(std::vector<double>({5, 2, 1.8})), baf::ControlPoint(std::vector<double>({6.5, 2, 2.3})),
+
+        baf::ControlPoint(std::vector<double>({0, 2.5, 3.7})), baf::ControlPoint(std::vector<double>({1, 2.5, 4.2})),
+        baf::ControlPoint(std::vector<double>({2.5, 2.5, 3.2})),
+        baf::ControlPoint(std::vector<double>({3.5, 2.5, 2.2})),
+        baf::ControlPoint(std::vector<double>({5, 2.5, 1.7})), baf::ControlPoint(std::vector<double>({6.5, 2.5, 2.2})),
+
+        baf::ControlPoint(std::vector<double>({0, 3, 3.6})), baf::ControlPoint(std::vector<double>({1, 3, 4.1})),
+        baf::ControlPoint(std::vector<double>({2.5, 3, 3.1})), baf::ControlPoint(std::vector<double>({3.5, 3, 2.1})),
+        baf::ControlPoint(std::vector<double>({5, 3, 1.6})), baf::ControlPoint(std::vector<double>({6.5, 3, 2.1})),
+
+        baf::ControlPoint(std::vector<double>({0, 4, 3.3})), baf::ControlPoint(std::vector<double>({1, 4, 3.8})),
+        baf::ControlPoint(std::vector<double>({2.5, 4, 2.8})), baf::ControlPoint(std::vector<double>({3.5, 4, 1.8})),
+        baf::ControlPoint(std::vector<double>({5, 4, 1.3})), baf::ControlPoint(std::vector<double>({6.5, 4, 1.8})),
+
+        baf::ControlPoint(std::vector<double>({0, 5, 3})), baf::ControlPoint(std::vector<double>({1, 5, 3.5})),
+        baf::ControlPoint(std::vector<double>({2.5, 5, 2.5})), baf::ControlPoint(std::vector<double>({3.5, 5, 1.5})),
+        baf::ControlPoint(std::vector<double>({5, 5, 1})), baf::ControlPoint(std::vector<double>({6.5, 5, 1.5})),
+
+        baf::ControlPoint(std::vector<double>({0, 5.5, 3})), baf::ControlPoint(std::vector<double>({1, 5.5, 3.5})),
+        baf::ControlPoint(std::vector<double>({2.5, 5.5, 2.5})),
+        baf::ControlPoint(std::vector<double>({3.5, 5.5, 1.5})),
+        baf::ControlPoint(std::vector<double>({5, 5.5, 1})), baf::ControlPoint(std::vector<double>({6.5, 5.5, 1.5}))
+    };
+    std::array<Degree, 2> degree = {Degree{2}, Degree{3}};
+    KnotVectors<2> knot_vector_before = {
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.25}, ParamCoord{0.5},
+                             ParamCoord{0.75}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3},
+                             ParamCoord{0.3}, ParamCoord{0.3}, ParamCoord{0.7}, ParamCoord{1}, ParamCoord{1},
+                             ParamCoord{1}, ParamCoord{1}}))};
+    bspline_2d_before_ = std::make_shared<spl::BSpline<2>>(knot_vector_before, degree, control_points);
+    spl::BSpline<2> b_spline_after(*bspline_2d_before_);
+    bspline_2d_after_ = std::make_shared<spl::BSpline<2>>(b_spline_after);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<2>> bspline_2d_before_;
+  std::shared_ptr<spl::BSpline<2>> bspline_2d_after_;
+};
+
+TEST_F(BSpline2DFig5_28b, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
+  bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.075);
   auto a = bspline_2d_after_->GetControlPoints();
+  std::cout << std::endl;
+  for (const auto &t : a) {
+    std::cout << t << "  ";
+  }
+  std::cout << std::endl;
+  io::IRITWriter writer;
+  std::any spline1 = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_before_);
+  std::any spline2 = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_after_);
+  writer.WriteFile({spline1, spline2}, "surface_mirrored");
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
+              bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 1);
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetKnot(6).get(), DoubleEq(0.7));
+  ASSERT_THAT(bspline_2d_after_->GetNumberOfControlPoints(), bspline_2d_before_->GetNumberOfControlPoints() - 6);
+  double s = 50;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      std::array<ParamCoord, 2> param_coord{ParamCoord(i / s), ParamCoord(j / s)};
+      for (int k = 0; k < bspline_2d_after_->GetDimension(); ++k) {
+        ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {k})[0],
+                    DoubleNear(bspline_2d_before_->Evaluate(param_coord, {k})[0], 0.075));
+      }
+    }
+  }
+}
+
+TEST_F(BSpline2DFig5_28b, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
+  bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.12);
+  auto a = bspline_2d_after_->GetControlPoints();
+  std::cout << std::endl;
+  for (const auto &t : a) {
+    std::cout << t << "  ";
+  }
+  std::cout << std::endl;
+  bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.12);
+  a = bspline_2d_after_->GetControlPoints();
+  std::cout << std::endl;
+  for (const auto &t : a) {
+    std::cout << t << "  ";
+  }
+  std::cout << std::endl;
+  io::IRITWriter writer;
+  std::any spline1 = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_before_);
+  std::any spline2 = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_after_);
+  writer.WriteFile({spline1, spline2}, "surface_mirrored2");
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
+              bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 2);
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetKnot(5).get(), DoubleEq(0.7));
+  ASSERT_THAT(bspline_2d_after_->GetNumberOfControlPoints(), bspline_2d_before_->GetNumberOfControlPoints() - 12);
   double s = 50;
   for (int i = 0; i <= s; ++i) {
     for (int j = 0; j <= s; ++j) {

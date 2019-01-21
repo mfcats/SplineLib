@@ -159,14 +159,33 @@ class BSpline : public Spline<DIM> {
   void SetNewControlPoints(std::vector<double> temp, int last, int ii, int off, int dimension) {
     std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    std::array<int, DIM - 1> temp_index_handler_length;
+    for (int k = 0; k < DIM - 1; ++k) {
+      if (k < dimension) {
+        temp_index_handler_length[k] = point_handler_length[k];
+      } else if (k >= dimension) {
+        temp_index_handler_length[k] = point_handler_length[k + 1];
+      }
+    }
+    util::MultiIndexHandler<DIM - 1> temp_index_handler(temp_index_handler_length);
     std::vector<double> coordinates(GetDimension(), 0);
     int count = 0;
     for (int m = 0; m < point_handler.Get1DLength(); ++m, ++point_handler) {
       int k_index = point_handler.GetIndices()[dimension];
       int k = k_index - off;
       if (k >= 1 && k != ii && k < last - off + 2) {
+        std::array<int, DIM - 1> indices2;
+        for (int k = 0; k < DIM - 1; ++k) {
+          if (k < dimension) {
+            indices2[k] = point_handler[k];
+          } else if (k >= dimension) {
+            indices2[k] = point_handler[k + 1];
+          }
+        }
+        temp_index_handler.SetIndices(indices2);
+        int x = temp_index_handler.Get1DIndex();
         for (int l = 0; l < GetDimension(); ++l) {
-          coordinates[l] = temp[(count * (last - off + 2) + k) * GetDimension() + l];
+          coordinates[l] = temp[(x * (last - off + 2) + k) * GetDimension() + l];
         }
         if (k == last - off + 1) count++;
         auto indices = point_handler.GetIndices();
@@ -189,6 +208,15 @@ class BSpline : public Spline<DIM> {
                                                    int &off, int &i, int &j, int dimension) const {
     std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    std::array<int, DIM - 1> temp_index_handler_length;
+    for (int k = 0; k < DIM - 1; ++k) {
+      if (k < dimension) {
+        temp_index_handler_length[k] = point_handler_length[k];
+      } else if (k >= dimension) {
+        temp_index_handler_length[k] = point_handler_length[k + 1];
+      }
+    }
+    util::MultiIndexHandler<DIM - 1> temp_index_handler(temp_index_handler_length);
     int new_control_points =
         physical_space_->GetNumberOfControlPoints() / physical_space_->GetNumberOfPointsInEachDirection()[dimension];
     std::vector<double> temp(new_control_points * GetDimension() * (last - first + 3), 0);
@@ -197,26 +225,68 @@ class BSpline : public Spline<DIM> {
       if (point_handler.GetIndices()[dimension] == first - 1) {
         for (int k = 0; k < GetDimension(); ++k) {
           int index =
-              point_handler.Get1DIndex() / point_handler_length[dimension] * GetDimension() * (last - first + 3);
+              (point_handler.Get1DIndex() / point_handler_length[dimension]) * GetDimension() * (last - first + 3);
+          int test =
+              (point_handler.Get1DIndex() % point_handler_length[dimension]) * GetDimension() * (last - first + 3);
+          std::array<int, DIM - 1> indices;
+          for (int k = 0; k < DIM - 1; ++k) {
+            if (k < dimension) {
+              indices[k] = point_handler[k];
+            } else if (k >= dimension) {
+              indices[k] = point_handler[k + 1];
+            }
+          }
+          temp_index_handler.SetIndices(indices);
+          int x = temp_index_handler.Get1DIndex();
+          std::cout << point_handler.Get1DIndex() << "  " << point_handler_length[dimension] << "  " << index << "  "
+                    << test << "  " << x << std::endl;
+          index = x * GetDimension() * (last - first + 3);
           temp[index + k] = physical_space_->GetControlPoint(point_handler.GetIndices()).GetValue(k);
         }
       } else if (point_handler.GetIndices()[dimension] == last + 1) {
         for (int k = 0; k < GetDimension(); ++k) {
+          std::array<int, DIM - 1> indices;
+          for (int k = 0; k < DIM - 1; ++k) {
+            if (k < dimension) {
+              indices[k] = point_handler[k];
+            } else if (k >= dimension) {
+              indices[k] = point_handler[k + 1];
+            }
+          }
+          temp_index_handler.SetIndices(indices);
+          int x = temp_index_handler.Get1DIndex() * GetDimension() * (last - first + 3);
           int index =
               point_handler.Get1DIndex() / point_handler_length[dimension] * GetDimension() * (last - first + 3);
+          index = x;
           temp[index + (last + 1 - off) * GetDimension() + k] =
               physical_space_->GetControlPoint(point_handler.GetIndices()).GetValue(k);
         }
       }
     }
+    std::cout << std::endl;
+    for (const auto &H : temp) {
+      std::cout << H << "  ";
+    }
+    std::cout << std::endl;
     while (j - i > 0) {
       point_handler.SetIndices({0});
       for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
         if (point_handler.GetIndices()[dimension] == i) {
           double alfi = scaling[i - first];
           for (int k = 0; k < GetDimension(); ++k) {
+            std::array<int, DIM - 1> indices;
+            for (int k = 0; k < DIM - 1; ++k) {
+              if (k < dimension) {
+                indices[k] = point_handler[k];
+              } else if (k >= dimension) {
+                indices[k] = point_handler[k + 1];
+              }
+            }
+            temp_index_handler.SetIndices(indices);
+            int x = temp_index_handler.Get1DIndex() * GetDimension() * (last - first + 3);
             int index =
                 point_handler.Get1DIndex() / point_handler_length[dimension] * GetDimension() * (last - first + 3);
+            index = x;
             temp[index + (i - off) * GetDimension() + k] =
                 (physical_space_->GetControlPoint(point_handler.GetIndices()).GetValue(k)
                     - (1 - alfi) * temp[index + (i - off - 1) * GetDimension() + k]) / alfi;
@@ -225,8 +295,19 @@ class BSpline : public Spline<DIM> {
         if (point_handler.GetIndices()[dimension] == j) {
           double alfj = scaling[j - first];
           for (int k = 0; k < GetDimension(); ++k) {
+            std::array<int, DIM - 1> indices;
+            for (int k = 0; k < DIM - 1; ++k) {
+              if (k < dimension) {
+                indices[k] = point_handler[k];
+              } else if (k >= dimension) {
+                indices[k] = point_handler[k + 1];
+              }
+            }
+            temp_index_handler.SetIndices(indices);
+            int x = temp_index_handler.Get1DIndex() * GetDimension() * (last - first + 3);
             int index =
                 point_handler.Get1DIndex() / point_handler_length[dimension] * GetDimension() * (last - first + 3);
+            index = x;
             temp[index + (j - off) * GetDimension() + k] =
                 (physical_space_->GetControlPoint(point_handler.GetIndices()).GetValue(k)
                     - alfj * temp[index + (j - off + 1) * GetDimension() + k]) / (1 - alfj);
@@ -246,27 +327,40 @@ class BSpline : public Spline<DIM> {
     int new_control_points =
         physical_space_->GetNumberOfControlPoints() / physical_space_->GetNumberOfPointsInEachDirection()[dimension];
     size_t temp_length = temp.size() / new_control_points;
+    std::cout << std::endl;
+    for (const auto &H : temp) {
+      std::cout << H << "  ";
+    }
+    std::cout << std::endl;
     for (int l = 0; l < new_control_points; ++l, ++point_handler) {
       std::vector<double> current_temp(temp_length, 0);
       for (size_t k = 0; k < temp_length; ++k) {
+        auto x = temp[l * temp_length + k];
         current_temp[k] = temp[l * temp_length + k];
       }
       std::vector<double> temp1(GetDimension() + 1, 1);
       std::vector<double> temp2(GetDimension() + 1, 1);
       for (int k = 0; k < GetDimension(); ++k) {
+        auto x = current_temp[(i - off - 1) * GetDimension() + k];
+        auto y = current_temp[(j - off + 1) * GetDimension() + k];
         temp1[k] = current_temp[(i - off - 1) * GetDimension() + k];
         temp2[k] = current_temp[(j - off + 1) * GetDimension() + k];
       }
+      auto a = util::VectorUtils<double>::ComputeDistance(temp1, temp2);
       if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
         for (int k = 0; k < GetDimension(); ++k) {
           auto indices = point_handler.GetIndices();
           indices[dimension] = i;
+          auto x = physical_space_->GetControlPoint(indices).GetValue(k);
+          auto y = alfi * current_temp[(i - off + 1) * GetDimension() + k]
+              + (1 - alfi) * current_temp[(i - off - 1) * GetDimension() + k];
           temp1[k] = physical_space_->GetControlPoint(indices).GetValue(k);
           temp2[k] = alfi * current_temp[(i - off + 1) * GetDimension() + k]
               + (1 - alfi) * current_temp[(i - off - 1) * GetDimension() + k];
         }
+        auto b = util::VectorUtils<double>::ComputeDistance(temp1, temp2);
         if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
-          return false;
+//          return false;
         }
       }
     }
