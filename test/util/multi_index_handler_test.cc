@@ -100,3 +100,9 @@ TEST_F(MultiHandler3D, ReturnsDifferenceIndex0And1And4AfterAdding1DIndex7) { // 
 TEST_F(MultiHandler3D, ReturnsCorrectLengthOf60) { // NOLINT
   ASSERT_THAT(multiIndexHandler3D->Get1DLength(), Eq(60));
 }
+
+TEST_F(MultiHandler3D, ReturnsCorrectLengthAfterExtractingDimension1) { // NOLINT
+  std::array<int, 3> indices = {2, 1, 3};
+  multiIndexHandler3D->SetIndices(indices);
+  ASSERT_THAT(multiIndexHandler3D->ExtractDimension(1), Eq(14));
+}
