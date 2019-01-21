@@ -381,12 +381,6 @@ class BSpline2DFig5_28 : public Test {  // NOLINT
 
 TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
   bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 0, 0.075);
-  auto a = bspline_2d_after_->GetControlPoints();
-  std::cout << std::endl;
-  for (const auto &t : a) {
-    std::cout << t << "  ";
-  }
-  std::cout << std::endl;
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(0.7));
@@ -405,12 +399,6 @@ TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
 
 TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
   bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 0, 0.12, 2);
-  auto a = bspline_2d_after_->GetControlPoints();
-  std::cout << std::endl;
-  for (const auto &t : a) {
-    std::cout << t << "  ";
-  }
-  std::cout << std::endl;
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() - 2);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetKnot(5).get(), DoubleEq(0.7));
@@ -487,16 +475,6 @@ class BSpline2DFig5_28b : public Test {  // NOLINT
 
 TEST_F(BSpline2DFig5_28b, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
   bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.075);
-  auto a = bspline_2d_after_->GetControlPoints();
-  std::cout << std::endl;
-  for (const auto &t : a) {
-    std::cout << t << "  ";
-  }
-  std::cout << std::endl;
-  io::IRITWriter writer;
-  std::any spline1 = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_before_);
-  std::any spline2 = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_after_);
-  writer.WriteFile({spline1, spline2}, "surface_mirrored");
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 1);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetKnot(6).get(), DoubleEq(0.7));
@@ -514,24 +492,7 @@ TEST_F(BSpline2DFig5_28b, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
 }
 
 TEST_F(BSpline2DFig5_28b, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
-  bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.12);
-  auto a = bspline_2d_after_->GetControlPoints();
-  std::cout << std::endl;
-  for (const auto &t : a) {
-    std::cout << t << "  ";
-  }
-  std::cout << std::endl;
-  bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.12);
-  a = bspline_2d_after_->GetControlPoints();
-  std::cout << std::endl;
-  for (const auto &t : a) {
-    std::cout << t << "  ";
-  }
-  std::cout << std::endl;
-  io::IRITWriter writer;
-  std::any spline1 = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_before_);
-  std::any spline2 = std::make_any<std::shared_ptr<spl::BSpline<2>>>(bspline_2d_after_);
-  writer.WriteFile({spline1, spline2}, "surface_mirrored2");
+  bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.12, 2);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 2);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetKnot(5).get(), DoubleEq(0.7));
