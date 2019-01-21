@@ -508,3 +508,266 @@ TEST_F(BSpline2DFig5_28b, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
     }
   }
 }
+
+class BSpline3DForKnotRemoval : public Test {  // NOLINT
+ public:
+  BSpline3DForKnotRemoval() {
+    std::array<Degree, 3> degree = {Degree{2}, Degree{2}, Degree{1}};
+    KnotVectors<3> knot_vector_before = {
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.3},
+                             ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                             ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0, 1, 4})), baf::ControlPoint(std::vector<double>({0, 1.5, 3.9})),
+        baf::ControlPoint(std::vector<double>({0, 2, 3.8})), baf::ControlPoint(std::vector<double>({0, 2.5, 3.7})),
+        baf::ControlPoint(std::vector<double>({0, 3, 3.6})),
+
+        baf::ControlPoint(std::vector<double>({1, 1, 4.5})), baf::ControlPoint(std::vector<double>({1, 1.5, 4.4})),
+        baf::ControlPoint(std::vector<double>({1, 2, 4.3})), baf::ControlPoint(std::vector<double>({1, 2.5, 4.2})),
+        baf::ControlPoint(std::vector<double>({1, 3, 4.1})),
+
+        baf::ControlPoint(std::vector<double>({2.5, 1, 3.5})), baf::ControlPoint(std::vector<double>({2.5, 1.5, 3.4})),
+        baf::ControlPoint(std::vector<double>({2.5, 2, 3.3})), baf::ControlPoint(std::vector<double>({2.5, 2.5, 3.2})),
+        baf::ControlPoint(std::vector<double>({2.5, 3, 3.1})),
+
+        baf::ControlPoint(std::vector<double>({0, 1, 6})), baf::ControlPoint(std::vector<double>({0, 1.5, 5.9})),
+        baf::ControlPoint(std::vector<double>({0, 2, 5.8})), baf::ControlPoint(std::vector<double>({0, 2.5, 5.7})),
+        baf::ControlPoint(std::vector<double>({0, 3, 5.6})),
+
+        baf::ControlPoint(std::vector<double>({1, 1, 6.5})), baf::ControlPoint(std::vector<double>({1, 1.5, 6.4})),
+        baf::ControlPoint(std::vector<double>({1, 2, 6.3})), baf::ControlPoint(std::vector<double>({1, 2.5, 6.2})),
+        baf::ControlPoint(std::vector<double>({1, 3, 6.1})),
+
+        baf::ControlPoint(std::vector<double>({2.5, 1, 5.5})), baf::ControlPoint(std::vector<double>({2.5, 1.5, 5.4})),
+        baf::ControlPoint(std::vector<double>({2.5, 2, 5.3})), baf::ControlPoint(std::vector<double>({2.5, 2.5, 5.2})),
+        baf::ControlPoint(std::vector<double>({2.5, 3, 5.1}))
+    };
+    bspline_3d_before_ = std::make_shared<spl::BSpline<3>>(knot_vector_before, degree, control_points);
+    spl::BSpline<3> b_spline_after(*bspline_3d_before_);
+    bspline_3d_after_ = std::make_shared<spl::BSpline<3>>(b_spline_after);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<3>> bspline_3d_before_;
+  std::shared_ptr<spl::BSpline<3>> bspline_3d_after_;
+};
+
+TEST_F(BSpline3DForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
+  bspline_3d_after_->RemoveKnot(ParamCoord(0.3), 0, 0.21);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              bspline_3d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(0)->GetKnot(5).get(), DoubleEq(1));
+  ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 6);
+  double s = 20;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      for (int k = 0; k <= s; ++k) {
+        std::array<ParamCoord, 3> param_coord{ParamCoord(i / s), ParamCoord(j / s), ParamCoord(k / s)};
+        for (int l = 0; l < bspline_3d_after_->GetDimension(); ++l) {
+          ASSERT_THAT(bspline_3d_after_->Evaluate(param_coord, {l})[0],
+                      DoubleNear(bspline_3d_before_->Evaluate(param_coord, {l})[0], 0.21));
+        }
+      }
+    }
+  }
+}
+
+TEST_F(BSpline3DForKnotRemoval, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
+  bspline_3d_after_->RemoveKnot(ParamCoord(0.3), 0, 0.21, 2);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              bspline_3d_before_->GetKnotVector(0)->GetNumberOfKnots() - 2);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(0)->GetKnot(4).get(), DoubleEq(1));
+  ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 12);
+  double s = 20;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      for (int k = 0; k <= s; ++k) {
+        std::array<ParamCoord, 3> param_coord{ParamCoord(i / s), ParamCoord(j / s), ParamCoord(k / s)};
+        for (int l = 0; l < bspline_3d_after_->GetDimension(); ++l) {
+          ASSERT_THAT(bspline_3d_after_->Evaluate(param_coord, {l})[0],
+                      DoubleNear(bspline_3d_before_->Evaluate(param_coord, {l})[0], 0.29));
+        }
+      }
+    }
+  }
+}
+
+class ABSpline3DForKnotRemoval : public Test {  // NOLINT
+ public:
+  ABSpline3DForKnotRemoval() {
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({0, 1, 4})),
+        baf::ControlPoint(std::vector<double>({1, 1, 4.5})),
+        baf::ControlPoint(std::vector<double>({2.5, 1, 3.5})),
+
+        baf::ControlPoint(std::vector<double>({0, 1.5, 3.9})),
+        baf::ControlPoint(std::vector<double>({1, 1.5, 4.4})),
+        baf::ControlPoint(std::vector<double>({2.5, 1.5, 3.4})),
+
+        baf::ControlPoint(std::vector<double>({0, 2, 3.8})),
+        baf::ControlPoint(std::vector<double>({1, 2, 4.3})),
+        baf::ControlPoint(std::vector<double>({2.5, 2, 3.3})),
+
+        baf::ControlPoint(std::vector<double>({0, 2.5, 3.7})),
+        baf::ControlPoint(std::vector<double>({1, 2.5, 4.2})),
+        baf::ControlPoint(std::vector<double>({2.5, 2.5, 3.2})),
+
+        baf::ControlPoint(std::vector<double>({0, 3, 3.6})),
+        baf::ControlPoint(std::vector<double>({1, 3, 4.1})),
+        baf::ControlPoint(std::vector<double>({2.5, 3, 3.1})),
+
+        baf::ControlPoint(std::vector<double>({0, 1, 6})),
+        baf::ControlPoint(std::vector<double>({1, 1, 6.5})),
+        baf::ControlPoint(std::vector<double>({2.5, 1, 5.5})),
+
+        baf::ControlPoint(std::vector<double>({0, 1.5, 5.9})),
+        baf::ControlPoint(std::vector<double>({1, 1.5, 6.4})),
+        baf::ControlPoint(std::vector<double>({2.5, 1.5, 5.4})),
+
+        baf::ControlPoint(std::vector<double>({0, 2, 5.8})),
+        baf::ControlPoint(std::vector<double>({1, 2, 6.3})),
+        baf::ControlPoint(std::vector<double>({2.5, 2, 5.3})),
+
+        baf::ControlPoint(std::vector<double>({0, 2.5, 5.7})),
+        baf::ControlPoint(std::vector<double>({1, 2.5, 6.2})),
+        baf::ControlPoint(std::vector<double>({2.5, 2.5, 5.2})),
+
+        baf::ControlPoint(std::vector<double>({0, 3, 5.6})),
+        baf::ControlPoint(std::vector<double>({1, 3, 6.1})),
+        baf::ControlPoint(std::vector<double>({2.5, 3, 5.1}))
+    };
+    std::array<Degree, 3> degree = {Degree{2}, Degree{2}, Degree{1}};
+    KnotVectors<3> knot_vector_before = {
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                             ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.3},
+                             ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+    bspline_3d_before_ = std::make_shared<spl::BSpline<3>>(knot_vector_before, degree, control_points);
+    spl::BSpline<3> b_spline_after(*bspline_3d_before_);
+    bspline_3d_after_ = std::make_shared<spl::BSpline<3>>(b_spline_after);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<3>> bspline_3d_before_;
+  std::shared_ptr<spl::BSpline<3>> bspline_3d_after_;
+};
+
+TEST_F(ABSpline3DForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
+  bspline_3d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.21);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(1)->GetNumberOfKnots(),
+              bspline_3d_before_->GetKnotVector(1)->GetNumberOfKnots() - 1);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(1)->GetKnot(5).get(), DoubleEq(1));
+  ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 6);
+  double s = 50;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      for (int k = 0; k <= s; ++k) {
+        std::array<ParamCoord, 3> param_coord{ParamCoord(i / s), ParamCoord(j / s), ParamCoord(k / s)};
+        for (int l = 0; l < bspline_3d_after_->GetDimension(); ++l) {
+          ASSERT_THAT(bspline_3d_after_->Evaluate(param_coord, {l})[0],
+                      DoubleNear(bspline_3d_before_->Evaluate(param_coord, {l})[0], 0.21));
+        }
+      }
+    }
+  }
+}
+
+TEST_F(ABSpline3DForKnotRemoval, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
+  bspline_3d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.21, 2);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(1)->GetNumberOfKnots(),
+              bspline_3d_before_->GetKnotVector(1)->GetNumberOfKnots() - 2);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(1)->GetKnot(4).get(), DoubleEq(1));
+  ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 12);
+  double s = 20;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      for (int k = 0; k <= s; ++k) {
+        std::array<ParamCoord, 3> param_coord{ParamCoord(i / s), ParamCoord(j / s), ParamCoord(k / s)};
+        for (int l = 0; l < bspline_3d_after_->GetDimension(); ++l) {
+          ASSERT_THAT(bspline_3d_after_->Evaluate(param_coord, {l})[0],
+                      DoubleNear(bspline_3d_before_->Evaluate(param_coord, {l})[0], 0.281));
+        }
+      }
+    }
+  }
+}
+
+class A3DBSplineToRemoveKnotInDirection2 : public Test {  // NOLINT
+ public:
+  A3DBSplineToRemoveKnotInDirection2() {
+    std::array<Degree, 3> degree = {Degree{2}, Degree{1}, Degree{2}};
+    ParamCoord zero = ParamCoord{0};
+    ParamCoord one = ParamCoord{1};
+    KnotVectors<3> knot_vector_before = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector({zero, zero, zero, one, one, one})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector({zero, zero, one, one})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({zero, zero, zero, ParamCoord{0.3}, ParamCoord{0.3}, one, one, one}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint({0, 1, 4}), baf::ControlPoint({1, 1, 4.5}), baf::ControlPoint({2.5, 1, 3.5}),
+        baf::ControlPoint({0, 1, 6}), baf::ControlPoint({1, 1, 6.5}), baf::ControlPoint({2.5, 1, 5.5}),
+
+        baf::ControlPoint({0, 1.5, 3.9}), baf::ControlPoint({1, 1.5, 4.4}), baf::ControlPoint({2.5, 1.5, 3.4}),
+        baf::ControlPoint({0, 1.5, 5.9}), baf::ControlPoint({1, 1.5, 6.4}), baf::ControlPoint({2.5, 1.5, 5.4}),
+
+        baf::ControlPoint({0, 2, 3.8}), baf::ControlPoint({1, 2, 4.3}), baf::ControlPoint({2.5, 2, 3.3}),
+        baf::ControlPoint({0, 2, 5.8}), baf::ControlPoint({1, 2, 6.3}), baf::ControlPoint({2.5, 2, 5.3}),
+
+        baf::ControlPoint({0, 2.5, 3.7}), baf::ControlPoint({1, 2.5, 4.2}), baf::ControlPoint({2.5, 2.5, 3.2}),
+        baf::ControlPoint({0, 2.5, 5.7}), baf::ControlPoint({1, 2.5, 6.2}), baf::ControlPoint({2.5, 2.5, 5.2}),
+
+        baf::ControlPoint({0, 3, 3.6}), baf::ControlPoint({1, 3, 4.1}), baf::ControlPoint({2.5, 3, 3.1}),
+        baf::ControlPoint({0, 3, 5.6}), baf::ControlPoint({1, 3, 6.1}), baf::ControlPoint({2.5, 3, 5.1})
+    };
+    bspline_3d_before_ = std::make_shared<spl::BSpline<3>>(knot_vector_before, degree, control_points);
+    spl::BSpline<3> b_spline_after(*bspline_3d_before_);
+    bspline_3d_after_ = std::make_shared<spl::BSpline<3>>(b_spline_after);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<3>> bspline_3d_before_;
+  std::shared_ptr<spl::BSpline<3>> bspline_3d_after_;
+};
+
+TEST_F(A3DBSplineToRemoveKnotInDirection2, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
+  bspline_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 0.21);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
+              bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 1);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(5).get(), DoubleEq(1));
+  ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 6);
+  util::MultiIndexHandler<3> coord_handler({21, 21, 21});
+  for (int i = 0; i < coord_handler.Get1DLength(); ++i) {
+    std::array<ParamCoord, 3> param_coord{
+        ParamCoord(coord_handler[0] / 20.0), ParamCoord(coord_handler[1] / 20.0), ParamCoord(coord_handler[2] / 20.0)};
+    for (int j = 0; j < bspline_3d_after_->GetDimension(); ++j) {
+      ASSERT_THAT(bspline_3d_after_->Evaluate(param_coord, {j})[0],
+                  DoubleNear(bspline_3d_before_->Evaluate(param_coord, {j})[0], 0.21));
+    }
+  }
+}
+
+TEST_F(A3DBSplineToRemoveKnotInDirection2, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
+  bspline_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 0.21, 2);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
+              bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 2);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(4).get(), DoubleEq(1));
+  ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 12);
+  util::MultiIndexHandler<3> coord_handler({21, 21, 21});
+  for (int i = 0; i < coord_handler.Get1DLength(); ++i) {
+    std::array<ParamCoord, 3> param_coord{
+        ParamCoord(coord_handler[0] / 20.0), ParamCoord(coord_handler[1] / 20.0), ParamCoord(coord_handler[2] / 20.0)};
+    for (int j = 0; j < bspline_3d_after_->GetDimension(); ++j) {
+      ASSERT_THAT(bspline_3d_after_->Evaluate(param_coord, {j})[0],
+                  DoubleNear(bspline_3d_before_->Evaluate(param_coord, {j})[0], 0.281));
+    }
+  }
+}
