@@ -137,3 +137,8 @@ void baf::KnotVector::InsertKnot(const ParamCoord &param_coord) {
   KnotSpan knot_span = GetKnotSpan(param_coord);
   knots_.insert(knots_.begin() + knot_span.get() + 1, param_coord);
 }
+
+void baf::KnotVector::RemoveKnot(const ParamCoord &param_coord) {
+  KnotSpan knot_span = GetKnotSpan(param_coord);
+  knots_.erase(knots_.begin() + knot_span.get());
+}
