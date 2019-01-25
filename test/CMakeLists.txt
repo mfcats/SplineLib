@@ -55,7 +55,7 @@ set(TEST_SOURCES
         iga/solution_vtk_writer_examples.cc
         iga/elm/element_test.cc
         iga/elm/element_generator_test.cc
-        iga/bdf_handler_test.cc)
+        iga/bdf_handler_test.cc
         iga/solution_vtk_writer_test.cc
         iga/solution_vtk_writer_examples.cc)
 
