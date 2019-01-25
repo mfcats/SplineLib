@@ -110,15 +110,17 @@ class NURBS : public Spline<DIM> {
     std::vector<double> temp_w = GetTemporaryNewWeights(scaling, first, last, off, i, j);
     std::vector<double> temp = GetTemporaryNewControlPoints(scaling, temp_w, first, last, off, i, j);
     i += (j - i) / 2, j -= (j - i) / 2;
-    if (!IsKnotRemovable(scaling[i - off - 1], temp, temp_w, tolerance, i, j, off)) {
+    if (!IsKnotRemovable(scaling[i - off - 1], temp, temp_w, tolerance, i, j, off, dimension)) {
       return false;
     }
     SetNewControlPoints(temp, last, i - off, off, dimension);
     SetNewWeights(temp_w, last, i - off, off, dimension);
     std::array<int, DIM> maximum_point_index = physical_space_->GetMaximumPointIndexInEachDirection();
     --maximum_point_index[dimension];
-    physical_space_->RemoveControlPoints(physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension]);
-    physical_space_->RemoveWeights(physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension]);
+    physical_space_->RemoveControlPoints(
+        physical_space_->GetNumberOfControlPoints() / physical_space_->GetNumberOfPointsInEachDirection()[dimension]);
+    physical_space_->RemoveWeights(
+        physical_space_->GetNumberOfControlPoints() / physical_space_->GetNumberOfPointsInEachDirection()[dimension]);
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
   }
@@ -294,25 +296,29 @@ class NURBS : public Spline<DIM> {
   }
 
   void SetNewControlPoints(std::vector<double> temp, int last, int ii, int off, int dimension) {
+    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
+    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
     std::vector<double> coordinates(GetDimension(), 0);
-    int index = 0;
-    for (int k = 1; k * GetDimension() < static_cast<int>(temp.size()); ++k) {
-      if (k != ii) {
+    for (int m = 0; m < point_handler.Get1DLength(); ++m, ++point_handler) {
+      int k = point_handler[dimension];
+      if (k - off >= 1 && k - off != ii && k < last + 2) {
+        int index = (point_handler.ExtractDimension(dimension) * (last - off + 2) + k - off) * GetDimension();
         for (int l = 0; l < GetDimension(); ++l) {
-          coordinates[l] = temp[k * GetDimension() + l];
+          coordinates[l] = temp[index + l];
         }
-        index = k < ii ? k + off : k + off - 1;
+        auto indices = point_handler.GetIndices();
+        indices[dimension] = k - off < ii ? k : k - 1;
         baf::ControlPoint cp(coordinates);
-        physical_space_->SetControlPoint2({index}, cp, dimension);
+        physical_space_->SetControlPoint2(indices, cp, dimension);
       }
-    }
-    for (int k = last + 1; k < physical_space_->GetNumberOfControlPoints(); ++k) {
-      for (int l = 0; l < GetDimension(); ++l) {
-        coordinates[l] = physical_space_->GetControlPoints()[k * GetDimension() + l];
+      if ((k <= off && k - off < 1)
+          || (k >= last + 1 && k < physical_space_->GetNumberOfPointsInEachDirection()[dimension])) {
+        auto indices = point_handler.GetIndices();
+        indices[dimension] = k <= off ? k : k - 1;
+        physical_space_->SetControlPoint2(indices,
+                                          physical_space_->GetControlPoint(point_handler.GetIndices()),
+                                          dimension);
       }
-      index = k - 1;
-      baf::ControlPoint cp(coordinates);
-      physical_space_->SetControlPoint2({index}, cp, dimension);
     }
   }
 
@@ -371,28 +377,35 @@ class NURBS : public Spline<DIM> {
   }
 
   bool IsKnotRemovable(double alfi, std::vector<double> temp, std::vector<double> temp_w, double tolerance,
-                       int i, int j, int off) const {
-    std::vector<double> temp1(GetDimension() + 1, temp_w[i - off - 1]);
-    std::vector<double> temp2(GetDimension() + 1, temp_w[j - off + 1]);
-    for (int k = 0; k < GetDimension(); ++k) {
-      temp1[k] = temp[(i - off - 1) * GetDimension() + k] * temp_w[i - off - 1];
-      temp2[k] = temp[(j - off + 1) * GetDimension() + k] * temp_w[j - off + 1];
-    }
-    if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
-      return true;
-    } else {
-      temp1[GetDimension()] = physical_space_->GetWeights()[i];
-      temp2[GetDimension()] = alfi * temp_w[i - off + 1] + (1 - alfi) * temp_w[i - off - 1];
+                       int i, int j, int off, int dimension) const {
+    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
+    point_handler_length[dimension] = 0;
+    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    int new_control_points =
+        physical_space_->GetNumberOfControlPoints() / physical_space_->GetNumberOfPointsInEachDirection()[dimension];
+    size_t temp_length = temp.size() / new_control_points;
+    for (int l = 0; l < new_control_points; ++l, ++point_handler) {
+      size_t offset = l * temp_length;
+      std::vector<double> temp1(GetDimension() + 1, temp_w[offset + i - off - 1]);
+      std::vector<double> temp2(GetDimension() + 1, temp_w[offset + j - off + 1]);
       for (int k = 0; k < GetDimension(); ++k) {
-        temp1[k] = physical_space_->GetControlPoints()[i * GetDimension() + k] * physical_space_->GetWeights()[i];
-        temp2[k] = (alfi * temp[(i - off + 1) * GetDimension() + k] * temp_w[i - off + 1]
-            + (1 - alfi) * temp[(i - off - 1) * GetDimension() + k] * temp_w[i - off - 1]);
+        temp1[k] = temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[offset + i - off - 1];
+        temp2[k] = temp[offset + (j - off + 1) * GetDimension() + k] * temp_w[offset + j - off + 1];
       }
-      if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
-        return true;
+      if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
+        for (int k = 0; k < GetDimension(); ++k) {
+          auto indices = point_handler.GetIndices();
+          indices[dimension] = i;
+          temp1[k] = physical_space_->GetHomogenousControlPoint(indices).GetValue(k);
+          temp2[k] = alfi * temp[offset + (i - off + 1) * GetDimension() + k] * temp_w[offset + i - off + 1]
+              + (1 - alfi) * temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[offset + i - off + 1];
+        }
+        if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
+//          return false;
+        }
       }
     }
-    return true;  // false;
+    return true;
   }
 
   std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_;
