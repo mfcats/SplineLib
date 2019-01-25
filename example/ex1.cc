@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <memory>
 #include <vector>
+#include <any>
 
 #include "knot_vector.h"
 #include "control_point.h"

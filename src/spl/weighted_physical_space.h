@@ -66,17 +66,30 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     --this->number_of_points_[dimension];
   }
 
+  void SetWeight2(std::array<int, DIM> indices, double weight, int dimension) {
+    --this->number_of_points_[dimension];
+    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);
+    point_handler.SetIndices(indices);
+    int first = point_handler.Get1DIndex();
+    weights_[first] = weight;
+    ++this->number_of_points_[dimension];
+  }
+
   void AddWeights(int number) {
     for (int i = 0; i < number; ++i) {
       weights_.emplace_back(0.0);
     }
   }
 
+  void RemoveWeights(int number) {
+    weights_.erase(weights_.end() - number - 1, weights_.end() - 1);
+  }
+
   std::vector<double> GetWeights() const override {
     return weights_;
   }
 
-  std::vector<double> GetSplittedWeights(int first, int length, int dimension) {
+  std::vector<double> GetDividedWeights(int first, int length, int dimension) {
     std::vector<double> weights;
     std::array<int, DIM> point_handler_length = this->GetNumberOfPointsInEachDirection();
     point_handler_length[dimension] = length;

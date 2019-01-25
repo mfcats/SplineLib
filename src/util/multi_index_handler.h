@@ -22,8 +22,11 @@ template<int DIM>
 class MultiIndexHandler {
  public:
   MultiIndexHandler() = default;
-  explicit MultiIndexHandler(const std::array<int, DIM> &multi_index_length) : multi_index_length_(
-      multi_index_length), current_multi_index_value_({0}) {}
+  explicit MultiIndexHandler(const std::array<int, DIM> &multi_index_length) : multi_index_length_(multi_index_length) {
+    for (auto &index : current_multi_index_value_) {
+      index = 0;
+    }
+  }
 
   int operator[](int i) {
 #ifdef DEBUG
@@ -35,7 +38,7 @@ class MultiIndexHandler {
 
   MultiIndexHandler &operator++() {
     for (int i = 0; i < DIM; ++i) {
-      if (current_multi_index_value_[i] == multi_index_length_[i] - 1) {
+      if (current_multi_index_value_[i] == multi_index_length_[i] - 1 || multi_index_length_[i] == 0) {
         current_multi_index_value_[i] = 0;
       } else {
         current_multi_index_value_[i]++;
@@ -103,13 +106,24 @@ class MultiIndexHandler {
     return indices;
   }
 
-  int Get1DIndex() {
+  int Get1DIndex() const {
     int index_1d = 0;
-    int temp;
     for (int i = 0; i < DIM; ++i) {
-      temp = current_multi_index_value_[i];
+      int temp = current_multi_index_value_[i];
       for (int j = i - 1; j >= 0; --j) {
         temp *= multi_index_length_[j];
+      }
+      index_1d += temp;
+    }
+    return Get1DIndex(multi_index_length_, current_multi_index_value_);
+  }
+
+  int Get1DIndex(const std::array<int, DIM> &length, const std::array<int, DIM> &indices) const {
+    int index_1d = 0;
+    for (int i = 0; i < DIM; ++i) {
+      int temp = indices[i];
+      for (int j = i - 1; j >= 0; --j) {
+        temp *= length[j];
       }
       index_1d += temp;
     }
@@ -122,6 +136,23 @@ class MultiIndexHandler {
       length *= multi_index_length_[i];
     }
     return length;
+  }
+
+  int ExtractDimension(int dimension) const {
+    std::array<int, DIM> indices, length;
+    for (int m = 0; m < DIM; ++m) {
+      if (m < dimension) {
+        indices[m] = current_multi_index_value_[m];
+        length[m] = multi_index_length_[m];
+      } else if (m == DIM - 1) {
+        indices[m] = 0;
+        length[m] = 0;
+      } else if (m >= dimension) {
+        indices[m] = current_multi_index_value_[m + 1];
+        length[m] = multi_index_length_[m + 1];
+      }
+    }
+    return Get1DIndex(length, indices);
   }
 
  private:

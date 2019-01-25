@@ -40,3 +40,6 @@ cmake-build-*
 # mac related files
 .DS_Store
 ._.DS_Store
+
+# example build
+example/build/*

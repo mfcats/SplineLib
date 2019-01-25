@@ -18,11 +18,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <algorithm>
 #include <array>
 #include <functional>
+#include <iostream>
 #include <vector>
 
 #include "b_spline_generator.h"
 #include "spline.h"
 #include "spline_generator.h"
+#include "vector_utils.h"
 
 namespace spl {
 template<int DIM>
@@ -85,18 +87,32 @@ class BSpline : public Spline<DIM> {
     physical_space_->IncrementNumberOfPoints(dimension);
   }
 
+  bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
+    int off = first - 1, i = first, j = last;
+    std::vector<double> temp = GetTemporaryNewControlPoints(scaling, first, last, off, i, j, dimension);
+    i += (j - i) / 2, j -= (j - i) / 2;
+    if (!IsKnotRemovable(scaling[i - off - 1], temp, tolerance, i, j, off, dimension)) {
+      return false;
+    }
+    SetNewControlPoints(temp, last, i - off, off, dimension);
+    physical_space_->RemoveControlPoints(
+        physical_space_->GetNumberOfControlPoints() / physical_space_->GetNumberOfPointsInEachDirection()[dimension]);
+    physical_space_->DecrementNumberOfPoints(dimension);
+    return true;
+  }
+
   std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> SudivideSpline(ParamCoord param_coord, int dimension) {
     this->InsertKnot(param_coord, dimension,
                      this->GetDegree(dimension).get() + 1
                          - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
     std::array<KnotVectors<DIM>, 2>
-        new_knot_vectors = this->parameter_space_->GetSplittedKnotVectors(param_coord, dimension);
+        new_knot_vectors = this->parameter_space_->GetDividedKnotVectors(param_coord, dimension);
     std::array<Degree, DIM> degrees = this->parameter_space_->GetDegrees();
     std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> subdivided_splines;
     int first = 0;
     for (int i = 0; i < 2; ++i) {
       int length = new_knot_vectors[i][dimension]->GetNumberOfKnots() - degrees[dimension].get() - 1;
-      std::vector<baf::ControlPoint> points = physical_space_->GetSplittedControlPoints(first, length, dimension);
+      std::vector<baf::ControlPoint> points = physical_space_->GetDividedControlPoints(first, length, dimension);
       spl::BSpline<DIM> spline(new_knot_vectors[i], degrees, points);
       subdivided_splines[i] = std::make_shared<spl::BSpline<DIM>>(spline);
       first = length;
@@ -139,6 +155,106 @@ class BSpline : public Spline<DIM> {
     } else {
       return physical_space_->GetControlPoint(indices);
     }
+  }
+
+  void SetNewControlPoints(std::vector<double> temp, int last, int ii, int off, int dimension) {
+    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
+    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    std::vector<double> coordinates(GetDimension(), 0);
+    for (int m = 0; m < point_handler.Get1DLength(); ++m, ++point_handler) {
+      int k = point_handler[dimension];
+      if (k - off >= 1 && k - off != ii && k < last + 2) {
+        int index = (point_handler.ExtractDimension(dimension) * (last - off + 2) + k - off) * GetDimension();
+        for (int l = 0; l < GetDimension(); ++l) {
+          coordinates[l] = temp[index + l];
+        }
+        auto indices = point_handler.GetIndices();
+        indices[dimension] = k - off < ii ? k : k - 1;
+        baf::ControlPoint cp(coordinates);
+        physical_space_->SetControlPoint2(indices, cp, dimension);
+      }
+      if ((k <= off && k - off < 1)
+          || (k >= last + 1 && k < physical_space_->GetNumberOfPointsInEachDirection()[dimension])) {
+        auto indices = point_handler.GetIndices();
+        indices[dimension] = k <= off ? k : k - 1;
+        physical_space_->SetControlPoint2(indices,
+                                          physical_space_->GetControlPoint(point_handler.GetIndices()),
+                                          dimension);
+      }
+    }
+  }
+
+  std::vector<double> GetTemporaryNewControlPoints(std::vector<double> scaling, int first, int last,
+                                                   int off, int i, int j, int dimension) const {
+    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
+    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    int new_control_points =
+        physical_space_->GetNumberOfControlPoints() / physical_space_->GetNumberOfPointsInEachDirection()[dimension];
+    std::vector<double> temp(new_control_points * GetDimension() * (last - first + 3), 0);
+    for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
+      if (point_handler[dimension] == first - 1 || point_handler[dimension] == last + 1) {
+        for (int k = 0; k < GetDimension(); ++k) {
+          int index = point_handler.ExtractDimension(dimension) * GetDimension() * (last - first + 3);
+          index += point_handler[dimension] == first - 1 ? k : (last + 1 - off) * GetDimension() + k;
+          temp[index] = physical_space_->GetControlPoint(point_handler.GetIndices()).GetValue(k);
+        }
+      }
+    }
+    while (j - i > 0) {
+      point_handler.SetIndices({0});
+      for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
+        if (point_handler[dimension] == i) {
+          double alfi = scaling[i - first];
+          for (int k = 0; k < GetDimension(); ++k) {
+            int index = point_handler.ExtractDimension(dimension) * GetDimension() * (last - first + 3);
+            temp[index + (i - off) * GetDimension() + k] =
+                (physical_space_->GetControlPoint(point_handler.GetIndices()).GetValue(k)
+                    - (1 - alfi) * temp[index + (i - off - 1) * GetDimension() + k]) / alfi;
+          }
+        }
+        if (point_handler[dimension] == j) {
+          double alfj = scaling[j - first];
+          for (int k = 0; k < GetDimension(); ++k) {
+            int index = point_handler.ExtractDimension(dimension) * GetDimension() * (last - first + 3);
+            temp[index + (j - off) * GetDimension() + k] =
+                (physical_space_->GetControlPoint(point_handler.GetIndices()).GetValue(k)
+                    - alfj * temp[index + (j - off + 1) * GetDimension() + k]) / (1 - alfj);
+          }
+        }
+      }
+      ++i, --j;
+    }
+    return temp;
+  }
+
+  bool IsKnotRemovable(double alfi, std::vector<double> temp, double tolerance,
+                       int i, int j, int off, int dimension) const {
+    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
+    point_handler_length[dimension] = 0;
+    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    int new_control_points =
+        physical_space_->GetNumberOfControlPoints() / physical_space_->GetNumberOfPointsInEachDirection()[dimension];
+    size_t temp_length = temp.size() / new_control_points;
+    for (int l = 0; l < new_control_points; ++l, ++point_handler) {
+      std::vector<double> temp1(GetDimension() + 1, 1), temp2(GetDimension() + 1, 1);
+      for (int k = 0; k < GetDimension(); ++k) {
+        temp1[k] = temp[l * temp_length + (i - off - 1) * GetDimension() + k];
+        temp2[k] = temp[l * temp_length + (j - off + 1) * GetDimension() + k];
+      }
+      if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
+        for (int k = 0; k < GetDimension(); ++k) {
+          auto indices = point_handler.GetIndices();
+          indices[dimension] = i;
+          temp1[k] = physical_space_->GetControlPoint(indices).GetValue(k);
+          temp2[k] = alfi * temp[l * temp_length + (i - off + 1) * GetDimension() + k]
+              + (1 - alfi) * temp[l * temp_length + (i - off - 1) * GetDimension() + k];
+        }
+        if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   std::shared_ptr<PhysicalSpace<DIM>> physical_space_;

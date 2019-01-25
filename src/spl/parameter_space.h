@@ -96,7 +96,7 @@ class ParameterSpace {
     return degree_;
   }
 
-  std::shared_ptr<baf::KnotVector> GetKnotVector(int direction) const {
+  virtual std::shared_ptr<baf::KnotVector> GetKnotVector(int direction) const {
     return knot_vector_[direction];
   }
 
@@ -156,7 +156,6 @@ class ParameterSpace {
     return GetKnotVector(direction)->GetLastKnot().get() - GetKnotVector(direction)->GetKnot(0).get();
   }
 
-
   void InsertKnot(ParamCoord knot, int dimension) {
     knot_vector_[dimension]->InsertKnot(knot);
     for (int i = 0; i < DIM; i++) {
@@ -170,7 +169,20 @@ class ParameterSpace {
     }
   }
 
-  std::array<KnotVectors<DIM>, 2> GetSplittedKnotVectors(ParamCoord param_coord, int dimension) const {
+  void RemoveKnot(ParamCoord knot, int dimension) {
+    knot_vector_[dimension]->RemoveKnot(knot);
+    for (int i = 0; i < DIM; i++) {
+      basis_functions_[i].erase(basis_functions_[i].begin(), basis_functions_[i].end());
+      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
+      for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
+        basis_functions_[i].emplace_back(baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]),
+                                                                                  KnotSpan{j},
+                                                                                  degree_[i]));
+      }
+    }
+  }
+
+  std::array<KnotVectors<DIM>, 2> GetDividedKnotVectors(ParamCoord param_coord, int dimension) const {
     auto knot_span = GetKnotVector(dimension)->GetKnotSpan(param_coord).get();
     auto knots = GetKnots();
     std::array<int, 2> first_knot = {0, knot_span - GetDegree(dimension).get()};

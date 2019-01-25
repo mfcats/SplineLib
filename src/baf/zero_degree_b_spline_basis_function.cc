@@ -16,14 +16,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "numeric_settings.h"
 
-baf::ZeroDegBSplBasFnc::ZeroDegBSplBasFnc(const baf::KnotVector &knot_vector,
-                                          const KnotSpan &start_of_support) :
-    BasisFunction(knot_vector, Degree{0}, start_of_support),
-    start_knot_(knot_vector.GetKnot(static_cast<size_t>(start_of_support.get()))),
-    end_knot_(knot_vector.GetKnot(static_cast<size_t>(start_of_support.get()) + 1)) {}
+baf::ZeroDegBSplBasFnc::ZeroDegBSplBasFnc(const baf::KnotVector &knot_vector, const KnotSpan &start_of_support) :
+    BasisFunction(knot_vector, Degree{0}, start_of_support) {}
 
-double baf::ZeroDegBSplBasFnc::EvaluateOnSupport(const ParamCoord /* param_coord*/&) const {
-  return util::NumericSettings<double>::AreEqual(start_knot_.get(), end_knot_.get()) ? 0.0 : 1.0;
+double baf::ZeroDegBSplBasFnc::EvaluateOnSupport(const ParamCoord /*param_coord*/&) const {
+  return 1.0;
 }
 
 double baf::ZeroDegBSplBasFnc::EvaluateDerivativeOnSupport(const ParamCoord /*param_coord*/&,
