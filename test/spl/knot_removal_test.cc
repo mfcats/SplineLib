@@ -379,8 +379,7 @@ class NURBSFig5_27 : public Test {  // NOLINT
     std::array<Degree, 1> degree = {Degree{3}};
     KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.5},
-                         ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.7}, ParamCoord{0.7}, ParamCoord{1},
-                         ParamCoord{1}, ParamCoord{1},
+                         ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.7}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1},
                          ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.1, 0.0})),
@@ -391,10 +390,9 @@ class NURBSFig5_27 : public Test {  // NOLINT
         baf::ControlPoint(std::vector<double>({3.5, 2.0})),
         baf::ControlPoint(std::vector<double>({4.0, 1.8})),
         baf::ControlPoint(std::vector<double>({4.5, 1.0})),
-        baf::ControlPoint(std::vector<double>({4.3, 0.0})),
         baf::ControlPoint(std::vector<double>({6.0, 0.0}))
     };
-    std::vector<double> weights = {1, 0.5, 2, 4, 1, 1, 2, 1, 1, 2};
+    std::vector<double> weights = {1, 0.95, 1.05, 1.5, 1, 1, 1.2, 1, 1.1};
     nurbs_1d_before_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
     spl::NURBS<1> nurbs_after(*nurbs_1d_before_);
     nurbs_1d_after_ = std::make_shared<spl::NURBS<1>>(nurbs_after);
@@ -406,52 +404,70 @@ class NURBSFig5_27 : public Test {  // NOLINT
 };
 
 TEST_F(NURBSFig5_27, RemovesKnot0_5Correctly) {  // NOLINT
-  nurbs_1d_after_->RemoveKnot(ParamCoord(0.5), 0, 0.9);
+  nurbs_1d_after_->RemoveKnot(ParamCoord(0.5), 0, 0.1);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               nurbs_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetKnot(7).get(), DoubleEq(0.7));
   ASSERT_THAT(nurbs_1d_after_->GetNumberOfControlPoints(), nurbs_1d_before_->GetNumberOfControlPoints() - 1);
 
-  io::IRITWriter writer;
-  std::any spline1 = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_1d_before_);
-  std::any spline2 = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_1d_after_);
-  writer.WriteFile({spline1, spline2}, "nurbs.itd");
-  io::VTKWriter vtkWriter;
-  vtkWriter.WriteFile({spline1, spline2}, "nurbs.vtk", {{50}, {50}});
   std::vector<baf::ControlPoint> new_control_points = {
       baf::ControlPoint(std::vector<double>({0.1, 0.0})),
+      baf::ControlPoint(std::vector<double>({0.0, 1.0})),
       baf::ControlPoint(std::vector<double>({1.0, 2.0})),
-      baf::ControlPoint(std::vector<double>({2.5, 124 / 55.0})),
-      baf::ControlPoint(std::vector<double>({3.7, 1.96})),
+      baf::ControlPoint(std::vector<double>({2.5, 2.25})),
+      baf::ControlPoint(std::vector<double>({3.5, 2})),
       baf::ControlPoint(std::vector<double>({4.0, 1.8})),
       baf::ControlPoint(std::vector<double>({4.5, 1.0})),
-      baf::ControlPoint(std::vector<double>({4.3, 0.0})),
       baf::ControlPoint(std::vector<double>({6.0, 0.0}))
   };
-  std::vector<double> new_weights = {1, 0.5, 2, 11.0 / 6.0, 5.0 / 6.0, 2, 1, 1, 2};
-  auto a = nurbs_1d_after_->GetControlPoints();
-  std::cout << std::endl;
-  for (const auto &u : a) {
-    std::cout << u << "  ";
-  }
-  std::cout << std::endl << std::endl;
-  auto b = nurbs_1d_after_->GetWeights();
-  for (const auto &p : b) {
-    std::cout << p << "  ";
-  }
-  std::cout << std::endl;
+  std::vector<double> new_weights = {1, 0.95, 1.05, 1.5, 1, 1.2, 1, 1.1};
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
-//      ASSERT_THAT(nurbs_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
+      ASSERT_THAT(nurbs_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
     }
-//    ASSERT_THAT(nurbs_1d_after_->GetWeight({i}), DoubleEq(new_weights[i]));
+    ASSERT_THAT(nurbs_1d_after_->GetWeight({i}), DoubleEq(new_weights[i]));
   }
   double s = 50.0;
   for (int i = 0; i <= s; ++i) {
     std::array<ParamCoord, 1> param_coord{ParamCoord(i / s)};
     ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {0})[0],
-                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {0})[0], 0.9));
+                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {0})[0], 0.1));
     ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {1})[0],
-                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {1})[0], 0.9));
+                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {1})[0], 0.1));
+  }
+}
+
+TEST_F(NURBSFig5_27, RemovesKnot0_5_and_0_3Correctly) {  // NOLINT
+  nurbs_1d_after_->RemoveKnot(ParamCoord(0.5), 0, 0.1);
+  nurbs_1d_after_->RemoveKnot(ParamCoord(0.3), 0, 0.32);
+  ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              nurbs_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 2);
+  ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetKnot(7).get(), DoubleEq(1));
+  ASSERT_THAT(nurbs_1d_after_->GetNumberOfControlPoints(), nurbs_1d_before_->GetNumberOfControlPoints() - 2);
+
+  std::vector<baf::ControlPoint> new_control_points = {
+      baf::ControlPoint(std::vector<double>({0.1, 0.0})),
+      baf::ControlPoint(std::vector<double>({-4.0 / 55.0, 19.0 / 11.0})),
+      baf::ControlPoint(std::vector<double>({2.1, 2.35})),
+      baf::ControlPoint(std::vector<double>({3.5, 2})),
+      baf::ControlPoint(std::vector<double>({4.0, 1.8})),
+      baf::ControlPoint(std::vector<double>({4.5, 1.0})),
+      baf::ControlPoint(std::vector<double>({6.0, 0.0}))
+  };
+  std::vector<double> new_weights = {1, 11.0 / 12.0, 1.875, 1, 1.2, 1, 1.1};
+  std::cout << std::endl;
+  for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
+    for (int j = 0; j < 2; ++j) {
+      ASSERT_THAT(nurbs_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
+    }
+    ASSERT_THAT(nurbs_1d_after_->GetWeight({i}), DoubleEq(new_weights[i]));
+  }
+  double s = 50.0;
+  for (int i = 0; i <= s; ++i) {
+    std::array<ParamCoord, 1> param_coord{ParamCoord(i / s)};
+    ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {0})[0],
+                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {0})[0], 0.32));
+    ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {1})[0],
+                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {1})[0], 0.32));
   }
 }

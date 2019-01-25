@@ -363,10 +363,6 @@ class NURBS : public Spline<DIM> {
     while (j - i > 0) {
       double alfi = scaling[i - first];
       double alfj = scaling[j - first];
-      auto a = physical_space_->GetWeights()[i];
-      auto b = physical_space_->GetWeights()[j];
-      auto c = temp[i - off - 1];
-      auto d = temp[j - off + 1];
       temp[i - off] = (physical_space_->GetWeights()[i] - (1 - alfi) * temp[i - off - 1]) / alfi;
       temp[j - off] = (physical_space_->GetWeights()[j] - alfj * temp[j - off + 1]) / (1 - alfj);
       ++i, --j;
@@ -378,16 +374,10 @@ class NURBS : public Spline<DIM> {
                        int i, int j, int off) const {
     std::vector<double> temp1(GetDimension() + 1, temp_w[i - off - 1]);
     std::vector<double> temp2(GetDimension() + 1, temp_w[j - off + 1]);
-    std::cout << std::endl;
-    for (const auto &t : temp) {
-      std::cout << t << "  ";
-    }
-    std::cout << std::endl;
     for (int k = 0; k < GetDimension(); ++k) {
       temp1[k] = temp[(i - off - 1) * GetDimension() + k] * temp_w[i - off - 1];
       temp2[k] = temp[(j - off + 1) * GetDimension() + k] * temp_w[j - off + 1];
     }
-    auto a = util::VectorUtils<double>::ComputeDistance(temp1, temp2);
     if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
       return true;
     } else {
@@ -398,7 +388,6 @@ class NURBS : public Spline<DIM> {
         temp2[k] = (alfi * temp[(i - off + 1) * GetDimension() + k] * temp_w[i - off + 1]
             + (1 - alfi) * temp[(i - off - 1) * GetDimension() + k] * temp_w[i - off - 1]);
       }
-      auto b = util::VectorUtils<double>::ComputeDistance(temp1, temp2);
       if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) <= tolerance) {
         return true;
       }
