@@ -96,8 +96,16 @@ class Spline {
     return parameter_space_->GetDegree(i);
   }
 
+  std::array<Degree, DIM> GetDegrees() const {
+    return parameter_space_->GetDegrees();
+  }
+
   std::shared_ptr<baf::KnotVector> GetKnotVector(int i) const {
     return parameter_space_->GetKnotVector(i);
+  }
+
+  std::array<std::shared_ptr<baf::KnotVector>, DIM> GetKnotVectors() const {
+    return parameter_space_->GetKnotVectors();
   }
 
   double GetKnotVectorRange(int direction) const {

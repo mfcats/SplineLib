@@ -22,21 +22,13 @@ using testing::DoubleEq;
 
 class A1DElement : public Test {
  public:
-  A1DElement() : element(1, {ParamCoord(0.5), ParamCoord(1.0)}) {}
+  A1DElement() : element({ParamCoord(0.5), ParamCoord(1.0)}) {}
 
  protected:
   iga::elm::Element element;
 };
 
-TEST_F(A1DElement, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(element.GetDimension(), 1);
-}
-
-TEST_F(A1DElement, ReturnsCorrectNumberOfNodes) { // NOLINT
-  ASSERT_THAT(element.GetNumberOfNodes(), 2);
-}
-
 TEST_F(A1DElement, ReturnsCorrectNode) { // NOLINT
-  ASSERT_THAT(element.GetNode(0).get(), DoubleEq(0.5));
-  ASSERT_THAT(element.GetNode(1).get(), DoubleEq(1.0));
+  ASSERT_THAT(element.GetLowerBound().get(), DoubleEq(0.5));
+  ASSERT_THAT(element.GetUpperBound().get(), DoubleEq(1.0));
 }
