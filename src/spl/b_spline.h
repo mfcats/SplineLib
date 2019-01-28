@@ -93,13 +93,13 @@ class BSpline : public Spline<DIM> {
 
   bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
     int off = first - 1, i = first, j = last;
-    std::vector<double> temp = GetTemporaryNewControlPoints(scaling, first, last, off, i, j, dimension);
+    std::vector<double> temp = GetTempNewControlPoints(scaling, off, last, i, j, dimension);
     i += (j - i) / 2, j -= (j - i) / 2;
     if (!IsKnotRemovable(scaling[i - off - 1], temp, tolerance, i, j, off, dimension)) {
       return false;
     }
     SetNewControlPoints(temp, last, i - off, off, dimension);
-    physical_space_->RemoveControlPoints(GetNumberOfControlPoints() / GetPointsPerDirection());
+    physical_space_->RemoveControlPoints(GetNumberOfControlPoints() / GetPointsPerDirection()[dimension]);
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
   }
@@ -159,7 +159,7 @@ class BSpline : public Spline<DIM> {
     }
   }
 
-  void SetNewControlPoints(std::vector<double> temp, int last, int ii, int off, int dimension) {
+  void SetNewControlPoints(const std::vector<double> &temp, int last, int ii, int off, int dimension) {
     std::array<int, DIM> point_handler_length = GetPointsPerDirection();
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
     std::vector<double> coordinates(GetDimension(), 0);
@@ -172,8 +172,7 @@ class BSpline : public Spline<DIM> {
         }
         auto indices = point_handler.GetIndices();
         indices[dimension] = k - off < ii ? k : k - 1;
-        baf::ControlPoint cp(coordinates);
-        physical_space_->SetControlPoint2(indices, cp, dimension);
+        physical_space_->SetControlPoint2(indices, baf::ControlPoint(coordinates), dimension);
       }
       if ((k <= off && k - off < 1) || (k >= last + 1 && k < GetPointsPerDirection()[dimension])) {
         auto indices = point_handler.GetIndices();
@@ -183,34 +182,34 @@ class BSpline : public Spline<DIM> {
     }
   }
 
-  std::vector<double> GetTemporaryNewControlPoints(std::vector<double> scaling, int first, int last,
-                                                   int off, int i, int j, int dimension) const {
+  std::vector<double> GetTempNewControlPoints(const std::vector<double> &scaling, int off, int last,
+                                              int i, int j, int dimension) const {
     std::array<int, DIM> point_handler_length = GetPointsPerDirection();
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
     int new_points = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
-    std::vector<double> temp(new_points * GetDimension() * (last - first + 3), 0);
+    std::vector<double> temp(new_points * GetDimension() * (last - off + 2), 0);
     for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
-      if (point_handler[dimension] == first - 1 || point_handler[dimension] == last + 1) {
-        int diff = point_handler[dimension] == first - 1 ? off : last + 1;
-        SetTemporaryNewControlPoint(temp, point_handler, 1, diff, off, last, dimension, 0);
+      if (point_handler[dimension] == off || point_handler[dimension] == last + 1) {
+        int diff = point_handler[dimension] == off ? off : last + 1;
+        SetTempNewControlPoint(point_handler, temp, 1, diff, off, last, dimension, 0);
       }
     }
     for (; j - i > 0; ++i, --j) {
       point_handler.SetIndices({0});
       for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
         if (point_handler[dimension] == i) {
-          SetTemporaryNewControlPoint(temp, point_handler, scaling[i - first], i, off, last, dimension, -1);
+          SetTempNewControlPoint(point_handler, temp, scaling[i - off - 1], i, off, last, dimension, -1);
         }
         if (point_handler[dimension] == j) {
-          SetTemporaryNewControlPoint(temp, point_handler, 1 - scaling[j - first], j, off, last, dimension, 1);
+          SetTempNewControlPoint(point_handler, temp, 1 - scaling[j - off - 1], j, off, last, dimension, 1);
         }
       }
     }
     return temp;
   }
 
-  void SetTemporaryNewControlPoint(std::vector<double> &temp, util::MultiIndexHandler<DIM> point_handler, double alpha,
-                                   int x, int off, int last, int dimension, int shift) const {
+  void SetTempNewControlPoint(const util::MultiIndexHandler<DIM> &point_handler, std::vector<double> &temp,
+                              double alpha, int x, int off, int last, int dimension, int shift) const {
     int index = point_handler.ExtractDimension(dimension) * (last - off + 2);
     for (int k = 0; k < GetDimension(); ++k) {
       temp[(index + x - off) * GetDimension() + k] = (GetControlPoint(point_handler.GetIndices(), k)
@@ -218,7 +217,7 @@ class BSpline : public Spline<DIM> {
     }
   }
 
-  bool IsKnotRemovable(double alfi, std::vector<double> temp, double tolerance,
+  bool IsKnotRemovable(double alfi, const std::vector<double> &temp, double tolerance,
                        int i, int j, int off, int dimension) const {
     std::array<int, DIM> point_handler_length = GetPointsPerDirection();
     point_handler_length[dimension] = 0;
