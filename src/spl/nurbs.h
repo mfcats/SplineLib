@@ -52,11 +52,11 @@ class NURBS : public Spline<DIM> {
 
   virtual ~NURBS() = default;
 
-  int GetNumberOfControlPoints() override {
+  int GetNumberOfControlPoints() const override {
     return physical_space_->GetNumberOfControlPoints();
   }
 
-  std::array<int, DIM> GetPointsPerDirection() override {
+  std::array<int, DIM> GetPointsPerDirection() const override {
     return physical_space_->GetNumberOfPointsInEachDirection();
   }
 
@@ -64,15 +64,15 @@ class NURBS : public Spline<DIM> {
     return physical_space_->GetDimension();
   }
 
-  double GetControlPoint(std::array<int, DIM> indices, int dimension) override {
+  double GetControlPoint(std::array<int, DIM> indices, int dimension) const override {
     return physical_space_->GetControlPoint(indices).GetValue(dimension);
   }
 
-  baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) {
+  baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const override {
     return physical_space_->GetControlPoint(indices);
   }
 
-  double GetWeight(std::array<int, DIM> indices) {
+  double GetWeight(std::array<int, DIM> indices) const {
     return physical_space_->GetWeight(indices);
   }
 
@@ -338,44 +338,6 @@ class NURBS : public Spline<DIM> {
         physical_space_->SetWeight2(indices, physical_space_->GetWeight(point_handler.GetIndices()), dimension);
       }
     }
-
-//    int index = 0;
-//    for (int k = 1; k < static_cast<int>(temp.size()); ++k) {
-//      if (k != ii) {
-//        index = k < ii ? k + off : k + off - 1;
-//        physical_space_->SetWeight2({index}, temp[k], dimension);
-//      }
-//    }
-//    for (int k = last + 1; k < physical_space_->GetNumberOfControlPoints(); ++k) {
-//      index = k - 1;
-//      physical_space_->SetWeight2({index}, physical_space_->GetWeights()[k], dimension);
-//    }
-//
-//
-//    std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
-//    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
-//    std::vector<double> coordinates(GetDimension(), 0);
-//    for (int m = 0; m < point_handler.Get1DLength(); ++m, ++point_handler) {
-//      int k = point_handler[dimension];
-//      if (k - off >= 1 && k - off != ii && k < last + 2) {
-//        int index = (point_handler.ExtractDimension(dimension) * (last - off + 2) + k - off) * GetDimension();
-//        for (int l = 0; l < GetDimension(); ++l) {
-//          coordinates[l] = temp[index + l];
-//        }
-//        auto indices = point_handler.GetIndices();
-//        indices[dimension] = k - off < ii ? k : k - 1;
-//        baf::ControlPoint cp(coordinates);
-//        physical_space_->SetControlPoint2(indices, cp, dimension);
-//      }
-//      if ((k <= off && k - off < 1)
-//          || (k >= last + 1 && k < physical_space_->GetNumberOfPointsInEachDirection()[dimension])) {
-//        auto indices = point_handler.GetIndices();
-//        indices[dimension] = k <= off ? k : k - 1;
-//        physical_space_->SetControlPoint2(indices,
-//                                          physical_space_->GetControlPoint(point_handler.GetIndices()),
-//                                          dimension);
-//      }
-//    }
   }
 
   std::vector<double> GetTemporaryNewControlPoints(std::vector<double> scaling, std::vector<double> temp_w, int first,
@@ -468,12 +430,13 @@ class NURBS : public Spline<DIM> {
     size_t temp_length = temp.size() / new_control_points;
     for (int l = 0; l < new_control_points; ++l, ++point_handler) {
       size_t offset = l * temp_length;
-      std::vector<double> temp1(GetDimension() + 1, temp_w[offset + i - off - 1]);
-      std::vector<double> temp2(GetDimension() + 1, temp_w[offset + j - off + 1]);
+      std::vector<double> temp1(static_cast<unsigned long>(GetDimension() + 1), temp_w[offset + i - off - 1]);
+      std::vector<double> temp2(static_cast<unsigned long>(GetDimension() + 1), temp_w[offset + j - off + 1]);
       for (int k = 0; k < GetDimension(); ++k) {
         temp1[k] = temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[offset + i - off - 1];
         temp2[k] = temp[offset + (j - off + 1) * GetDimension() + k] * temp_w[offset + j - off + 1];
       }
+      std::cout << util::VectorUtils<double>::ComputeDistance(temp1, temp2) << std::endl;
       if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
         for (int k = 0; k < GetDimension(); ++k) {
           auto indices = point_handler.GetIndices();
@@ -482,6 +445,7 @@ class NURBS : public Spline<DIM> {
           temp2[k] = alfi * temp[offset + (i - off + 1) * GetDimension() + k] * temp_w[offset + i - off + 1]
               + (1 - alfi) * temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[offset + i - off + 1];
         }
+        std::cout << util::VectorUtils<double>::ComputeDistance(temp1, temp2) << std::endl;
         if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
 //          return false;
         }
