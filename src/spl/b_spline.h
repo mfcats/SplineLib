@@ -188,32 +188,34 @@ class BSpline : public Spline<DIM> {
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
     int new_points = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     std::vector<double> temp(new_points * GetDimension() * (last - off + 2), 0);
+    std::shared_ptr<std::vector<double>> temp_ptr = std::make_shared<std::vector<double>>(temp);
     for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
       if (point_handler[dimension] == off || point_handler[dimension] == last + 1) {
         int diff = point_handler[dimension] == off ? off : last + 1;
-        SetTempNewControlPoint(point_handler, temp, 1, diff, off, last, dimension, 0);
+        SetTempNewControlPoint(point_handler, temp_ptr, 1, diff, off, last, dimension, 0);
       }
     }
     for (; j - i > 0; ++i, --j) {
       point_handler.SetIndices({0});
       for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
         if (point_handler[dimension] == i) {
-          SetTempNewControlPoint(point_handler, temp, scaling[i - off - 1], i, off, last, dimension, -1);
+          SetTempNewControlPoint(point_handler, temp_ptr, scaling[i - off - 1], i, off, last, dimension, -1);
         }
         if (point_handler[dimension] == j) {
-          SetTempNewControlPoint(point_handler, temp, 1 - scaling[j - off - 1], j, off, last, dimension, 1);
+          SetTempNewControlPoint(point_handler, temp_ptr, 1 - scaling[j - off - 1], j, off, last, dimension, 1);
         }
       }
     }
-    return temp;
+    return *temp_ptr;
   }
 
-  void SetTempNewControlPoint(const util::MultiIndexHandler<DIM> &point_handler, std::vector<double> &temp,
+  void SetTempNewControlPoint(const util::MultiIndexHandler<DIM> &point_handler,
+                              const std::shared_ptr<std::vector<double>> &temp_ptr,
                               double alpha, int x, int off, int last, int dimension, int shift) const {
     int index = point_handler.ExtractDimension(dimension) * (last - off + 2);
     for (int k = 0; k < GetDimension(); ++k) {
-      temp[(index + x - off) * GetDimension() + k] = (GetControlPoint(point_handler.GetIndices(), k)
-          - (1 - alpha) * temp[(index + x - off + shift) * GetDimension() + k]) / alpha;
+      (*temp_ptr)[(index + x - off) * GetDimension() + k] = (GetControlPoint(point_handler.GetIndices(), k)
+          - (1 - alpha) * (*temp_ptr)[(index + x - off + shift) * GetDimension() + k]) / alpha;
     }
   }
 
