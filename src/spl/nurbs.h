@@ -403,7 +403,8 @@ class NURBS : public Spline<DIM> {
             int index = point_handler.ExtractDimension(dimension) * GetDimension() * (last - first + 3);
             temp[index + (i - off) * GetDimension() + k] =
                 (physical_space_->GetHomogenousControlPoint(point_handler.GetIndices()).GetValue(k)
-                    - (1 - alfi) * temp[index + (i - off - 1) * GetDimension() + k]) / alfi / temp_w[index + i - off];
+                    - (1 - alfi) * temp[index + (i - off - 1) * GetDimension() + k]) / alfi
+                    / temp_w[index / GetDimension() + i - off];
           }
         }
         if (point_handler[dimension] == j) {
@@ -412,7 +413,8 @@ class NURBS : public Spline<DIM> {
             int index = point_handler.ExtractDimension(dimension) * GetDimension() * (last - first + 3);
             temp[index + (j - off) * GetDimension() + k] =
                 (physical_space_->GetHomogenousControlPoint(point_handler.GetIndices()).GetValue(k)
-                    - alfj * temp[index + (j - off + 1) * GetDimension() + k]) / (1 - alfj) / temp_w[index + j - off];
+                    - alfj * temp[index + (j - off + 1) * GetDimension() + k]) / (1 - alfj)
+                    / temp_w[index / GetDimension() + j - off];
           }
         }
       }
@@ -453,18 +455,6 @@ class NURBS : public Spline<DIM> {
       }
       ++i, --j;
     }
-
-//    std::vector<double> temp(last + 2 - off, 0);
-//    temp[0] = physical_space_->GetWeights()[first - 1];
-//    temp[last + 1 - off] = physical_space_->GetWeights()[last + 1];
-//    while (j - i > 0) {
-//      double alfi = scaling[i - first];
-//      double alfj = scaling[j - first];
-//      temp[i - off] = (physical_space_->GetWeights()[i] - (1 - alfi) * temp[i - off - 1]) / alfi;
-//      temp[j - off] = (physical_space_->GetWeights()[j] - alfj * temp[j - off + 1]) / (1 - alfj);
-//      ++i, --j;
-//    }
-
     return temp;
   }
 

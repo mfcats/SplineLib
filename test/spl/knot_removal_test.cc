@@ -221,7 +221,7 @@ TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetKnot(6).get(), DoubleEq(0.7));
   ASSERT_THAT(bspline_2d_after_->GetNumberOfControlPoints(), bspline_2d_before_->GetNumberOfControlPoints() - 6);
   util::MultiIndexHandler<2> coord_handler({31, 31});
-  for (int i = 0; i < coord_handler.Get1DLength(); ++i) {
+  for (int i = 0; i < coord_handler.Get1DLength(); ++i, coord_handler++) {
     std::array<ParamCoord, 2> param_coord{ParamCoord(coord_handler[0] / 30.0), ParamCoord(coord_handler[1] / 30.0)};
     for (int j = 0; j < bspline_2d_after_->GetDimension(); ++j, coord_handler++) {
       ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {j})[0],
@@ -289,7 +289,7 @@ TEST_F(A3DBSplineToRemoveKnotInDirection2, RemovesKnot0_3CorrectlyOneTime) {  //
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(5).get(), DoubleEq(1));
   ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 6);
   util::MultiIndexHandler<3> coord_handler({21, 21, 21});
-  for (int i = 0; i < coord_handler.Get1DLength(); ++i) {
+  for (int i = 0; i < coord_handler.Get1DLength(); ++i, coord_handler++) {
     std::array<ParamCoord, 3> param_coord{
         ParamCoord(coord_handler[0] / 20.0), ParamCoord(coord_handler[1] / 20.0), ParamCoord(coord_handler[2] / 20.0)};
     for (int j = 0; j < bspline_3d_after_->GetDimension(); ++j) {
@@ -306,7 +306,7 @@ TEST_F(A3DBSplineToRemoveKnotInDirection2, RemovesKnot0_3CorrectlyTwoTimes) {  /
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(4).get(), DoubleEq(1));
   ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 12);
   util::MultiIndexHandler<3> coord_handler({21, 21, 21});
-  for (int i = 0; i < coord_handler.Get1DLength(); ++i) {
+  for (int i = 0; i < coord_handler.Get1DLength(); ++i, coord_handler++) {
     std::array<ParamCoord, 3> param_coord{
         ParamCoord(coord_handler[0] / 20.0), ParamCoord(coord_handler[1] / 20.0), ParamCoord(coord_handler[2] / 20.0)};
     for (int j = 0; j < bspline_3d_after_->GetDimension(); ++j) {
@@ -455,7 +455,6 @@ TEST_F(NURBSFig5_27, RemovesKnot0_5_and_0_3Correctly) {  // NOLINT
       baf::ControlPoint(std::vector<double>({6.0, 0.0}))
   };
   std::vector<double> new_weights = {1, 11.0 / 12.0, 1.875, 1, 1.2, 1, 1.1};
-  std::cout << std::endl;
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
       ASSERT_THAT(nurbs_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
@@ -515,7 +514,7 @@ class NURBS2DFig5_28 : public Test {  // NOLINT
                                    1.01, 1.03, 1.04, 1.02, 1.01, 1,
                                    1, 0.95, 0.98, 1, 1.05, 1.01,
                                    0.95, 0.9, 0.8, 0.9, 1, 0.95,
-                                   0.9, 1, 1.1, 1.2, 1, 0.8};
+                                   0.9, 1, 1.01, 1.02, 1, 0.8};
     nurbs_2d_before_ = std::make_shared<spl::NURBS<2>>(knot_vector_before, degree, control_points, weights);
     spl::NURBS<2> nurbs_after(*nurbs_2d_before_);
     nurbs_2d_after_ = std::make_shared<spl::NURBS<2>>(nurbs_after);
@@ -537,7 +536,7 @@ TEST_F(NURBS2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
     std::array<ParamCoord, 2> param_coord{ParamCoord(coord_handler[0] / 30.0), ParamCoord(coord_handler[1] / 30.0)};
     for (int j = 0; j < nurbs_2d_after_->GetDimension(); ++j) {
       ASSERT_THAT(nurbs_2d_after_->Evaluate(param_coord, {j})[0],
-                  DoubleNear(nurbs_2d_before_->Evaluate(param_coord, {j})[0], 0.075));
+                  DoubleNear(nurbs_2d_before_->Evaluate(param_coord, {j})[0], 0.072));
     }
   }
 }
@@ -548,35 +547,12 @@ TEST_F(NURBS2DFig5_28, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
               nurbs_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 2);
   ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetKnot(5).get(), DoubleEq(0.7));
   ASSERT_THAT(nurbs_2d_after_->GetNumberOfControlPoints(), nurbs_2d_before_->GetNumberOfControlPoints() - 12);
-
-  io::IRITWriter writer;
-  std::any spline1 = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_2d_before_);
-  std::any spline2 = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_2d_after_);
-  writer.WriteFile({spline1, spline2}, "nurbs_2d_2.itd");
-
-  auto a = nurbs_2d_after_->GetControlPoints();
-  std::cout << std::endl;
-  for (const auto &h : a) {
-    std::cout << h << "  ";
-  }
-  std::cout << std::endl;
-  auto b = nurbs_2d_after_->GetWeights();
-  for (const auto &h : b) {
-    std::cout << h << "  ";
-  }
-  std::cout << std::endl;
-
   util::MultiIndexHandler<2> coord_handler({31, 31});
-  double max = 0;
   for (int i = 0; i < coord_handler.Get1DLength(); ++i, coord_handler++) {
     std::array<ParamCoord, 2> param_coord{ParamCoord(coord_handler[0] / 30.0), ParamCoord(coord_handler[1] / 30.0)};
     for (int j = 0; j < nurbs_2d_after_->GetDimension(); ++j) {
       ASSERT_THAT(nurbs_2d_after_->Evaluate(param_coord, {j})[0],
-                  DoubleNear(nurbs_2d_before_->Evaluate(param_coord, {j})[0], 2.11));
-      double
-          delta = nurbs_2d_after_->Evaluate(param_coord, {j})[0] - nurbs_2d_before_->Evaluate(param_coord, {j})[0];
-      if (abs(delta) > max) max = abs(delta);
+                  DoubleNear(nurbs_2d_before_->Evaluate(param_coord, {j})[0], 0.11));
     }
   }
-  std::cout << std::endl << max << std::endl;
 }
