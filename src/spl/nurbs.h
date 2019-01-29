@@ -99,8 +99,9 @@ class NURBS : public Spline<DIM> {
       std::array<int, DIM> indices = point_handler.GetIndices();
       baf::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling, current_point, first, last);
       double new_weight = GetNewWeight(indices, dimension, scaling, current_point, first, last);
-      physical_space_->SetControlPoint(indices, new_control_point, dimension);
-      physical_space_->SetWeight(indices, new_weight, dimension);
+      physical_space_->SetControlPoint(indices, new_control_point, dimension,
+                                       util::NumericOperations<int>::increment);
+      physical_space_->SetWeight(indices, new_weight, dimension, util::NumericOperations<int>::increment);
     }
     physical_space_->IncrementNumberOfPoints(dimension);
   }
@@ -294,22 +295,21 @@ class NURBS : public Spline<DIM> {
   void SetNewControlPoints(const std::vector<double> &temp, int last, int ii, int off, int dimension) {
     std::array<int, DIM> point_handler_length = physical_space_->GetNumberOfPointsInEachDirection();
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
-    std::vector<double> coordinates(GetDimension(), 0);
     for (int m = 0; m < point_handler.Get1DLength(); ++m, ++point_handler) {
       int k = point_handler[dimension];
       if (k - off >= 1 && k - off != ii && k < last + 2) {
         int index = (point_handler.ExtractDimension(dimension) * (last - off + 2) + k - off) * GetDimension();
-        for (int l = 0; l < GetDimension(); ++l) {
-          coordinates[l] = temp[index + l];
-        }
+        std::vector<double> coordinates(temp.begin() + index, temp.begin() + index + GetDimension());
         auto indices = point_handler.GetIndices();
         indices[dimension] = k - off < ii ? k : k - 1;
-        physical_space_->SetControlPoint2(indices, baf::ControlPoint(coordinates), dimension);
+        physical_space_->SetControlPoint(indices, baf::ControlPoint(coordinates), dimension,
+                                         util::NumericOperations<int>::decrement);
       }
       if ((k <= off && k - off < 1) || (k >= last + 1 && k < GetPointsPerDirection()[dimension])) {
         auto indices = point_handler.GetIndices();
         indices[dimension] = k <= off ? k : k - 1;
-        physical_space_->SetControlPoint2(indices, GetControlPoint(point_handler.GetIndices()), dimension);
+        physical_space_->SetControlPoint(indices, GetControlPoint(point_handler.GetIndices()), dimension,
+                                         util::NumericOperations<int>::decrement);
       }
     }
   }
@@ -323,12 +323,13 @@ class NURBS : public Spline<DIM> {
         int index = point_handler.ExtractDimension(dimension) * (last - off + 2) + k - off;
         auto indices = point_handler.GetIndices();
         indices[dimension] = k - off < ii ? k : k - 1;
-        physical_space_->SetWeight2(indices, temp[index], dimension);
+        physical_space_->SetWeight(indices, temp[index], dimension, util::NumericOperations<int>::decrement);
       }
       if ((k <= off && k - off < 1) || (k >= last + 1 && k < GetPointsPerDirection()[dimension])) {
         auto indices = point_handler.GetIndices();
         indices[dimension] = k <= off ? k : k - 1;
-        physical_space_->SetWeight2(indices, GetWeight(point_handler.GetIndices()), dimension);
+        physical_space_->SetWeight(indices, GetWeight(point_handler.GetIndices()), dimension,
+                                   util::NumericOperations<int>::decrement);
       }
     }
   }
@@ -427,7 +428,7 @@ class NURBS : public Spline<DIM> {
           indices[dimension] = i;
           temp1[k] = physical_space_->GetHomogenousControlPoint(indices).GetValue(k);
           temp2[k] = alfi * temp[offset + (i - off + 1) * GetDimension() + k] * temp_w[offset + i - off + 1]
-              + (1 - alfi) * temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[offset + i - off + 1];
+              + (1 - alfi) * temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[offset + i - off - 1];
         }
         if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
 //          return false;

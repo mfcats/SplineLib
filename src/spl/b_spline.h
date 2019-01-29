@@ -22,6 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "b_spline_generator.h"
+#include "numeric_operations.h"
 #include "spline.h"
 #include "spline_generator.h"
 #include "vector_utils.h"
@@ -86,7 +87,8 @@ class BSpline : public Spline<DIM> {
       auto current_point = point_handler.GetIndices()[dimension];
       std::array<int, DIM> indices = point_handler.GetIndices();
       baf::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling, current_point, first, last);
-      physical_space_->SetControlPoint(indices, new_control_point, dimension);
+      physical_space_->SetControlPoint(indices, new_control_point, dimension,
+                                       util::NumericOperations<int>::increment);
     }
     physical_space_->IncrementNumberOfPoints(dimension);
   }
@@ -162,22 +164,21 @@ class BSpline : public Spline<DIM> {
   void SetNewControlPoints(const std::vector<double> &temp, int last, int ii, int off, int dimension) {
     std::array<int, DIM> point_handler_length = GetPointsPerDirection();
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
-    std::vector<double> coordinates(GetDimension(), 0);
     for (int m = 0; m < point_handler.Get1DLength(); ++m, ++point_handler) {
       int k = point_handler[dimension];
       if (k - off >= 1 && k - off != ii && k < last + 2) {
         int index = (point_handler.ExtractDimension(dimension) * (last - off + 2) + k - off) * GetDimension();
-        for (int l = 0; l < GetDimension(); ++l) {
-          coordinates[l] = temp[index + l];
-        }
+        std::vector<double> coordinates(temp.begin() + index, temp.begin() + index + GetDimension());
         auto indices = point_handler.GetIndices();
         indices[dimension] = k - off < ii ? k : k - 1;
-        physical_space_->SetControlPoint2(indices, baf::ControlPoint(coordinates), dimension);
+        physical_space_->SetControlPoint(indices, baf::ControlPoint(coordinates), dimension,
+                                         util::NumericOperations<int>::decrement);
       }
       if ((k <= off && k - off < 1) || (k >= last + 1 && k < GetPointsPerDirection()[dimension])) {
         auto indices = point_handler.GetIndices();
         indices[dimension] = k <= off ? k : k - 1;
-        physical_space_->SetControlPoint2(indices, GetControlPoint(point_handler.GetIndices()), dimension);
+        physical_space_->SetControlPoint(indices, GetControlPoint(point_handler.GetIndices()), dimension,
+                                         util::NumericOperations<int>::decrement);
       }
     }
   }
