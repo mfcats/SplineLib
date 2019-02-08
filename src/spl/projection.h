@@ -82,8 +82,8 @@ class Projection {
   static std::array<ParamCoord, DIM> FindInitialValue1D(const std::vector<double> &point_phys_coords,
                                                         const std::shared_ptr<spl::Spline<DIM>> &spline,
                                                         const std::vector<int> &dimensions) {
-    iga::elm::ElementGenerator<1> element_generator(spline);
-    std::vector<iga::elm::Element> elements = element_generator.GetElementList(0);
+    util::ElementGenerator<1> element_generator(spline);
+    std::vector<util::Element> elements = element_generator.GetElementList(0);
     std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
     std::vector<double> splinePhysicalCoords = spline->Evaluate({ParamCoord{(0.5 * (
         elements[0].GetUpperBound() - elements[0].GetLowerBound()).get())}}, dimensions);

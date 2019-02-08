@@ -29,6 +29,8 @@ install(
 
 install(FILES
         any_casts.h
+        element.h
+        element_generator.h
         named_type.h
         numeric_settings.h
         multi_index_handler.h
