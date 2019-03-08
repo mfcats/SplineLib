@@ -367,7 +367,8 @@ class NURBS : public Spline<DIM> {
     int index = point_handler.ExtractDimension(dimension) * (last - off + 2);
     for (int k = 0; k < GetDimension(); ++k) {
       (*temp_ptr)[(index + x - off) * GetDimension() + k] = (GetHomogeneousControlPoint(point_handler.GetIndices(), k)
-          - (1 - alpha) * (*temp_ptr)[(index + x - off + shift) * GetDimension() + k]) / alpha
+          - (1 - alpha) * (*temp_ptr)[(index + x - off + shift) * GetDimension() + k] * temp_w[index + x - off + shift])
+          / alpha
           / temp_w[index + x - off];
     }
   }
@@ -430,8 +431,25 @@ class NURBS : public Spline<DIM> {
           temp2[k] = alfi * temp[offset + (i - off + 1) * GetDimension() + k] * temp_w[offset + i - off + 1]
               + (1 - alfi) * temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[offset + i - off - 1];
         }
+        auto indices = point_handler.GetIndices();
+        indices[dimension] = i;
+        temp1[GetDimension()] = physical_space_->GetWeight(indices);
+        temp2[GetDimension()] = alfi * temp_w[offset + i - off + 1] + (1 - alfi) * temp_w[offset + i - off - 1];
+
+        std::cout << std::endl << "temp1: ";
+        for (const auto &j : temp1) {
+          std::cout << j << "  ";
+        }
+        std::cout << std::endl << "temp2: ";
+        for (const auto &j : temp2) {
+          std::cout << j << "  ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "tol: " << tolerance << "   " << util::VectorUtils<double>::ComputeDistance(temp1, temp2)
+                  << std::endl;
         if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
-//          return false;
+          return false;
         }
       }
     }

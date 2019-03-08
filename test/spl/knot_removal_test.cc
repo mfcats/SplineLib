@@ -392,7 +392,7 @@ class NURBSFig5_27 : public Test {  // NOLINT
         baf::ControlPoint(std::vector<double>({4.5, 1.0})),
         baf::ControlPoint(std::vector<double>({6.0, 0.0}))
     };
-    std::vector<double> weights = {1, 0.95, 1.05, 1.5, 1, 1, 1.2, 1, 1.1};
+    std::vector<double> weights = {1, 0.95, 1.05, 1.05, 1, 0.95, 1.2, 1, 1.1};
     nurbs_1d_before_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
     spl::NURBS<1> nurbs_after(*nurbs_1d_before_);
     nurbs_1d_after_ = std::make_shared<spl::NURBS<1>>(nurbs_after);
@@ -420,7 +420,7 @@ TEST_F(NURBSFig5_27, RemovesKnot0_5Correctly) {  // NOLINT
       baf::ControlPoint(std::vector<double>({4.5, 1.0})),
       baf::ControlPoint(std::vector<double>({6.0, 0.0}))
   };
-  std::vector<double> new_weights = {1, 0.95, 1.05, 1.5, 1, 1.2, 1, 1.1};
+  std::vector<double> new_weights = {1, 0.95, 1.05, 1.05, 0.95, 1.2, 1, 1.1};
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
       ASSERT_THAT(nurbs_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
