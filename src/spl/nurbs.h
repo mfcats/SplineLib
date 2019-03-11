@@ -410,31 +410,43 @@ class NURBS : public Spline<DIM> {
 
   bool IsKnotRemovable(double alfi, const std::vector<double> &temp, const std::vector<double> &temp_w,
                        double tolerance, int i, int j, int off, int dimension) const {
+    auto maxdist = physical_space_->GetMaximumDistanceFromOrigin();
+    auto minw = physical_space_->GetMinimumWeight();
+    tolerance = tolerance * minw / maxdist;
+    std::cout << "max dist: " << maxdist << ", min weight: " << minw << ", tolerance: " << tolerance << std::endl;
+
     std::array<int, DIM> point_handler_length = GetPointsPerDirection();
     point_handler_length[dimension] = 0;
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
     int new_points = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     size_t temp_length = temp.size() / new_points;
+    size_t temp_w_length = temp_w.size() / new_points;
     for (int l = 0; l < new_points; ++l, ++point_handler) {
       size_t offset = l * temp_length;
-      std::vector<double> temp1(GetDimension() + 1, temp_w[offset + i - off - 1]);
-      std::vector<double> temp2(GetDimension() + 1, temp_w[offset + j - off + 1]);
+      size_t w_offset = l * temp_w_length;
+      std::vector<double> temp1(GetDimension() + 1, temp_w[w_offset + i - off]);
+      std::vector<double> temp2(GetDimension() + 1, temp_w[w_offset + j - off]);
       for (int k = 0; k < GetDimension(); ++k) {
-        temp1[k] = temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[offset + i - off - 1];
-        temp2[k] = temp[offset + (j - off + 1) * GetDimension() + k] * temp_w[offset + j - off + 1];
+        temp1[k] = temp[offset + (i - off) * GetDimension() + k] * temp_w[w_offset + i - off];
+        temp2[k] = temp[offset + (j - off) * GetDimension() + k] * temp_w[w_offset + j - off];
       }
       if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
         for (int k = 0; k < GetDimension(); ++k) {
           auto indices = point_handler.GetIndices();
           indices[dimension] = i;
           temp1[k] = physical_space_->GetHomogenousControlPoint(indices).GetValue(k);
-          temp2[k] = alfi * temp[offset + (i - off + 1) * GetDimension() + k] * temp_w[offset + i - off + 1]
-              + (1 - alfi) * temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[offset + i - off - 1];
+          std::cout << alfi << "  " << temp[offset + (i - off + 1) * GetDimension() + k] << "  "
+                    << temp_w[w_offset + i - off + 1] << std::endl;
+          std::cout << 1 - alfi << "  " << temp[offset + (i - off - 1) * GetDimension() + k] << "  "
+                    << temp_w[w_offset + i - off - 1] << std::endl;
+          std::cout << std::endl;
+          temp2[k] = alfi * temp[offset + (i - off + 1) * GetDimension() + k] * temp_w[w_offset + i - off + 1]
+              + (1 - alfi) * temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[w_offset + i - off - 1];
         }
         auto indices = point_handler.GetIndices();
         indices[dimension] = i;
         temp1[GetDimension()] = physical_space_->GetWeight(indices);
-        temp2[GetDimension()] = alfi * temp_w[offset + i - off + 1] + (1 - alfi) * temp_w[offset + i - off - 1];
+        temp2[GetDimension()] = alfi * temp_w[w_offset + i - off + 1] + (1 - alfi) * temp_w[w_offset + i - off - 1];
 
         std::cout << std::endl << "temp1: ";
         for (const auto &j : temp1) {

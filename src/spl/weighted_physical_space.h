@@ -57,6 +57,14 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     return weights_[first];
   }
 
+  double GetMinimumWeight() const {
+    double minimum = weights_[0];
+    for (const auto &weight : weights_) {
+      if (weight < minimum) minimum = weight;
+    }
+    return minimum;
+  }
+
   void SetWeight(std::array<int, DIM> indices, double weight, int dimension, int (*before)(int)) {
     const std::array<int, DIM> number_of_points_before(this->number_of_points_);
     this->number_of_points_[dimension] = before(this->number_of_points_[dimension]);

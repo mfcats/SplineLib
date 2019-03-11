@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <stdexcept>
 #include <vector>
+#include <vector_utils.h>
 
 #include "control_point.h"
 #include "multi_index_handler.h"
@@ -124,6 +125,20 @@ class PhysicalSpace {
       if (cp > expansion) expansion = cp;
     }
     return expansion;
+  }
+
+  double GetMaximumDistanceFromOrigin() const {
+    double maximum = 0;
+    std::vector<double> point(dimension_, 0);
+    std::vector<double> origin(dimension_, 0);
+    for (int i = 0; i < GetNumberOfControlPoints(); ++i) {
+      for (int j = 0; j < dimension_; ++j) {
+        point[j] = control_points_[i * dimension_ + j];
+      }
+      double distance = util::VectorUtils<double>::ComputeDistance(origin, point);
+      if (distance > maximum) maximum = distance;
+    }
+    return maximum;
   }
 
   std::vector<double> GetControlPoints() const {
