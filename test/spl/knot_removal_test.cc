@@ -631,3 +631,131 @@ TEST_F(A3DNURBSToRemoveKnotInThirdDirection, RemovesKnot0_3CorrectlyTwoTimes) { 
     }
   }
 }
+
+class Random1DNURBSForKnotInsertionb : public Test {  // NOLINT
+ public:
+  Random1DNURBSForKnotInsertionb() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomNURBSGenerator<1> spline_generator(limits, 10, 3);
+    spl::NURBS<1> nurbs(spline_generator);
+    nurbs_3d_before_ = std::make_shared<spl::NURBS<1>>(nurbs);
+    spl::NURBS<1> nurbs_after(nurbs);
+    nurbs_3d_after_ = std::make_shared<spl::NURBS<1>>(nurbs_after);
+  }
+
+ protected:
+  std::shared_ptr<spl::NURBS<1>> nurbs_3d_before_;
+  std::shared_ptr<spl::NURBS<1>> nurbs_3d_after_;
+};
+
+TEST_F(Random1DNURBSForKnotInsertionb, Removesandinserts) {  // NOLINT
+  nurbs_3d_after_->InsertKnot(ParamCoord(0.5), 0);
+  nurbs_3d_after_->RemoveKnot(ParamCoord(0.5), 0, 1e-15);
+  ASSERT_THAT(nurbs_3d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              nurbs_3d_before_->GetKnotVector(0)->GetNumberOfKnots());
+  ASSERT_THAT(nurbs_3d_after_->GetNumberOfControlPoints(), nurbs_3d_before_->GetNumberOfControlPoints());
+
+  for (int i = 0; i < nurbs_3d_before_->GetNumberOfControlPoints(); ++i) {
+    for (int j = 0; j < 2; ++j) {
+      ASSERT_THAT(nurbs_3d_after_->GetControlPoint({i}, j),
+                  DoubleNear(nurbs_3d_before_->GetControlPoint({i}, j), 1e-12));
+    }
+    ASSERT_THAT(nurbs_3d_after_->GetWeight({i}), DoubleEq(nurbs_3d_before_->GetWeight({i})));
+  }
+  double s = 50.0;
+  for (int i = 0; i <= s; ++i) {
+    std::array<ParamCoord, 1> param_coord{ParamCoord(i / s)};
+    ASSERT_THAT(nurbs_3d_after_->Evaluate(param_coord, {0})[0],
+                DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {0})[0], 1e-7));
+    ASSERT_THAT(nurbs_3d_after_->Evaluate(param_coord, {1})[0],
+                DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {1})[0], 1e-7));
+  }
+}
+
+class Random2DNURBSForKnotRemoval : public Test {  // NOLINT
+ public:
+  Random2DNURBSForKnotRemoval() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomNURBSGenerator<2> spline_generator(limits, 8, 3);
+    spl::NURBS<2> nurbs(spline_generator);
+    nurbs_3d_before_ = std::make_shared<spl::NURBS<2>>(nurbs);
+    spl::NURBS<2> nurbs_after(nurbs);
+    nurbs_3d_after_ = std::make_shared<spl::NURBS<2>>(nurbs_after);
+  }
+
+ protected:
+  std::shared_ptr<spl::NURBS<2>> nurbs_3d_before_;
+  std::shared_ptr<spl::NURBS<2>> nurbs_3d_after_;
+};
+
+TEST_F(Random2DNURBSForKnotRemoval, Removesandinserts) {  // NOLINT
+  nurbs_3d_after_->InsertKnot(ParamCoord(0.5), 0);
+  nurbs_3d_after_->RemoveKnot(ParamCoord(0.5), 0, 1e-15);
+  ASSERT_THAT(nurbs_3d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              nurbs_3d_before_->GetKnotVector(0)->GetNumberOfKnots());
+  ASSERT_THAT(nurbs_3d_after_->GetNumberOfControlPoints(), nurbs_3d_before_->GetNumberOfControlPoints());
+
+  for (int i = 0; i < nurbs_3d_before_->GetNumberOfControlPoints(); ++i) {
+    for (int j = 0; j < 2; ++j) {
+      ASSERT_THAT(nurbs_3d_after_->GetControlPoint({i}, j),
+                  DoubleNear(nurbs_3d_before_->GetControlPoint({i}, j), 1e-12));
+    }
+    ASSERT_THAT(nurbs_3d_after_->GetWeight({i}), DoubleEq(nurbs_3d_before_->GetWeight({i})));
+  }
+  double s = 20.0;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      std::array<ParamCoord, 2> param_coord{ParamCoord(i / s), ParamCoord(j / s)};
+      ASSERT_THAT(nurbs_3d_after_->Evaluate(param_coord, {0})[0],
+                  DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {0})[0], 1e-7));
+      ASSERT_THAT(nurbs_3d_after_->Evaluate(param_coord, {1})[0],
+                  DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {1})[0], 1e-7));
+    }
+  }
+}
+
+class Random3DNURBSForKnotRemoval : public Test {  // NOLINT
+ public:
+  Random3DNURBSForKnotRemoval() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomNURBSGenerator<3> spline_generator(limits, 4, 2);
+    spl::NURBS<3> nurbs(spline_generator);
+    nurbs_3d_before_ = std::make_shared<spl::NURBS<3>>(nurbs);
+    spl::NURBS<3> nurbs_after(nurbs);
+    nurbs_3d_after_ = std::make_shared<spl::NURBS<3>>(nurbs_after);
+  }
+
+ protected:
+  std::shared_ptr<spl::NURBS<3>> nurbs_3d_before_;
+  std::shared_ptr<spl::NURBS<3>> nurbs_3d_after_;
+};
+
+TEST_F(Random3DNURBSForKnotRemoval, Removesandinserts) {  // NOLINT
+  nurbs_3d_after_->InsertKnot(ParamCoord(0.5), 0);
+  nurbs_3d_after_->RemoveKnot(ParamCoord(0.5), 0, 1e-15);
+  ASSERT_THAT(nurbs_3d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              nurbs_3d_before_->GetKnotVector(0)->GetNumberOfKnots());
+  ASSERT_THAT(nurbs_3d_after_->GetNumberOfControlPoints(), nurbs_3d_before_->GetNumberOfControlPoints());
+
+  for (int i = 0; i < nurbs_3d_before_->GetNumberOfControlPoints(); ++i) {
+    for (int j = 0; j < 2; ++j) {
+      ASSERT_THAT(nurbs_3d_after_->GetControlPoint({i}, j),
+                  DoubleNear(nurbs_3d_before_->GetControlPoint({i}, j), 1e-12));
+    }
+    ASSERT_THAT(nurbs_3d_after_->GetWeight({i}), DoubleEq(nurbs_3d_before_->GetWeight({i})));
+  }
+  double s = 10.0;
+  for (int i = 0; i <= s; ++i) {
+    for (int j = 0; j <= s; ++j) {
+      for (int k = 0; k <= s; ++k) {
+        std::array<ParamCoord, 3> param_coord{ParamCoord(i / s), ParamCoord(j / s), ParamCoord(k / s)};
+        ASSERT_THAT(nurbs_3d_after_->Evaluate(param_coord, {0})[0],
+                    DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {0})[0], 1e-7));
+        ASSERT_THAT(nurbs_3d_after_->Evaluate(param_coord, {1})[0],
+                    DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {1})[0], 1e-7));
+        ASSERT_THAT(nurbs_3d_after_->Evaluate(param_coord, {2})[0],
+                    DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {2})[0], 1e-7));
+      }
+    }
+  }
+}

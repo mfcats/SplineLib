@@ -359,12 +359,6 @@ class NURBS : public Spline<DIM> {
         }
       }
     }
-//    std::cout << "i: " << i << "  j: " << j << std::endl;
-//    std::cout << std::endl << "temp points:" << std::endl;
-//    for (const auto y : *temp_ptr) {
-//      std::cout << y << "  ";
-//    }
-//    std::cout << std::endl;
     return *temp_ptr;
   }
 
@@ -404,11 +398,6 @@ class NURBS : public Spline<DIM> {
         }
       }
     }
-//    std::cout << std::endl << "temp weights:" << std::endl;
-//    for (const auto y : *temp_w_ptr) {
-//      std::cout << y << "  ";
-//    }
-//    std::cout << std::endl;
     return *temp_w_ptr;
   }
 
@@ -425,7 +414,6 @@ class NURBS : public Spline<DIM> {
     auto maxdist = physical_space_->GetMaximumDistanceFromOrigin();
     auto minw = physical_space_->GetMinimumWeight();
     tolerance = tolerance * minw / maxdist;
-//    std::cout << "max dist: " << maxdist << ", min weight: " << minw << ", tolerance: " << tolerance << std::endl;
 
     std::array<int, DIM> point_handler_length = GetPointsPerDirection();
     point_handler_length[dimension] = 0;
@@ -442,52 +430,17 @@ class NURBS : public Spline<DIM> {
         temp1[k] = temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[w_offset + i - off - 1];
         temp2[k] = temp[offset + (j - off + 1) * GetDimension() + k] * temp_w[w_offset + j - off + 1];
       }
-//      std::cout << std::endl;
-//      std::cout << "i: " << i << "  off: " << off << "  j: " << j << std::endl;
-//      std::cout << "offset: " << offset << "  pos1: " << i - off << "  pos2:" << j - off << std::endl;
-//      std::cout << "w_offset: " << w_offset << "  pos1: " << i - off << "  pos2:" << j - off << std::endl;
-//      std::cout << std::endl << "temp1: ";
-//      for (const auto &j : temp1) {
-//        std::cout << j << "  ";
-//      }
-//      std::cout << std::endl << "temp2: ";
-//      for (const auto &j : temp2) {
-//        std::cout << j << "  ";
-//      }
-//      std::cout << std::endl << "tol: " << tolerance << "   dist1:"
-//                << util::VectorUtils<double>::ComputeDistance(temp1, temp2)
-//                << std::endl << std::endl;
 
       if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
+        auto indices = point_handler.GetIndices();
+        indices[dimension] = i;
         for (int k = 0; k < GetDimension(); ++k) {
-          auto indices = point_handler.GetIndices();
-          indices[dimension] = i;
           temp1[k] = physical_space_->GetHomogenousControlPoint(indices).GetValue(k);
-//          std::cout << alfi << "  " << temp[offset + (i - off + 1) * GetDimension() + k] << "  "
-//                    << temp_w[w_offset + i - off + 1] << std::endl;
-//          std::cout << 1 - alfi << "  " << temp[offset + (i - off - 1) * GetDimension() + k] << "  "
-//                    << temp_w[w_offset + i - off - 1] << std::endl;
-//          std::cout << std::endl;
           temp2[k] = alfi * temp[offset + (i - off + 1) * GetDimension() + k] * temp_w[w_offset + i - off + 1]
               + (1 - alfi) * temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[w_offset + i - off - 1];
         }
-        auto indices = point_handler.GetIndices();
-        indices[dimension] = i;
         temp1[GetDimension()] = physical_space_->GetWeight(indices);
         temp2[GetDimension()] = alfi * temp_w[w_offset + i - off + 1] + (1 - alfi) * temp_w[w_offset + i - off - 1];
-
-//        std::cout << std::endl << "temp1: ";
-//        for (const auto &j : temp1) {
-//          std::cout << j << "  ";
-//        }
-//        std::cout << std::endl << "temp2: ";
-//        for (const auto &j : temp2) {
-//          std::cout << j << "  ";
-//        }
-//        std::cout << std::endl;
-//
-//        std::cout << "tol: " << tolerance << "   dist2:" << util::VectorUtils<double>::ComputeDistance(temp1, temp2)
-//                  << std::endl;
         if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
 //          return false;
         }
