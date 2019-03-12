@@ -430,7 +430,6 @@ class NURBS : public Spline<DIM> {
         temp1[k] = temp[offset + (i - off - 1) * GetDimension() + k] * temp_w[w_offset + i - off - 1];
         temp2[k] = temp[offset + (j - off + 1) * GetDimension() + k] * temp_w[w_offset + j - off + 1];
       }
-
       if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
         auto indices = point_handler.GetIndices();
         indices[dimension] = i;
