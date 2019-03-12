@@ -17,10 +17,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <stdexcept>
 #include <vector>
-#include <vector_utils.h>
 
 #include "control_point.h"
 #include "multi_index_handler.h"
+#include "vector_utils.h"
 
 namespace spl {
 template<int DIM>
