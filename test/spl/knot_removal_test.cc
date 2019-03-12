@@ -12,14 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <vtk_writer.h>
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
 #include "nurbs.h"
 #include "random_b_spline_generator.h"
 #include "random_nurbs_generator.h"
-#include "irit_writer.h"
 
 using testing::Test;
 using testing::DoubleEq;
