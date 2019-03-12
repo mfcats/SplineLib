@@ -30,6 +30,7 @@ install(
 install(FILES
         any_casts.h
         named_type.h
+        numeric_operations.h
         numeric_settings.h
         multi_index_handler.h
         random.h
