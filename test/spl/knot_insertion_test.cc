@@ -16,16 +16,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "nurbs.h"
-#include "random_b_spline_generator.h"
-#include "random_nurbs_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
-class BSplineEx5_1 : public Test {  // NOLINT
+class BSpline1DEx5_1 : public Test {  // NOLINT
  public:
-  BSplineEx5_1() {
+  BSpline1DEx5_1() {
     std::array<Degree, 1> degree = {Degree{3}};
     KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2},
@@ -50,7 +48,7 @@ class BSplineEx5_1 : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> bspline_1d_after_;
 };
 
-TEST_F(BSplineEx5_1, InsertsKnot2_5Correctly) {  // NOLINT
+TEST_F(BSpline1DEx5_1, InsertsKnot2_5Correctly) {  // NOLINT
   bspline_1d_after_->InsertKnot(ParamCoord(2.5), 0);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
@@ -79,9 +77,9 @@ TEST_F(BSplineEx5_1, InsertsKnot2_5Correctly) {  // NOLINT
   }
 }
 
-class NURBSEx5_2 : public Test {  // NOLINT
+class NURBS1DEx5_2 : public Test {  // NOLINT
  public:
-  NURBSEx5_2() {
+  NURBS1DEx5_2() {
     std::array<Degree, 1> degree = {Degree{3}};
     KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2},
@@ -110,7 +108,7 @@ class NURBSEx5_2 : public Test {  // NOLINT
   std::shared_ptr<spl::NURBS<1>> nurbs_1d_after_;
 };
 
-TEST_F(NURBSEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
+TEST_F(NURBS1DEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
   nurbs_1d_after_->InsertKnot(ParamCoord(2.0), 0);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               nurbs_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
@@ -145,9 +143,9 @@ TEST_F(NURBSEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
   }
 }
 
-class BSplineFig5_16 : public Test {  // NOLINT
+class BSpline1DFig5_16 : public Test {  // NOLINT
  public:
-  BSplineFig5_16() {
+  BSpline1DFig5_16() {
     std::array<Degree, 1> degree = {Degree{3}};
     KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.7},
@@ -172,7 +170,7 @@ class BSplineFig5_16 : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> bspline_1d_after_;
 };
 
-TEST_F(BSplineFig5_16, InsertsMidpoints) {  // NOLINT
+TEST_F(BSpline1DFig5_16, InsertsMidpoints) {  // NOLINT
   std::vector<ParamCoord> new_knots = {ParamCoord{0.15}, ParamCoord{0.5}, ParamCoord{0.85}};
   bspline_1d_after_->RefineKnots(new_knots, 0);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
@@ -206,7 +204,7 @@ TEST_F(BSplineFig5_16, InsertsMidpoints) {  // NOLINT
   }
 }
 
-TEST_F(BSplineFig5_16, InsertsKnot0_5MultipleTimesWithKnotRefinement) {  // NOLINT
+TEST_F(BSpline1DFig5_16, InsertsKnot0_5MultipleTimesWithKnotRefinement) {  // NOLINT
   std::vector<ParamCoord> new_knots = {ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.5}};
   bspline_1d_after_->RefineKnots(new_knots, 0);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
@@ -224,7 +222,7 @@ TEST_F(BSplineFig5_16, InsertsKnot0_5MultipleTimesWithKnotRefinement) {  // NOLI
   }
 }
 
-TEST_F(BSplineFig5_16, InsertsKnot0_5MultipleTimes) {  // NOLINT
+TEST_F(BSpline1DFig5_16, InsertsKnot0_5MultipleTimes) {  // NOLINT
   bspline_1d_after_->InsertKnot(ParamCoord{0.5}, 0, 3);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 3);
@@ -241,7 +239,7 @@ TEST_F(BSplineFig5_16, InsertsKnot0_5MultipleTimes) {  // NOLINT
   }
 }
 
-TEST_F(BSplineFig5_16, InsertsKnot0_3MultipleTimes) {  // NOLINT
+TEST_F(BSpline1DFig5_16, InsertsKnot0_3MultipleTimes) {  // NOLINT
   bspline_1d_after_->InsertKnot(ParamCoord{0.3}, 0, 2);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 2);
