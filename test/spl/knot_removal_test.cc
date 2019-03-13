@@ -175,6 +175,10 @@ TEST_F(NURBS1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
   }
 }
 
+TEST_F(NURBS1DFig5_26, RemovesOnlyOneKnot1_0CorrectlyWithTolerance0_81) {  // NOLINT
+  ASSERT_THAT(nurbs_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.81, 2), 1);
+}
+
 class BSpline2DFig5_28 : public Test {  // NOLINT
  public:
   BSpline2DFig5_28() {
