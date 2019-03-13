@@ -100,7 +100,6 @@ class PhysicalSpace {
 
   void RemoveControlPoints(int number) {
     control_points_.erase(control_points_.end() - number * dimension_, control_points_.end());
-
   }
 
   virtual int GetNumberOfControlPoints() const {
