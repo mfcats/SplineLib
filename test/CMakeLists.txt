@@ -47,6 +47,7 @@ set(TEST_SOURCES
         spl/surface_generator_test.cc
         spl/knot_insertion_test.cc
         spl/knot_removal_test.cc
+        spl/knot_insertion_and_removal_test.cc
         spl/spline_subdivision_test.cc
         spl/random_b_spline_generator_test.cc
         spl/random_nurbs_generator_test.cc
@@ -63,7 +64,6 @@ find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
 
 add_executable(SplineLibTests ${TEST_SOURCES})
-#target_link_libraries(SplineLibTests splinelibbaf splinelibspl splinelibutil splinelibio GMock::Main)
 target_link_libraries(SplineLibTests splinelibbaf splinelibiga splinelibspl splinelibutil splinelibio GMock::Main)
 
 add_executable(MaxTest ${MAX_SOURCES})
