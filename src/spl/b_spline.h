@@ -96,7 +96,8 @@ class BSpline : public Spline<DIM> {
   bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
     int off = first - 1, i = first, j = last;
     std::vector<double> temp = GetTempNewControlPoints(scaling, off, last, i, j, dimension);
-    i += (j - i) / 2, j -= (j - i) / 2;
+    int diff = static_cast<int>(ceil((j - i) / 2.0));
+    i += diff, j -= diff;
     if (!IsKnotRemovable(scaling[i - off - 1], temp, tolerance, i, j, off, dimension)) {
       return false;
     }

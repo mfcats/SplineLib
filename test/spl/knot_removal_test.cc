@@ -393,7 +393,7 @@ TEST_F(A3DBSplineForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
 }
 
 TEST_F(A3DBSplineForKnotRemoval, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
-  ASSERT_THAT(bspline_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 0.21, 2), 2);
+  ASSERT_THAT(bspline_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 0.28, 2), 2);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
               bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 2);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(4).get(), DoubleEq(1));
