@@ -32,7 +32,7 @@ class RandomSplineUtils {
   static std::array<Degree, DIM> GetRandomDegrees(int max_degree) {
     std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; ++i) {
-      degrees[i] = Degree{util::Random::GetBinomialRandom<int>(0, max_degree, 1)};
+      degrees[i] = Degree{util::Random::GetBinomialRandom<int>(1, max_degree, 1)};
     }
     return degrees;
   }
