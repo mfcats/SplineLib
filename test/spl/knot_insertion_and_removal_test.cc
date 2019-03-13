@@ -24,8 +24,8 @@ using testing::DoubleNear;
 
 class Random1DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
-  Random1DBSplineForKnotInsertionAndRemoval() :
-      param_coord_(ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}) {
+  Random1DBSplineForKnotInsertionAndRemoval()
+      : removed_{0}, param_coord_(ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}) {
     std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
     spl::RandomBSplineGenerator<1> spline_generator(limits, 10, 3);
     spl::BSpline<1> b_spline(spline_generator);
@@ -41,8 +41,8 @@ class Random1DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
   }
 
  protected:
-  ParamCoord param_coord_;
   size_t removed_;
+  ParamCoord param_coord_;
   std::shared_ptr<spl::BSpline<1>> original_;
   std::shared_ptr<spl::BSpline<1>> after_insertion_;
   std::shared_ptr<spl::BSpline<1>> after_removal_;
@@ -101,8 +101,8 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
 
 class Random1DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
-  Random1DNURBSForKnotInsertionAndRemoval() :
-      param_coord_(ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}) {
+  Random1DNURBSForKnotInsertionAndRemoval()
+      : removed_{0}, param_coord_(ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}) {
     std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
     spl::RandomNURBSGenerator<1> spline_generator(limits, 10, 3);
     spl::NURBS<1> nurbs(spline_generator);
@@ -118,8 +118,8 @@ class Random1DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
   }
 
  protected:
-  ParamCoord param_coord_;
   size_t removed_;
+  ParamCoord param_coord_;
   std::shared_ptr<spl::NURBS<1>> original_;
   std::shared_ptr<spl::NURBS<1>> after_insertion_;
   std::shared_ptr<spl::NURBS<1>> after_removal_;
@@ -179,7 +179,7 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
 
 class Random2DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
-  Random2DBSplineForKnotInsertionAndRemoval() : param_coord_{
+  Random2DBSplineForKnotInsertionAndRemoval() : removed_({0}), param_coord_{
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
@@ -202,8 +202,8 @@ class Random2DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
   }
 
  protected:
-  std::array<ParamCoord, 3> param_coord_;
   std::array<size_t, 3> removed_;
+  std::array<ParamCoord, 3> param_coord_;
   std::shared_ptr<spl::BSpline<2>> original_;
   std::shared_ptr<spl::BSpline<2>> after_insertion_;
   std::shared_ptr<spl::BSpline<2>> after_removal_;
@@ -272,7 +272,7 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
 
 class Random2DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
-  Random2DNURBSForKnotInsertionAndRemoval() : param_coord_{
+  Random2DNURBSForKnotInsertionAndRemoval() : removed_({0}), param_coord_{
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
@@ -295,8 +295,8 @@ class Random2DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
   }
 
  protected:
-  std::array<ParamCoord, 3> param_coord_;
   std::array<size_t, 3> removed_;
+  std::array<ParamCoord, 3> param_coord_;
   std::shared_ptr<spl::NURBS<2>> original_;
   std::shared_ptr<spl::NURBS<2>> after_insertion_;
   std::shared_ptr<spl::NURBS<2>> after_removal_;
@@ -366,7 +366,7 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
 
 class Random3DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
-  Random3DBSplineForKnotInsertionAndRemoval() : param_coord_{
+  Random3DBSplineForKnotInsertionAndRemoval() : removed_({0}), param_coord_{
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
@@ -389,8 +389,8 @@ class Random3DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
   }
 
  protected:
-  std::array<ParamCoord, 3> param_coord_;
   std::array<size_t, 3> removed_;
+  std::array<ParamCoord, 3> param_coord_;
   std::shared_ptr<spl::BSpline<3>> original_;
   std::shared_ptr<spl::BSpline<3>> after_insertion_;
   std::shared_ptr<spl::BSpline<3>> after_removal_;
@@ -467,7 +467,7 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
 
 class Random3DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
-  Random3DNURBSForKnotInsertionAndRemoval() : param_coord_{
+  Random3DNURBSForKnotInsertionAndRemoval() : removed_({0}), param_coord_{
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
       ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
@@ -490,8 +490,8 @@ class Random3DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
   }
 
  protected:
-  std::array<ParamCoord, 3> param_coord_;
   std::array<size_t, 3> removed_;
+  std::array<ParamCoord, 3> param_coord_;
   std::shared_ptr<spl::NURBS<3>> original_;
   std::shared_ptr<spl::NURBS<3>> after_insertion_;
   std::shared_ptr<spl::NURBS<3>> after_removal_;
