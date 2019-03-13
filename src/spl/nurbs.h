@@ -108,7 +108,6 @@ class NURBS : public Spline<DIM> {
 
   bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
     int off = first - 1, i = first, j = last;
-//    std::cout << "first: " << first << "  last: " << last << std::endl;
     std::vector<double> temp_w = GetTempNewWeights(scaling, off, last, i, j, dimension);
     std::vector<double> temp = GetTempNewControlPoints(scaling, temp_w, off, last, i, j, dimension);
     i += ceil((j - i) / 2.0), j -= ceil((j - i) / 2.0);
@@ -413,7 +412,7 @@ class NURBS : public Spline<DIM> {
                        double tolerance, int i, int j, int off, int dimension) const {
     auto maxdist = physical_space_->GetMaximumDistanceFromOrigin();
     auto minw = physical_space_->GetMinimumWeight();
-    tolerance = tolerance * minw / maxdist;
+    tolerance = tolerance * minw / (1 + maxdist);
 
     std::array<int, DIM> point_handler_length = GetPointsPerDirection();
     point_handler_length[dimension] = 0;
@@ -441,7 +440,7 @@ class NURBS : public Spline<DIM> {
         temp1[GetDimension()] = physical_space_->GetWeight(indices);
         temp2[GetDimension()] = alfi * temp_w[w_offset + i - off + 1] + (1 - alfi) * temp_w[w_offset + i - off - 1];
         if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
-//          return false;
+          return false;
         }
       }
     }

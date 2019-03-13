@@ -146,7 +146,7 @@ class NURBS1DFig5_26 : public Test {  // NOLINT
 };
 
 TEST_F(NURBS1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
-  nurbs_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.2);
+  nurbs_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.81);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               nurbs_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(2));
@@ -159,19 +159,19 @@ TEST_F(NURBS1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
       baf::ControlPoint(std::vector<double>({4.0, 1.5})),
       baf::ControlPoint(std::vector<double>({4.0, 0.0}))
   };
-  std::vector<double> new_weights = {10, 0.5, 4, 1, 0.5, 4};
+  std::vector<double> new_weights = {1, 0.8, 1.4, 1.1, 0.8, 1.4};
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
       ASSERT_THAT(nurbs_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
     }
+    ASSERT_THAT(nurbs_1d_after_->GetWeight({i}), DoubleEq(new_weights[i]));
   }
-  double s = 50;
-  for (int i = 0; i <= s; ++i) {
-    std::array<ParamCoord, 1> param_coord{ParamCoord(2 * i / s)};
+  for (int i = 0; i <= 50; ++i) {
+    std::array<ParamCoord, 1> param_coord{ParamCoord(2.0 * i / 50)};
     ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {0})[0],
-                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {0})[0], 0.7));
+                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {0})[0], 0.13));
     ASSERT_THAT(nurbs_1d_after_->Evaluate(param_coord, {1})[0],
-                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {1})[0], 0.7));
+                DoubleNear(nurbs_1d_before_->Evaluate(param_coord, {1})[0], 0.13));
   }
 }
 
@@ -308,14 +308,14 @@ class NURBS2DFig5_28 : public Test {  // NOLINT
 };
 
 TEST_F(NURBS2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
-  ASSERT_THAT(nurbs_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.075), 1);
+  ASSERT_THAT(nurbs_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 2.2), 1);
   ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               nurbs_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 1);
   ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetKnot(6).get(), DoubleEq(0.7));
   ASSERT_THAT(nurbs_2d_after_->GetNumberOfControlPoints(), nurbs_2d_before_->GetNumberOfControlPoints() - 6);
-  util::MultiIndexHandler<2> coord_handler({31, 31});
+  util::MultiIndexHandler<2> coord_handler({21, 21});
   for (int i = 0; i < coord_handler.Get1DLength(); ++i, coord_handler++) {
-    std::array<ParamCoord, 2> param_coord{ParamCoord(coord_handler[0] / 30.0), ParamCoord(coord_handler[1] / 30.0)};
+    std::array<ParamCoord, 2> param_coord{ParamCoord(coord_handler[0] / 20.0), ParamCoord(coord_handler[1] / 20.0)};
     for (int j = 0; j < nurbs_2d_after_->GetDimension(); ++j) {
       ASSERT_THAT(nurbs_2d_after_->Evaluate(param_coord, {j})[0],
                   DoubleNear(nurbs_2d_before_->Evaluate(param_coord, {j})[0], 0.072));
@@ -324,17 +324,17 @@ TEST_F(NURBS2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
 }
 
 TEST_F(NURBS2DFig5_28, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
-  ASSERT_THAT(nurbs_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.12, 2), 2);
+  ASSERT_THAT(nurbs_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 2.2, 2), 2);
   ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               nurbs_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 2);
   ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetKnot(5).get(), DoubleEq(0.7));
   ASSERT_THAT(nurbs_2d_after_->GetNumberOfControlPoints(), nurbs_2d_before_->GetNumberOfControlPoints() - 12);
-  util::MultiIndexHandler<2> coord_handler({31, 31});
+  util::MultiIndexHandler<2> coord_handler({21, 21});
   for (int i = 0; i < coord_handler.Get1DLength(); ++i, coord_handler++) {
-    std::array<ParamCoord, 2> param_coord{ParamCoord(coord_handler[0] / 30.0), ParamCoord(coord_handler[1] / 30.0)};
+    std::array<ParamCoord, 2> param_coord{ParamCoord(coord_handler[0] / 20.0), ParamCoord(coord_handler[1] / 20.0)};
     for (int j = 0; j < nurbs_2d_after_->GetDimension(); ++j) {
       ASSERT_THAT(nurbs_2d_after_->Evaluate(param_coord, {j})[0],
-                  DoubleNear(nurbs_2d_before_->Evaluate(param_coord, {j})[0], 0.11));
+                  DoubleNear(nurbs_2d_before_->Evaluate(param_coord, {j})[0], 0.07));
     }
   }
 }
@@ -381,10 +381,10 @@ TEST_F(A3DBSplineForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
               bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 1);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(5).get(), DoubleEq(1));
   ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 6);
-  util::MultiIndexHandler<3> coord_handler({21, 21, 21});
+  util::MultiIndexHandler<3> coord_handler({11, 11, 11});
   for (int i = 0; i < coord_handler.Get1DLength(); ++i, coord_handler++) {
     std::array<ParamCoord, 3> param_coord{
-        ParamCoord(coord_handler[0] / 20.0), ParamCoord(coord_handler[1] / 20.0), ParamCoord(coord_handler[2] / 20.0)};
+        ParamCoord(coord_handler[0] / 10.0), ParamCoord(coord_handler[1] / 10.0), ParamCoord(coord_handler[2] / 10.0)};
     for (int j = 0; j < bspline_3d_after_->GetDimension(); ++j) {
       ASSERT_THAT(bspline_3d_after_->Evaluate(param_coord, {j})[0],
                   DoubleNear(bspline_3d_before_->Evaluate(param_coord, {j})[0], 0.21));
@@ -398,10 +398,10 @@ TEST_F(A3DBSplineForKnotRemoval, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
               bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 2);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(4).get(), DoubleEq(1));
   ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 12);
-  util::MultiIndexHandler<3> coord_handler({21, 21, 21});
+  util::MultiIndexHandler<3> coord_handler({11, 11, 11});
   for (int i = 0; i < coord_handler.Get1DLength(); ++i, coord_handler++) {
     std::array<ParamCoord, 3> param_coord{
-        ParamCoord(coord_handler[0] / 20.0), ParamCoord(coord_handler[1] / 20.0), ParamCoord(coord_handler[2] / 20.0)};
+        ParamCoord(coord_handler[0] / 10.0), ParamCoord(coord_handler[1] / 10.0), ParamCoord(coord_handler[2] / 10.0)};
     for (int j = 0; j < bspline_3d_after_->GetDimension(); ++j) {
       ASSERT_THAT(bspline_3d_after_->Evaluate(param_coord, {j})[0],
                   DoubleNear(bspline_3d_before_->Evaluate(param_coord, {j})[0], 0.281));
@@ -451,15 +451,15 @@ class A3DNURBSForKnotRemoval : public Test {  // NOLINT
 };
 
 TEST_F(A3DNURBSForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
-  ASSERT_THAT(nurbs_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 0.21), 1);
+  ASSERT_THAT(nurbs_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 3.86), 1);
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
               nurbs_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 1);
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetKnot(5).get(), DoubleEq(1));
   ASSERT_THAT(nurbs_3d_after_->GetNumberOfControlPoints(), nurbs_3d_before_->GetNumberOfControlPoints() - 6);
-  util::MultiIndexHandler<3> coord_handler({11, 11, 11});
+  util::MultiIndexHandler<3> coord_handler({6, 6, 6});
   for (int i = 0; i < coord_handler.Get1DLength(); ++i, coord_handler++) {
     std::array<ParamCoord, 3> param_coord{
-        ParamCoord(coord_handler[0] / 10.0), ParamCoord(coord_handler[1] / 10.0), ParamCoord(coord_handler[2] / 10.0)};
+        ParamCoord(coord_handler[0] / 5.0), ParamCoord(coord_handler[1] / 5.0), ParamCoord(coord_handler[2] / 5.0)};
     for (int j = 0; j < nurbs_3d_after_->GetDimension(); ++j) {
       ASSERT_THAT(nurbs_3d_after_->Evaluate(param_coord, {j})[0],
                   DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {j})[0], 0.21));
@@ -468,18 +468,18 @@ TEST_F(A3DNURBSForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
 }
 
 TEST_F(A3DNURBSForKnotRemoval, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
-  ASSERT_THAT(nurbs_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 0.32, 2), 2);
+  ASSERT_THAT(nurbs_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 5.3, 2), 2);
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
               nurbs_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 2);
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetKnot(4).get(), DoubleEq(1));
   ASSERT_THAT(nurbs_3d_after_->GetNumberOfControlPoints(), nurbs_3d_before_->GetNumberOfControlPoints() - 12);
-  util::MultiIndexHandler<3> coord_handler({11, 11, 11});
+  util::MultiIndexHandler<3> coord_handler({6, 6, 6});
   for (int i = 0; i < coord_handler.Get1DLength(); ++i, coord_handler++) {
     std::array<ParamCoord, 3> param_coord{
-        ParamCoord(coord_handler[0] / 10.0), ParamCoord(coord_handler[1] / 10.0), ParamCoord(coord_handler[2] / 10.0)};
+        ParamCoord(coord_handler[0] / 5.0), ParamCoord(coord_handler[1] / 5.0), ParamCoord(coord_handler[2] / 5.0)};
     for (int j = 0; j < nurbs_3d_after_->GetDimension(); ++j) {
       ASSERT_THAT(nurbs_3d_after_->Evaluate(param_coord, {j})[0],
-                  DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {j})[0], 0.32));
+                  DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {j})[0], 0.23));
     }
   }
 }
