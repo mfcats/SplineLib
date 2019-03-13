@@ -66,10 +66,10 @@ class PhysicalSpace {
     return baf::ControlPoint(coordinates);
   }
 
-  virtual void SetControlPoint(std::array<int, DIM> indices, const baf::ControlPoint &control_point, int dimension,
-                               int (*before)(int)) {
+  void SetControlPoint(std::array<int, DIM> indices, const baf::ControlPoint &control_point, int dimension = 0,
+                       int (*before)(int) = nullptr) {
     const std::array<int, DIM> number_of_points_before(number_of_points_);
-    number_of_points_[dimension] = before(number_of_points_[dimension]);
+    if (before) number_of_points_[dimension] = before(number_of_points_[dimension]);
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
     point_handler.SetIndices(indices);
     int first = dimension_ * point_handler.Get1DIndex();
@@ -88,7 +88,7 @@ class PhysicalSpace {
   }
 
   void RemoveControlPoints(int number) {
-    control_points_.erase(control_points_.end() - number * dimension_ - 1, control_points_.end() - 1);
+    control_points_.erase(control_points_.end() - number * dimension_, control_points_.end());
   }
 
   virtual int GetNumberOfControlPoints() const {
