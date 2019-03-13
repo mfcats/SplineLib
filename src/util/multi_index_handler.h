@@ -86,6 +86,14 @@ class MultiIndexHandler {
     }
   }
 
+  void Set1DIndex(int index) {
+    bool reached = false;
+    while (!reached) {
+      (*this)++;
+      if (this->Get1DIndex() == index) reached = true;
+    }
+  }
+
   std::array<int, DIM> GetIndices() const {
     return current_multi_index_value_;
   }

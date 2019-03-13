@@ -19,7 +19,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "element.h"
 #include "multi_index_handler.h"
-#include "named_type.h"
 #include "spline.h"
 
 namespace iga {
@@ -27,113 +26,94 @@ namespace elm {
 template<int DIM>
 class ElementGenerator {
  public:
-  explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spline_(std::move(spl)) {}
+  explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spl_(std::move(spl)) {
+    for (int i = 0; i < DIM; ++i) {
+      for (uint64_t j = 0; j < spl_->GetKnotVector(i)->GetNumberOfKnots() - spl_->GetDegree(i).get() - 1; ++j) {
+        if ((spl_->GetKnotVector(i)->GetKnot(j).get() - spl_->GetKnotVector(i)->GetKnot(j + 1).get()) != 0) {
+          elements_[i].emplace_back(Element({spl_->GetKnotVector(i)->GetKnot(j),
+                                             spl_->GetKnotVector(i)->GetKnot(j + 1)}));
+        }
+      }
+    }
+  }
 
   std::vector<iga::elm::Element> GetElementList(int dir) const {
-    std::vector<iga::elm::Element> elements;
-    for (uint64_t k = 0; k < spline_->GetKnotVector(dir)->GetNumberOfKnots() - spline_->GetDegree(dir).get() - 1;
-         ++k) {
-      if ((GetLowerElementBound(k, dir).get() - GetHigherElementBound(k, dir).get()) != 0) {
-        elements.emplace_back(Element(1, GetElementNodes(k, dir)));
-      }
-    }
-    return elements;
+    return elements_[dir];
   }
 
-  std::vector<int> GetKnotMultiplicity(int dir) const {
-    std::vector<int> knot_multiplicity;
-    std::vector<ParamCoord> internal_knots = GetInternalKnots(dir);
-    int temp = 0;
-    for (uint64_t j = 0; j < internal_knots.size() - 1; ++j) {
-      if (internal_knots[j].get() == internal_knots[j + 1].get()) {
-        temp += 1;
-      } else if ((internal_knots[j].get() != internal_knots[j + 1].get()) || (j == internal_knots.size() - 2)) {
-        knot_multiplicity.emplace_back(temp);
-        temp = 0;
-      }
+  std::array<int, DIM> GetNumElementsPerParamDir() const {
+    std::array<int, DIM> num_elms{};
+    for (int i = 0; i < DIM; ++i) {
+      num_elms[i] = elements_[i].size();
     }
-    return knot_multiplicity;
+    return num_elms;
   }
 
-  int GetElementNumberAtParamCoord(std::array<ParamCoord, 2> param_coord) const {
-    uint64_t element_number_xi = 0;
-    uint64_t element_number_eta = 0;
-    std::vector<ParamCoord> unique_knots_xi = GetUniqueKnots(0);
-    std::vector<ParamCoord> unique_knots_eta = GetUniqueKnots(1);
-    for (uint64_t i = 0; i < unique_knots_xi.size() - 1; ++i) {
-      if ((unique_knots_xi[i].get() <= param_coord[0].get()) &&
-          (unique_knots_xi[i + 1].get() > param_coord[0].get())) {
-        element_number_xi = i;
-      }
+  int GetNumberOfElements() const {
+    int num_elms = 1;
+    for (int i = 0; i < DIM; ++i) {
+      num_elms *= elements_[i].size();
     }
-    for (uint64_t i = 0; i < unique_knots_eta.size() - 1; ++i) {
-      if ((unique_knots_eta[i].get() <= param_coord[1].get()) &&
-          (unique_knots_eta[i + 1].get() > param_coord[1].get())) {
-        element_number_eta = i;
-      }
-    }
-    return Get1DElementIndex(element_number_xi, element_number_eta);
+    return num_elms;
   }
 
-  std::array<int, 2> Get2DElementIndices(int element_number) const {
-    element_number += 1;
-    int number_of_elements_xi = static_cast<int>(GetElementList(0).size());
-    int q = element_number / number_of_elements_xi;
-    int r = element_number % number_of_elements_xi;
-    std::array<int, 2> element_indices_2d{};
-    if (r == 0) {
-      element_indices_2d[1] = q - 1;
-      element_indices_2d[0] = number_of_elements_xi - 1;
-    } else {
-      element_indices_2d[1] = q;
-      element_indices_2d[0] = r - 1;
+  std::array<int, DIM> GetKnotMultiplicityIndexShift(int elm_num) const {
+    std::array<int, DIM> index_shift{};
+    std::array<std::vector<ParamCoord>, DIM> internal = GetInternalKnots();
+    std::array<std::vector<ParamCoord>, DIM> unique = GetUniqueKnots();
+    for (int i = 0; i < DIM; ++i) {
+      ParamCoord lower_bound = unique[i][GetElementIndices(elm_num)[i]];
+      internal[i].erase(
+          std::find(internal[i].rbegin(), internal[i].rend(), lower_bound).base(), internal[i].rbegin().base());
+      unique[i].erase(std::find(unique[i].rbegin(), unique[i].rend(), lower_bound).base(), unique[i].rbegin().base());
+      index_shift[i] = internal[i].size() - unique[i].size();
     }
-    return element_indices_2d;
+    return index_shift;
+  }
+
+  int GetElementNumberAtParamCoord(std::array<ParamCoord, DIM> param_coords) const {
+    std::array<int, DIM> element_indices{};
+    for (int i = 0; i < DIM; ++i) {
+      baf::KnotVector unique_kv(GetUniqueKnots()[i]);
+      element_indices[i] = unique_kv.GetKnotSpan(param_coords[i]).get();
+    }
+    return Get1DElementIndex(element_indices);
+  }
+
+  std::array<int, DIM> GetElementIndices(int element_index) const {
+    util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumElementsPerParamDir());
+    mult_ind_handl_elm = mult_ind_handl_elm + element_index;
+    return mult_ind_handl_elm.GetIndices();
+  }
+
+  int Get1DElementIndex(std::array<int, DIM> element_indices) const {
+    util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumElementsPerParamDir());
+    mult_ind_handl_elm.SetIndices(element_indices);
+    return mult_ind_handl_elm.Get1DIndex();
   }
 
  private:
-  std::vector<ParamCoord> GetInternalKnots(int dir) const {
-    std::vector<ParamCoord> knots = spline_->GetKnots()[dir];
-    std::vector<ParamCoord> internal_knots;
-    int degree = spline_->GetDegree(dir).get();
-    for (auto j = uint64_t(degree); j < knots.size() - degree; ++j) {
-      internal_knots.emplace_back(knots[j]);
+  std::array<std::vector<ParamCoord>, DIM> GetInternalKnots() const {
+    std::array<std::vector<ParamCoord>, DIM> internal_knots;
+    for (int i = 0; i < DIM; ++i) {
+      std::vector<ParamCoord> knots = spl_->GetKnots()[i];
+      auto first = knots.begin() + spl_->GetDegree(i).get();
+      auto last = knots.end() - spl_->GetDegree(i).get();
+      internal_knots[i] = std::vector<ParamCoord>(first, last);
     }
     return internal_knots;
   }
 
-  std::vector<ParamCoord> GetUniqueKnots(int dir) const {
-    std::vector<ParamCoord> internal_knots = GetInternalKnots(dir);
-    std::vector<ParamCoord> unique_knots;
-    for (uint64_t i = 0; i < internal_knots.size() - 1; ++i) {
-      if (internal_knots[i].get() != internal_knots[i + 1].get()) {
-        unique_knots.emplace_back(internal_knots[i]);
-      }
+  std::array<std::vector<ParamCoord>, DIM> GetUniqueKnots() const {
+    std::array<std::vector<ParamCoord>, DIM> internal_knots = GetInternalKnots();
+    for (int i = 0; i < DIM; ++i) {
+      internal_knots[i].erase(unique(internal_knots[i].begin(), internal_knots[i].end()), internal_knots[i].end());
     }
-    unique_knots.emplace_back(internal_knots[internal_knots.size() - 1]);
-    return unique_knots;
+    return internal_knots;
   }
 
-  int Get1DElementIndex(uint64_t element_number_xi, uint64_t element_number_eta) const {
-    util::MultiIndexHandler<2> multi_index_handler({static_cast<int>(GetElementList(0).size()),
-                                                    static_cast<int>(GetElementList(1).size())});
-    multi_index_handler.SetIndices({static_cast<int>(element_number_xi), static_cast<int>(element_number_eta)});
-    return multi_index_handler.Get1DIndex();
-  }
-
-  ParamCoord GetLowerElementBound(uint64_t currentKnot, int dir) const {
-    return spline_->GetKnotVector(dir)->GetKnots()[currentKnot];
-  }
-
-  ParamCoord GetHigherElementBound(uint64_t currentKnot, int dir) const {
-    return spline_->GetKnotVector(dir)->GetKnots()[currentKnot + 1];
-  }
-
-  std::vector<ParamCoord> GetElementNodes(uint64_t currentKnot, int dir) const {
-    return {GetLowerElementBound(currentKnot, dir), GetHigherElementBound(currentKnot, dir)};
-  }
-
-  std::shared_ptr<spl::Spline<DIM>> spline_;
+  std::shared_ptr<spl::Spline<DIM>> spl_;
+  std::array<std::vector<iga::elm::Element>, DIM> elements_;
 };
 }  // namespace elm
 }  // namespace iga

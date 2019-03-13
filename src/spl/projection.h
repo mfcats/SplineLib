@@ -82,20 +82,21 @@ class Projection {
   static std::array<ParamCoord, DIM> FindInitialValue1D(const std::vector<double> &point_phys_coords,
                                                         const std::shared_ptr<spl::Spline<DIM>> &spline,
                                                         const std::vector<int> &dimensions) {
-    iga::elm::ElementGenerator element_generator(spline);
+    iga::elm::ElementGenerator<1> element_generator(spline);
     std::vector<iga::elm::Element> elements = element_generator.GetElementList(0);
     std::array<ParamCoord, DIM> paramCoords = {ParamCoord{0}};
-    std::vector<double> splinePhysicalCoords =
-        spline->Evaluate({ParamCoord{(0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0)).get())}}, dimensions);
+    std::vector<double> splinePhysicalCoords = spline->Evaluate({ParamCoord{(0.5 * (
+        elements[0].GetUpperBound() - elements[0].GetLowerBound()).get())}}, dimensions);
     double distance = util::VectorUtils<double>::ComputeDistance(point_phys_coords, splinePhysicalCoords);
-    paramCoords[0] = ParamCoord{{0.5 * (elements[0].GetNode(1) - elements[0].GetNode(0)).get()}};
+    paramCoords[0] = ParamCoord{{0.5 * (elements[0].GetUpperBound() - elements[0].GetLowerBound()).get()}};
     for (auto i = 1u; i < elements.size(); ++i) {
-      splinePhysicalCoords = spline->Evaluate({ParamCoord{
-          0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)).get() + elements[i].GetNode(0).get()}}, dimensions);
+      splinePhysicalCoords = spline->Evaluate({ParamCoord{0.5 * (
+          elements[i].GetUpperBound() - elements[i].GetLowerBound()).get() + elements[i].GetLowerBound().get()}},
+              dimensions);
       if (util::VectorUtils<double>::ComputeDistance(point_phys_coords, splinePhysicalCoords) < distance) {
         distance = util::VectorUtils<double>::ComputeDistance(point_phys_coords, splinePhysicalCoords);
-        paramCoords[0] =
-            ParamCoord{0.5 * (elements[i].GetNode(1) - elements[i].GetNode(0)).get() + elements[i].GetNode(0).get()};
+        paramCoords[0] = ParamCoord{0.5 * (
+                elements[i].GetUpperBound() - elements[i].GetLowerBound()).get() + elements[i].GetLowerBound().get()};
       }
     }
     return paramCoords;

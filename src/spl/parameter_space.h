@@ -100,6 +100,10 @@ class ParameterSpace {
     return knot_vector_[direction];
   }
 
+  std::array<std::shared_ptr<baf::KnotVector>, DIM> GetKnotVectors() const {
+    return knot_vector_;
+  }
+
   virtual double GetBasisFunctions(std::array<int, DIM> indices, std::array<ParamCoord, DIM> param_coord) const {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
