@@ -22,3 +22,8 @@ set(TEST_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/xml_reader_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/xml_writer_test.cc
         PARENT_SCOPE)
+
+set(IGES_READ ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read.iges PARENT_SCOPE)
+set(IGES_READ_2 ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read2.iges PARENT_SCOPE)
+set(PATH_TO_IRIT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test_files/test.itd PARENT_SCOPE)
+set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test_files/spline_tank.xml PARENT_SCOPE)
