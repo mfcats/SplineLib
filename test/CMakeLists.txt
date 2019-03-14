@@ -19,9 +19,6 @@ add_subdirectory(io)
 add_subdirectory(spl)
 add_subdirectory(util)
 
-set(TEST_SOURCES
-        ${TEST_SOURCES_BAF} ${TEST_SOURCES_IGA} ${TEST_SOURCES_IO} ${TEST_SOURCES_SPL} ${TEST_SOURCES_UTIL})
-
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
 

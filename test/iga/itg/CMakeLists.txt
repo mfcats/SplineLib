@@ -13,6 +13,8 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(TEST_SOURCES_IGA_ITG
-        integration_point_test.cc
-        integration_rule_test.cc)
+set(TEST_SOURCES
+        ${TEST_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/integration_point_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/integration_rule_test.cc
+        PARENT_SCOPE)

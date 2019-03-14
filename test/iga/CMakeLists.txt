@@ -13,17 +13,17 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(TEST_SOURCES_IGA
-        ${TEST_SOURCES_IGA_EML}
-        ${TEST_SOURCES_IGA_ITG}
-        basis_function_handler_test.cc
-        bdf_handler_test.cc
-        connectivity_handler_test.cc
-        element_integral_calculator_test.cc
-        linear_equation_assembler_test.cc
-        mapping_handler_test.cc
-        solution_vtk_writer_test.cc
-        solution_vtk_writer_examples.cc)
+set(TEST_SOURCES
+        ${TEST_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/basis_function_handler_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/bdf_handler_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/connectivity_handler_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/element_integral_calculator_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/linear_equation_assembler_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/mapping_handler_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/solution_vtk_writer_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/solution_vtk_writer_examples.cc
+        PARENT_SCOPE)
 
 add_subdirectory(elm)
 add_subdirectory(itg)

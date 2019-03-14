@@ -13,5 +13,7 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(TEST_SOURCES_UTIL
-        multi_index_handler_test.cc)
+set(TEST_SOURCES
+        ${TEST_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/multi_index_handler_test.cc
+        PARENT_SCOPE)

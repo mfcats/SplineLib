@@ -13,9 +13,11 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(TEST_SOURCES_BAF
-        b_spline_basis_function_test.cc
-        basis_function_factory.cc
-        control_point_test.cc
-        knot_vector_test.cc
-        zero_degree_b_spline_basis_function_test.cc)
+set(TEST_SOURCES
+        ${TEST_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/b_spline_basis_function_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/basis_function_factory.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/control_point_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/knot_vector_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/zero_degree_b_spline_basis_function_test.cc
+        PARENT_SCOPE)

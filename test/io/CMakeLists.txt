@@ -13,18 +13,20 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(TEST_SOURCES_IO
-        iges_reader_writer_test.cc
-        io_converter_test.cc
-        irit_reader_writer_test.cc
-        vtk_writer_test.cc
-        xml_reader_test.cc
-        xml_writer_test.cc)
+set(TEST_SOURCES
+        ${TEST_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/iges_reader_writer_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/io_converter_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/irit_reader_writer_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/vtk_writer_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/xml_reader_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/xml_writer_test.cc
+        PARENT_SCOPE)
 
-set(IGES_READ ${CMAKE_CURRENT_SOURCE_DIR}/io/test_files/read.iges)
-set(IGES_READ_2 ${CMAKE_CURRENT_SOURCE_DIR}/io/test_files/read2.iges)
-set(PATH_TO_IRIT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/io/test_files/test.itd)
-set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/io/test_files/spline_tank.xml)
+set(IGES_READ ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read.iges)
+set(IGES_READ_2 ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read2.iges)
+set(PATH_TO_IRIT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test_files/test.itd)
+set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test_files/spline_tank.xml)
 configure_file(config_irit.in.h ${CMAKE_CURRENT_BINARY_DIR}/config_irit.h)
 configure_file(config_xml.in.h ${CMAKE_CURRENT_BINARY_DIR}/config_xml.h)
 configure_file(config_iges.in.h ${CMAKE_CURRENT_BINARY_DIR}/config_iges.h)

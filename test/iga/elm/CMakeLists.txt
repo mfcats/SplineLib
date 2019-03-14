@@ -13,7 +13,9 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(TEST_SOURCES_IGA_ELM
-        element_generator_test.cc
-        element_integration_point_test.cc
-        element_test.cc)
+set(TEST_SOURCES
+        ${TEST_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/element_generator_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/element_integration_point_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/element_test.cc
+        PARENT_SCOPE)

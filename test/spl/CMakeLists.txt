@@ -13,25 +13,28 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-set(TEST_SOURCES_SPL
-        b_spline_2d_test.cc
-        b_spline_test.cc
-        knot_insertion_and_removal_test.cc
-        knot_insertion_test.cc
-        knot_removal_test.cc
-        nurbs_2d_test.cc
-        nurbs_3d_test.cc
-        nurbs_test.cc
-        parameter_space_test.cc
-        physical_space_test.cc
-        projection_curve_test.cc
-        projection_surface_test.cc
-        random_b_spline_generator_test.cc
-        random_nurbs_generator_test.cc
-        spline_subdivision_test.cc
-        square_generator_test.cc
-        surface_generator_test.cc
-        weighted_physical_space_test.cc)
+set(TEST_SOURCES
+        ${TEST_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/b_spline_2d_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/b_spline_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/knot_insertion_and_removal_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/knot_insertion_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/knot_removal_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/nurbs_2d_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/nurbs_3d_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/nurbs_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/parameter_space_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/physical_space_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/projection_curve_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/projection_surface_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/random_b_spline_generator_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/random_nurbs_generator_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/spline_subdivision_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/square_generator_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/surface_generator_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/weighted_physical_space_test.cc
+        PARENT_SCOPE)
 
 set(MAX_SOURCES
-        surface_generator_test)
+        ${CMAKE_CURRENT_SOURCE_DIR}/surface_generator_test
+        PARENT_SCOPE)
