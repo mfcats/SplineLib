@@ -13,6 +13,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include <stdlib.h>
+#include <iostream>
 
 #include "io_converter.h"
 
@@ -22,6 +23,8 @@ int main(int argc, char *argv[]) {
   }
   const char *input = argv[1];
   const char *output = argv[2];
+  std::cout << "The input file is " << input << std::endl;
+  std::cout << "The output file is " << output << std::endl;
   io::IOConverter converter;
   converter.ConvertFile(input, output);
   return 0;
