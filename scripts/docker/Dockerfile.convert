@@ -23,4 +23,4 @@ WORKDIR /code/example/build
 RUN spack load splinelib@github build_type=Release %gcc@8 && cmake ../
 RUN make
 
-ENTRYPOINT spack load splinelib@github build_type=Release %gcc@8 && ./IoConverter INPUT OUTPUT
+ENTRYPOINT spack load splinelib@github build_type=Release %gcc@8 && ./IoConverter /code/example/${INPUT} /code/example/${OUTPUT}

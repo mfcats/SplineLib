@@ -1,0 +1,7 @@
+#!/bin/bash
+cd ../
+docker build -t splinelib:convert -f scripts/docker/Dockerfile.convert .
+docker run -te "TERM=xterm-256color" -e INPUT=$1 -e OUTPUT=$2 --name convert splinelib:convert
+docker cp convert:/code/example/$OUTPUT example
+docker rm convert
+cd example
