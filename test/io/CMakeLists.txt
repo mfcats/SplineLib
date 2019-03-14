@@ -23,10 +23,10 @@ set(TEST_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/xml_writer_test.cc
         PARENT_SCOPE)
 
-set(IGES_READ ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read.iges)
-set(IGES_READ_2 ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read2.iges)
-set(PATH_TO_IRIT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test_files/test.itd)
-set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test_files/spline_tank.xml)
-configure_file(config_irit.in.h ${CMAKE_CURRENT_BINARY_DIR}/config_irit.h)
-configure_file(config_xml.in.h ${CMAKE_CURRENT_BINARY_DIR}/config_xml.h)
-configure_file(config_iges.in.h ${CMAKE_CURRENT_BINARY_DIR}/config_iges.h)
+set(IGES_READ ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read.iges PARENT_SCOPE)
+set(IGES_READ_2 ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read2.iges PARENT_SCOPE)
+set(PATH_TO_IRIT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test_files/test.itd PARENT_SCOPE)
+set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test_files/spline_tank.xml PARENT_SCOPE)
+configure_file(config_irit.in.h ${CMAKE_CURRENT_BINARY_DIR}/../config_irit.h)
+configure_file(config_xml.in.h ${CMAKE_CURRENT_BINARY_DIR}/../config_xml.h)
+configure_file(config_iges.in.h ${CMAKE_CURRENT_BINARY_DIR}/../config_iges.h)
