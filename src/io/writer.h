@@ -28,30 +28,34 @@ class Writer {
  public:
   Writer() = default;
 
-  virtual void WriteFile(const std::vector<std::any> &splines, const char *filename) {
+  virtual void WriteFile(const std::vector<std::any> &splines, const char *filename) const {
     if (util::StringOperations::EndsWith(filename, ".iges")) {
       io::IGESWriter iges_writer;
-      std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimensions(splines, 2);
+      std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 2);
       iges_writer.WriteFile(splines_with_max_dim, filename);
+      PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 2, filename);
     } else if (util::StringOperations::EndsWith(filename, ".itd")) {
       io::IRITWriter irit_writer;
-      std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimensions(splines, 3);
+      std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 3);
+      PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 3, filename);
       return irit_writer.WriteFile(splines_with_max_dim, filename);
     } else if (util::StringOperations::EndsWith(filename, ".vtk")) {
       io::VTKWriter vtk_writer;
-      std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimensions(splines, 3);
+      std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 3);
+      PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 3, filename);
       return vtk_writer.WriteFile(splines_with_max_dim, filename, {{10}, {10}, {10}});
     } else if (util::StringOperations::EndsWith(filename, ".xml")) {
       io::XMLWriter xml_writer;
-      std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimensions(splines, 4);
+      std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 4);
+      PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 4, filename);
       return xml_writer.WriteFile(splines_with_max_dim, filename);
     } else {
-      throw std::runtime_error("Only files of format iges, itd, vtk and xml can be written.");
+      throw std::runtime_error(R"(Only files of format ".iges", ".itd", ".vtk" and ".xml" can be written.)");
     }
   }
 
  private:
-  std::vector<std::any> GetSplinesOfCorrectDimensions(const std::vector<std::any> &splines, int max_dim) {
+  std::vector<std::any> GetSplinesOfCorrectDimension(const std::vector<std::any> &splines, int max_dim) const {
     std::vector<std::any> splines_with_max_dim;
     for (const auto &spline : splines) {
       if (util::AnyCasts::GetSplineDimension(spline) <= max_dim) {
@@ -59,6 +63,13 @@ class Writer {
       }
     }
     return splines_with_max_dim;
+  }
+
+  void PrintWarningForOmittedSplines(size_t splines, size_t count, int max_dim, const char *filename) const {
+    if (count < splines) {
+      std::cerr << "Only the " << count << " splines of dimension equal or less than " << max_dim
+                << " have been written to " << filename << "." << std::endl;
+    }
   }
 };
 }  // namespace io

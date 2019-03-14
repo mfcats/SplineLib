@@ -37,7 +37,7 @@ class Reader {
       io::XMLReader xml_reader;
       return xml_reader.ReadFile(filename);
     } else {
-      throw std::runtime_error("Only files of format iges, itd and xml can be read.");
+      throw std::runtime_error(R"(Only files of format ".iges", ".itd" and ".xml" can be read.)");
     }
   }
 };
