@@ -13,6 +13,9 @@
 # <http://www.gnu.org/licenses/>.
 #
 
+add_subdirectory(elm)
+add_subdirectory(itg)
+
 set(TEST_SOURCES
         ${TEST_SOURCES}
         ${CMAKE_CURRENT_SOURCE_DIR}/basis_function_handler_test.cc
@@ -24,6 +27,3 @@ set(TEST_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/solution_vtk_writer_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/solution_vtk_writer_examples.cc
         PARENT_SCOPE)
-
-add_subdirectory(elm)
-add_subdirectory(itg)
