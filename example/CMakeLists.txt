@@ -31,4 +31,3 @@ add_executable(IoConverter ${IO})
 target_link_libraries(ex1 SplineLib::splinelibspl)
 target_link_libraries(TestcaseOptimizer SplineLib::splinelibspl SplineLib::splinelibutil SplineLib::splinelibio)
 target_link_libraries(IoConverter SplineLib::splinelibspl SplineLib::splinelibutil SplineLib::splinelibio)
-
