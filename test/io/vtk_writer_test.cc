@@ -19,9 +19,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::Ne;
 
-class A1DBNURBSForVTKWriter {  // NOLINT
+class A1DNURBSForVTKWriter {  // NOLINT
  public:
-  A1DBNURBSForVTKWriter() {
+  A1DNURBSForVTKWriter() {
     std::array<Degree, 1> degree = {Degree{1}};
     KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}))};
@@ -38,9 +38,9 @@ class A1DBNURBSForVTKWriter {  // NOLINT
   std::shared_ptr<spl::NURBS<1>> nurbs_1d_;
 };
 
-class A2DBNURBSForVTKWriter {  // NOLINT
+class A2DNURBSForVTKWriter {  // NOLINT
  public:
-  A2DBNURBSForVTKWriter() {
+  A2DNURBSForVTKWriter() {
     std::array<Degree, 2> degree = {Degree{1}, Degree{1}};
     KnotVectors<2> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector(
@@ -66,9 +66,9 @@ class A2DBNURBSForVTKWriter {  // NOLINT
   std::shared_ptr<spl::NURBS<2>> nurbs_2d_;
 };
 
-class A3DBNURBSForVTKWriter {  // NOLINT
+class A3DNURBSForVTKWriter {  // NOLINT
  public:
-  A3DBNURBSForVTKWriter() {
+  A3DNURBSForVTKWriter() {
     std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{1}};
     KnotVectors<3> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector(
@@ -96,9 +96,9 @@ class A3DBNURBSForVTKWriter {  // NOLINT
 };
 
 class AVTKWriter : public Test,
-                   public A1DBNURBSForVTKWriter, public A2DBNURBSForVTKWriter, public A3DBNURBSForVTKWriter {  // NOLINT
+                   public A1DNURBSForVTKWriter, public A2DNURBSForVTKWriter, public A3DNURBSForVTKWriter {  // NOLINT
  public:
-  AVTKWriter() : vtk_writer_(std::make_unique<io::VTKWriter>()), scattering_({{100}, {30, 30}, {10, 8, 5}}) {
+  AVTKWriter() : vtk_writer_(std::make_unique<io::VTKWriter>()), scattering_({{100}, {40, 30}, {10, 8, 12}}) {
     std::any nurbs_1d_any = std::make_any<std::shared_ptr<spl::NURBS<1>>>(nurbs_1d_);
     std::any nurbs_2d_any = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_2d_);
     std::any nurbs_3d_any = std::make_any<std::shared_ptr<spl::NURBS<3>>>(nurbs_3d_);
@@ -121,30 +121,34 @@ TEST_F(AVTKWriter, CreatesVTKFile) {  // NOLINT
     file += line + "\n";
   }
   ASSERT_THAT(file.find("# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("DATASET UNSTRUCTURED_GRID\nPOINTS 1656 double\n"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("CELLS 1400 8400\n"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("CELL_TYPES 1400\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("DATASET UNSTRUCTURED_GRID\nPOINTS 2659 double\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CELLS 2260 14940\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CELL_TYPES 2260\n"), Ne(std::string::npos));
   remove("splines.vtk");
 }
 
 TEST_F(AVTKWriter, ThrowsForMissingEntryInScattering) {  // NOLINT
   scattering_.pop_back();
   ASSERT_THROW(vtk_writer_->WriteFile(splines_, "splines.vtk", scattering_), std::runtime_error);
+  remove("splines.vtk");
 }
 
 TEST_F(AVTKWriter, ThrowsForTooManyEntriesInScattering) {  // NOLINT
   scattering_.push_back({10});
   ASSERT_THROW(vtk_writer_->WriteFile(splines_, "splines.vtk", scattering_), std::runtime_error);
+  remove("splines.vtk");
 }
 
 TEST_F(AVTKWriter, ThrowsForMissingEntryInSplineScattering) {  // NOLINT
   scattering_.back().pop_back();
   ASSERT_THROW(vtk_writer_->WriteFile(splines_, "splines.vtk", scattering_), std::runtime_error);
+  remove("splines.vtk");
 }
 
 TEST_F(AVTKWriter, ThrowsForTooManyEntriesInSplineScattering) {  // NOLINT
-  scattering_[1].push_back(20);
+  scattering_.front().push_back(20);
   ASSERT_THROW(vtk_writer_->WriteFile(splines_, "splines.vtk", scattering_), std::runtime_error);
+  remove("splines.vtk");
 }
 
 TEST_F(AVTKWriter, ThrowsForSplineOfDimensionFour) {  // NOLINT
