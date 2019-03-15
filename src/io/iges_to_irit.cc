@@ -13,7 +13,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "iges_reader.h"
-#include "writer.h"
+#include "irit_writer.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
@@ -25,14 +25,11 @@ int main(int argc, char *argv[]) {
   std::vector<std::any> splines;
   try {
     io::IGESReader iges_reader;
-    splines = iges_reader.ReadFile(filename);
+    splines = iges_reader.ReadFile(input);
   } catch (...) {
-    throw std::runtime_error(R"(The input file isn't of correct ".iges" format.)")
+    throw std::runtime_error(R"(The input file isn't of correct ".iges" format.)");
   }
   io::IRITWriter irit_writer;
-  io::Writer writer;
-  std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 3);
-  irit_writer.WriteFile(splines_with_max_dim, output);
-  PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 3, output);
+  irit_writer.WriteFile(splines, output);
   return 0;
 }

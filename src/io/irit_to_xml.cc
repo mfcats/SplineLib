@@ -12,18 +12,24 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <stdlib.h>
-#include <iostream>
-
-#include "io_converter.h"
+#include "irit_reader.h"
+#include "xml_writer.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
-    throw std::runtime_error("One input file and one name of the output file are required");
+    throw std::runtime_error("Exactly one name of the input file and of the output file are required");
   }
   const char *input = argv[1];
   const char *output = argv[2];
-  io::IOConverter converter;
-  converter.ConvertFile(input, output);
+
+  std::vector<std::any> splines;
+  try {
+    io::IRITReader irit_reader;
+    splines = irit_reader.ReadFile(input);
+  } catch (...) {
+    throw std::runtime_error(R"(The input file isn't of correct ".itd" format.)");
+  }
+  io::XMLWriter xml_writer;
+  xml_writer.WriteFile(splines, output);
   return 0;
 }

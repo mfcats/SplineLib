@@ -12,18 +12,27 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <stdlib.h>
-#include <iostream>
-
-#include "io_converter.h"
+#include "xml_reader.h"
+#include "writer.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
-    throw std::runtime_error("One input file and one name of the output file are required");
+    throw std::runtime_error("Exactly one name of the input file and of the output file are required");
   }
   const char *input = argv[1];
   const char *output = argv[2];
-  io::IOConverter converter;
-  converter.ConvertFile(input, output);
+
+  std::vector<std::any> splines;
+  try {
+    io::XMLReader xml_reader;
+    splines = xml_reader.ReadFile(input);
+  } catch (...) {
+    throw std::runtime_error(R"(The input file isn't of correct ".xml" format.)");
+  }
+  io::IGESWriter iges_writer;
+  io::Writer writer;
+  std::vector<std::any> splines_with_max_dim = writer.GetSplinesOfCorrectDimension(splines, 2);
+  iges_writer.WriteFile(splines_with_max_dim, output);
+  writer.PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 2, output);
   return 0;
 }

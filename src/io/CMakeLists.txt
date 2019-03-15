@@ -14,15 +14,15 @@
 #
 
 add_library(splinelibio INTERFACE)
-add_executable(iges2irit irit_to_iges.cc)
-add_executable(iges2vtk irit_to_iges.cc)
-add_executable(iges2xml irit_to_iges.cc)
+add_executable(iges2irit iges_to_irit.cc)
+add_executable(iges2vtk iges_to_vtk.cc)
+add_executable(iges2xml iges_to_xml.cc)
 add_executable(irit2iges irit_to_iges.cc)
-add_executable(irit2vtk irit_to_iges.cc)
-add_executable(irit2xml irit_to_iges.cc)
-add_executable(xml2iges irit_to_iges.cc)
-add_executable(xml2irit irit_to_iges.cc)
-add_executable(xml2vtk irit_to_iges.cc)
+add_executable(irit2vtk irit_to_vtk.cc)
+add_executable(irit2xml irit_to_xml.cc)
+add_executable(xml2iges xml_to_iges.cc)
+add_executable(xml2irit xml_to_irit.cc)
+add_executable(xml2vtk xml_to_vtk.cc)
 
 target_include_directories(splinelibio INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)

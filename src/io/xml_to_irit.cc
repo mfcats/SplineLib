@@ -25,14 +25,14 @@ int main(int argc, char *argv[]) {
   std::vector<std::any> splines;
   try {
     io::XMLReader xml_reader;
-    splines = xml_reader.ReadFile(filename);
+    splines = xml_reader.ReadFile(input);
   } catch (...) {
-    throw std::runtime_error(R"(The input file isn't of correct ".xml" format.)")
+    throw std::runtime_error(R"(The input file isn't of correct ".xml" format.)");
   }
   io::IRITWriter irit_writer;
   io::Writer writer;
-  std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 3);
+  std::vector<std::any> splines_with_max_dim = writer.GetSplinesOfCorrectDimension(splines, 3);
   irit_writer.WriteFile(splines_with_max_dim, output);
-  PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 3, output);
+  writer.PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 3, output);
   return 0;
 }
