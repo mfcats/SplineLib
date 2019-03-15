@@ -27,7 +27,15 @@ add_executable(xml2vtk irit_to_iges.cc)
 target_include_directories(splinelibio INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_link_libraries(splinelibio INTERFACE splinelibspl pugixmllib)
-target_link_libraries(irit2iges splinelibio)
+target_link_libraries(iges2irit splinelibspl splinelibio)
+target_link_libraries(iges2vtk splinelibspl splinelibio)
+target_link_libraries(iges2xml splinelibspl splinelibio)
+target_link_libraries(irit2iges splinelibspl splinelibio)
+target_link_libraries(irit2vtk splinelibspl splinelibio)
+target_link_libraries(irit2xml splinelibspl splinelibio)
+target_link_libraries(xml2iges splinelibspl splinelibio)
+target_link_libraries(xml2irit splinelibspl splinelibio)
+target_link_libraries(xml2vtk splinelibspl splinelibio)
 
 
 install(
