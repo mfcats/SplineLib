@@ -56,7 +56,6 @@ class Writer {
     }
   }
 
- private:
   std::vector<std::any> GetSplinesOfCorrectDimension(const std::vector<std::any> &splines, int max_dim) const {
     std::vector<std::any> splines_with_max_dim;
     for (const auto &spline : splines) {
