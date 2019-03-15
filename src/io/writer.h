@@ -28,7 +28,9 @@ class Writer {
  public:
   Writer() = default;
 
-  virtual void WriteFile(const std::vector<std::any> &splines, const char *filename) const {
+  void WriteFile(const std::vector<std::any> &splines,
+                 const char *filename,
+                 const std::vector<std::vector<int>> &scattering = {}) const {
     if (util::StringOperations::EndsWith(filename, ".iges")) {
       io::IGESWriter iges_writer;
       std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 2);
@@ -43,7 +45,7 @@ class Writer {
       io::VTKWriter vtk_writer;
       std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 3);
       PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 3, filename);
-      return vtk_writer.WriteFile(splines_with_max_dim, filename, {{10}, {10}, {10}});
+      return vtk_writer.WriteFile(splines_with_max_dim, filename, scattering);
     } else if (util::StringOperations::EndsWith(filename, ".xml")) {
       io::XMLWriter xml_writer;
       std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 4);
