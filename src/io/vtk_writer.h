@@ -148,11 +148,15 @@ class VTKWriter {
 
   void Write2DCells(std::ofstream &file, std::array<int, 2> scattering, int offset) const {
     util::MultiIndexHandler<2> point_handler({scattering[0] + 1, scattering[1] + 1});
-    for (int j = 0; j < scattering[0]; ++j) {
-      for (int i = 0; i < scattering[1]; ++i) {
-        file << "4 " << (scattering[0] + 1) * j + i + offset << " " << (scattering[0] + 1) * j + i + 1 + offset << " "
-             << (scattering[0] + 1) * (j + 1) + i + 1 + offset << " " << (scattering[0] + 1) * (j + 1) + i + offset
-             << "\n";
+    for (int j = 0; j < scattering[1]; ++j) {
+      for (int i = 0; i <= scattering[0]; ++i, ++point_handler) {
+        if (point_handler.GetIndices()[0] != scattering[0] && point_handler.GetIndices()[1] != scattering[1]) {
+          file << "4 " << point_handler.Get1DIndex() + offset << " " << (point_handler + 1).Get1DIndex() + offset << " "
+               << (point_handler + scattering[0] + 1).Get1DIndex() + offset << " "
+               << (point_handler - 1).Get1DIndex() + offset
+               << "\n";
+          point_handler - (scattering[0] + 1);
+        }
       }
     }
   }
