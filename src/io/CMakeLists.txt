@@ -14,12 +14,24 @@
 #
 
 add_library(splinelibio INTERFACE)
+add_executable(iges2irit irit_to_iges.cc)
+add_executable(iges2vtk irit_to_iges.cc)
+add_executable(iges2xml irit_to_iges.cc)
+add_executable(irit2iges irit_to_iges.cc)
+add_executable(irit2vtk irit_to_iges.cc)
+add_executable(irit2xml irit_to_iges.cc)
+add_executable(xml2iges irit_to_iges.cc)
+add_executable(xml2irit irit_to_iges.cc)
+add_executable(xml2vtk irit_to_iges.cc)
+
 target_include_directories(splinelibio INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_link_libraries(splinelibio INTERFACE splinelibspl pugixmllib)
+target_link_libraries(irit2iges splinelibio)
+
 
 install(
-        TARGETS splinelibio
+        TARGETS splinelibio iges2irit iges2vtk iges2xml irit2iges irit2vtk irit2xml xml2iges xml2irit xml2vtk
         EXPORT "${targets_export_name}"
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
