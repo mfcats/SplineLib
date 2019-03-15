@@ -36,6 +36,7 @@ class VTKWriter {
     if (newFile.is_open()) {
       newFile << "# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n\nDATASET UNSTRUCTURED_GRID\n";
       std::vector<int> dimensions = GetSplineDimensions(splines);
+      ThrowIfScatteringHasWrongSizes(scattering, dimensions);
       std::vector<int> cells = GetNumberOfAllCells(dimensions, scattering);
       std::vector<int> points = GetNumberOfAllPoints(dimensions, scattering);
       newFile << "POINTS " << std::accumulate(points.begin(), points.end(), 0) << " double\n";
@@ -62,6 +63,17 @@ class VTKWriter {
       dimensions.push_back(util::AnyCasts::GetSplineDimension(spline));
     }
     return dimensions;
+  }
+
+  void ThrowIfScatteringHasWrongSizes(std::vector<std::vector<int>> scattering, std::vector<int> dimensions) const {
+    if (scattering.size() != dimensions.size()) {
+      throw std::runtime_error("There have to be as many scattering entries as splines to be written to vtk.");
+    }
+    for (size_t i = 0; i < dimensions.size(); ++i) {
+      if (static_cast<int>(scattering[i].size()) != dimensions[i]) {
+        throw std::runtime_error("There have to be a scattering entries for each spline dimension.");
+      }
+    }
   }
 
   std::vector<int> GetNumberOfAllPoints(const std::vector<int> &dimensions,

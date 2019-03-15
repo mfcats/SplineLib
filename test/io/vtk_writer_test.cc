@@ -127,6 +127,26 @@ TEST_F(AVTKWriter, CreatesVTKFile) {  // NOLINT
   remove("splines.vtk");
 }
 
+TEST_F(AVTKWriter, ThrowsForMissingEntryInScattering) {  // NOLINT
+  scattering_.pop_back();
+  ASSERT_THROW(vtk_writer_->WriteFile(splines_, "splines.vtk", scattering_), std::runtime_error);
+}
+
+TEST_F(AVTKWriter, ThrowsForTooManyEntriesInScattering) {  // NOLINT
+  scattering_.push_back({10});
+  ASSERT_THROW(vtk_writer_->WriteFile(splines_, "splines.vtk", scattering_), std::runtime_error);
+}
+
+TEST_F(AVTKWriter, ThrowsForMissingEntryInSplineScattering) {  // NOLINT
+  scattering_.back().pop_back();
+  ASSERT_THROW(vtk_writer_->WriteFile(splines_, "splines.vtk", scattering_), std::runtime_error);
+}
+
+TEST_F(AVTKWriter, ThrowsForTooManyEntriesInSplineScattering) {  // NOLINT
+  scattering_[1].push_back(20);
+  ASSERT_THROW(vtk_writer_->WriteFile(splines_, "splines.vtk", scattering_), std::runtime_error);
+}
+
 TEST_F(AVTKWriter, ThrowsForSplineOfDimensionFour) {  // NOLINT
   std::shared_ptr<spl::NURBS<4>> nurbs_4d_;
   std::any nurbs_4d_any = std::make_any<std::shared_ptr<spl::NURBS<4>>>(nurbs_4d_);
