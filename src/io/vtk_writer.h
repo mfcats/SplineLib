@@ -71,7 +71,7 @@ class VTKWriter {
     }
     for (size_t i = 0; i < dimensions.size(); ++i) {
       if (static_cast<int>(scattering[i].size()) != dimensions[i]) {
-        throw std::runtime_error("There have to be a scattering entries for each spline dimension.");
+        throw std::runtime_error("There have to be a scattering entry for each spline dimension.");
       }
     }
   }
