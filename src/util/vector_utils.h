@@ -60,6 +60,14 @@ class VectorUtils {
     r[2] = a[0] * b[1] - a[1] * b[0];
     return r;
   }
+
+  static std::vector<T> FilterVector(const std::vector<T> &input, const std::vector<int> &positions) {
+    std::vector<T> output;
+    for (const auto &pos : positions) {
+      output.emplace_back(input[pos]);
+    }
+    return output;
+  }
 };
 }  // namespace util
 

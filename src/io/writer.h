@@ -57,13 +57,19 @@ class Writer {
   }
 
   std::vector<std::any> GetSplinesOfCorrectDimension(const std::vector<std::any> &splines, int max_dim) const {
-    std::vector<std::any> splines_with_max_dim;
-    for (const auto &spline : splines) {
-      if (util::AnyCasts::GetSplineDimension(spline) <= max_dim) {
-        splines_with_max_dim.emplace_back(spline);
+    std::vector<int> positions = GetSplinePositionsOfCorrectDimension(splines, max_dim);
+    std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
+    return splines_with_max_dim;
+  }
+
+  std::vector<int> GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines, int max_dim) const {
+    std::vector<int> spline_positions_with_max_dim;
+    for (size_t i = 0; i < splines.size(); ++i) {
+      if (util::AnyCasts::GetSplineDimension(splines[i]) <= max_dim) {
+        spline_positions_with_max_dim.emplace_back(i);
       }
     }
-    return splines_with_max_dim;
+    return spline_positions_with_max_dim;
   }
 
   void PrintWarningForOmittedSplines(size_t splines, size_t count, int max_dim, const char *filename) const {
