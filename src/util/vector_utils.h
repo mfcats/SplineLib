@@ -64,7 +64,7 @@ class VectorUtils {
   static std::vector<T> FilterVector(const std::vector<T> &input, const std::vector<int> &positions) {
     std::vector<T> output;
     for (const auto &pos : positions) {
-      if (pos < input.size()) {
+      if (pos < static_cast<int>(input.size())) {
         output.emplace_back(input[pos]);
       } else {
         throw std::runtime_error("The vector index is too high to be filtered from the input vector.");

@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "string_operations.h"
 #include "vector_utils.h"
 
-io::ConverterLog::ConverterLog() {
+io::ConverterLog::ConverterLog() : log_file_() {
   std::cout << "The log file has to be of the following format:" << std::endl
             << "input:\n# path to input file\n" << std::endl
             << "output:\n# path to output file\n" << std::endl
