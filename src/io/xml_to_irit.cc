@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
-    throw std::runtime_error("Exactly one name of the log file is required");
+    throw std::runtime_error("Exactly one name of the log file is required as command line argument.");
   }
   const char *log_file = argv[1];
   io::ConverterLog log(log_file);
@@ -27,6 +27,8 @@ int main(int argc, char *argv[]) {
   try {
     io::XMLReader xml_reader;
     splines = xml_reader.ReadFile(log.GetInput());
+  } catch (std::runtime_error &error) {
+    throw error;
   } catch (...) {
     throw std::runtime_error(R"(The input file isn't of correct ".xml" format.)");
   }

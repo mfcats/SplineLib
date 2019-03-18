@@ -1,0 +1,8 @@
+input:
+../../test/io/test_files/spline_tank.xml
+
+output:
+out.itd
+
+options:
+all
