@@ -16,9 +16,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <ctime>
 #include <fstream>
+#include <iostream>
 
 #include "string_operations.h"
 #include "vector_utils.h"
+
+io::ConverterLog::ConverterLog() {
+  std::cout << "The log file has to be of the following format:" << std::endl
+            << "input:\n# path to input file\n" << std::endl
+            << "output:\n# path to output file\n" << std::endl
+            << "options:\n# list seperated by line breaks of positions of splines in input file to be written to the "
+            << "output file, 'all' for all splines in input file\n" << std::endl
+            << "If this is a converter to VTK format, the log file has to expanded by the following entry:" << std::endl
+            << "scattering:\n# scattering for each spline seperated by line breaks and for each dimension seperated "
+            << "by spaces\n" << std::endl
+            << "The log file is expanded by a log entry if converting succeed:" << std::endl
+            << "log:\n# time date\n# spline positions in input file that have been written to output file.\n";
+}
 
 io::ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
   std::ifstream log;

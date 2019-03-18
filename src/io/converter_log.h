@@ -20,6 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace io {
 class ConverterLog {
  public:
+  ConverterLog();
   explicit ConverterLog(const char *log_file);
 
   const char *GetInput() const;
