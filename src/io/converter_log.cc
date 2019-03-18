@@ -1,7 +1,21 @@
+/* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+
+This file is part of SplineLib.
+
+SplineLib is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation version 3 of the License.
+
+SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
+<http://www.gnu.org/licenses/>.
+*/
+
 #include "converter_log.h"
 
+#include <ctime>
 #include <fstream>
-#include <time.h>
 
 #include "string_operations.h"
 #include "vector_utils.h"
@@ -83,10 +97,11 @@ void io::ConverterLog::WriteLog() {
 }
 
 std::string io::ConverterLog::GetTime() {
+  struct tm timeinfo{};
   time_t rawtime;
-  time(&rawtime);
-  struct tm *timeinfo = localtime(&rawtime);
-  return asctime(timeinfo);
+  rawtime = time(&rawtime);
+  localtime_r(&rawtime, &timeinfo);
+  return asctime(&timeinfo);
 }
 
 bool io::ConverterLog::OneSpline() {
