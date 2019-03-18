@@ -14,13 +14,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IO_CONVERTER_LOG_H_
 #define SRC_IO_CONVERTER_LOG_H_
 
-#include <fstream>
-#include <iostream>
 #include <string>
-#include <time.h>
 #include <vector>
-
-#include "string_operations.h"
 
 namespace io {
 class ConverterLog {
@@ -30,6 +25,7 @@ class ConverterLog {
   const char *GetInput() const;
   const char *GetOutput() const;
   std::vector<int> GetPositions(std::vector<int> possible_positions);
+  std::vector<std::vector<int>> GetScattering();
 
   void WriteLog();
 
@@ -43,6 +39,7 @@ class ConverterLog {
   std::vector<int> positions_;
   std::vector<int> written_;
   std::vector<int> not_written_;
+  std::vector<std::vector<int>> scattering_;
 };
 }  // namespace io
 

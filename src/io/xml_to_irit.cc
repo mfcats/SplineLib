@@ -21,9 +21,9 @@ int main(int argc, char *argv[]) {
     throw std::runtime_error("Exactly one name of the log file is required");
   }
   const char *log_file = argv[1];
-
   io::ConverterLog log(log_file);
   std::vector<std::any> splines;
+
   try {
     io::XMLReader xml_reader;
     splines = xml_reader.ReadFile(log.GetInput());
@@ -33,11 +33,9 @@ int main(int argc, char *argv[]) {
 
   io::IRITWriter irit_writer;
   io::Writer writer;
-  std::vector<int> positions = writer.GetSplinePositionsOfCorrectDimension(splines, 3);
-  positions = log.GetPositions(positions);
+  std::vector<int> positions = log.GetPositions(writer.GetSplinePositionsOfCorrectDimension(splines, 3));
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
   irit_writer.WriteFile(splines_with_max_dim, log.GetOutput());
-  writer.PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 3, log.GetOutput());
 
   log.WriteLog();
   return 0;

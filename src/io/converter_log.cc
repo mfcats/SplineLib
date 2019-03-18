@@ -1,5 +1,11 @@
 #include "converter_log.h"
 
+#include <fstream>
+#include <time.h>
+
+#include "string_operations.h"
+#include "vector_utils.h"
+
 io::ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
   std::ifstream log;
   log.open(log_file);
@@ -24,6 +30,12 @@ io::ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
         positions_.push_back(std::stoi(line));
       }
     }
+    if (util::StringOperations::StartsWith(line, "scattering:")) {
+      while (getline(log, line) && !util::StringOperations::EndsWith(util::StringOperations::trim(line), ":")) {
+        std::vector<std::string> strings = util::StringOperations::split(line, ' ');
+        scattering_.emplace_back(util::StringOperations::StringVectorToNumberVector<int>(strings));
+      }
+    }
   }
 }
 
@@ -37,7 +49,7 @@ const char *io::ConverterLog::GetOutput() const {
 
 std::vector<int> io::ConverterLog::GetPositions(std::vector<int> possible_positions) {
   if (positions_[0] == -1) {
-    written_ = positions_;
+    written_ = possible_positions;
   } else {
     for (const auto &pos : positions_) {
       if (std::find(possible_positions.begin(), possible_positions.end(), pos) != possible_positions.end()) {
@@ -48,6 +60,10 @@ std::vector<int> io::ConverterLog::GetPositions(std::vector<int> possible_positi
     }
   }
   return written_;
+}
+
+std::vector<std::vector<int>> io::ConverterLog::GetScattering() {
+  return util::VectorUtils<std::vector<int>>::FilterVector(scattering_, written_);
 }
 
 void io::ConverterLog::WriteLog() {
