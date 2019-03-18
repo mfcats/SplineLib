@@ -20,4 +20,4 @@ RUN make install
 RUN mkdir /code/example/build
 WORKDIR /code/example/build
 
-CMD spack load splinelib@github build_type=Release %gcc@8 && ./../../build-acceptance/src/io/xml2irit ../log.txt
+CMD spack load splinelib@github build_type=Release %gcc@8 && ./../../build-acceptance/src/io/xml2irit --help && ./../../build-acceptance/src/io/xml2irit ../log.txt
