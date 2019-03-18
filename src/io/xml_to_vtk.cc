@@ -19,8 +19,8 @@ int main(int argc, char *argv[]) {
   if (argc != 3) {
     throw std::runtime_error("Exactly one name of the input file and of the output file are required");
   }
-  const char *input = argv[1];
-  const char *output = argv[2];
+  const char *input = argv[1];  // NOLINT
+  const char *output = argv[2];  // NOLINT
 
   std::vector<std::any> splines;
   try {

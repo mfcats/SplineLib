@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
   if (argc != 2) {
     throw std::runtime_error("Exactly one name of the log file is required as command line argument.");
   }
-  const char *log_file = argv[1];
+  const char *log_file = argv[1];  // NOLINT
   io::ConverterLog log(log_file);
   std::vector<std::any> splines;
 
