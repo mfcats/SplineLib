@@ -12,14 +12,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <any>
+#include <array>
 #include <memory>
 #include <vector>
-#include <iostream>
-#include <stdlib.h>
 
-#include "knot_vector.h"
-#include "control_point.h"
 #include "b_spline.h"
+#include "control_point.h"
+#include "knot_vector.h"
 #include "vtk_writer.h"
 
 void createVTKFromControlPoints(std::vector<baf::ControlPoint> control_points, std::string fileName) {

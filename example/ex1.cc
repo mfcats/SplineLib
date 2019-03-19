@@ -15,11 +15,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <memory>
 #include <vector>
-#include <any>
 
-#include "knot_vector.h"
-#include "control_point.h"
 #include "b_spline.h"
+#include "control_point.h"
+#include "knot_vector.h"
 
 int main() {
   std::array<Degree, 1> degree = {Degree{2}};
@@ -33,9 +32,10 @@ int main() {
       baf::ControlPoint(std::vector<double>({8.0, 2.5})),
       baf::ControlPoint(std::vector<double>({8.0, 1.0}))
   };
-  std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_ptr = {
-      std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
-                                                         ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))};
+  KnotVectors<1> knot_vector_ptr =
+      {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                                                          ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4},
+                                                          ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))};
   spl::BSpline<1> b_spline(knot_vector_ptr, degree, control_points);
 
   b_spline.Evaluate({ParamCoord{1.0}}, {0});
