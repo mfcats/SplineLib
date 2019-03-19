@@ -40,7 +40,7 @@ class KnotVector {
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
   KnotVector(std::vector<ParamCoord> coords, Degree degree, int nbControlPoints);
 
-  virtual ~KnotVector() = default;
+  ~KnotVector() = default;
 
   KnotVector operator -(const KnotVector& rhs) const;
   KnotVector &operator=(const KnotVector &other);
@@ -51,12 +51,12 @@ class KnotVector {
   bool AreEqual(const KnotVector &rhs, double tolerance) const;
   ParamCoord &operator[](size_t index);
 
-  virtual ParamCoord GetKnot(size_t index) const;
+  ParamCoord GetKnot(size_t index) const;
   std::vector<ParamCoord> GetKnots() const;
   ParamCoord GetLastKnot() const;
-  virtual KnotSpan GetKnotSpan(ParamCoord param_coord) const;
-  virtual size_t GetMultiplicity(ParamCoord param_coord) const;
-  virtual size_t GetNumberOfKnots() const;
+  KnotSpan GetKnotSpan(ParamCoord param_coord) const;
+  size_t GetMultiplicity(ParamCoord param_coord) const;
+  size_t GetNumberOfKnots() const;
 
   ConstKnotIterator begin() const;
   ConstKnotIterator end() const;
@@ -64,8 +64,9 @@ class KnotVector {
   KnotIterator begin();
   KnotIterator end();
 
-  virtual bool IsInKnotVectorRange(const ParamCoord &param_coord) const;
-  virtual bool IsLastKnot(const ParamCoord &param_coord) const;
+  bool IsInKnotVectorRange(const ParamCoord &param_coord) const;
+  bool IsLastKnot(const ParamCoord &param_coord) const;
+
   void InsertKnot(const ParamCoord &param_coord);
   void RemoveKnot(const ParamCoord &param_coord);
 
