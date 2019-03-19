@@ -29,7 +29,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 #include "multi_index_handler.h"
 #include "nurbs.h"
-#include "spline.h"
 
 namespace io {
 class IGESWriter {
