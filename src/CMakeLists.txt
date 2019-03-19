@@ -16,5 +16,5 @@
 add_subdirectory(util)
 add_subdirectory(baf)
 add_subdirectory(spl)
-add_subdirectory(io)
-add_subdirectory(iga)
+#add_subdirectory(io)
+#add_subdirectory(iga)

@@ -58,7 +58,7 @@ class AnyCasts {
                     return 4;
                   } catch (std::bad_any_cast &msg) {
                     throw std::runtime_error(
-                        "Input has to be a pointer to a b-spline or nurbs of dimension 1, 2, 3 or 4.");
+                        "Input has to be a shared pointer to a b-spline or nurbs of dimension 1, 2, 3 or 4.");
                   }
                 }
               }
@@ -74,7 +74,11 @@ class AnyCasts {
     try {
       return std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(spline);
     } catch (std::bad_any_cast &msg) {
-      return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
+      try {
+        return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
+      } catch (std::bad_any_cast &msg) {
+        throw std::runtime_error("Input has to be a shared pointer to a b-spline or nurbs of declared dimension");
+      }
     }
   }
 
@@ -84,7 +88,12 @@ class AnyCasts {
       std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
       return true;
     } catch (std::bad_any_cast &msg) {
-      return false;
+      try {
+        std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(spline);
+        return false;
+      } catch (std::bad_any_cast &msg) {
+        throw std::runtime_error("Input has to be a shared pointer to a b-spline or nurbs of declared dimension");
+      }
     }
   }
 };

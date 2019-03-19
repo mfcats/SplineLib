@@ -26,7 +26,7 @@ class AnySplines : public Test {
     KnotVectors<1> knot_vector_ptr =
         {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord(0), ParamCoord(0), ParamCoord(1),
                                                             ParamCoord(1)}))};
-    std::vector<baf::ControlPoint> control_points = {baf::ControlPoint{0.0}, baf::ControlPoint{1.0}};
+    std::vector<baf::ControlPoint> control_points = {baf::ControlPoint{0.0}, baf::ControlPoint{1.2}};
     spl::BSpline<1> b_spline_1d(knot_vector_ptr, degree, control_points);
     std::shared_ptr<spl::BSpline<1>> b_spline_1d_ptr = std::make_shared<spl::BSpline<1>>(b_spline_1d);
     b_spline_1d_any_ = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_1d_ptr);
@@ -44,15 +44,15 @@ class AnySplines : public Test {
   std::any nurbs_2d_any_;
 };
 
-TEST_F(AnySplines, CanGetSplineDimension) {  // NOLINT
+TEST_F(AnySplines, CanBeCheckedForSplineDimension) {  // NOLINT
   ASSERT_THAT(util::AnyCasts::GetSplineDimension(b_spline_1d_any_), 1);
   ASSERT_THAT(util::AnyCasts::GetSplineDimension(nurbs_2d_any_), 2);
   ASSERT_THROW(util::AnyCasts::GetSplineDimension(std::make_any<int>(8)), std::runtime_error);
 }
 
-TEST_F(AnySplines, CanGetSpline) {  // NOLINT
-  ASSERT_THAT(util::AnyCasts::GetSpline<1>(b_spline_1d_any_), 1);
-  ASSERT_THAT(util::AnyCasts::GetSpline<2>(nurbs_2d_any_), 2);
+TEST_F(AnySplines, CanBeCastedToSplines) {  // NOLINT
+  ASSERT_THAT(util::AnyCasts::GetSpline<1>(b_spline_1d_any_)->GetControlPoint({1}).GetValue(0), DoubleEq(1.2));
+  ASSERT_THAT(util::AnyCasts::GetSpline<2>(nurbs_2d_any_)->GetWeights()[1], DoubleEq(0.8));
   ASSERT_THROW(util::AnyCasts::GetSpline<1>(std::make_any<int>(8)), std::runtime_error);
 }
 
