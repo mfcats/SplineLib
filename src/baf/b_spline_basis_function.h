@@ -18,7 +18,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <memory>
 
 #include "basis_function.h"
-#include "numeric_settings.h"
 
 namespace baf {
 class BSplineBasisFunction : public BasisFunction {

@@ -28,7 +28,6 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-
 install(FILES
         pugiconfig.hpp
         pugixml.hpp

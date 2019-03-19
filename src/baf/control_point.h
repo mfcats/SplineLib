@@ -15,19 +15,17 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_BAF_CONTROL_POINT_H_
 #define SRC_BAF_CONTROL_POINT_H_
 
+#include <array>
 #include <initializer_list>
 #include <vector>
-#include <array>
 
 namespace baf {
 class ControlPoint {
  public:
   explicit ControlPoint(std::initializer_list<double> coordinates);
-
   explicit ControlPoint(std::vector<double> coordinates);
 
   int GetDimension() const;
-
   double GetValue(int dimension) const;
 
   ControlPoint operator+(const ControlPoint& control_point) const;

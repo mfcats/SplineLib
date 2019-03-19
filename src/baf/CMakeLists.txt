@@ -13,15 +13,13 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-
 set(SOURCES
         b_spline_basis_function.cc
 		basis_function.cc
         basis_function_factory.cc
         control_point.cc
         knot_vector.cc
-        zero_degree_b_spline_basis_function.cc
-        )
+		zero_degree_b_spline_basis_function.cc)
 
 add_library(splinelibbaf SHARED ${SOURCES})
 target_include_directories(splinelibbaf PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)

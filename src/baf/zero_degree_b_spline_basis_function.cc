@@ -14,8 +14,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "zero_degree_b_spline_basis_function.h"
 
-#include "numeric_settings.h"
-
 baf::ZeroDegBSplBasFnc::ZeroDegBSplBasFnc(const baf::KnotVector &knot_vector, const KnotSpan &start_of_support) :
     BasisFunction(knot_vector, Degree{0}, start_of_support) {}
 
