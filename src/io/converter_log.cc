@@ -21,18 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "string_operations.h"
 #include "vector_utils.h"
 
-io::ConverterLog::ConverterLog() : log_file_() {
-  std::cout << "The log file has to be of the following format:" << std::endl
-            << "input:\n# path to input file\n" << std::endl
-            << "output:\n# path to output file\n" << std::endl
-            << "options:\n# list seperated by line breaks of positions of splines in input file to be written to the "
-            << "output file, 'all' for all splines in input file\n" << std::endl
-            << "If this is a converter to VTK format, the log file has to expanded by the following entry:" << std::endl
-            << "scattering:\n# scattering for each spline seperated by line breaks and for each dimension seperated "
-            << "by spaces\n" << std::endl
-            << "The log file is expanded by a log entry if converting succeed:" << std::endl
-            << "log:\n# time date\n# spline positions in input file that have been written to output file.\n";
-}
+io::ConverterLog::ConverterLog() : log_file_("") {}
 
 io::ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
   std::ifstream log;
@@ -94,7 +83,7 @@ std::vector<std::vector<int>> io::ConverterLog::GetScattering() {
   return util::VectorUtils<std::vector<int>>::FilterVector(scattering_, written_);
 }
 
-void io::ConverterLog::WriteLog() {
+void io::ConverterLog::WriteLog() const {
   std::ofstream log;
   log.open(log_file_, std::ios_base::app);
   log << "\n\nlog:\n" << GetTime();
@@ -110,7 +99,20 @@ void io::ConverterLog::WriteLog() {
   log << " in file " << input_ << (OneSpline() ? " has" : " have") << " been written to " << output_;
 }
 
-std::string io::ConverterLog::GetTime() {
+void io::ConverterLog::PrintHelp() const {
+  std::cout << "The log file has to be of the following format:" << std::endl
+            << "input:\n# path to input file\n" << std::endl
+            << "output:\n# path to output file\n" << std::endl
+            << "options:\n# list seperated by line breaks of positions of splines in input file to be written to the "
+            << "output file, 'all' for all splines in input file\n" << std::endl
+            << "If this is a converter to VTK format, the log file has to expanded by the following entry:" << std::endl
+            << "scattering:\n# scattering for each spline seperated by line breaks and for each dimension seperated "
+            << "by spaces\n" << std::endl
+            << "The log file is expanded by a log entry if converting succeed:" << std::endl
+            << "log:\n# time date\n# spline positions in input file that have been written to output file.\n";
+}
+
+std::string io::ConverterLog::GetTime() const {
   struct tm timeinfo{};
   time_t rawtime;
   rawtime = time(&rawtime);
@@ -118,6 +120,6 @@ std::string io::ConverterLog::GetTime() {
   return asctime(&timeinfo);
 }
 
-bool io::ConverterLog::OneSpline() {
+bool io::ConverterLog::OneSpline() const {
   return written_.size() == 1;
 }

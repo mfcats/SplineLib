@@ -28,11 +28,12 @@ class ConverterLog {
   std::vector<int> GetPositions(std::vector<int> possible_positions);
   std::vector<std::vector<int>> GetScattering();
 
-  void WriteLog();
+  void WriteLog() const;
+  void PrintHelp() const;
 
  private:
-  std::string GetTime();
-  bool OneSpline();
+  std::string GetTime() const;
+  bool OneSpline() const;
 
   const char *log_file_;
   std::string input_;

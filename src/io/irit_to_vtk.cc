@@ -23,6 +23,7 @@ int main(int argc, char *argv[]) {
   const char *log_file = argv[1];  // NOLINT
   if (util::StringOperations::StartsWith(log_file, "--help") || util::StringOperations::StartsWith(log_file, "-h")) {
     io::ConverterLog help;
+    help.PrintHelp();
     return 0;
   }
   io::ConverterLog log(log_file);
