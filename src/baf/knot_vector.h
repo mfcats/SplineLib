@@ -42,7 +42,7 @@ class KnotVector {
 
   ~KnotVector() = default;
 
-  KnotVector operator -(const KnotVector& rhs) const;
+  KnotVector operator-(const KnotVector &rhs) const;
   KnotVector &operator=(const KnotVector &other);
   KnotVector &operator=(KnotVector &&other) noexcept;
   // Check if absolute distance between all knots is smaller than the epsilon defined in
