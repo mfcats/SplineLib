@@ -51,24 +51,14 @@ class XMLReader {
   void AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines) {
     std::vector<baf::ControlPoint> control_points = GetControlPoints(spline);
     int dimension = std::stoi(spline->attribute("splDim").value());
-    switch (dimension) {
-      case 1: {
-        splines->push_back(Get1DSpline(spline, control_points));
-        break;
-      }
-      case 2: {
-        splines->push_back(Get2DSpline(spline, control_points));
-        break;
-      }
-      case 3: {
-        splines->push_back(Get3DSpline(spline, control_points));
-        break;
-      }
-      case 4: {
-        splines->push_back(Get4DSpline(spline, control_points));
-        break;
-      }
-      default: {}
+    if (dimension == 1) {
+      splines->push_back(Get1DSpline(spline, control_points));
+    } else if (dimension == 2) {
+      splines->push_back(Get2DSpline(spline, control_points));
+    } else if (dimension == 3) {
+      splines->push_back(Get3DSpline(spline, control_points));
+    } else if (dimension == 4) {
+      splines->push_back(Get4DSpline(spline, control_points));
     }
   }
 

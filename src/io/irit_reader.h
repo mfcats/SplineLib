@@ -21,9 +21,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "b_spline.h"
+#include "irit_reader_utils.h"
 #include "nurbs.h"
 #include "string_operations.h"
-#include "irit_reader_utils.h"
 
 namespace io {
 class IRITReader {
@@ -45,20 +45,12 @@ class IRITReader {
     std::vector<std::string> entries = util::StringOperations::split(file, ' ');
     std::vector<int> spline_positions = GetSplinePositions(entries);
     for (int &spline_position : spline_positions) {
-      switch (GetDimension(entries[spline_position])) {
-        case 1: {
-          vector_of_splines.emplace_back(Get1DSpline(spline_position, entries));
-          break;
-        }
-        case 2: {
-          vector_of_splines.emplace_back(Get2DSpline(spline_position, entries));
-          break;
-        }
-        case 3: {
-          vector_of_splines.emplace_back(Get3DSpline(spline_position, entries));
-          break;
-        }
-        default: {}
+      if (GetDimension(entries[spline_position]) == 1) {
+        vector_of_splines.emplace_back(Get1DSpline(spline_position, entries));
+      } else if (GetDimension(entries[spline_position]) == 2) {
+        vector_of_splines.emplace_back(Get2DSpline(spline_position, entries));
+      } else if (GetDimension(entries[spline_position]) == 3) {
+        vector_of_splines.emplace_back(Get3DSpline(spline_position, entries));
       }
     }
     return vector_of_splines;

@@ -44,24 +44,14 @@ class XMLWriter {
  private:
   void AddSpline(pugi::xml_node *spline_list, const std::any &spline) {
     int spline_dimension = util::AnyCasts::GetSplineDimension(spline);
-    switch (spline_dimension) {
-      case 1: {
-        Add1DSpline(spline_list, spline);
-        break;
-      }
-      case 2: {
-        Add2DSpline(spline_list, spline);
-        break;
-      }
-      case 3: {
-        Add3DSpline(spline_list, spline);
-        break;
-      }
-      case 4: {
-        Add4DSpline(spline_list, spline);
-        break;
-      }
-      default: {}
+    if (spline_dimension == 1) {
+      Add1DSpline(spline_list, spline);
+    } else if (spline_dimension == 2) {
+      Add2DSpline(spline_list, spline);
+    } else if (spline_dimension == 3) {
+      Add3DSpline(spline_list, spline);
+    } else if (spline_dimension == 4) {
+      Add4DSpline(spline_list, spline);
     }
   }
 

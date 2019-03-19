@@ -49,22 +49,14 @@ class IRITWriter {
   void AddSpline(std::ofstream &file, const std::any &spline, int spline_number) const {
     file << "  [OBJECT SPLINE" + std::to_string(spline_number + 1) + "\n    ";
     int spline_dimension = util::AnyCasts::GetSplineDimension(spline);
-    switch (spline_dimension) {
-      case 1: {
-        Write1DSpline(file, spline);
-        break;
-      }
-      case 2: {
-        Write2DSpline(file, spline);
-        break;
-      }
-      case 3: {
-        Write3DSpline(file, spline);
-        break;
-      }
-      default: {
+    if (spline_dimension == 1) {
+      Write1DSpline(file, spline);
+    } else if (spline_dimension == 2) {
+      Write2DSpline(file, spline);
+    } else if (spline_dimension == 3) {
+      Write3DSpline(file, spline);
+    } else {
         throw std::runtime_error("Only splines of dimensions 1 to 3 can be written to an irit file.");
-      }
     }
     file << "    ]\n  ]\n";
   }
