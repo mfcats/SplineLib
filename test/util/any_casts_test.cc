@@ -40,6 +40,7 @@ class AnySplines : public Test {
     nurbs_2d_any_ = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_2d_ptr);
   }
 
+ protected:
   std::any b_spline_1d_any_;
   std::any nurbs_2d_any_;
 };
