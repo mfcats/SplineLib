@@ -39,6 +39,25 @@ std::string GetCommandOutput(const std::string &command) {
   return result;
 }
 
+std::string GetPathToInstallDir() {
+  std::string pwd = GetCommandOutput("pwd");
+  std::string exec;
+  if (pwd.substr(pwd.length() - 5, 4) == "test") {
+    exec = GetCommandOutput("find .. -name iges2irit");
+  } else {
+    exec = GetCommandOutput("find . -name iges2irit");
+  }
+  std::cout << "exec: " << exec << std::endl;
+  std::vector<std::string> execs = util::StringOperations::split(exec, '\n');
+  for (const auto &e : execs) {
+    if (e.find("dSYM") == std::string::npos) {
+      return e;
+    }
+  }
+
+  return pwd + "src/io/";
+}
+
 bool CompareToHelpOutput(const std::string &string) {
   std::string help = std::string("The log file has to be of the following format:\n")
       + "input:\n# path to input file\n\n" + "output:\n# path to output file\n\n"
@@ -57,9 +76,9 @@ class Iges2iritExecutable : public Test {
 };
 
 TEST_F(Iges2iritExecutable, PrintsHelp) {  // NOLINT
-  std::string output = GetCommandOutput("./../src/io/iges2irit -h");
+  std::string output = GetCommandOutput(GetPathToInstallDir() + " -h");
   ASSERT_THAT(CompareToHelpOutput(output), true);
-  output = GetCommandOutput("./../src/io/iges2irit --help");
+  output = GetCommandOutput(GetPathToInstallDir() + " --help");
   ASSERT_THAT(CompareToHelpOutput(output), true);
 }
 
@@ -67,7 +86,7 @@ TEST_F(Iges2iritExecutable, Works) {  // NOLINT
   std::ofstream outfile("log.txt");
   outfile << "input:\n" << iges_read << "\n\noutput:\nout.itd\n\noptions:\nall";
   outfile.close();
-  std::system("./../src/io/iges2irit log.txt");
+  std::system((GetPathToInstallDir() + " log.txt").c_str());
 
   std::ifstream newFile("log.txt");
   ASSERT_THAT(newFile.good(), true);
@@ -81,4 +100,100 @@ TEST_F(Iges2iritExecutable, Works) {  // NOLINT
       Ne(std::string::npos));
   remove("log.txt");
 //  remove("out.itd");
+}
+
+class Iges2vtkExecutable : public Test {
+ public:
+  Iges2vtkExecutable() = default;
+};
+
+TEST_F(Iges2vtkExecutable, PrintsHelp) {  // NOLINT
+  std::string output = GetCommandOutput(GetPathToInstallDir() + "iges2vtk -h");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+  output = GetCommandOutput(GetPathToInstallDir() + "iges2vtk --help");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+}
+
+class Iges2xmlExecutable : public Test {
+ public:
+  Iges2xmlExecutable() = default;
+};
+
+TEST_F(Iges2xmlExecutable, PrintsHelp) {  // NOLINT
+  std::string output = GetCommandOutput(GetPathToInstallDir() + "iges2xml -h");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+  output = GetCommandOutput(GetPathToInstallDir() + "iges2xml --help");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+}
+
+class Irit2igesExecutable : public Test {
+ public:
+  Irit2igesExecutable() = default;
+};
+
+TEST_F(Irit2igesExecutable, PrintsHelp) {  // NOLINT
+  std::string output = GetCommandOutput(GetPathToInstallDir() + "irit2iges -h");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+  output = GetCommandOutput(GetPathToInstallDir() + "irit2iges --help");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+}
+
+class Irit2vtkExecutable : public Test {
+ public:
+  Irit2vtkExecutable() = default;
+};
+
+TEST_F(Irit2vtkExecutable, PrintsHelp) {  // NOLINT
+  std::string output = GetCommandOutput(GetPathToInstallDir() + "irit2vtk -h");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+  output = GetCommandOutput(GetPathToInstallDir() + "irit2vtk --help");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+}
+
+class Irit2xmlExecutable : public Test {
+ public:
+  Irit2xmlExecutable() = default;
+};
+
+TEST_F(Irit2xmlExecutable, PrintsHelp) {  // NOLINT
+  std::string output = GetCommandOutput(GetPathToInstallDir() + "irit2xml -h");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+  output = GetCommandOutput(GetPathToInstallDir() + "irit2xml --help");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+}
+
+class Xml2igesExecutable : public Test {
+ public:
+  Xml2igesExecutable() = default;
+};
+
+TEST_F(Xml2igesExecutable, PrintsHelp) {  // NOLINT
+  std::string output = GetCommandOutput(GetPathToInstallDir() + "xml2iges -h");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+  output = GetCommandOutput(GetPathToInstallDir() + "xml2iges --help");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+}
+
+class Xml2iritExecutable : public Test {
+ public:
+  Xml2iritExecutable() = default;
+};
+
+TEST_F(Xml2iritExecutable, PrintsHelp) {  // NOLINT
+  std::string output = GetCommandOutput(GetPathToInstallDir() + "xml2irit -h");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+  output = GetCommandOutput(GetPathToInstallDir() + "xml2irit --help");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+}
+
+class Xml2vtkExecutable : public Test {
+ public:
+  Xml2vtkExecutable() = default;
+};
+
+TEST_F(Xml2vtkExecutable, PrintsHelp) {  // NOLINT
+  std::string output = GetCommandOutput(GetPathToInstallDir() + "xml2vtk -h");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
+  output = GetCommandOutput(GetPathToInstallDir() + "xml2vtk --help");
+  ASSERT_THAT(CompareToHelpOutput(output), true);
 }
