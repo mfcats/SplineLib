@@ -45,7 +45,11 @@ class VectorUtils {
 
   static T ComputeScalarProduct(std::vector<T> vectorA, std::vector<T> vectorB) {
     std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::multiplies<T>());
-    return std::accumulate(vectorB.begin(), vectorB.end(), 0);
+    T sum = 0;
+    for (T i : vectorB) {
+      sum += i;
+    }
+    return sum;
   }
 
   static std::vector<T> ScaleVector(std::vector<T> vectorA, T factor) {
