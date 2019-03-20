@@ -24,6 +24,8 @@ add_executable(xml2iges xml_to_iges.cc converter_log.cc)
 add_executable(xml2irit xml_to_irit.cc converter_log.cc)
 add_executable(xml2vtk xml_to_vtk.cc converter_log.cc)
 
+set_target_properties(iges2irit PROPERTIES ENABLE_EXPORTS 1)
+
 target_include_directories(splinelibio INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_link_libraries(splinelibio INTERFACE splinelibspl pugixmllib)

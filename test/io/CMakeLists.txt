@@ -16,6 +16,7 @@
 set(TEST_SOURCES
         ${TEST_SOURCES}
         ${CMAKE_CURRENT_SOURCE_DIR}/iges_reader_writer_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/io_converter_executables_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/io_converter_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/irit_reader_writer_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/vtk_writer_test.cc
