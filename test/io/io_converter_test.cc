@@ -19,10 +19,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "io_converter.h"
-#include "xml_reader.h"
 
 using testing::Test;
 using testing::DoubleNear;
+using testing::Ne;
 
 class AnIOConverter : public Test {
  public:
@@ -86,6 +86,25 @@ TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConvertingSplinesFromIGESFil
   ASSERT_THAT(xml_bspline_1d->Evaluate({ParamCoord(0.76584)}, {0})[0],
               DoubleNear(iges_bspline_1d->Evaluate({ParamCoord(0.76584)}, {0})[0], 0.00001));
   remove("converted_xml_file.xml");
+}
+
+TEST_F(AnIOConverter, ConvertsSplinesFromIGESFileToVTKFile) {  // NOLINT
+  std::vector<std::any> iges_splines = iges_reader_.ReadFile(iges_read);
+  auto iges_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_splines[0]);
+  auto iges_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_splines[1]);
+  io_converter_->ConvertFile(iges_read, "converted_vtk_file.vtk", {{20, 30}, {70}});
+  std::ifstream newFile;
+  newFile.open("converted_vtk_file.vtk");
+  ASSERT_THAT(newFile.good(), true);
+  std::string line, file;
+  while (getline(newFile, line)) {
+    file += line + "\n";
+  }
+  ASSERT_THAT(file.find("# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("DATASET UNSTRUCTURED_GRID\nPOINTS 722 double\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CELLS 670 3210\n"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("CELL_TYPES 670\n"), Ne(std::string::npos));
+  remove("converted_vtk_file.vtk");
 }
 
 TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConvertingSplinesFromXMLFileToIGESFile) {  // NOLINT

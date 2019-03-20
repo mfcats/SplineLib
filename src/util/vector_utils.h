@@ -25,9 +25,9 @@ namespace util {
 template<typename T>
 class VectorUtils {
  public:
-  static T ComputeTwoNorm(std::vector<T> vectorA) {
+  static double ComputeTwoNorm(std::vector<T> vectorA) {
     std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(), vectorA.begin(), std::multiplies<T>());
-    T sum = 0;
+    double sum = 0;
     for (T i : vectorA) {
       sum += i;
     }
@@ -39,7 +39,7 @@ class VectorUtils {
     return vectorB;
   }
 
-  static T ComputeDistance(std::vector<T> vectorA, std::vector<T> vectorB) {
+  static double ComputeDistance(std::vector<T> vectorA, std::vector<T> vectorB) {
     return util::VectorUtils<T>::ComputeTwoNorm(util::VectorUtils<T>::ComputeDifference(vectorA, vectorB));
   }
 
