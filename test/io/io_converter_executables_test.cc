@@ -16,7 +16,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <config_iges.h>
 #include <config_irit.h>
 #include <config_xml.h>
-#include <cstdlib>
+
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+#endif
 
 #include "gmock/gmock.h"
 
@@ -40,22 +43,30 @@ std::string GetCommandOutput(const std::string &command) {
 }
 
 std::string GetPathToInstallDir() {
-  std::string pwd = GetCommandOutput("pwd");
-  std::string exec;
-  if (pwd.substr(pwd.length() - 5, 4) == "test") {
-    exec = GetCommandOutput("find .. -name iges2irit");
-  } else {
-    exec = GetCommandOutput("find . -name iges2irit");
+  char exePath[PATH_MAX];
+  uint32_t len = sizeof(exePath);
+#ifdef __linux__
+  char szTmp[32];
+  sprintf(szTmp, "/proc/%d/exe", getpid());
+  int bytes = readlink(szTmp, exePath, len);
+  if(bytes >= 0) {
+    exePath[bytes] = '\0';
   }
-  std::cout << "exec: " << exec << std::endl;
-  std::vector<std::string> execs = util::StringOperations::split(exec, '\n');
-  for (const auto &e : execs) {
-    if (e.find("dSYM") == std::string::npos) {
-      return e;
+#elif __APPLE__
+  if (_NSGetExecutablePath(exePath, &len) != 0) {
+    exePath[0] = '\0'; // buffer too small (!)
+  } else {
+    char *canonicalPath = realpath(exePath, nullptr);
+    if (canonicalPath != nullptr) {
+      strncpy(exePath, canonicalPath, len);
+      free(canonicalPath);
     }
   }
-
-  return pwd + "src/io/";
+#else
+  throw std::runtime_error("Cannot find path of executable.");
+#endif
+  std::string path(exePath);
+  return path.substr(0, path.length() - 14) + "/../src/io/";
 }
 
 bool CompareToHelpOutput(const std::string &string) {
@@ -76,9 +87,9 @@ class Iges2iritExecutable : public Test {
 };
 
 TEST_F(Iges2iritExecutable, PrintsHelp) {  // NOLINT
-  std::string output = GetCommandOutput(GetPathToInstallDir() + " -h");
+  std::string output = GetCommandOutput(GetPathToInstallDir() + "iges2irit -h");
   ASSERT_THAT(CompareToHelpOutput(output), true);
-  output = GetCommandOutput(GetPathToInstallDir() + " --help");
+  output = GetCommandOutput(GetPathToInstallDir() + "iges2irit --help");
   ASSERT_THAT(CompareToHelpOutput(output), true);
 }
 
@@ -86,7 +97,7 @@ TEST_F(Iges2iritExecutable, Works) {  // NOLINT
   std::ofstream outfile("log.txt");
   outfile << "input:\n" << iges_read << "\n\noutput:\nout.itd\n\noptions:\nall";
   outfile.close();
-  std::system((GetPathToInstallDir() + " log.txt").c_str());
+  std::system((GetPathToInstallDir() + "iges2irit log.txt").c_str());
 
   std::ifstream newFile("log.txt");
   ASSERT_THAT(newFile.good(), true);
