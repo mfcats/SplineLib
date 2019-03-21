@@ -47,14 +47,14 @@ std::string GetPathToInstallDir() {
   uint32_t len = sizeof(exePath);
 #ifdef __linux__
   char szTmp[32];
-  sprintf(szTmp, "/proc/%d/exe", getpid());
+  snprintf(szTmp, "/proc/%d/exe", getpid());
   int bytes = readlink(szTmp, exePath, len);
-  if(bytes >= 0) {
+  if (bytes >= 0) {
     exePath[bytes] = '\0';
   }
 #elif __APPLE__
   if (_NSGetExecutablePath(exePath, &len) != 0) {
-    exePath[0] = '\0'; // buffer too small (!)
+    exePath[0] = '\0';
   } else {
     char *canonicalPath = realpath(exePath, nullptr);
     if (canonicalPath != nullptr) {
