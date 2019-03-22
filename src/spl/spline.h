@@ -37,7 +37,8 @@ class Spline {
   Spline(KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree) {
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
   }
-  explicit Spline(std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
+  explicit Spline(std::shared_ptr<ParameterSpace < DIM>>
+parameter_space) {
     parameter_space_ = parameter_space;
   }
   Spline(const Spline<DIM> &spline) {
@@ -90,6 +91,33 @@ class Spline {
                                                                  ParamCoord param_coord,
                                                                  int derivative) const {
     return parameter_space_->EvaluateAllNonZeroBasisFunctionDerivatives(direction, param_coord, derivative);
+  }
+
+  bool AreGeometricallyEqual(const spl::Spline<DIM> &rhs,
+                             double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+    double number = static_cast<int>(ceil(pow(100, 1.0 / DIM)));
+    std::array<int, DIM> points;
+    for (auto &p : points) {
+      p = number + 1;
+    }
+    std::vector<int> dimensions;
+    for (int i = 0; i < DIM; ++i) {
+      dimensions.push_back(i);
+    }
+    util::MultiIndexHandler<DIM> point_handler(points);
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      std::array<ParamCoord, DIM> param_coord;
+      for (int dim = 0; dim < DIM; ++dim) {
+        double span = GetKnotVector(dim)->GetLastKnot().get() - GetKnotVector(dim)->GetKnot(0).get();
+        param_coord[dim] = ParamCoord(span / number * point_handler[dim]);
+      }
+      std::vector<double> evaluate_this = Evaluate(param_coord, dimensions);
+      std::vector<double> evaluate_rhs = rhs.Evaluate(param_coord, dimensions);
+      if (util::VectorUtils<double>::ComputeDistance(evaluate_this, evaluate_rhs) > tolerance) {
+        return false;
+      }
+    }
+    return true;
   }
 
   Degree GetDegree(int i) const {
@@ -215,7 +243,7 @@ class Spline {
     return total_length;
   }
 
-  std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
+  std::shared_ptr<ParameterSpace < DIM>> parameter_space_;
 };
 }  //  namespace spl
 
