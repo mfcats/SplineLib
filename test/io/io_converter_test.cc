@@ -105,7 +105,10 @@ TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConvertingSplinesFromXMLFile
   ASSERT_THAT(xml_splines.size(), 4);
   auto xml_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_splines[0]);
   auto xml_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_splines[1]);
+  testing::internal::CaptureStderr();
   io_converter_->ConvertFile(path_to_xml_file, "converted_iges_file.iges");
+  ASSERT_THAT(testing::internal::GetCapturedStderr(),
+              "Only the 2 splines of dimension equal or less than 2 have been written to converted_iges_file.iges.\n");
   std::vector<std::any> iges_splines = iges_reader_.ReadFile("converted_iges_file.iges");
   ASSERT_THAT(iges_splines.size(), xml_splines.size() - 2);
   auto iges_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_splines[0]);
@@ -120,7 +123,10 @@ TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConvertingSplinesFromXMLFile
   ASSERT_THAT(xml_splines.size(), 4);
   auto xml_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_splines[0]);
   auto xml_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_splines[1]);
+  testing::internal::CaptureStderr();
   io_converter_->ConvertFile(path_to_xml_file, "converted_irit_file.itd");
+  ASSERT_THAT(testing::internal::GetCapturedStderr(),
+              "Only the 2 splines of dimension equal or less than 3 have been written to converted_irit_file.itd.\n");
   std::vector<std::any> irit_splines = irit_reader_.ReadFile("converted_irit_file.itd");
   ASSERT_THAT(irit_splines.size(), xml_splines.size() - 2);
   auto irit_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_splines[0]);
@@ -137,7 +143,10 @@ TEST_F(AnIOConverter, ReturnsSameValueBeforeAndAfterConvertingSplinesFromIRITFil
   auto irit_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(irit_splines[1]);
   auto irit_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(irit_splines[2]);
   auto irit_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_splines[3]);
+  testing::internal::CaptureStderr();
   io_converter_->ConvertFile(path_to_irit_file, "converted_iges_file.iges");
+  ASSERT_THAT(testing::internal::GetCapturedStderr(),
+              "Only the 4 splines of dimension equal or less than 2 have been written to converted_iges_file.iges.\n");
   std::vector<std::any> iges_splines = iges_reader_.ReadFile("converted_iges_file.iges");
   ASSERT_THAT(iges_splines.size(), irit_splines.size() - 2);
   auto iges_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_splines[0]);
