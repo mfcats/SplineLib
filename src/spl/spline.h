@@ -95,13 +95,11 @@ parameter_space) {
 
   bool AreGeometricallyEqual(const spl::Spline<DIM> &rhs,
                              double tolerance = util::NumericSettings<double>::kEpsilon()) const {
-    double number = static_cast<int>(ceil(pow(100, 1.0 / DIM)));
-    std::array<int, DIM> points;
-    for (auto &p : points) {
-      p = number + 1;
-    }
+    double number = ceil(pow(100, 1.0 / DIM));
+    std::array<int, DIM> points = std::array<int, DIM>();
     std::vector<int> dimensions;
     for (int i = 0; i < DIM; ++i) {
+      points[i] = number + 1;
       dimensions.push_back(i);
     }
     util::MultiIndexHandler<DIM> point_handler(points);
