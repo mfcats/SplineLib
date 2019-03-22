@@ -117,8 +117,8 @@ class NURBS : public Spline<DIM> {
     }
     SetNewControlPoints(temp, last, i - off, off, dimension);
     SetNewWeights(temp_w, last, i - off, off, dimension);
-    physical_space_->RemoveControlPoints(GetNumberOfControlPoints() / GetPointsPerDirection()[dimension]);
     physical_space_->RemoveWeights(GetNumberOfControlPoints() / GetPointsPerDirection()[dimension]);
+    physical_space_->RemoveControlPoints(GetNumberOfControlPoints() / GetPointsPerDirection()[dimension]);
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
   }
