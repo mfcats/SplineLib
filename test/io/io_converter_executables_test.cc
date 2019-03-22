@@ -32,12 +32,10 @@ std::string GetCommandOutput(const std::string &command) {
   std::string result, file;
   FILE *pipe{popen(command.c_str(), "r")};
   char buffer[256];
-
   while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
     file = buffer;
     result += file.substr(0, file.size() - 1) + "\n";
   }
-
   pclose(pipe);
   return result;
 }
@@ -69,6 +67,21 @@ std::string GetPathToInstallDir() {
   return path.substr(0, path.length() - 14) + "/../src/io/";
 }
 
+void CreateLogFile(const char *executable, const char *output, const char *options = "all") {
+  std::ofstream outfile("log.txt");
+  outfile << "input:\n" << executable << "\n\noutput:\n" << output << "\n\noptions:\n" << options;
+  outfile.close();
+}
+
+std::string GetLog() {
+  std::ifstream newFile("log.txt");
+  std::string line, file;
+  while (getline(newFile, line)) {
+    file += line + "\n";
+  }
+  return file;
+}
+
 bool CompareToHelpOutput(const std::string &string) {
   std::string help = std::string("The log file has to be of the following format:\n")
       + "input:\n# path to input file\n\n" + "output:\n# path to output file\n\n"
@@ -84,6 +97,10 @@ bool CompareToHelpOutput(const std::string &string) {
 class Iges2iritExecutable : public Test {
  public:
   Iges2iritExecutable() = default;
+
+ protected:
+  io::IGESReader iges_reader_;
+  io::IRITReader irit_reader_;
 };
 
 TEST_F(Iges2iritExecutable, PrintsHelp) {  // NOLINT
@@ -94,23 +111,23 @@ TEST_F(Iges2iritExecutable, PrintsHelp) {  // NOLINT
 }
 
 TEST_F(Iges2iritExecutable, Works) {  // NOLINT
-  std::ofstream outfile("log.txt");
-  outfile << "input:\n" << iges_read << "\n\noutput:\nout.itd\n\noptions:\nall";
-  outfile.close();
+  CreateLogFile(iges_read, "out.itd");
+  std::vector<std::any> iges_splines = iges_reader_.ReadFile(iges_read);
+  auto iges_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_splines[0]);
+  auto iges_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_splines[1]);
   std::system((GetPathToInstallDir() + "iges2irit log.txt").c_str());
-
-  std::ifstream newFile("log.txt");
-  ASSERT_THAT(newFile.good(), true);
-  std::string line, file;
-  while (getline(newFile, line)) {
-    file += line + "\n";
-  }
-  ASSERT_THAT(file.find("log:\n"), Ne(std::string::npos));
+  std::vector<std::any> irit_splines = irit_reader_.ReadFile("out.itd");
+  auto irit_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_splines[0]);
+  auto irit_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(irit_splines[1]);
+  ASSERT_THAT(irit_nurbs_2d->AreEqual(*iges_nurbs_2d.get(), 1e-6), true);
+  ASSERT_THAT(irit_bspline_1d->AreEqual(*iges_bspline_1d.get(), 1e-6), true);
+  std::string log = GetLog();
+  ASSERT_THAT(log.find("log:\n"), Ne(std::string::npos));
   ASSERT_THAT(
-      file.find(std::string("The splines at positions 0, 1 in file ") + iges_read + " have been written to out.itd"),
+      log.find(std::string("The splines at positions 0, 1 in file ") + iges_read + " have been written to out.itd"),
       Ne(std::string::npos));
   remove("log.txt");
-//  remove("out.itd");
+  remove("out.itd");
 }
 
 class Iges2vtkExecutable : public Test {
