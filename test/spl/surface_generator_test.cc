@@ -269,10 +269,10 @@ TEST_F(ASurface, ReturnCorrectVTK ) { // NOLINT
   std::any nurbsJoinedScaledCmp_any = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbsJoinedScaledCmp);
   splines = {nurbsJoined_any};
   splines2 = {nurbsJoinedScaledCmp_any};
-  remove("splines.vtk");
-  remove("splines2.vkt");
   vtk_writer_->WriteFile(splines, "splines.vtk", scattering_);
   vtk_writer_->WriteFile(splines2, "splines2.vtk", scattering_);
+  remove("splines.vtk");
+  remove("splines2.vtk");
 }
 
 class MockWeightedPhysicalSpaceSectionC: public spl::WeightedPhysicalSpace<1> {
@@ -460,8 +460,8 @@ TEST_F(AComplexSurface, ReturnCorrectVTK ) { // NOLINT
   std::vector<std::any> splines;
   std::any nurbsJoinedScaled_any = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbsJoinedScaled);
   splines = {nurbsJoinedScaled_any};
-  remove("splines.vtk");
   vtk_writer_->WriteFile(splines, "splines.vtk", scattering_);
+  remove("splines.vtk");
 }
 
 TEST_F(AComplexSurface , ReturnCorrectControlPoint_0_7) { // NOLINT
