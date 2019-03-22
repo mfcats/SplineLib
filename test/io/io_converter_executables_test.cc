@@ -47,7 +47,7 @@ std::string GetPathToInstallDir() {
   uint32_t len = sizeof(exePath);
 #ifdef __linux__
   char szTmp[32];
-  snprintf(szTmp, "/proc/%d/exe", getpid());
+  snprintf(szTmp, 32, "/proc/%d/exe", getpid());
   int bytes = readlink(szTmp, exePath, len);
   if (bytes >= 0) {
     exePath[bytes] = '\0';
