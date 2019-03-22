@@ -149,10 +149,10 @@ class IGESWriter {
     for (double weight : weights) {
       contents->append(GetString(weight) + delimiter);
     }
-    std::vector<double> control_points = spl->GetControlPoints();
     int dim = spl->GetDimension();
+    std::vector<double> control_points = Get3DControlPoints(spl->GetControlPoints(), dim);
     for (size_t i = 0; i < control_points.size() - 1; ++i) {
-      contents->append(GetString(Get3DControlPoints(control_points, dim)[i]) + delimiter);
+      contents->append(GetString(control_points[i]) + delimiter);
     }
     contents->append(GetString(control_points[control_points.size() - 1]));
   }
@@ -184,10 +184,10 @@ class IGESWriter {
     for (double weight : weights) {
       contents->append(GetString(weight) + delimiter);
     }
-    std::vector<double> control_points = spl->GetControlPoints();
     int dim = spl->GetDimension();
+    std::vector<double> control_points = Get3DControlPoints(spl->GetControlPoints(), dim);
     for (size_t i = 0; i < control_points.size() - 1; ++i) {
-      contents->append(GetString(Get3DControlPoints(control_points, dim)[i]) + delimiter);
+      contents->append(GetString(control_points[i]) + delimiter);
     }
     contents->append(GetString(control_points[control_points.size() - 1]));
   }
