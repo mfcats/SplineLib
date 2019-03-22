@@ -69,10 +69,6 @@ bool baf::KnotVector::operator==(const KnotVector &rhs) const {
 
 bool baf::KnotVector::AreEqual(const KnotVector &rhs,
                                double tolerance = util::NumericSettings<double>::kEpsilon()) const {
-  auto kv = std::equal(this->begin(), this->end(), rhs.begin(), rhs.end(),
-                       [&](ParamCoord knot_a, ParamCoord knot_b) {
-                         return util::NumericSettings<double>::AreEqual(knot_a.get(), knot_b.get(), tolerance);
-                       });
   return std::equal(this->begin(), this->end(), rhs.begin(), rhs.end(),
                     [&](ParamCoord knot_a, ParamCoord knot_b) {
                       return util::NumericSettings<double>::AreEqual(knot_a.get(), knot_b.get(), tolerance);

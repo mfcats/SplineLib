@@ -84,14 +84,6 @@ class ParameterSpace {
   }
 
   bool AreEqual(const ParameterSpace<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
-    auto deg = std::equal(degree_.begin(), degree_.end(), rhs.degree_.begin(), rhs.degree_.end(),
-                          [&](Degree degree_a, Degree degree_b) {
-                            return util::NumericSettings<double>::AreEqual(degree_a.get(), degree_b.get());
-                          });
-    auto kvs = std::equal(knot_vector_.begin(), knot_vector_.end(), rhs.knot_vector_.begin(), rhs.knot_vector_.end(),
-                          [&](std::shared_ptr<baf::KnotVector> kv_a, std::shared_ptr<baf::KnotVector> kv_b) {
-                            return kv_a->AreEqual(*kv_b.get(), tolerance);
-                          });
     return std::equal(degree_.begin(), degree_.end(), rhs.degree_.begin(), rhs.degree_.end(),
                       [&](Degree degree_a, Degree degree_b) {
                         return util::NumericSettings<double>::AreEqual(degree_a.get(), degree_b.get());

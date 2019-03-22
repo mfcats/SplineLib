@@ -57,16 +57,6 @@ class PhysicalSpace {
   }
 
   bool AreEqual(const PhysicalSpace<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
-    auto cps = std::equal(control_points_.begin(), control_points_.end(),
-                          rhs.control_points_.begin(), rhs.control_points_.end(),
-                          [&](double cp_a, double cp_b) {
-                            return util::NumericSettings<double>::AreEqual(cp_a, cp_b, tolerance);
-                          });
-    auto numb = std::equal(number_of_points_.begin(), number_of_points_.end(),
-                           rhs.number_of_points_.begin(), rhs.number_of_points_.end(),
-                           [&](int number_a, int number_b) {
-                             return util::NumericSettings<double>::AreEqual(number_a, number_b);
-                           });
     return std::equal(control_points_.begin(), control_points_.end(),
                       rhs.control_points_.begin(), rhs.control_points_.end(),
                       [&](double cp_a, double cp_b) {
