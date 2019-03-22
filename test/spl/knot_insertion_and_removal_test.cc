@@ -80,15 +80,6 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneLessControlPointAfterKno
   ASSERT_THAT(after_removal_->GetPointsPerDirection()[0], after_insertion_->GetPointsPerDirection()[0] - 1);
 }
 
-TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangePhysicallyAfterKnotRemoval) {  // NOLINT
-  for (int point = 0; point < original_->GetNumberOfControlPoints(); ++point) {
-    for (int dimension = 0; dimension < original_->GetDimension(); ++dimension) {
-      ASSERT_THAT(after_removal_->GetControlPoint({point}, dimension),
-                  DoubleNear(original_->GetControlPoint({point}, dimension), 1e-10));
-    }
-  }
-}
-
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 100; ++evaluated_point) {
     std::array<ParamCoord, 1> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
@@ -97,6 +88,10 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
   }
+}
+
+TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
+  ASSERT_THAT(original_->AreEqual((*after_removal_.get()), 1e-10), true);
 }
 
 class Random1DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
@@ -157,14 +152,8 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, HasOneLessControlPointAfterKnotR
   ASSERT_THAT(after_removal_->GetPointsPerDirection()[0], after_insertion_->GetPointsPerDirection()[0] - 1);
 }
 
-TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangePhysicallyAfterKnotRemoval) {  // NOLINT
-  for (int point = 0; point < original_->GetNumberOfControlPoints(); ++point) {
-    for (int dimension = 0; dimension < original_->GetDimension(); ++dimension) {
-      ASSERT_THAT(after_removal_->GetControlPoint({point}, dimension),
-                  DoubleNear(original_->GetControlPoint({point}, dimension), 1e-10));
-    }
-    ASSERT_THAT(after_removal_->GetWeight({point}), DoubleNear(original_->GetWeight({point}), 1e-10));
-  }
+TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
+  ASSERT_THAT(original_->AreEqual((*after_removal_.get()), 1e-10), true);
 }
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
@@ -250,13 +239,8 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, HasOneLessControlPointPerDirec
   ASSERT_THAT(after_removal_->GetPointsPerDirection()[1], after_insertion_->GetPointsPerDirection()[1] - 2);
 }
 
-TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangePhysicallyAfterKnotRemoval) {  // NOLINT
-  for (int point = 0; point < original_->GetNumberOfControlPoints(); ++point) {
-    for (int dimension = 0; dimension < original_->GetDimension(); ++dimension) {
-      ASSERT_THAT(after_removal_->GetControlPoint({point}, dimension),
-                  DoubleNear(original_->GetControlPoint({point}, dimension), 1e-10));
-    }
-  }
+TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
+  ASSERT_THAT(original_->AreEqual((*after_removal_.get()), 1e-10), true);
 }
 
 TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
@@ -338,19 +322,8 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, HasOneLessKnotPerDirectionAfterK
               after_insertion_->GetKnotVector(1)->GetNumberOfKnots() - 1);
 }
 
-TEST_F(Random2DNURBSForKnotInsertionAndRemoval, HasOneLessControlPointPerDirectionAfterKnotRemoval) {  // NOLINT
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[0], after_insertion_->GetPointsPerDirection()[0] - 2);
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[1], after_insertion_->GetPointsPerDirection()[1] - 1);
-}
-
-TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangePhysicallyAfterKnotRemoval) {  // NOLINT
-  for (int point = 0; point < original_->GetNumberOfControlPoints(); ++point) {
-    for (int dimension = 0; dimension < original_->GetDimension(); ++dimension) {
-      ASSERT_THAT(after_removal_->GetControlPoint({point}, dimension),
-                  DoubleNear(original_->GetControlPoint({point}, dimension), 1e-10));
-    }
-    ASSERT_THAT(after_removal_->GetWeight({point}), DoubleNear(original_->GetWeight({point}), 1e-10));
-  }
+TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
+  ASSERT_THAT(original_->AreEqual((*after_removal_.get()), 1e-10), true);
 }
 
 TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
@@ -444,13 +417,8 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, HasOneLessControlPointPerDirec
   ASSERT_THAT(after_removal_->GetPointsPerDirection()[2], after_insertion_->GetPointsPerDirection()[2] - 1);
 }
 
-TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangePhysicallyAfterKnotRemoval) {  // NOLINT
-  for (int point = 0; point < original_->GetNumberOfControlPoints(); ++point) {
-    for (int dimension = 0; dimension < original_->GetDimension(); ++dimension) {
-      ASSERT_THAT(after_removal_->GetControlPoint({point}, dimension),
-                  DoubleNear(original_->GetControlPoint({point}, dimension), 1e-10));
-    }
-  }
+TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
+  ASSERT_THAT(original_->AreEqual((*after_removal_.get()), 1e-10), true);
 }
 
 TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
@@ -545,14 +513,8 @@ TEST_F(Random3DNURBSForKnotInsertionAndRemoval, HasOneLessControlPointPerDirecti
   ASSERT_THAT(after_removal_->GetPointsPerDirection()[2], after_insertion_->GetPointsPerDirection()[2] - 1);
 }
 
-TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangePhysicallyAfterKnotRemoval) {  // NOLINT
-  for (int point = 0; point < original_->GetNumberOfControlPoints(); ++point) {
-    for (int dimension = 0; dimension < original_->GetDimension(); ++dimension) {
-      ASSERT_THAT(after_removal_->GetControlPoint({point}, dimension),
-                  DoubleNear(original_->GetControlPoint({point}, dimension), 1e-10));
-    }
-    ASSERT_THAT(after_removal_->GetWeight({point}), DoubleNear(original_->GetWeight({point}), 1e-10));
-  }
+TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
+  ASSERT_THAT(original_->AreEqual((*after_removal_.get()), 1e-10), true);
 }
 
 TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT

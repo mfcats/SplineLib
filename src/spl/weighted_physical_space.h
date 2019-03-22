@@ -38,6 +38,36 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     this->weights_ = physical_space.weights_;
   }
 
+  bool AreEqual(const WeightedPhysicalSpace<DIM> &rhs,
+                double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+    for (auto it = weights_.begin(); it != weights_.end(); ++it) {
+      auto a = *it;
+      auto r = 10;
+    }
+    for (auto it = rhs.weights_.begin(); it != rhs.weights_.end(); ++it) {
+      auto a = *it;
+      auto r = 10;
+    }
+    auto a = weights_.size();
+    auto b = rhs.weights_.size();
+    auto wght = std::equal(weights_.begin(), weights_.end(),
+                           rhs.weights_.begin(), rhs.weights_.end(),
+                           [&](double weight_a, double weight_b) {
+                             return util::NumericSettings<double>::AreEqual(weight_a, weight_b, tolerance);
+                           });
+    auto cps = std::equal(this->weights_.begin(), this->weights_.end(),
+                          rhs.weights_.begin(), rhs.weights_.end(),
+                          [&](double cp_a, double cp_b) {
+                            return util::NumericSettings<double>::AreEqual(cp_a, cp_b, tolerance);
+                          });
+    auto phys = PhysicalSpace<DIM>::AreEqual(rhs, tolerance);
+    return std::equal(weights_.begin(), weights_.end(),
+                      rhs.weights_.begin(), rhs.weights_.end(),
+                      [&](double weight_a, double weight_b) {
+                        return util::NumericSettings<double>::AreEqual(weight_a, weight_b, tolerance);
+                      }) && PhysicalSpace<DIM>::AreEqual(rhs, tolerance);
+  }
+
   virtual baf::ControlPoint GetHomogenousControlPoint(std::array<int, DIM> indices) const {
     std::vector<double> coordinates;
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);
@@ -91,7 +121,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
   }
 
   void RemoveWeights(int number) {
-    weights_.erase(weights_.end() - number - 1, weights_.end() - 1);
+    weights_.erase(weights_.end() - number, weights_.end());
   }
 
   std::vector<double> GetWeights() const override {

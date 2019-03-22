@@ -28,8 +28,8 @@ class NumericSettings {
     return kEpsilonFactor_ * std::numeric_limits<T>::epsilon();
   }
 
-  constexpr static bool AreEqual(const T &a, const T &b) {
-    return std::abs(a - b) < kEpsilon();
+  constexpr static bool AreEqual(const T &a, const T &b, T tolerance = kEpsilon()) {
+    return std::abs(a - b) < tolerance;
   }
 
   NumericSettings(const NumericSettings &numericSettings) = delete;

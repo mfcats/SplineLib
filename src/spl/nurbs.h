@@ -52,6 +52,13 @@ class NURBS : public Spline<DIM> {
 
   virtual ~NURBS() = default;
 
+  bool AreEqual(const NURBS<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+    auto param = this->parameter_space_->AreEqual(*rhs.parameter_space_.get(), tolerance);
+    auto phys = physical_space_->AreEqual(*rhs.physical_space_.get(), tolerance);
+    return this->parameter_space_->AreEqual(*rhs.parameter_space_.get(), tolerance)
+        && physical_space_->AreEqual(*rhs.physical_space_.get(), tolerance);
+  }
+
   int GetNumberOfControlPoints() const override {
     return physical_space_->GetNumberOfControlPoints();
   }

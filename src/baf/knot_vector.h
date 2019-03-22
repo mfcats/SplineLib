@@ -50,6 +50,7 @@ class KnotVector {
   // Check if absolute distance between all knots is smaller than the epsilon defined in
   // NumericSettings.
   bool operator==(const KnotVector &rhs) const;
+  bool AreEqual(const KnotVector &rhs, double tolerance) const;
   ParamCoord &operator[](size_t index);
 
   virtual ParamCoord GetKnot(size_t index) const;
