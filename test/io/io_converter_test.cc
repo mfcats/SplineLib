@@ -21,7 +21,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "io_converter.h"
 
 using testing::Test;
-using testing::DoubleNear;
 using testing::Ne;
 
 class AnIOConverter : public Test {
