@@ -96,7 +96,7 @@ class ElementGenerator {
   std::array<std::vector<ParamCoord>, DIM> GetInternalKnots() const {
     std::array<std::vector<ParamCoord>, DIM> internal_knots;
     for (int i = 0; i < DIM; ++i) {
-      std::vector<ParamCoord> knots = spl_->GetKnots()[i];
+      baf::KnotVector knots = *spl_->GetKnotVector(i);
       auto first = knots.begin() + spl_->GetDegree(i).get();
       auto last = knots.end() - spl_->GetDegree(i).get();
       internal_knots[i] = std::vector<ParamCoord>(first, last);

@@ -162,10 +162,6 @@ parameter_space) {
     return GetPhysicalSpace()->GetWeights();
   }
 
-  std::array<std::vector<ParamCoord>, DIM> GetKnots() const {
-    return parameter_space_->GetKnots();
-  }
-
   void InsertKnot(ParamCoord knot, int dimension, size_t multiplicity = 1) {
     KnotSpan knot_span = GetKnotVector(dimension)->GetKnotSpan(knot);
     Degree degree = GetDegree(dimension);

@@ -140,7 +140,7 @@ class IGESWriter {
                    GetString(spl->GetDegree(0).get()), GetString(0), GetString(0), GetString(isRational),
                    GetString(0)}, delimiter);
 
-    auto knots = spl->GetKnots()[0];
+    auto knots = *spl->GetKnotVector(0);
     for (auto &knot : knots) {
       contents->append(GetString(knot.get()) + delimiter);
     }
@@ -171,8 +171,8 @@ class IGESWriter {
                    GetString(spl->GetDegree(0).get()), GetString(spl->GetDegree(1).get()),
                    GetString(0), GetString(0), GetString(isRational), GetString(0), GetString(0)},
                   delimiter);
-    auto knots1 = spl->GetKnots()[0];
-    auto knots2 = spl->GetKnots()[1];
+    auto knots1 = *spl->GetKnotVector(0);
+    auto knots2 = *spl->GetKnotVector(1);
     for (auto &i : knots1) {
       contents->append(GetString(i.get()) + delimiter);
     }
