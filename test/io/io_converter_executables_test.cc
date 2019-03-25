@@ -41,29 +41,29 @@ std::string GetCommandOutput(const std::string &command) {
 }
 
 std::string GetPathToInstallDir() {
-  char exePath[PATH_MAX];
-  uint32_t len = sizeof(exePath);
+  char exec_path[PATH_MAX];
+  uint32_t length = sizeof(exec_path);
 #ifdef __linux__
   char szTmp[32];
-  snprintf(szTmp, 32, "/proc/%d/exe", getpid());
-  int bytes = readlink(szTmp, exePath, len);
+  snprintf(szTmp, sizeof(szTmp) / sizeof(char), "/proc/%d/exe", getpid());
+  int bytes = readlink(szTmp, exec_path, length);
   if (bytes >= 0) {
-    exePath[bytes] = '\0';
+    exec_path[bytes] = '\0';
   }
 #elif __APPLE__
-  if (_NSGetExecutablePath(exePath, &len) != 0) {
-    exePath[0] = '\0';
+  if (_NSGetExecutablePath(exec_path, &length) != 0) {
+    exec_path[0] = '\0';
   } else {
-    char *canonicalPath = realpath(exePath, nullptr);
-    if (canonicalPath != nullptr) {
-      strncpy(exePath, canonicalPath, len);
-      free(canonicalPath);
+    char *canonical_path = realpath(exec_path, nullptr);
+    if (canonical_path != nullptr) {
+      strncpy(exec_path, canonical_path, length);
+      free(canonical_path);
     }
   }
 #else
   throw std::runtime_error("Cannot find path of executable.");
 #endif
-  std::string path(exePath);
+  std::string path(exec_path);
   return path.substr(0, path.length() - 14) + "/../src/io/";
 }
 
@@ -73,7 +73,7 @@ void CreateLogFile(const char *executable, const char *output, const char *optio
   outfile.close();
 }
 
-std::string GetFileContent(std::string filename) {
+std::string GetFileContent(const std::string &filename) {
   std::ifstream newFile(filename);
   std::string line, file;
   while (getline(newFile, line)) {
@@ -110,6 +110,17 @@ TEST_F(Iges2iritExecutable, PrintsHelp) {  // NOLINT
   ASSERT_THAT(CompareToHelpOutput(output), true);
 }
 
+TEST_F(Iges2iritExecutable, WritesLog) {  // NOLINT
+  CreateLogFile(iges_read, "out.itd");
+  std::system((GetPathToInstallDir() + "iges2irit log.txt").c_str());
+  std::string log = GetFileContent("log.txt");
+  ASSERT_THAT(log.find("log:\n"), Ne(std::string::npos));
+  ASSERT_THAT(log.find(std::string("The splines at positions 0, 1 in file ") + iges_read
+                           + " have been written to out.itd"), Ne(std::string::npos));
+  remove("log.txt");
+  remove("out.itd");
+}
+
 TEST_F(Iges2iritExecutable, ConvertsFileCorrectly) {  // NOLINT
   CreateLogFile(iges_read, "out.itd");
   std::vector<std::any> iges_splines = iges_reader_.ReadFile(iges_read);
@@ -125,17 +136,6 @@ TEST_F(Iges2iritExecutable, ConvertsFileCorrectly) {  // NOLINT
   remove("out.itd");
 }
 
-TEST_F(Iges2iritExecutable, WritesLog) {  // NOLINT
-  CreateLogFile(iges_read, "out.itd");
-  std::system((GetPathToInstallDir() + "iges2irit log.txt").c_str());
-  std::string log = GetFileContent("log.txt");
-  ASSERT_THAT(log.find("log:\n"), Ne(std::string::npos));
-  ASSERT_THAT(log.find(std::string("The splines at positions 0, 1 in file ") + iges_read
-                           + " have been written to out.itd"), Ne(std::string::npos));
-  remove("log.txt");
-  remove("out.itd");
-}
-
 class Iges2vtkExecutable : public Test {
  public:
   Iges2vtkExecutable() = default;
@@ -146,6 +146,29 @@ TEST_F(Iges2vtkExecutable, PrintsHelp) {  // NOLINT
   ASSERT_THAT(CompareToHelpOutput(output), true);
   output = GetCommandOutput(GetPathToInstallDir() + "iges2vtk --help");
   ASSERT_THAT(CompareToHelpOutput(output), true);
+}
+
+TEST_F(Iges2vtkExecutable, WritesLog) {  // NOLINT
+  CreateLogFile(iges_read, "out.vtk", "all\n\nscattering:\n20 30\n70");
+  std::system((GetPathToInstallDir() + "iges2vtk log.txt").c_str());
+  std::string log = GetFileContent("log.txt");
+  ASSERT_THAT(log.find("log:\n"), Ne(std::string::npos));
+  ASSERT_THAT(log.find(std::string("The splines at positions 0, 1 in file ") + iges_read
+                           + " have been written to out.vtk"), Ne(std::string::npos));
+  remove("log.txt");
+  remove("out.vtk");
+}
+
+TEST_F(Iges2vtkExecutable, ConvertsFileCorrectly) {  // NOLINT
+  CreateLogFile(iges_read, "out.vtk", "all\n\nscattering:\n20 30\n70");
+  std::system((GetPathToInstallDir() + "iges2vtk log.txt").c_str());
+  std::string vtk_file = GetFileContent("out.vtk");
+  ASSERT_THAT(vtk_file.find("# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n"), Ne(std::string::npos));
+  ASSERT_THAT(vtk_file.find("DATASET UNSTRUCTURED_GRID\nPOINTS 722 double\n"), Ne(std::string::npos));
+  ASSERT_THAT(vtk_file.find("CELLS 670 3210\n"), Ne(std::string::npos));
+  ASSERT_THAT(vtk_file.find("CELL_TYPES 670\n"), Ne(std::string::npos));
+  remove("log.txt");
+  remove("out.vtk");
 }
 
 class Iges2xmlExecutable : public Test {
@@ -165,27 +188,27 @@ TEST_F(Iges2xmlExecutable, PrintsHelp) {  // NOLINT
 }
 
 TEST_F(Iges2xmlExecutable, WritesLog) {  // NOLINT
-  CreateLogFile(iges_read, "out.xml");
+  CreateLogFile(iges_read_2, "out.xml", "1");
   std::system((GetPathToInstallDir() + "iges2xml log.txt").c_str());
   std::string log = GetFileContent("log.txt");
   ASSERT_THAT(log.find("log:\n"), Ne(std::string::npos));
-  ASSERT_THAT(log.find(std::string("The splines at positions 0, 1 in file ") + iges_read
-                           + " have been written to out.xml"), Ne(std::string::npos));
+  ASSERT_THAT(log.find(std::string("The spline at position 1 in file ") + iges_read_2
+                           + " has been written to out.xml"), Ne(std::string::npos));
   remove("log.txt");
   remove("out.xml");
 }
 
 TEST_F(Iges2xmlExecutable, ConvertsFileCorrectly) {  // NOLINT
-  CreateLogFile(iges_read, "out.xml");
-  std::vector<std::any> iges_splines = iges_reader_.ReadFile(iges_read);
-  auto iges_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_splines[0]);
-  auto iges_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_splines[1]);
+  CreateLogFile(iges_read_2, "out.xml");
+  std::vector<std::any> iges_splines = iges_reader_.ReadFile(iges_read_2);
+  auto iges_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(iges_splines[0]);
+  auto iges_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(iges_splines[1]);
   std::system((GetPathToInstallDir() + "iges2xml log.txt").c_str());
   std::vector<std::any> xml_splines = xml_reader_.ReadFile("out.xml");
-  auto xml_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_splines[0]);
-  auto xml_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_splines[1]);
-  ASSERT_THAT(xml_nurbs_2d->AreEqual(*iges_nurbs_2d.get(), 1e-6), true);
-  ASSERT_THAT(xml_bspline_1d->AreEqual(*iges_bspline_1d.get(), 1e-6), true);
+  auto xml_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_splines[0]);
+  auto xml_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(xml_splines[1]);
+  ASSERT_THAT(xml_bspline_2d->AreEqual(*iges_bspline_2d.get(), 1e-6), true);
+  ASSERT_THAT(xml_nurbs_1d->AreEqual(*iges_nurbs_1d.get(), 1e-6), true);
   remove("log.txt");
   remove("out.xml");
 }
@@ -218,19 +241,16 @@ TEST_F(Irit2igesExecutable, WritesLog) {  // NOLINT
 }
 
 TEST_F(Irit2igesExecutable, ConvertsFileCorrectly) {  // NOLINT
-  CreateLogFile(path_to_irit_file, "out.iges");
+  CreateLogFile(path_to_irit_file, "out.iges", "1\n2\n3");
   std::vector<std::any> irit_splines = irit_reader_.ReadFile(path_to_irit_file);
-  auto irit_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(irit_splines[0]);
   auto irit_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(irit_splines[1]);
   auto irit_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(irit_splines[2]);
   auto irit_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_splines[3]);
   std::system((GetPathToInstallDir() + "irit2iges log.txt").c_str());
   std::vector<std::any> iges_splines = iges_reader_.ReadFile("out.iges");
-  auto iges_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_splines[0]);
-  auto iges_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(iges_splines[1]);
-  auto iges_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(iges_splines[2]);
-  auto iges_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_splines[3]);
-  ASSERT_THAT(irit_bspline_1d->AreEqual(*iges_bspline_1d.get()), true);
+  auto iges_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(iges_splines[0]);
+  auto iges_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(iges_splines[1]);
+  auto iges_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_splines[2]);
   ASSERT_THAT(irit_nurbs_1d->AreGeometricallyEqual(*iges_nurbs_1d.get()), true);
   ASSERT_THAT(irit_bspline_2d->AreEqual(*iges_bspline_2d.get()), true);
   ASSERT_THAT(irit_nurbs_2d->AreGeometricallyEqual(*iges_nurbs_2d.get()), true);
@@ -255,20 +275,20 @@ TEST_F(Irit2vtkExecutable, WritesLog) {  // NOLINT
   std::system((GetPathToInstallDir() + "irit2vtk log.txt").c_str());
   std::string log = GetFileContent("log.txt");
   ASSERT_THAT(log.find("log:\n"), Ne(std::string::npos));
-  ASSERT_THAT(log.find(std::string("The splines at positions 0, 3, 5 in file ") + iges_read
+  ASSERT_THAT(log.find(std::string("The splines at positions 0, 3, 5 in file ") + path_to_irit_file
                            + " have been written to out.vtk"), Ne(std::string::npos));
   remove("log.txt");
   remove("out.vtk");
 }
 
 TEST_F(Irit2vtkExecutable, ConvertsFileCorrectly) {  // NOLINT
-  CreateLogFile(path_to_irit_file, "out.vtk", "all\n\nscattering:\n30\n40\n10 5\n10 20");
+  CreateLogFile(path_to_irit_file, "out.vtk", "all\n\nscattering:\n30\n40\n10 5\n10 20\n5 8 5\n9 4 8");
   std::system((GetPathToInstallDir() + "irit2vtk log.txt").c_str());
   std::string vtk_file = GetFileContent("out.vtk");
   ASSERT_THAT(vtk_file.find("# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n"), Ne(std::string::npos));
-  ASSERT_THAT(vtk_file.find("DATASET UNSTRUCTURED_GRID\nPOINTS 369 double\n"), Ne(std::string::npos));
-  ASSERT_THAT(vtk_file.find("CELLS 320 1460\n"), Ne(std::string::npos));
-  ASSERT_THAT(vtk_file.find("CELL_TYPES 320\n"), Ne(std::string::npos));
+  ASSERT_THAT(vtk_file.find("DATASET UNSTRUCTURED_GRID\nPOINTS 1143 double\n"), Ne(std::string::npos));
+  ASSERT_THAT(vtk_file.find("CELLS 808 5852\n"), Ne(std::string::npos));
+  ASSERT_THAT(vtk_file.find("CELL_TYPES 808\n"), Ne(std::string::npos));
   remove("log.txt");
   remove("out.vtk");
 }
@@ -301,28 +321,19 @@ TEST_F(Irit2xmlExecutable, WritesLog) {  // NOLINT
 }
 
 TEST_F(Irit2xmlExecutable, ConvertsFileCorrectly) {  // NOLINT
-  CreateLogFile(path_to_irit_file, "out.xml");
+  CreateLogFile(path_to_irit_file, "out.xml", "1\n2\n4");
   std::vector<std::any> irit_splines = irit_reader_.ReadFile(path_to_irit_file);
-  auto irit_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(irit_splines[0]);
   auto irit_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(irit_splines[1]);
   auto irit_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(irit_splines[2]);
-  auto irit_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_splines[3]);
   auto irit_bspline_3d = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(irit_splines[4]);
-  auto irit_nurbs_3d = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(irit_splines[5]);
   std::system((GetPathToInstallDir() + "irit2xml log.txt").c_str());
   std::vector<std::any> xml_splines = xml_reader_.ReadFile("out.xml");
-  auto xml_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_splines[0]);
-  auto xml_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(xml_splines[1]);
-  auto xml_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_splines[2]);
-  auto xml_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_splines[3]);
-  auto xml_bspline_3d = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(xml_splines[4]);
-  auto xml_nurbs_3d = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(xml_splines[5]);
-  ASSERT_THAT(irit_bspline_1d->AreEqual(*xml_bspline_1d.get(), 1e-6), true);
+  auto xml_nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(xml_splines[0]);
+  auto xml_bspline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_splines[1]);
+  auto xml_bspline_3d = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(xml_splines[2]);
   ASSERT_THAT(irit_nurbs_1d->AreGeometricallyEqual(*xml_nurbs_1d.get()), true);
   ASSERT_THAT(irit_bspline_2d->AreEqual(*xml_bspline_2d.get()), true);
-  ASSERT_THAT(irit_nurbs_2d->AreGeometricallyEqual(*xml_nurbs_2d.get()), true);
   ASSERT_THAT(irit_bspline_3d->AreEqual(*xml_bspline_3d.get()), true);
-  ASSERT_THAT(irit_nurbs_3d->AreGeometricallyEqual(*xml_nurbs_3d.get()), true);
   remove("log.txt");
   remove("out.xml");
 }
@@ -421,4 +432,27 @@ TEST_F(Xml2vtkExecutable, PrintsHelp) {  // NOLINT
   ASSERT_THAT(CompareToHelpOutput(output), true);
   output = GetCommandOutput(GetPathToInstallDir() + "xml2vtk --help");
   ASSERT_THAT(CompareToHelpOutput(output), true);
+}
+
+TEST_F(Xml2vtkExecutable, WritesLog) {  // NOLINT
+  CreateLogFile(path_to_xml_file, "out.vtk", "1\n3\n\nscattering:\n30 25\n3 4 5 6");
+  std::system((GetPathToInstallDir() + "xml2vtk log.txt").c_str());
+  std::string log = GetFileContent("log.txt");
+  ASSERT_THAT(log.find("log:\n"), Ne(std::string::npos));
+  ASSERT_THAT(log.find(std::string("The spline at position 1 in file ") + path_to_xml_file
+                           + " has been written to out.vtk"), Ne(std::string::npos));
+  remove("log.txt");
+  remove("out.vtk");
+}
+
+TEST_F(Xml2vtkExecutable, ConvertsFileCorrectly) {  // NOLINT
+  CreateLogFile(path_to_xml_file, "out.vtk", "all\n\nscattering:\n10 5\n10 20");
+  std::system((GetPathToInstallDir() + "xml2vtk log.txt").c_str());
+  std::string vtk_file = GetFileContent("out.vtk");
+  ASSERT_THAT(vtk_file.find("# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n"), Ne(std::string::npos));
+  ASSERT_THAT(vtk_file.find("DATASET UNSTRUCTURED_GRID\nPOINTS 297 double\n"), Ne(std::string::npos));
+  ASSERT_THAT(vtk_file.find("CELLS 250 1250\n"), Ne(std::string::npos));
+  ASSERT_THAT(vtk_file.find("CELL_TYPES 250\n"), Ne(std::string::npos));
+  remove("log.txt");
+  remove("out.vtk");
 }

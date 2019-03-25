@@ -80,7 +80,17 @@ std::vector<int> io::ConverterLog::GetPositions(std::vector<int> possible_positi
 }
 
 std::vector<std::vector<int>> io::ConverterLog::GetScattering() {
-  return util::VectorUtils<std::vector<int>>::FilterVector(scattering_, written_);
+  std::vector<int> indices;
+  if (positions_[0] != -1) {
+    for (int i = 0; i < static_cast<int>(positions_.size()); ++i) {
+      if (std::find(written_.begin(), written_.end(), positions_[i]) != written_.end()) {
+        indices.emplace_back(i);
+      }
+    }
+  } else {
+    indices = written_;
+  }
+  return util::VectorUtils<std::vector<int>>::FilterVector(scattering_, indices);
 }
 
 void io::ConverterLog::WriteLog() const {
