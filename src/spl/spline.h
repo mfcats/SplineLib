@@ -42,7 +42,7 @@ parameter_space) {
     parameter_space_ = parameter_space;
   }
   Spline(const Spline<DIM> &spline) {
-    ParameterSpace<DIM> parameter_space(*spline.GetParameterSpace());
+    ParameterSpace<DIM> parameter_space(*spline.parameter_space_);
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(parameter_space);
   }
 
@@ -145,10 +145,6 @@ parameter_space) {
   virtual baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const = 0;
 
   virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;
-
-  std::shared_ptr<spl::ParameterSpace<DIM>> GetParameterSpace() const {
-    return parameter_space_;
-  }
 
   double GetExpansion() const {
     return GetPhysicalSpace()->GetExpansion();
