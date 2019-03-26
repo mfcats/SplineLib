@@ -33,8 +33,8 @@ class SurfaceGenerator : public NURBSGenerator<2> {
   std::shared_ptr<ParameterSpace<2>> JoinParameterSpaces(std::shared_ptr<NURBS<1>> const &nurbs_T,
                                                          std::shared_ptr<NURBS<1>> const &nurbs_C) const;
 
-  std::shared_ptr<WeightedPhysicalSpace<2>> JoinPhysicalSpaces(std::shared_ptr<spl::PhysicalSpace<1>> const &space_1,
-                                                               std::shared_ptr<spl::PhysicalSpace<1>> const &space_2) const;
+  std::shared_ptr<WeightedPhysicalSpace<2>> JoinPhysicalSpaces(std::shared_ptr<NURBS<1>> const &nurbs_T,
+                                                               std::shared_ptr<NURBS<1>> const &nurbs_C) const;
 
   std::array<double, 3> CrossProduct(std::vector<double> a, std::vector<double> b) const;
 

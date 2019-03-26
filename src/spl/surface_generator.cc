@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
                                         std::shared_ptr<spl::NURBS<1>> const &nurbs_C) {
   this->parameter_space_ = JoinParameterSpaces(nurbs_T, nurbs_C);
-  this->physical_space_ = JoinPhysicalSpaces(nurbs_T->GetPhysicalSpace(), nurbs_C->GetPhysicalSpace());
+  this->physical_space_ = JoinPhysicalSpaces(nurbs_T, nurbs_C);
 }
 
 std::shared_ptr<spl::ParameterSpace<2>>
@@ -32,19 +32,19 @@ spl::SurfaceGenerator::JoinParameterSpaces(std::shared_ptr<spl::NURBS<1>> const 
 }
 
 std::shared_ptr<spl::WeightedPhysicalSpace<2>> spl::SurfaceGenerator::JoinPhysicalSpaces(
-    std::shared_ptr<spl::PhysicalSpace<1>> const &space_1,
-    std::shared_ptr<spl::PhysicalSpace<1>> const &space_2) const {
+    std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
+    std::shared_ptr<spl::NURBS<1>> const &nurbs_C) const {
   std::array<int, 2> j_number_of_points =
-      {space_1->GetNumberOfControlPoints(), space_2->GetNumberOfControlPoints()};
+      {nurbs_T->GetNumberOfControlPoints(), nurbs_C->GetNumberOfControlPoints()};
   std::vector<baf::ControlPoint> j_control_points;
   std::vector<double> joined_weights;
-  for (int i = 0; i < space_2->GetNumberOfControlPoints(); ++i) {
+  for (int i = 0; i < nurbs_C->GetNumberOfControlPoints(); ++i) {
     std::array<int, 1> index_space_2 = {i};
-    for (int j = 0; j < space_1->GetNumberOfControlPoints(); ++j) {
+    for (int j = 0; j < nurbs_T->GetNumberOfControlPoints(); ++j) {
       std::array<int, 1> index_space_1 = {j};
-      j_control_points.emplace_back(space_1->GetControlPoint(index_space_1) +
-          space_2->GetControlPoint(index_space_2));
-      joined_weights.emplace_back(space_1->GetWeight(index_space_1) * space_2->GetWeight(index_space_2));
+      j_control_points.emplace_back(nurbs_T->GetControlPoint(index_space_1) +
+          nurbs_C->GetControlPoint(index_space_2));
+      joined_weights.emplace_back(nurbs_T->GetWeight(index_space_1) * nurbs_C->GetWeight(index_space_2));
     }
   }
   return std::make_shared<spl::WeightedPhysicalSpace<2>>(spl::WeightedPhysicalSpace<2>(

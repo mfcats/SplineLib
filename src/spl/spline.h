@@ -144,8 +144,6 @@ parameter_space) {
   virtual double GetControlPoint(std::array<int, DIM> indices, int dimension) const = 0;
   virtual baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const = 0;
 
-  virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;
-
   double GetExpansion() const {
     return GetPhysicalSpace()->GetExpansion();
   }
@@ -220,6 +218,8 @@ parameter_space) {
                                                     std::array<int, DIM> derivative,
                                                     std::array<int, DIM> indices,
                                                     int dimension) const = 0;
+
+  virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;
 
   std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
     return parameter_space_->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
