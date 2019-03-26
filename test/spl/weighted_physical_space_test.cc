@@ -48,6 +48,10 @@ TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectWeight) {  // NOLINT
   ASSERT_THAT(weighted_physical_space.GetWeight({2}), DoubleEq(0.8));
 }
 
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectMinimumWeight) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetMinimumWeight(), DoubleEq(0.5));
+}
+
 TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPoint) {  // NOLINT
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{0}).GetValue(0), DoubleEq(0.0));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{0}).GetValue(1), DoubleEq(0.0));
@@ -64,6 +68,33 @@ TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPoint) {  //
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{4}).GetValue(0), DoubleEq(6.0));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{4}).GetValue(1), DoubleEq(-1.2));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{4}).GetValue(2), DoubleEq(1.2));
+}
+
+TEST_F(A1DWeightedPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 5);
+  weighted_physical_space.AddControlPoints(1);
+  weighted_physical_space.SetControlPoint({5}, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  weighted_physical_space.SetWeight({5}, 4.3);
+  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 6);
+  ASSERT_THAT(weighted_physical_space.GetControlPoint(std::array<int, 1>{5}).GetValue(0), DoubleEq(6.0));
+  ASSERT_THAT(weighted_physical_space.GetWeight(std::array<int, 1>{5}), DoubleEq(4.3));
+}
+
+TEST_F(A1DWeightedPhysicalSpace, RemovesControlPointAndWeight) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 5);
+  weighted_physical_space.RemoveControlPoints(2);
+  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 3);
+  ASSERT_THAT(weighted_physical_space.GetWeights().size(), 3);
+}
+
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectDividedControlPoints) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetDividedWeights(2, 2, 0).size(), 2);
+  ASSERT_THAT(weighted_physical_space.GetDividedWeights(2, 2, 0)[0], DoubleEq(0.8));
+}
+
+TEST_F(A1DWeightedPhysicalSpace, EvaluatesThatCopiedSplineEqualsOriginalSpline) {  // NOLINT
+  spl::WeightedPhysicalSpace<1> copy(weighted_physical_space);
+  ASSERT_THAT(weighted_physical_space.AreEqual(copy), true);
 }
 
 class A2DWeightedPhysicalSpace : public Test {
@@ -116,6 +147,10 @@ TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastWeightFor1DIndex) {  // NOLIN
   ASSERT_THAT(weighted_physical_space.GetWeight({5}), DoubleEq(3.8));
 }
 
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectMinimumWeight) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetMinimumWeight(), DoubleEq(0.5));
+}
+
 TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPointFor2DIndex) {  // NOLINT
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{0, 0}).GetValue(0), DoubleEq(0.0));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{0, 0}).GetValue(1), DoubleEq(0.0));
@@ -150,6 +185,33 @@ TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPointFor1DIn
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{5}).GetValue(0), DoubleEq(19.0));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{5}).GetValue(1), DoubleEq(3.8));
   ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 2>{5}).GetValue(2), DoubleEq(3.8));
+}
+
+TEST_F(A2DWeightedPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 6);
+  weighted_physical_space.AddControlPoints(1);
+  weighted_physical_space.SetControlPoint({6}, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  weighted_physical_space.SetWeight({6}, 4.3);
+  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 7);
+  ASSERT_THAT(weighted_physical_space.GetControlPoint(std::array<int, 2>{6}).GetValue(0), DoubleEq(6.0));
+  ASSERT_THAT(weighted_physical_space.GetWeight(std::array<int, 2>{6}), DoubleEq(4.3));
+}
+
+TEST_F(A2DWeightedPhysicalSpace, Removes2ControlPointsAndWeights) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 6);
+  weighted_physical_space.RemoveControlPoints(2);
+  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 4);
+  ASSERT_THAT(weighted_physical_space.GetWeights().size(), 4);
+}
+
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectDividedWeights) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetDividedWeights(1, 2, 0).size(), 4);
+  ASSERT_THAT(weighted_physical_space.GetDividedWeights(1, 2, 0)[2], DoubleEq(1.2));
+}
+
+TEST_F(A2DWeightedPhysicalSpace, EvaluatesThatCopiedSplineEqualsOriginalSpline) {  // NOLINT
+  spl::WeightedPhysicalSpace<2> copy(weighted_physical_space);
+  ASSERT_THAT(weighted_physical_space.AreEqual(copy), true);
 }
 
 /* 1-dimensional nurbs spline with following properties :

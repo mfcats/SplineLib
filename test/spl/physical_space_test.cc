@@ -93,6 +93,11 @@ TEST_F(A1DPhysicalSpace, ReturnsCorrectDividedControlPoints) {  // NOLINT
   ASSERT_THAT(physical_space.GetDividedControlPoints(2, 2, 0)[0].GetValue(0), DoubleEq(3.0));
 }
 
+TEST_F(A1DPhysicalSpace, EvaluatesThatCopiedSplineEqualsOriginalSpline) {  // NOLINT
+  spl::PhysicalSpace<1> copy(physical_space);
+  ASSERT_THAT(physical_space.AreEqual(copy), true);
+}
+
 class A2DPhysicalSpace : public Test {
  public:
   A2DPhysicalSpace() {
@@ -177,4 +182,9 @@ TEST_F(A2DPhysicalSpace, ReturnsCorrectMaximumDistanceFromOrigin) {  // NOLINT
 TEST_F(A2DPhysicalSpace, ReturnsCorrectDividedControlPoints) {  // NOLINT
   ASSERT_THAT(physical_space.GetDividedControlPoints(1, 2, 0).size(), 4);
   ASSERT_THAT(physical_space.GetDividedControlPoints(1, 2, 0)[2].GetValue(0), DoubleEq(1.5));
+}
+
+TEST_F(A2DPhysicalSpace, EvaluatesThatCopiedSplineEqualsOriginalSpline) {  // NOLINT
+  spl::PhysicalSpace<2> copy(physical_space);
+  ASSERT_THAT(physical_space.AreEqual(copy), true);
 }

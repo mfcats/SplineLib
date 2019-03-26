@@ -74,9 +74,9 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     return minimum;
   }
 
-  void SetWeight(std::array<int, DIM> indices, double weight, int dimension, int (*before)(int)) {
+  void SetWeight(std::array<int, DIM> indices, double weight, int dimension = 0, int (*before)(int) = nullptr) {
     const std::array<int, DIM> number_of_points_before(this->number_of_points_);
-    this->number_of_points_[dimension] = before(this->number_of_points_[dimension]);
+    if (before) this->number_of_points_[dimension] = before(this->number_of_points_[dimension]);
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);
     point_handler.SetIndices(indices);
     int first = point_handler.Get1DIndex();
@@ -84,7 +84,8 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     this->number_of_points_ = number_of_points_before;
   }
 
-  void AddWeights(int number) {
+  void AddControlPoints(int number) override {
+    PhysicalSpace<DIM>::AddControlPoints(number);
     for (int i = 0; i < number; ++i) {
       weights_.emplace_back(0.0);
     }

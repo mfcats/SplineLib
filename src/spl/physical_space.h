@@ -90,7 +90,7 @@ class PhysicalSpace {
     number_of_points_ = number_of_points_before;
   }
 
-  void AddControlPoints(int number) {
+  virtual void AddControlPoints(int number) {
     for (int i = 0; i < number; ++i) {
       for (int j = 0; j < dimension_; ++j) {
         control_points_.emplace_back(0.0);
