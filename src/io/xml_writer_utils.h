@@ -56,7 +56,7 @@ class XMLWriterUtils {
     for (int i = 0; i < point_handler.Get1DLength(); ++i, point_handler++) {
       auto indices = point_handler.GetIndices();
       string += "\n      ";
-      for (int j = 0; j < spline_ptr->GetDimension(); j++) {
+      for (int j = 0; j < spline_ptr->GetPointDim(); j++) {
         string += std::to_string(spline_ptr->GetControlPoint(indices, j)) + "  ";
       }
     }

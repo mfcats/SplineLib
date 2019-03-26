@@ -66,7 +66,7 @@ class IRITWriter {
     bool rational = util::AnyCasts::IsRational<1>(spline);
     file << "[CURVE BSPLINE "
         + io::IRITWriterUtils<1>::GetNumberOfControlPoints(spline_ptr) + io::IRITWriterUtils<1>::GetOrder(spline_ptr)
-        + GetPointType(rational, spline_ptr->GetDimension()) + "\n" + io::IRITWriterUtils<1>::GetKnotVectors(spline_ptr)
+        + GetPointType(rational, spline_ptr->GetPointDim()) + "\n" + io::IRITWriterUtils<1>::GetKnotVectors(spline_ptr)
         + io::IRITWriterUtils<1>::GetControlPoints(util::AnyCasts::IsRational<1>(spline), spline_ptr, spline);
   }
 
@@ -75,7 +75,7 @@ class IRITWriter {
     bool rational = util::AnyCasts::IsRational<2>(spline);
     file << "[SURFACE BSPLINE "
         + io::IRITWriterUtils<2>::GetNumberOfControlPoints(spline_ptr) + io::IRITWriterUtils<2>::GetOrder(spline_ptr)
-        + GetPointType(rational, spline_ptr->GetDimension()) + "\n" + io::IRITWriterUtils<2>::GetKnotVectors(spline_ptr)
+        + GetPointType(rational, spline_ptr->GetPointDim()) + "\n" + io::IRITWriterUtils<2>::GetKnotVectors(spline_ptr)
         + io::IRITWriterUtils<2>::GetControlPoints(util::AnyCasts::IsRational<2>(spline), spline_ptr, spline);
   }
 
@@ -84,7 +84,7 @@ class IRITWriter {
     bool rational = util::AnyCasts::IsRational<3>(spline);
     file << "[TRIVAR BSPLINE "
         + io::IRITWriterUtils<3>::GetNumberOfControlPoints(spline_ptr) + io::IRITWriterUtils<3>::GetOrder(spline_ptr)
-        + GetPointType(rational, spline_ptr->GetDimension()) + "\n" + io::IRITWriterUtils<3>::GetKnotVectors(spline_ptr)
+        + GetPointType(rational, spline_ptr->GetPointDim()) + "\n" + io::IRITWriterUtils<3>::GetKnotVectors(spline_ptr)
         + io::IRITWriterUtils<3>::GetControlPoints(util::AnyCasts::IsRational<3>(spline), spline_ptr, spline);
   }
 

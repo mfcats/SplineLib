@@ -200,9 +200,9 @@ class ASurface : public Test {
 };
 
 TEST_F(ASurface, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(nurbs1->GetDimension(), 3);
-  ASSERT_THAT(nurbs2->GetDimension(), 3);
-  ASSERT_THAT(nurbsJoined->GetDimension(), 3);
+  ASSERT_THAT(nurbs1->GetPointDim(), 3);
+  ASSERT_THAT(nurbs2->GetPointDim(), 3);
+  ASSERT_THAT(nurbsJoined->GetPointDim(), 3);
 }
 
 TEST_F(ASurface, ReturnsCorrectKnotVector) { // NOLINT
@@ -225,7 +225,7 @@ TEST_F(ASurface, ReturnCorrectControlPoints) { // NOLINT
 }
 
 TEST_F(ASurface, ReturnsCorrectDiemnsionScaled) { // NOLINT
-  ASSERT_THAT(nurbsJoinedScaled->GetDimension(), 3);
+  ASSERT_THAT(nurbsJoinedScaled->GetPointDim(), 3);
 }
 
 TEST_F(ASurface, ReturnsCorrectNumberOfKnotsFirstDimension) { // NOLINT

@@ -45,7 +45,7 @@ class ParameterSpace {
   }
 
   ParameterSpace(const ParameterSpace<DIM> &parameter_space) {
-    degree_ = parameter_space.GetDegrees();
+    degree_ = parameter_space.degree_;
     for (int i = 0; i < DIM; ++i) {
       baf::KnotVector knot_vector = *(parameter_space.GetKnotVector(i));
       knot_vector_[i] = std::make_shared<baf::KnotVector>(knot_vector);
@@ -94,8 +94,8 @@ class ParameterSpace {
                       });
   }
 
-  std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator GetFirstNonZeroKnot(int direction,
-                                                                                       ParamCoord param_coord) const {
+  std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator
+  GetFirstNonZeroKnot(int direction, ParamCoord param_coord) const {
     return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord).get()
         - degree_[direction].get();
   }
@@ -104,16 +104,8 @@ class ParameterSpace {
     return degree_[direction];
   }
 
-  std::array<Degree, DIM> GetDegrees() const {
-    return degree_;
-  }
-
   virtual std::shared_ptr<baf::KnotVector> GetKnotVector(int direction) const {
     return knot_vector_[direction];
-  }
-
-  std::array<std::shared_ptr<baf::KnotVector>, DIM> GetKnotVectors() const {
-    return knot_vector_;
   }
 
   virtual double GetBasisFunctions(std::array<int, DIM> indices, std::array<ParamCoord, DIM> param_coord) const {

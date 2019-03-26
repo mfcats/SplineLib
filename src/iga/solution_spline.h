@@ -25,23 +25,18 @@ template<int DIM>
 class SolutionSpline {
  public:
   SolutionSpline(const std::shared_ptr<spl::NURBS<DIM>> &spl, const arma::dvec &solution) {
-    KnotVectors<DIM> knot_vector = spl->GetKnotVectors();
-    std::array<Degree, DIM> degree = spl->GetDegrees();
-    std::vector<double> weights = spl->GetWeights();
     std::vector<baf::ControlPoint> control_points;
-    std::vector<double> cp = spl->GetControlPoints();
-    int cp_dim = spl->GetDimension();
-    uint64_t l = 0;
-    for (uint64_t i = 0; i < cp.size() - (cp_dim - 1); i += cp_dim) {
+    std::array<int, DIM> points_per_direction = spl->GetPointsPerDirection();
+    util::MultiIndexHandler<DIM> point_handler(points_per_direction);
+    for (uint64_t i = 0, l = 0; i < spl->GetNumberOfControlPoints(); ++i, ++point_handler, ++l) {
       std::vector<double> temp;
-      for (int j = 0; j < cp_dim; ++j) {
-        temp.emplace_back(cp[i + j]);
+      for (int j = 0; j < spl->GetPointDim(); ++j) {
+        temp.emplace_back(spl->GetControlPoint(point_handler.GetIndices(), j));
       }
       temp.emplace_back(solution(l));
       control_points.emplace_back(baf::ControlPoint(temp));
-      l += 1;
     }
-    solution_spl_ = std::make_shared<spl::NURBS<DIM>>(knot_vector, degree, control_points, weights);
+    solution_spl_ = std::make_shared<spl::NURBS<DIM>>(*spl.get(), control_points);
   }
 
   std::shared_ptr<spl::NURBS<DIM>> GetSolutionSpline() {

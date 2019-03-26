@@ -54,7 +54,7 @@ class MappingHandler {
   }
 
   arma::dmat GetDxDxi(std::array<ParamCoord, DIM> param_coord) const {
-    int cp_dim = spline_->GetDimension();
+    int cp_dim = spline_->GetPointDim();
     arma::dmat dx_dxi(static_cast<uint64_t>(cp_dim), static_cast<uint64_t>(DIM), arma::fill::zeros);
     for (int i = 0; i < cp_dim; ++i) {
       for (int j = 0; j < DIM; ++j) {

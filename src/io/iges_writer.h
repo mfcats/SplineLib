@@ -144,16 +144,17 @@ class IGESWriter {
     for (auto &knot : knots) {
       contents->append(GetString(knot.get()) + delimiter);
     }
-    std::vector<double> weights = spl->GetWeights();
-    for (double weight : weights) {
-      contents->append(GetString(weight) + delimiter);
+    for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
+      contents->append(GetString(spl->GetWeight({i})) + delimiter);
     }
-    int dim = spl->GetDimension();
-    std::vector<double> control_points = Get3DControlPoints(spl->GetControlPoints(), dim);
-    for (size_t i = 0; i < control_points.size() - 1; ++i) {
-      contents->append(GetString(control_points[i]) + delimiter);
+    for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
+      for (int j = 0; j < 3; ++j) {
+        contents->append(GetString(Get3DControlPoint(spl, i, j)));
+        if (i != spl->GetNumberOfControlPoints() - 1 || j != 2) {
+          contents->append(delimiter);
+        }
+      }
     }
-    contents->append(GetString(control_points[control_points.size() - 1]));
   }
 
   void GetParameterData2D(std::string *contents, const std::string &delimiter, const std::any &spline) {
@@ -179,32 +180,26 @@ class IGESWriter {
     for (auto &i : knots2) {
       contents->append(GetString(i.get()) + delimiter);
     }
-    std::vector<double> weights = spl->GetWeights();
-    for (double weight : weights) {
-      contents->append(GetString(weight) + delimiter);
+    for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
+      contents->append(GetString(spl->GetWeight({i})) + delimiter);
     }
-    int dim = spl->GetDimension();
-    std::vector<double> control_points = Get3DControlPoints(spl->GetControlPoints(), dim);
-    for (size_t i = 0; i < control_points.size() - 1; ++i) {
-      contents->append(GetString(control_points[i]) + delimiter);
-    }
-    contents->append(GetString(control_points[control_points.size() - 1]));
-  }
-
-  std::vector<double> Get3DControlPoints(std::vector<double> control_points, int dim) {
-    if (dim != 3) {
-      std::vector<double> control_points_3d;
-      for (uint64_t i = 0; i < control_points.size(); ++i) {
-        control_points_3d.emplace_back(control_points[i]);
-        if (static_cast<int>(i % dim) == dim - 1) {
-          for (int j = 0; j < 3 - dim; ++j) {
-            control_points_3d.emplace_back(0);
-          }
+    for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
+      for (int j = 0; j < 3; ++j) {
+        contents->append(GetString(Get3DControlPoint(spl, i, j)));
+        if (i != spl->GetNumberOfControlPoints() - 1 || j != 2) {
+          contents->append(delimiter);
         }
       }
-      return control_points_3d;
     }
-    return control_points;
+  }
+
+  template<int DIM>
+  double Get3DControlPoint(std::shared_ptr<spl::Spline<DIM>> spline, int index, int direction) {
+    if (direction < spline->GetPointDim()) {
+      return spline->GetControlPoint({index}, direction);
+    } else {
+      return 0.0;
+    }
   }
 
   std::vector<std::string> GetDataEntry(int paramStart, int paramLength, const std::any &spline, int *dLine) {

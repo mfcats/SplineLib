@@ -122,38 +122,40 @@ parameter_space) {
     return parameter_space_->GetDegree(i);
   }
 
-  std::array<Degree, DIM> GetDegrees() const {
-    return parameter_space_->GetDegrees();
-  }
-
   std::shared_ptr<baf::KnotVector> GetKnotVector(int i) const {
     return parameter_space_->GetKnotVector(i);
-  }
-
-  std::array<std::shared_ptr<baf::KnotVector>, DIM> GetKnotVectors() const {
-    return parameter_space_->GetKnotVectors();
   }
 
   double GetKnotVectorRange(int direction) const {
     return parameter_space_->GetKnotVectorRange(direction);
   }
 
-  virtual int GetNumberOfControlPoints() const = 0;
-  virtual std::array<int, DIM> GetPointsPerDirection() const = 0;
-  virtual int GetDimension() const = 0;
-  virtual double GetControlPoint(std::array<int, DIM> indices, int dimension) const = 0;
-  virtual baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const = 0;
+  int GetNumberOfControlPoints() const {
+    return GetPhysicalSpace()->GetNumberOfControlPoints();
+  }
+
+  std::array<int, DIM> GetPointsPerDirection() const {
+    return GetPhysicalSpace()->GetPointsPerDirection();
+  }
+
+  int GetPointDim() const {
+    return GetPhysicalSpace()->GetDimension();
+  }
+
+  double GetControlPoint(std::array<int, DIM> indices, int dimension) const {
+    return GetPhysicalSpace()->GetControlPoint(indices).GetValue(dimension);
+  }
+
+  baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const {
+    return GetPhysicalSpace()->GetControlPoint(indices);
+  }
 
   double GetExpansion() const {
     return GetPhysicalSpace()->GetExpansion();
   }
 
-  std::vector<double> GetControlPoints() const {
-    return GetPhysicalSpace()->GetControlPoints();
-  }
-
-  std::vector<double> GetWeights() const {
-    return GetPhysicalSpace()->GetWeights();
+  double GetWeight(std::array<int, DIM> indices) const {
+    return GetPhysicalSpace()->GetWeight(indices);
   }
 
   void InsertKnot(ParamCoord knot, int dimension, size_t multiplicity = 1) {

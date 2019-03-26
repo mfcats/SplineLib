@@ -35,7 +35,7 @@ class SolutionVTKWriter {
       const std::vector<std::vector<int>> &scattering, const std::string &filename) {
     iga::SolutionSpline<DIM> sol_spl(spl, solution);
     std::shared_ptr<spl::NURBS<DIM>> solution_spl = sol_spl.GetSolutionSpline();
-    int cp_dim = spl->GetDimension();
+    int cp_dim = spl->GetPointDim();
     std::vector<double> dxi;
     std::array<int, DIM> num_pnts{};
     for (int i = 0; i < DIM; ++i) {
