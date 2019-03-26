@@ -93,7 +93,7 @@ TEST_F(A1DPhysicalSpace, ReturnsCorrectDividedControlPoints) {  // NOLINT
   ASSERT_THAT(physical_space.GetDividedControlPoints(2, 2, 0)[0].GetValue(0), DoubleEq(3.0));
 }
 
-TEST_F(A1DPhysicalSpace, EvaluatesThatCopiedSplineEqualsOriginalSpline) {  // NOLINT
+TEST_F(A1DPhysicalSpace, EvaluatesThatCopiedSpaceEqualsOriginalSpace) {  // NOLINT
   spl::PhysicalSpace<1> copy(physical_space);
   ASSERT_THAT(physical_space.AreEqual(copy), true);
 }
@@ -184,7 +184,7 @@ TEST_F(A2DPhysicalSpace, ReturnsCorrectDividedControlPoints) {  // NOLINT
   ASSERT_THAT(physical_space.GetDividedControlPoints(1, 2, 0)[2].GetValue(0), DoubleEq(1.5));
 }
 
-TEST_F(A2DPhysicalSpace, EvaluatesThatCopiedSplineEqualsOriginalSpline) {  // NOLINT
+TEST_F(A2DPhysicalSpace, EvaluatesThatCopiedSpaceEqualsOriginalSpace) {  // NOLINT
   spl::PhysicalSpace<2> copy(physical_space);
   ASSERT_THAT(physical_space.AreEqual(copy), true);
 }

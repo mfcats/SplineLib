@@ -92,7 +92,7 @@ TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectDividedControlPoints) {  // NOLIN
   ASSERT_THAT(weighted_physical_space.GetDividedWeights(2, 2, 0)[0], DoubleEq(0.8));
 }
 
-TEST_F(A1DWeightedPhysicalSpace, EvaluatesThatCopiedSplineEqualsOriginalSpline) {  // NOLINT
+TEST_F(A1DWeightedPhysicalSpace, EvaluatesThatCopiedSpaceEqualsOriginalSpace) {  // NOLINT
   spl::WeightedPhysicalSpace<1> copy(weighted_physical_space);
   ASSERT_THAT(weighted_physical_space.AreEqual(copy), true);
 }
@@ -209,7 +209,7 @@ TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectDividedWeights) {  // NOLINT
   ASSERT_THAT(weighted_physical_space.GetDividedWeights(1, 2, 0)[2], DoubleEq(1.2));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, EvaluatesThatCopiedSplineEqualsOriginalSpline) {  // NOLINT
+TEST_F(A2DWeightedPhysicalSpace, EvaluatesThatCopiedSpaceEqualsOriginalSpace) {  // NOLINT
   spl::WeightedPhysicalSpace<2> copy(weighted_physical_space);
   ASSERT_THAT(weighted_physical_space.AreEqual(copy), true);
 }
