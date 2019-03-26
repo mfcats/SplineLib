@@ -49,12 +49,9 @@ class PhysicalSpace {
     }
   }
 
-  PhysicalSpace(const PhysicalSpace &physical_space)
-      : dimension_(physical_space.dimension_), control_points_(physical_space.control_points_) {
-    for (int i = 0; i < DIM; ++i) {
-      number_of_points_[i] = physical_space.number_of_points_[i];
-    }
-  }
+  PhysicalSpace(const PhysicalSpace &physical_space) : dimension_(physical_space.dimension_),
+                                                       number_of_points_(physical_space.number_of_points_),
+                                                       control_points_(physical_space.control_points_) {}
 
   bool AreEqual(const PhysicalSpace<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
     return std::equal(control_points_.begin(), control_points_.end(),

@@ -51,6 +51,14 @@ TEST_F(A1DPhysicalSpace, ReturnsCorrectControlPoint) {  // NOLINT
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{2}).GetValue(1), DoubleEq(2.0));
 }
 
+TEST_F(A1DPhysicalSpace, ReturnsCorrectNumberOfPointsInEachDirection) {  // NOLINT
+  ASSERT_THAT(physical_space.GetPointsPerDirection()[0], 5);
+}
+
+TEST_F(A1DPhysicalSpace, ReturnsCorrectMaximumPointIndexForEachDirection) {  // NOLINT
+  ASSERT_THAT(physical_space.GetMaximumPointIndexInEachDirection()[0], 4);
+}
+
 TEST_F(A1DPhysicalSpace, ReturnsCorrectDimension) {  // NOLINT
   ASSERT_THAT(physical_space.GetDimension(), 2);
 }
@@ -72,8 +80,17 @@ TEST_F(A1DPhysicalSpace, RemovesControlPoint) {  // NOLINT
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{2}).GetValue(1), DoubleEq(2.0));
 }
 
+TEST_F(A1DPhysicalSpace, ReturnsCorrectExpansion) {  // NOLINT
+  ASSERT_THAT(physical_space.GetExpansion(), DoubleEq(5.0));
+}
+
 TEST_F(A1DPhysicalSpace, ReturnsCorrectMaximumDistanceFromOrigin) {  // NOLINT
   ASSERT_THAT(physical_space.GetMaximumDistanceFromOrigin(), DoubleEq(sqrt(26)));
+}
+
+TEST_F(A1DPhysicalSpace, ReturnsCorrectDividedControlPoints) {  // NOLINT
+  ASSERT_THAT(physical_space.GetDividedControlPoints(2, 2, 0).size(), 2);
+  ASSERT_THAT(physical_space.GetDividedControlPoints(2, 2, 0)[0].GetValue(0), DoubleEq(3.0));
 }
 
 class A2DPhysicalSpace : public Test {
@@ -118,6 +135,16 @@ TEST_F(A2DPhysicalSpace, ReturnsDefaultWeight) { // NOLINT
   ASSERT_THAT(physical_space.GetWeight(std::array<int, 2>{1, 2}), DoubleEq(1.0));
 }
 
+TEST_F(A2DPhysicalSpace, ReturnsCorrectNumberOfPointsInEachDirection) {  // NOLINT
+  ASSERT_THAT(physical_space.GetPointsPerDirection()[0], 3);
+  ASSERT_THAT(physical_space.GetPointsPerDirection()[1], 2);
+}
+
+TEST_F(A2DPhysicalSpace, ReturnsCorrectMaximumPointIndexForEachDirection) {  // NOLINT
+  ASSERT_THAT(physical_space.GetMaximumPointIndexInEachDirection()[0], 2);
+  ASSERT_THAT(physical_space.GetMaximumPointIndexInEachDirection()[1], 1);
+}
+
 TEST_F(A2DPhysicalSpace, ReturnsCorrectDimension) {  // NOLINT
   ASSERT_THAT(physical_space.GetDimension(), 2);
 }
@@ -139,6 +166,15 @@ TEST_F(A2DPhysicalSpace, RemovesControlPoint) {  // NOLINT
   ASSERT_THAT(physical_space.GetControlPoint({3}).GetValue(1), DoubleEq(2.0));
 }
 
+TEST_F(A2DPhysicalSpace, ReturnsCorrectExpansion) {  // NOLINT
+  ASSERT_THAT(physical_space.GetExpansion(), DoubleEq(5.0));
+}
+
 TEST_F(A2DPhysicalSpace, ReturnsCorrectMaximumDistanceFromOrigin) {  // NOLINT
   ASSERT_THAT(physical_space.GetMaximumDistanceFromOrigin(), DoubleEq(sqrt(26)));
+}
+
+TEST_F(A2DPhysicalSpace, ReturnsCorrectDividedControlPoints) {  // NOLINT
+  ASSERT_THAT(physical_space.GetDividedControlPoints(1, 2, 0).size(), 4);
+  ASSERT_THAT(physical_space.GetDividedControlPoints(1, 2, 0)[2].GetValue(0), DoubleEq(1.5));
 }
