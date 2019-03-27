@@ -57,13 +57,22 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     return weights_[first];
   }
 
-  void SetWeight(std::array<int, DIM> indices, double weight, int dimension) {
-    ++this->number_of_points_[dimension];
+  double GetMinimumWeight() const {
+    double minimum = weights_[0];
+    for (const auto &weight : weights_) {
+      if (weight < minimum) minimum = weight;
+    }
+    return minimum;
+  }
+
+  void SetWeight(std::array<int, DIM> indices, double weight, int dimension, int (*before)(int)) {
+    const std::array<int, DIM> number_of_points_before(this->number_of_points_);
+    this->number_of_points_[dimension] = before(this->number_of_points_[dimension]);
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);
     point_handler.SetIndices(indices);
     int first = point_handler.Get1DIndex();
     weights_[first] = weight;
-    --this->number_of_points_[dimension];
+    this->number_of_points_ = number_of_points_before;
   }
 
   void SetWeight2(std::array<int, DIM> indices, double weight, int dimension) {

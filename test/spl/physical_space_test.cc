@@ -46,19 +46,34 @@ TEST_F(A1DPhysicalSpace, ThrowsForDifferingDimensionsOfControlPoints) {  // NOLI
   ASSERT_THROW(spl::PhysicalSpace<1>(control_points, {6}), std::runtime_error);
 }
 
-TEST_F(A1DPhysicalSpace, ReturnsCorrectFirstControlPoint) {  // NOLINT
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{0}).GetValue(0), DoubleEq(0.0));
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{0}).GetValue(1), DoubleEq(0.0));
-}
-
-TEST_F(A1DPhysicalSpace, ReturnsCorrectInnerControlPoint) {  // NOLINT
+TEST_F(A1DPhysicalSpace, ReturnsCorrectControlPoint) {  // NOLINT
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{2}).GetValue(0), DoubleEq(3.0));
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{2}).GetValue(1), DoubleEq(2.0));
 }
 
-TEST_F(A1DPhysicalSpace, ReturnsCorrectLastControlPoint) {  // NOLINT
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{4}).GetValue(0), DoubleEq(5.0));
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{4}).GetValue(1), DoubleEq(-1.0));
+TEST_F(A1DPhysicalSpace, ReturnsCorrectDimension) {  // NOLINT
+  ASSERT_THAT(physical_space.GetDimension(), 2);
+}
+
+TEST_F(A1DPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
+  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 5);
+  physical_space.AddControlPoints(1);
+  physical_space.SetControlPoint({5}, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 6);
+  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{5}).GetValue(0), DoubleEq(6.0));
+  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{5}).GetValue(1), DoubleEq(0.0));
+}
+
+TEST_F(A1DPhysicalSpace, RemovesControlPoint) {  // NOLINT
+  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 5);
+  physical_space.RemoveControlPoints(2);
+  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 3);
+  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{2}).GetValue(0), DoubleEq(3.0));
+  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 1>{2}).GetValue(1), DoubleEq(2.0));
+}
+
+TEST_F(A1DPhysicalSpace, ReturnsCorrectMaximumDistanceFromOrigin) {  // NOLINT
+  ASSERT_THAT(physical_space.GetMaximumDistanceFromOrigin(), DoubleEq(sqrt(26)));
 }
 
 class A2DPhysicalSpace : public Test {
@@ -89,24 +104,9 @@ TEST_F(A2DPhysicalSpace, ThrowsForDifferingDimensionsOfControlPoints) {  // NOLI
   ASSERT_THROW(spl::PhysicalSpace<2>(control_points, {1, 7}), std::runtime_error);
 }
 
-TEST_F(A2DPhysicalSpace, ReturnsCorrectFirstControlPointFor2DIndex) {  // NOLINT
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{0, 0}).GetValue(0), DoubleEq(0.0));
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{0, 0}).GetValue(1), DoubleEq(0.0));
-}
-
-TEST_F(A2DPhysicalSpace, ReturnsCorrectInnerControlPointFor2DIndex) {  // NOLINT
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{1, 1}).GetValue(0), DoubleEq(1.5));
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{1, 1}).GetValue(1), DoubleEq(2.5));
-}
-
 TEST_F(A2DPhysicalSpace, ReturnsCorrectLastControlPointFor2DIndex) {  // NOLINT
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{2, 1}).GetValue(0), DoubleEq(5.0));
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{2, 1}).GetValue(1), DoubleEq(1.0));
-}
-
-TEST_F(A2DPhysicalSpace, ReturnsCorrectFirstControlPointFor1DIndex) {  // NOLINT
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{0}).GetValue(0), DoubleEq(0.0));
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{0}).GetValue(1), DoubleEq(0.0));
 }
 
 TEST_F(A2DPhysicalSpace, ReturnsCorrectInnerControlPointFor1DIndex) {  // NOLINT
@@ -114,11 +114,31 @@ TEST_F(A2DPhysicalSpace, ReturnsCorrectInnerControlPointFor1DIndex) {  // NOLINT
   ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{4}).GetValue(1), DoubleEq(2.5));
 }
 
-TEST_F(A2DPhysicalSpace, ReturnsCorrectLastControlPointFor1DIndex) {  // NOLINT
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{5}).GetValue(0), DoubleEq(5.0));
-  ASSERT_THAT(physical_space.GetControlPoint(std::array<int, 2>{5}).GetValue(1), DoubleEq(1.0));
+TEST_F(A2DPhysicalSpace, ReturnsDefaultWeight) { // NOLINT
+  ASSERT_THAT(physical_space.GetWeight(std::array<int, 2>{1, 2}), DoubleEq(1.0));
 }
 
-TEST_F(A2DPhysicalSpace, ReturnDefaultWeight) { // NOLINT
-  ASSERT_THAT(physical_space.GetWeight(std::array<int, 2>{1, 2}), DoubleEq(1.0));
+TEST_F(A2DPhysicalSpace, ReturnsCorrectDimension) {  // NOLINT
+  ASSERT_THAT(physical_space.GetDimension(), 2);
+}
+
+TEST_F(A2DPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
+  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 6);
+  physical_space.AddControlPoints(1);
+  physical_space.SetControlPoint({6}, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 7);
+  ASSERT_THAT(physical_space.GetControlPoint({6}).GetValue(0), DoubleEq(6.0));
+  ASSERT_THAT(physical_space.GetControlPoint({6}).GetValue(1), DoubleEq(0.0));
+}
+
+TEST_F(A2DPhysicalSpace, RemovesControlPoint) {  // NOLINT
+  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 6);
+  physical_space.RemoveControlPoints(2);
+  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 4);
+  ASSERT_THAT(physical_space.GetControlPoint({3}).GetValue(0), DoubleEq(0.0));
+  ASSERT_THAT(physical_space.GetControlPoint({3}).GetValue(1), DoubleEq(2.0));
+}
+
+TEST_F(A2DPhysicalSpace, ReturnsCorrectMaximumDistanceFromOrigin) {  // NOLINT
+  ASSERT_THAT(physical_space.GetMaximumDistanceFromOrigin(), DoubleEq(sqrt(26)));
 }

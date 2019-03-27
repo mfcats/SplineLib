@@ -13,29 +13,17 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-add_library(splinelibutil INTERFACE)
-target_include_directories(splinelibutil INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+add_subdirectory(elm)
+add_subdirectory(itg)
 
-install(
-        TARGETS splinelibutil
-        EXPORT "${targets_export_name}"
-        LIBRARY DESTINATION "${library_install_dir}"
-        ARCHIVE DESTINATION "${library_install_dir}"
-        RUNTIME DESTINATION "${executable_install_dir}"
-        INCLUDES DESTINATION "${include_install_dir}"
-)
-
-
-install(FILES
-        any_casts.h
-        named_type.h
-        numeric_operations.h
-        numeric_settings.h
-        multi_index_handler.h
-        random.h
-        string_operations.h
-        vector_utils.h
-        DESTINATION "${include_install_dir}")
-
-
+set(TEST_SOURCES
+        ${TEST_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/basis_function_handler_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/bdf_handler_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/connectivity_handler_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/element_integral_calculator_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/linear_equation_assembler_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/mapping_handler_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/solution_vtk_writer_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/solution_vtk_writer_examples.cc
+        PARENT_SCOPE)

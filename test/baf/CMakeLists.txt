@@ -13,29 +13,11 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-add_library(splinelibutil INTERFACE)
-target_include_directories(splinelibutil INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-
-install(
-        TARGETS splinelibutil
-        EXPORT "${targets_export_name}"
-        LIBRARY DESTINATION "${library_install_dir}"
-        ARCHIVE DESTINATION "${library_install_dir}"
-        RUNTIME DESTINATION "${executable_install_dir}"
-        INCLUDES DESTINATION "${include_install_dir}"
-)
-
-
-install(FILES
-        any_casts.h
-        named_type.h
-        numeric_operations.h
-        numeric_settings.h
-        multi_index_handler.h
-        random.h
-        string_operations.h
-        vector_utils.h
-        DESTINATION "${include_install_dir}")
-
-
+set(TEST_SOURCES
+        ${TEST_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/b_spline_basis_function_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/basis_function_factory.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/control_point_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/knot_vector_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/zero_degree_b_spline_basis_function_test.cc
+        PARENT_SCOPE)

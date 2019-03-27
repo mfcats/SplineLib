@@ -20,6 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "control_point.h"
 #include "multi_index_handler.h"
+#include "vector_utils.h"
 
 namespace spl {
 template<int DIM>
@@ -65,26 +66,17 @@ class PhysicalSpace {
     return baf::ControlPoint(coordinates);
   }
 
-  virtual void SetControlPoint(std::array<int, DIM> indices, const baf::ControlPoint &control_point, int dimension) {
-    ++number_of_points_[dimension];
+  void SetControlPoint(std::array<int, DIM> indices, const baf::ControlPoint &control_point, int dimension = 0,
+                       int (*before)(int) = nullptr) {
+    const std::array<int, DIM> number_of_points_before(number_of_points_);
+    if (before) number_of_points_[dimension] = before(number_of_points_[dimension]);
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
     point_handler.SetIndices(indices);
     int first = dimension_ * point_handler.Get1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
       control_points_[first + coordinate] = control_point.GetValue(coordinate);
     }
-    --number_of_points_[dimension];
-  }
-
-  virtual void SetControlPoint2(std::array<int, DIM> indices, const baf::ControlPoint &control_point, int dimension) {
-    --number_of_points_[dimension];
-    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
-    point_handler.SetIndices(indices);
-    int first = dimension_ * point_handler.Get1DIndex();
-    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      control_points_[first + coordinate] = control_point.GetValue(coordinate);
-    }
-    ++number_of_points_[dimension];
+    number_of_points_ = number_of_points_before;
   }
 
   void AddControlPoints(int number) {
@@ -96,7 +88,7 @@ class PhysicalSpace {
   }
 
   void RemoveControlPoints(int number) {
-    control_points_.erase(control_points_.end() - number * dimension_ - 1, control_points_.end() - 1);
+    control_points_.erase(control_points_.end() - number * dimension_, control_points_.end());
   }
 
   virtual int GetNumberOfControlPoints() const {
@@ -133,6 +125,20 @@ class PhysicalSpace {
       if (cp > expansion) expansion = cp;
     }
     return expansion;
+  }
+
+  double GetMaximumDistanceFromOrigin() const {
+    double maximum = 0;
+    std::vector<double> point(dimension_, 0);
+    std::vector<double> origin(dimension_, 0);
+    for (int i = 0; i < GetNumberOfControlPoints(); ++i) {
+      for (int j = 0; j < dimension_; ++j) {
+        point[j] = control_points_[i * dimension_ + j];
+      }
+      double distance = util::VectorUtils<double>::ComputeDistance(origin, point);
+      if (distance > maximum) maximum = distance;
+    }
+    return maximum;
   }
 
   std::vector<double> GetControlPoints() const {
