@@ -28,7 +28,7 @@ template<int DIM>
 class PoissonProblem {
  public:
   PoissonProblem(std::shared_ptr<spl::NURBS<DIM>> spl, const iga::itg::IntegrationRule &rule) :
-  spline_(std::move(spl)), num_cp_(spline_->GetNumberOfControlPoints()), rule_(rule) {
+      spline_(std::move(spl)), rule_(rule), num_cp_(spline_->GetNumberOfControlPoints()) {
     linear_equation_assembler_ = std::make_shared<iga::LinearEquationAssembler<DIM>>(spline_);
     elm_itg_calc_ = std::make_shared<iga::ElementIntegralCalculator<DIM>>(spline_);
     matA_ = std::make_shared<arma::dmat>(num_cp_, num_cp_, arma::fill::zeros);

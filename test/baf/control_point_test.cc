@@ -30,11 +30,11 @@ class AControlPoint : public Test {
       scaling({1.0, 1.0, 1.0}) {}
 
  protected:
-  std::array<std::array<double, 4>, 4> transMatrix;
-  std::array<double, 3> scaling;
   baf::ControlPoint control_point;
   baf::ControlPoint control_point_b;
   baf::ControlPoint control_point_c;
+  std::array<std::array<double, 4>, 4> transMatrix;
+  std::array<double, 3> scaling;
 };
 
 TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
