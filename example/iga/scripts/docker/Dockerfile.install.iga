@@ -9,12 +9,17 @@ SHELL ["bash", "-c"]
 ENV BASH_ENV /etc/profile.d/spack.sh
 
 WORKDIR /code/example/iga
+
 RUN spack clean
+RUN spack repo list
+
 RUN spack repo add ./../../scripts/spack-repo
 RUN spack spec splinelib
 RUN spack install splinelib@github %gcc@8
+
 RUN spack repo add ./scripts/spack-repo
 RUN spack setup csiga@github %gcc@8^armadillo%gcc@7
+
 RUN mkdir /code/example/iga/build
 WORKDIR /code/example/iga/build
 RUN ./../spconfig.py ..

@@ -34,7 +34,7 @@ class Csiga(CMakePackage):
 
     version('github', git='https://git.rwth-aachen.de/christophsusen/csiga.git', branch='master')
 
-    # depends_on("googletest+gmock~shared")
+    depends_on("googletest+gmock~shared")
     depends_on("armadillo")
     depends_on("splinelib")
 
