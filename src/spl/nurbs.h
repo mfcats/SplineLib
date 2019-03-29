@@ -115,15 +115,15 @@ class NURBS : public Spline<DIM> {
     int off = first - 1, i = first, j = last;
     std::vector<double> temp_w = GetTempNewWeights(scaling, off, last, i, j, dimension);
     std::vector<double> temp = GetTempNewControlPoints(scaling, temp_w, off, last, i, j, dimension);
-    int diff = static_cast<int>(ceil((j - i) / 2.0));
+    auto diff = static_cast<int>(ceil((j - i) / 2.0));
     i += diff, j -= diff;
     if (!IsKnotRemovable(scaling[i - off - 1], temp, temp_w, tolerance, i, j, off, dimension)) {
       return false;
     }
     SetNewControlPoints(temp, last, i - off, off, dimension);
     SetNewWeights(temp_w, last, i - off, off, dimension);
-    physical_space_->RemoveWeights(GetNumberOfControlPoints() / GetPointsPerDirection()[dimension]);
     physical_space_->RemoveControlPoints(GetNumberOfControlPoints() / GetPointsPerDirection()[dimension]);
+    physical_space_->RemoveWeights(GetNumberOfControlPoints() / GetPointsPerDirection()[dimension]);
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
   }
