@@ -17,7 +17,7 @@ RUN spack repo rm /spackrepo/scripts/spack-repo
 RUN spack repo add ./../../scripts/spack-repo
 RUN spack spec splinelib
 
-RUN spack install splinelib@github build_type=Release %gcc@8
+# RUN spack install splinelib@github build_type=Release %gcc@8
 RUN spack load splinelib@github build_type=Release %gcc@8
 
 RUN spack repo add ./scripts/spack-repo
