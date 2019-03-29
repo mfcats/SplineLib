@@ -5,20 +5,16 @@ FROM christophsusen/spack
 ADD . /spackrepo
 WORKDIR /spackrepo
 
-# Install cmake and openmpi and add them to packages.yaml
-RUN apt-get update && apt-get install -y cmake
-RUN mv ./scripts/docker/packages.yaml /root/.spack/linux/packages.yaml
-
 # Install googletest versions
 RUN spack repo add /spackrepo/scripts/spack-repo
 RUN spack setup -v splinelib@github build_type=Debug %gcc@7
-RUN spack setup -v splinelib@github build_type=Release %gcc@7^armadillo%gcc@7
-RUN spack setup -v splinelib@github build_type=Debug %clang@6^armadillo%gcc@7
-RUN spack setup -v splinelib@github build_type=Release %clang@6^armadillo%gcc@7
-RUN spack setup -v splinelib@github build_type=Debug %clang@5^armadillo%gcc@7
-RUN spack setup -v splinelib@github build_type=Release %clang@5^armadillo%gcc@7
-RUN spack setup -v splinelib@github build_type=Debug %gcc@8^armadillo%gcc@7
-RUN spack setup -v splinelib@github build_type=Release %gcc@8^armadillo%gcc@7
+RUN spack setup -v splinelib@github build_type=Release %gcc@7
+RUN spack setup -v splinelib@github build_type=Debug %clang@6
+RUN spack setup -v splinelib@github build_type=Release %clang@6
+RUN spack setup -v splinelib@github build_type=Debug %clang@5
+RUN spack setup -v splinelib@github build_type=Release %clang@5
+RUN spack setup -v splinelib@github build_type=Debug %gcc@8
+RUN spack setup -v splinelib@github build_type=Release %gcc@8
 RUN spack clean -a
 
 CMD /bin/bash
