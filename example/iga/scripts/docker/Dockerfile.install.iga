@@ -1,4 +1,4 @@
-FROM christophsusen/gtest
+FROM christophsusen/spack
 
 # Add current directory as working directory to docker
 ADD . /code
@@ -10,18 +10,12 @@ ENV BASH_ENV /etc/profile.d/spack.sh
 
 WORKDIR /code/example/iga
 
-RUN spack clean
-RUN spack repo list
-
-RUN spack repo rm /spackrepo/scripts/spack-repo
 RUN spack repo add ./../../scripts/spack-repo
-RUN spack spec splinelib
-
-# RUN spack install splinelib@github build_type=Release %gcc@8
-RUN spack load splinelib@github build_type=Release %gcc@8^armadillo%gcc@7
+RUN spack install splinelib@github %gcc@8
+RUN spack load splinelib@github %gcc@8
 
 RUN spack repo add ./scripts/spack-repo
-RUN spack setup csiga@github build_type=Release %gcc@8^armadillo%gcc@7
+RUN spack setup csiga@github %gcc@8^armadillo%gcc@7
 
 RUN mkdir /code/example/iga/build
 WORKDIR /code/example/iga/build
