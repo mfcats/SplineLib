@@ -1,4 +1,4 @@
-FROM christophsusen/spack
+FROM christophsusen/armadillo
 
 # Add current directory as working directory to docker
 ADD . /code
@@ -9,11 +9,6 @@ SHELL ["bash", "-c"]
 ENV BASH_ENV /etc/profile.d/spack.sh
 
 WORKDIR /code/example/iga
-
-RUN spack repo add ./../../scripts/spack-repo
-RUN spack install splinelib@github %gcc@8
-RUN spack load splinelib@github %gcc@8
-
 RUN spack repo add ./scripts/spack-repo
 RUN spack setup csiga@github %gcc@8^armadillo%gcc@7
 

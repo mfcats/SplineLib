@@ -1,0 +1,13 @@
+FROM christophsusen/gtest
+
+# Add current directory as working directory to docker
+ADD . /code
+WORKDIR /code
+
+# Set-up shell
+SHELL ["bash", "-c"]
+ENV BASH_ENV /etc/profile.d/spack.sh
+
+WORKDIR /code/example/iga
+RUN spack repo add ./scripts/spack-repo
+RUN spack setup csiga@github %gcc@8^armadillo%gcc@7
