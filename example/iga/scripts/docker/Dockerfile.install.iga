@@ -13,6 +13,7 @@ WORKDIR /code/example/iga
 RUN spack clean
 RUN spack repo list
 
+RUN spack repo rm ./../../scripts/spack-repo
 RUN spack repo add ./../../scripts/spack-repo
 RUN spack spec splinelib
 RUN spack install splinelib@github %gcc@8
