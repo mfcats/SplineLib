@@ -26,17 +26,18 @@
 from spack import *
 
 
-class Splinelib(CMakePackage):
-    """Library for spline manipulation."""
+class Csiga(CMakePackage):
+    """Library for Isogeometric Analysis."""
 
-    homepage = "https://github.com/mfcats/SplineLib"
-    url = ""
+    homepage = "https://git.rwth-aachen.de/christophsusen/csiga"
+    url      = ""
 
-    version('github', git='https://github.com/mfcats/SplineLib.git', branch='master')
+    version('github', git='https://git.rwth-aachen.de/christophsusen/csiga.git', branch='master')
 
-    depends_on("googletest+gmock~shared")
+    # depends_on("googletest+gmock~shared")
     depends_on("armadillo")
+    depends_on("splinelib")
 
     def cmake_args(self):
         options = []
-        return options
+        return options    

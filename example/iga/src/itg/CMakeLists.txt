@@ -13,22 +13,24 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-cmake_minimum_required(VERSION 3.6)
+add_library(CSigaitg INTERFACE)
+target_include_directories(CSigaitg INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
-project(SplineLibExamples LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 17)
+install(
+        TARGETS CSigaitg
+        EXPORT "${targets_export_name}"
+        LIBRARY DESTINATION "${library_install_dir}"
+        ARCHIVE DESTINATION "${library_install_dir}"
+        RUNTIME DESTINATION "${executable_install_dir}"
+        INCLUDES DESTINATION "${include_install_dir}"
+)
 
-set(SOURCES ex1.cc)
-set(OPTIMIZER testcase_optimizer.cc)
-set(IGA_SOURCES iga.cc)
-
-find_package(SplineLib REQUIRED)
-find_package(CSiga REQUIRED)
-
-add_executable(ex1 ${SOURCES})
-add_executable(TestcaseOptimizer ${OPTIMIZER})
-add_executable(iga ${IGA_SOURCES})
-
-target_link_libraries(ex1 SplineLib::splinelibspl)
-target_link_libraries(TestcaseOptimizer SplineLib::splinelibspl SplineLib::splinelibutil SplineLib::splinelibio)
-target_link_libraries(iga CSiga)
+install(FILES
+        five_point_gauss_legendre.h
+        four_point_gauss_legendre.h
+        integration_point.h
+        integration_rule.h
+        one_point_gauss_legendre.h
+        three_point_gauss_legendre.h
+        two_point_gauss_legendre.h
+        DESTINATION "${include_install_dir}")
