@@ -18,10 +18,10 @@ RUN spack repo add ./../../scripts/spack-repo
 RUN spack spec splinelib
 
 # RUN spack install splinelib@github build_type=Release %gcc@8
-RUN spack load splinelib@github build_type=Release %gcc@8
+RUN spack load splinelib@github build_type=Release %gcc@8^armadillo%gcc@7
 
 RUN spack repo add ./scripts/spack-repo
-RUN spack setup csiga@github build_type=Release %gcc@8
+RUN spack setup csiga@github build_type=Release %gcc@8^armadillo%gcc@7
 
 RUN mkdir /code/example/iga/build
 WORKDIR /code/example/iga/build
