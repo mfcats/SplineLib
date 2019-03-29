@@ -32,7 +32,7 @@ class Splinelib(CMakePackage):
     homepage = "https://github.com/mfcats/SplineLib"
     url = ""
 
-    version('github', git='https://github.com/mfcats/SplineLib.git', branch='master')
+    version('github', git='https://github.com/mfcats/SplineLib.git', branch='remove_iga')
 
     depends_on("googletest+gmock~shared")
 
