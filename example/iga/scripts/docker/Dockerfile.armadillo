@@ -8,6 +8,11 @@ WORKDIR /code
 SHELL ["bash", "-c"]
 ENV BASH_ENV /etc/profile.d/spack.sh
 
+RUN spack install -v openblas %gcc@7
+RUN spack install -v armadillo %gcc@7
+
 WORKDIR /code/example/iga
 RUN spack repo add ./scripts/spack-repo
-RUN spack setup csiga@github %gcc@8^armadillo%gcc@7
+RUN spack setup -v csiga@github %gcc@8^armadillo%gcc@7
+
+CMD /bin/bash -l
