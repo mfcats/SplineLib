@@ -16,9 +16,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <config_irit.h>
 #include <config_xml.h>
 
-#include "gmock/gmock.h"
-
 #include <fstream>
+
+#include "gmock/gmock.h"
 
 #include "io_converter.h"
 

@@ -15,11 +15,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IO_XML_WRITER_H_
 #define SRC_IO_XML_WRITER_H_
 
+#include <any>
 #include <vector>
 
 #include "pugixml.hpp"
-
-#include <any>
 
 namespace io {
 class XMLWriter {

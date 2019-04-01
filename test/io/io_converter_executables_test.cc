@@ -21,9 +21,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <mach-o/dyld.h>
 #endif
 
-#include "gmock/gmock.h"
-
 #include <fstream>
+
+#include "gmock/gmock.h"
 
 #include "io_converter.h"
 
