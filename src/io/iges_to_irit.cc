@@ -14,6 +14,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "converter_log.h"
 #include "iges_reader.h"
+#include "irit_writer.h"
+#include "string_operations.h"
+#include "vector_utils.h"
 #include "writer.h"
 
 int main(int argc, char *argv[]) {

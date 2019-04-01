@@ -18,6 +18,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
+#include <fstream>
+
 #include "io_converter.h"
 
 using testing::Test;

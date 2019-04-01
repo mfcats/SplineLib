@@ -13,7 +13,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "converter_log.h"
+#include "string_operations.h"
 #include "xml_reader.h"
+#include "vtk_writer.h"
 #include "writer.h"
 
 int main(int argc, char *argv[]) {

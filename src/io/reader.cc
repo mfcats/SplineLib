@@ -12,26 +12,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IO_WRITER_H_
-#define SRC_IO_WRITER_H_
+#include "reader.h"
 
-#include <any>
-#include <vector>
+#include "string_operations.h"
 
-namespace io {
-class Writer {
- public:
-  Writer() = default;
-
-  void WriteFile(const std::vector<std::any> &splines,
-                 const char *filename,
-                 const std::vector<std::vector<int>> &scattering = {}) const;
-
-  std::vector<std::any> GetSplinesOfCorrectDimension(const std::vector<std::any> &splines, int max_dim) const;
-  std::vector<int> GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines, int max_dim) const;
-
-  void PrintWarningForOmittedSplines(size_t splines, size_t count, int max_dim, const char *filename) const;
-};
-}  // namespace io
-
-#endif  // SRC_IO_WRITER_H_
+std::vector<std::any> io::Reader::ReadFile(const char *filename) {
+  if (util::StringOperations::EndsWith(filename, ".iges")) {
+    io::IGESReader iges_reader;
+    return iges_reader.ReadFile(filename);
+  } else if (util::StringOperations::EndsWith(filename, ".itd")) {
+    io::IRITReader irit_reader;
+    return irit_reader.ReadFile(filename);
+  } else if (util::StringOperations::EndsWith(filename, ".xml")) {
+    io::XMLReader xml_reader;
+    return xml_reader.ReadFile(filename);
+  } else {
+    throw std::runtime_error(R"(Only files of format ".iges", ".itd" and ".xml" can be read.)");
+  }
+}

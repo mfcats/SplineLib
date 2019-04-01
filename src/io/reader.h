@@ -15,11 +15,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IO_READER_H_
 #define SRC_IO_READER_H_
 
+#include <any>
 #include <vector>
 
 #include "iges_reader.h"
 #include "irit_reader.h"
-#include "string_operations.h"
 #include "xml_reader.h"
 
 namespace io {
@@ -27,20 +27,7 @@ class Reader {
  public:
   Reader() = default;
 
-  virtual std::vector<std::any> ReadFile(const char *filename) {
-    if (util::StringOperations::EndsWith(filename, ".iges")) {
-      io::IGESReader iges_reader;
-      return iges_reader.ReadFile(filename);
-    } else if (util::StringOperations::EndsWith(filename, ".itd")) {
-      io::IRITReader irit_reader;
-      return irit_reader.ReadFile(filename);
-    } else if (util::StringOperations::EndsWith(filename, ".xml")) {
-      io::XMLReader xml_reader;
-      return xml_reader.ReadFile(filename);
-    } else {
-      throw std::runtime_error(R"(Only files of format ".iges", ".itd" and ".xml" can be read.)");
-    }
-  }
+  virtual std::vector<std::any> ReadFile(const char *filename);
 };
 }  // namespace io
 

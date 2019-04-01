@@ -18,7 +18,9 @@ set(SOURCES
         iges_writer.cc
         irit_reader.cc
         irit_writer.cc
+        reader.cc
         vtk_writer.cc
+        writer.cc
         xml_reader.cc
         xml_writer.cc)
 
