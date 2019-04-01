@@ -15,8 +15,12 @@
 
 set(SOURCES
         iges_reader.cc
+        iges_writer.cc
         irit_reader.cc
-        xml_reader.cc)
+        irit_writer.cc
+        vtk_writer.cc
+        xml_reader.cc
+        xml_writer.cc)
 
 add_library(splinelibio SHARED ${SOURCES})
 add_library(ioconversion INTERFACE)

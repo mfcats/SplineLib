@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <vector>
 
+#include "any_casts.h"
 #include "iges_writer.h"
 #include "irit_writer.h"
 #include "string_operations.h"
