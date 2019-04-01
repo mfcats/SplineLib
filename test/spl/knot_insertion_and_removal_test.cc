@@ -153,7 +153,6 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, HasOneLessControlPointAfterKnotR
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
   ASSERT_THAT(original_->AreEqual((*after_removal_.get()), 1e-10), true);
-
 }
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
