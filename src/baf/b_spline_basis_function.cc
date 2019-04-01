@@ -62,4 +62,3 @@ double baf::BSplineBasisFunction::ComputeRightQuotient(const ParamCoord &param_c
 double baf::BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {
   return std::abs(denominator) < util::NumericSettings<double>::kEpsilon() ? 0.0 : 1.0 / denominator;
 }
-
