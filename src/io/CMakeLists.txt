@@ -13,7 +13,12 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-add_library(splinelibio INTERFACE)
+set(SOURCES
+        iges_reader.cc
+        irit_reader.cc
+        xml_reader.cc)
+
+add_library(splinelibio SHARED ${SOURCES})
 add_library(ioconversion INTERFACE)
 add_executable(iges2irit iges_to_irit.cc converter_log.cc)
 add_executable(iges2vtk iges_to_vtk.cc converter_log.cc)
@@ -25,19 +30,10 @@ add_executable(xml2iges xml_to_iges.cc converter_log.cc)
 add_executable(xml2irit xml_to_irit.cc converter_log.cc)
 add_executable(xml2vtk xml_to_vtk.cc converter_log.cc)
 
-set_target_properties(iges2irit PROPERTIES ENABLE_EXPORTS 1)
-set_target_properties(iges2vtk PROPERTIES ENABLE_EXPORTS 1)
-set_target_properties(iges2xml PROPERTIES ENABLE_EXPORTS 1)
-set_target_properties(irit2iges PROPERTIES ENABLE_EXPORTS 1)
-set_target_properties(irit2vtk PROPERTIES ENABLE_EXPORTS 1)
-set_target_properties(irit2xml PROPERTIES ENABLE_EXPORTS 1)
-set_target_properties(xml2iges PROPERTIES ENABLE_EXPORTS 1)
-set_target_properties(xml2irit PROPERTIES ENABLE_EXPORTS 1)
-set_target_properties(xml2vtk PROPERTIES ENABLE_EXPORTS 1)
+set_target_properties(iges2irit iges2vtk iges2xml irit2iges irit2vtk irit2xml xml2iges xml2irit xml2vtk PROPERTIES ENABLE_EXPORTS 1)
 
-target_include_directories(splinelibio INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibio INTERFACE splinelibspl pugixmllib)
+target_include_directories(splinelibio PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_link_libraries(splinelibio splinelibspl pugixmllib)
 target_link_libraries(iges2irit splinelibio)
 target_link_libraries(iges2vtk splinelibio)
 target_link_libraries(iges2xml splinelibio)

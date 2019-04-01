@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "iges_reader.h"
 #include "irit_reader.h"
+#include "string_operations.h"
 #include "xml_reader.h"
 
 namespace io {
