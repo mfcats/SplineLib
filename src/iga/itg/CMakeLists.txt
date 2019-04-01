@@ -26,7 +26,6 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-
 install(FILES
         five_point_gauss_legendre.h
         four_point_gauss_legendre.h
@@ -36,4 +35,3 @@ install(FILES
         integration_point.h
         integration_rule.h
         DESTINATION "${include_install_dir}")
-

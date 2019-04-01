@@ -31,7 +31,6 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-
 install(FILES
         alias.h
         b_spline.h
@@ -50,5 +49,3 @@ install(FILES
         surface_generator.h
         weighted_physical_space.h
         DESTINATION "${include_install_dir}")
-
-

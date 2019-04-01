@@ -26,9 +26,7 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-
 install(FILES
         element_generator.h
         element_integration_point.h
         DESTINATION "${include_install_dir}")
-

@@ -36,5 +36,3 @@ install(FILES
         string_operations.h
         vector_utils.h
         DESTINATION "${include_install_dir}")
-
-

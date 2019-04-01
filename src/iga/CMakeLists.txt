@@ -21,7 +21,6 @@ add_library(splinelibiga INTERFACE)
 target_include_directories(splinelibiga INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> ${ARMADILLO_INCLUDE_DIRS})
 target_link_libraries(splinelibiga INTERFACE splinelibspl splinelibigaitg splinelibigaelm splinelibio ${ARMADILLO_LIBRARIES})
 
-
 install(
         TARGETS splinelibiga
         EXPORT "${targets_export_name}"
@@ -30,7 +29,6 @@ install(
         RUNTIME DESTINATION "${executable_install_dir}"
         INCLUDES DESTINATION "${include_install_dir}"
 )
-
 
 install(FILES
         mapping_handler.h
