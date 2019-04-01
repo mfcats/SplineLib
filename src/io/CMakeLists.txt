@@ -16,7 +16,6 @@
 add_subdirectory(executables)
 
 set(SOURCES
-        converter_log.cc
         iges_reader.cc
         iges_writer.cc
         irit_reader.cc
@@ -42,7 +41,6 @@ install(
 )
 
 install(FILES
-        converter_log.h
         iges_reader.h
         iges_writer.h
         io_converter.h
