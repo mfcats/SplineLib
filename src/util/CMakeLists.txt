@@ -26,7 +26,6 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-
 install(FILES
         any_casts.h
         named_type.h
