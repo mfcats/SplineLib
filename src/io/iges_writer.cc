@@ -124,8 +124,9 @@ void io::IGESWriter::GetParameterData1D(std::string *contents,
                                         const std::any &spline) const {
   std::shared_ptr<spl::Spline<1>> spl;
   int isRational = 0;
-  if (IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
-  if (!IsRational(spline)) {
+  if (IsRational(spline)) {
+    spl = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
+  } else {
     spl = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
     isRational = 1;
   }
@@ -157,8 +158,9 @@ void io::IGESWriter::GetParameterData2D(std::string *contents,
                                         const std::any &spline) const {
   std::shared_ptr<spl::Spline<2>> spl;
   int isRational = 0;
-  if (IsRational(spline)) spl = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
-  if (!IsRational(spline)) {
+  if (IsRational(spline)) {
+    spl = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
+  } else {
     isRational = 1;
     spl = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
   }
@@ -194,9 +196,8 @@ template<int DIM>
 double io::IGESWriter::Get3DControlPoint(std::shared_ptr<spl::Spline<DIM>> spline, int index, int direction) const {
   if (direction < spline->GetPointDim()) {
     return spline->GetControlPoint({index}, direction);
-  } else {
-    return 0.0;
   }
+  return 0.0;
 }
 
 std::vector<std::string> io::IGESWriter::GetDataEntry(int paramStart,
@@ -233,11 +234,11 @@ std::vector<std::string> io::IGESWriter::GetTerminateSection(int linesS, int lin
 int io::IGESWriter::GetDimension(const std::any &spline) const {
   if (util::AnyCasts::GetSplineDimension(spline) == 1) {
     return 126;
-  } else if (util::AnyCasts::GetSplineDimension(spline) == 2) {
-    return 128;
-  } else {
-    throw std::runtime_error("Only splines of dimensions 1 or 2 can be written to an iges file.");
   }
+  if (util::AnyCasts::GetSplineDimension(spline) == 2) {
+    return 128;
+  }
+  throw std::runtime_error("Only splines of dimensions 1 or 2 can be written to an iges file.");
 }
 
 bool io::IGESWriter::IsRational(std::any spline) const {
@@ -312,18 +313,26 @@ double io::IGESWriter::GetHighestValue(std::vector<std::any> splines) const {
     if (dimension == 126) {
       if (isRational) {
         auto spl = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
-        if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
+        if (highestValue < spl->GetExpansion()) {
+          highestValue = spl->GetExpansion();
+        }
       } else {
         auto spl = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
-        if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
+        if (highestValue < spl->GetExpansion()) {
+          highestValue = spl->GetExpansion();
+        }
       }
     } else if (dimension == 128) {
       if (isRational) {
         auto spl = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
-        if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
+        if (highestValue < spl->GetExpansion()) {
+          highestValue = spl->GetExpansion();
+        }
       } else {
         auto spl = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
-        if (highestValue < spl->GetExpansion()) highestValue = spl->GetExpansion();
+        if (highestValue < spl->GetExpansion()) {
+          highestValue = spl->GetExpansion();
+        }
       }
     }
   }

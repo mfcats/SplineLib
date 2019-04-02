@@ -28,7 +28,9 @@ void io::IRITWriter::WriteFile(const std::vector<std::any> &splines, const char 
     newFile << "[OBJECT SPLINES\n";
     for (unsigned int i = 0; i < splines.size(); i++) {
       AddSpline(newFile, splines[i], i);
-      if (i < splines.size() - 1) newFile << "\n";
+      if (i < splines.size() - 1) {
+        newFile << "\n";
+      }
     }
     newFile << "]";
     newFile.close();

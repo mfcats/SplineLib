@@ -49,7 +49,9 @@ std::vector<std::any> io::IRITReader::ReadFile(const char *filename) {
 std::vector<int> io::IRITReader::GetSplinePositions(const std::vector<std::string> &entries) const {
   std::vector<int> spline_positions;
   for (auto i = 0u; i < entries.size(); i++) {
-    if (entries[i] == "BSPLINE") spline_positions.push_back(i - 1);
+    if (entries[i] == "BSPLINE") {
+      spline_positions.push_back(i - 1);
+    }
   }
   return spline_positions;
 }
@@ -123,7 +125,9 @@ std::vector<baf::ControlPoint> io::IRITReader::GetControlPoints(int start,
     }
     coordinates.push_back(
         util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])) / weights[i]);
-    if (rational) coordinates.erase(coordinates.begin());
+    if (rational) {
+      coordinates.erase(coordinates.begin());
+    }
     control_points.emplace_back(coordinates);
   }
   return control_points;

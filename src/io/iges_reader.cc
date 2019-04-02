@@ -56,7 +56,7 @@ std::vector<std::any> io::IGESReader::ReadFile(const char *filename) {
 }
 
 std::any io::IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
-  int upperSumIndex = static_cast<int>(parameterData[1]);
+  auto upperSumIndex = static_cast<int>(parameterData[1]);
   std::array<Degree, 1> degree{};
   degree[0] = Degree{static_cast<int>(parameterData[2])};
   KnotVectors<1> knot_vector;
@@ -95,10 +95,9 @@ std::any io::IGESReader::Create1DSpline(const std::vector<double> &parameterData
   if (parameterData[5] == 1) {
     auto spl = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
     return std::make_any<std::shared_ptr<spl::BSpline<1>>>(spl);
-  } else {
-    auto spl = std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
-    return std::make_any<std::shared_ptr<spl::NURBS<1>>>(spl);
   }
+  auto spl = std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+  return std::make_any<std::shared_ptr<spl::NURBS<1>>>(spl);
 }
 
 std::any io::IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
@@ -150,10 +149,9 @@ std::any io::IGESReader::Create2DSpline(const std::vector<double> &parameterData
   if (parameterData[7] == 1) {
     auto spl = std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points);
     return std::make_any<std::shared_ptr<spl::BSpline<2>>>(spl);
-  } else {
-    auto spl = std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
-    return std::make_any<std::shared_ptr<spl::NURBS<2>>>(spl);
   }
+  auto spl = std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
+  return std::make_any<std::shared_ptr<spl::NURBS<2>>>(spl);
 }
 
 std::array<int, 2> io::IGESReader::GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection,

@@ -41,27 +41,30 @@ std::vector<int> io::IOConverter::GetSplinePositionsOfCorrectDimension(const std
 io::IOConverter::file_format io::IOConverter::GetFileFormat(const char *filename) const {
   if (util::StringOperations::EndsWith(filename, ".iges")) {
     return iges;
-  } else if (util::StringOperations::EndsWith(filename, ".itd")) {
-    return irit;
-  } else if (util::StringOperations::EndsWith(filename, ".vtk")) {
-    return vtk;
-  } else if (util::StringOperations::EndsWith(filename, ".xml")) {
-    return xml;
-  } else {
-    return error;
   }
+  if (util::StringOperations::EndsWith(filename, ".itd")) {
+    return irit;
+  }
+  if (util::StringOperations::EndsWith(filename, ".vtk")) {
+    return vtk;
+  }
+  if (util::StringOperations::EndsWith(filename, ".xml")) {
+    return xml;
+  }
+  return error;
 }
 
 io::Reader *io::IOConverter::GetReader() const {
   if (input_format_ == iges) {
     return new io::IGESReader;
-  } else if (input_format_ == irit) {
-    return new io::IRITReader;
-  } else if (input_format_ == xml) {
-    return new io::XMLReader;
-  } else {
-    throw std::runtime_error(R"(Only files of format ".iges", ".itd" and ".xml" can be read.)");
   }
+  if (input_format_ == irit) {
+    return new io::IRITReader;
+  }
+  if (input_format_ == xml) {
+    return new io::XMLReader;
+  }
+  throw std::runtime_error(R"(Only files of format ".iges", ".itd" and ".xml" can be read.)");
 }
 
 void io::IOConverter::GetWriter(const std::vector<std::any> &splines, const std::vector<int> &positions,
@@ -86,10 +89,11 @@ void io::IOConverter::WriteFile(const std::vector<std::any> &splines, const std:
   if (output_format_ != vtk) {
     writer->WriteFile(splines_with_max_dim, output_filename_);
   } else {
-    reinterpret_cast<io::VTKWriter *>(writer)->WriteFile(splines_with_max_dim,
-                                                         output_filename_,
-                                                         GetScattering(scattering, positions, written_));
+    dynamic_cast<io::VTKWriter *>(writer)->WriteFile(splines_with_max_dim,
+                                                     output_filename_,
+                                                     GetScattering(scattering, positions, written_));
   }
+  delete writer;
 }
 
 void io::IOConverter::GetPositions(const std::vector<int> &positions,

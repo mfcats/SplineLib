@@ -54,10 +54,9 @@ std::any io::XMLReader::Get1DSpline(pugi::xml_node *spline, const std::vector<ba
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<1>>>(
         std::make_shared<spl::BSpline<1>>(knot_vectors, degrees, control_points));
-  } else {
-    return std::make_any<std::shared_ptr<spl::NURBS<1>>>(
-        std::make_shared<spl::NURBS<1>>(knot_vectors, degrees, control_points, GetWeights(spline)));
   }
+  return std::make_any<std::shared_ptr<spl::NURBS<1>>>(
+      std::make_shared<spl::NURBS<1>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
 std::any io::XMLReader::Get2DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
@@ -66,10 +65,9 @@ std::any io::XMLReader::Get2DSpline(pugi::xml_node *spline, const std::vector<ba
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<2>>>(
         std::make_shared<spl::BSpline<2>>(knot_vectors, degrees, control_points));
-  } else {
-    return std::make_any<std::shared_ptr<spl::NURBS<2>>>(
-        std::make_shared<spl::NURBS<2>>(knot_vectors, degrees, control_points, GetWeights(spline)));
   }
+  return std::make_any<std::shared_ptr<spl::NURBS<2>>>(
+      std::make_shared<spl::NURBS<2>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
 std::any io::XMLReader::Get3DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
@@ -78,10 +76,9 @@ std::any io::XMLReader::Get3DSpline(pugi::xml_node *spline, const std::vector<ba
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<3>>>(
         std::make_shared<spl::BSpline<3>>(knot_vectors, degrees, control_points));
-  } else {
-    return std::make_any<std::shared_ptr<spl::NURBS<3>>>(
-        std::make_shared<spl::NURBS<3>>(knot_vectors, degrees, control_points, GetWeights(spline)));
   }
+  return std::make_any<std::shared_ptr<spl::NURBS<3>>>(
+      std::make_shared<spl::NURBS<3>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
 std::any io::XMLReader::Get4DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
@@ -90,10 +87,9 @@ std::any io::XMLReader::Get4DSpline(pugi::xml_node *spline, const std::vector<ba
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<4>>>(
         std::make_shared<spl::BSpline<4>>(knot_vectors, degrees, control_points));
-  } else {
-    return std::make_any<std::shared_ptr<spl::NURBS<4>>>(
-        std::make_shared<spl::NURBS<4>>(knot_vectors, degrees, control_points, GetWeights(spline)));
   }
+  return std::make_any<std::shared_ptr<spl::NURBS<4>>>(
+      std::make_shared<spl::NURBS<4>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
 std::vector<baf::ControlPoint> io::XMLReader::GetControlPoints(pugi::xml_node *spline) {

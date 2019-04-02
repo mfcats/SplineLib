@@ -50,7 +50,9 @@ void io::XMLWriter::Add1DSpline(pugi::xml_node *spline_list, const std::any &spl
   AddSplineAttributes(&spline_node, 1, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
   AddControlPointVarNames(&spline_node, spline_ptr->GetPointDim());
   io::XMLWriterUtils<1>::AddControlPointVars(&spline_node, spline_ptr);
-  if (util::AnyCasts::IsRational<1>(spline)) io::XMLWriterUtils<1>::AddWeights(&spline_node, spline);
+  if (util::AnyCasts::IsRational<1>(spline)) {
+    io::XMLWriterUtils<1>::AddWeights(&spline_node, spline);
+  }
   io::XMLWriterUtils<1>::AddDegrees(&spline_node, spline_ptr);
   io::XMLWriterUtils<1>::AddKnotVectors(&spline_node, spline_ptr);
 }
@@ -61,7 +63,9 @@ void io::XMLWriter::Add2DSpline(pugi::xml_node *spline_list, const std::any &spl
   AddSplineAttributes(&spline_node, 2, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
   AddControlPointVarNames(&spline_node, spline_ptr->GetPointDim());
   io::XMLWriterUtils<2>::AddControlPointVars(&spline_node, spline_ptr);
-  if (util::AnyCasts::IsRational<2>(spline)) io::XMLWriterUtils<2>::AddWeights(&spline_node, spline);
+  if (util::AnyCasts::IsRational<2>(spline)) {
+    io::XMLWriterUtils<2>::AddWeights(&spline_node, spline);
+  }
   io::XMLWriterUtils<2>::AddDegrees(&spline_node, spline_ptr);
   io::XMLWriterUtils<2>::AddKnotVectors(&spline_node, spline_ptr);
 }
@@ -72,7 +76,9 @@ void io::XMLWriter::Add3DSpline(pugi::xml_node *spline_list, const std::any &spl
   AddSplineAttributes(&spline_node, 3, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
   AddControlPointVarNames(&spline_node, spline_ptr->GetPointDim());
   io::XMLWriterUtils<3>::AddControlPointVars(&spline_node, spline_ptr);
-  if (util::AnyCasts::IsRational<3>(spline)) io::XMLWriterUtils<3>::AddWeights(&spline_node, spline);
+  if (util::AnyCasts::IsRational<3>(spline)) {
+    io::XMLWriterUtils<3>::AddWeights(&spline_node, spline);
+  }
   io::XMLWriterUtils<3>::AddDegrees(&spline_node, spline_ptr);
   io::XMLWriterUtils<3>::AddKnotVectors(&spline_node, spline_ptr);
 }
@@ -83,7 +89,9 @@ void io::XMLWriter::Add4DSpline(pugi::xml_node *spline_list, const std::any &spl
   AddSplineAttributes(&spline_node, 4, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
   AddControlPointVarNames(&spline_node, spline_ptr->GetPointDim());
   io::XMLWriterUtils<4>::AddControlPointVars(&spline_node, spline_ptr);
-  if (util::AnyCasts::IsRational<4>(spline)) io::XMLWriterUtils<4>::AddWeights(&spline_node, spline);
+  if (util::AnyCasts::IsRational<4>(spline)) {
+    io::XMLWriterUtils<4>::AddWeights(&spline_node, spline);
+  }
   io::XMLWriterUtils<4>::AddDegrees(&spline_node, spline_ptr);
   io::XMLWriterUtils<4>::AddKnotVectors(&spline_node, spline_ptr);
 }

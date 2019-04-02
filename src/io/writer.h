@@ -22,6 +22,7 @@ namespace io {
 class Writer {
  public:
   Writer() = default;
+  virtual ~Writer() = default;
 
   virtual void WriteFile(const std::vector<std::any> &splines, const char *filename) const = 0;
 };

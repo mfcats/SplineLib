@@ -48,7 +48,7 @@ void io::VTKWriter::WriteFile(const std::vector<std::any> &splines,
 std::vector<int> io::VTKWriter::GetSplineDimensions(const std::vector<std::any> &splines) const {
   std::vector<int> dimensions;
   for (const auto &spline : splines) {
-    dimensions.push_back(util::AnyCasts::GetSplineDimension(spline));
+    dimensions.emplace_back(util::AnyCasts::GetSplineDimension(spline));
   }
   return dimensions;
 }
@@ -67,24 +67,22 @@ void io::VTKWriter::ThrowIfScatteringHasWrongSizes(std::vector<std::vector<int>>
 
 std::vector<int> io::VTKWriter::GetNumberOfAllPoints(const std::vector<int> &dimensions,
                                                      const std::vector<std::vector<int>> &scattering) const {
-  std::vector<int> points;
+  std::vector<int> points(dimensions.size());
   for (auto i = 0u; i < dimensions.size(); ++i) {
-    points.push_back(dimensions[i] == 1 ? VTKWriterUtils<1>::NumberOfCells({scattering[i][0] + 1}) :
-                     (dimensions[i] == 2 ? VTKWriterUtils<2>::NumberOfCells({scattering[i][0] + 1,
-                                                                             scattering[i][1] + 1}) :
-                      VTKWriterUtils<3>::NumberOfCells({scattering[i][0] + 1, scattering[i][1] + 1,
-                                                        scattering[i][2] + 1})));
+    points[i] = dimensions[i] == 1 ? VTKWriterUtils<1>::NumberOfCells({scattering[i][0] + 1}) :
+                (dimensions[i] == 2 ? VTKWriterUtils<2>::NumberOfCells({scattering[i][0] + 1, scattering[i][1] + 1}) :
+                 VTKWriterUtils<3>::NumberOfCells({scattering[i][0] + 1, scattering[i][1] + 1, scattering[i][2] + 1}));
   }
   return points;
 }
 
 std::vector<int> io::VTKWriter::GetNumberOfAllCells(const std::vector<int> &dimensions,
                                                     const std::vector<std::vector<int>> &scattering) const {
-  std::vector<int> cells;
+  std::vector<int> cells(dimensions.size());
   for (auto i = 0u; i < dimensions.size(); ++i) {
-    cells.push_back(dimensions[i] == 1 ? VTKWriterUtils<1>::NumberOfCells({scattering[i][0]}) :
-                    (dimensions[i] == 2 ? VTKWriterUtils<2>::NumberOfCells({scattering[i][0], scattering[i][1]}) :
-                     VTKWriterUtils<3>::NumberOfCells({scattering[i][0], scattering[i][1], scattering[i][2]})));
+    cells[i] = dimensions[i] == 1 ? VTKWriterUtils<1>::NumberOfCells({scattering[i][0]}) :
+               (dimensions[i] == 2 ? VTKWriterUtils<2>::NumberOfCells({scattering[i][0], scattering[i][1]}) :
+                VTKWriterUtils<3>::NumberOfCells({scattering[i][0], scattering[i][1], scattering[i][2]}));
   }
   return cells;
 }
