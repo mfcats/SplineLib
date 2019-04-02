@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 #include "xml_writer_utils.h"
 
-void io::XMLWriter::WriteFile(const std::vector<std::any> &splines, const char *filename) {
+void io::XMLWriter::WriteFile(const std::vector<std::any> &splines, const char *filename) const {
   pugi::xml_document doc;
   pugi::xml_node spline_list = doc.append_child("SplineList");
   spline_list.append_attribute("NumberOfSplines") = std::to_string(splines.size()).c_str();
@@ -31,7 +31,7 @@ void io::XMLWriter::WriteFile(const std::vector<std::any> &splines, const char *
   doc.save_file(filename, "  ", pugi::format_indent_attributes, pugi::encoding_utf8);
 }
 
-void io::XMLWriter::AddSpline(pugi::xml_node *spline_list, const std::any &spline) {
+void io::XMLWriter::AddSpline(pugi::xml_node *spline_list, const std::any &spline) const {
   int spline_dimension = util::AnyCasts::GetSplineDimension(spline);
   if (spline_dimension == 1) {
     Add1DSpline(spline_list, spline);
@@ -44,7 +44,7 @@ void io::XMLWriter::AddSpline(pugi::xml_node *spline_list, const std::any &splin
   }
 }
 
-void io::XMLWriter::Add1DSpline(pugi::xml_node *spline_list, const std::any &spline) {
+void io::XMLWriter::Add1DSpline(pugi::xml_node *spline_list, const std::any &spline) const {
   std::shared_ptr<spl::Spline<1>> spline_ptr = util::AnyCasts::GetSpline<1>(spline);
   pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
   AddSplineAttributes(&spline_node, 1, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
@@ -55,7 +55,7 @@ void io::XMLWriter::Add1DSpline(pugi::xml_node *spline_list, const std::any &spl
   io::XMLWriterUtils<1>::AddKnotVectors(&spline_node, spline_ptr);
 }
 
-void io::XMLWriter::Add2DSpline(pugi::xml_node *spline_list, const std::any &spline) {
+void io::XMLWriter::Add2DSpline(pugi::xml_node *spline_list, const std::any &spline) const {
   std::shared_ptr<spl::Spline<2>> spline_ptr = util::AnyCasts::GetSpline<2>(spline);
   pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
   AddSplineAttributes(&spline_node, 2, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
@@ -66,7 +66,7 @@ void io::XMLWriter::Add2DSpline(pugi::xml_node *spline_list, const std::any &spl
   io::XMLWriterUtils<2>::AddKnotVectors(&spline_node, spline_ptr);
 }
 
-void io::XMLWriter::Add3DSpline(pugi::xml_node *spline_list, const std::any &spline) {
+void io::XMLWriter::Add3DSpline(pugi::xml_node *spline_list, const std::any &spline) const {
   std::shared_ptr<spl::Spline<3>> spline_ptr = util::AnyCasts::GetSpline<3>(spline);
   pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
   AddSplineAttributes(&spline_node, 3, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
@@ -77,7 +77,7 @@ void io::XMLWriter::Add3DSpline(pugi::xml_node *spline_list, const std::any &spl
   io::XMLWriterUtils<3>::AddKnotVectors(&spline_node, spline_ptr);
 }
 
-void io::XMLWriter::Add4DSpline(pugi::xml_node *spline_list, const std::any &spline) {
+void io::XMLWriter::Add4DSpline(pugi::xml_node *spline_list, const std::any &spline) const {
   std::shared_ptr<spl::Spline<4>> spline_ptr = util::AnyCasts::GetSpline<4>(spline);
   pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
   AddSplineAttributes(&spline_node, 4, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
@@ -91,14 +91,14 @@ void io::XMLWriter::Add4DSpline(pugi::xml_node *spline_list, const std::any &spl
 void io::XMLWriter::AddSplineAttributes(pugi::xml_node *spline_node,
                                         int spline_dimension,
                                         int space_dimension,
-                                        int control_points) {
+                                        int control_points) const {
   spline_node->append_attribute("splDim") = spline_dimension;
   spline_node->append_attribute("spaceDim") = space_dimension;
   spline_node->append_attribute("numOfCntrlPntVars") = space_dimension;
   spline_node->append_attribute("numCntrlPnts") = control_points;
 }
 
-void io::XMLWriter::AddControlPointVarNames(pugi::xml_node *spline_node, int space_dimension) {
+void io::XMLWriter::AddControlPointVarNames(pugi::xml_node *spline_node, int space_dimension) const {
   pugi::xml_node names = spline_node->append_child("cntrlPntVarNames");
   if (space_dimension == 1) {
     names.append_child(pugi::node_pcdata).set_value("\n      x\n    ");

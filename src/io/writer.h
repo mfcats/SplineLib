@@ -12,32 +12,19 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IO_IRIT_WRITER_H_
-#define SRC_IO_IRIT_WRITER_H_
+#ifndef SRC_IO_WRITER_H_
+#define SRC_IO_WRITER_H_
 
 #include <any>
-#include <fstream>
-#include <string>
 #include <vector>
 
-#include "writer.h"
-
 namespace io {
-class IRITWriter : public Writer {
+class Writer {
  public:
-  IRITWriter() = default;
+  Writer() = default;
 
-  void WriteFile(const std::vector<std::any> &splines, const char *filename) const override;
-
- private:
-  void AddSpline(std::ofstream &file, const std::any &spline, int spline_number) const;
-
-  void Write1DSpline(std::ofstream &file, const std::any &spline) const;
-  void Write2DSpline(std::ofstream &file, const std::any &spline) const;
-  void Write3DSpline(std::ofstream &file, const std::any &spline) const;
-
-  std::string GetPointType(bool rational, int space_dimension) const;
+  virtual void WriteFile(const std::vector<std::any> &splines, const char *filename) const = 0;
 };
 }  // namespace io
 
-#endif  // SRC_IO_IRIT_WRITER_H_
+#endif  // SRC_IO_WRITER_H_

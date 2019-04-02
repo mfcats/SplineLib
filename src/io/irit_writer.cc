@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "irit_writer_utils.h"
 #include "nurbs.h"
 
-void io::IRITWriter::WriteFile(const std::vector<std::any> &splines, const std::string &filename) const {
+void io::IRITWriter::WriteFile(const std::vector<std::any> &splines, const char *filename) const {
   std::ofstream newFile;
   newFile.open(filename);
   if (newFile.is_open()) {

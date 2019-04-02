@@ -23,7 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "reader.h"
 
 namespace io {
-class IGESReader : Reader {
+class IGESReader : public Reader {
  public:
   IGESReader() = default;
 

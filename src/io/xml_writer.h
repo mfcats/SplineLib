@@ -20,24 +20,29 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "pugixml.hpp"
 
+#include "writer.h"
+
 namespace io {
-class XMLWriter {
+class XMLWriter : public Writer {
  public:
   XMLWriter() = default;
 
-  void WriteFile(const std::vector<std::any> &splines, const char *filename);
+  void WriteFile(const std::vector<std::any> &splines, const char *filename) const override;
 
  private:
-  void AddSpline(pugi::xml_node *spline_list, const std::any &spline);
+  void AddSpline(pugi::xml_node *spline_list, const std::any &spline) const;
 
-  void Add1DSpline(pugi::xml_node *spline_list, const std::any &spline);
-  void Add2DSpline(pugi::xml_node *spline_list, const std::any &spline);
-  void Add3DSpline(pugi::xml_node *spline_list, const std::any &spline);
-  void Add4DSpline(pugi::xml_node *spline_list, const std::any &spline);
+  void Add1DSpline(pugi::xml_node *spline_list, const std::any &spline) const;
+  void Add2DSpline(pugi::xml_node *spline_list, const std::any &spline) const;
+  void Add3DSpline(pugi::xml_node *spline_list, const std::any &spline) const;
+  void Add4DSpline(pugi::xml_node *spline_list, const std::any &spline) const;
 
-  void AddSplineAttributes(pugi::xml_node *spline_node, int spline_dimension, int space_dimension, int control_points);
+  void AddSplineAttributes(pugi::xml_node *spline_node,
+                           int spline_dimension,
+                           int space_dimension,
+                           int control_points) const;
 
-  void AddControlPointVarNames(pugi::xml_node *spline_node, int space_dimension);
+  void AddControlPointVarNames(pugi::xml_node *spline_node, int space_dimension) const;
 };
 }  // namespace io
 

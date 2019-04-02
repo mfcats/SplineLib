@@ -24,58 +24,61 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "nurbs.h"
+#include "writer.h"
 
 namespace io {
-class IGESWriter {
+class IGESWriter : public Writer {
  public:
   IGESWriter() = default;
 
-  void WriteFile(std::vector<std::any> splines, const std::string &filename);
+  void WriteFile(const std::vector<std::any> &splines, const char *filename) const override;
 
  private:
-  std::vector<std::string> GetStartSection();
+  std::vector<std::string> GetStartSection() const;
 
-  std::vector<std::string> GetGlobalSection(const std::string &filename, const std::string &delimiter,
-                                            const std::string &endDelimiter, const std::vector<std::any> &splines);
-  std::vector<std::string> GetGlobalSectionLayout(const std::string *contents);
+  std::vector<std::string> GetGlobalSection(const std::string &filename,
+                                            const std::string &delimiter,
+                                            const std::string &endDelimiter,
+                                            const std::vector<std::any> &splines) const;
+  std::vector<std::string> GetGlobalSectionLayout(const std::string *contents) const;
 
   std::vector<std::string> GetParameterData(const std::string &delimiter, const std::string &endDelimiter,
-                                            const std::any &spline, int entityPosition, int *pLine);
-  std::vector<std::string> GetParameterSectionLayout(const std::string *contents, int entityPosition, int *pLine);
+                                            const std::any &spline, int entityPosition, int *pLine) const;
+  std::vector<std::string> GetParameterSectionLayout(const std::string *contents, int entityPosition, int *pLine) const;
 
-  void GetParameterData1D(std::string *contents, const std::string &delimiter, const std::any &spline);
-  void GetParameterData2D(std::string *contents, const std::string &delimiter, const std::any &spline);
+  void GetParameterData1D(std::string *contents, const std::string &delimiter, const std::any &spline) const;
+  void GetParameterData2D(std::string *contents, const std::string &delimiter, const std::any &spline) const;
 
   template<int DIM>
-  double Get3DControlPoint(std::shared_ptr<spl::Spline<DIM>> spline, int index, int direction);
+  double Get3DControlPoint(std::shared_ptr<spl::Spline<DIM>> spline, int index, int direction) const;
 
-  std::vector<std::string> GetDataEntry(int paramStart, int paramLength, const std::any &spline, int *dLine);
-  std::vector<std::string> GetDataEntrySectionLayout(const std::string *contents, int *dLine);
+  std::vector<std::string> GetDataEntry(int paramStart, int paramLength, const std::any &spline, int *dLine) const;
+  std::vector<std::string> GetDataEntrySectionLayout(const std::string *contents, int *dLine) const;
 
-  std::vector<std::string> GetTerminateSection(int linesS, int linesG, int linesD, int linesP);
+  std::vector<std::string> GetTerminateSection(int linesS, int linesG, int linesD, int linesP) const;
 
-  int GetDimension(const std::any &spline);
+  int GetDimension(const std::any &spline) const;
 
-  bool IsRational(std::any spline);
+  bool IsRational(std::any spline) const;
 
-  void AddToContents(std::string *contents, const std::vector<std::string> &add, const std::string &delimiter);
+  void AddToContents(std::string *contents, const std::vector<std::string> &add, const std::string &delimiter) const;
 
-  std::string GetHollerithFormat(const std::string &str);
+  std::string GetHollerithFormat(const std::string &str) const;
 
-  std::string GetBlock(const std::string &str, int width, bool right);
+  std::string GetBlock(const std::string &str, int width, bool right) const;
 
   template<typename T>
-  std::string GetString(const T value);
+  std::string GetString(const T value) const;
 
   void WriteFile(std::ofstream &file, const std::vector<std::string> &start,
                  const std::vector<std::string> &global, const std::vector<std::string> &data,
-                 const std::vector<std::string> &parameter, const std::vector<std::string> &terminate);
+                 const std::vector<std::string> &parameter, const std::vector<std::string> &terminate) const;
 
-  void AppendToFile(std::ofstream &file, const std::vector<std::string> &contents);
+  void AppendToFile(std::ofstream &file, const std::vector<std::string> &contents) const;
 
-  std::string GetTime();
+  std::string GetTime() const;
 
-  double GetHighestValue(std::vector<std::any> splines);
+  double GetHighestValue(std::vector<std::any> splines) const;
 };
 }  // namespace io
 

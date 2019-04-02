@@ -23,7 +23,7 @@ io::IOConverter::IOConverter(const char *input_filename, const char *output_file
 std::vector<int> io::IOConverter::ConvertFile(const std::vector<int> &positions,
                                               const std::vector<std::vector<int>> &scattering) {
   std::vector<std::any> splines = GetReader()->ReadFile(input_filename_);
-  WriteFile(splines, positions, scattering);
+  GetWriter(splines, positions, scattering);
   return written_;
 }
 
@@ -52,42 +52,43 @@ io::IOConverter::file_format io::IOConverter::GetFileFormat(const char *filename
   }
 }
 
-std::shared_ptr<io::Reader> io::IOConverter::GetReader() const {
+io::Reader *io::IOConverter::GetReader() const {
   if (input_format_ == iges) {
-    return std::make_shared<io::Reader>(io::IGESReader());
+    return new io::IGESReader;
   } else if (input_format_ == irit) {
-    return std::make_shared<io::Reader>(io::IRITReader());
+    return new io::IRITReader;
   } else if (input_format_ == xml) {
-    return std::make_shared<io::Reader>(io::XMLReader());;
+    return new io::XMLReader;
   } else {
     throw std::runtime_error(R"(Only files of format ".iges", ".itd" and ".xml" can be read.)");
   }
 }
 
-void io::IOConverter::WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions,
+void io::IOConverter::GetWriter(const std::vector<std::any> &splines, const std::vector<int> &positions,
                                 const std::vector<std::vector<int>> &scattering) {
   if (output_format_ == iges) {
-    io::IGESWriter iges_writer;
-    GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 2));
-    std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
-    iges_writer.WriteFile(splines_with_max_dim, output_filename_);
+    WriteFile(splines, positions, 2, new io::IGESWriter);
   } else if (output_format_ == irit) {
-    io::IRITWriter irit_writer;
-    GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 3));
-    std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
-    irit_writer.WriteFile(splines_with_max_dim, output_filename_);
+    WriteFile(splines, positions, 3, new io::IRITWriter);
   } else if (output_format_ == vtk) {
-    io::VTKWriter vtk_writer;
-    GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 3));
-    std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
-    vtk_writer.WriteFile(splines_with_max_dim, output_filename_, GetScattering(scattering, positions, written_));
+    WriteFile(splines, positions, 3, new io::VTKWriter, scattering);
   } else if (output_format_ == xml) {
-    io::XMLWriter xml_writer;
-    GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 4));
-    std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
-    xml_writer.WriteFile(splines_with_max_dim, output_filename_);
+    WriteFile(splines, positions, 4, new io::XMLWriter);
   } else {
     throw std::runtime_error(R"(Only files of format ".iges", ".itd", ".vtk" and ".xml" can be written.)");
+  }
+}
+
+void io::IOConverter::WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions, int max_dim,
+                                io::Writer *writer, const std::vector<std::vector<int>> &scattering) {
+  GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, max_dim));
+  std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
+  if (output_format_ != vtk) {
+    writer->WriteFile(splines_with_max_dim, output_filename_);
+  } else {
+    reinterpret_cast<io::VTKWriter *>(writer)->WriteFile(splines_with_max_dim,
+                                                         output_filename_,
+                                                         GetScattering(scattering, positions, written_));
   }
 }
 
