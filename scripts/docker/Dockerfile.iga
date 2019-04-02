@@ -8,14 +8,25 @@ WORKDIR /code
 SHELL ["bash", "-c"]
 ENV BASH_ENV /etc/profile.d/spack.sh
 
+RUN spack repo add /code/scripts/spack-repo
+RUN spack setup -v splinelib@github build_type=Release %gcc@8
+RUN mkdir /code/build-acceptance
+WORKDIR /code/build-acceptance
+RUN ./../spconfiy.py ..
+RUN make install
+
+WORKDIR /code/example/iga
 RUN spack repo add /code/example/iga/scripts/spack-repo
 RUN spack setup -v csiga@github %gcc@8^armadillo%gcc@7
-
 RUN mkdir /code/example/iga/build
 WORKDIR /code/example/iga/build
+RUN ./../spconfig.py ..
 RUN make install
 
 RUN mkdir /code/example/build
 WORKDIR /code/example/build
 
-CMD spack load --dependencies csiga@github %gcc@8^armadillo%gcc@7 && cmake .. && ./iga
+RUN spack load --dependencies csiga@github %gcc@8^armadillo%gcc@7 && cmake ../
+RUN make
+
+CMD spack load --dependencies csiga@github %gcc@8^armadillo%gcc@7 && ./iga
