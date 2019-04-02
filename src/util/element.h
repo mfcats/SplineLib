@@ -12,20 +12,31 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <armadillo>
-#include <array>
+#ifndef SRC_UTIL_ELEMENT_H_
+#define SRC_UTIL_ELEMENT_H_
 
-#include "gmock/gmock.h"
-#include "matlab_test_data.h"
-#include "test_spline.h"
+#include <memory>
+#include <vector>
 
-using testing::DoubleNear;
+#include "control_point.h"
+#include "knot_vector.h"
 
-TEST_F(AnIGATestSpline, TestElementIntegralCalculator) { // NOLINT
-  elm_itg_calc.GetLaplaceElementIntegral(0, rule, matA);
-  for (uint64_t i = 0; i < matlab_element_one_integral.size(); ++i) {
-    for (uint64_t j = 0; j < matlab_element_one_integral[0].size(); ++j) {
-      ASSERT_THAT((*matA)(i, j), DoubleNear(matlab_element_one_integral[i][j], 0.00005));
-    }
+namespace util {
+class Element {
+ public:
+  explicit Element(const std::array<ParamCoord, 2> &nodes) : nodes_(nodes) {}
+
+  ParamCoord GetLowerBound() const {
+    return nodes_[0];
   }
-}
+
+  ParamCoord GetUpperBound() const {
+    return nodes_[1];
+  }
+
+ private:
+  std::array<ParamCoord, 2> nodes_;
+};
+}  // namespace util
+
+#endif  // SRC_UTIL_ELEMENT_H_
