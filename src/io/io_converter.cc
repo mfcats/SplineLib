@@ -20,10 +20,11 @@ io::IOConverter::IOConverter(const char *input_filename, const char *output_file
       input_format_(GetFileFormat(input_filename)),
       output_format_(GetFileFormat(output_filename)) {}
 
-void io::IOConverter::ConvertFile(const std::vector<int> &positions,
-                                  const std::vector<std::vector<int>> &scattering) {
+std::vector<int> io::IOConverter::ConvertFile(const std::vector<int> &positions,
+                                              const std::vector<std::vector<int>> &scattering) {
   std::vector<std::any> splines = ReadFile();
   WriteFile(splines, positions, scattering);
+  return written_;
 }
 
 std::vector<int> io::IOConverter::GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines,
@@ -70,52 +71,40 @@ void io::IOConverter::WriteFile(const std::vector<std::any> &splines, const std:
                                 const std::vector<std::vector<int>> &scattering) {
   if (output_format_ == iges) {
     io::IGESWriter iges_writer;
-    std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 2);
+    GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 2));
+    std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
     iges_writer.WriteFile(splines_with_max_dim, output_filename_);
-    PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 2, output_filename_);
   } else if (output_format_ == irit) {
     io::IRITWriter irit_writer;
-    std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 3);
-    PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 3, output_filename_);
-    return irit_writer.WriteFile(splines_with_max_dim, output_filename_);
+    GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 3));
+    std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
+    irit_writer.WriteFile(splines_with_max_dim, output_filename_);
   } else if (output_format_ == vtk) {
     io::VTKWriter vtk_writer;
-    std::vector<int> written = GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 3));
-    std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
-    PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 3, output_filename_);
-    return vtk_writer.WriteFile(splines_with_max_dim, output_filename_, GetScattering(scattering, positions, written));
+    GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 3));
+    std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
+    vtk_writer.WriteFile(splines_with_max_dim, output_filename_, GetScattering(scattering, positions, written_));
   } else if (output_format_ == xml) {
     io::XMLWriter xml_writer;
-    std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 4);
-    PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 4, output_filename_);
-    return xml_writer.WriteFile(splines_with_max_dim, output_filename_);
+    GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 4));
+    std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
+    xml_writer.WriteFile(splines_with_max_dim, output_filename_);
   } else {
     throw std::runtime_error(R"(Only files of format ".iges", ".itd", ".vtk" and ".xml" can be written.)");
   }
 }
 
-std::vector<std::any> io::IOConverter::GetSplinesOfCorrectDimension(const std::vector<std::any> &splines,
-                                                                    int max_dim) const {
-  std::vector<int> positions = GetSplinePositionsOfCorrectDimension(splines, max_dim);
-  std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
-  return splines_with_max_dim;
-}
-
-std::vector<int> io::IOConverter::GetPositions(const std::vector<int> &positions,
-                                               const std::vector<int> &possible_positions) {
-  std::vector<int> written;
+void io::IOConverter::GetPositions(const std::vector<int> &positions,
+                                   const std::vector<int> &possible_positions) {
   if (positions.empty()) {
-    written = possible_positions;
+    written_ = possible_positions;
   } else {
     for (const auto &pos : positions) {
       if (std::find(possible_positions.begin(), possible_positions.end(), pos) != possible_positions.end()) {
-        written.emplace_back(pos);
-      } else {
-        not_written_.emplace_back(pos);
+        written_.emplace_back(pos);
       }
     }
   }
-  return written;
 }
 
 std::vector<std::vector<int>> io::IOConverter::GetScattering(const std::vector<std::vector<int>> &scattering,
@@ -132,14 +121,4 @@ std::vector<std::vector<int>> io::IOConverter::GetScattering(const std::vector<s
     indices = written;
   }
   return util::VectorUtils<std::vector<int>>::FilterVector(scattering, indices);
-}
-
-void io::IOConverter::PrintWarningForOmittedSplines(size_t splines,
-                                                    size_t count,
-                                                    int max_dim,
-                                                    const char *filename) const {
-  if (count < splines) {
-    std::cerr << "Only the " << count << " splines of dimension equal or less than " << max_dim
-              << " have been written to " << filename << "." << std::endl;
-  }
 }

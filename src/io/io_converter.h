@@ -34,8 +34,8 @@ class IOConverter {
  public:
   IOConverter(const char *input_filename, const char *output_filename);
 
-  void ConvertFile(const std::vector<int> &positions = {},
-                   const std::vector<std::vector<int>> &scattering = {});
+  std::vector<int> ConvertFile(const std::vector<int> &positions = {},
+                               const std::vector<std::vector<int>> &scattering = {});
 
   static std::vector<int> GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines, int max_dim);
 
@@ -48,19 +48,16 @@ class IOConverter {
   void WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions,
                  const std::vector<std::vector<int>> &scattering);
 
-  std::vector<std::any> GetSplinesOfCorrectDimension(const std::vector<std::any> &splines, int max_dim) const;
-  std::vector<int> GetPositions(const std::vector<int> &positions, const std::vector<int> &possible_positions);
+  void GetPositions(const std::vector<int> &positions, const std::vector<int> &possible_positions);
   std::vector<std::vector<int>> GetScattering(const std::vector<std::vector<int>> &scattering,
                                               const std::vector<int> &positions,
                                               const std::vector<int> &written);
-
-  void PrintWarningForOmittedSplines(size_t splines, size_t count, int max_dim, const char *filename) const;
 
   const char *input_filename_;
   const char *output_filename_;
   file_format input_format_;
   file_format output_format_;
-  std::vector<int> not_written_;
+  std::vector<int> written_;
 };
 }  // namespace io
 
