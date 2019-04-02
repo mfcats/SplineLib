@@ -12,18 +12,34 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "writer.h"
+#include "io_converter.h"
 
-#include "any_casts.h"
-#include "iges_writer.h"
-#include "irit_writer.h"
-#include "string_operations.h"
-#include "vtk_writer.h"
-#include "xml_writer.h"
+void io::IOConverter::ConvertFile(const char *input_filename,
+                                  const char *output_filename,
+                                  const std::vector<int> &positions,
+                                  const std::vector<std::vector<int>> &scattering) {
+  std::vector<std::any> splines = ReadFile(input_filename);
+  WriteFile(splines, output_filename, scattering);
+}
 
-void io::Writer::WriteFile(const std::vector<std::any> &splines,
-                           const char *filename,
-                           const std::vector<std::vector<int>> &scattering) const {
+std::vector<std::any> io::IOConverter::ReadFile(const char *filename) {
+  if (util::StringOperations::EndsWith(filename, ".iges")) {
+    io::IGESReader iges_reader;
+    return iges_reader.ReadFile(filename);
+  } else if (util::StringOperations::EndsWith(filename, ".itd")) {
+    io::IRITReader irit_reader;
+    return irit_reader.ReadFile(filename);
+  } else if (util::StringOperations::EndsWith(filename, ".xml")) {
+    io::XMLReader xml_reader;
+    return xml_reader.ReadFile(filename);
+  } else {
+    throw std::runtime_error(R"(Only files of format ".iges", ".itd" and ".xml" can be read.)");
+  }
+}
+
+void io::IOConverter::WriteFile(const std::vector<std::any> &splines,
+                                const char *filename,
+                                const std::vector<std::vector<int>> &scattering) const {
   if (util::StringOperations::EndsWith(filename, ".iges")) {
     io::IGESWriter iges_writer;
     std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 2);
@@ -49,15 +65,15 @@ void io::Writer::WriteFile(const std::vector<std::any> &splines,
   }
 }
 
-std::vector<std::any> io::Writer::GetSplinesOfCorrectDimension(const std::vector<std::any> &splines,
-                                                               int max_dim) const {
+std::vector<std::any> io::IOConverter::GetSplinesOfCorrectDimension(const std::vector<std::any> &splines,
+                                                                    int max_dim) const {
   std::vector<int> positions = GetSplinePositionsOfCorrectDimension(splines, max_dim);
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
   return splines_with_max_dim;
 }
 
-std::vector<int> io::Writer::GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines,
-                                                                  int max_dim) const {
+std::vector<int> io::IOConverter::GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines,
+                                                                       int max_dim) const {
   std::vector<int> spline_positions_with_max_dim;
   for (size_t i = 0; i < splines.size(); ++i) {
     if (util::AnyCasts::GetSplineDimension(splines[i]) <= max_dim) {
@@ -67,7 +83,10 @@ std::vector<int> io::Writer::GetSplinePositionsOfCorrectDimension(const std::vec
   return spline_positions_with_max_dim;
 }
 
-void io::Writer::PrintWarningForOmittedSplines(size_t splines, size_t count, int max_dim, const char *filename) const {
+void io::IOConverter::PrintWarningForOmittedSplines(size_t splines,
+                                                    size_t count,
+                                                    int max_dim,
+                                                    const char *filename) const {
   if (count < splines) {
     std::cerr << "Only the " << count << " splines of dimension equal or less than " << max_dim
               << " have been written to " << filename << "." << std::endl;

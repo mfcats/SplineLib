@@ -13,10 +13,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "converter_log.h"
+#include "io_converter.h"
 #include "string_operations.h"
 #include "xml_reader.h"
 #include "vtk_writer.h"
-#include "writer.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
   }
 
   io::VTKWriter vtk_writer;
-  io::Writer writer;
+  io::IOConverter writer;
   std::vector<int> positions = log.GetPositions(writer.GetSplinePositionsOfCorrectDimension(splines, 3));
   std::vector<std::vector<int>> scattering = log.GetScattering();
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);

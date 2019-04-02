@@ -18,11 +18,10 @@ add_subdirectory(executables)
 set(SOURCES
         iges_reader.cc
         iges_writer.cc
+        io_converter.cc
         irit_reader.cc
         irit_writer.cc
-        reader.cc
         vtk_writer.cc
-        writer.cc
         xml_reader.cc
         xml_writer.cc)
 
@@ -48,12 +47,10 @@ install(FILES
         irit_reader_utils.h
         irit_writer.h
         irit_writer_utils.h
-        reader.h
         vtk_writer.h
         vtk_writer_utils.h
         xml_reader.h
         xml_reader_utils.h
         xml_writer.h
         xml_writer_utils.h
-        writer.h
         DESTINATION "${include_install_dir}")

@@ -14,10 +14,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "converter_log.h"
 #include "iges_reader.h"
+#include "io_converter.h"
 #include "irit_writer.h"
 #include "string_operations.h"
 #include "vector_utils.h"
-#include "writer.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -42,8 +42,8 @@ int main(int argc, char *argv[]) {
   }
 
   io::IRITWriter irit_writer;
-  io::Writer writer;
-  std::vector<int> positions = log.GetPositions(writer.GetSplinePositionsOfCorrectDimension(splines, 3));
+  io::IOConverter converter;
+  std::vector<int> positions = log.GetPositions(converter.GetSplinePositionsOfCorrectDimension(splines, 3));
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
   irit_writer.WriteFile(splines_with_max_dim, log.GetOutput());
 

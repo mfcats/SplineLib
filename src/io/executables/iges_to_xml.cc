@@ -14,9 +14,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "converter_log.h"
 #include "iges_reader.h"
+#include "io_converter.h"
 #include "string_operations.h"
 #include "vector_utils.h"
-#include "writer.h"
 #include "xml_writer.h"
 
 int main(int argc, char *argv[]) {
@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
   }
 
   io::XMLWriter xml_writer;
-  io::Writer writer;
+  io::IOConverter writer;
   std::vector<int> positions = log.GetPositions(writer.GetSplinePositionsOfCorrectDimension(splines, 4));
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
   xml_writer.WriteFile(splines_with_max_dim, log.GetOutput());

@@ -15,10 +15,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IO_IO_CONVERTER_H_
 #define SRC_IO_IO_CONVERTER_H_
 
+#include <any>
 #include <vector>
 
-#include "reader.h"
-#include "writer.h"
+#include "any_casts.h"
+#include "iges_reader.h"
+#include "iges_writer.h"
+#include "irit_reader.h"
+#include "irit_writer.h"
+#include "string_operations.h"
+#include "vtk_writer.h"
+#include "xml_reader.h"
+#include "xml_writer.h"
 
 namespace io {
 class IOConverter {
@@ -27,12 +35,20 @@ class IOConverter {
 
   void ConvertFile(const char *input_filename,
                    const char *output_filename,
-                   const std::vector<std::vector<int>> &scattering = {}) {
-    io::Reader reader;
-    std::vector<std::any> splines = reader.ReadFile(input_filename);
-    io::Writer writer;
-    writer.WriteFile(splines, output_filename, scattering);
-  }
+                   const std::vector<int> &positions = {},
+                   const std::vector<std::vector<int>> &scattering = {});
+
+  std::vector<std::any> ReadFile(const char *filename);
+
+  void WriteFile(const std::vector<std::any> &splines,
+                 const char *filename,
+                 const std::vector<std::vector<int>> &scattering) const;
+
+  std::vector<std::any> GetSplinesOfCorrectDimension(const std::vector<std::any> &splines, int max_dim) const;
+
+  std::vector<int> GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines, int max_dim) const;
+
+  void PrintWarningForOmittedSplines(size_t splines, size_t count, int max_dim, const char *filename) const;
 };
 }  // namespace io
 

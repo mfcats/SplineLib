@@ -86,7 +86,7 @@ TEST_F(AnIOConverter, ConvertsSplinesFromIGESFileToVTKFile) {  // NOLINT
   ASSERT_THAT(iges_splines.size(), 2);
   auto iges_nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_splines[0]);
   auto iges_bspline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_splines[1]);
-  io_converter_->ConvertFile(iges_read, "converted_vtk_file.vtk", {{20, 30}, {70}});
+  io_converter_->ConvertFile(iges_read, "converted_vtk_file.vtk", {}, {{20, 30}, {70}});
   std::ifstream newFile;
   newFile.open("converted_vtk_file.vtk");
   ASSERT_THAT(newFile.good(), true);

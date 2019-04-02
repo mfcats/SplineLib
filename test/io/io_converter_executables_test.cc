@@ -66,7 +66,7 @@ std::string GetPathToInstallDir() {
   throw std::runtime_error("Cannot find path of executable.");
 #endif
   std::string path(static_cast<char *>(exec_path));
-  return path.substr(0, path.length() - 14) + "/../src/io/";
+  return path.substr(0, path.length() - 15) + "/../src/io/executables/";
 }
 
 void CreateLogFile(const char *executable, const char *output, const char *options = "all") {
