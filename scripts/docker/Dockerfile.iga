@@ -9,7 +9,7 @@ SHELL ["bash", "-c"]
 ENV BASH_ENV /etc/profile.d/spack.sh
 
 RUN spack repo add /code/example/iga/scripts/spack-repo
-RUN spack setup csiga@github %gcc@8^armadillo%gcc@7
+RUN spack setup -v csiga@github %gcc@8^armadillo%gcc@7
 
 RUN mkdir /code/example/iga/build
 WORKDIR /code/example/iga/build
