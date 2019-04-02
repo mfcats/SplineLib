@@ -20,13 +20,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "b_spline.h"
+#include "reader.h"
 
 namespace io {
-class IRITReader {
+class IRITReader : Reader {
  public:
   IRITReader() = default;
 
-  std::vector<std::any> ReadFile(const char *filename);
+  std::vector<std::any> ReadFile(const char *filename) override;
 
  private:
   std::vector<int> GetSplinePositions(const std::vector<std::string> &entries) const;

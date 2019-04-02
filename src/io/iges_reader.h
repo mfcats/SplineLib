@@ -20,12 +20,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
+#include "reader.h"
+
 namespace io {
-class IGESReader {
+class IGESReader : Reader {
  public:
   IGESReader() = default;
 
-  std::vector<std::any> ReadFile(const char *filename);
+  std::vector<std::any> ReadFile(const char *filename) override;
 
  private:
   std::any Create1DSpline(const std::vector<double> &parameterData);

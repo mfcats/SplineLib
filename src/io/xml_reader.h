@@ -23,13 +23,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "nurbs.h"
+#include "reader.h"
 
 namespace io {
-class XMLReader {
+class XMLReader : Reader {
  public:
   XMLReader() = default;
 
-  std::vector<std::any> ReadFile(const char *filename);
+  std::vector<std::any> ReadFile(const char *filename) override;
 
  private:
   void AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines);

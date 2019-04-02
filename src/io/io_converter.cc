@@ -22,7 +22,7 @@ io::IOConverter::IOConverter(const char *input_filename, const char *output_file
 
 std::vector<int> io::IOConverter::ConvertFile(const std::vector<int> &positions,
                                               const std::vector<std::vector<int>> &scattering) {
-  std::vector<std::any> splines = ReadFile();
+  std::vector<std::any> splines = GetReader()->ReadFile(input_filename_);
   WriteFile(splines, positions, scattering);
   return written_;
 }
@@ -52,16 +52,13 @@ io::IOConverter::file_format io::IOConverter::GetFileFormat(const char *filename
   }
 }
 
-std::vector<std::any> io::IOConverter::ReadFile() const {
+std::shared_ptr<io::Reader> io::IOConverter::GetReader() const {
   if (input_format_ == iges) {
-    io::IGESReader iges_reader;
-    return iges_reader.ReadFile(input_filename_);
+    return std::make_shared<io::Reader>(io::IGESReader());
   } else if (input_format_ == irit) {
-    io::IRITReader irit_reader;
-    return irit_reader.ReadFile(input_filename_);
+    return std::make_shared<io::Reader>(io::IRITReader());
   } else if (input_format_ == xml) {
-    io::XMLReader xml_reader;
-    return xml_reader.ReadFile(input_filename_);
+    return std::make_shared<io::Reader>(io::XMLReader());;
   } else {
     throw std::runtime_error(R"(Only files of format ".iges", ".itd" and ".xml" can be read.)");
   }

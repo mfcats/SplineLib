@@ -44,7 +44,7 @@ class IOConverter {
  private:
   file_format GetFileFormat(const char *filename) const;
 
-  std::vector<std::any> ReadFile() const;
+  std::shared_ptr<io::Reader> GetReader() const;
   void WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions,
                  const std::vector<std::vector<int>> &scattering);
 
