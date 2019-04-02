@@ -86,8 +86,3 @@ jobs:
       install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
       script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
 
-   #- stage: Install
-      #name: IGA
-      #install: docker build -t splinelibtests:install_iga -f example/iga/scripts/docker/Dockerfile.iga .
-      #script: docker run -te "TERM=xterm-256color" --name iga
-
