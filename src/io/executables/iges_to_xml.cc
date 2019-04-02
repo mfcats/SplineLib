@@ -42,8 +42,7 @@ int main(int argc, char *argv[]) {
   }
 
   io::XMLWriter xml_writer;
-  io::IOConverter writer;
-  std::vector<int> positions = log.GetPositions(writer.GetSplinePositionsOfCorrectDimension(splines, 4));
+  std::vector<int> positions = log.GetPositions(io::IOConverter::GetSplinePositionsOfCorrectDimension(splines, 4));
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
   xml_writer.WriteFile(splines_with_max_dim, log.GetOutput());
 

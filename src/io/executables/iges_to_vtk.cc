@@ -42,8 +42,7 @@ int main(int argc, char *argv[]) {
   }
 
   io::VTKWriter vtk_writer;
-  io::IOConverter writer;
-  std::vector<int> positions = log.GetPositions(writer.GetSplinePositionsOfCorrectDimension(splines, 3));
+  std::vector<int> positions = log.GetPositions(io::IOConverter::GetSplinePositionsOfCorrectDimension(splines, 3));
   std::vector<std::vector<int>> scattering = log.GetScattering();
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
   vtk_writer.WriteFile(splines_with_max_dim, log.GetOutput(), scattering);

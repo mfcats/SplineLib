@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_IO_IO_CONVERTER_H_
 
 #include <any>
+#include <string>
 #include <vector>
 
 #include "any_casts.h"
@@ -31,24 +32,32 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace io {
 class IOConverter {
  public:
-  IOConverter() = default;
+  IOConverter(const char *input_filename, const char *output_filename);
 
-  void ConvertFile(const char *input_filename,
-                   const char *output_filename,
-                   const std::vector<int> &positions = {},
-                   const std::vector<std::vector<int>> &scattering = {});
+  void ConvertFile(const std::vector<int> &positions = {},
+                   const std::vector<std::vector<int>> &scattering = {}) const;
 
-  std::vector<std::any> ReadFile(const char *filename);
-
+  std::vector<std::any> ReadFile() const;
   void WriteFile(const std::vector<std::any> &splines,
-                 const char *filename,
                  const std::vector<std::vector<int>> &scattering) const;
 
   std::vector<std::any> GetSplinesOfCorrectDimension(const std::vector<std::any> &splines, int max_dim) const;
+  static std::vector<int> GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines, int max_dim);
 
-  std::vector<int> GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines, int max_dim) const;
+  enum file_format { error, iges, irit, vtk, xml };
 
+ private:
   void PrintWarningForOmittedSplines(size_t splines, size_t count, int max_dim, const char *filename) const;
+
+  std::vector<int> GetPositions(const std::vector<int> &positions, const std::vector<int> &possible_positions);
+
+  file_format GetFileFormat(const char *filename) const;
+
+  const char *input_filename_;
+  const char *output_filename_;
+  file_format input_format_;
+  file_format output_format_;
+  std::vector<int> not_written_;
 };
 }  // namespace io
 
