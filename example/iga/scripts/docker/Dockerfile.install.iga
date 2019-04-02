@@ -8,20 +8,11 @@ WORKDIR /code
 SHELL ["bash", "-c"]
 ENV BASH_ENV /etc/profile.d/spack.sh
 
-WORKDIR /code/example/iga
-RUN spack setup csiga@github %gcc@8^armadillo%gcc@7
-
-RUN mkdir /code/example/iga/build
-WORKDIR /code/example/iga/build
-RUN ./../spconfig.py ..
-
-# Install CSiga
-RUN make install
+RUN spack install csiga@github %gcc@8^armadillo%gcc@7
 
 RUN mkdir /code/example/build
 WORKDIR /code/example/build
-
-RUN spack load --dependencies csiga@github %gcc@8 && cmake .. 
+RUN spack load --dependencies csiga@github %gcc@8^armadillo%gcc@7 && cmake ..
 RUN make
 
-CMD spack load --dependencies csiga@github %gcc@8 && ./iga
+CMD spack load --dependencies csiga@github %gcc@8^armadillo%gcc@7 && ./iga
