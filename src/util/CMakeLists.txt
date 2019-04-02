@@ -32,6 +32,7 @@ install(FILES
         element.h
         element_generator.h
         named_type.h
+        numeric_operations.h
         numeric_settings.h
         multi_index_handler.h
         random.h

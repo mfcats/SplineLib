@@ -157,7 +157,7 @@ class ASurface : public Test {
           std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0},
                                                              ParamCoord{1}, ParamCoord{1}}))},
         parameter_trajectory(std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(
-                knot_vector1_, degree1_))),
+            knot_vector1_, degree1_))),
         w_physical_section(std::make_shared<NiceMock<MockWeightedPhysicalSpaceSection>>()),
         w_physical_trajectory(std::make_shared<NiceMock<MockWeightedPhysicalSpaceTrajectory>>()),
         parameter_section(std::make_shared<NiceMock<MockParameterSpaceSection>>()) {
@@ -185,7 +185,7 @@ class ASurface : public Test {
   }
 
  protected:
-  uint64_t nbInter, nbInterCmp;
+  int nbInter, nbInterCmp;
   std::array<Degree, 1> degree1_;
   KnotVectors<1> knot_vector1_;
   std::shared_ptr<spl::ParameterSpace<1>> parameter_trajectory;
@@ -437,7 +437,7 @@ class AComplexSurface : public Test {
 
  protected:
   std::array<Degree, 1> degree1_;
-  uint64_t nbInter;
+  int nbInter;
   std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector1_;
   std::shared_ptr<spl::ParameterSpace<1>> parameter_trajectory;
   std::shared_ptr<spl::NURBS<1>> nurbs1;
@@ -525,7 +525,7 @@ class AComplexSurface2 : public Test {
 
  protected:
   std::array<Degree, 1> degree1_;
-  uint64_t nbInter;
+  int nbInter;
   std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector1_;
   std::shared_ptr<spl::ParameterSpace<1>> parameter_trajectory;
   std::shared_ptr<NiceMock<MockParameterSpaceSection>> parameter_section;

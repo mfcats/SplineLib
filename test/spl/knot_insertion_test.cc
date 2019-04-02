@@ -16,16 +16,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "nurbs.h"
-#include "random_b_spline_generator.h"
-#include "random_nurbs_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
-class BSplineEx5_1 : public Test {  // NOLINT
+class BSpline1DEx5_1 : public Test {  // NOLINT
  public:
-  BSplineEx5_1() {
+  BSpline1DEx5_1() {
     std::array<Degree, 1> degree = {Degree{3}};
     KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2},
@@ -50,7 +48,7 @@ class BSplineEx5_1 : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> bspline_1d_after_;
 };
 
-TEST_F(BSplineEx5_1, InsertsKnot2_5Correctly) {  // NOLINT
+TEST_F(BSpline1DEx5_1, InsertsKnot2_5Correctly) {  // NOLINT
   bspline_1d_after_->InsertKnot(ParamCoord(2.5), 0);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
@@ -79,9 +77,9 @@ TEST_F(BSplineEx5_1, InsertsKnot2_5Correctly) {  // NOLINT
   }
 }
 
-class NURBSEx5_2 : public Test {  // NOLINT
+class NURBS1DEx5_2 : public Test {  // NOLINT
  public:
-  NURBSEx5_2() {
+  NURBS1DEx5_2() {
     std::array<Degree, 1> degree = {Degree{3}};
     KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2},
@@ -110,7 +108,7 @@ class NURBSEx5_2 : public Test {  // NOLINT
   std::shared_ptr<spl::NURBS<1>> nurbs_1d_after_;
 };
 
-TEST_F(NURBSEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
+TEST_F(NURBS1DEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
   nurbs_1d_after_->InsertKnot(ParamCoord(2.0), 0);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               nurbs_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
@@ -145,165 +143,9 @@ TEST_F(NURBSEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
   }
 }
 
-class Random2DBSplineForKnotInsertion : public Test {  // NOLINT
+class BSpline1DFig5_16 : public Test {  // NOLINT
  public:
-  Random2DBSplineForKnotInsertion() {
-    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
-    spl::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
-    spl::BSpline<2> b_spline(spline_generator);
-    bspline_2d_before_ = std::make_shared<spl::BSpline<2>>(b_spline);
-    spl::BSpline<2> b_spline_after(b_spline);
-    bspline_2d_after_ = std::make_shared<spl::BSpline<2>>(b_spline_after);
-  }
-
- protected:
-  std::shared_ptr<spl::BSpline<2>> bspline_2d_before_;
-  std::shared_ptr<spl::BSpline<2>> bspline_2d_after_;
-};
-
-TEST_F(Random2DBSplineForKnotInsertion, InsertsKnot0_4InFirstDirectionCorrectly) {  // NOLINT
-  bspline_2d_after_->InsertKnot(ParamCoord(0.4), 0);
-  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
-              bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
-              bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots());
-  ASSERT_THAT(bspline_2d_after_->GetPointsPerDirection()[0], bspline_2d_before_->GetPointsPerDirection()[0] + 1);
-  double steps = 50;
-  for (int i = 0; i <= steps; ++i) {
-    ParamCoord coord2 = ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-    std::array<ParamCoord, 2> param_coord{ParamCoord(i / steps), coord2};
-    for (int j = 0; j < 2; ++j) {
-      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {j})[0],
-                  DoubleNear(bspline_2d_before_->Evaluate(param_coord, {j})[0], 0.000001));
-    }
-  }
-}
-
-TEST_F(Random2DBSplineForKnotInsertion, InsertsKnot0_7InSecondDirectionCorrectly) {  // NOLINT
-  bspline_2d_after_->InsertKnot(ParamCoord(0.7), 1);
-  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
-              bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots());
-  ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
-              bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(bspline_2d_after_->GetPointsPerDirection()[1], bspline_2d_before_->GetPointsPerDirection()[1] + 1);
-  double steps = 50;
-  for (int i = 0; i <= steps; ++i) {
-    ParamCoord coord1 = ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-    std::array<ParamCoord, 2> param_coord{coord1, ParamCoord(i / steps)};
-    for (int j = 0; j < 2; ++j) {
-      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {j})[0],
-                  DoubleNear(bspline_2d_before_->Evaluate(param_coord, {j})[0], 0.000001));
-    }
-  }
-}
-
-TEST_F(Random2DBSplineForKnotInsertion, InsertsKnot0_4InFirstAndKnot0_7InSecondDirectionCorrectly) {  // NOLINT
-  bspline_2d_after_->InsertKnot(ParamCoord(0.4), 0);
-  bspline_2d_after_->InsertKnot(ParamCoord(0.7), 1);
-  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
-              bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
-              bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(bspline_2d_after_->GetPointsPerDirection()[0], bspline_2d_before_->GetPointsPerDirection()[0] + 1);
-  ASSERT_THAT(bspline_2d_after_->GetPointsPerDirection()[1], bspline_2d_before_->GetPointsPerDirection()[1] + 1);
-  double steps = 10;
-  for (int i = 0; i <= steps; ++i) {
-    for (int j = 0; j <= steps; ++j) {
-      std::array<ParamCoord, 2> param_coord{ParamCoord(i / steps), ParamCoord(j / steps)};
-      for (int k = 0; k < 2; ++k) {
-        ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {k})[0],
-                    DoubleNear(bspline_2d_before_->Evaluate(param_coord, {k})[0], 0.000001));
-      }
-    }
-  }
-}
-
-class Random3DBSplineForKnotInsertion : public Test {  // NOLINT
- public:
-  Random3DBSplineForKnotInsertion() {
-    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
-    spl::RandomBSplineGenerator<3> spline_generator(limits, 10, 4);
-    spl::BSpline<3> b_spline(spline_generator);
-    bspline_3d_before_ = std::make_shared<spl::BSpline<3>>(b_spline);
-    spl::BSpline<3> b_spline_after(b_spline);
-    bspline_3d_after_ = std::make_shared<spl::BSpline<3>>(b_spline_after);
-  }
-
- protected:
-  std::shared_ptr<spl::BSpline<3>> bspline_3d_before_;
-  std::shared_ptr<spl::BSpline<3>> bspline_3d_after_;
-};
-
-TEST_F(Random3DBSplineForKnotInsertion, InsertsKnot0_4InFirst_Knot0_99InSecond_Knot0_01InThirdDirection) {  // NOLINT
-  bspline_3d_after_->InsertKnot(ParamCoord(0.4), 0);
-  bspline_3d_after_->InsertKnot(ParamCoord(0.99), 1);
-  bspline_3d_after_->InsertKnot(ParamCoord(0.01), 2);
-  ASSERT_THAT(bspline_3d_after_->GetKnotVector(0)->GetNumberOfKnots(),
-              bspline_3d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(bspline_3d_after_->GetKnotVector(1)->GetNumberOfKnots(),
-              bspline_3d_before_->GetKnotVector(1)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
-              bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[0], bspline_3d_before_->GetPointsPerDirection()[0] + 1);
-  ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[1], bspline_3d_before_->GetPointsPerDirection()[1] + 1);
-  ASSERT_THAT(bspline_3d_after_->GetPointsPerDirection()[2], bspline_3d_before_->GetPointsPerDirection()[2] + 1);
-  double s = 5;
-  for (int i = 0; i <= s; ++i) {
-    for (int j = 0; j <= s; ++j) {
-      for (int k = 0; k <= s; ++k) {
-        std::array<ParamCoord, 3> param_coord{ParamCoord(i / s), ParamCoord(j / s), ParamCoord(k / s)};
-        for (int l = 0; l < 3; ++l) {
-          ASSERT_THAT(bspline_3d_after_->Evaluate(param_coord, {l})[0],
-                      DoubleNear(bspline_3d_before_->Evaluate(param_coord, {l})[0], 0.000001));
-        }
-      }
-    }
-  }
-}
-
-class Random3DNURBSForKnotInsertion : public Test {  // NOLINT
- public:
-  Random3DNURBSForKnotInsertion() {
-    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
-    spl::RandomNURBSGenerator<3> spline_generator(limits, 10, 4);
-    spl::NURBS<3> nurbs(spline_generator);
-    nurbs_3d_before_ = std::make_shared<spl::NURBS<3>>(nurbs);
-    spl::NURBS<3> nurbs_after(nurbs);
-    nurbs_3d_after_ = std::make_shared<spl::NURBS<3>>(nurbs_after);
-  }
-
- protected:
-  std::shared_ptr<spl::NURBS<3>> nurbs_3d_before_;
-  std::shared_ptr<spl::NURBS<3>> nurbs_3d_after_;
-};
-
-TEST_F(Random3DNURBSForKnotInsertion, InsertsKnot0_4InFirst_Knot0_99InSecond_Knot0_01InThirdDirection) {  // NOLINT
-  nurbs_3d_after_->InsertKnot(ParamCoord(0.4), 0);
-  nurbs_3d_after_->InsertKnot(ParamCoord(0.99), 1);
-  nurbs_3d_after_->InsertKnot(ParamCoord(0.01), 2);
-  ASSERT_THAT(nurbs_3d_after_->GetKnotVector(0)->GetNumberOfKnots(),
-              nurbs_3d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(nurbs_3d_after_->GetKnotVector(1)->GetNumberOfKnots(),
-              nurbs_3d_before_->GetKnotVector(1)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
-              nurbs_3d_before_->GetKnotVector(2)->GetNumberOfKnots() + 1);
-  ASSERT_THAT(nurbs_3d_after_->GetWeights().size(), nurbs_3d_after_->GetNumberOfControlPoints());
-  ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[0], nurbs_3d_before_->GetPointsPerDirection()[0] + 1);
-  ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[1], nurbs_3d_before_->GetPointsPerDirection()[1] + 1);
-  ASSERT_THAT(nurbs_3d_after_->GetPointsPerDirection()[2], nurbs_3d_before_->GetPointsPerDirection()[2] + 1);
-  std::array<ParamCoord, 3> param_coord{};
-  for (int i = 0; i < 3; ++i) {
-    param_coord[i] = ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-  }
-  for (int l = 0; l < 3; ++l) {
-    ASSERT_THAT(nurbs_3d_after_->Evaluate(param_coord, {l})[0],
-                DoubleNear(nurbs_3d_before_->Evaluate(param_coord, {l})[0], 0.000001));
-  }
-}
-
-class BSplineFig5_16 : public Test {  // NOLINT
- public:
-  BSplineFig5_16() {
+  BSpline1DFig5_16() {
     std::array<Degree, 1> degree = {Degree{3}};
     KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.7},
@@ -328,7 +170,7 @@ class BSplineFig5_16 : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> bspline_1d_after_;
 };
 
-TEST_F(BSplineFig5_16, InsertsMidpoints) {  // NOLINT
+TEST_F(BSpline1DFig5_16, InsertsMidpoints) {  // NOLINT
   std::vector<ParamCoord> new_knots = {ParamCoord{0.15}, ParamCoord{0.5}, ParamCoord{0.85}};
   bspline_1d_after_->RefineKnots(new_knots, 0);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
@@ -362,7 +204,7 @@ TEST_F(BSplineFig5_16, InsertsMidpoints) {  // NOLINT
   }
 }
 
-TEST_F(BSplineFig5_16, InsertsKnot0_5MultipleTimesWithKnotRefinement) {  // NOLINT
+TEST_F(BSpline1DFig5_16, InsertsKnot0_5MultipleTimesWithKnotRefinement) {  // NOLINT
   std::vector<ParamCoord> new_knots = {ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.5}};
   bspline_1d_after_->RefineKnots(new_knots, 0);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
@@ -380,7 +222,7 @@ TEST_F(BSplineFig5_16, InsertsKnot0_5MultipleTimesWithKnotRefinement) {  // NOLI
   }
 }
 
-TEST_F(BSplineFig5_16, InsertsKnot0_5MultipleTimes) {  // NOLINT
+TEST_F(BSpline1DFig5_16, InsertsKnot0_5MultipleTimes) {  // NOLINT
   bspline_1d_after_->InsertKnot(ParamCoord{0.5}, 0, 3);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 3);
@@ -397,7 +239,7 @@ TEST_F(BSplineFig5_16, InsertsKnot0_5MultipleTimes) {  // NOLINT
   }
 }
 
-TEST_F(BSplineFig5_16, InsertsKnot0_3MultipleTimes) {  // NOLINT
+TEST_F(BSpline1DFig5_16, InsertsKnot0_3MultipleTimes) {  // NOLINT
   bspline_1d_after_->InsertKnot(ParamCoord{0.3}, 0, 2);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 2);

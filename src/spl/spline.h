@@ -112,10 +112,11 @@ class Spline {
     return parameter_space_->GetKnotVectorRange(direction);
   }
 
-  virtual int GetNumberOfControlPoints() = 0;
-  virtual std::array<int, DIM> GetPointsPerDirection() = 0;
+  virtual int GetNumberOfControlPoints() const = 0;
+  virtual std::array<int, DIM> GetPointsPerDirection() const = 0;
   virtual int GetDimension() const = 0;
-  virtual double GetControlPoint(std::array<int, DIM> indices, int dimension) = 0;
+  virtual double GetControlPoint(std::array<int, DIM> indices, int dimension) const = 0;
+  virtual baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const = 0;
 
   virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;
 
@@ -185,9 +186,8 @@ class Spline {
   }
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
-  virtual bool RemoveControlPoints(std::vector<double>, int, int, int, double) {
-    return false;
-  }
+  virtual bool RemoveControlPoints(std::vector<double> scaling,
+                                   int first, int last, int dimension, double tolerance) = 0;
 
  protected:
   void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
