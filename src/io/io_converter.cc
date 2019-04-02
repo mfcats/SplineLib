@@ -21,9 +21,34 @@ io::IOConverter::IOConverter(const char *input_filename, const char *output_file
       output_format_(GetFileFormat(output_filename)) {}
 
 void io::IOConverter::ConvertFile(const std::vector<int> &positions,
-                                  const std::vector<std::vector<int>> &scattering) const {
+                                  const std::vector<std::vector<int>> &scattering) {
   std::vector<std::any> splines = ReadFile();
-  WriteFile(splines, scattering);
+  WriteFile(splines, positions, scattering);
+}
+
+std::vector<int> io::IOConverter::GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines,
+                                                                       int max_dim) {
+  std::vector<int> spline_positions_with_max_dim;
+  for (size_t i = 0; i < splines.size(); ++i) {
+    if (util::AnyCasts::GetSplineDimension(splines[i]) <= max_dim) {
+      spline_positions_with_max_dim.emplace_back(i);
+    }
+  }
+  return spline_positions_with_max_dim;
+}
+
+io::IOConverter::file_format io::IOConverter::GetFileFormat(const char *filename) const {
+  if (util::StringOperations::EndsWith(filename, ".iges")) {
+    return iges;
+  } else if (util::StringOperations::EndsWith(filename, ".itd")) {
+    return irit;
+  } else if (util::StringOperations::EndsWith(filename, ".vtk")) {
+    return vtk;
+  } else if (util::StringOperations::EndsWith(filename, ".xml")) {
+    return xml;
+  } else {
+    return error;
+  }
 }
 
 std::vector<std::any> io::IOConverter::ReadFile() const {
@@ -41,8 +66,8 @@ std::vector<std::any> io::IOConverter::ReadFile() const {
   }
 }
 
-void io::IOConverter::WriteFile(const std::vector<std::any> &splines,
-                                const std::vector<std::vector<int>> &scattering) const {
+void io::IOConverter::WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions,
+                                const std::vector<std::vector<int>> &scattering) {
   if (output_format_ == iges) {
     io::IGESWriter iges_writer;
     std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 2);
@@ -55,9 +80,10 @@ void io::IOConverter::WriteFile(const std::vector<std::any> &splines,
     return irit_writer.WriteFile(splines_with_max_dim, output_filename_);
   } else if (output_format_ == vtk) {
     io::VTKWriter vtk_writer;
-    std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 3);
+    std::vector<int> written = GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 3));
+    std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
     PrintWarningForOmittedSplines(splines.size(), splines_with_max_dim.size(), 3, output_filename_);
-    return vtk_writer.WriteFile(splines_with_max_dim, output_filename_, scattering);
+    return vtk_writer.WriteFile(splines_with_max_dim, output_filename_, GetScattering(scattering, positions, written));
   } else if (output_format_ == xml) {
     io::XMLWriter xml_writer;
     std::vector<std::any> splines_with_max_dim = GetSplinesOfCorrectDimension(splines, 4);
@@ -75,31 +101,10 @@ std::vector<std::any> io::IOConverter::GetSplinesOfCorrectDimension(const std::v
   return splines_with_max_dim;
 }
 
-std::vector<int> io::IOConverter::GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines,
-                                                                       int max_dim) {
-  std::vector<int> spline_positions_with_max_dim;
-  for (size_t i = 0; i < splines.size(); ++i) {
-    if (util::AnyCasts::GetSplineDimension(splines[i]) <= max_dim) {
-      spline_positions_with_max_dim.emplace_back(i);
-    }
-  }
-  return spline_positions_with_max_dim;
-}
-
-void io::IOConverter::PrintWarningForOmittedSplines(size_t splines,
-                                                    size_t count,
-                                                    int max_dim,
-                                                    const char *filename) const {
-  if (count < splines) {
-    std::cerr << "Only the " << count << " splines of dimension equal or less than " << max_dim
-              << " have been written to " << filename << "." << std::endl;
-  }
-}
-
 std::vector<int> io::IOConverter::GetPositions(const std::vector<int> &positions,
                                                const std::vector<int> &possible_positions) {
   std::vector<int> written;
-  if (positions.size() == 0) {
+  if (positions.empty()) {
     written = possible_positions;
   } else {
     for (const auto &pos : positions) {
@@ -113,16 +118,28 @@ std::vector<int> io::IOConverter::GetPositions(const std::vector<int> &positions
   return written;
 }
 
-io::IOConverter::file_format io::IOConverter::GetFileFormat(const char *filename) const {
-  if (util::StringOperations::EndsWith(filename, ".iges")) {
-    return iges;
-  } else if (util::StringOperations::EndsWith(filename, ".itd")) {
-    return irit;
-  } else if (util::StringOperations::EndsWith(filename, ".vtk")) {
-    return vtk;
-  } else if (util::StringOperations::EndsWith(filename, ".xml")) {
-    return xml;
+std::vector<std::vector<int>> io::IOConverter::GetScattering(const std::vector<std::vector<int>> &scattering,
+                                                             const std::vector<int> &positions,
+                                                             const std::vector<int> &written) {
+  std::vector<int> indices;
+  if (!positions.empty()) {
+    for (int i = 0; i < static_cast<int>(positions.size()); ++i) {
+      if (std::find(written.begin(), written.end(), positions[i]) != written.end()) {
+        indices.emplace_back(i);
+      }
+    }
   } else {
-    return error;
+    indices = written;
+  }
+  return util::VectorUtils<std::vector<int>>::FilterVector(scattering, indices);
+}
+
+void io::IOConverter::PrintWarningForOmittedSplines(size_t splines,
+                                                    size_t count,
+                                                    int max_dim,
+                                                    const char *filename) const {
+  if (count < splines) {
+    std::cerr << "Only the " << count << " splines of dimension equal or less than " << max_dim
+              << " have been written to " << filename << "." << std::endl;
   }
 }
