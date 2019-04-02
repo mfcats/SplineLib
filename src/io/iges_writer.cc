@@ -20,6 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "any_casts.h"
 #include "multi_index_handler.h"
+#include "system_operations.h"
 
 void io::IGESWriter::WriteFile(std::vector<std::any> splines, const std::string &filename) {
   std::ofstream newFile;
@@ -293,10 +294,7 @@ void io::IGESWriter::AppendToFile(std::ofstream &file, const std::vector<std::st
 }
 
 std::string io::IGESWriter::GetTime() {
-  time_t timer;
-  time(&timer);
-  struct tm ptm{};
-  localtime_r(&timer, &ptm);
+  struct tm ptm = util::SystemOperations::GetTime();
   std::string date = GetString((ptm.tm_year + 1900) * 10000 + (ptm.tm_mon + 1) * 100 + ptm.tm_mday);
   std::string time = GetString(ptm.tm_hour * 10000 + ptm.tm_min * 100 + ptm.tm_sec);
   return GetHollerithFormat(date + "." + time);

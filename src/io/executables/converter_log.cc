@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <ctime>
 #include <fstream>
 #include <iostream>
+#include <system_operations.h>
 
 #include "string_operations.h"
 #include "vector_utils.h"
@@ -123,10 +124,7 @@ void io::ConverterLog::PrintHelp() const {
 }
 
 std::string io::ConverterLog::GetTime() const {
-  struct tm timeinfo{};
-  time_t rawtime;
-  rawtime = time(&rawtime);
-  localtime_r(&rawtime, &timeinfo);
+  struct tm timeinfo = util::SystemOperations::GetTime();
   return asctime(&timeinfo);
 }
 
