@@ -12,6 +12,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
 #
+
 cmake_minimum_required(VERSION 3.6)
 
 project(SplineLibExamples LANGUAGES CXX)

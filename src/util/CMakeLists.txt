@@ -29,6 +29,8 @@ install(
 
 install(FILES
         any_casts.h
+        element.h
+        element_generator.h
         named_type.h
         numeric_operations.h
         numeric_settings.h
