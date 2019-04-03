@@ -70,30 +70,34 @@ io::Reader *io::IOConverter::GetReader() const {
 void io::IOConverter::GetWriter(const std::vector<std::any> &splines, const std::vector<int> &positions,
                                 const std::vector<std::vector<int>> &scattering) {
   if (output_format_ == iges) {
-    WriteFile(splines, positions, 2, new io::IGESWriter);
+    std::shared_ptr<io::IGESWriter> ptr = std::make_shared<io::IGESWriter>(io::IGESWriter());
+    WriteFile(splines, positions, 2, std::dynamic_pointer_cast<io::Writer>(ptr));
   } else if (output_format_ == irit) {
-    WriteFile(splines, positions, 3, new io::IRITWriter);
+    std::shared_ptr<io::IRITWriter> ptr = std::make_shared<io::IRITWriter>(io::IRITWriter());
+    WriteFile(splines, positions, 3, std::dynamic_pointer_cast<io::Writer>(ptr));
   } else if (output_format_ == vtk) {
-    WriteFile(splines, positions, 3, new io::VTKWriter, scattering);
+    std::shared_ptr<io::VTKWriter> ptr = std::make_shared<io::VTKWriter>(io::VTKWriter());
+    WriteFile(splines, positions, 3, std::dynamic_pointer_cast<io::Writer>(ptr), scattering);
   } else if (output_format_ == xml) {
-    WriteFile(splines, positions, 4, new io::XMLWriter);
+    std::shared_ptr<io::XMLWriter> ptr = std::make_shared<io::XMLWriter>(io::XMLWriter());
+    WriteFile(splines, positions, 4, std::dynamic_pointer_cast<io::Writer>(ptr));
   } else {
     throw std::runtime_error(R"(Only files of format ".iges", ".itd", ".vtk" and ".xml" can be written.)");
   }
 }
 
 void io::IOConverter::WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions, int max_dim,
-                                io::Writer *writer, const std::vector<std::vector<int>> &scattering) {
+                                const std::shared_ptr<io::Writer> &writer,
+                                const std::vector<std::vector<int>> &scattering) {
   GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, max_dim));
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
   if (output_format_ != vtk) {
     writer->WriteFile(splines_with_max_dim, output_filename_);
   } else {
-    dynamic_cast<io::VTKWriter *>(writer)->WriteFile(splines_with_max_dim,
-                                                     output_filename_,
-                                                     GetScattering(scattering, positions, written_));
+    std::dynamic_pointer_cast<io::VTKWriter>(writer)->WriteFile(splines_with_max_dim,
+                                                                output_filename_,
+                                                                GetScattering(scattering, positions, written_));
   }
-  delete writer;
 }
 
 void io::IOConverter::GetPositions(const std::vector<int> &positions,
