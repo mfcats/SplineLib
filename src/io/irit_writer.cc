@@ -80,5 +80,5 @@ void io::IRITWriter::Write3DSpline(std::ofstream &file, const std::any &spline) 
 }
 
 std::string io::IRITWriter::GetPointType(bool rational, int space_dimension) const {
-  return (rational ? "P" : "E") + std::to_string(space_dimension);
+  return (rational ? std::string("P") : std::string("E")) + std::to_string(space_dimension);
 }

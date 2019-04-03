@@ -46,9 +46,9 @@ void io::VTKWriter::WriteFile(const std::vector<std::any> &splines,
 }
 
 std::vector<int> io::VTKWriter::GetSplineDimensions(const std::vector<std::any> &splines) const {
-  std::vector<int> dimensions;
-  for (const auto &spline : splines) {
-    dimensions.emplace_back(util::AnyCasts::GetSplineDimension(spline));
+  std::vector<int> dimensions(splines.size());
+  for (size_t i = 0; i < splines.size(); ++i) {
+    dimensions[i] = util::AnyCasts::GetSplineDimension(splines[i]);
   }
   return dimensions;
 }
