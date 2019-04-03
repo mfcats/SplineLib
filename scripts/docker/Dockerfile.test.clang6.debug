@@ -5,7 +5,7 @@ ADD . /code
 WORKDIR /code
 
 RUN spack repo add /code/scripts/spack-repo
-RUN spack setup -v splinelib@github build_type=Debug %clang@6^armadillo%gcc@7
+RUN spack setup -v splinelib@github build_type=Debug %clang@6
 RUN mkdir /code/build-clang6-debug
 WORKDIR /code/build-clang6-debug
 RUN ../spconfig.py ..
