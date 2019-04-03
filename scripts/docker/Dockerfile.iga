@@ -12,7 +12,7 @@ RUN spack repo add /code/scripts/spack-repo
 RUN spack setup -v splinelib@github build_type=Release %gcc@8
 RUN mkdir /code/build-acceptance
 WORKDIR /code/build-acceptance
-RUN ./../spconfiy.py ..
+RUN ./../spconfig.py ..
 RUN make install
 
 WORKDIR /code/example/iga
