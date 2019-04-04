@@ -80,14 +80,14 @@ jobs:
             #      name: Memory
             #      install: docker build -t splinelibtests:valgrind -f scripts/docker/Dockerfile.test.gcc8.valgrind .
             #      script: docker run -te "TERM=xterm-256color" --name valgrind splinelibtests:valgrind
-
-            #- stage: Install
-            #  name: Ex1
-            #  install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
-            #  script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
+	    #
+            #	 - stage: Install
+            #      name: Ex1
+            #  	   install: docker build -t splinelibtests:install -f scripts/docker/Dockerfile.install .
+            #  	   script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
 
     - stage: Install
       name: IGA
-      install: docker build -t iga -f scripts/docker/Dockerfile.iga .
-      script: docker run -te "TERM=xterm-256color" --name iga
+      install: docker build -t iga:latest -f scripts/docker/Dockerfile.iga .
+      script: docker run -te "TERM=xterm-256color" --name iga iga:latest
 
