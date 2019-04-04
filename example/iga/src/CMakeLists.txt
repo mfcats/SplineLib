@@ -15,6 +15,8 @@
 
 add_subdirectory(itg)
 
+list(APPEND CMAKE_PREFIX_PATH /usr/local/opt/spack/linux-ubuntu18.04-x86_64/gcc-8/splinelib-github-t7by6dejarqmydvm2xo5zgcqtvkpz3dz)
+
 find_package(Armadillo REQUIRED)
 find_package(SplineLib REQUIRED)
 
@@ -46,3 +48,4 @@ install(FILES
         poisson_problem.h
         element_integration_point.h
         DESTINATION "${include_install_dir}")
+

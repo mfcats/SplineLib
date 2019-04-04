@@ -59,7 +59,7 @@ else()
 endif()
 
 add_subdirectory(src)
-# add_subdirectory(test)
+add_subdirectory(test)
 
 # Package configuration
 write_basic_package_version_file(

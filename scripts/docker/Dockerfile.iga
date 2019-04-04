@@ -8,25 +8,27 @@ WORKDIR /code
 SHELL ["bash", "-c"]
 ENV BASH_ENV /etc/profile.d/spack.sh
 
-RUN spack repo add /code/scripts/spack-repo
-RUN spack install splinelib@github build_type=Release %gcc@8
-#RUN mkdir /code/build-acceptance
-#WORKDIR /code/build-acceptance
-#RUN ./../spconfig.py ..
-#RUN make install
-
-WORKDIR /code/example/iga
-RUN spack repo add /code/example/iga/scripts/spack-repo
-RUN spack setup -v csiga@github %gcc@8^armadillo%gcc@7
-RUN mkdir /code/example/iga/build
-WORKDIR /code/example/iga/build
-RUN ./../spconfig.py ..
+# Install SplineLib
+RUN spack setup splinelib@github build_type=Release %gcc@8 arch=linux-ubuntu18.04-x86_64
+RUN mkdir /code/build
+WORKDIR /code/build
+RUN ./../spconfig.py
 RUN make install
 
-RUN mkdir /code/example/build
-WORKDIR /code/example/build
+# Install CSiga
+RUN mkdir /code/example/iga/build
+WORKDIR /code/example/iga/build
+# RUN spack load armadillo
+# RUN cmake ..
+# RUN make install
 
-RUN spack load --dependencies csiga@github %gcc@8^armadillo%gcc@7 && cmake ../
-RUN make
+# Build tests
+# RUN mkdir /code/example/build
+# WORKDIR /code/example/build
+# RUN cmake ..
+# RUN make
 
-CMD spack load --dependencies csiga@github %gcc@8^armadillo%gcc@7 && ./iga
+# Run tests
+# CMD ./iga
+
+CMD spack load armadillo && cmake .. && make && ./test/CSigaTests
