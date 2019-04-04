@@ -12,7 +12,7 @@ ENV BASH_ENV /etc/profile.d/spack.sh
 RUN spack setup splinelib@github build_type=Release %gcc@8 arch=linux-ubuntu18.04-x86_64
 RUN mkdir /code/build
 WORKDIR /code/build
-RUN ./../spconfig.py
+RUN ./../spconfig.py ..
 RUN make install
 
 # Install CSiga
