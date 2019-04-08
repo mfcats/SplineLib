@@ -6,9 +6,9 @@ services:
 - docker
 
 stages:
-- UnitTests
-- Lint
-- AcceptanceTests
+#- UnitTests
+#- Lint
+#- AcceptanceTests
 - Install
 
 jobs:
