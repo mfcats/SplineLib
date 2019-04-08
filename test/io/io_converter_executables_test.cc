@@ -397,11 +397,11 @@ TEST_F(Xml2iritExecutable, PrintsHelp) {  // NOLINT
 }
 
 TEST_F(Xml2iritExecutable, WritesLog) {  // NOLINT
-  CreateLogFile(path_to_xml_file, "out.itd");
+  CreateLogFile(path_to_xml_file, "out.itd", "3");
   std::system((GetPathToInstallDir() + "xml2irit log.txt").c_str());  // NOLINT
   std::string log = GetFileContent("log.txt");
   ASSERT_THAT(log.find("log:\n"), Ne(std::string::npos));
-  ASSERT_THAT(log.find(std::string("The splines at positions 0, 1 in file ") + path_to_xml_file
+  ASSERT_THAT(log.find(std::string("No splines in file ") + path_to_xml_file
                            + " have been written to out.itd"), Ne(std::string::npos));
   remove("log.txt");
   remove("out.itd");
