@@ -411,5 +411,5 @@ TEST_F(A3DNURBSForKnotRemoval, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetKnot(4).get(), DoubleEq(1));
   ASSERT_THAT(nurbs_3d_after_->GetNumberOfControlPoints(), nurbs_3d_before_->GetNumberOfControlPoints() - 12);
   ASSERT_THAT(nurbs_3d_before_->AreGeometricallyEqual(*nurbs_3d_after_, 0.1), false);
-  ASSERT_THAT(nurbs_3d_before_->AreGeometricallyEqual(*nurbs_3d_after_, 0.2), true);
+  ASSERT_THAT(nurbs_3d_before_->AreGeometricallyEqual(*nurbs_3d_after_, 0.22), true);
 }
