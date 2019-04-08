@@ -25,9 +25,9 @@ namespace util {
 template<typename T>
 class VectorUtils {
  public:
-  static T ComputeTwoNorm(std::vector<T> vectorA) {
+  static double ComputeTwoNorm(std::vector<T> vectorA) {
     std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(), vectorA.begin(), std::multiplies<T>());
-    T sum = 0;
+    double sum = 0;
     for (T i : vectorA) {
       sum += i;
     }
@@ -39,13 +39,17 @@ class VectorUtils {
     return vectorB;
   }
 
-  static T ComputeDistance(std::vector<T> vectorA, std::vector<T> vectorB) {
+  static double ComputeDistance(std::vector<T> vectorA, std::vector<T> vectorB) {
     return util::VectorUtils<T>::ComputeTwoNorm(util::VectorUtils<T>::ComputeDifference(vectorA, vectorB));
   }
 
   static T ComputeScalarProduct(std::vector<T> vectorA, std::vector<T> vectorB) {
     std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::multiplies<T>());
-    return std::accumulate(vectorB.begin(), vectorB.end(), 0);
+    T sum = 0;
+    for (T i : vectorB) {
+      sum += i;
+    }
+    return sum;
   }
 
   static std::vector<T> ScaleVector(std::vector<T> vectorA, T factor) {
@@ -59,6 +63,18 @@ class VectorUtils {
     r[1] = a[2] * b[0] - a[0] * b[2];
     r[2] = a[0] * b[1] - a[1] * b[0];
     return r;
+  }
+
+  static std::vector<T> FilterVector(const std::vector<T> &input, const std::vector<int> &positions) {
+    std::vector<T> output;
+    for (const auto &pos : positions) {
+      if (pos < static_cast<int>(input.size())) {
+        output.emplace_back(input[pos]);
+      } else {
+        throw std::runtime_error("The vector index is too high to be filtered from the input vector.");
+      }
+    }
+    return output;
   }
 };
 }  // namespace util

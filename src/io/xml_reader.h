@@ -37,7 +37,7 @@ class XMLReader {
     pugi::xml_document xml_document;
     pugi::xml_parse_result result = xml_document.load_file(filename);
     if (!result) {
-      throw std::runtime_error("File couldn't be loaded.");
+      throw std::runtime_error("Input file for XML reader couldn't be parsed.");
     }
     pugi::xml_node next_spline = xml_document.child("SplineList").first_child();
     while (!next_spline.empty()) {

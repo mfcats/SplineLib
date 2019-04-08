@@ -52,6 +52,11 @@ class NURBS : public Spline<DIM> {
 
   virtual ~NURBS() = default;
 
+  bool AreEqual(const NURBS<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+    return this->parameter_space_->AreEqual(*rhs.parameter_space_.get(), tolerance)
+        && physical_space_->AreEqual(*rhs.physical_space_.get(), tolerance);
+  }
+
   int GetNumberOfControlPoints() const override {
     return physical_space_->GetNumberOfControlPoints();
   }
@@ -117,8 +122,8 @@ class NURBS : public Spline<DIM> {
     }
     SetNewControlPoints(temp, last, i - off, off, dimension);
     SetNewWeights(temp_w, last, i - off, off, dimension);
-    physical_space_->RemoveControlPoints(GetNumberOfControlPoints() / GetPointsPerDirection()[dimension]);
     physical_space_->RemoveWeights(GetNumberOfControlPoints() / GetPointsPerDirection()[dimension]);
+    physical_space_->RemoveControlPoints(GetNumberOfControlPoints() / GetPointsPerDirection()[dimension]);
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
   }

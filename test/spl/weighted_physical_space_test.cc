@@ -178,6 +178,8 @@ class A1DWeightedPhysicalSpace_a : public Test {
   std::vector<double> weights_;
 };
 
-TEST_F(A1DWeightedPhysicalSpace_a, blala) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{0}).GetValue(2), DoubleEq(1));
+TEST_F(A1DWeightedPhysicalSpace_a, ReturnsHomogeneousControlPoint) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{1}).GetValue(0), DoubleEq(4.0));
+  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{1}).GetValue(1), DoubleEq(4.0));
+  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(std::array<int, 1>{1}).GetValue(2), DoubleEq(4.0));
 }

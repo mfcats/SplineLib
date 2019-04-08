@@ -87,6 +87,11 @@ jobs:
       script: docker run -te "TERM=xterm-256color" --name install splinelibtests:install
 
     - stage: Install
+      name: IOConversion
+      install: docker build -t splinelibtests:convert -f scripts/docker/Dockerfile.convert .
+      script: docker run -te "TERM=xterm-256color" --name convert splinelibtests:convert
+      
+    - stage: Install
       name: IGA
       install: docker build -t splinelibtests:iga -f scripts/docker/Dockerfile.iga .
       script: docker run -te "TERM=xterm-256color" --name iga splinelibtests:iga

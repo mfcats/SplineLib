@@ -51,6 +51,11 @@ class BSpline : public Spline<DIM> {
 
   virtual ~BSpline() = default;
 
+  bool AreEqual(const BSpline<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+    return this->parameter_space_->AreEqual(*rhs.parameter_space_.get(), tolerance)
+        && physical_space_->AreEqual(*rhs.physical_space_.get(), tolerance);
+  }
+
   int GetNumberOfControlPoints() const override {
     return physical_space_->GetNumberOfControlPoints();
   }

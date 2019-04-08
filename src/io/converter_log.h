@@ -11,29 +11,38 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.
 */
+#ifndef SRC_IO_CONVERTER_LOG_H_
+#define SRC_IO_CONVERTER_LOG_H_
 
-#ifndef SRC_IO_IO_CONVERTER_H_
-#define SRC_IO_IO_CONVERTER_H_
-
+#include <string>
 #include <vector>
 
-#include "reader.h"
-#include "writer.h"
-
 namespace io {
-class IOConverter {
+class ConverterLog {
  public:
-  IOConverter() = default;
+  ConverterLog();
+  explicit ConverterLog(const char *log_file);
 
-  void ConvertFile(const char *input_filename,
-                   const char *output_filename,
-                   const std::vector<std::vector<int>> &scattering = {}) {
-    io::Reader reader;
-    std::vector<std::any> splines = reader.ReadFile(input_filename);
-    io::Writer writer;
-    writer.WriteFile(splines, output_filename, scattering);
-  }
+  const char *GetInput() const;
+  const char *GetOutput() const;
+  std::vector<int> GetPositions(std::vector<int> possible_positions);
+  std::vector<std::vector<int>> GetScattering();
+
+  void WriteLog() const;
+  void PrintHelp() const;
+
+ private:
+  std::string GetTime() const;
+  bool OneSpline() const;
+
+  const char *log_file_;
+  std::string input_;
+  std::string output_;
+  std::vector<int> positions_;
+  std::vector<int> written_;
+  std::vector<int> not_written_;
+  std::vector<std::vector<int>> scattering_;
 };
 }  // namespace io
 
-#endif  // SRC_IO_IO_CONVERTER_H_
+#endif  // SRC_IO_CONVERTER_LOG_H_

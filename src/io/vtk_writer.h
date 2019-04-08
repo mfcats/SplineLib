@@ -36,6 +36,7 @@ class VTKWriter {
     if (newFile.is_open()) {
       newFile << "# vtk DataFile Version 3.0\nSpline from Splinelib\nASCII\n\nDATASET UNSTRUCTURED_GRID\n";
       std::vector<int> dimensions = GetSplineDimensions(splines);
+      ThrowIfScatteringHasWrongSizes(scattering, dimensions);
       std::vector<int> cells = GetNumberOfAllCells(dimensions, scattering);
       std::vector<int> points = GetNumberOfAllPoints(dimensions, scattering);
       newFile << "POINTS " << std::accumulate(points.begin(), points.end(), 0) << " double\n";
@@ -62,6 +63,17 @@ class VTKWriter {
       dimensions.push_back(util::AnyCasts::GetSplineDimension(spline));
     }
     return dimensions;
+  }
+
+  void ThrowIfScatteringHasWrongSizes(std::vector<std::vector<int>> scattering, std::vector<int> dimensions) const {
+    if (scattering.size() != dimensions.size()) {
+      throw std::runtime_error("There have to be as many scattering entries as splines to be written to vtk.");
+    }
+    for (size_t i = 0; i < dimensions.size(); ++i) {
+      if (static_cast<int>(scattering[i].size()) != dimensions[i]) {
+        throw std::runtime_error("There have to be a scattering entry for each spline dimension.");
+      }
+    }
   }
 
   std::vector<int> GetNumberOfAllPoints(const std::vector<int> &dimensions,
@@ -136,11 +148,15 @@ class VTKWriter {
 
   void Write2DCells(std::ofstream &file, std::array<int, 2> scattering, int offset) const {
     util::MultiIndexHandler<2> point_handler({scattering[0] + 1, scattering[1] + 1});
-    for (int j = 0; j < scattering[0]; ++j) {
-      for (int i = 0; i < scattering[1]; ++i) {
-        file << "4 " << (scattering[0] + 1) * j + i + offset << " " << (scattering[0] + 1) * j + i + 1 + offset << " "
-             << (scattering[0] + 1) * (j + 1) + i + 1 + offset << " " << (scattering[0] + 1) * (j + 1) + i + offset
-             << "\n";
+    for (int j = 0; j < scattering[1]; ++j) {
+      for (int i = 0; i <= scattering[0]; ++i, ++point_handler) {
+        if (point_handler.GetIndices()[0] != scattering[0] && point_handler.GetIndices()[1] != scattering[1]) {
+          file << "4 " << point_handler.Get1DIndex() + offset << " " << (point_handler + 1).Get1DIndex() + offset << " "
+               << (point_handler + scattering[0] + 1).Get1DIndex() + offset << " "
+               << (point_handler - 1).Get1DIndex() + offset
+               << "\n";
+          point_handler - (scattering[0] + 1);
+        }
       }
     }
   }

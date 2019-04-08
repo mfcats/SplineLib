@@ -38,6 +38,15 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     this->weights_ = physical_space.weights_;
   }
 
+  bool AreEqual(const WeightedPhysicalSpace<DIM> &rhs,
+                double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+    return std::equal(weights_.begin(), weights_.end(),
+                      rhs.weights_.begin(), rhs.weights_.end(),
+                      [&](double weight_a, double weight_b) {
+                        return util::NumericSettings<double>::AreEqual(weight_a, weight_b, tolerance);
+                      }) && PhysicalSpace<DIM>::AreEqual(rhs, tolerance);
+  }
+
   virtual baf::ControlPoint GetHomogenousControlPoint(std::array<int, DIM> indices) const {
     std::vector<double> coordinates;
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);
@@ -91,7 +100,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
   }
 
   void RemoveWeights(int number) {
-    weights_.erase(weights_.end() - number - 1, weights_.end() - 1);
+    weights_.erase(weights_.end() - number, weights_.end());
   }
 
   std::vector<double> GetWeights() const override {

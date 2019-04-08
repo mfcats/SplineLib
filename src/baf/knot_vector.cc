@@ -43,7 +43,7 @@ baf::KnotVector::KnotVector(std::vector<ParamCoord> coords, Degree degree, int n
     knots_.emplace_back(ParamCoord{curParamCoord});
   }
   for (int i = 0; i <= degree.get(); ++i) {
-    knots_.emplace_back(coords[coords.size()-1]);
+    knots_.emplace_back(coords[coords.size() - 1]);
   }
 }
 
@@ -61,12 +61,17 @@ baf::KnotVector &baf::KnotVector::operator=(KnotVector &&other) noexcept {
 }
 
 bool baf::KnotVector::operator==(const KnotVector &rhs) const {
-  return std::equal(this->begin(),
-                    this->end(),
-                    rhs.begin(),
-                    rhs.end(),
+  return std::equal(this->begin(), this->end(), rhs.begin(), rhs.end(),
                     [&](ParamCoord knot_a, ParamCoord knot_b) {
                       return util::NumericSettings<double>::AreEqual(knot_a.get(), knot_b.get());
+                    });
+}
+
+bool baf::KnotVector::AreEqual(const KnotVector &rhs,
+                               double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+  return std::equal(this->begin(), this->end(), rhs.begin(), rhs.end(),
+                    [&](ParamCoord knot_a, ParamCoord knot_b) {
+                      return util::NumericSettings<double>::AreEqual(knot_a.get(), knot_b.get(), tolerance);
                     });
 }
 

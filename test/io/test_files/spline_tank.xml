@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SplineList
         SplineType="1"
-        NumberOfSplines="3">
+        NumberOfSplines="4">
     <SplineEntry
             splDim="  2"
             spaceDim="  3"

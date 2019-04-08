@@ -24,6 +24,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "basis_function.h"
 #include "basis_function_factory.h"
 #include "knot_vector.h"
+#include "numeric_settings.h"
 
 namespace spl {
 template<int DIM>
@@ -80,6 +81,17 @@ class ParameterSpace {
       ++first_non_zero;
     }
     return basis_function_values;
+  }
+
+  bool AreEqual(const ParameterSpace<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+    return std::equal(degree_.begin(), degree_.end(), rhs.degree_.begin(), rhs.degree_.end(),
+                      [&](Degree degree_a, Degree degree_b) {
+                        return util::NumericSettings<double>::AreEqual(degree_a.get(), degree_b.get());
+                      })
+        && std::equal(knot_vector_.begin(), knot_vector_.end(), rhs.knot_vector_.begin(), rhs.knot_vector_.end(),
+                      [&](std::shared_ptr<baf::KnotVector> kv_a, std::shared_ptr<baf::KnotVector> kv_b) {
+                        return kv_a->AreEqual(*kv_b.get(), tolerance);
+                      });
   }
 
   std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator GetFirstNonZeroKnot(int direction,
