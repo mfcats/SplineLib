@@ -21,7 +21,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::Test;
 using testing::DoubleEq;
-using testing::DoubleNear;
 
 class BSpline1DFig5_26 : public Test {  // NOLINT
  public:
