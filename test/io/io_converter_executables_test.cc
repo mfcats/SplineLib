@@ -136,44 +136,6 @@ TEST_F(Iges2iritExecutable, ConvertsFileCorrectly) {  // NOLINT
   remove("out.itd");
 }
 
-TEST_F(Iges2iritExecutable, ThrowsForTooManyInputArguments) {  // NOLINT
-  try {
-    std::system((GetPathToInstallDir() + "iges2irit").c_str());  // NOLINT
-  } catch (std::runtime_error &e) {
-    ASSERT_THAT(e.what(), "Exactly one name of the log file is required as command line argument.");
-  }
-}
-
-TEST_F(Iges2iritExecutable, ThrowsForWrongIGESFile) {  // NOLINT
-  std::stringstream buffer;
-  std::streambuf *old = std::cerr.rdbuf(buffer.rdbuf());
-
-  std::cerr << "Bla" << std::endl;
-
-  std::string text = buffer.str();
-  ASSERT_THAT(text, "Bla\n");
-  try {
-    std::stringstream buffer;
-    std::streambuf *old = std::cout.rdbuf(buffer.rdbuf());
-    CreateLogFile("", "out.iges");
-    std::string output = GetCommandOutput(GetPathToInstallDir() + "iges2irit log.txt");
-    std::system((GetPathToInstallDir() + "iges2irit log.txt").c_str());  // NOLINT
-    std::clog << "Bla" << std::endl;
-    std::string text = buffer.str();
-
-    ASSERT_THAT(output,
-                "terminate called after throwing an instance of 'std::runtime_error'\n  what():  IGES file could not be opened.");
-    ASSERT_THAT(text,
-                "terminate called after throwing an instance of 'std::runtime_error'\n  what():  IGES file could not be opened.");
-
-    std::system((GetPathToInstallDir() + "iges2irit log.txt").c_str());  // NOLINT
-  } catch (std::runtime_error &e) {
-    std::cout << "1" << std::endl;
-    ASSERT_THAT(e.what(), "IGES file could not be opened.");
-  }
-  remove("log.txt");
-}
-
 class Iges2vtkExecutable : public Test {
  public:
   Iges2vtkExecutable() = default;
@@ -435,11 +397,11 @@ TEST_F(Xml2iritExecutable, PrintsHelp) {  // NOLINT
 }
 
 TEST_F(Xml2iritExecutable, WritesLog) {  // NOLINT
-  CreateLogFile(path_to_xml_file, "out.itd");
+  CreateLogFile(path_to_xml_file, "out.itd", "3");
   std::system((GetPathToInstallDir() + "xml2irit log.txt").c_str());  // NOLINT
   std::string log = GetFileContent("log.txt");
   ASSERT_THAT(log.find("log:\n"), Ne(std::string::npos));
-  ASSERT_THAT(log.find(std::string("The splines at positions 0, 1 in file ") + path_to_xml_file
+  ASSERT_THAT(log.find(std::string("No splines in file ") + path_to_xml_file
                            + " have been written to out.itd"), Ne(std::string::npos));
   remove("log.txt");
   remove("out.itd");
