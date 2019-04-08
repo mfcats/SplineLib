@@ -18,7 +18,5 @@ RUN make install
 # Install CSiga
 RUN mkdir /code/example/iga/build
 WORKDIR /code/example/iga/build
-RUN spack load armadillo
-RUN cmake ..
 
-CMD spack load armadillo && spack load googletest && make && ./test/CSigaTests
+CMD spack load armadillo && spack load googletest && cmake .. && make && ./test/CSigaTests
