@@ -19,4 +19,4 @@ RUN make install
 RUN mkdir /code/example/iga/build
 WORKDIR /code/example/iga/build
 
-CMD spack load armadillo && spack load googletest && cmake .. && make && ./test/CSigaTests
+CMD spack load armadillo && spack load googletest@1.8.0 +gmock+pthreads~shared %gcc@8.2.0 && cmake .. && make && ./test/CSigaTests
