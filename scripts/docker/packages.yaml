@@ -1,0 +1,4 @@
+packages:
+  cmake:
+    paths:
+      cmake@3.10.2 arch=linux-ubuntu18.04-x86_64: /usr/bin/cmake

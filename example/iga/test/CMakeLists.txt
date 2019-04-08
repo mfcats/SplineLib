@@ -13,19 +13,25 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-cmake_minimum_required(VERSION 3.6)
+set(TEST_SOURCES
+        element_test.cc
+        solution_vtk_writer_test.cc
+        element_integration_point_test.cc
+        connectivity_handler_test.cc
+        mapping_handler_test.cc
+        basis_function_handler_test.cc
+        element_generator_test.cc
+        solution_vtk_writer_examples.cc
+        integration_point_test.cc
+        element_integral_calculator_test.cc
+        linear_equation_assembler_test.cc
+        integration_rule_test.cc
+        bdf_handler_test.cc)
 
-project(SplineLibExamples LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 17)
+find_package(GMock REQUIRED)
+#include_directories(${GTEST_INCLUDE_DIRS})
 
-set(SOURCES ex1.cc)
-set(OPTIMIZER testcase_optimizer.cc)
+add_executable(CSigaTests ${TEST_SOURCES})
+target_link_libraries(CSigaTests CSiga GMock::Main)
 
-find_package(SplineLib REQUIRED)
-
-add_executable(ex1 ${SOURCES})
-add_executable(TestcaseOptimizer ${OPTIMIZER})
-
-target_link_libraries(ex1 SplineLib::splinelibspl)
-target_link_libraries(TestcaseOptimizer SplineLib::splinelibspl SplineLib::splinelibutil SplineLib::splinelibio)
-
+target_compile_definitions(CSigaTests PRIVATE GTEST_HAS_PTHREAD=0)
