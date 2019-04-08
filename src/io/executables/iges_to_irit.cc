@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
     io::IGESReader iges_reader;
     splines = iges_reader.ReadFile(log.GetInput());
   } catch (std::runtime_error &error) {
+    std::cerr << error.what() << std::endl;
     throw error;
   } catch (...) {
     throw std::runtime_error(R"(The input file isn't of correct ".iges" format.)");

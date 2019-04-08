@@ -9,7 +9,7 @@ SHELL ["bash", "-c"]
 ENV BASH_ENV /etc/profile.d/spack.sh
 
 RUN spack repo add /code/scripts/spack-repo
-RUN spack setup -v splinelib@github build_type=Release %gcc@8^armadillo%gcc@7
+RUN spack setup -v splinelib@github build_type=Release %gcc@8
 RUN mkdir /code/build-convert
 WORKDIR /code/build-convert
 RUN ./../spconfig.py ..
@@ -20,4 +20,4 @@ RUN make install
 RUN mkdir /code/example/build
 WORKDIR /code/example/build
 
-CMD spack load splinelib@github build_type=Release %gcc@8 && ./../../build-acceptance/src/io/xml2irit --help && ./../../build-acceptance/src/io/xml2irit ../log.txt
+CMD spack load splinelib@github build_type=Release %gcc@8 && ./../../build-convert/src/io/xml2irit --help && ./../../build-convert/src/io/xml2irit ../log.txt
