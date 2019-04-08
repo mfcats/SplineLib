@@ -18,21 +18,14 @@ cmake_minimum_required(VERSION 3.6)
 project(SplineLibExamples LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
-list(APPEND CMAKE_PREFIX_PATH /usr/local/opt/spack/linux-ubuntu18.04-x86_64/gcc-8/splinelib-github-t7by6dejarqmydvm2xo5zgcqtvkpz3dz)
-list(APPEND CMAKE_PREFIX_PATH /usr/local/lib/cmake/CSiga)
-
 set(SOURCES ex1.cc)
 set(OPTIMIZER testcase_optimizer.cc)
-set(IGA iga.cc)
 
 find_package(SplineLib REQUIRED)
-find_package(CSiga REQUIRED)
 
 add_executable(ex1 ${SOURCES})
 add_executable(TestcaseOptimizer ${OPTIMIZER})
-add_executable(iga ${IGA})
 
 target_link_libraries(ex1 SplineLib::splinelibspl)
 target_link_libraries(TestcaseOptimizer SplineLib::splinelibspl SplineLib::splinelibutil SplineLib::splinelibio)
-target_link_libraries(iga INTERFACE CSiga PRIVATE SplineLib::splinelibspl)
 
