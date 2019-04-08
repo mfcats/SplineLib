@@ -136,6 +136,44 @@ TEST_F(Iges2iritExecutable, ConvertsFileCorrectly) {  // NOLINT
   remove("out.itd");
 }
 
+TEST_F(Iges2iritExecutable, ThrowsForTooManyInputArguments) {  // NOLINT
+  try {
+    std::system((GetPathToInstallDir() + "iges2irit").c_str());  // NOLINT
+  } catch (std::runtime_error &e) {
+    ASSERT_THAT(e.what(), "Exactly one name of the log file is required as command line argument.");
+  }
+}
+
+TEST_F(Iges2iritExecutable, ThrowsForWrongIGESFile) {  // NOLINT
+  std::stringstream buffer;
+  std::streambuf *old = std::cerr.rdbuf(buffer.rdbuf());
+
+  std::cerr << "Bla" << std::endl;
+
+  std::string text = buffer.str();
+  ASSERT_THAT(text, "Bla\n");
+  try {
+    std::stringstream buffer;
+    std::streambuf *old = std::cout.rdbuf(buffer.rdbuf());
+    CreateLogFile("", "out.iges");
+    std::string output = GetCommandOutput(GetPathToInstallDir() + "iges2irit log.txt");
+    std::system((GetPathToInstallDir() + "iges2irit log.txt").c_str());  // NOLINT
+    std::clog << "Bla" << std::endl;
+    std::string text = buffer.str();
+
+    ASSERT_THAT(output,
+                "terminate called after throwing an instance of 'std::runtime_error'\n  what():  IGES file could not be opened.");
+    ASSERT_THAT(text,
+                "terminate called after throwing an instance of 'std::runtime_error'\n  what():  IGES file could not be opened.");
+
+    std::system((GetPathToInstallDir() + "iges2irit log.txt").c_str());  // NOLINT
+  } catch (std::runtime_error &e) {
+    std::cout << "1" << std::endl;
+    ASSERT_THAT(e.what(), "IGES file could not be opened.");
+  }
+  remove("log.txt");
+}
+
 class Iges2vtkExecutable : public Test {
  public:
   Iges2vtkExecutable() = default;
