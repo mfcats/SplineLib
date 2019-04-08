@@ -100,6 +100,8 @@ parameter_space) {
     std::vector<int> dimensions;
     for (int i = 0; i < DIM; ++i) {
       points[i] = number + 1;
+    }
+    for (int i = 0; i < GetDimension(); ++i) {
       dimensions.push_back(i);
     }
     util::MultiIndexHandler<DIM> point_handler(points);
