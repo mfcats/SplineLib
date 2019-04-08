@@ -1,0 +1,22 @@
+FROM christophsusen/armadillo
+
+# Add current directory as working directory to docker
+ADD . /code
+WORKDIR /code
+
+# Set-up shell
+SHELL ["bash", "-c"]
+ENV BASH_ENV /etc/profile.d/spack.sh
+
+# Install SplineLib
+RUN spack setup splinelib@github build_type=Release %gcc@8 arch=linux-ubuntu18.04-x86_64
+RUN mkdir /code/build
+WORKDIR /code/build
+RUN ./../spconfig.py ..
+RUN make install
+
+# Install CSiga
+RUN mkdir /code/example/iga/build
+WORKDIR /code/example/iga/build
+
+CMD spack load armadillo && spack load googletest@1.8.0 +gmock+pthreads~shared %gcc@8.2.0 && cmake .. && make && ./test/CSigaTests
