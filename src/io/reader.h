@@ -22,6 +22,7 @@ namespace io {
 class Reader {
  public:
   Reader() = default;
+  virtual ~Reader() = default;
 
   virtual std::vector<std::any> ReadFile(const char *filename) = 0;
 };

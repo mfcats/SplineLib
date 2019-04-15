@@ -31,10 +31,10 @@ class VTKWriter : public Writer {
   void WriteFile(const std::vector<std::any> &splines,
                  const std::string &filename,
                  const std::vector<std::vector<int>> &scattering) const;
-  void WriteFile(const std::vector<std::any> &splines, const char *filename) const override {}
-
 
  private:
+  void WriteFile(const std::vector<std::any> &/*splines*/, const char */*filename*/) const override {}
+
   std::vector<int> GetSplineDimensions(const std::vector<std::any> &splines) const;
 
   void ThrowIfScatteringHasWrongSizes(std::vector<std::vector<int>> scattering, std::vector<int> dimensions) const;
