@@ -17,6 +17,7 @@ set(TEST_SOURCES
         ${TEST_SOURCES}
         ${CMAKE_CURRENT_SOURCE_DIR}/b_spline_2d_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/b_spline_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/degree_elevation_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/knot_insertion_and_removal_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/knot_insertion_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/knot_removal_test.cc
