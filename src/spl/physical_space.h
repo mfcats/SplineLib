@@ -66,6 +66,19 @@ class PhysicalSpace {
                       });
   }
 
+  bool AreEqual(const PhysicalSpace<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+    return std::equal(control_points_.begin(), control_points_.end(),
+                      rhs.control_points_.begin(), rhs.control_points_.end(),
+                      [&](double cp_a, double cp_b) {
+                        return util::NumericSettings<double>::AreEqual(cp_a, cp_b, tolerance);
+                      })
+        && std::equal(number_of_points_.begin(), number_of_points_.end(),
+                      rhs.number_of_points_.begin(), rhs.number_of_points_.end(),
+                      [&](int number_a, int number_b) {
+                        return util::NumericSettings<double>::AreEqual(number_a, number_b);
+                      });
+  }
+
   virtual baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const {
     std::vector<double> coordinates;
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);

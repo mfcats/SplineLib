@@ -13,25 +13,20 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-add_subdirectory(executables)
+add_subdirectory(itg)
 
-set(SOURCES
-        iges_reader.cc
-        iges_writer.cc
-        io_converter.cc
-        irit_reader.cc
-        irit_writer.cc
-        vtk_writer.cc
-        xml_reader.cc
-        xml_writer.cc)
+list(APPEND CMAKE_PREFIX_PATH /usr/local/opt/spack/linux-ubuntu18.04-x86_64/gcc-8/splinelib-github-t7by6dejarqmydvm2xo5zgcqtvkpz3dz)
 
-add_library(splinelibio SHARED ${SOURCES})
+find_package(Armadillo REQUIRED)
+find_package(SplineLib REQUIRED)
 
-target_include_directories(splinelibio PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_link_libraries(splinelibio splinelibspl pugixmllib)
+add_library(CSiga INTERFACE)
+target_include_directories(CSiga INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> ${ARMADILLO_INCLUDE_DIRS})
+target_link_libraries(CSiga INTERFACE CSigaitg SplineLib::splinelibspl ${ARMADILLO_LIBRARIES})
 
 install(
-        TARGETS splinelibio
+        TARGETS CSiga
         EXPORT "${targets_export_name}"
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
@@ -40,20 +35,17 @@ install(
 )
 
 install(FILES
-        iges_reader.h
-        iges_writer.h
-        io_converter.h
-        irit_reader.h
-        irit_reader_utils.h
-        irit_writer.h
-        irit_writer_utils.h
-        reader.h
-        vtk_writer.h
-        vtk_writer_utils.h
-        writer.h
-        xml_reader.h
-        xml_reader_utils.h
-        xml_writer.h
-        xml_writer_utils.h
-        writer.h
+        solution_spline.h
+        bdf_handler.h
+        element_integral_calculator.h
+        element_generator.h
+        element.h
+        linear_equation_assembler.h
+        basis_function_handler.h
+        connectivity_handler.h
+        solution_vtk_writer.h
+        mapping_handler.h
+        poisson_problem.h
+        element_integration_point.h
         DESTINATION "${include_install_dir}")
+
