@@ -14,7 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #ifndef SRC_SPL_SPLINE_H_
 #define SRC_SPL_SPLINE_H_
-
+#include <iostream>
 #include <algorithm>
 #include <array>
 #include <functional>
@@ -37,7 +37,8 @@ class Spline {
   Spline(KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree) {
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
   }
-  explicit Spline(std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
+  explicit Spline(std::shared_ptr<ParameterSpace < DIM>>
+parameter_space) {
     parameter_space_ = parameter_space;
   }
   Spline(const Spline<DIM> &spline) {
@@ -210,9 +211,9 @@ class Spline {
     for (double i = 0; i < GetDegree(dimension).get() + 2; ++i) {
       alpha.push_back(i / (GetDegree(dimension).get() + 1));
     }
-    // b : insert knot 0.3 twice
+    // b: insert knot 0.3 twice
     InsertKnot(ParamCoord{0.3}, 0, 2);
-    // degree elevate Bezier segment [0, 0.3]
+    // c: degree elevate Bezier segment [0, 0.3]
     std::array<double, 4 * 2> bezier_cp;
     std::array<double, 5 * 2> new_bezier_cp;
     std::vector<baf::ControlPoint> cps;
@@ -222,20 +223,21 @@ class Spline {
       }
     }
     std::vector<double> coord(GetPointDim());
-    for (int j = 0; j < GetPointDim(); ++j) {
-      new_bezier_cp[j] = bezier_cp[j];
-      coord.push_back(new_bezier_cp[j]);
-    }
-    cps.emplace_back(baf::ControlPoint(coord));
-    for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
+    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
       for (int j = 0; j < GetPointDim(); ++j) {
         double
             n = (1 - alpha[i]) * bezier_cp[i * GetPointDim() + j] + alpha[i] * bezier_cp[(i - 1) * GetPointDim() + j];
-        new_bezier_cp[(i + 1) * GetPointDim() + j] = n;
+        new_bezier_cp[i * GetPointDim() + j] = n;
         coord[j] = n;
       }
       cps.emplace_back(baf::ControlPoint(coord));
     }
+    for (int j = 0; j < GetPointDim(); ++j) {
+      new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j] =
+          bezier_cp[GetDegree(dimension).get() * GetPointDim() + j];
+      coord[j] = new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j];
+    }
+    cps.emplace_back(baf::ControlPoint(coord));
     GetPhysicalSpace()->AddControlPoints(1);
     for (int i = GetNumberOfControlPoints(); i > 0; --i) {
       GetPhysicalSpace()->SetControlPoint({i}, GetPhysicalSpace()->GetControlPoint({i - 1}));
@@ -243,6 +245,43 @@ class Spline {
     for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
       GetPhysicalSpace()->SetControlPoint({i}, cps[i]);
     }
+    GetPhysicalSpace()->IncrementNumberOfPoints(dimension);
+    // d: insert knot 0.6 twice
+    InsertKnot(ParamCoord{0.6}, 0, 2);
+    int offset = 4;
+    // e: degree elevate Bezier segment [0.3, 0.6]
+    cps.erase(cps.begin(), cps.end());
+    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
+      for (int j = 0; j < GetPointDim(); ++j) {
+        bezier_cp[i * GetPointDim() + j] = GetControlPoint({i + offset}, j);
+      }
+    }
+    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
+      for (int j = 0; j < GetPointDim(); ++j) {
+        double
+            n = (1 - alpha[i]) * bezier_cp[i * GetPointDim() + j] + alpha[i] * bezier_cp[(i - 1) * GetPointDim() + j];
+        new_bezier_cp[i * GetPointDim() + j] = n;
+        coord[j] = n;
+      }
+      cps.emplace_back(baf::ControlPoint(coord));
+    }
+    for (int j = 0; j < GetPointDim(); ++j) {
+      new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j] =
+          bezier_cp[GetDegree(dimension).get() * GetPointDim() + j];
+      coord[j] = new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j];
+    }
+    cps.emplace_back(baf::ControlPoint(coord));
+    GetPhysicalSpace()->AddControlPoints(1);
+    GetPhysicalSpace()->IncrementNumberOfPoints(dimension);
+    for (int i = GetNumberOfControlPoints(); i > offset; --i) {
+      GetPhysicalSpace()->SetControlPoint({i}, GetPhysicalSpace()->GetControlPoint({i - 1}));
+    }
+    for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
+      GetPhysicalSpace()->SetControlPoint({i + offset}, cps[i]);
+    }
+    GetPhysicalSpace()->IncrementNumberOfPoints(dimension);
+    // b: remove knot 0.3 twice
+    RemoveKnot(ParamCoord{0.3}, 0, 0.1, 2);
   }
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
@@ -277,7 +316,7 @@ class Spline {
     return total_length;
   }
 
-  std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
+  std::shared_ptr<ParameterSpace < DIM>> parameter_space_;
 };
 }  //  namespace spl
 
