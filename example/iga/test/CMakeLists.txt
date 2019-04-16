@@ -14,19 +14,19 @@
 #
 
 set(TEST_SOURCES
-        element_test.cc
-        solution_vtk_writer_test.cc
-        element_integration_point_test.cc
-        connectivity_handler_test.cc
-        mapping_handler_test.cc
         basis_function_handler_test.cc
+        bdf_handler_test.cc
+        connectivity_handler_test.cc
         element_generator_test.cc
-        solution_vtk_writer_examples.cc
-        integration_point_test.cc
         element_integral_calculator_test.cc
-        linear_equation_assembler_test.cc
+        element_integration_point_test.cc
+        element_test.cc
+        integration_point_test.cc
         integration_rule_test.cc
-        bdf_handler_test.cc)
+        linear_equation_assembler_test.cc
+        mapping_handler_test.cc
+        solution_vtk_writer_examples.cc
+        solution_vtk_writer_test.cc)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})

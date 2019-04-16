@@ -28,7 +28,7 @@ class SolutionSpline {
     std::vector<baf::ControlPoint> control_points;
     std::array<int, DIM> points_per_direction = spl->GetPointsPerDirection();
     util::MultiIndexHandler<DIM> point_handler(points_per_direction);
-    for (uint64_t i = 0, l = 0; i < spl->GetNumberOfControlPoints(); ++i, ++point_handler, ++l) {
+    for (uint64_t i = 0, l = 0; i < static_cast<uint64_t>(spl->GetNumberOfControlPoints()); ++i, ++point_handler, ++l) {
       std::vector<double> temp;
       for (int j = 0; j < spl->GetPointDim(); ++j) {
         temp.emplace_back(spl->GetControlPoint(point_handler.GetIndices(), j));
