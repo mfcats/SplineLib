@@ -89,17 +89,10 @@ void io::IOConverter::GetWriter(const std::vector<std::any> &splines, const std:
 }
 
 void io::IOConverter::WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions, int max_dim,
-                                const std::shared_ptr<io::Writer> &writer,
-                                const std::vector<std::vector<int>> &scattering) {
+                                const std::shared_ptr<io::Writer> &writer) {
   GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, max_dim));
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
-  if (output_format_ != vtk) {
-    writer->WriteFile(splines_with_max_dim, output_filename_);
-  } else {
-    std::dynamic_pointer_cast<io::VTKWriter>(writer)->WriteFile(splines_with_max_dim,
-                                                                output_filename_,
-                                                                GetScattering(scattering, positions, written_));
-  }
+  writer->WriteFile(splines_with_max_dim, output_filename_);
 }
 
 void io::IOConverter::GetPositions(const std::vector<int> &positions,
