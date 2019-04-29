@@ -100,3 +100,57 @@ TEST_F(BSpline1DFig5_35, Test) {  // NOLINT
   bspline_1d_after_->RemoveKnot(ParamCoord{0.3}, 0, 0.001, 2);
   PrintSpline(bspline_1d_after_);
 }
+
+class ALinearBSpline : public Test {  // NOLINT
+ public:
+  ALinearBSpline() {
+    std::array<Degree, 1> degree = {Degree{1}};
+    KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{1},
+                         ParamCoord{1}}))};
+    KnotVectors<1> knot_vector_after = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{1},
+                         ParamCoord{1}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0}))
+    };
+    bspline_1d_before_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
+    bspline_1d_after_ = std::make_shared<spl::BSpline<1>>(knot_vector_after, degree, control_points);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<1>> bspline_1d_before_;
+  std::shared_ptr<spl::BSpline<1>> bspline_1d_after_;
+};
+
+TEST_F(ALinearBSpline, ElevatesDegreeFrom1To2Correctly) {  // NOLINT
+  std::array<Degree, 1> degree = {Degree{2}};
+  KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(
+      baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.3}, ParamCoord{0.6},
+                       ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+  std::vector<baf::ControlPoint> control_points = {
+      baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 1.5})),
+      baf::ControlPoint(std::vector<double>({1.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({1.5, 2.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 2.5})),
+      baf::ControlPoint(std::vector<double>({2.0, 3.0}))
+  };
+  auto test = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
+
+  io::IRITWriter writer;
+  std::any before = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_);
+//  PrintSpline(bspline_1d_before_);
+  bspline_1d_after_->ElevateDegree(0);
+//  PrintSpline(bspline_1d_after_);
+  std::any after = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_after_);
+  writer.WriteFile({before, after}, "degree_elevation.itd");
+  ASSERT_THAT(bspline_1d_after_->AreEqual(*test), true);
+  ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*test), true);
+  ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*test), true);
+  ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true);
+}

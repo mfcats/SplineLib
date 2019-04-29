@@ -206,83 +206,125 @@ parameter_space) {
   }
 
   void ElevateDegree(int dimension) {
-    // compute Bezier coefficients
     std::vector<double> alpha;
-    for (double i = 0; i < GetDegree(dimension).get() + 2; ++i) {
-      alpha.push_back(i / (GetDegree(dimension).get() + 1));
+    for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
+      alpha.push_back(static_cast<double>(i) / (GetDegree(dimension).get() + 1));
     }
-    // b: insert knot 0.3 twice
-    InsertKnot(ParamCoord{0.3}, 0, 2);
-    // c: degree elevate Bezier segment [0, 0.3]
-    std::array<double, 4 * 2> bezier_cp;
-    std::array<double, 5 * 2> new_bezier_cp;
-    std::vector<baf::ControlPoint> cps;
-    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
-      for (int j = 0; j < GetPointDim(); ++j) {
-        bezier_cp[i * GetPointDim() + j] = GetControlPoint({i}, j);
+    for (int start = 2; start >= 0; --start) {
+      std::vector<double> bezier_cps(start * GetPointDim());
+      std::vector<baf::ControlPoint> cps;
+      for (int i = start; i < start + GetDegree(dimension).get() + 1; ++i) {
+        for (int j = 0; j < GetPointDim(); ++j) {
+          bezier_cps[(i - start) * GetPointDim() + j] = GetControlPoint({i}, j);
+        }
       }
-    }
-    std::vector<double> coord(GetPointDim());
-    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
+      std::vector<double> coord(static_cast<size_t>(GetPointDim()));
+      for (size_t i = start; i < start + GetDegree(dimension).get() + 1; ++i) {
+        for (int j = 0; j < GetPointDim(); ++j) {
+          coord[j] = (1 - alpha[i - start]) * bezier_cps[(i - start) * GetPointDim() + j]
+              + alpha[i - start] * bezier_cps[(i - 1 - start) * GetPointDim() + j];
+        }
+        cps.emplace_back(baf::ControlPoint(coord));
+      }
       for (int j = 0; j < GetPointDim(); ++j) {
-        double
-            n = (1 - alpha[i]) * bezier_cp[i * GetPointDim() + j] + alpha[i] * bezier_cp[(i - 1) * GetPointDim() + j];
-        new_bezier_cp[i * GetPointDim() + j] = n;
-        coord[j] = n;
+//        new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j] =
+//            bezier_cp[GetDegree(dimension).get() * GetPointDim() + j];
+//        coord[j] = new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j];
+        coord[j] = bezier_cps[GetDegree(dimension).get() * GetPointDim() + j];
       }
       cps.emplace_back(baf::ControlPoint(coord));
-    }
-    for (int j = 0; j < GetPointDim(); ++j) {
-      new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j] =
-          bezier_cp[GetDegree(dimension).get() * GetPointDim() + j];
-      coord[j] = new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j];
-    }
-    cps.emplace_back(baf::ControlPoint(coord));
-    GetPhysicalSpace()->AddControlPoints(1);
-    for (int i = GetNumberOfControlPoints(); i > 0; --i) {
-      GetPhysicalSpace()->SetControlPoint({i}, GetPhysicalSpace()->GetControlPoint({i - 1}));
-    }
-    for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
-      GetPhysicalSpace()->SetControlPoint({i}, cps[i]);
-    }
-    GetPhysicalSpace()->IncrementNumberOfPoints(dimension);
-    // d: insert knot 0.6 twice
-    InsertKnot(ParamCoord{0.6}, 0, 2);
-    int offset = 4;
-    // e: degree elevate Bezier segment [0.3, 0.6]
-    cps.erase(cps.begin(), cps.end());
-    std::vector<baf::ControlPoint> cps2;
-    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
-      for (int j = 0; j < GetPointDim(); ++j) {
-        bezier_cp[i * GetPointDim() + j] = GetControlPoint({i + offset}, j);
+
+      GetPhysicalSpace()->AddControlPoints(1);
+      for (int i = GetNumberOfControlPoints(); i > start; --i) {
+        GetPhysicalSpace()->SetControlPoint({i}, GetPhysicalSpace()->GetControlPoint({i - 1}));
       }
-    }
-    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
-      for (int j = 0; j < GetPointDim(); ++j) {
-        double
-            n = (1 - alpha[i]) * bezier_cp[i * GetPointDim() + j] + alpha[i] * bezier_cp[(i - 1) * GetPointDim() + j];
-        new_bezier_cp[i * GetPointDim() + j] = n;
-        coord[j] = n;
+
+      for (int i = start; i < start + GetDegree(dimension).get() + 2; ++i) {
+        GetPhysicalSpace()->SetControlPoint({i}, cps[i - start]);
       }
-      cps2.emplace_back(baf::ControlPoint(coord));
+      GetPhysicalSpace()->IncrementNumberOfPoints(dimension);
+      parameter_space_->InsertKnot(GetKnotVector(dimension)->GetKnot(start + GetDegree(dimension).get()), dimension);
     }
-    for (int j = 0; j < GetPointDim(); ++j) {
-      new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j] =
-          bezier_cp[GetDegree(dimension).get() * GetPointDim() + j];
-      coord[j] = new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j];
-    }
-    cps2.emplace_back(baf::ControlPoint(coord));
-    GetPhysicalSpace()->AddControlPoints(1);
-    GetPhysicalSpace()->IncrementNumberOfPoints(dimension);
-    for (int i = GetNumberOfControlPoints(); i > offset; --i) {
-      GetPhysicalSpace()->SetControlPoint({i}, GetPhysicalSpace()->GetControlPoint({i - 1}));
-    }
-    for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
-      GetPhysicalSpace()->SetControlPoint({i + offset}, cps2[i]);
-    }
-    GetPhysicalSpace()->IncrementNumberOfPoints(dimension);
-    // b: remove knot 0.3 twice
-//    RemoveKnot(ParamCoord{0.3}, 0, 0.1, 2);
+    parameter_space_->InsertKnot(ParamCoord{1}, dimension);
+    parameter_space_->ElevateDegree(dimension);
+
+//    // compute Bezier coefficients
+//    std::vector<double> alpha;
+//    for (double i = 0; i < GetDegree(dimension).get() + 2; ++i) {
+//      alpha.push_back(i / (GetDegree(dimension).get() + 1));
+//    }
+//    // b: insert knot 0.3 twice
+//    InsertKnot(ParamCoord{0.3}, 0, 2);
+//    // c: degree elevate Bezier segment [0, 0.3]
+//    std::array<double, 4 * 2> bezier_cp;
+//    std::array<double, 5 * 2> new_bezier_cp;
+//    std::vector<baf::ControlPoint> cps;
+//    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
+//      for (int j = 0; j < GetPointDim(); ++j) {
+//        bezier_cp[i * GetPointDim() + j] = GetControlPoint({i}, j);
+//      }
+//    }
+//    std::vector<double> coord(GetPointDim());
+//    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
+//      for (int j = 0; j < GetPointDim(); ++j) {
+//        double
+//            n = (1 - alpha[i]) * bezier_cp[i * GetPointDim() + j] + alpha[i] * bezier_cp[(i - 1) * GetPointDim() + j];
+//        new_bezier_cp[i * GetPointDim() + j] = n;
+//        coord[j] = n;
+//      }
+//      cps.emplace_back(baf::ControlPoint(coord));
+//    }
+//    for (int j = 0; j < GetPointDim(); ++j) {
+//      new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j] =
+//          bezier_cp[GetDegree(dimension).get() * GetPointDim() + j];
+//      coord[j] = new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j];
+//    }
+//    cps.emplace_back(baf::ControlPoint(coord));
+//    GetPhysicalSpace()->AddControlPoints(1);
+//    for (int i = GetNumberOfControlPoints(); i > 0; --i) {
+//      GetPhysicalSpace()->SetControlPoint({i}, GetPhysicalSpace()->GetControlPoint({i - 1}));
+//    }
+//    for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
+//      GetPhysicalSpace()->SetControlPoint({i}, cps[i]);
+//    }
+//    GetPhysicalSpace()->IncrementNumberOfPoints(dimension);
+//    // d: insert knot 0.6 twice
+//    InsertKnot(ParamCoord{0.6}, 0, 2);
+//    int offset = 4;
+//    // e: degree elevate Bezier segment [0.3, 0.6]
+//    cps.erase(cps.begin(), cps.end());
+//    std::vector<baf::ControlPoint> cps2;
+//    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
+//      for (int j = 0; j < GetPointDim(); ++j) {
+//        bezier_cp[i * GetPointDim() + j] = GetControlPoint({i + offset}, j);
+//      }
+//    }
+//    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
+//      for (int j = 0; j < GetPointDim(); ++j) {
+//        double
+//            n = (1 - alpha[i]) * bezier_cp[i * GetPointDim() + j] + alpha[i] * bezier_cp[(i - 1) * GetPointDim() + j];
+//        new_bezier_cp[i * GetPointDim() + j] = n;
+//        coord[j] = n;
+//      }
+//      cps2.emplace_back(baf::ControlPoint(coord));
+//    }
+//    for (int j = 0; j < GetPointDim(); ++j) {
+//      new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j] =
+//          bezier_cp[GetDegree(dimension).get() * GetPointDim() + j];
+//      coord[j] = new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j];
+//    }
+//    cps2.emplace_back(baf::ControlPoint(coord));
+//    GetPhysicalSpace()->AddControlPoints(1);
+//    GetPhysicalSpace()->IncrementNumberOfPoints(dimension);
+//    for (int i = GetNumberOfControlPoints(); i > offset; --i) {
+//      GetPhysicalSpace()->SetControlPoint({i}, GetPhysicalSpace()->GetControlPoint({i - 1}));
+//    }
+//    for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
+//      GetPhysicalSpace()->SetControlPoint({i + offset}, cps2[i]);
+//    }
+//    GetPhysicalSpace()->IncrementNumberOfPoints(dimension);
+//    // b: remove knot 0.3 twice
+////    RemoveKnot(ParamCoord{0.3}, 0, 0.1, 2);
   }
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;

@@ -155,15 +155,26 @@ class ParameterSpace {
       basis_functions_[i].erase(basis_functions_[i].begin(), basis_functions_[i].end());
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
       for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
-        basis_functions_[i].emplace_back(baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]),
-                                                                                  KnotSpan{j},
-                                                                                  degree_[i]));
+        basis_functions_[i].emplace_back(
+            baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
       }
     }
   }
 
   void RemoveKnot(ParamCoord knot, int dimension) {
     knot_vector_[dimension]->RemoveKnot(knot);
+    for (int i = 0; i < DIM; i++) {
+      basis_functions_[i].erase(basis_functions_[i].begin(), basis_functions_[i].end());
+      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
+      for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
+        basis_functions_[i].emplace_back(
+            baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
+      }
+    }
+  }
+
+  void ElevateDegree(int dimension) {
+    degree_[dimension] = Degree{degree_[dimension].get() + 1};
     for (int i = 0; i < DIM; i++) {
       basis_functions_[i].erase(basis_functions_[i].begin(), basis_functions_[i].end());
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
