@@ -211,7 +211,7 @@ parameter_space) {
       alpha.push_back(static_cast<double>(i) / (GetDegree(dimension).get() + 1));
     }
     for (int start = 2; start >= 0; --start) {
-      std::vector<double> bezier_cps(start * GetPointDim());
+      std::vector<double> bezier_cps((GetDegree(dimension).get() + 1) * GetPointDim(), 0);
       std::vector<baf::ControlPoint> cps;
       for (int i = start; i < start + GetDegree(dimension).get() + 1; ++i) {
         for (int j = 0; j < GetPointDim(); ++j) {
@@ -219,7 +219,7 @@ parameter_space) {
         }
       }
       std::vector<double> coord(static_cast<size_t>(GetPointDim()));
-      for (size_t i = start; i < start + GetDegree(dimension).get() + 1; ++i) {
+      for (int i = start; i < start + GetDegree(dimension).get() + 1; ++i) {
         for (int j = 0; j < GetPointDim(); ++j) {
           coord[j] = (1 - alpha[i - start]) * bezier_cps[(i - start) * GetPointDim() + j]
               + alpha[i - start] * bezier_cps[(i - 1 - start) * GetPointDim() + j];
@@ -227,9 +227,6 @@ parameter_space) {
         cps.emplace_back(baf::ControlPoint(coord));
       }
       for (int j = 0; j < GetPointDim(); ++j) {
-//        new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j] =
-//            bezier_cp[GetDegree(dimension).get() * GetPointDim() + j];
-//        coord[j] = new_bezier_cp[(GetDegree(dimension).get() + 1) * GetPointDim() + j];
         coord[j] = bezier_cps[GetDegree(dimension).get() * GetPointDim() + j];
       }
       cps.emplace_back(baf::ControlPoint(coord));
@@ -243,7 +240,8 @@ parameter_space) {
         GetPhysicalSpace()->SetControlPoint({i}, cps[i - start]);
       }
       GetPhysicalSpace()->IncrementNumberOfPoints(dimension);
-      parameter_space_->InsertKnot(GetKnotVector(dimension)->GetKnot(start + GetDegree(dimension).get()), dimension);
+      parameter_space_->InsertKnot(GetKnotVector(dimension)->GetKnot(static_cast<size_t>(start
+          + GetDegree(dimension).get())), dimension);
     }
     parameter_space_->InsertKnot(ParamCoord{1}, dimension);
     parameter_space_->ElevateDegree(dimension);
