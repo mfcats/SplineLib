@@ -21,10 +21,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
-#include "writer.h"
-
 namespace io {
-class VTKWriter : public Writer {
+class VTKWriter {
  public:
   VTKWriter() = default;
 
@@ -33,8 +31,6 @@ class VTKWriter : public Writer {
                  const std::vector<std::vector<int>> &scattering) const;
 
  private:
-  void WriteFile(const std::vector<std::any> &/*splines*/, const char */*filename*/) const override {}
-
   std::vector<int> GetSplineDimensions(const std::vector<std::any> &splines) const;
 
   void ThrowIfScatteringHasWrongSizes(std::vector<std::vector<int>> scattering, std::vector<int> dimensions) const;
