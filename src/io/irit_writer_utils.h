@@ -65,10 +65,10 @@ class IRITWriterUtils {
     }
     for (int control_point = 0; control_point < point_handler.Get1DLength(); ++control_point, point_handler++) {
       string += "      [" + (rational ? std::to_string(nurbs->GetWeight(point_handler.GetIndices())) + " " : "");
-      for (int dimension = 0; dimension < spline_ptr->GetDimension(); dimension++) {
+      for (int dimension = 0; dimension < spline_ptr->GetPointDim(); dimension++) {
         string += std::to_string(spline_ptr->GetControlPoint(point_handler.GetIndices(), dimension)
                                      * (rational ? nurbs->GetWeight(point_handler.GetIndices()) : 1))
-            + (dimension < spline_ptr->GetDimension() - 1 ? " " : "]\n");
+            + (dimension < spline_ptr->GetPointDim() - 1 ? " " : "]\n");
       }
     }
     return string;

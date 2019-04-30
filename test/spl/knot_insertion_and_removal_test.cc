@@ -60,7 +60,7 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneMoreControlPointAfterKno
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 100; ++evaluated_point) {
     std::array<ParamCoord, 1> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
-    for (int j = 0; j < original_->GetDimension(); ++j) {
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
@@ -80,11 +80,12 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneLessControlPointAfterKno
   ASSERT_THAT(after_removal_->GetPointsPerDirection()[0], after_insertion_->GetPointsPerDirection()[0] - 1);
 }
 
-TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangePhysicallyAfterKnotRemoval) {  // NOLINT
-  for (int point = 0; point < original_->GetNumberOfControlPoints(); ++point) {
-    for (int dimension = 0; dimension < original_->GetDimension(); ++dimension) {
-      ASSERT_THAT(after_removal_->GetControlPoint({point}, dimension),
-                  DoubleNear(original_->GetControlPoint({point}, dimension), 1e-10));
+TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
+  for (int evaluated_point = 0; evaluated_point < 100; ++evaluated_point) {
+    std::array<ParamCoord, 1> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
+      ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
+                  DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
   }
 }
@@ -131,7 +132,7 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, HasOneMoreControlPointAfterKnotI
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 100; ++evaluated_point) {
     std::array<ParamCoord, 1> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
-    for (int j = 0; j < original_->GetDimension(); ++j) {
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
@@ -158,7 +159,7 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionA
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 100; ++evaluated_point) {
     std::array<ParamCoord, 1> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
-    for (int j = 0; j < original_->GetDimension(); ++j) {
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
@@ -213,7 +214,7 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
   for (int evaluated_point = 0; evaluated_point < 25; ++evaluated_point) {
     std::array<ParamCoord, 2> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
-    for (int j = 0; j < original_->GetDimension(); ++j) {
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
@@ -246,7 +247,7 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
   for (int evaluated_point = 0; evaluated_point < 25; ++evaluated_point) {
     std::array<ParamCoord, 2> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
-    for (int j = 0; j < original_->GetDimension(); ++j) {
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
@@ -301,7 +302,7 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
   for (int evaluated_point = 0; evaluated_point < 10; ++evaluated_point) {
     std::array<ParamCoord, 2> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
-    for (int j = 0; j < original_->GetDimension(); ++j) {
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
@@ -329,7 +330,7 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
   for (int evaluated_point = 0; evaluated_point < 10; ++evaluated_point) {
     std::array<ParamCoord, 2> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
-    for (int j = 0; j < original_->GetDimension(); ++j) {
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
@@ -388,7 +389,7 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
     std::array<ParamCoord, 3> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
-    for (int j = 0; j < original_->GetDimension(); ++j) {
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
@@ -425,7 +426,7 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
     std::array<ParamCoord, 3> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
-    for (int j = 0; j < original_->GetDimension(); ++j) {
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
@@ -484,7 +485,7 @@ TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
     std::array<ParamCoord, 3> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
-    for (int j = 0; j < original_->GetDimension(); ++j) {
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
@@ -521,7 +522,7 @@ TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
     std::array<ParamCoord, 3> param_coord{ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
                                           ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
-    for (int j = 0; j < original_->GetDimension(); ++j) {
+    for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }

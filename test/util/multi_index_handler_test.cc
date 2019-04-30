@@ -61,6 +61,12 @@ TEST_F(MultiHandler2D, Returns1DIndex23AfterSettingCurrentIndexTo3And2) { // NOL
   ASSERT_THAT(multiIndexHandler2D->Get1DIndex(), Eq(23));
 }
 
+TEST_F(MultiHandler2D, Returns2DIndex3And2AfterSettingCurrent1DIndexTo23) { // NOLINT
+  multiIndexHandler2D->Set1DIndex(23);
+  ASSERT_THAT(multiIndexHandler2D->GetIndices()[0], Eq(3));
+  ASSERT_THAT(multiIndexHandler2D->GetIndices()[1], Eq(2));
+}
+
 class MultiHandler3D : public Test {
  public:
   MultiHandler3D() {

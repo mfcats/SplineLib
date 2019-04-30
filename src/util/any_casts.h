@@ -24,57 +24,41 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace util {
 class AnyCasts {
  public:
-  static int GetSplineDimension(const std::any &spline) {
-    try {
-      std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline);
-      return 1;
-    } catch (std::bad_any_cast &msg) {
-      try {
-        std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline);
-        return 1;
-      } catch (std::bad_any_cast &msg) {
-        try {
-          std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline);
-          return 2;
-        } catch (std::bad_any_cast &msg) {
-          try {
-            std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline);
-            return 2;
-          } catch (std::bad_any_cast &msg) {
-            try {
-              std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline);
-              return 3;
-            } catch (std::bad_any_cast &msg) {
-              try {
-                std::any_cast<std::shared_ptr<spl::NURBS<3>>>(spline);
-                return 3;
-              } catch (std::bad_any_cast &msg) {
-                try {
-                  std::any_cast<std::shared_ptr<spl::BSpline<4>>>(spline);
-                  return 4;
-                } catch (std::bad_any_cast &msg) {
-                  try {
-                    std::any_cast<std::shared_ptr<spl::NURBS<4>>>(spline);
-                    return 4;
-                  } catch (std::bad_any_cast &msg) {
-                    throw std::runtime_error(
-                        "Input has to be a pointer to a b-spline or nurbs of dimension 1, 2, 3 or 4.");
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   template<int DIM>
   static std::shared_ptr<spl::Spline<DIM>> GetSpline(std::any spline) {
     try {
       return std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(spline);
     } catch (std::bad_any_cast &msg) {
-      return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
+      try {
+        return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
+      } catch (std::bad_any_cast &msg) {
+        throw std::runtime_error("Input has to be a shared pointer to a b-spline or nurbs of declared dimension");
+      }
+    }
+  }
+
+  static int GetSplineDimension(const std::any &spline) {
+    try {
+      GetSpline<1>(spline);
+      return 1;
+    } catch (std::runtime_error &e) {
+      try {
+        GetSpline<2>(spline);
+        return 2;
+      } catch (std::runtime_error &e) {
+        try {
+          GetSpline<3>(spline);
+          return 3;
+        } catch (std::runtime_error &e) {
+          try {
+            GetSpline<4>(spline);
+            return 4;
+          } catch (std::runtime_error &e) {
+            throw std::runtime_error(
+                "Input has to be a shared pointer to a b-spline or nurbs of dimension 1, 2, 3 or 4.");
+          }
+        }
+      }
     }
   }
 
@@ -84,7 +68,12 @@ class AnyCasts {
       std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
       return true;
     } catch (std::bad_any_cast &msg) {
-      return false;
+      try {
+        std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(spline);
+        return false;
+      } catch (std::bad_any_cast &msg) {
+        throw std::runtime_error("Input has to be a shared pointer to a b-spline or nurbs of declared dimension");
+      }
     }
   }
 };

@@ -12,20 +12,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_IO_READER_H_
-#define SRC_IO_READER_H_
+#ifndef SRC_UTIL_SYSTEM_OPERATIONS_H_
+#define SRC_UTIL_SYSTEM_OPERATIONS_H_
 
-#include <any>
-#include <vector>
+#include <ctime>
 
-namespace io {
-class Reader {
+namespace util {
+class SystemOperations {
  public:
-  Reader() = default;
-  virtual ~Reader() = default;
-
-  virtual std::vector<std::any> ReadFile(const char *filename) = 0;
+  static struct tm GetTime() {
+    struct tm timeinfo{};
+    time_t rawtime;
+    rawtime = time(&rawtime);
+    localtime_r(&rawtime, &timeinfo);
+    return timeinfo;
+  }
 };
-}  // namespace io
+}  // namespace util
 
-#endif  // SRC_IO_READER_H_
+#endif  // SRC_UTIL_SYSTEM_OPERATIONS_H_

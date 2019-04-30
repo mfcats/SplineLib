@@ -34,7 +34,7 @@ class NumericSettings {
 
   NumericSettings(const NumericSettings &numericSettings) = delete;
 
-  void operator=(const NumericSettings &numericSettings)  = delete;
+  void operator=(const NumericSettings &numericSettings) = delete;
 
  private:
   NumericSettings() = default;

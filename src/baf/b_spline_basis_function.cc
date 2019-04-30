@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline_basis_function.h"
 
 #include "basis_function_factory.h"
+#include "numeric_settings.h"
 
 baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
                                                 const Degree &degree,
@@ -30,15 +31,15 @@ baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
 }
 
 double baf::BSplineBasisFunction::EvaluateOnSupport(const ParamCoord &param_coord) const {
-  return ComputeLeftQuotient(param_coord)*left_lower_degree_->Evaluate(param_coord)
-      + ComputeRightQuotient(param_coord)*right_lower_degree_->Evaluate(param_coord);
+  return ComputeLeftQuotient(param_coord) * left_lower_degree_->Evaluate(param_coord)
+      + ComputeRightQuotient(param_coord) * right_lower_degree_->Evaluate(param_coord);
 }
 
 double baf::BSplineBasisFunction::EvaluateDerivativeOnSupport(const ParamCoord &param_coord,
                                                               const Derivative &derivative) const {
   return GetDegree().get()
-      *(left_denom_inv_*left_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1})
-          - right_denom_inv_*right_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1}));
+      * (left_denom_inv_ * left_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1})
+          - right_denom_inv_ * right_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1}));
 }
 
 void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
@@ -51,14 +52,13 @@ void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &k
 }
 
 double baf::BSplineBasisFunction::ComputeLeftQuotient(const ParamCoord &param_coord) const {
-  return (param_coord - GetStartKnot()).get()*left_denom_inv_;
+  return (param_coord - GetStartKnot()).get() * left_denom_inv_;
 }
 
 double baf::BSplineBasisFunction::ComputeRightQuotient(const ParamCoord &param_coord) const {
-  return (GetEndKnot() - param_coord).get()*right_denom_inv_;
+  return (GetEndKnot() - param_coord).get() * right_denom_inv_;
 }
 
 double baf::BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {
-  return std::abs(denominator) < util::NumericSettings<double>::kEpsilon() ? 0.0 : 1.0/denominator;
+  return std::abs(denominator) < util::NumericSettings<double>::kEpsilon() ? 0.0 : 1.0 / denominator;
 }
-

@@ -48,6 +48,12 @@ class MultiIndexHandler {
     return *this;
   }
 
+  const MultiIndexHandler operator++(int) {
+    MultiIndexHandler result(*this);
+    ++(*this);
+    return result;
+  }
+
   MultiIndexHandler &operator--() {
     for (int i = 0; i < DIM; ++i) {
       if (current_multi_index_value_[i] == 0) {
@@ -72,12 +78,6 @@ class MultiIndexHandler {
       --(*this);
     }
     return *this;
-  }
-
-  const MultiIndexHandler operator++(int) {
-    MultiIndexHandler result(*this);
-    ++(*this);
-    return result;
   }
 
   void SetIndices(const std::array<int, DIM> &indices) {

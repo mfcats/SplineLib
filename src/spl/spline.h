@@ -37,12 +37,11 @@ class Spline {
   Spline(KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree) {
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
   }
-  explicit Spline(std::shared_ptr<ParameterSpace < DIM>>
-parameter_space) {
+  explicit Spline(std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
     parameter_space_ = parameter_space;
   }
   Spline(const Spline<DIM> &spline) {
-    ParameterSpace<DIM> parameter_space(*spline.GetParameterSpace());
+    ParameterSpace<DIM> parameter_space(*spline.parameter_space_);
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(parameter_space);
   }
 
@@ -101,7 +100,7 @@ parameter_space) {
     for (int i = 0; i < DIM; ++i) {
       points[i] = number + 1;
     }
-    for (int i = 0; i < GetDimension(); ++i) {
+    for (int i = 0; i < GetPointDim(); ++i) {
       dimensions.push_back(i);
     }
     util::MultiIndexHandler<DIM> point_handler(points);
@@ -124,48 +123,40 @@ parameter_space) {
     return parameter_space_->GetDegree(i);
   }
 
-  std::array<Degree, DIM> GetDegrees() const {
-    return parameter_space_->GetDegrees();
-  }
-
   std::shared_ptr<baf::KnotVector> GetKnotVector(int i) const {
     return parameter_space_->GetKnotVector(i);
-  }
-
-  std::array<std::shared_ptr<baf::KnotVector>, DIM> GetKnotVectors() const {
-    return parameter_space_->GetKnotVectors();
   }
 
   double GetKnotVectorRange(int direction) const {
     return parameter_space_->GetKnotVectorRange(direction);
   }
 
-  virtual int GetNumberOfControlPoints() const = 0;
-  virtual std::array<int, DIM> GetPointsPerDirection() const = 0;
-  virtual int GetDimension() const = 0;
-  virtual double GetControlPoint(std::array<int, DIM> indices, int dimension) const = 0;
-  virtual baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const = 0;
+  int GetNumberOfControlPoints() const {
+    return GetPhysicalSpace()->GetNumberOfControlPoints();
+  }
 
-  virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;
+  std::array<int, DIM> GetPointsPerDirection() const {
+    return GetPhysicalSpace()->GetPointsPerDirection();
+  }
 
-  std::shared_ptr<spl::ParameterSpace<DIM>> GetParameterSpace() const {
-    return parameter_space_;
+  int GetPointDim() const {
+    return GetPhysicalSpace()->GetDimension();
+  }
+
+  double GetControlPoint(std::array<int, DIM> indices, int dimension) const {
+    return GetPhysicalSpace()->GetControlPoint(indices).GetValue(dimension);
+  }
+
+  baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const {
+    return GetPhysicalSpace()->GetControlPoint(indices);
   }
 
   double GetExpansion() const {
     return GetPhysicalSpace()->GetExpansion();
   }
 
-  std::vector<double> GetControlPoints() const {
-    return GetPhysicalSpace()->GetControlPoints();
-  }
-
-  std::vector<double> GetWeights() const {
-    return GetPhysicalSpace()->GetWeights();
-  }
-
-  std::array<std::vector<ParamCoord>, DIM> GetKnots() const {
-    return parameter_space_->GetKnots();
+  double GetWeight(std::array<int, DIM> indices) const {
+    return GetPhysicalSpace()->GetWeight(indices);
   }
 
   void InsertKnot(ParamCoord knot, int dimension, size_t multiplicity = 1) {
@@ -231,6 +222,8 @@ parameter_space) {
                                                     std::array<int, DIM> indices,
                                                     int dimension) const = 0;
 
+  virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;
+
   std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
     return parameter_space_->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
   }
@@ -243,7 +236,7 @@ parameter_space) {
     return total_length;
   }
 
-  std::shared_ptr<ParameterSpace < DIM>> parameter_space_;
+  std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
 };
 }  //  namespace spl
 

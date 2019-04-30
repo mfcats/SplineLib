@@ -13,8 +13,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "converter_log.h"
-#include "iges_reader.h"
-#include "writer.h"
+#include "io_converter.h"
+#include "irit_reader.h"
+#include "string_operations.h"
+#include "vtk_writer.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -30,19 +32,19 @@ int main(int argc, char *argv[]) {
   std::vector<std::any> splines;
 
   try {
-    io::IGESReader iges_reader;
-    splines = iges_reader.ReadFile(log.GetInput());
+    io::IRITReader irit_reader;
+    splines = irit_reader.ReadFile(log.GetInput());
   } catch (std::runtime_error &error) {
     throw error;
   } catch (...) {
-    throw std::runtime_error(R"(The input file isn't of correct ".iges" format.)");
+    throw std::runtime_error(R"(The input file isn't of correct ".itd" format.)");
   }
 
-  io::XMLWriter xml_writer;
-  io::Writer writer;
-  std::vector<int> positions = log.GetPositions(writer.GetSplinePositionsOfCorrectDimension(splines, 4));
+  io::VTKWriter vtk_writer;
+  std::vector<int> positions = log.GetPositions(io::IOConverter::GetSplinePositionsOfCorrectDimension(splines, 3));
+  std::vector<std::vector<int>> scattering = log.GetScattering();
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
-  xml_writer.WriteFile(splines_with_max_dim, log.GetOutput());
+  vtk_writer.WriteFile(splines_with_max_dim, log.GetOutput(), scattering);
 
   log.WriteLog();
   return 0;

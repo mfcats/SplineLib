@@ -59,7 +59,7 @@ class VTKWriterUtils {
         coords[j] = ParamCoord(knots[j] + point_handler[j] * (knots[j + DIM] - knots[j]) / scattering[j]);
       }
       for (int k = 0; k < 3; ++k) {
-        file << (k < spline_ptr->GetDimension() ? spline_ptr->Evaluate(coords, {k})[0] : 0) << (k < 2 ? " " : "\n");
+        file << (k < spline_ptr->GetPointDim() ? spline_ptr->Evaluate(coords, {k})[0] : 0) << (k < 2 ? " " : "\n");
       }
     }
   }

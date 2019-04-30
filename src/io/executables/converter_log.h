@@ -11,8 +11,8 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.
 */
-#ifndef SRC_IO_CONVERTER_LOG_H_
-#define SRC_IO_CONVERTER_LOG_H_
+#ifndef SRC_IO_EXECUTABLES_CONVERTER_LOG_H_
+#define SRC_IO_EXECUTABLES_CONVERTER_LOG_H_
 
 #include <string>
 #include <vector>
@@ -45,4 +45,4 @@ class ConverterLog {
 };
 }  // namespace io
 
-#endif  // SRC_IO_CONVERTER_LOG_H_
+#endif  // SRC_IO_EXECUTABLES_CONVERTER_LOG_H_

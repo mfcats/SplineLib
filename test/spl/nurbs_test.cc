@@ -317,7 +317,7 @@ class MockWeightedPhysicalSpace112 : public spl::WeightedPhysicalSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 1>));
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
-  MOCK_METHOD0(GetDimension, int());
+  MOCK_CONST_METHOD0(GetDimension, int());
 };
 
 void mock_weights(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace112>> &w_physical_space) {

@@ -10,8 +10,8 @@ ENV BASH_ENV /etc/profile.d/spack.sh
 
 RUN spack repo add /code/scripts/spack-repo
 RUN spack setup -v splinelib@github build_type=Release %gcc@8
-RUN mkdir /code/build-acceptance
-WORKDIR /code/build-acceptance
+RUN mkdir /code/build-install
+WORKDIR /code/build-install
 RUN ./../spconfig.py ..
 
 # Install Splinelib

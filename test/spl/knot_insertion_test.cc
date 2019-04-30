@@ -114,7 +114,6 @@ TEST_F(NURBS1DEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
               nurbs_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 1);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(2.0));
   ASSERT_THAT(nurbs_1d_after_->GetNumberOfControlPoints(), nurbs_1d_before_->GetNumberOfControlPoints() + 1);
-  ASSERT_THAT(nurbs_1d_after_->GetWeights().size(), nurbs_1d_after_->GetNumberOfControlPoints());
   std::vector<baf::ControlPoint> new_control_points = {
       baf::ControlPoint(std::vector<double>({0.0, 1.0})),
       baf::ControlPoint(std::vector<double>({1.0, 2.0})),
@@ -131,7 +130,6 @@ TEST_F(NURBS1DEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
       ASSERT_THAT(nurbs_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
     }
   }
-  ASSERT_THAT(nurbs_1d_after_->GetWeights().size(), nurbs_1d_before_->GetWeights().size() + 1);
   std::vector<double> new_weights = {1.0, 1.0, 2.0, 10.0 / 3.0, 3.0, 1.0, 4.0, 2.0, 1.0};
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     ASSERT_THAT(nurbs_1d_after_->GetWeight({i}), DoubleEq(new_weights[i]));

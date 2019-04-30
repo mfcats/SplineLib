@@ -18,7 +18,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <memory>
 
 #include "basis_function.h"
-#include "numeric_settings.h"
 
 namespace baf {
 class BSplineBasisFunction : public BasisFunction {
@@ -27,7 +26,6 @@ class BSplineBasisFunction : public BasisFunction {
 
  protected:
   double EvaluateOnSupport(const ParamCoord &param_coord) const override;
-
   double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const override;
 
  private:
@@ -36,7 +34,6 @@ class BSplineBasisFunction : public BasisFunction {
                                     const KnotSpan &start_of_support);
 
   double ComputeLeftQuotient(const ParamCoord &param_coord) const;
-
   double ComputeRightQuotient(const ParamCoord &param_coord) const;
 
   double InverseWithPossiblyZeroDenominator(double denominator) const;

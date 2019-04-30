@@ -15,24 +15,51 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IO_IO_CONVERTER_H_
 #define SRC_IO_IO_CONVERTER_H_
 
+#include <any>
+#include <string>
 #include <vector>
 
-#include "reader.h"
-#include "writer.h"
+#include "any_casts.h"
+#include "iges_reader.h"
+#include "iges_writer.h"
+#include "irit_reader.h"
+#include "irit_writer.h"
+#include "string_operations.h"
+#include "vtk_writer.h"
+#include "xml_reader.h"
+#include "xml_writer.h"
 
 namespace io {
 class IOConverter {
  public:
-  IOConverter() = default;
+  IOConverter(const char *input_filename, const char *output_filename);
 
-  void ConvertFile(const char *input_filename,
-                   const char *output_filename,
-                   const std::vector<std::vector<int>> &scattering = {}) {
-    io::Reader reader;
-    std::vector<std::any> splines = reader.ReadFile(input_filename);
-    io::Writer writer;
-    writer.WriteFile(splines, output_filename, scattering);
-  }
+  std::vector<int> ConvertFile(const std::vector<int> &positions = {},
+                               const std::vector<std::vector<int>> &scattering = {});
+
+  static std::vector<int> GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines, int max_dim);
+
+  enum file_format { error, iges, irit, vtk, xml };
+
+ private:
+  file_format GetFileFormat(const char *filename) const;
+
+  io::Reader *GetReader() const;
+  void GetWriter(const std::vector<std::any> &splines, const std::vector<int> &positions,
+                 const std::vector<std::vector<int>> &scattering);
+  void WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions, int max_dim,
+                 const std::shared_ptr<io::Writer> &writer);
+
+  void GetPositions(const std::vector<int> &positions, const std::vector<int> &possible_positions);
+  std::vector<std::vector<int>> GetScattering(const std::vector<std::vector<int>> &scattering,
+                                              const std::vector<int> &positions,
+                                              const std::vector<int> &written);
+
+  const char *input_filename_;
+  const char *output_filename_;
+  file_format input_format_;
+  file_format output_format_;
+  std::vector<int> written_;
 };
 }  // namespace io
 

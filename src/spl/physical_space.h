@@ -49,12 +49,9 @@ class PhysicalSpace {
     }
   }
 
-  PhysicalSpace(const PhysicalSpace &physical_space)
-      : dimension_(physical_space.dimension_), control_points_(physical_space.control_points_) {
-    for (int i = 0; i < DIM; ++i) {
-      number_of_points_[i] = physical_space.number_of_points_[i];
-    }
-  }
+  PhysicalSpace(const PhysicalSpace &physical_space) : dimension_(physical_space.dimension_),
+                                                       number_of_points_(physical_space.number_of_points_),
+                                                       control_points_(physical_space.control_points_) {}
 
   bool AreEqual(const PhysicalSpace<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
     return std::equal(control_points_.begin(), control_points_.end(),
@@ -93,7 +90,7 @@ class PhysicalSpace {
     number_of_points_ = number_of_points_before;
   }
 
-  void AddControlPoints(int number) {
+  virtual void AddControlPoints(int number) {
     for (int i = 0; i < number; ++i) {
       for (int j = 0; j < dimension_; ++j) {
         control_points_.emplace_back(0.0);
@@ -101,7 +98,7 @@ class PhysicalSpace {
     }
   }
 
-  void RemoveControlPoints(int number) {
+  virtual void RemoveControlPoints(int number) {
     control_points_.erase(control_points_.end() - number * dimension_, control_points_.end());
   }
 
@@ -109,7 +106,7 @@ class PhysicalSpace {
     return static_cast<int>(control_points_.size()) / dimension_;
   }
 
-  std::array<int, DIM> GetNumberOfPointsInEachDirection() const {
+  std::array<int, DIM> GetPointsPerDirection() const {
     return number_of_points_;
   }
 
@@ -131,6 +128,10 @@ class PhysicalSpace {
 
   virtual int GetDimension() const {
     return dimension_;
+  }
+
+  virtual double GetWeight(std::array<int, DIM>) const {
+    return 1.0;
   }
 
   double GetExpansion() const {
@@ -155,29 +156,9 @@ class PhysicalSpace {
     return maximum;
   }
 
-  std::vector<double> GetControlPoints() const {
-    return control_points_;
-  }
-
-  virtual std::vector<double> GetWeights() const {
-    std::vector<double> weights;
-    int numberOfWeights = 1;
-    for (int i = 0; i < DIM; ++i) {
-      numberOfWeights *= number_of_points_[i];
-    }
-    for (int i = 0; i < numberOfWeights; ++i) {
-      weights.emplace_back(1.0);
-    }
-    return weights;
-  }
-
-  virtual double GetWeight(std::array<int, DIM>) const {
-    return 1.0;
-  }
-
   std::vector<baf::ControlPoint> GetDividedControlPoints(int first, int length, int dimension) {
     std::vector<baf::ControlPoint> points;
-    std::array<int, DIM> point_handler_length = GetNumberOfPointsInEachDirection();
+    std::array<int, DIM> point_handler_length = GetPointsPerDirection();
     point_handler_length[dimension] = length;
     util::MultiIndexHandler<DIM> point_handler(point_handler_length);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
@@ -193,7 +174,6 @@ class PhysicalSpace {
   std::array<int, DIM> number_of_points_;
   std::vector<double> control_points_;
 };
-
 }  // namespace spl
 
 #endif  // SRC_SPL_PHYSICAL_SPACE_H_

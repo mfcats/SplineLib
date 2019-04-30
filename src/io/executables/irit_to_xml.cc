@@ -13,8 +13,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "converter_log.h"
+#include "io_converter.h"
 #include "irit_reader.h"
-#include "writer.h"
+#include "string_operations.h"
+#include "xml_writer.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -38,12 +40,10 @@ int main(int argc, char *argv[]) {
     throw std::runtime_error(R"(The input file isn't of correct ".itd" format.)");
   }
 
-  io::IGESWriter iges_writer;
-  io::Writer writer;
-  std::vector<int> positions = log.GetPositions(writer.GetSplinePositionsOfCorrectDimension(splines, 2));
+  io::XMLWriter iges_writer;
+  std::vector<int> positions = log.GetPositions(io::IOConverter::GetSplinePositionsOfCorrectDimension(splines, 4));
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
   iges_writer.WriteFile(splines_with_max_dim, log.GetOutput());
 
   log.WriteLog();
-  return 0;
 }

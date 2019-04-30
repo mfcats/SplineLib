@@ -16,8 +16,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_BAF_KNOT_VECTOR_H_
 
 #include <initializer_list>
-#include <limits>
-#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -44,7 +42,7 @@ class KnotVector {
 
   virtual ~KnotVector() = default;
 
-  KnotVector operator -(const KnotVector& rhs) const;
+  KnotVector operator-(const KnotVector &rhs) const;
   KnotVector &operator=(const KnotVector &other);
   KnotVector &operator=(KnotVector &&other) noexcept;
   // Check if absolute distance between all knots is smaller than the epsilon defined in
@@ -54,7 +52,6 @@ class KnotVector {
   ParamCoord &operator[](size_t index);
 
   virtual ParamCoord GetKnot(size_t index) const;
-  std::vector<ParamCoord> GetKnots() const;
   ParamCoord GetLastKnot() const;
   virtual KnotSpan GetKnotSpan(ParamCoord param_coord) const;
   virtual size_t GetMultiplicity(ParamCoord param_coord) const;
@@ -68,6 +65,7 @@ class KnotVector {
 
   virtual bool IsInKnotVectorRange(const ParamCoord &param_coord) const;
   virtual bool IsLastKnot(const ParamCoord &param_coord) const;
+
   void InsertKnot(const ParamCoord &param_coord);
   void RemoveKnot(const ParamCoord &param_coord);
 

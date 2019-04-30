@@ -14,17 +14,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function.h"
 
-#include "numeric_settings.h"
-
 double baf::BasisFunction::Evaluate(const ParamCoord &paramCoord) const {
   return IsCoordinateInSupport(paramCoord) ? this->EvaluateOnSupport(paramCoord) : 0.0;
 }
 
 double baf::BasisFunction::EvaluateDerivative(const ParamCoord &param_coord, const Derivative &derivative) const {
-  return derivative.get() == 0 ? Evaluate(param_coord)
-                               : IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord,
-                                                                                                        derivative)
-                                                                    : 0.0;
+  return derivative.get() == 0 ? Evaluate(param_coord) :
+         (IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0);
 }
 
 baf::BasisFunction::BasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support)

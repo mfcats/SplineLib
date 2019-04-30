@@ -152,6 +152,20 @@ TEST_F(AKnotVector, CanBeAssignedByIterators) { // NOLINT
   ASSERT_THAT(knot_vector, Eq(knot_vector_));
 }
 
+TEST_F(AKnotVector, CanInsertKnot) {  // NOLINT
+  baf::KnotVector knot_vector_copy = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
+  knot_vector_copy.InsertKnot(ParamCoord{0.5});
+  ASSERT_THAT(knot_vector_copy.GetNumberOfKnots(), knot_vector_.GetNumberOfKnots() + 1);
+  ASSERT_THAT(knot_vector_copy.GetKnotSpan(ParamCoord{0.5}).get(), knot_vector_.GetKnotSpan(ParamCoord{0.5}).get() + 1);
+}
+
+TEST_F(AKnotVector, CanRemoveKnot) {  // NOLINT
+  baf::KnotVector knot_vector_copy = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
+  knot_vector_copy.RemoveKnot(ParamCoord{0.5});
+  ASSERT_THAT(knot_vector_copy.GetNumberOfKnots(), knot_vector_.GetNumberOfKnots() - 1);
+  ASSERT_THAT(knot_vector_copy.GetKnotSpan(ParamCoord{0.5}).get(), knot_vector_.GetKnotSpan(ParamCoord{0.5}).get() - 1);
+}
+
 TEST_F(AKnotVector, CanBeAveraged) { // NOLINT
   std::vector<ParamCoord> coords = {ParamCoord(0.0), ParamCoord(5.0/17.0), ParamCoord(9.0/17.0),
                                     ParamCoord(14.0/17.0), ParamCoord(1.0)};

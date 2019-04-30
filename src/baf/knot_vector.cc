@@ -16,6 +16,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <algorithm>
 #include <functional>
+#include <limits>
+#include <stdexcept>
 
 #include "numeric_settings.h"
 
@@ -89,10 +91,6 @@ ParamCoord baf::KnotVector::GetKnot(size_t index) const {
 #else
   return knots_[index];
 #endif
-}
-
-std::vector<ParamCoord> baf::KnotVector::GetKnots() const {
-  return knots_;
 }
 
 ParamCoord baf::KnotVector::GetLastKnot() const {
