@@ -12,6 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <irit_writer.h>
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
@@ -42,6 +43,34 @@ void PrintSpline(std::shared_ptr<spl::BSpline<DIM>> spline) {
     }
     std::cout << std::endl;
   }
+}
+
+template<int DIM>
+void PrintSpline(std::shared_ptr<spl::NURBS<DIM>> spline) {
+  std::cout << std::endl << "degrees:" << std::endl;
+  for (int i = 0; i < DIM; ++i) {
+    std::cout << spline->GetDegree(i).get() << "   ";
+  }
+  std::cout << std::endl << std::endl << "knot vectors:" << std::endl;
+  for (int i = 0; i < DIM; ++i) {
+    auto kv = spline->GetKnotVector(i);
+    for (const auto &knot : *kv) {
+      std::cout << knot.get() << "  ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl << "control points:" << std::endl;
+  for (int i = 0; i < spline->GetNumberOfControlPoints(); ++i) {
+    for (int j = 0; j < spline->GetPointDim(); ++j) {
+      std::cout << spline->GetControlPoint({i}, j) << "  ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl << "weights:" << std::endl;
+  for (int i = 0; i < spline->GetNumberOfControlPoints(); ++i) {
+    std::cout << spline->GetWeight({i}) << "  ";
+  }
+  std::cout << std::endl;
 }
 
 class BSpline1DFig5_35 : public Test {  // NOLINT
@@ -217,4 +246,47 @@ TEST_F(Random1DBSplineForDegreeElevation, HasMoreControlPoints) {
 
 TEST_F(Random1DBSplineForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
   ASSERT_THAT(after_elevation->AreGeometricallyEqual(*original_), true);
+}
+
+class Random1DNURBSForDegreeElevation : public Test {  // NOLINT
+ public:
+  Random1DNURBSForDegreeElevation() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomNURBSGenerator<1> spline_generator(limits, 5, 3);
+    spl::NURBS<1> nurbs(spline_generator);
+    original_ = std::make_shared<spl::NURBS<1>>(nurbs);
+
+    spl::NURBS<1> elevation_spline(nurbs);
+    elevation_spline.ElevateDegree(0);
+    after_elevation_ = std::make_shared<spl::NURBS<1>>(elevation_spline);
+  }
+
+ protected:
+  std::shared_ptr<spl::NURBS<1>> original_;
+  std::shared_ptr<spl::NURBS<1>> after_elevation_;
+};
+
+TEST_F(Random1DNURBSForDegreeElevation, HasELevatedDegree) {
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+}
+
+TEST_F(Random1DNURBSForDegreeElevation, HasMoreKnots) {
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+}
+
+TEST_F(Random1DNURBSForDegreeElevation, HasMoreControlPoints) {
+  ASSERT_THAT(after_elevation_->GetNumberOfControlPoints(),
+              original_->GetNumberOfControlPoints() + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+}
+
+TEST_F(Random1DNURBSForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  io::IRITWriter writer;
+  std::any before = std::make_any<std::shared_ptr<spl::NURBS<1>>>(original_);
+  std::any after = std::make_any<std::shared_ptr<spl::NURBS<1>>>(after_elevation_);
+  writer.WriteFile({before, after}, "degree_elevation.itd");
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.01), true);
 }

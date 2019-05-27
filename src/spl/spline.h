@@ -285,7 +285,10 @@ parameter_space) {
         --position;
       }
       ParamCoord cur_knot = GetKnotVector(dimension)->GetKnot(position);
-      RemoveKnot(cur_knot, dimension, util::NumericSettings<double>::kEpsilon(), static_cast<size_t>(diff[i - 1] - 1));
+      RemoveKnot(cur_knot,
+                 dimension,
+                 100 /*util::NumericSettings<double>::kEpsilon()*/,
+                 static_cast<size_t>(diff[i - 1] - 1));
     }
   }
 
