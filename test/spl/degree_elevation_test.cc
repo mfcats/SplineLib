@@ -12,12 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <vtk_writer.h>
-#include <irit_writer.h>
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
 #include "nurbs.h"
+#include "random_b_spline_generator.h"
+#include "random_nurbs_generator.h"
 
 using testing::Test;
 
@@ -72,19 +72,11 @@ class BSpline1DFig5_35 : public Test {  // NOLINT
 };
 
 TEST_F(BSpline1DFig5_35, ElevatesDegreeFrom3To4Correctly) {  // NOLINT
-  io::IRITWriter writer;
-  std::any before = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_);
-  PrintSpline(bspline_1d_before_);
   bspline_1d_after_->ElevateDegree(0);
-  PrintSpline(bspline_1d_after_);
-
-  std::any after_b = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_);
-
-  writer.WriteFile({before, after_b}, "degree_elevation.itd");  //, {{100}, {100}});
-//  ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
-//              bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 4);
-//  ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() + 3);
-
+  ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 4);
+  ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() + 3);
+  ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true);
 }
 
 class ALinearBSpline : public Test {  // NOLINT
@@ -128,13 +120,7 @@ TEST_F(ALinearBSpline, ElevatesDegreeFrom1To2Correctly) {  // NOLINT
   };
   auto test = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
 
-  io::IRITWriter writer;
-  std::any before = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_);
-//  PrintSpline(bspline_1d_before_);
   bspline_1d_after_->ElevateDegree(0);
-//  PrintSpline(bspline_1d_after_);
-  std::any after = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_after_);
-  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(bspline_1d_after_->AreEqual(*test), true);
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*test), true);
   ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*test), true);
@@ -176,42 +162,59 @@ TEST_F(AQuadraticBSpline, ElevatesDegreeFrom2To3Correctly) {  // NOLINT
                        ParamCoord{1}}))};
   std::vector<baf::ControlPoint> control_points = {
       baf::ControlPoint(std::vector<double>({1.0, 1.0})),
-      baf::ControlPoint(std::vector<double>({1.0, 1.5})),
-      baf::ControlPoint(std::vector<double>({1.0, 7.0 / 6.0})),
-      baf::ControlPoint(std::vector<double>({1.0, 11.0 / 6.0})),
-      baf::ControlPoint(std::vector<double>({2.0, 2.0})),
-      baf::ControlPoint(std::vector<double>({2.0, 2.5})),
+      baf::ControlPoint(std::vector<double>({1.0, 5.0 / 3.0})),
+      baf::ControlPoint(std::vector<double>({7.0 / 6.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({11.0 / 6.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 7.0 / 3.0})),
       baf::ControlPoint(std::vector<double>({2.0, 3.0})),
-      baf::ControlPoint(std::vector<double>({3.0, 3.0})),
+      baf::ControlPoint(std::vector<double>({8.0 / 3.0, 3.0})),
+      baf::ControlPoint(std::vector<double>({3.0, 10.0 / 3.0})),
       baf::ControlPoint(std::vector<double>({3.0, 4.0}))
   };
   auto test = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
 
-  io::IRITWriter writer;
-  std::any before = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_);
-  PrintSpline(bspline_1d_before_);
   bspline_1d_after_->ElevateDegree(0);
-  PrintSpline(bspline_1d_after_);
-  std::any after = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_after_);
-  std::any test_any = std::make_any<std::shared_ptr<spl::BSpline<1>>>(test);
-  writer.WriteFile({before, after, test_any}, "degree_elevation.itd");
   ASSERT_THAT(bspline_1d_after_->AreEqual(*test), true);
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*test), true);
   ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*test), true);
   ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true);
 }
 
-TEST_F(AQuadraticBSpline, trial) {  // NOLINT
-//  io::IRITWriter writer;
-//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_);
-  PrintSpline(bspline_1d_before_);
-  bspline_1d_after_->ElevateDegree(0);
-//  PrintSpline(bspline_1d_after_);
-//  bspline_1d_after_->InsertKnot(ParamCoord{0}, 0);
-  PrintSpline(bspline_1d_after_);
-  ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true);
-  io::IRITWriter writer;
-  std::any before = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_);
-  std::any after = std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_after_);
-  writer.WriteFile({before, after}, "degree_elevation.itd");
+class Random1DBSplineForDegreeElevation : public Test {  // NOLINT
+ public:
+  Random1DBSplineForDegreeElevation() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomBSplineGenerator<1> spline_generator(limits, 10, 3);
+    spl::BSpline<1> b_spline(spline_generator);
+    original_ = std::make_shared<spl::BSpline<1>>(b_spline);
+
+    spl::BSpline<1> elevation_spline(b_spline);
+    elevation_spline.ElevateDegree(0);
+    after_elevation = std::make_shared<spl::BSpline<1>>(elevation_spline);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<1>> original_;
+  std::shared_ptr<spl::BSpline<1>> after_elevation;
+};
+
+TEST_F(Random1DBSplineForDegreeElevation, HasELevatedDegree) {
+  ASSERT_THAT(after_elevation->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+}
+
+TEST_F(Random1DBSplineForDegreeElevation, HasMoreKnots) {
+  ASSERT_THAT(after_elevation->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+}
+
+TEST_F(Random1DBSplineForDegreeElevation, HasMoreControlPoints) {
+  ASSERT_THAT(after_elevation->GetNumberOfControlPoints(),
+              original_->GetNumberOfControlPoints() + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+}
+
+TEST_F(Random1DBSplineForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  ASSERT_THAT(after_elevation->AreGeometricallyEqual(*original_), true);
 }
