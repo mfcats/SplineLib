@@ -227,11 +227,11 @@ class Random1DBSplineForDegreeElevation : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> after_elevation;
 };
 
-TEST_F(Random1DBSplineForDegreeElevation, HasELevatedDegree) {
+TEST_F(Random1DBSplineForDegreeElevation, HasELevatedDegree) {  // NOLINT
   ASSERT_THAT(after_elevation->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
 }
 
-TEST_F(Random1DBSplineForDegreeElevation, HasMoreKnots) {
+TEST_F(Random1DBSplineForDegreeElevation, HasMoreKnots) {  // NOLINT
   ASSERT_THAT(after_elevation->GetKnotVector(0)->GetNumberOfDifferentKnots(),
               original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
   ASSERT_THAT(after_elevation->GetKnotVector(0)->GetNumberOfKnots(),
@@ -239,7 +239,7 @@ TEST_F(Random1DBSplineForDegreeElevation, HasMoreKnots) {
                   + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
 }
 
-TEST_F(Random1DBSplineForDegreeElevation, HasMoreControlPoints) {
+TEST_F(Random1DBSplineForDegreeElevation, HasMoreControlPoints) {  // NOLINT
   ASSERT_THAT(after_elevation->GetNumberOfControlPoints(),
               original_->GetNumberOfControlPoints() + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
 }
@@ -266,11 +266,11 @@ class Random1DNURBSForDegreeElevation : public Test {  // NOLINT
   std::shared_ptr<spl::NURBS<1>> after_elevation_;
 };
 
-TEST_F(Random1DNURBSForDegreeElevation, HasELevatedDegree) {
+TEST_F(Random1DNURBSForDegreeElevation, HasELevatedDegree) {  // NOLINT
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
 }
 
-TEST_F(Random1DNURBSForDegreeElevation, HasMoreKnots) {
+TEST_F(Random1DNURBSForDegreeElevation, HasMoreKnots) {  // NOLINT
   ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
               original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
   ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
@@ -278,7 +278,7 @@ TEST_F(Random1DNURBSForDegreeElevation, HasMoreKnots) {
                   + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
 }
 
-TEST_F(Random1DNURBSForDegreeElevation, HasMoreControlPoints) {
+TEST_F(Random1DNURBSForDegreeElevation, HasMoreControlPoints) {  // NOLINT
   ASSERT_THAT(after_elevation_->GetNumberOfControlPoints(),
               original_->GetNumberOfControlPoints() + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
 }
