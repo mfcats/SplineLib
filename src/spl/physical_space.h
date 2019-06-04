@@ -71,8 +71,13 @@ class PhysicalSpace {
     util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
     point_handler.SetIndices(indices);
     int first = dimension_ * point_handler.Get1DIndex();
+    auto a = control_points_.size();
+    for (const auto p : control_points_) {
+      auto r = 9;
+    }
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      coordinates.push_back(control_points_[first + coordinate]);
+      auto y = control_points_[first + coordinate];
+      coordinates.push_back(y);
     }
     return baf::ControlPoint(coordinates);
   }
