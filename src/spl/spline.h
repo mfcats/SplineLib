@@ -372,8 +372,8 @@ parameter_space) {
             auto b = point_handler.Get1DIndex();
             coord[j] = bezier_cps[b * GetPointDim() + j];
           }
+          cps.emplace_back(baf::ControlPoint(coord));
         }
-        cps.emplace_back(baf::ControlPoint(coord));
       }
     } else {
       for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
@@ -403,9 +403,33 @@ parameter_space) {
 
   void SetNewBezierSegmentControlPoints(std::vector<baf::ControlPoint> new_bezier_cps, int dimension, int segment) {
     int first = segment * (GetDegree(dimension).get() + 1);
-    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
-      GetPhysicalSpace()->SetControlPoint({i + first}, new_bezier_cps[i]);
+    auto points_per_direction = GetPointsPerDirection();
+    util::MultiIndexHandler<DIM> point_handler(points_per_direction);
+    int width = GetDegree(dimension).get() + 1;
+    int length = GetNumberOfControlPoints() / points_per_direction[dimension];
+    int segment_width = GetPointDim() * (GetDegree(dimension).get() + 1);
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      auto c = point_handler.Get1DIndex() % points_per_direction[dimension];
+      auto
+          d = c > segment * (GetDegree(dimension).get() + 1) && c <= (segment + 1) * (GetDegree(dimension).get() + 1);
+      auto e = point_handler.Get1DIndex() / points_per_direction[dimension];
+      auto f = new_bezier_cps.size();
+
+      auto g = point_handler[0];
+      auto h = point_handler[1];
+      if (d) {
+        auto m = e * width + c;
+        auto n = e * (width + 1) + (c - 1) % (GetDegree(dimension).get() + 1) + 1;
+        auto s = new_bezier_cps[n].GetValue(0);
+        auto t = new_bezier_cps[n].GetValue(1);
+        GetPhysicalSpace()->SetControlPoint(point_handler.GetIndices(), new_bezier_cps[n]);
+      }
     }
+
+
+//    for (int i = 0; i < GetDegree(dimension).get() + 1; ++i) {
+//      GetPhysicalSpace()->SetControlPoint({i + first}, new_bezier_cps[i]);
+//    }
   }
 
   std::shared_ptr<ParameterSpace < DIM>> parameter_space_;

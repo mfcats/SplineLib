@@ -203,6 +203,7 @@ TEST_F(AQuadraticBSpline, ElevatesDegreeFrom2To3Correctly) {  // NOLINT
   auto test = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
 
   bspline_1d_after_->ElevateDegree(0);
+  PrintSpline(bspline_1d_after_);
   ASSERT_THAT(bspline_1d_after_->AreEqual(*test), true);
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*test), true);
   ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*test), true);
@@ -346,16 +347,16 @@ TEST_F(A2DBSplineForDegreeElevation, HasELevatedDegree) {  // NOLINT
 TEST_F(A2DBSplineForDegreeElevation, HasMoreKnots) {  // NOLINT
   ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
               original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
-  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(), original_->GetKnotVector(0)->GetNumberOfKnots());
-  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(),
-              original_->GetKnotVector(1)->GetNumberOfKnots()
-                  + original_->GetKnotVector(1)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(), original_->GetKnotVector(1)->GetNumberOfKnots());
 }
 
 TEST_F(A2DBSplineForDegreeElevation, HasMoreControlPoints) {  // NOLINT
-  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
-  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1],
-              original_->GetPointsPerDirection()[1] + original_->GetKnotVector(1)->GetNumberOfDifferentKnots() - 1);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0],
+              original_->GetPointsPerDirection()[0] + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
 }
 
 TEST_F(A2DBSplineForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
@@ -407,5 +408,5 @@ TEST_F(Random2DBSplineForDegreeElevation, HasMoreControlPoints) {  // NOLINT
 }
 
 TEST_F(Random2DBSplineForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1), true);
 }
