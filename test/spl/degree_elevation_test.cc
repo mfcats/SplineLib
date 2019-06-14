@@ -12,7 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <irit_writer.h>
+//#include <irit_writer.h>
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
@@ -285,10 +285,10 @@ TEST_F(Random1DNURBSForDegreeElevation, HasMoreControlPoints) {  // NOLINT
 }
 
 TEST_F(Random1DNURBSForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
-  io::IRITWriter writer;
-  std::any before = std::make_any<std::shared_ptr<spl::NURBS<1>>>(original_);
-  std::any after = std::make_any<std::shared_ptr<spl::NURBS<1>>>(after_elevation_);
-  writer.WriteFile({before, after}, "degree_elevation.itd");
+//  io::IRITWriter writer;
+//  std::any before = std::make_any<std::shared_ptr<spl::NURBS<1>>>(original_);
+//  std::any after = std::make_any<std::shared_ptr<spl::NURBS<1>>>(after_elevation_);
+//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.01), true);
 }
 
@@ -336,10 +336,10 @@ class A2DBSplineForDegreeElevation : public Test {  // NOLINT
 TEST_F(A2DBSplineForDegreeElevation, HasELevatedDegree) {  // NOLINT
   PrintSpline(original_);
   PrintSpline(after_elevation_);
-  io::IRITWriter writer;
-  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
-  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
-  writer.WriteFile({before, after}, "degree_elevation.itd");
+//  io::IRITWriter writer;
+//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
+//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
+//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
 }
@@ -363,6 +363,87 @@ TEST_F(A2DBSplineForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevat
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
 }
 
+class A2DBSplineForDegreeElevationInDirection1 : public Test {  // NOLINT
+ public:
+  A2DBSplineForDegreeElevationInDirection1() {
+    std::array<Degree, 2> degree = {Degree{1}, Degree{2}};
+    KnotVectors<2> knot_vector_before = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                         ParamCoord{1}})),
+                                         std::make_shared<baf::KnotVector>(
+                                             baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                              ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{0.6},
+                                                              ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    KnotVectors<2> knot_vector_after = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
+                         ParamCoord{1}})),
+                                        std::make_shared<baf::KnotVector>(
+                                            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
+                                                             ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{0.6},
+                                                             ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 1.0})),
+
+        baf::ControlPoint(std::vector<double>({1.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({1.5, 2.5})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 3.0})),
+        baf::ControlPoint(std::vector<double>({2.5, 3.5})),
+
+        baf::ControlPoint(std::vector<double>({3.0, 3.0})),
+        baf::ControlPoint(std::vector<double>({3.5, 4.0})),
+
+        baf::ControlPoint(std::vector<double>({3.0, 4.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 5.0}))
+    };
+    original_ = std::make_shared<spl::BSpline<2>>(knot_vector_before, degree, control_points);
+    after_elevation_ = std::make_shared<spl::BSpline<2>>(knot_vector_after, degree, control_points);
+    after_elevation_->ElevateDegree(1);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<2>> original_;
+  std::shared_ptr<spl::BSpline<2>> after_elevation_;
+};
+
+TEST_F(A2DBSplineForDegreeElevationInDirection1, HasELevatedDegree) {  // NOLINT
+  PrintSpline(original_);
+  PrintSpline(after_elevation_);
+//  io::IRITWriter writer;
+//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
+//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
+//  writer.WriteFile({before, after}, "degree_elevation.itd");
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get());
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get() + 1);
+}
+
+TEST_F(A2DBSplineForDegreeElevationInDirection1, HasMoreKnots) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(1)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(), original_->GetKnotVector(0)->GetNumberOfKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(),
+              original_->GetKnotVector(1)->GetNumberOfKnots()
+                  + original_->GetKnotVector(1)->GetNumberOfDifferentKnots());
+}
+
+TEST_F(A2DBSplineForDegreeElevationInDirection1, HasMoreControlPoints) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1],
+              original_->GetPointsPerDirection()[1] + original_->GetKnotVector(1)->GetNumberOfDifferentKnots() - 1);
+}
+
+TEST_F(A2DBSplineForDegreeElevationInDirection1, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  PrintSpline(original_);
+  PrintSpline(after_elevation_);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.1), true);
+}
+
 class Random2DBSplineForDegreeElevation : public Test {  // NOLINT
  public:
   Random2DBSplineForDegreeElevation() {
@@ -384,10 +465,10 @@ class Random2DBSplineForDegreeElevation : public Test {  // NOLINT
 TEST_F(Random2DBSplineForDegreeElevation, HasELevatedDegree) {  // NOLINT
   PrintSpline(original_);
   PrintSpline(after_elevation_);
-  io::IRITWriter writer;
-  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
-  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
-  writer.WriteFile({before, after}, "degree_elevation.itd");
+//  io::IRITWriter writer;
+//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
+//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
+//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get());
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get() + 1);
 }

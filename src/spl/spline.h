@@ -225,7 +225,7 @@ parameter_space) {
       SetNewBezierSegmentControlPoints(new_bez_cps[i], dimension, i);
     }
     parameter_space_->ElevateDegree(dimension);
-    RemoveBezierKnots(diff, dimension);
+//    RemoveBezierKnots(diff, dimension);
   }
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
@@ -300,22 +300,31 @@ parameter_space) {
     int length = GetNumberOfControlPoints() / points_per_direction[dimension];
     int segment_width = GetPointDim() * (GetDegree(dimension).get() + 1);
     auto p = GetPointDim() * (GetDegree(dimension).get() + 1) * length;
-    std::vector<double> bezier_cps; // (static_cast<size_t>(GetPointDim() * (GetDegree(dimension).get() + 1) * length));
+    std::vector<double> bezier_cps(GetPointDim() * (GetDegree(dimension).get() + 1) * length);
     if (!old_) {
       for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
         auto a = point_handler.Get1DIndex();
         auto b1 = point_handler[0];
         auto b2 = point_handler[1];
-        auto c = point_handler.Get1DIndex() % points_per_direction[dimension];
+        auto c = point_handler[dimension]; //point_handler.Get1DIndex() % points_per_direction[dimension];
         auto
             d = c >= segment * (GetDegree(dimension).get() + 1) && c < (segment + 1) * (GetDegree(dimension).get() + 1);
         auto e = point_handler.Get1DIndex() / points_per_direction[dimension];
         if (d) {
           for (int j = 0; j < GetPointDim(); ++j) {
             auto f = e * segment_width + (c % (GetDegree(dimension).get() + 1)) * GetPointDim() + j;
+//            auto p = (c % width) * length + (point_handler.Get1DIndex() % c);
+//            auto p1 = c % width;
+//            auto p2 = point_handler.Get1DIndex() % c;
+//            auto p3 = p1 * length;
+//            auto p4 = p2 + p3;
+            auto r = point_handler.ExtractDimension(dimension);
+            auto q = c % width + point_handler.ExtractDimension(dimension) * width;
+            auto qpd = q * GetPointDim() + j;
             auto g = GetControlPoint(point_handler.GetIndices(), j);
 //            bezier_cps[e * segment_width + c * GetPointDim() + j] = GetControlPoint(point_handler.GetIndices(), j);
-            bezier_cps.emplace_back(GetControlPoint(point_handler.GetIndices(), j));
+//            bezier_cps.emplace_back(GetControlPoint(point_handler.GetIndices(), j));
+            bezier_cps[qpd] = GetControlPoint(point_handler.GetIndices(), j);
           }
         }
       }
@@ -353,9 +362,16 @@ parameter_space) {
     if (!old_) {
 
       for (int k = 0; k < point_handler.Get1DLength(); ++k, ++point_handler) {
-        auto i = point_handler[dimension];
+        auto i = point_handler[0];
         auto p = point_handler.Get1DIndex(); // point_handler.ExtractDimension(dimension);
         for (int j = 0; j < GetPointDim(); ++j) {
+          auto i1 = p * GetPointDim() + j;
+          auto i2 = (p - 1) * GetPointDim() + j;
+          auto c1 = bezier_cps[i1];
+          auto c2 = bezier_cps[i2];
+          auto e1 = (1 - alpha[i]);
+          auto e2 = alpha[i];
+          auto n = e1 * c1 + e2 * c2;
           coord[j] =
               (1 - alpha[i]) * bezier_cps[p * GetPointDim() + j] + alpha[i] * bezier_cps[(p - 1) * GetPointDim() + j];
         }
@@ -409,7 +425,7 @@ parameter_space) {
     int length = GetNumberOfControlPoints() / points_per_direction[dimension];
     int segment_width = GetPointDim() * (GetDegree(dimension).get() + 1);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      auto c = point_handler.Get1DIndex() % points_per_direction[dimension];
+      auto c = point_handler[dimension]; // point_handler.Get1DIndex() % points_per_direction[dimension];
       auto
           d = c > segment * (GetDegree(dimension).get() + 1) && c <= (segment + 1) * (GetDegree(dimension).get() + 1);
       auto e = point_handler.Get1DIndex() / points_per_direction[dimension];
@@ -420,9 +436,16 @@ parameter_space) {
       if (d) {
         auto m = e * width + c;
         auto n = e * (width + 1) + (c - 1) % (GetDegree(dimension).get() + 1) + 1;
+        auto p1 = (c - 1) % width;
+        auto p2 = point_handler.ExtractDimension(dimension);
+        auto p3 = p2 * (width + 1);
+        auto p4 = p1 + p3 + 1;
+        auto q1 = new_bezier_cps[p4].GetValue(0);
+        auto q2 = new_bezier_cps[p4].GetValue(1);
         auto s = new_bezier_cps[n].GetValue(0);
         auto t = new_bezier_cps[n].GetValue(1);
-        GetPhysicalSpace()->SetControlPoint(point_handler.GetIndices(), new_bezier_cps[n]);
+//        GetPhysicalSpace()->SetControlPoint(point_handler.GetIndices(), new_bezier_cps[n]);
+        GetPhysicalSpace()->SetControlPoint(point_handler.GetIndices(), new_bezier_cps[p4]);
       }
     }
 
