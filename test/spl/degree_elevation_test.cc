@@ -249,48 +249,48 @@ TEST_F(Random1DBSplineForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeE
   ASSERT_THAT(after_elevation->AreGeometricallyEqual(*original_), true);
 }
 
-class Random1DNURBSForDegreeElevation : public Test {  // NOLINT
- public:
-  Random1DNURBSForDegreeElevation() {
-    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
-    spl::RandomNURBSGenerator<1> spline_generator(limits, 5, 3);
-    spl::NURBS<1> nurbs(spline_generator);
-    original_ = std::make_shared<spl::NURBS<1>>(nurbs);
-
-    spl::NURBS<1> elevation_spline(nurbs);
-    elevation_spline.ElevateDegree(0);
-    after_elevation_ = std::make_shared<spl::NURBS<1>>(elevation_spline);
-  }
-
- protected:
-  std::shared_ptr<spl::NURBS<1>> original_;
-  std::shared_ptr<spl::NURBS<1>> after_elevation_;
-};
-
-TEST_F(Random1DNURBSForDegreeElevation, HasELevatedDegree) {  // NOLINT
-  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
-}
-
-TEST_F(Random1DNURBSForDegreeElevation, HasMoreKnots) {  // NOLINT
-  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
-              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
-  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
-              original_->GetKnotVector(0)->GetNumberOfKnots()
-                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
-}
-
-TEST_F(Random1DNURBSForDegreeElevation, HasMoreControlPoints) {  // NOLINT
-  ASSERT_THAT(after_elevation_->GetNumberOfControlPoints(),
-              original_->GetNumberOfControlPoints() + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
-}
-
-TEST_F(Random1DNURBSForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
-//  io::IRITWriter writer;
-//  std::any before = std::make_any<std::shared_ptr<spl::NURBS<1>>>(original_);
-//  std::any after = std::make_any<std::shared_ptr<spl::NURBS<1>>>(after_elevation_);
-//  writer.WriteFile({before, after}, "degree_elevation.itd");
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.01), true);
-}
+//class Random1DNURBSForDegreeElevation : public Test {  // NOLINT
+// public:
+//  Random1DNURBSForDegreeElevation() {
+//    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+//    spl::RandomNURBSGenerator<1> spline_generator(limits, 5, 3);
+//    spl::NURBS<1> nurbs(spline_generator);
+//    original_ = std::make_shared<spl::NURBS<1>>(nurbs);
+//
+//    spl::NURBS<1> elevation_spline(nurbs);
+//    elevation_spline.ElevateDegree(0);
+//    after_elevation_ = std::make_shared<spl::NURBS<1>>(elevation_spline);
+//  }
+//
+// protected:
+//  std::shared_ptr<spl::NURBS<1>> original_;
+//  std::shared_ptr<spl::NURBS<1>> after_elevation_;
+//};
+//
+//TEST_F(Random1DNURBSForDegreeElevation, HasELevatedDegree) {  // NOLINT
+//  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+//}
+//
+//TEST_F(Random1DNURBSForDegreeElevation, HasMoreKnots) {  // NOLINT
+//  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+//              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+//  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+//              original_->GetKnotVector(0)->GetNumberOfKnots()
+//                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+//}
+//
+//TEST_F(Random1DNURBSForDegreeElevation, HasMoreControlPoints) {  // NOLINT
+//  ASSERT_THAT(after_elevation_->GetNumberOfControlPoints(),
+//              original_->GetNumberOfControlPoints() + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+//}
+//
+//TEST_F(Random1DNURBSForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+////  io::IRITWriter writer;
+////  std::any before = std::make_any<std::shared_ptr<spl::NURBS<1>>>(original_);
+////  std::any after = std::make_any<std::shared_ptr<spl::NURBS<1>>>(after_elevation_);
+////  writer.WriteFile({before, after}, "degree_elevation.itd");
+//  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.01), true);
+//}
 
 class A2DBSplineForDegreeElevation : public Test {  // NOLINT
  public:
@@ -1052,11 +1052,11 @@ TEST_F(Random3DBSplineForDegreeElevationInDirection0, ElevatesDegreeInAllDirecti
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
 }
 
-class Random4DBSplineForDegreeElevationInDirection0 : public Test {  // NOLINT
+class Random4DBSplineForDegreeElevationInDirection3 : public Test {  // NOLINT
  public:
-  Random4DBSplineForDegreeElevationInDirection0() {
+  Random4DBSplineForDegreeElevationInDirection3() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
-    spl::RandomBSplineGenerator<4> spline_generator(limits, 4, 3);
+    spl::RandomBSplineGenerator<4> spline_generator(limits, 2, 3);
     spl::BSpline<4> b_spline(spline_generator);
     original_ = std::make_shared<spl::BSpline<4>>(b_spline);
 
@@ -1070,44 +1070,44 @@ class Random4DBSplineForDegreeElevationInDirection0 : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<4>> after_elevation_;
 };
 
-TEST_F(Random4DBSplineForDegreeElevationInDirection0, HasELevatedDegree) {  // NOLINT
+TEST_F(Random4DBSplineForDegreeElevationInDirection3, HasELevatedDegree) {  // NOLINT
   PrintSpline(original_);
   PrintSpline(after_elevation_);
 //  io::IRITWriter writer;
 //  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
 //  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
 //  writer.WriteFile({before, after}, "degree_elevation.itd");
-  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get());
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
   ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get());
-  ASSERT_THAT(after_elevation_->GetDegree(3).get(), original_->GetDegree(3).get());
+  ASSERT_THAT(after_elevation_->GetDegree(3).get(), original_->GetDegree(3).get() + 1);
 }
 
-TEST_F(Random4DBSplineForDegreeElevationInDirection0, HasMoreKnots) {  // NOLINT
+TEST_F(Random4DBSplineForDegreeElevationInDirection3, HasMoreKnots) {  // NOLINT
   ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
               original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
-  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
-              original_->GetKnotVector(0)->GetNumberOfKnots()
-                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(), original_->GetKnotVector(0)->GetNumberOfKnots());
   ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(), original_->GetKnotVector(1)->GetNumberOfKnots());
   ASSERT_THAT(after_elevation_->GetKnotVector(2)->GetNumberOfKnots(), original_->GetKnotVector(2)->GetNumberOfKnots());
-  ASSERT_THAT(after_elevation_->GetKnotVector(3)->GetNumberOfKnots(), original_->GetKnotVector(3)->GetNumberOfKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(3)->GetNumberOfKnots(),
+              original_->GetKnotVector(3)->GetNumberOfKnots()
+                  + original_->GetKnotVector(3)->GetNumberOfDifferentKnots());
 }
 
-TEST_F(Random4DBSplineForDegreeElevationInDirection0, HasMoreControlPoints) {  // NOLINT
-  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0],
-              original_->GetPointsPerDirection()[0] + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+TEST_F(Random4DBSplineForDegreeElevationInDirection3, HasMoreControlPoints) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
   ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
   ASSERT_THAT(after_elevation_->GetPointsPerDirection()[2], original_->GetPointsPerDirection()[2]);
-  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[3], original_->GetPointsPerDirection()[3]);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[3],
+              original_->GetPointsPerDirection()[3] + original_->GetKnotVector(3)->GetNumberOfDifferentKnots() - 1);
 }
 
-TEST_F(Random4DBSplineForDegreeElevationInDirection0, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+TEST_F(Random4DBSplineForDegreeElevationInDirection3, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
 }
 
-TEST_F(Random4DBSplineForDegreeElevationInDirection0, ElevatesDegreeInAllDirections) {  // NOLINT
-  after_elevation_->ElevateDegree(1);
-  after_elevation_->ElevateDegree(2);
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
-}
+//TEST_F(Random4DBSplineForDegreeElevationInDirection0, ElevatesDegreeInAllDirections) {  // NOLINT
+//  after_elevation_->ElevateDegree(1);
+//  after_elevation_->ElevateDegree(2);
+//  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+//}
