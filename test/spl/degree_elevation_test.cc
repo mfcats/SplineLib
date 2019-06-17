@@ -12,7 +12,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-//#include <irit_writer.h>
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
@@ -21,57 +20,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "random_nurbs_generator.h"
 
 using testing::Test;
-
-template<int DIM>
-void PrintSpline(std::shared_ptr<spl::BSpline<DIM>> spline) {
-  std::cout << std::endl << "degrees:" << std::endl;
-  for (int i = 0; i < DIM; ++i) {
-    std::cout << spline->GetDegree(i).get() << "   ";
-  }
-  std::cout << std::endl << std::endl << "knot vectors:" << std::endl;
-  for (int i = 0; i < DIM; ++i) {
-    auto kv = spline->GetKnotVector(i);
-    for (const auto &knot : *kv) {
-      std::cout << knot.get() << "  ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl << "control points:" << std::endl;
-  for (int i = 0; i < spline->GetNumberOfControlPoints(); ++i) {
-    for (int j = 0; j < spline->GetPointDim(); ++j) {
-      std::cout << spline->GetControlPoint({i}, j) << "  ";
-    }
-    std::cout << std::endl;
-  }
-}
-
-template<int DIM>
-void PrintSpline(std::shared_ptr<spl::NURBS<DIM>> spline) {
-  std::cout << std::endl << "degrees:" << std::endl;
-  for (int i = 0; i < DIM; ++i) {
-    std::cout << spline->GetDegree(i).get() << "   ";
-  }
-  std::cout << std::endl << std::endl << "knot vectors:" << std::endl;
-  for (int i = 0; i < DIM; ++i) {
-    auto kv = spline->GetKnotVector(i);
-    for (const auto &knot : *kv) {
-      std::cout << knot.get() << "  ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl << "control points:" << std::endl;
-  for (int i = 0; i < spline->GetNumberOfControlPoints(); ++i) {
-    for (int j = 0; j < spline->GetPointDim(); ++j) {
-      std::cout << spline->GetControlPoint({i}, j) << "  ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl << "weights:" << std::endl;
-  for (int i = 0; i < spline->GetNumberOfControlPoints(); ++i) {
-    std::cout << spline->GetWeight({i}) << "  ";
-  }
-  std::cout << std::endl;
-}
 
 class BSpline1DFig5_35 : public Test {  // NOLINT
  public:
@@ -203,7 +151,6 @@ TEST_F(AQuadraticBSpline, ElevatesDegreeFrom2To3Correctly) {  // NOLINT
   auto test = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
 
   bspline_1d_after_->ElevateDegree(0);
-  PrintSpline(bspline_1d_after_);
   ASSERT_THAT(bspline_1d_after_->AreEqual(*test), true);
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*test), true);
   ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*test), true);
@@ -334,12 +281,6 @@ class A2DBSplineForDegreeElevation : public Test {  // NOLINT
 };
 
 TEST_F(A2DBSplineForDegreeElevation, HasELevatedDegree) {  // NOLINT
-  PrintSpline(original_);
-  PrintSpline(after_elevation_);
-//  io::IRITWriter writer;
-//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
-//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
-//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
 }
@@ -427,7 +368,7 @@ TEST_F(A2DBSplineForDegreeElevation, HasELevatedDegreeTwiceInDirection0andOnceIn
               original_->GetPointsPerDirection()[1]
                   + 1 * (original_->GetKnotVector(1)->GetNumberOfDifferentKnots() - 1));
 
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-10), true);
 }
 
 TEST_F(A2DBSplineForDegreeElevation, HasELevatedDegreeTwiceInDirection0and1) {  // NOLINT
@@ -453,7 +394,7 @@ TEST_F(A2DBSplineForDegreeElevation, HasELevatedDegreeTwiceInDirection0and1) {  
               original_->GetPointsPerDirection()[1]
                   + 2 * (original_->GetKnotVector(1)->GetNumberOfDifferentKnots() - 1));
 
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000000001), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-12), true);
 }
 
 class A2DBSplineForDegreeElevationInDirection1 : public Test {  // NOLINT
@@ -504,12 +445,6 @@ class A2DBSplineForDegreeElevationInDirection1 : public Test {  // NOLINT
 };
 
 TEST_F(A2DBSplineForDegreeElevationInDirection1, HasELevatedDegree) {  // NOLINT
-  PrintSpline(original_);
-  PrintSpline(after_elevation_);
-//  io::IRITWriter writer;
-//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
-//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
-//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get());
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get() + 1);
 }
@@ -532,8 +467,6 @@ TEST_F(A2DBSplineForDegreeElevationInDirection1, HasMoreControlPoints) {  // NOL
 }
 
 TEST_F(A2DBSplineForDegreeElevationInDirection1, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
-  PrintSpline(original_);
-  PrintSpline(after_elevation_);
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
 }
 
@@ -556,12 +489,6 @@ class Random2DBSplineForDegreeElevationInDirection0 : public Test {  // NOLINT
 };
 
 TEST_F(Random2DBSplineForDegreeElevationInDirection0, HasELevatedDegree) {  // NOLINT
-  PrintSpline(original_);
-  PrintSpline(after_elevation_);
-//  io::IRITWriter writer;
-//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
-//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
-//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
 }
@@ -627,12 +554,6 @@ class Random2DBSplineForDegreeElevationInDirection1 : public Test {  // NOLINT
 };
 
 TEST_F(Random2DBSplineForDegreeElevationInDirection1, HasELevatedDegree) {  // NOLINT
-  PrintSpline(original_);
-  PrintSpline(after_elevation_);
-//  io::IRITWriter writer;
-//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
-//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
-//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get());
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get() + 1);
 }
@@ -716,12 +637,6 @@ class A3DBSplineForDegreeElevation : public Test {  // NOLINT
 };
 
 TEST_F(A3DBSplineForDegreeElevation, HasELevatedDegree) {  // NOLINT
-  PrintSpline(original_);
-  PrintSpline(after_elevation_);
-//  io::IRITWriter writer;
-//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
-//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
-//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
   ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get());
@@ -745,23 +660,23 @@ TEST_F(A3DBSplineForDegreeElevation, HasMoreControlPoints) {  // NOLINT
 }
 
 TEST_F(A3DBSplineForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-12), true);
 }
 
 TEST_F(A3DBSplineForDegreeElevation, ElevatesDegreeInDirection0and1and2) {  // NOLINT
   after_elevation_->ElevateDegree(1);
   after_elevation_->ElevateDegree(2);
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000000001), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-12), true);
 }
 
 TEST_F(A3DBSplineForDegreeElevation, ElevatesDegreeInDirection0and1) {  // NOLINT
   after_elevation_->ElevateDegree(1);
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000000001), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-12), true);
 }
 
 TEST_F(A3DBSplineForDegreeElevation, ElevatesDegreeInDirection0and2) {  // NOLINT
   after_elevation_->ElevateDegree(2);
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000000001), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-12), true);
 }
 
 class A3DBSplineForDegreeElevationInDirection1 : public Test {  // NOLINT
@@ -832,12 +747,6 @@ class A3DBSplineForDegreeElevationInDirection1 : public Test {  // NOLINT
 };
 
 TEST_F(A3DBSplineForDegreeElevationInDirection1, HasELevatedDegree) {  // NOLINT
-  PrintSpline(original_);
-  PrintSpline(after_elevation_);
-//  io::IRITWriter writer;
-//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
-//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
-//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get());
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get() + 1);
   ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get());
@@ -866,18 +775,18 @@ TEST_F(A3DBSplineForDegreeElevationInDirection1, DoesNotChangeGeometricallyAfter
 
 TEST_F(A3DBSplineForDegreeElevationInDirection1, ElevatesDegreeInDirection0and1) {  // NOLINT
   after_elevation_->ElevateDegree(0);
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-10), true);
 }
 
 TEST_F(A3DBSplineForDegreeElevationInDirection1, ElevatesDegreeInDirection1and2) {  // NOLINT
   after_elevation_->ElevateDegree(2);
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-10), true);
 }
 
 TEST_F(A3DBSplineForDegreeElevationInDirection1, ElevatesDegreeInDirection0and1and2) {  // NOLINT
   after_elevation_->ElevateDegree(0);
   after_elevation_->ElevateDegree(2);
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-10), true);
 }
 
 class A3DBSplineForDegreeElevationInDirection2 : public Test {  // NOLINT
@@ -948,12 +857,6 @@ class A3DBSplineForDegreeElevationInDirection2 : public Test {  // NOLINT
 };
 
 TEST_F(A3DBSplineForDegreeElevationInDirection2, HasELevatedDegree) {  // NOLINT
-  PrintSpline(original_);
-  PrintSpline(after_elevation_);
-//  io::IRITWriter writer;
-//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
-//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
-//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get());
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
   ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get() + 1);
@@ -982,18 +885,18 @@ TEST_F(A3DBSplineForDegreeElevationInDirection2, DoesNotChangeGeometricallyAfter
 
 TEST_F(A3DBSplineForDegreeElevationInDirection2, ElevatesDegreeInDirection0and2) {  // NOLINT
   after_elevation_->ElevateDegree(0);
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-12), true);
 }
 
 TEST_F(A3DBSplineForDegreeElevationInDirection2, ElevatesDegreeInDirection1and2) {  // NOLINT
   after_elevation_->ElevateDegree(1);
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-12), true);
 }
 
 TEST_F(A3DBSplineForDegreeElevationInDirection2, ElevatesDegreeInDirection0and1and2) {  // NOLINT
   after_elevation_->ElevateDegree(0);
   after_elevation_->ElevateDegree(1);
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-12), true);
 }
 
 class Random3DBSplineForDegreeElevationInDirection0 : public Test {  // NOLINT
@@ -1015,12 +918,6 @@ class Random3DBSplineForDegreeElevationInDirection0 : public Test {  // NOLINT
 };
 
 TEST_F(Random3DBSplineForDegreeElevationInDirection0, HasELevatedDegree) {  // NOLINT
-  PrintSpline(original_);
-  PrintSpline(after_elevation_);
-//  io::IRITWriter writer;
-//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
-//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
-//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
   ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get());
@@ -1071,12 +968,6 @@ class Random4DBSplineForDegreeElevationInDirection3 : public Test {  // NOLINT
 };
 
 TEST_F(Random4DBSplineForDegreeElevationInDirection3, HasELevatedDegree) {  // NOLINT
-  PrintSpline(original_);
-  PrintSpline(after_elevation_);
-//  io::IRITWriter writer;
-//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
-//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
-//  writer.WriteFile({before, after}, "degree_elevation.itd");
   ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get());
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
   ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get());

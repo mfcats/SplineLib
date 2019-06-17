@@ -289,124 +289,58 @@ parameter_space) {
   }
 
   std::vector<double> GetBezierSegment(int dimension, int segment) const {
-    int first = segment * (GetDegree(dimension).get() + 1);
-    auto points_per_direction = GetPointsPerDirection();
-    util::MultiIndexHandler<DIM> point_handler(points_per_direction);
+    util::MultiIndexHandler<DIM> point_handler(GetPointsPerDirection());
     int width = GetDegree(dimension).get() + 1;
-    int length = GetNumberOfControlPoints() / points_per_direction[dimension];
+    int length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     int segment_width = GetPointDim() * (GetDegree(dimension).get() + 1);
-    auto p = GetPointDim() * (GetDegree(dimension).get() + 1) * length;
-    std::vector<double> bezier_cps(GetPointDim() * (GetDegree(dimension).get() + 1) * length);
-      for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-        auto a = point_handler.Get1DIndex();
-        auto b1 = point_handler[0];
-        auto b2 = point_handler[1];
-        auto c = point_handler[dimension]; //point_handler.Get1DIndex() % points_per_direction[dimension];
-        auto
-            d = c >= segment * (GetDegree(dimension).get() + 1) && c < (segment + 1) * (GetDegree(dimension).get() + 1);
-        auto e = point_handler.Get1DIndex() / points_per_direction[dimension];
-        if (d) {
-          for (int j = 0; j < GetPointDim(); ++j) {
-            auto f = e * segment_width + (c % (GetDegree(dimension).get() + 1)) * GetPointDim() + j;
-//            auto p = (c % width) * length + (point_handler.Get1DIndex() % c);
-//            auto p1 = c % width;
-//            auto p2 = point_handler.Get1DIndex() % c;
-//            auto p3 = p1 * length;
-//            auto p4 = p2 + p3;
-            auto r = point_handler.ExtractDimension(dimension);
-            auto q = c % width + point_handler.ExtractDimension(dimension) * width;
-            auto qpd = q * GetPointDim() + j;
-            auto g = GetControlPoint(point_handler.GetIndices(), j);
-//            bezier_cps[e * segment_width + c * GetPointDim() + j] = GetControlPoint(point_handler.GetIndices(), j);
-//            bezier_cps.emplace_back(GetControlPoint(point_handler.GetIndices(), j));
-            bezier_cps[qpd] = GetControlPoint(point_handler.GetIndices(), j);
-          }
+    std::vector<double> bezier_cps(segment_width * length);
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      auto index_in_dir = point_handler[dimension];
+      if (index_in_dir >= segment * (GetDegree(dimension).get() + 1)
+          && index_in_dir < (segment + 1) * (GetDegree(dimension).get() + 1)) {
+        for (int j = 0; j < GetPointDim(); ++j) {
+          auto index = (index_in_dir % width + point_handler.ExtractDimension(dimension) * width) * GetPointDim() + j;
+          bezier_cps[index] = GetControlPoint(point_handler.GetIndices(), j);
         }
       }
-
-    std::cout << std::endl << "Bezier control points:" << std::endl;
-    std::cout << bezier_cps.size() << std::endl;
-    for (const auto p : bezier_cps) {
-      std::cout << p << "  ";
     }
-    std::cout << std::endl;
-
     return bezier_cps;
   }
 
   std::vector<baf::ControlPoint> DegreeElevateBezierSegment(std::vector<double> bezier_cps,
                                                             std::vector<double> alpha,
                                                             int dimension) const {
-    auto points_per_direction = GetPointsPerDirection();
     int width = GetDegree(dimension).get() + 1;
-    int length = GetNumberOfControlPoints() / points_per_direction[dimension];
-    int segment_width = GetPointDim() * (GetDegree(dimension).get() + 1);
+    int length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     util::MultiIndexHandler<2> point_handler({width, length});
-
     std::vector<baf::ControlPoint> cps;
     std::vector<double> coord(static_cast<size_t>(GetPointDim()));
-
-      for (int k = 0; k < point_handler.Get1DLength(); ++k, ++point_handler) {
-        auto i = point_handler[0];
-        auto p = point_handler.Get1DIndex(); // point_handler.ExtractDimension(dimension);
-        for (int j = 0; j < GetPointDim(); ++j) {
-          auto i1 = p * GetPointDim() + j;
-          auto i2 = (p - 1) * GetPointDim() + j;
-          auto c1 = bezier_cps[i1];
-          auto c2 = bezier_cps[i2];
-          auto e1 = (1 - alpha[i]);
-          auto e2 = alpha[i];
-          auto n = e1 * c1 + e2 * c2;
-          coord[j] =
-              (1 - alpha[i]) * bezier_cps[p * GetPointDim() + j] + alpha[i] * bezier_cps[(p - 1) * GetPointDim() + j];
-        }
-//        if (i >= 0 && i < GetDegree(dimension).get() + 1) {
-//          for (int j = 0; j < GetPointDim(); ++j) {
-//            coord[j] =
-//                (1 - alpha[i]) * bezier_cps[p * GetPointDim() + j] + alpha[i] * bezier_cps[(p - 1) * GetPointDim() + j];
-//          }
-        cps.emplace_back(baf::ControlPoint(coord));
-//        }
-        if (point_handler[0] == GetDegree(dimension).get()) {
-          for (int j = 0; j < GetPointDim(); ++j) {
-            auto a = point_handler[0] * segment_width + GetDegree(dimension).get() * GetPointDim() + j;
-            auto b = point_handler.Get1DIndex();
-            coord[j] = bezier_cps[b * GetPointDim() + j];
-          }
-          cps.emplace_back(baf::ControlPoint(coord));
-        }
+    for (int k = 0; k < point_handler.Get1DLength(); ++k, ++point_handler) {
+      auto index = point_handler[0];
+      auto pos = point_handler.Get1DIndex();
+      for (int j = 0; j < GetPointDim(); ++j) {
+        coord[j] = (1 - alpha[index]) * bezier_cps[pos * GetPointDim() + j]
+            + alpha[index] * bezier_cps[(pos - 1) * GetPointDim() + j];
       }
-
-    std::cout << std::endl << "degree elevated bezier segment: " << std::endl;
-    std::cout << cps.size() << "  " << cps.size() * GetPointDim() << std::endl;
-    for (const auto &y : cps) {
-      for (int i = 0; i < GetPointDim(); ++i) {
-        std::cout << y.GetValue(i) << "  ";
+      cps.emplace_back(baf::ControlPoint(coord));
+      if (point_handler[0] == GetDegree(dimension).get()) {
+        for (int j = 0; j < GetPointDim(); ++j) {
+          coord[j] = bezier_cps[point_handler.Get1DIndex() * GetPointDim() + j];
+        }
+        cps.emplace_back(baf::ControlPoint(coord));
       }
     }
-    std::cout << std::endl;
-
     return cps;
   }
 
   void SetNewBezierSegmentControlPoints(std::vector<baf::ControlPoint> new_bezier_cps, int dimension, int segment) {
-    int first = segment * (GetDegree(dimension).get() + 1);
-    auto points_per_direction = GetPointsPerDirection();
-    util::MultiIndexHandler<DIM> point_handler(points_per_direction);
+    util::MultiIndexHandler<DIM> point_handler(GetPointsPerDirection());
     int width = GetDegree(dimension).get() + 1;
-    int length = GetNumberOfControlPoints() / points_per_direction[dimension];
-    int segment_width = GetPointDim() * (GetDegree(dimension).get() + 1);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      auto c = point_handler[dimension]; // point_handler.Get1DIndex() % points_per_direction[dimension];
-      auto
-          d = c > segment * (GetDegree(dimension).get() + 1) && c <= (segment + 1) * (GetDegree(dimension).get() + 1);
-      auto e = point_handler.Get1DIndex() / points_per_direction[dimension];
-      auto f = new_bezier_cps.size();
-
-      auto g = point_handler[0];
-      auto h = point_handler[1];
-      if (d) {
-        auto index = (c - 1) % width + point_handler.ExtractDimension(dimension) * (width + 1) + 1;
+      auto index_in_dir = point_handler[dimension];
+      if (index_in_dir > segment * (GetDegree(dimension).get() + 1)
+          && index_in_dir <= (segment + 1) * (GetDegree(dimension).get() + 1)) {
+        auto index = (index_in_dir - 1) % width + point_handler.ExtractDimension(dimension) * (width + 1) + 1;
         GetPhysicalSpace()->SetControlPoint(point_handler.GetIndices(), new_bezier_cps[index]);
       }
     }
