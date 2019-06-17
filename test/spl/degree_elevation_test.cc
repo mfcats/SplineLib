@@ -363,6 +363,99 @@ TEST_F(A2DBSplineForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevat
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
 }
 
+TEST_F(A2DBSplineForDegreeElevation, HasELevatedDegreeInDirection0and1) {  // NOLINT
+  after_elevation_->ElevateDegree(1);
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get() + 1);
+
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(),
+              original_->GetKnotVector(1)->GetNumberOfKnots()
+                  + original_->GetKnotVector(1)->GetNumberOfDifferentKnots());
+
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0],
+              original_->GetPointsPerDirection()[0] + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1],
+              original_->GetPointsPerDirection()[1] + original_->GetKnotVector(1)->GetNumberOfDifferentKnots() - 1);
+
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(A2DBSplineForDegreeElevation, HasELevatedDegreeTwiceInDirection0) {  // NOLINT
+  after_elevation_->ElevateDegree(0);
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 2);
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
+
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + 2 * original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(), original_->GetKnotVector(1)->GetNumberOfKnots());
+
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0],
+              original_->GetPointsPerDirection()[0]
+                  + 2 * (original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1));
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(A2DBSplineForDegreeElevation, HasELevatedDegreeTwiceInDirection0andOnceInDirection1) {  // NOLINT
+  after_elevation_->ElevateDegree(0);
+  after_elevation_->ElevateDegree(1);
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 2);
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get() + 1);
+
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + 2 * original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(),
+              original_->GetKnotVector(1)->GetNumberOfKnots()
+                  + 1 * original_->GetKnotVector(1)->GetNumberOfDifferentKnots());
+
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0],
+              original_->GetPointsPerDirection()[0]
+                  + 2 * (original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1));
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1],
+              original_->GetPointsPerDirection()[1]
+                  + 1 * (original_->GetKnotVector(1)->GetNumberOfDifferentKnots() - 1));
+
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(A2DBSplineForDegreeElevation, HasELevatedDegreeTwiceInDirection0and1) {  // NOLINT
+  after_elevation_->ElevateDegree(0);
+  after_elevation_->ElevateDegree(1);
+  after_elevation_->ElevateDegree(1);
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 2);
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get() + 2);
+
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + 2 * original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(),
+              original_->GetKnotVector(1)->GetNumberOfKnots()
+                  + 2 * original_->GetKnotVector(1)->GetNumberOfDifferentKnots());
+
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0],
+              original_->GetPointsPerDirection()[0]
+                  + 2 * (original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1));
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1],
+              original_->GetPointsPerDirection()[1]
+                  + 2 * (original_->GetKnotVector(1)->GetNumberOfDifferentKnots() - 1));
+
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000000001), true);
+}
+
 class A2DBSplineForDegreeElevationInDirection1 : public Test {  // NOLINT
  public:
   A2DBSplineForDegreeElevationInDirection1() {
@@ -441,12 +534,83 @@ TEST_F(A2DBSplineForDegreeElevationInDirection1, HasMoreControlPoints) {  // NOL
 TEST_F(A2DBSplineForDegreeElevationInDirection1, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
   PrintSpline(original_);
   PrintSpline(after_elevation_);
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.1), true);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
 }
 
-class Random2DBSplineForDegreeElevation : public Test {  // NOLINT
+class Random2DBSplineForDegreeElevationInDirection0 : public Test {  // NOLINT
  public:
-  Random2DBSplineForDegreeElevation() {
+  Random2DBSplineForDegreeElevationInDirection0() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomBSplineGenerator<2> spline_generator(limits, 2, 3);
+    spl::BSpline<2> b_spline(spline_generator);
+    original_ = std::make_shared<spl::BSpline<2>>(b_spline);
+
+    spl::BSpline<2> elevation_spline(b_spline);
+    elevation_spline.ElevateDegree(0);
+    after_elevation_ = std::make_shared<spl::BSpline<2>>(elevation_spline);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<2>> original_;
+  std::shared_ptr<spl::BSpline<2>> after_elevation_;
+};
+
+TEST_F(Random2DBSplineForDegreeElevationInDirection0, HasELevatedDegree) {  // NOLINT
+  PrintSpline(original_);
+  PrintSpline(after_elevation_);
+//  io::IRITWriter writer;
+//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
+//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
+//  writer.WriteFile({before, after}, "degree_elevation.itd");
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
+}
+
+TEST_F(Random2DBSplineForDegreeElevationInDirection0, HasMoreKnots) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(), original_->GetKnotVector(1)->GetNumberOfKnots());
+}
+
+TEST_F(Random2DBSplineForDegreeElevationInDirection0, HasMoreControlPoints) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0],
+              original_->GetPointsPerDirection()[0] + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+}
+
+TEST_F(Random2DBSplineForDegreeElevationInDirection0, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random2DBSplineForDegreeElevationInDirection0, ElevatesDegreeTwiceInDirection0) {  // NOLINT
+  after_elevation_->ElevateDegree(0);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random2DBSplineForDegreeElevationInDirection0, ElevatesDegreeInDirection0and1) {  // NOLINT
+  after_elevation_->ElevateDegree(1);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random2DBSplineForDegreeElevationInDirection0, ElevatesDegreeInDirection0andTwiceInDirection1) {  // NOLINT
+  after_elevation_->ElevateDegree(1);
+  after_elevation_->ElevateDegree(1);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random2DBSplineForDegreeElevationInDirection0, ElevatesDegreeTwiceInDirection0and1) {  // NOLINT
+  after_elevation_->ElevateDegree(0);
+  after_elevation_->ElevateDegree(1);
+  after_elevation_->ElevateDegree(1);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+class Random2DBSplineForDegreeElevationInDirection1 : public Test {  // NOLINT
+ public:
+  Random2DBSplineForDegreeElevationInDirection1() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
     spl::RandomBSplineGenerator<2> spline_generator(limits, 2, 3);
     spl::BSpline<2> b_spline(spline_generator);
@@ -462,7 +626,7 @@ class Random2DBSplineForDegreeElevation : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<2>> after_elevation_;
 };
 
-TEST_F(Random2DBSplineForDegreeElevation, HasELevatedDegree) {  // NOLINT
+TEST_F(Random2DBSplineForDegreeElevationInDirection1, HasELevatedDegree) {  // NOLINT
   PrintSpline(original_);
   PrintSpline(after_elevation_);
 //  io::IRITWriter writer;
@@ -473,7 +637,7 @@ TEST_F(Random2DBSplineForDegreeElevation, HasELevatedDegree) {  // NOLINT
   ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get() + 1);
 }
 
-TEST_F(Random2DBSplineForDegreeElevation, HasMoreKnots) {  // NOLINT
+TEST_F(Random2DBSplineForDegreeElevationInDirection1, HasMoreKnots) {  // NOLINT
   ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
               original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
   ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(), original_->GetKnotVector(0)->GetNumberOfKnots());
@@ -482,12 +646,468 @@ TEST_F(Random2DBSplineForDegreeElevation, HasMoreKnots) {  // NOLINT
                   + original_->GetKnotVector(1)->GetNumberOfDifferentKnots());
 }
 
-TEST_F(Random2DBSplineForDegreeElevation, HasMoreControlPoints) {  // NOLINT
+TEST_F(Random2DBSplineForDegreeElevationInDirection1, HasMoreControlPoints) {  // NOLINT
   ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
   ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1],
               original_->GetPointsPerDirection()[1] + original_->GetKnotVector(1)->GetNumberOfDifferentKnots() - 1);
 }
 
-TEST_F(Random2DBSplineForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
-  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1), true);
+TEST_F(Random2DBSplineForDegreeElevationInDirection1, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+class A3DBSplineForDegreeElevation : public Test {  // NOLINT
+ public:
+  A3DBSplineForDegreeElevation() {
+    std::array<Degree, 3> degree = {Degree{2}, Degree{1}, Degree{1}};
+    KnotVectors<3> knot_vector_before = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{0.6},
+             ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+    KnotVectors<3> knot_vector_after = {
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6},
+                             ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 2.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 2.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({3.0, 3.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({3.0, 4.0, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.5, 2.5, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.5, 3.5, 0.0})),
+        baf::ControlPoint(std::vector<double>({3.5, 4.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 5.0, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 2.0, 1.5})),
+        baf::ControlPoint(std::vector<double>({2.0, 2.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 2.5})),
+        baf::ControlPoint(std::vector<double>({3.0, 3.0, 1.5})),
+        baf::ControlPoint(std::vector<double>({3.0, 4.0, 1.0})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.5, 2.5, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 2.5})),
+        baf::ControlPoint(std::vector<double>({2.5, 3.5, 3.0})),
+        baf::ControlPoint(std::vector<double>({3.5, 4.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 5.0, 1.0}))
+    };
+    original_ = std::make_shared<spl::BSpline<3>>(knot_vector_before, degree, control_points);
+    after_elevation_ = std::make_shared<spl::BSpline<3>>(knot_vector_after, degree, control_points);
+    after_elevation_->ElevateDegree(0);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<3>> original_;
+  std::shared_ptr<spl::BSpline<3>> after_elevation_;
+};
+
+TEST_F(A3DBSplineForDegreeElevation, HasELevatedDegree) {  // NOLINT
+  PrintSpline(original_);
+  PrintSpline(after_elevation_);
+//  io::IRITWriter writer;
+//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
+//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
+//  writer.WriteFile({before, after}, "degree_elevation.itd");
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
+  ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get());
+}
+
+TEST_F(A3DBSplineForDegreeElevation, HasMoreKnots) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(), original_->GetKnotVector(1)->GetNumberOfKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(2)->GetNumberOfKnots(), original_->GetKnotVector(2)->GetNumberOfKnots());
+}
+
+TEST_F(A3DBSplineForDegreeElevation, HasMoreControlPoints) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0],
+              original_->GetPointsPerDirection()[0] + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[2], original_->GetPointsPerDirection()[2]);
+}
+
+TEST_F(A3DBSplineForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(A3DBSplineForDegreeElevation, ElevatesDegreeInDirection0and1and2) {  // NOLINT
+  after_elevation_->ElevateDegree(1);
+  after_elevation_->ElevateDegree(2);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000000001), true);
+}
+
+TEST_F(A3DBSplineForDegreeElevation, ElevatesDegreeInDirection0and1) {  // NOLINT
+  after_elevation_->ElevateDegree(1);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000000001), true);
+}
+
+TEST_F(A3DBSplineForDegreeElevation, ElevatesDegreeInDirection0and2) {  // NOLINT
+  after_elevation_->ElevateDegree(2);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000000001), true);
+}
+
+class A3DBSplineForDegreeElevationInDirection1 : public Test {  // NOLINT
+ public:
+  A3DBSplineForDegreeElevationInDirection1() {
+    std::array<Degree, 3> degree = {Degree{1}, Degree{2}, Degree{1}};
+    KnotVectors<3> knot_vector_before = {
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{0.6},
+             ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+    KnotVectors<3> knot_vector_after = {
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6},
+                             ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 1.0, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({1.0, 2.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.5, 2.5, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 2.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.5, 3.5, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({3.0, 3.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({3.5, 4.0, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({3.0, 4.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 5.0, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 1.0, 1.0})),
+
+        baf::ControlPoint(std::vector<double>({1.0, 2.0, 1.5})),
+        baf::ControlPoint(std::vector<double>({1.5, 2.5, 2.0})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 2.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 2.5})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 2.5})),
+        baf::ControlPoint(std::vector<double>({2.5, 3.5, 3.0})),
+
+        baf::ControlPoint(std::vector<double>({3.0, 3.0, 1.5})),
+        baf::ControlPoint(std::vector<double>({3.5, 4.0, 2.0})),
+
+        baf::ControlPoint(std::vector<double>({3.0, 4.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 5.0, 1.0}))
+    };
+    original_ = std::make_shared<spl::BSpline<3>>(knot_vector_before, degree, control_points);
+    after_elevation_ = std::make_shared<spl::BSpline<3>>(knot_vector_after, degree, control_points);
+    after_elevation_->ElevateDegree(1);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<3>> original_;
+  std::shared_ptr<spl::BSpline<3>> after_elevation_;
+};
+
+TEST_F(A3DBSplineForDegreeElevationInDirection1, HasELevatedDegree) {  // NOLINT
+  PrintSpline(original_);
+  PrintSpline(after_elevation_);
+//  io::IRITWriter writer;
+//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
+//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
+//  writer.WriteFile({before, after}, "degree_elevation.itd");
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get());
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get() + 1);
+  ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get());
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection1, HasMoreKnots) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(), original_->GetKnotVector(0)->GetNumberOfKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(),
+              original_->GetKnotVector(1)->GetNumberOfKnots()
+                  + original_->GetKnotVector(1)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(2)->GetNumberOfKnots(), original_->GetKnotVector(2)->GetNumberOfKnots());
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection1, HasMoreControlPoints) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1],
+              original_->GetPointsPerDirection()[1] + original_->GetKnotVector(1)->GetNumberOfDifferentKnots() - 1);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[2], original_->GetPointsPerDirection()[2]);
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection1, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection1, ElevatesDegreeInDirection0and1) {  // NOLINT
+  after_elevation_->ElevateDegree(0);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection1, ElevatesDegreeInDirection1and2) {  // NOLINT
+  after_elevation_->ElevateDegree(2);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection1, ElevatesDegreeInDirection0and1and2) {  // NOLINT
+  after_elevation_->ElevateDegree(0);
+  after_elevation_->ElevateDegree(2);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+}
+
+class A3DBSplineForDegreeElevationInDirection2 : public Test {  // NOLINT
+ public:
+  A3DBSplineForDegreeElevationInDirection2() {
+    std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{2}};
+    KnotVectors<3> knot_vector_before = {
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{0.6},
+             ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    KnotVectors<3> knot_vector_after = {
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+        std::make_shared<baf::KnotVector>(
+            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6},
+                             ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 1.0, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 1.0, 1.0})),
+
+        baf::ControlPoint(std::vector<double>({1.0, 2.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({1.5, 2.5, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({1.0, 2.0, 1.5})),
+        baf::ControlPoint(std::vector<double>({1.5, 2.5, 2.0})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 2.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 2.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 2.5})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({2.5, 3.5, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 2.5})),
+        baf::ControlPoint(std::vector<double>({2.5, 3.5, 3.0})),
+
+        baf::ControlPoint(std::vector<double>({3.0, 3.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({3.5, 4.0, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({3.0, 3.0, 1.5})),
+        baf::ControlPoint(std::vector<double>({3.5, 4.0, 2.0})),
+
+        baf::ControlPoint(std::vector<double>({3.0, 4.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 5.0, 0.0})),
+
+        baf::ControlPoint(std::vector<double>({3.0, 4.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({5.0, 5.0, 1.0}))
+    };
+    original_ = std::make_shared<spl::BSpline<3>>(knot_vector_before, degree, control_points);
+    after_elevation_ = std::make_shared<spl::BSpline<3>>(knot_vector_after, degree, control_points);
+    after_elevation_->ElevateDegree(2);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<3>> original_;
+  std::shared_ptr<spl::BSpline<3>> after_elevation_;
+};
+
+TEST_F(A3DBSplineForDegreeElevationInDirection2, HasELevatedDegree) {  // NOLINT
+  PrintSpline(original_);
+  PrintSpline(after_elevation_);
+//  io::IRITWriter writer;
+//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
+//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
+//  writer.WriteFile({before, after}, "degree_elevation.itd");
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get());
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
+  ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get() + 1);
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection2, HasMoreKnots) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(), original_->GetKnotVector(0)->GetNumberOfKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(), original_->GetKnotVector(1)->GetNumberOfKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(2)->GetNumberOfKnots(),
+              original_->GetKnotVector(2)->GetNumberOfKnots()
+                  + original_->GetKnotVector(2)->GetNumberOfDifferentKnots());
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection2, HasMoreControlPoints) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[2],
+              original_->GetPointsPerDirection()[2] + original_->GetKnotVector(2)->GetNumberOfDifferentKnots() - 1);
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection2, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection2, ElevatesDegreeInDirection0and2) {  // NOLINT
+  after_elevation_->ElevateDegree(0);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection2, ElevatesDegreeInDirection1and2) {  // NOLINT
+  after_elevation_->ElevateDegree(1);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+}
+
+TEST_F(A3DBSplineForDegreeElevationInDirection2, ElevatesDegreeInDirection0and1and2) {  // NOLINT
+  after_elevation_->ElevateDegree(0);
+  after_elevation_->ElevateDegree(1);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.00000000001), true);
+}
+
+class Random3DBSplineForDegreeElevationInDirection0 : public Test {  // NOLINT
+ public:
+  Random3DBSplineForDegreeElevationInDirection0() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomBSplineGenerator<3> spline_generator(limits, 4, 3);
+    spl::BSpline<3> b_spline(spline_generator);
+    original_ = std::make_shared<spl::BSpline<3>>(b_spline);
+
+    spl::BSpline<3> elevation_spline(b_spline);
+    elevation_spline.ElevateDegree(0);
+    after_elevation_ = std::make_shared<spl::BSpline<3>>(elevation_spline);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<3>> original_;
+  std::shared_ptr<spl::BSpline<3>> after_elevation_;
+};
+
+TEST_F(Random3DBSplineForDegreeElevationInDirection0, HasELevatedDegree) {  // NOLINT
+  PrintSpline(original_);
+  PrintSpline(after_elevation_);
+//  io::IRITWriter writer;
+//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
+//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
+//  writer.WriteFile({before, after}, "degree_elevation.itd");
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
+  ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get());
+}
+
+TEST_F(Random3DBSplineForDegreeElevationInDirection0, HasMoreKnots) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(), original_->GetKnotVector(1)->GetNumberOfKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(2)->GetNumberOfKnots(), original_->GetKnotVector(2)->GetNumberOfKnots());
+}
+
+TEST_F(Random3DBSplineForDegreeElevationInDirection0, HasMoreControlPoints) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0],
+              original_->GetPointsPerDirection()[0] + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+}
+
+TEST_F(Random3DBSplineForDegreeElevationInDirection0, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random3DBSplineForDegreeElevationInDirection0, ElevatesDegreeInAllDirections) {  // NOLINT
+  after_elevation_->ElevateDegree(1);
+  after_elevation_->ElevateDegree(2);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+class Random4DBSplineForDegreeElevationInDirection0 : public Test {  // NOLINT
+ public:
+  Random4DBSplineForDegreeElevationInDirection0() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomBSplineGenerator<4> spline_generator(limits, 4, 3);
+    spl::BSpline<4> b_spline(spline_generator);
+    original_ = std::make_shared<spl::BSpline<4>>(b_spline);
+
+    spl::BSpline<4> elevation_spline(b_spline);
+    elevation_spline.ElevateDegree(3);
+    after_elevation_ = std::make_shared<spl::BSpline<4>>(elevation_spline);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<4>> original_;
+  std::shared_ptr<spl::BSpline<4>> after_elevation_;
+};
+
+TEST_F(Random4DBSplineForDegreeElevationInDirection0, HasELevatedDegree) {  // NOLINT
+  PrintSpline(original_);
+  PrintSpline(after_elevation_);
+//  io::IRITWriter writer;
+//  std::any before = std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_);
+//  std::any after = std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_elevation_);
+//  writer.WriteFile({before, after}, "degree_elevation.itd");
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
+  ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get());
+  ASSERT_THAT(after_elevation_->GetDegree(3).get(), original_->GetDegree(3).get());
+}
+
+TEST_F(Random4DBSplineForDegreeElevationInDirection0, HasMoreKnots) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(), original_->GetKnotVector(1)->GetNumberOfKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(2)->GetNumberOfKnots(), original_->GetKnotVector(2)->GetNumberOfKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(3)->GetNumberOfKnots(), original_->GetKnotVector(3)->GetNumberOfKnots());
+}
+
+TEST_F(Random4DBSplineForDegreeElevationInDirection0, HasMoreControlPoints) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0],
+              original_->GetPointsPerDirection()[0] + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[2], original_->GetPointsPerDirection()[2]);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[3], original_->GetPointsPerDirection()[3]);
+}
+
+TEST_F(Random4DBSplineForDegreeElevationInDirection0, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random4DBSplineForDegreeElevationInDirection0, ElevatesDegreeInAllDirections) {  // NOLINT
+  after_elevation_->ElevateDegree(1);
+  after_elevation_->ElevateDegree(2);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
 }

@@ -225,7 +225,7 @@ parameter_space) {
       SetNewBezierSegmentControlPoints(new_bez_cps[i], dimension, i);
     }
     parameter_space_->ElevateDegree(dimension);
-//    RemoveBezierKnots(diff, dimension);
+    RemoveBezierKnots(diff, dimension);
   }
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
