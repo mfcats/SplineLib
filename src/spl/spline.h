@@ -238,6 +238,7 @@ parameter_space) {
     }
     // Assemble the computed control points into the physical space of the spline.
     for (int i = static_cast<int>(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2); i >= 0; --i) {
+      // TODO: Segfault occurs when executing the function above. Probably a control point is missing.
       SetNewBezierSegmentControlPoints(all_new_bezier_cps[i], dimension, i);
     }
     // Remove one entry of the first and last knot.
@@ -253,14 +254,19 @@ parameter_space) {
   std::vector<baf::ControlPoint> DegreeReduceBezierSegment(std::vector<double> bezier_cps, int dimension) const {
     uint64_t r = (GetDegree(dimension).get() - 1) / 2;
     // New control points.
-    std::vector<baf::ControlPoint> cps;
+    std::vector<std::vector<double>> cps(static_cast<unsigned long>(GetDegree(dimension).get()));
     // Vector of length sdim (number of space dimensions).
     std::vector<double> coord(static_cast<unsigned long>(GetPointDim()));
     // First control point of the degree reduced bezier segment is equal to the original first control point.
     for (uint64_t j = 0; j < GetPointDim(); ++j) {
       coord[j] = bezier_cps[j];
     }
-    cps.emplace_back(baf::ControlPoint(coord));
+    cps[0] = coord;
+    // Last control point of the degree reduced bezier segment is equal to the original last control point.
+    for (uint64_t j = 0; j < GetPointDim(); ++j) {
+      coord[j] = bezier_cps[GetDegree(dimension).get() * GetPointDim() + j];
+    }
+    cps[GetDegree(dimension).get() - 1] = coord;
     // Loop through the new control points P_i for i = 1,...,r-1.
     for (uint64_t i = 1; i <= r - 1; ++i) {
       // Compute the degree elevation coeffiecient alpha_i for the current control point.
@@ -269,27 +275,27 @@ parameter_space) {
       for (uint64_t j = 0; j < GetPointDim(); ++j) {
         // Compute the new control point P_i as a function of P_i-1, the old control point Q_i and the degree elevation
         // coefficient alpha_i.
-        coord[j] = (bezier_cps[i * GetPointDim() + j] - alpha_i * cps[i - 1].GetValue(j)) / (1 - alpha_i);
+        coord[j] = (bezier_cps[i * GetPointDim() + j] - alpha_i * cps[i - 1][j]) / (1 - alpha_i);
       }
-      cps.emplace_back(baf::ControlPoint(coord));
+      cps[i] = coord;
     }
     // Compute the new control point P_r depending on whether the degree p is even or odd.
     if (GetDegree(dimension).get() % 2 == 0) {
       uint64_t alpha_i = r / GetDegree(dimension).get();
       for (uint64_t j = 0; j < GetPointDim(); ++j) {
-        coord[j] = (bezier_cps[r * GetPointDim() + j] - alpha_i * cps[r - 1].GetValue(j)) / (1 - alpha_i);
+        coord[j] = (bezier_cps[r * GetPointDim() + j] - alpha_i * cps[r - 1][j]) / (1 - alpha_i);
       }
     } else {
       uint64_t alpha_r_L = r / GetDegree(dimension).get();
       uint64_t alpha_r_R = (r + 1) / GetDegree(dimension).get();
       for (uint64_t j = 0; j < GetPointDim(); ++j) {
-        double P_r_L = (bezier_cps[r * GetPointDim() + j] - alpha_r_L * cps[r - 1].GetValue(j)) / (1 - alpha_r_L);
-        double P_r_R = (bezier_cps[(r + 1) * GetPointDim() + j] - (1 - alpha_r_R) * cps[(r + 1) - 1].GetValue(j))
+        double P_r_L = (bezier_cps[r * GetPointDim() + j] - alpha_r_L * cps[r - 1][j]) / (1 - alpha_r_L);
+        double P_r_R = (bezier_cps[(r + 1) * GetPointDim() + j] - (1 - alpha_r_R) * cps[(r + 1) - 1][j])
                        / (1 - alpha_r_R);
         coord[j] = 0.5 * (P_r_L + P_r_R);
       }
     }
-    cps.emplace_back(baf::ControlPoint(coord));
+    cps[r] = coord;
     // Loop though the remaining new control points P_i for i = p-2,...,r+1.
     for (uint64_t i = r + 1; i <= GetDegree(dimension).get() - 2; ++i) {
       // Compute the degree elevation coeffiecient alpha_i for the current control point.
@@ -298,17 +304,16 @@ parameter_space) {
       for (uint64_t j = 0; j < GetPointDim(); ++j) {
         // Compute the new control point P_i as a function of P_i-1, the old control point Q_i and the degree elevation
         // coefficient alpha_i.
-        // TODO: When accessing bezier_cps a segmentation fault occurs! There has to be something wrong with the index!
-        coord[j] = (bezier_cps[(i + 1) * GetPointDim() + j] - (1 - alpha_i) * cps[i + 1].GetValue(j)) / alpha_i;
+        coord[j] = (bezier_cps[(i + 1) * GetPointDim() + j] - (1 - alpha_i) * cps[i + 1][j]) / alpha_i;
       }
-      cps.emplace_back(baf::ControlPoint(coord));
+      cps[i] = coord;
     }
-    // Last control point of the degree reduced bezier segment is equal to the original last control point.
-    for (uint64_t j = 0; j < GetPointDim(); ++j) {
-      coord[j] = bezier_cps[GetDegree(dimension).get() * GetPointDim() + j];
+    // Create vector of baf::ControlPoint out of the cps vector.
+    std::vector<baf::ControlPoint> cps_;
+    for (uint64_t i = 0; i < cps_.size(); ++i) {
+      cps_.emplace_back(baf::ControlPoint(cps[i]));
     }
-    cps.emplace_back(baf::ControlPoint(coord));
-    return cps;
+    return cps_;
   }
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
