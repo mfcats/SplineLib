@@ -327,8 +327,6 @@ parameter_space) {
       auto index = point_handler[0];
       auto pos = point_handler.Get1DIndex();
       for (int j = 0; j < GetPointDim(); ++j) {
-        auto a = bezier_cps[pos * GetPointDim() + j];
-        auto b = alpha[index];
         coord[j] = (1 - alpha[index]) * bezier_cps[pos * GetPointDim() + j]
             + alpha[index] * bezier_cps[(pos - 1) * GetPointDim() + j];
       }
