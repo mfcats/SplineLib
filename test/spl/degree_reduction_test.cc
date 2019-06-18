@@ -76,13 +76,13 @@ TEST_F(BSpline1DFig5_39, ReducesDegreeFrom4To3Correctly) {  // NOLINT
 
   PrintSpline(bspline_1d_after_);
 
-  /* // Write spline after degree reduction to VTK file for visualization.
+  // Write spline after degree reduction to VTK file for visualization.
   std::vector<std::any> splines;
   splines.emplace_back(std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_after_));
-  // splines.emplace_back(std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_));
+  splines.emplace_back(std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_));
   io::VTKWriter vtk_writer;
-  vtk_writer.WriteFile(splines, "/Users/christophsusen/Desktop/test.vtk", {{40}});
-  // vtk_writer.WriteFile(splines, "/Users/christophsusen/Desktop/test.vtk", {{40}, {40}}); */
+  // vtk_writer.WriteFile(splines, "/Users/christophsusen/Desktop/test.vtk", {{40}});
+  vtk_writer.WriteFile(splines, "/Users/christophsusen/Desktop/test.vtk", {{40}, {40}});
 
   /* ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 4);
