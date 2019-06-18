@@ -127,6 +127,35 @@ class NURBS : public Spline<DIM> {
     return subdivided_splines;
   }
 
+  void ElevateDegree(int dimension) override {
+    std::vector<double> alpha = this->ComputeBezierDegreeElevationCoeffients(dimension);
+    auto diff = this->ProduceBezierSegments(dimension);
+    std::cout << std::endl;
+    for (int i = 0; i < GetPhysicalSpace()->GetNumberOfControlPoints(); ++i) {
+      for (int j = 0; j < this->GetPointDim(); ++j) {
+        std::cout << GetPhysicalSpace()->GetControlPoint({i}).GetValue(j) << "  ";
+      }
+      std::cout << physical_space_->GetWeight({i});
+      std::cout << std::endl;
+    }
+    std::cout << std::endl;
+    std::vector<std::vector<baf::ControlPoint>>
+        new_bez_cps(this->GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1);
+    std::vector<std::vector<double>> new_bez_wgts(this->GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1);
+    for (int i = static_cast<int>(this->GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2); i >= 0; --i) {
+      new_bez_cps[i] = DegreeElevateBezierSegment(GetBezierSegment(dimension, i), alpha, dimension);
+      new_bez_wgts[i] = DegreeElevateBezierSegmentWeights(GetBezierSegment(dimension, i), alpha, dimension);
+    }
+    this->InsertKnot(this->GetKnotVector(dimension)->GetLastKnot(), dimension);
+    this->parameter_space_->InsertKnot(this->GetKnotVector(dimension)->GetKnot(0), dimension);
+    for (int i = static_cast<int>(this->GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2); i >= 0; --i) {
+      SetNewBezierSegmentControlPoints(new_bez_cps[i], dimension, i);
+      SetNewBezierSegmentWeights(new_bez_wgts[i], dimension, i);
+    }
+    this->parameter_space_->ElevateDegree(dimension);
+    this->RemoveBezierKnots(diff, dimension);
+  }
+
  private:
   std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const override {
     return physical_space_;
@@ -435,6 +464,125 @@ class NURBS : public Spline<DIM> {
       }
     }
     return true;
+  }
+
+  std::vector<double> GetBezierSegment(int dimension, int segment) const override {
+    util::MultiIndexHandler<DIM> point_handler(this->GetPointsPerDirection());
+    int width = this->GetDegree(dimension).get() + 1;
+    int length = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
+    int segment_width = (this->GetPointDim() + 1) * (this->GetDegree(dimension).get() + 1);
+    std::vector<double> bezier_cps(segment_width * length);
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      auto index_in_dir = point_handler[dimension];
+      if (index_in_dir >= segment * (this->GetDegree(dimension).get() + 1)
+          && index_in_dir < (segment + 1) * (this->GetDegree(dimension).get() + 1)) {
+        for (int j = 0; j < this->GetPointDim(); ++j) {
+          auto index =
+              (index_in_dir % width + point_handler.ExtractDimension(dimension) * width) * (this->GetPointDim() + 1)
+                  + j;
+          bezier_cps[index] = this->GetControlPoint(point_handler.GetIndices(), j);
+        }
+        auto index =
+            (index_in_dir % width + point_handler.ExtractDimension(dimension) * width) * (this->GetPointDim() + 1)
+                + this->GetPointDim();
+        bezier_cps[index] = this->GetWeight(point_handler.GetIndices());
+      }
+    }
+    return bezier_cps;
+  }
+
+  std::vector<baf::ControlPoint> DegreeElevateBezierSegment(std::vector<double> bezier_cps,
+                                                            std::vector<double> alpha,
+                                                            int dimension) const override {
+    int width = this->GetDegree(dimension).get() + 1;
+    int length = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
+    util::MultiIndexHandler<2> point_handler({width, length});
+    std::vector<baf::ControlPoint> cps;
+    std::vector<double> coord(static_cast<size_t>(this->GetPointDim()));
+    for (int k = 0; k < point_handler.Get1DLength(); ++k, ++point_handler) {
+      auto index = point_handler[0];
+      auto pos = point_handler.Get1DIndex();
+      for (int j = 0; j < this->GetPointDim(); ++j) {
+        auto a = bezier_cps[pos * (this->GetPointDim() + 1) + j];
+        auto b = bezier_cps[pos * (this->GetPointDim() + 1) + this->GetPointDim()];
+        auto c = a * b;
+        auto d = alpha[index];
+        coord[j] = (1 - alpha[index]) * bezier_cps[pos * (this->GetPointDim() + 1) + j] *
+            bezier_cps[pos * (this->GetPointDim() + 1) + this->GetPointDim()]
+            + alpha[index] * bezier_cps[(pos - 1) * (this->GetPointDim() + 1) + j] *
+                bezier_cps[(pos - 1) * (this->GetPointDim() + 1) + this->GetPointDim()];
+        auto e = coord[j];
+        auto neww = (1 - alpha[index]) * bezier_cps[pos * (this->GetPointDim() + 1) + this->GetPointDim()]
+            + alpha[index] * bezier_cps[(pos - 1) * (this->GetPointDim() + 1) + this->GetPointDim()];
+        coord[j] /= neww;
+        auto f = coord[j];
+        int op = 0;
+      }
+      cps.emplace_back(baf::ControlPoint(coord));
+      if (point_handler[0] == this->GetDegree(dimension).get()) {
+        for (int j = 0; j < this->GetPointDim(); ++j) {
+          auto a = bezier_cps[point_handler.Get1DIndex() * (this->GetPointDim() + 1) + j];
+          auto b = bezier_cps[point_handler.Get1DIndex() * (this->GetPointDim() + 1) + this->GetPointDim()];
+          auto c = a * b;
+          coord[j] = bezier_cps[point_handler.Get1DIndex() * (this->GetPointDim() + 1) + j]
+              * bezier_cps[point_handler.Get1DIndex() * (this->GetPointDim() + 1) + this->GetPointDim()];
+          auto e = coord[j];
+          auto neww = bezier_cps[point_handler.Get1DIndex() * (this->GetPointDim() + 1) + this->GetPointDim()];
+          coord[j] /= neww;
+          auto f = coord[j];
+          int op = 0;
+        }
+        cps.emplace_back(baf::ControlPoint(coord));
+      }
+    }
+    return cps;
+  }
+
+  std::vector<double> DegreeElevateBezierSegmentWeights(std::vector<double> bezier_cps,
+                                                        std::vector<double> alpha,
+                                                        int dimension) const {
+    int width = this->GetDegree(dimension).get() + 1;
+    int length = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
+    util::MultiIndexHandler<2> point_handler({width, length});
+    std::vector<double> weights;
+    for (int k = 0; k < point_handler.Get1DLength(); ++k, ++point_handler) {
+      auto index = point_handler[0];
+      auto pos = point_handler.Get1DIndex();
+      auto neww = (1 - alpha[index]) * bezier_cps[pos * (this->GetPointDim() + 1) + this->GetPointDim()]
+          + alpha[index] * bezier_cps[(pos - 1) * (this->GetPointDim() + 1) + this->GetPointDim()];
+      weights.emplace_back(neww);
+      if (point_handler[0] == this->GetDegree(dimension).get()) {
+        neww = bezier_cps[point_handler.Get1DIndex() * (this->GetPointDim() + 1) + this->GetPointDim()];
+        weights.emplace_back(neww);
+      }
+    }
+    return weights;
+  }
+
+  void SetNewBezierSegmentControlPoints(std::vector<baf::ControlPoint> new_bezier_cps, int dimension, int segment) {
+    util::MultiIndexHandler<DIM> point_handler(this->GetPointsPerDirection());
+    int width = this->GetDegree(dimension).get() + 1;
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      auto index_in_dir = point_handler[dimension];
+      if (index_in_dir > segment * (this->GetDegree(dimension).get() + 1)
+          && index_in_dir <= (segment + 1) * (this->GetDegree(dimension).get() + 1)) {
+        auto index = (index_in_dir - 1) % width + point_handler.ExtractDimension(dimension) * (width + 1) + 1;
+        GetPhysicalSpace()->SetControlPoint(point_handler.GetIndices(), new_bezier_cps[index]);
+      }
+    }
+  }
+
+  void SetNewBezierSegmentWeights(std::vector<double> new_weights, int dimension, int segment) {
+    util::MultiIndexHandler<DIM> point_handler(this->GetPointsPerDirection());
+    int width = this->GetDegree(dimension).get() + 1;
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      auto index_in_dir = point_handler[dimension];
+      if (index_in_dir > segment * (this->GetDegree(dimension).get() + 1)
+          && index_in_dir <= (segment + 1) * (this->GetDegree(dimension).get() + 1)) {
+        auto index = (index_in_dir - 1) % width + point_handler.ExtractDimension(dimension) * (width + 1) + 1;
+        physical_space_->SetWeight(point_handler.GetIndices(), new_weights[index]);
+      }
+    }
   }
 
   std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_;

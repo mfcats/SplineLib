@@ -19,6 +19,57 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "random_b_spline_generator.h"
 #include "random_nurbs_generator.h"
 
+template<int DIM>
+void PrintSpline(std::shared_ptr<spl::BSpline<DIM>> spline) {
+  std::cout << std::endl << "degrees:" << std::endl;
+  for (int i = 0; i < DIM; ++i) {
+    std::cout << spline->GetDegree(i).get() << "   ";
+  }
+  std::cout << std::endl << std::endl << "knot vectors:" << std::endl;
+  for (int i = 0; i < DIM; ++i) {
+    auto kv = spline->GetKnotVector(i);
+    for (const auto &knot : *kv) {
+      std::cout << knot.get() << "  ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl << "control points:" << std::endl;
+  for (int i = 0; i < spline->GetNumberOfControlPoints(); ++i) {
+    for (int j = 0; j < spline->GetPointDim(); ++j) {
+      std::cout << spline->GetControlPoint({i}, j) << "  ";
+    }
+    std::cout << std::endl;
+  }
+}
+
+template<int DIM>
+void PrintSpline(std::shared_ptr<spl::NURBS<DIM>> spline) {
+  std::cout << std::endl << "degrees:" << std::endl;
+  for (int i = 0; i < DIM; ++i) {
+    std::cout << spline->GetDegree(i).get() << "   ";
+  }
+  std::cout << std::endl << std::endl << "knot vectors:" << std::endl;
+  for (int i = 0; i < DIM; ++i) {
+    auto kv = spline->GetKnotVector(i);
+    for (const auto &knot : *kv) {
+      std::cout << knot.get() << "  ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl << "control points:" << std::endl;
+  for (int i = 0; i < spline->GetNumberOfControlPoints(); ++i) {
+    for (int j = 0; j < spline->GetPointDim(); ++j) {
+      std::cout << spline->GetControlPoint({i}, j) << "  ";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl << "weights:" << std::endl;
+  for (int i = 0; i < spline->GetNumberOfControlPoints(); ++i) {
+    std::cout << spline->GetWeight({i}) << "  ";
+  }
+  std::cout << std::endl;
+}
+
 using testing::Test;
 
 class BSpline1DFig5_35 : public Test {  // NOLINT
@@ -101,6 +152,90 @@ TEST_F(ALinearBSpline, ElevatesDegreeFrom1To2Correctly) {  // NOLINT
   ASSERT_THAT(bspline_1d_after_->AreEqual(*test), true);
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*test), true);
   ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*test), true);
+  ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true);
+}
+
+class ALinearNURBS : public Test {  // NOLINT
+ public:
+  ALinearNURBS() {
+    std::array<Degree, 1> degree = {Degree{1}};
+    KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{1},
+                         ParamCoord{1}}))};
+    KnotVectors<1> knot_vector_after = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{1},
+                         ParamCoord{1}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0}))
+    };
+    std::vector<double> weights = {1.0, 1.5, 0.5, 1.0};
+    nurbs_1d_before_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
+    nurbs_1d_after_ = std::make_shared<spl::NURBS<1>>(knot_vector_after, degree, control_points, weights);
+  }
+
+ protected:
+  std::shared_ptr<spl::NURBS<1>> nurbs_1d_before_;
+  std::shared_ptr<spl::NURBS<1>> nurbs_1d_after_;
+};
+
+TEST_F(ALinearNURBS, ElevatesDegreeFrom1To2Correctly) {  // NOLINT
+  std::array<Degree, 1> degree = {Degree{2}};
+  KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(
+      baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.3}, ParamCoord{0.6},
+                       ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+  std::vector<baf::ControlPoint> control_points = {
+      baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+      baf::ControlPoint(std::vector<double>({1.0, 1.5})),
+      baf::ControlPoint(std::vector<double>({1.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({1.5, 2.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 2.0})),
+      baf::ControlPoint(std::vector<double>({2.0, 2.5})),
+      baf::ControlPoint(std::vector<double>({2.0, 3.0}))
+  };
+  std::vector<double> weights = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+  auto test = std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
+
+  PrintSpline(nurbs_1d_before_);
+  nurbs_1d_after_->ElevateDegree(0);
+  PrintSpline(nurbs_1d_after_);
+//  ASSERT_THAT(nurbs_1d_after_->AreEqual(*test), true);
+//  ASSERT_THAT(nurbs_1d_before_->AreGeometricallyEqual(*test), true);
+//  ASSERT_THAT(nurbs_1d_after_->AreGeometricallyEqual(*test), true);
+  ASSERT_THAT(nurbs_1d_after_->AreGeometricallyEqual(*nurbs_1d_before_), true);
+}
+
+class ALinearBSplineToCompare : public Test {  // NOLINT
+ public:
+  ALinearBSplineToCompare() {
+    std::array<Degree, 1> degree = {Degree{1}};
+    KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{1},
+                         ParamCoord{1}}))};
+    KnotVectors<1> knot_vector_after = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{1},
+                         ParamCoord{1}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.5, 3.0, 1.5})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0, 0.5})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0, 1.0}))
+    };
+    bspline_1d_before_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
+    bspline_1d_after_ = std::make_shared<spl::BSpline<1>>(knot_vector_after, degree, control_points);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<1>> bspline_1d_before_;
+  std::shared_ptr<spl::BSpline<1>> bspline_1d_after_;
+};
+
+TEST_F(ALinearBSplineToCompare, ElevatesDegreeFrom1To2Correctly) {  // NOLINT
+  PrintSpline(bspline_1d_before_);
+  bspline_1d_after_->ElevateDegree(0);
+  PrintSpline(bspline_1d_after_);
   ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true);
 }
 
@@ -196,48 +331,48 @@ TEST_F(Random1DBSplineForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeE
   ASSERT_THAT(after_elevation->AreGeometricallyEqual(*original_), true);
 }
 
-//class Random1DNURBSForDegreeElevation : public Test {  // NOLINT
-// public:
-//  Random1DNURBSForDegreeElevation() {
-//    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
-//    spl::RandomNURBSGenerator<1> spline_generator(limits, 5, 3);
-//    spl::NURBS<1> nurbs(spline_generator);
-//    original_ = std::make_shared<spl::NURBS<1>>(nurbs);
-//
-//    spl::NURBS<1> elevation_spline(nurbs);
-//    elevation_spline.ElevateDegree(0);
-//    after_elevation_ = std::make_shared<spl::NURBS<1>>(elevation_spline);
-//  }
-//
-// protected:
-//  std::shared_ptr<spl::NURBS<1>> original_;
-//  std::shared_ptr<spl::NURBS<1>> after_elevation_;
-//};
-//
-//TEST_F(Random1DNURBSForDegreeElevation, HasELevatedDegree) {  // NOLINT
-//  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
-//}
-//
-//TEST_F(Random1DNURBSForDegreeElevation, HasMoreKnots) {  // NOLINT
-//  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
-//              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
-//  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
-//              original_->GetKnotVector(0)->GetNumberOfKnots()
-//                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
-//}
-//
-//TEST_F(Random1DNURBSForDegreeElevation, HasMoreControlPoints) {  // NOLINT
-//  ASSERT_THAT(after_elevation_->GetNumberOfControlPoints(),
-//              original_->GetNumberOfControlPoints() + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
-//}
-//
-//TEST_F(Random1DNURBSForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
-////  io::IRITWriter writer;
-////  std::any before = std::make_any<std::shared_ptr<spl::NURBS<1>>>(original_);
-////  std::any after = std::make_any<std::shared_ptr<spl::NURBS<1>>>(after_elevation_);
-////  writer.WriteFile({before, after}, "degree_elevation.itd");
-//  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.01), true);
-//}
+class Random1DNURBSForDegreeElevation : public Test {  // NOLINT
+ public:
+  Random1DNURBSForDegreeElevation() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomNURBSGenerator<1> spline_generator(limits, 5, 3);
+    spl::NURBS<1> nurbs(spline_generator);
+    original_ = std::make_shared<spl::NURBS<1>>(nurbs);
+
+    spl::NURBS<1> elevation_spline(nurbs);
+    elevation_spline.ElevateDegree(0);
+    after_elevation_ = std::make_shared<spl::NURBS<1>>(elevation_spline);
+  }
+
+ protected:
+  std::shared_ptr<spl::NURBS<1>> original_;
+  std::shared_ptr<spl::NURBS<1>> after_elevation_;
+};
+
+TEST_F(Random1DNURBSForDegreeElevation, HasELevatedDegree) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+}
+
+TEST_F(Random1DNURBSForDegreeElevation, HasMoreKnots) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+}
+
+TEST_F(Random1DNURBSForDegreeElevation, HasMoreControlPoints) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetNumberOfControlPoints(),
+              original_->GetNumberOfControlPoints() + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+}
+
+TEST_F(Random1DNURBSForDegreeElevation, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+//  io::IRITWriter writer;
+//  std::any before = std::make_any<std::shared_ptr<spl::NURBS<1>>>(original_);
+//  std::any after = std::make_any<std::shared_ptr<spl::NURBS<1>>>(after_elevation_);
+//  writer.WriteFile({before, after}, "degree_elevation.itd");
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 0.01), true);
+}
 
 class A2DBSplineForDegreeElevation : public Test {  // NOLINT
  public:
@@ -944,6 +1079,56 @@ TEST_F(Random3DBSplineForDegreeElevationInDirection0, DoesNotChangeGeometrically
 }
 
 TEST_F(Random3DBSplineForDegreeElevationInDirection0, ElevatesDegreeInAllDirections) {  // NOLINT
+  after_elevation_->ElevateDegree(1);
+  after_elevation_->ElevateDegree(2);
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+class Random3DNURBSForDegreeElevationInDirection0 : public Test {  // NOLINT
+ public:
+  Random3DNURBSForDegreeElevationInDirection0() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomNURBSGenerator<3> spline_generator(limits, 4, 3);
+    spl::NURBS<3> b_spline(spline_generator);
+    original_ = std::make_shared<spl::NURBS<3>>(b_spline);
+
+    spl::NURBS<3> elevation_spline(b_spline);
+    elevation_spline.ElevateDegree(0);
+    after_elevation_ = std::make_shared<spl::NURBS<3>>(elevation_spline);
+  }
+
+ protected:
+  std::shared_ptr<spl::NURBS<3>> original_;
+  std::shared_ptr<spl::NURBS<3>> after_elevation_;
+};
+
+TEST_F(Random3DNURBSForDegreeElevationInDirection0, HasELevatedDegree) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+  ASSERT_THAT(after_elevation_->GetDegree(1).get(), original_->GetDegree(1).get());
+  ASSERT_THAT(after_elevation_->GetDegree(2).get(), original_->GetDegree(2).get());
+}
+
+TEST_F(Random3DNURBSForDegreeElevationInDirection0, HasMoreKnots) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots()
+                  + original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(1)->GetNumberOfKnots(), original_->GetKnotVector(1)->GetNumberOfKnots());
+  ASSERT_THAT(after_elevation_->GetKnotVector(2)->GetNumberOfKnots(), original_->GetKnotVector(2)->GetNumberOfKnots());
+}
+
+TEST_F(Random3DNURBSForDegreeElevationInDirection0, HasMoreControlPoints) {  // NOLINT
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[0],
+              original_->GetPointsPerDirection()[0] + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+  ASSERT_THAT(after_elevation_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+}
+
+TEST_F(Random3DNURBSForDegreeElevationInDirection0, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random3DNURBSForDegreeElevationInDirection0, ElevatesDegreeInAllDirections) {  // NOLINT
   after_elevation_->ElevateDegree(1);
   after_elevation_->ElevateDegree(2);
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
