@@ -19,28 +19,28 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "random_b_spline_generator.h"
 #include "random_nurbs_generator.h"
 
-template<int DIM>
-void PrintSpline(std::shared_ptr<spl::BSpline<DIM>> spline) {
-  std::cout << std::endl << "degrees:" << std::endl;
-  for (int i = 0; i < DIM; ++i) {
-    std::cout << spline->GetDegree(i).get() << "   ";
-  }
-  std::cout << std::endl << std::endl << "knot vectors:" << std::endl;
-  for (int i = 0; i < DIM; ++i) {
-    auto kv = spline->GetKnotVector(i);
-    for (const auto &knot : *kv) {
-      std::cout << knot.get() << "  ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl << "control points:" << std::endl;
-  for (int i = 0; i < spline->GetNumberOfControlPoints(); ++i) {
-    for (int j = 0; j < spline->GetPointDim(); ++j) {
-      std::cout << spline->GetControlPoint({i}, j) << "  ";
-    }
-    std::cout << std::endl;
-  }
-}
+//template<int DIM>
+//void PrintSpline(std::shared_ptr<spl::BSpline<DIM>> spline) {
+//  std::cout << std::endl << "degrees:" << std::endl;
+//  for (int i = 0; i < DIM; ++i) {
+//    std::cout << spline->GetDegree(i).get() << "   ";
+//  }
+//  std::cout << std::endl << std::endl << "knot vectors:" << std::endl;
+//  for (int i = 0; i < DIM; ++i) {
+//    auto kv = spline->GetKnotVector(i);
+//    for (const auto &knot : *kv) {
+//      std::cout << knot.get() << "  ";
+//    }
+//    std::cout << std::endl;
+//  }
+//  std::cout << std::endl << "control points:" << std::endl;
+//  for (int i = 0; i < spline->GetNumberOfControlPoints(); ++i) {
+//    for (int j = 0; j < spline->GetPointDim(); ++j) {
+//      std::cout << spline->GetControlPoint({i}, j) << "  ";
+//    }
+//    std::cout << std::endl;
+//  }
+//}
 
 template<int DIM>
 void PrintSpline(std::shared_ptr<spl::NURBS<DIM>> spline) {
@@ -233,9 +233,9 @@ class ALinearBSplineToCompare : public Test {  // NOLINT
 };
 
 TEST_F(ALinearBSplineToCompare, ElevatesDegreeFrom1To2Correctly) {  // NOLINT
-  PrintSpline(bspline_1d_before_);
+//  PrintSpline(bspline_1d_before_);
   bspline_1d_after_->ElevateDegree(0);
-  PrintSpline(bspline_1d_after_);
+//  PrintSpline(bspline_1d_after_);
   ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true);
 }
 

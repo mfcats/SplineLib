@@ -75,13 +75,8 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
   }
 
   void SetWeightedControlPoint(std::array<int, DIM> indices, baf::ControlPoint &control_point, double weight) {
-    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(this->number_of_points_);
-    point_handler.SetIndices(indices);
-    int first = this->dimension_ * point_handler.Get1DIndex();
-    for (int coordinate = 0; coordinate < this->dimension_; coordinate++) {
-      this->control_points_[first + coordinate] = control_point.GetValue(coordinate);
-    }
-    weights_[first] = weight;
+    this->SetControlPoint(indices, control_point);
+    SetWeight(indices, weight);
   }
 
   void SetWeight(std::array<int, DIM> indices, double weight, int dimension = 0, int (*before)(int) = nullptr) {

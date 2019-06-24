@@ -237,6 +237,14 @@ class BSpline : public Spline<DIM> {
     return true;
   }
 
+  int GetBezierPointLength() const override {
+    return this->GetPointDim();
+  }
+
+  void SetNewBezierPoint(std::pair<baf::ControlPoint, double> new_bezier_point, std::array<int, DIM> indices) override {
+    physical_space_->SetControlPoint(indices, new_bezier_point.first);
+  }
+
   std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
 };
 }  // namespace spl
