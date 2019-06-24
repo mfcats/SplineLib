@@ -1,13 +1,9 @@
 /* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
-
 This file is part of SplineLib.
-
 SplineLib is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation version 3 of the License.
-
 SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
-
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.
 */
@@ -96,9 +92,9 @@ class ElementGenerator {
   std::array<std::vector<ParamCoord>, DIM> GetInternalKnots() const {
     std::array<std::vector<ParamCoord>, DIM> internal_knots;
     for (int i = 0; i < DIM; ++i) {
-      std::vector<ParamCoord> knots = spl_->GetKnots()[i];
-      auto first = knots.begin() + spl_->GetDegree(i).get();
-      auto last = knots.end() - spl_->GetDegree(i).get();
+//      std::vector<ParamCoord> knots = spl_->GetKnotVector(i)->  //spl_->GetKnots()[i];
+      auto first = spl_->GetKnotVector(i)->begin() + spl_->GetDegree(i).get();
+      auto last = spl_->GetKnotVector(i)->end() - spl_->GetDegree(i).get();
       internal_knots[i] = std::vector<ParamCoord>(first, last);
     }
     return internal_knots;

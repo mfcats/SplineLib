@@ -215,8 +215,8 @@ class BasisFunctionHandler {
 
   double GetWeight(std::array<ParamCoord, DIM> param_coord, int local_index) const {
     iga::ConnectivityHandler<DIM> connectivity_handler(spline_);
-    return spline_->GetWeights()[connectivity_handler.GetGlobalIndex(element_generator_->GetElementNumberAtParamCoord(
-        param_coord), local_index) - 1];
+    return spline_->GetWeight({connectivity_handler.GetGlobalIndex(element_generator_->GetElementNumberAtParamCoord(
+        param_coord), local_index) - 1});
   }
 
   std::shared_ptr<spl::NURBS<DIM>> spline_;
