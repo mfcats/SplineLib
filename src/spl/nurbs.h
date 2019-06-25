@@ -127,25 +127,6 @@ class NURBS : public Spline<DIM> {
     return subdivided_splines;
   }
 
-  void ElevateDegree(int dimension) override {
-    std::vector<double> alpha = this->ComputeBezierDegreeElevationCoeffients(dimension);
-    auto diff = this->ProduceBezierSegments(dimension);
-    std::vector<std::vector<std::pair<baf::ControlPoint, double>>>
-        new_bez_points(this->GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1);
-    for (int i = static_cast<int>(this->GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2); i >= 0; --i) {
-      new_bez_points[i] = this->DegreeElevateBezierSegment(this->GetBezierSegment(dimension, i), alpha, dimension);
-    }
-    this->InsertKnot(this->GetKnotVector(dimension)->GetLastKnot(), dimension);
-    this->parameter_space_->InsertKnot(this->GetKnotVector(dimension)->GetKnot(0), dimension);
-    for (int i = static_cast<int>(this->GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2); i >= 0; --i) {
-      SetNewBezierSegmentControlPoints(new_bez_points[i],
-                                       dimension,
-                                       i); // new_bez_cps[i], new_bez_wgts[i], dimension, i);
-    }
-    this->parameter_space_->ElevateDegree(dimension);
-    this->RemoveBezierKnots(diff, dimension);
-  }
-
  private:
   std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const override {
     return physical_space_;
@@ -454,23 +435,6 @@ class NURBS : public Spline<DIM> {
       }
     }
     return true;
-  }
-
-  void SetNewBezierSegmentControlPoints(std::vector<std::pair<baf::ControlPoint,
-                                                              double>> new_bezier_points, // std::vector<double> new_weights,
-                                        int dimension, int segment) {
-    util::MultiIndexHandler<DIM> point_handler(this->GetPointsPerDirection());
-    int width = this->GetDegree(dimension).get() + 1;
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      auto index_in_dir = point_handler[dimension];
-      if (index_in_dir > segment * (this->GetDegree(dimension).get() + 1)
-          && index_in_dir <= (segment + 1) * (this->GetDegree(dimension).get() + 1)) {
-        auto index = (index_in_dir - 1) % width + point_handler.ExtractDimension(dimension) * (width + 1) + 1;
-        physical_space_->SetWeightedControlPoint(point_handler.GetIndices(),
-                                                 new_bezier_points[index].first,
-                                                 new_bezier_points[index].second);
-      }
-    }
   }
 
   int GetBezierPointLength() const override {
