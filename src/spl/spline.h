@@ -14,12 +14,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #ifndef SRC_SPL_SPLINE_H_
 #define SRC_SPL_SPLINE_H_
+
 #include <iostream>
 #include <algorithm>
 #include <array>
 #include <functional>
 #include <numeric>
 #include <sstream>
+#include <utility>
 #include <vector>
 
 #include "control_point.h"
@@ -296,7 +298,7 @@ parameter_space) {
     int width = GetDegree(dimension).get() + 1;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     int point_length = this->GetBezierPointLength();
-    std::vector<double> bezier_cps(static_cast<unsigned long>(point_length * width * segment_length));
+    std::vector<double> bezier_cps(static_cast<size_t>(point_length * width * segment_length));
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
       auto index_in_dir = point_handler[dimension];
       if (index_in_dir >= segment * width && index_in_dir < (segment + 1) * width) {
