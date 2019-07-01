@@ -84,7 +84,6 @@ class BSpline : public Spline<DIM> {
     }
     SetNewControlPoints(temp, last, i - off, off, dimension);
     physical_space_->RemoveControlPoints(this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension]);
-
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
   }

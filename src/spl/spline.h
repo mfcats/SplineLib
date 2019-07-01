@@ -284,8 +284,8 @@ class Spline {
       while (GetKnotVector(dimension)->GetKnot(position) == GetKnotVector(dimension)->GetKnot(position - 1)) {
         --position;
       }
-      RemoveKnot(GetKnotVector(dimension)->GetKnot(position),
-                 dimension, 100 /*util::NumericSettings<double>::kEpsilon()*/, static_cast<size_t>(diff[i - 1] - 1));
+      RemoveKnot(GetKnotVector(dimension)->GetKnot(position), dimension,
+                 util::NumericSettings<double>::kEpsilon(), static_cast<size_t>(diff[i - 1] - 1));
     }
   }
 
