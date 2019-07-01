@@ -164,9 +164,7 @@ class Spline {
     KnotSpan knot_span = GetKnotVector(dimension)->GetKnotSpan(knot);
     Degree degree = GetDegree(dimension);
     for (size_t i = 1; i <= multiplicity; ++i) {
-      if (GetKnotVector(dimension)->IsLastKnot(knot)) {
-        knot_span = knot_span + KnotSpan{1};
-      }
+      if (GetKnotVector(dimension)->IsLastKnot(knot)) knot_span = knot_span + KnotSpan{1};
       auto last = knot_span.get() - GetKnotVector(dimension)->GetMultiplicity(knot);
       auto first = knot_span.get() - degree.get() + i;
       std::vector<double> scaling;
@@ -208,18 +206,22 @@ class Spline {
     return count;
   }
 
-  virtual void ElevateDegree(int dimension) {
+  virtual void ElevateDegreeForDimension(int dimension) {
     std::vector<double> alpha = ComputeBezierDegreeElevationCoeffients(dimension);
     auto diff = ProduceBezierSegments(dimension);
     std::vector<std::vector<std::pair<baf::ControlPoint, double>>>
-        new_bez_points(this->GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1);
-    for (int i = static_cast<int>(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2); i >= 0; --i) {
-      new_bez_points[i] = DegreeElevateBezierSegment(GetBezierSegment(dimension, i), alpha, dimension);
+        new_bez_points(static_cast<uint64_t>(this->GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1));
+    for (int current_new_bezier_point = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2;
+         current_new_bezier_point >= 0;
+         --current_new_bezier_point) {
+      new_bez_points[current_new_bezier_point] = DegreeElevateBezierSegment(
+          GetBezierSegment(dimension, current_new_bezier_point), alpha, dimension);
     }
     InsertKnot(GetKnotVector(dimension)->GetLastKnot(), dimension);
     parameter_space_->InsertKnot(GetKnotVector(dimension)->GetKnot(0), dimension);
-    for (int i = static_cast<int>(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2); i >= 0; --i) {
-      SetNewBezierSegmentControlPoints(new_bez_points[i], dimension, i);
+    for (int current_new_bezier_point = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2;
+         current_new_bezier_point >= 0; --current_new_bezier_point) {
+      SetNewBezierSegmentControlPoints(new_bez_points[current_new_bezier_point], dimension, current_new_bezier_point);
     }
     parameter_space_->ElevateDegree(dimension);
     RemoveBezierKnots(diff, dimension);
@@ -259,83 +261,74 @@ class Spline {
 
   std::vector<double> ComputeBezierDegreeElevationCoeffients(int dimension) const {
     std::vector<double> alpha;
-    for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
-      alpha.push_back(static_cast<double>(i) / (GetDegree(dimension).get() + 1));
+    for (int current_bezier_point = 0; current_bezier_point < GetDegree(dimension).get() + 2; ++current_bezier_point) {
+      alpha.push_back(current_bezier_point / (GetDegree(dimension).get() + 1.0));
     }
     return alpha;
   }
 
   std::vector<int> ProduceBezierSegments(int dimension) {
-    size_t position = GetKnotVector(dimension)->GetNumberOfKnots() - GetDegree(dimension).get() - 2;
+    auto current_knot = GetDegree(dimension).get() + 1;
     std::vector<int> diff(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2, GetDegree(dimension).get());
-    for (size_t i = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2; i > 0; --i, --position) {
-      while (GetKnotVector(dimension)->GetKnot(position) == GetKnotVector(dimension)->GetKnot(position - 1)) {
-        --position;
-        --diff[i - 1];
+    for (int current_knot_span = 0; current_knot_span < GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2;
+         ++current_knot_span, ++current_knot) {
+      while (GetKnotVector(dimension)->GetKnot(current_knot) == GetKnotVector(dimension)->GetKnot(current_knot + 1)) {
+        ++current_knot;
+        --diff[current_knot_span];
       }
-      InsertKnot(GetKnotVector(dimension)->GetKnot(position), dimension, static_cast<size_t>(diff[i - 1]));
+      InsertKnot(GetKnotVector(dimension)->GetKnot(current_knot), dimension,
+                 static_cast<size_t>(diff[current_knot_span]));
+      current_knot += diff[current_knot_span];
     }
     return diff;
   }
 
   void RemoveBezierKnots(std::vector<int> diff, int dimension) {
-    size_t position = GetKnotVector(dimension)->GetNumberOfKnots() - GetDegree(dimension).get() - 2;
-    for (size_t i = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2; i > 0; --i, --position) {
-      while (GetKnotVector(dimension)->GetKnot(position) == GetKnotVector(dimension)->GetKnot(position - 1)) {
-        --position;
+    auto current_knot = GetDegree(dimension).get() + 1;
+    for (int current_knot_span = 0; current_knot_span < GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2;
+         ++current_knot_span, ++current_knot) {
+      RemoveKnot(GetKnotVector(dimension)->GetKnot(current_knot), dimension,
+                 util::NumericSettings<double>::kEpsilon(), static_cast<size_t>(diff[current_knot_span] - 1));
+      while (GetKnotVector(dimension)->GetKnot(current_knot) == GetKnotVector(dimension)->GetKnot(current_knot + 1)) {
+        ++current_knot;
       }
-      RemoveKnot(GetKnotVector(dimension)->GetKnot(position), dimension,
-                 util::NumericSettings<double>::kEpsilon(), static_cast<size_t>(diff[i - 1] - 1));
     }
   }
 
-  virtual int GetBezierPointLength() const = 0;
+  virtual int GetPointLength() const = 0;
 
-  virtual std::vector<double> GetBezierSegment(int dimension, int segment) const {
-    util::MultiIndexHandler<DIM> point_handler(GetPointsPerDirection());
-    int width = GetDegree(dimension).get() + 1;
-    int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
-    int point_length = this->GetBezierPointLength();
-    std::vector<double> bezier_cps(static_cast<size_t>(point_length * width * segment_length));
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      auto index_in_dir = point_handler[dimension];
-      if (index_in_dir >= segment * width && index_in_dir < (segment + 1) * width) {
-        double weight = this->GetWeight(point_handler.GetIndices());
-        if (point_length == GetPointDim() + 1) {
-          auto weight_index = (index_in_dir % width + point_handler.ExtractDimension(dimension) * width) * point_length
-              + this->GetPointDim();
-          bezier_cps[weight_index] = weight;
-        }
-        for (int j = 0; j < GetPointDim(); ++j) {
-          auto index = (index_in_dir % width + point_handler.ExtractDimension(dimension) * width) * point_length + j;
-          bezier_cps[index] = GetControlPoint(point_handler.GetIndices(), j) * weight;
-        }
-      }
-    }
-    return bezier_cps;
-  }
+  virtual std::vector<double> GetBezierSegment(int dimension, int segment) const = 0;
 
-  std::vector<std::pair<baf::ControlPoint, double>>
-  DegreeElevateBezierSegment(std::vector<double> bezier_cps, std::vector<double> alpha, int dimension) const {
+  std::vector<std::pair<baf::ControlPoint, double>> DegreeElevateBezierSegment(std::vector<double> bezier_cps,
+                                                                               std::vector<double> alpha,
+                                                                               int dimension) const {
     int width = GetDegree(dimension).get() + 1;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     util::MultiIndexHandler<2> point_handler({width, segment_length});
-    int point_length = this->GetBezierPointLength();
+    int point_length = GetPointLength();
     std::vector<std::pair<baf::ControlPoint, double>> weighted_cps;
     std::vector<double> coord(static_cast<size_t>(GetPointDim()));
     for (int k = 0; k < point_handler.Get1DLength(); ++k, ++point_handler) {
       auto index = point_handler[0];
       auto pos = point_handler.Get1DIndex();
-      double new_weight = point_length == GetPointDim() ? 1.0 :
-                          (1 - alpha[index]) * bezier_cps[pos * point_length + this->GetPointDim()]
-                              + alpha[index] * bezier_cps[(pos - 1) * point_length + this->GetPointDim()];
+      double new_weight;
+      if (point_length == GetPointDim()) {
+        new_weight = 1.0;
+      } else {
+        new_weight = (1 - alpha[index]) * bezier_cps[pos * point_length + this->GetPointDim()] +
+            alpha[index] * bezier_cps[(pos - 1) * point_length + this->GetPointDim()];
+      }
       for (int j = 0; j < GetPointDim(); ++j) {
         coord[j] = ((1 - alpha[index]) * bezier_cps[pos * point_length + j]
             + alpha[index] * bezier_cps[(pos - 1) * point_length + j]) / new_weight;
       }
       weighted_cps.emplace_back(std::make_pair(baf::ControlPoint(coord), new_weight));
       if (point_handler[0] == GetDegree(dimension).get()) {
-        new_weight = point_length == GetPointDim() ? 1.0 : bezier_cps[pos * point_length + this->GetPointDim()];
+        if (point_length == GetPointDim()) {
+          new_weight = 1.0;
+        } else {
+          new_weight = bezier_cps[pos * point_length + this->GetPointDim()];
+        }
         for (int j = 0; j < GetPointDim(); ++j) {
           coord[j] = bezier_cps[pos * point_length + j] / new_weight;
         }
@@ -345,8 +338,7 @@ class Spline {
     return weighted_cps;
   }
 
-  virtual void SetNewBezierPoint(std::pair<baf::ControlPoint, double> new_bezier_point,
-                                 std::array<int, DIM> indices) = 0;
+  virtual void SetNewPoint(baf::ControlPoint new_point, double new_weight, std::array<int, DIM> indices) = 0;
 
   virtual void SetNewBezierSegmentControlPoints(std::vector<std::pair<baf::ControlPoint, double>> new_bezier_points,
                                                 int dimension,
@@ -357,7 +349,7 @@ class Spline {
       auto index_in_dir = point_handler[dimension];
       if (index_in_dir > segment * width && index_in_dir <= (segment + 1) * width) {
         auto index = (index_in_dir - 1) % width + point_handler.ExtractDimension(dimension) * (width + 1) + 1;
-        this->SetNewBezierPoint(new_bezier_points[index], point_handler.GetIndices());
+        SetNewPoint(new_bezier_points[index].first, new_bezier_points[index].second, point_handler.GetIndices());
       }
     }
   }

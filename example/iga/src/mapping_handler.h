@@ -1,9 +1,13 @@
 /* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+
 This file is part of SplineLib.
+
 SplineLib is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation version 3 of the License.
+
 SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.
 */
@@ -38,8 +42,8 @@ class MappingHandler {
     std::array<ParamCoord, DIM> param_coords{};
     for (int i = 0; i < DIM; ++i) {
       iga::elm::Element elm = elm_gen.GetElementList(i)[elm_gen.GetElementIndices(element_number)[i]];
-      param_coords[i] = ParamCoord{((elm.GetUpperBound() - elm.GetLowerBound()).get() * itg_pnts[i]
-          + (elm.GetUpperBound() + elm.GetLowerBound()).get()) / 2.0};
+      param_coords[i] = ParamCoord{((elm.GetUpperBound() - elm.GetLowerBound()).get() * itg_pnts[i] +
+          (elm.GetUpperBound() + elm.GetLowerBound()).get()) / 2.0};
     }
     return param_coords;
   }
@@ -69,8 +73,8 @@ class MappingHandler {
     for (int i = 0; i < DIM; ++i) {
       knot_span[i] = static_cast<size_t>(spline_->GetKnotVector(i)->GetKnotSpan(param_coord[i]).get());
       dxi_dxitilde(static_cast<uint64_t>(i), static_cast<uint64_t>(i)) =
-          (spline_->GetKnotVector(i)->GetKnot(knot_span[i] + 1).get()
-              - spline_->GetKnotVector(i)->GetKnot(knot_span[i]).get()) / 2;
+          (spline_->GetKnotVector(i)->GetKnot(knot_span[i] + 1).get() -
+              spline_->GetKnotVector(i)->GetKnot(knot_span[i]).get()) / 2;
     }
     return dxi_dxitilde;
   }

@@ -22,6 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "b_spline_generator.h"
+#include "multi_index_handler.h"
 #include "numeric_operations.h"
 #include "spline.h"
 #include "spline_generator.h"
@@ -65,9 +66,10 @@ class BSpline : public Spline<DIM> {
     point_handler.SetIndices(maximum_point_index);
     physical_space_->AddControlPoints(this->GetNumberOfControlPoints() / maximum_point_index[dimension]);
     for (int i = point_handler.Get1DLength() - 1; i >= 0; --i, --point_handler) {
-      auto current_point = point_handler[dimension];
+      auto current_point_index = point_handler[dimension];
       std::array<int, DIM> indices = point_handler.GetIndices();
-      baf::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling, current_point, first, last);
+      baf::ControlPoint
+          new_control_point = GetNewControlPoint(indices, dimension, scaling, current_point_index, first, last);
       physical_space_->SetControlPoint(indices, new_control_point, dimension,
                                        util::NumericOperations<int>::increment);
     }
@@ -128,19 +130,19 @@ class BSpline : public Spline<DIM> {
   }
 
   baf::ControlPoint GetNewControlPoint(std::array<int, DIM> indices, int dimension, std::vector<double> scaling,
-                                       int current_point, int first, int last) {
-    if (current_point > last) {
+                                       int current_point_index, int first, int last) {
+    if (current_point_index > last) {
       --indices[dimension];
       return this->GetControlPoint(indices);
-    } else if (current_point >= first) {
+    } else if (current_point_index >= first) {
       std::array<int, DIM> lower_indices = indices;
       --lower_indices[dimension];
       baf::ControlPoint upper_control_point = this->GetControlPoint(indices);
       baf::ControlPoint lower_control_point = this->GetControlPoint(lower_indices);
       std::vector<double> coordinates;
       for (int j = 0; j < upper_control_point.GetDimension(); ++j) {
-        coordinates.push_back(scaling[current_point - first] * upper_control_point.GetValue(j)
-                                  + (1 - scaling[current_point - first]) * lower_control_point.GetValue(j));
+        coordinates.push_back(scaling[current_point_index - first] * upper_control_point.GetValue(j)
+                                  + (1 - scaling[current_point_index - first]) * lower_control_point.GetValue(j));
       }
       return baf::ControlPoint(coordinates);
     } else {
@@ -236,12 +238,30 @@ class BSpline : public Spline<DIM> {
     return true;
   }
 
-  int GetBezierPointLength() const override {
+  int GetPointLength() const override {
     return this->GetPointDim();
   }
 
-  void SetNewBezierPoint(std::pair<baf::ControlPoint, double> new_bezier_point, std::array<int, DIM> indices) override {
-    physical_space_->SetControlPoint(indices, new_bezier_point.first);
+  std::vector<double> GetBezierSegment(int dimension, int segment) const override {
+    util::MultiIndexHandler<DIM> point_handler(this->GetPointsPerDirection());
+    int width = this->GetDegree(dimension).get() + 1;
+    int segment_length = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
+    int point_length = GetPointLength();
+    std::vector<double> bezier_cps(static_cast<size_t>(point_length * width * segment_length));
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      auto index_in_dir = point_handler[dimension];
+      if (index_in_dir >= segment * width && index_in_dir < (segment + 1) * width) {
+        for (int j = 0; j < point_length; ++j) {
+          auto index = (index_in_dir % width + point_handler.ExtractDimension(dimension) * width) * point_length + j;
+          bezier_cps[index] = this->GetControlPoint(point_handler.GetIndices(), j);
+        }
+      }
+    }
+    return bezier_cps;
+  }
+
+  void SetNewPoint(baf::ControlPoint new_point, double /*new_weight*/, std::array<int, DIM> indices) override {
+    physical_space_->SetControlPoint(indices, new_point);
   }
 
   std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
