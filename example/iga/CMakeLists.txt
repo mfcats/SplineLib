@@ -79,4 +79,3 @@ install(
         NAMESPACE "${namespace}"
         DESTINATION "${config_install_dir}"
 )
-

@@ -35,17 +35,16 @@ install(
 )
 
 install(FILES
-        solution_spline.h
-        bdf_handler.h
-        element_integral_calculator.h
-        element_generator.h
-        element.h
-        linear_equation_assembler.h
         basis_function_handler.h
+        bdf_handler.h
         connectivity_handler.h
-        solution_vtk_writer.h
+        element.h
+        element_generator.h
+        element_integral_calculator.h
+        element_integration_point.h
+        linear_equation_assembler.h
         mapping_handler.h
         poisson_problem.h
-        element_integration_point.h
+        solution_spline.h
+        solution_vtk_writer.h
         DESTINATION "${include_install_dir}")
-

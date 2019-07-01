@@ -64,13 +64,13 @@ class PoissonProblem {
 
  private:
   std::shared_ptr<spl::NURBS<DIM>> spline_;
+  int num_cp_;
+  iga::itg::IntegrationRule rule_;
   std::shared_ptr<iga::LinearEquationAssembler<DIM>> linear_equation_assembler_;
   std::shared_ptr<iga::ElementIntegralCalculator<DIM>> elm_itg_calc_;
-  iga::itg::IntegrationRule rule_;
   std::shared_ptr<arma::dmat> matA_;
   std::shared_ptr<arma::dvec> vecB_;
   std::shared_ptr<arma::dvec> srcCp_;
-  int num_cp_;
 };
 }  // namespace iga
 
