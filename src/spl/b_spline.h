@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <algorithm>
 #include <array>
 #include <functional>
-#include <iostream>
+#include <utility>
 #include <vector>
 
 #include "b_spline_generator.h"
@@ -84,7 +84,6 @@ class BSpline : public Spline<DIM> {
     }
     SetNewControlPoints(temp, last, i - off, off, dimension);
     physical_space_->RemoveControlPoints(this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension]);
-
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
   }
@@ -235,6 +234,14 @@ class BSpline : public Spline<DIM> {
       }
     }
     return true;
+  }
+
+  int GetBezierPointLength() const override {
+    return this->GetPointDim();
+  }
+
+  void SetNewBezierPoint(std::pair<baf::ControlPoint, double> new_bezier_point, std::array<int, DIM> indices) override {
+    physical_space_->SetControlPoint(indices, new_bezier_point.first);
   }
 
   std::shared_ptr<PhysicalSpace<DIM>> physical_space_;

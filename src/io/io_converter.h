@@ -48,7 +48,7 @@ class IOConverter {
   void GetWriter(const std::vector<std::any> &splines, const std::vector<int> &positions,
                  const std::vector<std::vector<int>> &scattering);
   void WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions, int max_dim,
-                 const std::shared_ptr<io::Writer> &writer, const std::vector<std::vector<int>> &scattering = {});
+                 const std::shared_ptr<io::Writer> &writer);
 
   void GetPositions(const std::vector<int> &positions, const std::vector<int> &possible_positions);
   std::vector<std::vector<int>> GetScattering(const std::vector<std::vector<int>> &scattering,

@@ -13,10 +13,10 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-#add_subdirectory(baf)
-#add_subdirectory(io)
+add_subdirectory(baf)
+add_subdirectory(io)
 add_subdirectory(spl)
-#add_subdirectory(util)
+add_subdirectory(util)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})

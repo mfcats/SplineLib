@@ -74,6 +74,11 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
     return minimum;
   }
 
+  void SetWeightedControlPoint(std::array<int, DIM> indices, const baf::ControlPoint &control_point, double weight) {
+    this->SetControlPoint(indices, control_point);
+    SetWeight(indices, weight);
+  }
+
   void SetWeight(std::array<int, DIM> indices, double weight, int dimension = 0, int (*before)(int) = nullptr) {
     const std::array<int, DIM> number_of_points_before(this->number_of_points_);
     if (before) this->number_of_points_[dimension] = before(this->number_of_points_[dimension]);
