@@ -143,5 +143,9 @@ void baf::KnotVector::InsertKnot(const ParamCoord &param_coord) {
 
 void baf::KnotVector::RemoveKnot(const ParamCoord &param_coord) {
   KnotSpan knot_span = GetKnotSpan(param_coord);
-  knots_.erase(knots_.begin() + knot_span.get());
+
+  // knots_.erase(knots_.begin() + knot_span.get());
+  // TODO: Knot removal does not work for the last knot without the if statements below.
+  if (!IsLastKnot(param_coord)) knots_.erase(knots_.begin() + knot_span.get());
+  if (IsLastKnot(param_coord)) knots_.erase(knots_.end() - 1);
 }

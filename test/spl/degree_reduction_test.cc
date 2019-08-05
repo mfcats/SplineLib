@@ -71,21 +71,23 @@ class BSpline1DFig5_39 : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> bspline_1d_after_;
 };
 
-TEST_F(BSpline1DFig5_39, ReducesDegreeFrom4To3Correctly) {  // NOLINT
+TEST_F(BSpline1DFig5_39, ReducesDegreeFrom5To4Correctly) {  // NOLINT
+
+  // Elevate the degree of the spline by one and then reduce it to obtain a spline that has not changed geometrically.
+  bspline_1d_after_->ElevateDegree(0);
   bspline_1d_after_->ReduceDegree(0);
 
-  PrintSpline(bspline_1d_after_);
+  // Print degree, knot vector and control points of the degree reduced spline to the console.
+  // PrintSpline(bspline_1d_after_);
 
   // Write spline after degree reduction to VTK file for visualization.
-  std::vector<std::any> splines;
+  /* std::vector<std::any> splines;
   splines.emplace_back(std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_after_));
   splines.emplace_back(std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_));
   io::VTKWriter vtk_writer;
-  // vtk_writer.WriteFile(splines, "/Users/christophsusen/Desktop/test.vtk", {{40}});
-  vtk_writer.WriteFile(splines, "/Users/christophsusen/Desktop/test.vtk", {{40}, {40}});
+  vtk_writer.WriteFile(splines, "/Users/christophsusen/Desktop/test.vtk", {{40}, {40}}); */
 
-  /* ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
-              bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() + 4);
-  ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() + 3);
-  ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true); */
+  // The geometry of the spline and its degree should have remained unchanged.
+  ASSERT_THAT(bspline_1d_after_->GetDegree(0).get(),bspline_1d_before_->GetDegree(0).get());
+  ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true);
 }
