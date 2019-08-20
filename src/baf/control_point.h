@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <algorithm>
 #include <array>
+#include <functional>
 #include <initializer_list>
 #include <vector>
 
