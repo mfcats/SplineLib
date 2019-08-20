@@ -23,11 +23,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 
+#include "bezier_segment.h"
 #include "control_point.h"
 #include "knot_vector.h"
 #include "multi_index_handler.h"
 #include "parameter_space.h"
 #include "physical_space.h"
+
+// TODO: Remove!
+#include <iostream>
 
 namespace spl {
 template<int DIM>
@@ -243,6 +247,74 @@ class Spline {
 
   void ReduceDegree(int dimension) {
 
+  // Insert knots to subdivide the spline into Bézier segments. The diff vector holds the number of times every
+  // inner knot was inserted in order to reach a multiplicity of p.
+  std::vector<int> diff = ProduceBezierSegments(dimension);
+
+  uint64_t num_bezier_segments = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1;
+  std::vector<spl::BezierSegment<DIM>> bezier_segments;
+  for (uint64_t i = 0; i < num_bezier_segments; ++i) {
+    bezier_segments.emplace_back(GetBezierSegment2(dimension, i));
+    bezier_segments[i].ReduceDegree(0);
+  }
+
+  // Print control points of all Bézier segments to the console for debugging purposes.
+  std::cout << "Control points of all Bézier segments:" << std::endl;
+  for (size_t i = 0; i < bezier_segments.size(); ++i) {
+    std::cout << "Bézier segment " << i << ":" << std::endl;
+    for (int j = 0; j < bezier_segments[0].GetDegree(dimension).get() + 1; ++j) {
+      baf::ControlPoint cp = bezier_segments[i].GetControlPoint(j);
+      std::cout << cp.GetValue(0) << ", " << cp.GetValue(1) << std::endl;
+    }
+    std::cout << std::endl;
+  }
+  std::cout << std::endl;
+
+  // TODO: Function below does not work properly!
+  SetNewBezierSegmentControlPoints2(bezier_segments, dimension);
+
+  parameter_space_->ReduceDegree(dimension);
+  parameter_space_->DecrementMultiplicityOfAllKnots(dimension);
+
+
+  /* // Assemble the computed control points into the physical space of the spline.
+  std::array<int, 1> indices = {1};
+  int num_cps_per_bezier_segment = GetDegree(dimension).get();
+  for (int i = 0; i < num_bezier_segments; ++i) {
+
+    // TODO: Modify function below to be able to use it for degree elevation and degree reduction.
+    // SetNewBezierSegmentControlPoints(all_new_bezier_cps[i], dimension, i);
+    // Loop through all new control points of the current Bézier segment.
+    for (int j = 1; j < num_cps_per_bezier_segment; ++j) {
+      SetNewBezierPoint(all_new_bezier_cps[i][j], indices);
+      ++indices[0];
+    }
+  }
+
+  // TODO: On every Bézier segment, the number of control points is decreased by one.
+  for (int i = 0; i < num_bezier_segments; ++i) {
+    this->GetPhysicalSpace()->RemoveControlPoints(1);
+    this->GetPhysicalSpace()->DecrementNumberOfPoints(0);
+  }
+
+  // TODO: Account for multiplicity of p+1 at inner knot values (see ProduceBezierSegments function).
+  parameter_space_->RemoveKnot(ParamCoord{0.3}, 0);
+  parameter_space_->RemoveKnot(ParamCoord{0.6}, 0);
+
+  // Remove one entry of the first and last knot.
+  parameter_space_->RemoveKnot(GetKnotVector(dimension)->GetKnot(0), dimension);
+  parameter_space_->RemoveKnot(GetKnotVector(dimension)->GetLastKnot(), dimension);
+
+  // Reduce degree of dimension by one and create new basis functions.
+  parameter_space_->ReduceDegree(dimension);
+
+  // Remove the knots to get rid of the decomposition into bezier segments (remove one knot more than inserted).
+  std::transform(diff.begin(), diff.end(), diff.begin(), std::bind(std::plus<int>(), std::placeholders::_1, 1));
+  RemoveBezierKnots(diff, dimension); */
+}
+
+  /* void ReduceDegree(int dimension) {
+
     // TODO: Try to move the computation of the degree reduction coefficients to a separate function!
     // Compute p degree elevation coefficients that would be used for the degree elevation from p-1 to p.
     // std::vector<double> alpha = ComputeBezierDegreeReductionCoefficients(dimension);
@@ -298,9 +370,9 @@ class Spline {
     // Remove the knots to get rid of the decomposition into bezier segments (remove one knot more than inserted).
     std::transform(diff.begin(), diff.end(), diff.begin(), std::bind(std::plus<int>(), std::placeholders::_1, 1));
     RemoveBezierKnots(diff, dimension);
-  }
+  } */
 
-  std::vector<std::pair<baf::ControlPoint, double>> DegreeReduceBezierSegment(std::vector<double> bezier_cps,
+  /* std::vector<std::pair<baf::ControlPoint, double>> DegreeReduceBezierSegment(std::vector<double> bezier_cps,
       int dimension) const {
 
     // Number of control points per degree reduced Bézier segment.
@@ -419,7 +491,7 @@ class Spline {
     }
 
     return weighted_cps;
-  }
+  } */
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
   virtual bool RemoveControlPoints(std::vector<double> scaling,
@@ -532,6 +604,26 @@ class Spline {
     return bezier_cps;
   }
 
+  spl::BezierSegment<DIM> GetBezierSegment2(int dimension, int segment) const {
+    util::MultiIndexHandler<DIM> point_handler(GetPointsPerDirection());
+    int width = GetDegree(dimension).get() + 1;
+    int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
+    std::vector<baf::ControlPoint> bezier_cps(static_cast<size_t>(width * segment_length), baf::ControlPoint({0.0}));
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      auto index_in_dir = point_handler[dimension];
+      if (point_handler[dimension] >= segment * width - segment && index_in_dir < (segment + 1) * width - segment) {
+        auto index = ((index_in_dir + segment) % width + point_handler.ExtractDimension(dimension) * width);
+          bezier_cps[index] = GetControlPoint(point_handler.GetIndices());
+      }
+    }
+    std::array<bool, DIM> is_bezier_in_direction = {};
+    is_bezier_in_direction[dimension] = true;
+    std::array<int, DIM> num_control_points = GetPointsPerDirection();
+    num_control_points[dimension] = width;
+    return spl::BezierSegment<DIM>(parameter_space_->GetDegrees(), bezier_cps, is_bezier_in_direction,
+        num_control_points);
+  }
+
   std::vector<std::pair<baf::ControlPoint, double>>
   DegreeElevateBezierSegment(std::vector<double> bezier_cps, std::vector<double> alpha, int dimension) const {
     int width = GetDegree(dimension).get() + 1;
@@ -575,6 +667,24 @@ class Spline {
         auto index = (index_in_dir - 1) % width + point_handler.ExtractDimension(dimension) * (width + 1) + 1;
         this->SetNewBezierPoint(new_bezier_points[index], point_handler.GetIndices());
       }
+    }
+  }
+
+  void SetNewBezierSegmentControlPoints2(std::vector<spl::BezierSegment<DIM>> bezier_segments, int dimension) {
+    std::array<int, DIM> cps_per_dir = GetPointsPerDirection();
+    cps_per_dir[dimension] -= (GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1);
+    GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
+    util::MultiIndexHandler<DIM> point_handler(cps_per_dir);
+    int delta_num_cps = GetPhysicalSpace()->GetNumberOfControlPoints() - point_handler.Get1DLength();
+    GetPhysicalSpace()->RemoveControlPoints(delta_num_cps);
+    int width = bezier_segments[0].GetDegree(dimension).get() + 1;
+    int segment = 0;
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler ) {
+      int index_in_dir = point_handler[dimension];
+      int index = (index_in_dir + segment) % width + point_handler.ExtractDimension(dimension) * width;
+      this->GetPhysicalSpace()->SetControlPoint(point_handler.GetIndices(),
+          bezier_segments[segment].GetControlPoint(index));
+      if (index == width - 1) ++segment;
     }
   }
 

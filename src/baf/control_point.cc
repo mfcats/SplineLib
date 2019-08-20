@@ -31,6 +31,22 @@ baf::ControlPoint baf::ControlPoint::operator+(const baf::ControlPoint &control_
   return ControlPoint(coordinates_new);
 }
 
+baf::ControlPoint baf::ControlPoint::operator-(const baf::ControlPoint &control_point) const {
+  std::vector<double> coordinates_new;
+  coordinates_new.reserve(this->GetDimension());
+  for (int i = 0; i < this->GetDimension(); ++i) {
+    coordinates_new.push_back(this->GetValue(i) - control_point.GetValue(i));
+  }
+  return ControlPoint(coordinates_new);
+}
+
+baf::ControlPoint baf::ControlPoint::operator*(const double &scalar) const {
+  std::vector<double> coordinates_new(this->GetDimension());
+  std::transform(coordinates_.begin(), coordinates_.end(), coordinates_new.begin(),
+      std::bind(std::multiplies<>(), std::placeholders::_1, scalar));
+  return ControlPoint(coordinates_new);
+}
+
 baf::ControlPoint baf::ControlPoint::Transform(std::array<std::array<double, 4>, 4> TransMatrix,
     std::array<double, 3> scaling) const {
   std::vector<double> coordinates_new = {TransMatrix[0][3], TransMatrix[1][3], TransMatrix[2][3]};

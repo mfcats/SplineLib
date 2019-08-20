@@ -15,8 +15,7 @@
 
 set(SOURCES
         square_generator.cc
-        surface_generator.cc
-        spline.h)
+        surface_generator.cc)
 
 add_library(splinelibspl SHARED ${SOURCES})
 target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
@@ -33,6 +32,7 @@ install(
 
 install(FILES
         alias.h
+        bezier_segment.h
         b_spline.h
         b_spline_generator.h
         nurbs.h

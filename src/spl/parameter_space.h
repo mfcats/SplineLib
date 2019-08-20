@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_SPL_PARAMETER_SPACE_H_
 
 #include <array>
+#include <algorithm>
 #include <memory>
 #include <sstream>
 #include <vector>
@@ -102,6 +103,10 @@ class ParameterSpace {
 
   virtual Degree GetDegree(int direction) const {
     return degree_[direction];
+  }
+
+  virtual std::array<Degree, DIM> GetDegrees() const {
+    return degree_;
   }
 
   virtual std::shared_ptr<baf::KnotVector> GetKnotVector(int direction) const {
@@ -194,6 +199,15 @@ class ParameterSpace {
         basis_functions_[i].emplace_back(
             baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
       }
+    }
+  }
+
+  void DecrementMultiplicityOfAllKnots(int dim) {
+    std::vector<ParamCoord> unique_knots(GetKnotVector(dim)->GetNumberOfDifferentKnots());
+    auto last = std::unique_copy(GetKnotVector(dim)->begin(), GetKnotVector(dim)->end(), unique_knots.begin());
+    unique_knots.resize(std::distance(unique_knots.begin(), last));
+    for (auto &knot : unique_knots) {
+      RemoveKnot(knot, dim);
     }
   }
 

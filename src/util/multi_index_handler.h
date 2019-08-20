@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_UTIL_MULTI_INDEX_HANDLER_H_
 
 #include <array>
+#include <vector>
 
 namespace util {
 template<int DIM>
@@ -153,6 +154,19 @@ class MultiIndexHandler {
       }
     }
     return Get1DIndex(length, indices);
+  }
+
+  std::vector<int> Get1DIndicesForFixedDimension(int dimension, int value) {
+    // TODO: Reserve memory for the indices vector. Length can be computed prior to filling the vector.
+    std::vector<int> indices;
+    std::array<int, DIM> old_indices = current_multi_index_value_;
+    for (int i = 0; i < Get1DLength(); ++i, ++(*this)) {
+      if (current_multi_index_value_[dimension] == value) {
+        indices.emplace_back(Get1DIndex());
+      }
+    }
+    current_multi_index_value_ = old_indices;
+    return indices;
   }
 
  private:

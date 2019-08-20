@@ -126,6 +126,10 @@ class PhysicalSpace {
     --number_of_points_[dimension];
   }
 
+  void SetNumberOfPoints(int dimension, int value) {
+    number_of_points_[dimension] = value;
+  }
+
   virtual int GetDimension() const {
     return dimension_;
   }

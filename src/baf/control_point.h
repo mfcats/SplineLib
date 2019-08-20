@@ -28,7 +28,9 @@ class ControlPoint {
   int GetDimension() const;
   double GetValue(int dimension) const;
 
-  ControlPoint operator+(const ControlPoint& control_point) const;
+  ControlPoint operator+(const ControlPoint &control_point) const;
+  ControlPoint operator-(const ControlPoint &control_point) const;
+  ControlPoint operator*(const double &scalar) const;
 
   ControlPoint Transform(std::array<std::array<double, 4>, 4> TransMatrix, std::array<double, 3> scaling) const;
 

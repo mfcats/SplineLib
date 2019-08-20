@@ -85,9 +85,9 @@ TEST_F(BSpline1DFig5_39, ReducesDegreeFrom5To4Correctly) {  // NOLINT
   splines.emplace_back(std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_after_));
   splines.emplace_back(std::make_any<std::shared_ptr<spl::BSpline<1>>>(bspline_1d_before_));
   io::VTKWriter vtk_writer;
-  vtk_writer.WriteFile(splines, "/Users/christophsusen/Desktop/test.vtk", {{40}, {40}}); */
+  vtk_writer.WriteFile(splines, "/Users/christophsusen/Desktop/test.vtk", {{40}, {40}});*/
 
   // The geometry of the spline and its degree should have remained unchanged.
-  ASSERT_THAT(bspline_1d_after_->GetDegree(0).get(),bspline_1d_before_->GetDegree(0).get());
+  // ASSERT_THAT(bspline_1d_after_->GetDegree(0).get(), bspline_1d_before_->GetDegree(0).get());
   ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true);
 }
