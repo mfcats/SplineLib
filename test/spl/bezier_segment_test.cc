@@ -12,6 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <memory>
+
 #include "gmock/gmock.h"
 
 #include "control_point.h"
