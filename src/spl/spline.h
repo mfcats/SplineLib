@@ -251,247 +251,25 @@ class Spline {
   // inner knot was inserted in order to reach a multiplicity of p.
   std::vector<int> diff = ProduceBezierSegments(dimension);
 
+  // Create Bezier segment objects and degree reduce these simultaneously.
   uint64_t num_bezier_segments = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1;
   std::vector<spl::BezierSegment<DIM>> bezier_segments;
+  bezier_segments.reserve(num_bezier_segments);
   for (uint64_t i = 0; i < num_bezier_segments; ++i) {
     bezier_segments.emplace_back(GetBezierSegment2(dimension, i));
     bezier_segments[i].ReduceDegree(0);
   }
 
-  // Print control points of all Bézier segments to the console for debugging purposes.
-  std::cout << "Control points of all Bézier segments:" << std::endl;
-  for (size_t i = 0; i < bezier_segments.size(); ++i) {
-    std::cout << "Bézier segment " << i << ":" << std::endl;
-    for (int j = 0; j < bezier_segments[0].GetDegree(dimension).get() + 1; ++j) {
-      baf::ControlPoint cp = bezier_segments[i].GetControlPoint(j);
-      std::cout << cp.GetValue(0) << ", " << cp.GetValue(1) << std::endl;
-    }
-    std::cout << std::endl;
-  }
-  std::cout << std::endl;
-
-  // TODO: Function below does not work properly!
+  // Assemble the control points of the degree reduced bezier segments back into the physical space of the spline.
   SetNewBezierSegmentControlPoints2(bezier_segments, dimension);
 
   parameter_space_->ReduceDegree(dimension);
   parameter_space_->DecrementMultiplicityOfAllKnots(dimension);
 
-
-  /* // Assemble the computed control points into the physical space of the spline.
-  std::array<int, 1> indices = {1};
-  int num_cps_per_bezier_segment = GetDegree(dimension).get();
-  for (int i = 0; i < num_bezier_segments; ++i) {
-
-    // TODO: Modify function below to be able to use it for degree elevation and degree reduction.
-    // SetNewBezierSegmentControlPoints(all_new_bezier_cps[i], dimension, i);
-    // Loop through all new control points of the current Bézier segment.
-    for (int j = 1; j < num_cps_per_bezier_segment; ++j) {
-      SetNewBezierPoint(all_new_bezier_cps[i][j], indices);
-      ++indices[0];
-    }
-  }
-
-  // TODO: On every Bézier segment, the number of control points is decreased by one.
-  for (int i = 0; i < num_bezier_segments; ++i) {
-    this->GetPhysicalSpace()->RemoveControlPoints(1);
-    this->GetPhysicalSpace()->DecrementNumberOfPoints(0);
-  }
-
-  // TODO: Account for multiplicity of p+1 at inner knot values (see ProduceBezierSegments function).
-  parameter_space_->RemoveKnot(ParamCoord{0.3}, 0);
-  parameter_space_->RemoveKnot(ParamCoord{0.6}, 0);
-
-  // Remove one entry of the first and last knot.
-  parameter_space_->RemoveKnot(GetKnotVector(dimension)->GetKnot(0), dimension);
-  parameter_space_->RemoveKnot(GetKnotVector(dimension)->GetLastKnot(), dimension);
-
-  // Reduce degree of dimension by one and create new basis functions.
-  parameter_space_->ReduceDegree(dimension);
-
   // Remove the knots to get rid of the decomposition into bezier segments (remove one knot more than inserted).
-  std::transform(diff.begin(), diff.end(), diff.begin(), std::bind(std::plus<int>(), std::placeholders::_1, 1));
-  RemoveBezierKnots(diff, dimension); */
+  std::transform(diff.begin(), diff.end(), diff.begin(), std::bind(std::plus<>(), std::placeholders::_1, 1));
+  RemoveBezierKnots(diff, dimension);
 }
-
-  /* void ReduceDegree(int dimension) {
-
-    // TODO: Try to move the computation of the degree reduction coefficients to a separate function!
-    // Compute p degree elevation coefficients that would be used for the degree elevation from p-1 to p.
-    // std::vector<double> alpha = ComputeBezierDegreeReductionCoefficients(dimension);
-
-    // Number of Bézier segments obtained by the decomposition below.
-    int num_bezier_segments = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1;
-
-    // Insert knots to subdivide the spline into Bézier segments. The diff vector holds the number of times every
-    // inner knot was inserted in order to reach a multiplicity of p.
-    std::vector<int> diff = ProduceBezierSegments(dimension);
-
-    // Data structure to hold the new control points for all Bézier segments. First index is the number of the Bézier
-    // segment, second index is the number of the control point of the specific Bézier segment. The double associated
-    // with the control point (using std::pair) is the new weight.
-    std::vector<std::vector<std::pair<baf::ControlPoint, double>>> all_new_bezier_cps;
-
-    // Loop through all Bézier segments.
-    for (int i = 0; i < num_bezier_segments; ++i) {
-      all_new_bezier_cps.emplace_back(DegreeReduceBezierSegment(GetBezierSegment(dimension, i), dimension));
-    }
-
-    // Assemble the computed control points into the physical space of the spline.
-    std::array<int, 1> indices = {1};
-    int num_cps_per_bezier_segment = GetDegree(dimension).get();
-    for (int i = 0; i < num_bezier_segments; ++i) {
-
-      // TODO: Modify function below to be able to use it for degree elevation and degree reduction.
-      // SetNewBezierSegmentControlPoints(all_new_bezier_cps[i], dimension, i);
-      // Loop through all new control points of the current Bézier segment.
-      for (int j = 1; j < num_cps_per_bezier_segment; ++j) {
-        SetNewBezierPoint(all_new_bezier_cps[i][j], indices);
-        ++indices[0];
-      }
-    }
-
-    // TODO: On every Bézier segment, the number of control points is decreased by one.
-    for (int i = 0; i < num_bezier_segments; ++i) {
-      this->GetPhysicalSpace()->RemoveControlPoints(1);
-      this->GetPhysicalSpace()->DecrementNumberOfPoints(0);
-    }
-
-    // TODO: Account for multiplicity of p+1 at inner knot values (see ProduceBezierSegments function).
-    parameter_space_->RemoveKnot(ParamCoord{0.3}, 0);
-    parameter_space_->RemoveKnot(ParamCoord{0.6}, 0);
-
-    // Remove one entry of the first and last knot.
-    parameter_space_->RemoveKnot(GetKnotVector(dimension)->GetKnot(0), dimension);
-    parameter_space_->RemoveKnot(GetKnotVector(dimension)->GetLastKnot(), dimension);
-
-    // Reduce degree of dimension by one and create new basis functions.
-    parameter_space_->ReduceDegree(dimension);
-
-    // Remove the knots to get rid of the decomposition into bezier segments (remove one knot more than inserted).
-    std::transform(diff.begin(), diff.end(), diff.begin(), std::bind(std::plus<int>(), std::placeholders::_1, 1));
-    RemoveBezierKnots(diff, dimension);
-  } */
-
-  /* std::vector<std::pair<baf::ControlPoint, double>> DegreeReduceBezierSegment(std::vector<double> bezier_cps,
-      int dimension) const {
-
-    // Number of control points per degree reduced Bézier segment.
-    uint64_t num_bezier_cps = GetDegree(dimension).get();
-
-    // TODO: Use weights of one for now. Needs to be corrected to handle NURBS correctly!
-    double new_weight = 1.0;
-
-    // The first and last control point of the Bézier segment remain unchanged.
-    baf::ControlPoint first(std::vector<double>(bezier_cps.begin(), bezier_cps.begin() + GetPointDim()));
-    baf::ControlPoint last(std::vector<double>(bezier_cps.end() - GetPointDim(), bezier_cps.end()));
-
-    // Vector of pairs to hold control point and corresponding weight.
-    // TODO: Is there a cleaner way to allocate memory when creating the vector?
-    std::vector<std::pair<baf::ControlPoint, double>> weighted_cps(num_bezier_cps, std::make_pair(first, new_weight));
-    // weighted_cps[0] = std::make_pair(first, new_weight);
-    weighted_cps[num_bezier_cps - 1] = std::make_pair(last, new_weight);
-
-    // Vector to hold the physical coordinates of one control point.
-    std::vector<double> coord(static_cast<size_t>(GetPointDim()));
-
-    uint64_t r = (GetDegree(dimension).get() - 1) / 2;
-
-    if (GetDegree(dimension).get() % 2 == 0) {
-      // Loop through the new control points P_i for i = 1,...,r.
-      for (uint64_t i = 1; i <= r; ++i) {
-
-        // Compute the degree elevation coeffiecient alpha_i for the current control point.
-        double alpha_i = double(i) / double(GetDegree(dimension).get());
-
-        // Loop through the physical dimensions of the current new control point.
-        // TODO: Control point times scalar should be implemented as an operator in the corresponding class!
-        for (int j = 0; j < GetPointDim(); ++j) {
-
-          // Compute the new control point P_i as a function of P_i-1, the old control point Q_i and the degree
-          // elevation coefficient alpha_i.
-          coord[j] =
-              (bezier_cps[i * GetPointDim() + j] - alpha_i * weighted_cps[i - 1].first.GetValue(j)) / (1 - alpha_i);
-        }
-        weighted_cps[i] = std::make_pair(baf::ControlPoint(coord), new_weight);
-      }
-
-      // Loop though the new control points P_i for i = p-2,...,r+1.
-      // Depending on the degree, p-2 can be greater or less than r+1. Therefore, the lower and upper bounds of the
-      // loop are determined as follows. TODO: Correct?
-      int lower = std::min(static_cast<int>(r + 1), GetDegree(dimension).get() - 2);
-      int upper = std::max(static_cast<int>(r + 1), GetDegree(dimension).get() - 2);
-      for (int i = upper; i >= lower; --i) {
-
-        // Compute the degree elevation coefficient alpha_i for the current control point.
-        double alpha_i = double(i + 1) / double(GetDegree(dimension).get());
-
-        // Loop through the physical dimensions of the current new control point.
-        for (int j = 0; j < GetPointDim(); ++j) {
-
-          // Compute the new control point P_i as a function of P_i-1, the old control point Q_i and the degree
-          // elevation coefficient alpha_i.
-          coord[j] = (bezier_cps[(i + 1) * GetPointDim() + j]
-              - (1 - alpha_i) * weighted_cps[i + 1].first.GetValue(j)) / alpha_i;
-        }
-        weighted_cps[i] = std::make_pair(baf::ControlPoint(coord), new_weight);
-      }
-    }
-
-    if (GetDegree(dimension).get() % 2 != 0) {
-      // Loop through the new control points P_i for i = 1,...,r-1.
-      for (uint64_t i = 1; i <= r - 1; ++i) {
-
-        // Compute the degree elevation coeffiecient alpha_i for the current control point.
-        double alpha_i = double(i) / double(GetDegree(dimension).get());
-
-        // Loop through the physical dimensions of the current new control point.
-        // TODO: Control point times scalar should be implemented as an operator in the corresponding class!
-        for (int j = 0; j < GetPointDim(); ++j) {
-
-          // Compute the new control point P_i as a function of P_i-1, the old control point Q_i and the degree
-          // elevation coefficient alpha_i.
-          coord[j] =
-              (bezier_cps[i * GetPointDim() + j] - alpha_i * weighted_cps[i - 1].first.GetValue(j)) / (1 - alpha_i);
-        }
-        weighted_cps[i] = std::make_pair(baf::ControlPoint(coord), new_weight);
-      }
-
-      // Loop though the new control points P_i for i = p-2,...,r+1.
-      // Depending on the degree, p-2 can be greater or less than r+1. Therefore, the lower and upper bounds of the
-      // loop are determined as follows. TODO: Correct?
-      int lower = std::min(static_cast<int>(r + 1), GetDegree(dimension).get() - 2);
-      int upper = std::max(static_cast<int>(r + 1), GetDegree(dimension).get() - 2);
-      for (int i = upper; i >= lower; --i) {
-
-        // Compute the degree elevation coefficient alpha_i for the current control point.
-        double alpha_i = double(i + 1) / double(GetDegree(dimension).get());
-
-        // Loop through the physical dimensions of the current new control point.
-        for (int j = 0; j < GetPointDim(); ++j) {
-
-          // Compute the new control point P_i as a function of P_i-1, the old control point Q_i and the degree
-          // elevation coefficient alpha_i.
-          coord[j] = (bezier_cps[(i + 1) * GetPointDim() + j]
-              - (1 - alpha_i) * weighted_cps[i + 1].first.GetValue(j)) / alpha_i;
-        }
-        weighted_cps[i] = std::make_pair(baf::ControlPoint(coord), new_weight);
-      }
-
-      // Compute the control point in the center of the Bézier segment.
-      double alpha_r_L = double(r) / double(GetDegree(dimension).get());
-      double alpha_r_R = double(r + 1) / double(GetDegree(dimension).get());
-      for (int j = 0; j < GetPointDim(); ++j) {
-        double P_r_L = (bezier_cps[r * GetPointDim() + j] - alpha_r_L * weighted_cps[r - 1].first.GetValue(j))
-            / (1 - alpha_r_L);
-        double P_r_R = (bezier_cps[(r + 1) * GetPointDim() + j]
-            - (1 - alpha_r_R) * weighted_cps[r + 1].first.GetValue(j)) / alpha_r_R;
-        coord[j] = 0.5 * (P_r_L + P_r_R);
-      }
-      weighted_cps[r] = std::make_pair(baf::ControlPoint(coord), new_weight);
-    }
-
-    return weighted_cps;
-  } */
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
   virtual bool RemoveControlPoints(std::vector<double> scaling,
