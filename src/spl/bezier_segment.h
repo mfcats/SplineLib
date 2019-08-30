@@ -42,12 +42,14 @@ class BezierSegment {
     }
   };
 
-  void ReduceDegree(int dimension) {
+  double ReduceDegree(int dimension) {
     // If the spline is not a Bézier spline in the direction of dimension, the degree can't be reduced.
     if (!is_bezier_in_direction_[dimension]) {
       throw std::runtime_error(
           "The degree in this direction cannot be reduced! The spline is not a Bézier spline in that direction!");
     }
+    // Maximum error bound of the degree reduction.
+    double max_error_bound = 0.0;
     // Create MultiIndexHandler for old number of control points, decrement the degree of dimension together with the
     // number of control points of that dimension, create MultiIndexHandler for the new number of control points and
     // reserve memory for the new control points.
@@ -137,7 +139,8 @@ class BezierSegment {
               - control_points_new[indices_new_plus_one[j]] * (1 - alpha)) * (1 / alpha);
         }
       }
-      // Compute all control points P_{r,j,k} that lie in the center of the Bézier segment.
+      // Compute all control points P_{r,j,k} that lie in the center of the Bézier segment as well as the maximum
+      // error bound of the degree reduction.
       auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r);
       auto indices_new_r_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r - 1);
       auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r + 1);
@@ -151,11 +154,26 @@ class BezierSegment {
         baf::ControlPoint P_r_R = (control_points_[indices_old_r_plus_one[j]]
             - control_points_new[indices_new_r_plus_one[j]] * (1 - alpha_r_plus_one)) * (1 / alpha_r_plus_one);
         control_points_new[indices_new_r[j]] = (P_r_L + P_r_R) * 0.5;
+        max_error_bound += (P_r_L - P_r_R).GetEuclideanNorm();
       }
     }
 
     // Replace the control points of the Bézier segment by the new ones.
     control_points_ = control_points_new;
+
+    // Compute the maximum error bound of the degree reduction for the case that the degree is even.
+    if ((degrees_[dimension].get() + 1) % 2 == 0) {
+      auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r + 1);
+      auto indices_old_r = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r);
+      auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r + 1);
+      for (uint64_t j = 0; j < indices_new.size(); ++j) {
+        max_error_bound +=
+            (control_points_new[indices_new_r_plus_one[j]] - (control_points_[indices_old_r[j]]
+            + control_points_[indices_old_r_plus_one[j]]) * 0.5).GetEuclideanNorm();
+      }
+    }
+
+    return max_error_bound;
   };
 
   void SetDegreeAndNumberOfControlPoints(std::array<Degree, DIM> delta_degrees) {

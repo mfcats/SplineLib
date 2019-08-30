@@ -58,6 +58,15 @@ baf::ControlPoint baf::ControlPoint::Transform(std::array<std::array<double, 4>,
   return ControlPoint(coordinates_new);
 }
 
+double baf::ControlPoint::GetEuclideanNorm() const {
+  double euclidean_norm = 0.0;
+  for (auto &coordinate : coordinates_) {
+    euclidean_norm += pow(coordinate, 2);
+  }
+  euclidean_norm = sqrt(euclidean_norm);
+  return euclidean_norm;
+}
+
 double baf::ControlPoint::GetValue(int dimension) const {
 #ifdef DEBUG
   return coordinates_.at(dimension);

@@ -75,7 +75,7 @@ TEST_F(BSpline1DFig5_39, ReducesDegreeFrom5To4Correctly) {  // NOLINT
 
   // Elevate the degree of the spline by one and then reduce it to obtain a spline that has not changed geometrically.
   bspline_1d_after_->ElevateDegree(0);
-  bspline_1d_after_->ReduceDegree(0);
+  bool successful = bspline_1d_after_->ReduceDegree(0, 0.0001);
 
   // Print degree, knot vector and control points of the degree reduced spline to the console.
   // PrintSpline(bspline_1d_after_);
@@ -88,6 +88,7 @@ TEST_F(BSpline1DFig5_39, ReducesDegreeFrom5To4Correctly) {  // NOLINT
   vtk_writer.WriteFile(splines, "/Users/christophsusen/Desktop/test.vtk", {{40}, {40}});*/
 
   // The geometry of the spline and its degree should have remained unchanged.
+  ASSERT_THAT(successful, true);
   ASSERT_THAT(bspline_1d_after_->GetDegree(0).get(), bspline_1d_before_->GetDegree(0).get());
   ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true);
 }

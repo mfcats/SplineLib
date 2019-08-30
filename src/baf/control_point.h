@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <functional>
 #include <initializer_list>
 #include <vector>
@@ -35,6 +36,7 @@ class ControlPoint {
   ControlPoint operator*(const double &scalar) const;
 
   ControlPoint Transform(std::array<std::array<double, 4>, 4> TransMatrix, std::array<double, 3> scaling) const;
+  double GetEuclideanNorm() const;
 
  protected:
   std::vector<double> coordinates_;

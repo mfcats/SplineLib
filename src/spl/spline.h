@@ -245,7 +245,7 @@ class Spline {
     RemoveBezierKnots(diff, dimension);
   }
 
-  void ReduceDegree(int dimension) {
+  bool ReduceDegree(int dimension, double tolerance) {
 
   // Insert knots to subdivide the spline into Bézier segments. The diff vector holds the number of times every
   // inner knot was inserted in order to reach a multiplicity of p.
@@ -255,20 +255,23 @@ class Spline {
   uint64_t num_bezier_segments = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1;
   std::vector<spl::BezierSegment<DIM>> bezier_segments;
   bezier_segments.reserve(num_bezier_segments);
+  double total_error = 0.0;
   for (uint64_t i = 0; i < num_bezier_segments; ++i) {
     bezier_segments.emplace_back(GetBezierSegment2(dimension, i));
-    bezier_segments[i].ReduceDegree(0);
+    total_error += bezier_segments[i].ReduceDegree(0);
+    if (total_error > tolerance) return false;
   }
 
   // Assemble the control points of the degree reduced bezier segments back into the physical space of the spline.
   SetNewBezierSegmentControlPoints2(bezier_segments, dimension);
-
   parameter_space_->ReduceDegree(dimension);
   parameter_space_->DecrementMultiplicityOfAllKnots(dimension);
 
   // Remove the knots to get rid of the decomposition into bezier segments (remove one knot more than inserted).
   std::transform(diff.begin(), diff.end(), diff.begin(), std::bind(std::plus<>(), std::placeholders::_1, 1));
   RemoveBezierKnots(diff, dimension);
+
+  return true;
 }
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
