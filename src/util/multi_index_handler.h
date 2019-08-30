@@ -160,6 +160,8 @@ class MultiIndexHandler {
     // TODO: Reserve memory for the indices vector. Length can be computed prior to filling the vector.
     std::vector<int> indices;
     std::array<int, DIM> old_indices = current_multi_index_value_;
+    // TODO: Does the Set1DIndex function have to iterate through all indices every time?
+    Set1DIndex(0);
     for (int i = 0; i < Get1DLength(); ++i, ++(*this)) {
       if (current_multi_index_value_[dimension] == value) {
         indices.emplace_back(Get1DIndex());

@@ -54,7 +54,7 @@ class BezierSegment {
     // number of control points of that dimension, create MultiIndexHandler for the new number of control points and
     // reserve memory for the new control points.
     util::MultiIndexHandler<DIM> cp_handler_old(num_control_points_);
-    std::array<Degree, DIM> delta_degrees;
+    std::array<Degree, DIM> delta_degrees{};
     delta_degrees[dimension] = Degree{-1};
     SetDegreeAndNumberOfControlPoints(delta_degrees);
     util::MultiIndexHandler<DIM> cp_handler_new(num_control_points_);
@@ -92,7 +92,7 @@ class BezierSegment {
       // Depending on the degree, p-2 can be greater or less than r+1. Therefore, the lower and upper bounds of the
       // loop are determined as follows: TODO: Correct?
       int lower = std::min(static_cast<int>(r + 1), degrees_[dimension].get() - 1);
-      int upper = std::max(static_cast<int>(r + 1), degrees_[dimension].get() - 2);
+      int upper = std::max(static_cast<int>(r + 1), degrees_[dimension].get() - 1);
       for (int i = upper; i >= lower; --i) {
         // Get 1D indices for all P_{i,j,k,...}, P_{i+1,j,k,...} (new control points) and for all
         // Q_{i+1,j,k} (old control points) for the current value of i. Afterwards, the degree elevation coefficient
@@ -125,7 +125,7 @@ class BezierSegment {
       // Depending on the degree, p-2 can be greater or less than r+1. Therefore, the lower and upper bounds of the
       // loop are determined as follows: TODO: Correct?
       int lower = std::min(static_cast<int>(r + 1), degrees_[dimension].get() - 1);
-      int upper = std::max(static_cast<int>(r + 1), degrees_[dimension].get() - 2);
+      int upper = std::max(static_cast<int>(r + 1), degrees_[dimension].get() - 1);
       for (int i = upper; i >= lower; --i) {
         // Get 1D indices for all P_{i,j,k,...}, P_{i+1,j,k,...} (new control points) and for all
         // Q_{i+1,j,k} (old control points) for the current value of i. Afterwards, the degree elevation coefficient
@@ -158,20 +158,20 @@ class BezierSegment {
       }
     }
 
-    // Replace the control points of the Bézier segment by the new ones.
-    control_points_ = control_points_new;
-
     // Compute the maximum error bound of the degree reduction for the case that the degree is even.
     if ((degrees_[dimension].get() + 1) % 2 == 0) {
+      auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r);
       auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r + 1);
-      auto indices_old_r = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r);
       auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r + 1);
       for (uint64_t j = 0; j < indices_new.size(); ++j) {
         max_error_bound +=
-            (control_points_new[indices_new_r_plus_one[j]] - (control_points_[indices_old_r[j]]
-            + control_points_[indices_old_r_plus_one[j]]) * 0.5).GetEuclideanNorm();
+            (control_points_[indices_old_r_plus_one[j]] - ((control_points_new[indices_new_r[j]]
+                + control_points_new[indices_new_r_plus_one[j]]) * 0.5)).GetEuclideanNorm();
       }
     }
+
+    // Replace the control points of the Bézier segment by the new ones.
+    control_points_ = control_points_new;
 
     return max_error_bound;
   };

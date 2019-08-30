@@ -465,7 +465,9 @@ class Spline {
       int index = (index_in_dir + segment) % width + point_handler.ExtractDimension(dimension) * width;
       this->GetPhysicalSpace()->SetControlPoint(point_handler.GetIndices(),
           bezier_segments[segment].GetControlPoint(index));
+      // TODO: Skipping of the control points in between bezier segments does not work for multidimensional splines.
       if (index == width - 1) ++segment;
+      if (segment >= bezier_segments.size()) segment = 0;
     }
   }
 
