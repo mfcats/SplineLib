@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
+#include "random_b_spline_generator.h"
 #include "nurbs.h"
 #include "vtk_writer.h"
 
@@ -41,6 +42,37 @@ void PrintSpline(std::shared_ptr<spl::BSpline<DIM>> spline) {
     }
     std::cout << std::endl;
   }
+}
+
+class ALinearBSpline : public Test {  // NOLINT
+ public:
+  ALinearBSpline() {
+    std::array<Degree, 1> degree = {Degree{1}};
+    KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{1},
+                         ParamCoord{1}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0}))
+    };
+    b_spline_before_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
+    b_spline_after_ = std::make_shared<spl::BSpline<1>>(*b_spline_before_);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<1>> b_spline_before_;
+  std::shared_ptr<spl::BSpline<1>> b_spline_after_;
+};
+
+TEST_F(ALinearBSpline, DoesNotChangeGeometricallyAfterDegreeReduction) {  // NOLINT
+  b_spline_after_->ElevateDegree(0);
+  b_spline_after_->ElevateDegree(0);
+  bool successful = b_spline_after_->ReduceDegree(0, 0.0001);
+  successful = successful && b_spline_after_->ReduceDegree(0, 0.0001);
+  ASSERT_THAT(successful, true);
+  ASSERT_THAT(b_spline_after_->AreGeometricallyEqual(*b_spline_before_), true);
 }
 
 class BSpline1DFig5_39 : public Test {  // NOLINT
@@ -71,7 +103,7 @@ class BSpline1DFig5_39 : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> bspline_1d_after_;
 };
 
-TEST_F(BSpline1DFig5_39, ReducesDegreeFrom5To4Correctly) {  // NOLINT
+TEST_F(BSpline1DFig5_39, ReducesDegreeCorrectly) {  // NOLINT
 
   // Elevate the degree of the spline by one and then reduce it to obtain a spline that has not changed geometrically.
   bspline_1d_after_->ElevateDegree(0);
@@ -121,23 +153,39 @@ class A2DBSplineForDegreeReduction : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<2>> after_reduction_;
 };
 
-TEST_F(A2DBSplineForDegreeReduction, ReducesDegreeFrom4To3Correctly) {  // NOLINT
+TEST_F(A2DBSplineForDegreeReduction, ReducesDegreeCorrectly) {  // NOLINT
 
   // Elevate the degree of the spline by one and then reduce it to obtain a spline that has not changed geometrically.
-  // TODO: Degree reduction after just one degree elevation does not work.
-  after_reduction_->ElevateDegree(0);
   after_reduction_->ElevateDegree(0);
   bool successful = after_reduction_->ReduceDegree(0, 0.001);
-
-  // Write spline after degree reduction to VTK file for visualization.
-  /* std::vector<std::any> splines;
-  splines.emplace_back(std::make_any<std::shared_ptr<spl::BSpline<2>>>(original_));
-  splines.emplace_back(std::make_any<std::shared_ptr<spl::BSpline<2>>>(after_reduction_));
-  io::VTKWriter vtk_writer;
-  vtk_writer.WriteFile(splines, "/Users/christophsusen/Desktop/test.vtk", {{40, 40}, {40, 40}}); */
 
   // The geometry of the spline and its degree should have remained unchanged.
   ASSERT_THAT(successful, true);
   ASSERT_THAT(after_reduction_->GetDegree(1).get(), original_->GetDegree(1).get());
   ASSERT_THAT(after_reduction_->AreGeometricallyEqual(*original_), true);
+}
+
+class Random3DBSplineForDegreeReduction : public Test {  // NOLINT
+ public:
+  Random3DBSplineForDegreeReduction() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomBSplineGenerator<3> spline_generator(limits, 4, 3);
+    spl::BSpline<3> b_spline(spline_generator);
+    b_spline_before_ = std::make_shared<spl::BSpline<3>>(b_spline);
+    b_spline_after_ = std::make_shared<spl::BSpline<3>>(b_spline);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<3>> b_spline_before_;
+  std::shared_ptr<spl::BSpline<3>> b_spline_after_;
+};
+
+TEST_F(Random3DBSplineForDegreeReduction, ReducesDegreeCorrectly) {  // NOLINT
+  b_spline_after_->ElevateDegree(0);
+  b_spline_after_->ElevateDegree(1);
+  b_spline_after_->ElevateDegree(2);
+  b_spline_after_->ReduceDegree(0, 1e-10);
+  b_spline_after_->ReduceDegree(1, 1e-10);
+  b_spline_after_->ReduceDegree(2, 1e-10);
+  ASSERT_THAT(b_spline_after_->AreGeometricallyEqual(*b_spline_before_), true);
 }

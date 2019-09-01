@@ -72,10 +72,10 @@ class BezierSegment {
       control_points_new[indices_new[i]] = control_points_[indices_old[i]];
     }
     // Compute the new inner control points of the Bézier segment. The computation varies for even and odd degree.
-    uint64_t r = (degrees_[dimension].get()) / 2;
+    int r = (degrees_[dimension].get()) / 2;
     if ((degrees_[dimension].get() + 1) % 2 == 0) {
       // Loop through the new control points P_{i,j,k,...} for i = 1,...,r.
-      for (uint64_t i = 1; i <= r; ++i) {
+      for (int i = 1; i <= r; ++i) {
         // Get 1D indices for all P_{i,j,k,...}, P_{i-1,j,k,...} (new control points) and for all
         // Q_{i,j,k} (old control points) for the current value of i. Afterwards, the degree elevation coefficient
         // and the new control points are computed.
@@ -89,10 +89,8 @@ class BezierSegment {
         }
       }
       // Loop backwards through the new control points P_{i,j,k,...} for i = p-2,...,r+1.
-      // Depending on the degree, p-2 can be greater or less than r+1. Therefore, the lower and upper bounds of the
-      // loop are determined as follows: TODO: Correct?
-      int lower = std::min(static_cast<int>(r + 1), degrees_[dimension].get() - 1);
-      int upper = std::max(static_cast<int>(r + 1), degrees_[dimension].get() - 1);
+      int lower = static_cast<int>(r + 1);
+      int upper = degrees_[dimension].get() - 1;
       for (int i = upper; i >= lower; --i) {
         // Get 1D indices for all P_{i,j,k,...}, P_{i+1,j,k,...} (new control points) and for all
         // Q_{i+1,j,k} (old control points) for the current value of i. Afterwards, the degree elevation coefficient
@@ -108,7 +106,7 @@ class BezierSegment {
       }
     } else if ((degrees_[dimension].get() + 1) % 2 != 0) {
       // Loop through the new control points P_{i,j,k,...} for i = 1,...,r-1.
-      for (uint64_t i = 1; i <= r-1; ++i) {
+      for (int i = 1; i <= r - 1; ++i) {
         // Get 1D indices for all P_{i,j,k,...}, P_{i-1,j,k,...} (new control points) and for all
         // Q_{i,j,k} (old control points) for the current value of i. Afterwards, the degree elevation coefficient
         // and the new control points are computed.
@@ -122,10 +120,8 @@ class BezierSegment {
         }
       }
       // Loop backwards through the new control points P_{i,j,k,...} for i = p-2,...,r+1.
-      // Depending on the degree, p-2 can be greater or less than r+1. Therefore, the lower and upper bounds of the
-      // loop are determined as follows: TODO: Correct?
-      int lower = std::min(static_cast<int>(r + 1), degrees_[dimension].get() - 1);
-      int upper = std::max(static_cast<int>(r + 1), degrees_[dimension].get() - 1);
+      int lower = static_cast<int>(r + 1);
+      int upper = degrees_[dimension].get() - 1;
       for (int i = upper; i >= lower; --i) {
         // Get 1D indices for all P_{i,j,k,...}, P_{i+1,j,k,...} (new control points) and for all
         // Q_{i+1,j,k} (old control points) for the current value of i. Afterwards, the degree elevation coefficient
@@ -154,7 +150,7 @@ class BezierSegment {
         baf::ControlPoint P_r_R = (control_points_[indices_old_r_plus_one[j]]
             - control_points_new[indices_new_r_plus_one[j]] * (1 - alpha_r_plus_one)) * (1 / alpha_r_plus_one);
         control_points_new[indices_new_r[j]] = (P_r_L + P_r_R) * 0.5;
-        max_error_bound += (P_r_L - P_r_R).GetEuclideanNorm();
+        if ((P_r_L - P_r_R).GetEuclideanNorm() > max_error_bound) max_error_bound = (P_r_L - P_r_R).GetEuclideanNorm();
       }
     }
 
@@ -164,9 +160,10 @@ class BezierSegment {
       auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r + 1);
       auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r + 1);
       for (uint64_t j = 0; j < indices_new.size(); ++j) {
-        max_error_bound +=
+        double current_max_error_bound =
             (control_points_[indices_old_r_plus_one[j]] - ((control_points_new[indices_new_r[j]]
                 + control_points_new[indices_new_r_plus_one[j]]) * 0.5)).GetEuclideanNorm();
+        if (current_max_error_bound > max_error_bound) max_error_bound = current_max_error_bound;
       }
     }
 

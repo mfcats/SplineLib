@@ -30,9 +30,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "parameter_space.h"
 #include "physical_space.h"
 
-// TODO: Remove!
-#include <iostream>
-
 namespace spl {
 template<int DIM>
 class Spline {
@@ -60,8 +57,8 @@ class Spline {
 
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();
-      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
-      for (auto j = 0u; j < dimensions.size(); ++j) {
+      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
+      for (size_t j = 0; j < dimensions.size(); ++j) {
         evaluated_point[j] += GetEvaluatedControlPoint(param_coord, indices, dimensions[j]);
       }
     }
@@ -79,21 +76,21 @@ class Spline {
 
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();
-      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
-      for (auto j = 0u; j < dimensions.size(); ++j) {
+      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
+      for (size_t j = 0; j < dimensions.size(); ++j) {
         evaluated_point[j] += GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
       }
     }
     return evaluated_point;
   }
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParamCoord param_coord) const {
+  [[nodiscard]] std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParamCoord param_coord) const {
     return parameter_space_->EvaluateAllNonZeroBasisFunctions(direction, param_coord);
   }
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(int direction,
-                                                                 ParamCoord param_coord,
-                                                                 int derivative) const {
+  [[nodiscard]] std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(int direction,
+                                                                               ParamCoord param_coord,
+                                                                               int derivative) const {
     return parameter_space_->EvaluateAllNonZeroBasisFunctionDerivatives(direction, param_coord, derivative);
   }
 
@@ -124,19 +121,19 @@ class Spline {
     return true;
   }
 
-  Degree GetDegree(int i) const {
+  [[nodiscard]] Degree GetDegree(int i) const {
     return parameter_space_->GetDegree(i);
   }
 
-  std::shared_ptr<baf::KnotVector> GetKnotVector(int i) const {
+  [[nodiscard]] std::shared_ptr<baf::KnotVector> GetKnotVector(int i) const {
     return parameter_space_->GetKnotVector(i);
   }
 
-  double GetKnotVectorRange(int direction) const {
+  [[nodiscard]] double GetKnotVectorRange(int direction) const {
     return parameter_space_->GetKnotVectorRange(direction);
   }
 
-  int GetNumberOfControlPoints() const {
+  [[nodiscard]] int GetNumberOfControlPoints() const {
     return GetPhysicalSpace()->GetNumberOfControlPoints();
   }
 
@@ -144,7 +141,7 @@ class Spline {
     return GetPhysicalSpace()->GetPointsPerDirection();
   }
 
-  int GetPointDim() const {
+  [[nodiscard]] int GetPointDim() const {
     return GetPhysicalSpace()->GetDimension();
   }
 
@@ -156,7 +153,7 @@ class Spline {
     return GetPhysicalSpace()->GetControlPoint(indices);
   }
 
-  double GetExpansion() const {
+  [[nodiscard]] double GetExpansion() const {
     return GetPhysicalSpace()->GetExpansion();
   }
 
@@ -186,7 +183,7 @@ class Spline {
     }
   }
 
-  void RefineKnots(std::vector<ParamCoord> new_knots, int dimension) {
+  void RefineKnots(const std::vector<ParamCoord> &new_knots, int dimension) {
     for (const auto &knot : new_knots) {
       this->InsertKnot(knot, dimension);
     }
@@ -240,7 +237,7 @@ class Spline {
     parameter_space_->ElevateDegree(dimension);
 
     // TODO: CODE CHANGED HERE!
-    std::transform(diff.begin(), diff.end(), diff.begin(), std::bind(std::plus<int>(), std::placeholders::_1, 1));
+    std::transform(diff.begin(), diff.end(), diff.begin(), std::bind(std::plus<>(), std::placeholders::_1, 1));
 
     RemoveBezierKnots(diff, dimension);
   }
@@ -258,7 +255,7 @@ class Spline {
   double total_error = 0.0;
   for (uint64_t i = 0; i < num_bezier_segments; ++i) {
     bezier_segments.emplace_back(GetBezierSegment2(dimension, i));
-    total_error += bezier_segments[i].ReduceDegree(0);
+    total_error += bezier_segments[i].ReduceDegree(dimension);
     if (total_error > tolerance) return false;
   }
 
@@ -306,7 +303,7 @@ class Spline {
     return total_length;
   }
 
-  std::vector<double> ComputeBezierDegreeElevationCoeffients(int dimension) const {
+  [[nodiscard]] std::vector<double> ComputeBezierDegreeElevationCoeffients(int dimension) const {
     std::vector<double> alpha;
     for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
       alpha.push_back(static_cast<double>(i) / (GetDegree(dimension).get() + 1));
@@ -342,9 +339,9 @@ class Spline {
     }
   }
 
-  virtual int GetBezierPointLength() const = 0;
+  [[nodiscard]] virtual int GetBezierPointLength() const = 0;
 
-  virtual std::vector<double> GetBezierSegment(int dimension, int segment) const {
+  [[nodiscard]] virtual std::vector<double> GetBezierSegment(int dimension, int segment) const {
     util::MultiIndexHandler<DIM> point_handler(GetPointsPerDirection());
     int width = GetDegree(dimension).get() + 1;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
@@ -405,7 +402,7 @@ class Spline {
         num_control_points);
   }
 
-  std::vector<std::pair<baf::ControlPoint, double>>
+  [[nodiscard]] std::vector<std::pair<baf::ControlPoint, double>>
   DegreeElevateBezierSegment(std::vector<double> bezier_cps, std::vector<double> alpha, int dimension) const {
     int width = GetDegree(dimension).get() + 1;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
@@ -459,15 +456,16 @@ class Spline {
     int delta_num_cps = GetPhysicalSpace()->GetNumberOfControlPoints() - point_handler.Get1DLength();
     GetPhysicalSpace()->RemoveControlPoints(delta_num_cps);
     int width = bezier_segments[0].GetDegree(dimension).get() + 1;
-    int segment = 0;
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler ) {
       int index_in_dir = point_handler[dimension];
-      int index = (index_in_dir + segment) % width + point_handler.ExtractDimension(dimension) * width;
+      int segment = index_in_dir / (width - 1);
+      int index = index_in_dir % (width - 1) + point_handler.ExtractDimension(dimension) * width;
+      if (static_cast<size_t>(segment) > bezier_segments.size() - 1) {
+        segment--;
+        index = (width - 1) + point_handler.ExtractDimension(dimension) * width;
+      }
       this->GetPhysicalSpace()->SetControlPoint(point_handler.GetIndices(),
           bezier_segments[segment].GetControlPoint(index));
-      // TODO: Skipping of the control points in between bezier segments does not work for multidimensional splines.
-      if (index == width - 1) ++segment;
-      if (segment >= bezier_segments.size()) segment = 0;
     }
   }
 
