@@ -312,8 +312,7 @@ class Spline {
 
   std::vector<int> ProduceBezierSegments(int dimension) {
     size_t position = GetKnotVector(dimension)->GetNumberOfKnots() - GetDegree(dimension).get() - 2;
-
-    // TODO: In order to decompose the spline into Bézier segments, every inner knot has to be repeated only p times.
+    // TODO(Christoph): In order to decompose the spline into Bézier segments, every inner knot has to be repeated only p times.
     // std::vector<int> diff(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2, GetDegree(dimension).get());
     std::vector<int> diff(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2, GetDegree(dimension).get() - 1);
 
@@ -348,19 +347,19 @@ class Spline {
     std::vector<double> bezier_cps(static_cast<size_t>(point_length * width * segment_length));
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
       auto index_in_dir = point_handler[dimension];
-      // TODO(Christoph): If the decomposition into Bézier segments is done correctly (insert knots up to multiplicity p), the line
-      // below has to be modified to catch the right control points for all Bézier segments. As it is it will only
-      // work for the first Bézier segment and will miss the first control point for the following Bézier segment.
+      // TODO(Christoph): If the decomposition into Bézier segments is done correctly (insert knots up to multiplicity
+      // p), the line below has to be modified to catch the right control points for all Bézier segments. As it is it
+      // will only work for the first Bézier segment and will miss the first control point for the following Bézier
+      // segment.
       // if (index_in_dir >= segment * width && index_in_dir < (segment + 1) * width) {
       if (index_in_dir >= segment * width - segment && index_in_dir < (segment + 1) * width - segment) {
         double weight = this->GetWeight(point_handler.GetIndices());
         if (point_length == GetPointDim() + 1) {
           // TODO(Christoph): See the comment above to understand the change here!
-          // auto weight_index = (index_in_dir % width + point_handler.ExtractDimension(dimension) * width) * point_length
-          //     + this->GetPointDim();
+          // auto weight_index = (index_in_dir % width + point_handler.ExtractDimension(dimension) * width)
+          //     * point_length + this->GetPointDim();
           auto weight_index = ((index_in_dir + segment) % width
               + point_handler.ExtractDimension(dimension) * width) * point_length + this->GetPointDim();
-
           bezier_cps[weight_index] = weight;
         }
         for (int j = 0; j < GetPointDim(); ++j) {
@@ -368,11 +367,9 @@ class Spline {
           // auto index = (index_in_dir % width + point_handler.ExtractDimension(dimension) * width) * point_length + j;
           auto index = ((index_in_dir + segment) % width
               + point_handler.ExtractDimension(dimension) * width) * point_length + j;
-
           bezier_cps[index] = GetControlPoint(point_handler.GetIndices(), j) * weight;
         }
       }
-
     }
     return bezier_cps;
   }
