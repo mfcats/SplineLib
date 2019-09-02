@@ -75,7 +75,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
   }
 
   void SetWeightedControlPoint(std::array<int, DIM> indices, const baf::ControlPoint &control_point, double weight) {
-    this->SetControlPoint(indices, control_point);
+    PhysicalSpace<DIM>::SetControlPoint(indices, control_point);
     SetWeight(indices, weight);
   }
 

@@ -38,7 +38,7 @@ class BSplineFig5_35 : public Test {  // NOLINT
     };
     original_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
     after_elevation_ = std::make_shared<spl::BSpline<1>>(*original_);
-    after_elevation_->ElevateDegree(0);
+    after_elevation_->ElevateDegreeForDimension(0);
   }
 
  protected:
@@ -82,7 +82,7 @@ class ALinearNURBS : public Test {  // NOLINT
     std::vector<double> weights = {1.0, 1.5, 0.5, 1.0};
     original_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
     after_elevation_ = std::make_shared<spl::NURBS<1>>(*original_);
-    after_elevation_->ElevateDegree(0);
+    after_elevation_->ElevateDegreeForDimension(0);
   }
 
  protected:
@@ -119,7 +119,7 @@ class Random1DBSplineForDegreeElevation : public Test {  // NOLINT
     original_ = std::make_shared<spl::BSpline<1>>(b_spline);
 
     spl::BSpline<1> elevation_spline(b_spline);
-    elevation_spline.ElevateDegree(0);
+    elevation_spline.ElevateDegreeForDimension(0);
     after_elevation = std::make_shared<spl::BSpline<1>>(elevation_spline);
   }
 
@@ -158,7 +158,7 @@ class Random1DNURBSForDegreeElevation : public Test {  // NOLINT
     original_ = std::make_shared<spl::NURBS<1>>(nurbs);
 
     spl::NURBS<1> elevation_spline(nurbs);
-    elevation_spline.ElevateDegree(0);
+    elevation_spline.ElevateDegreeForDimension(0);
     after_elevation_ = std::make_shared<spl::NURBS<1>>(elevation_spline);
   }
 
@@ -209,7 +209,7 @@ class A2DBSplineForDegreeElevation : public Test {  // NOLINT
     };
     original_ = std::make_shared<spl::BSpline<2>>(knot_vector_before, degree, control_points);
     after_elevation_ = std::make_shared<spl::BSpline<2>>(*original_);
-    after_elevation_->ElevateDegree(0);
+    after_elevation_->ElevateDegreeForDimension(0);
   }
 
  protected:
@@ -250,7 +250,7 @@ class Random2DBSplineForDegreeElevationInDirection0 : public Test {  // NOLINT
     original_ = std::make_shared<spl::BSpline<2>>(b_spline);
 
     spl::BSpline<2> elevation_spline(b_spline);
-    elevation_spline.ElevateDegree(0);
+    elevation_spline.ElevateDegreeForDimension(0);
     after_elevation_ = std::make_shared<spl::BSpline<2>>(elevation_spline);
   }
 
@@ -292,7 +292,7 @@ class Random2DBSplineForDegreeElevationInDirection1 : public Test {  // NOLINT
     original_ = std::make_shared<spl::BSpline<2>>(b_spline);
 
     spl::BSpline<2> elevation_spline(b_spline);
-    elevation_spline.ElevateDegree(1);
+    elevation_spline.ElevateDegreeForDimension(1);
     after_elevation_ = std::make_shared<spl::BSpline<2>>(elevation_spline);
   }
 
@@ -326,11 +326,11 @@ TEST_F(Random2DBSplineForDegreeElevationInDirection1, DoesNotChangeGeometrically
 }
 
 TEST_F(Random2DBSplineForDegreeElevationInDirection1, DoesNotChangeGeometricallyAfterMoreDegreeElevations) {  // NOLINT
-  after_elevation_->ElevateDegree(0);
+  after_elevation_->ElevateDegreeForDimension(0);
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
-  after_elevation_->ElevateDegree(0);
+  after_elevation_->ElevateDegreeForDimension(0);
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
-  after_elevation_->ElevateDegree(1);
+  after_elevation_->ElevateDegreeForDimension(1);
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
 }
 
@@ -378,7 +378,7 @@ class A3DBSplineForDegreeElevationInDirection2 : public Test {  // NOLINT
     };
     original_ = std::make_shared<spl::BSpline<3>>(knot_vector_before, degree, control_points);
     after_elevation_ = std::make_shared<spl::BSpline<3>>(*original_);
-    after_elevation_->ElevateDegree(2);
+    after_elevation_->ElevateDegreeForDimension(2);
   }
 
  protected:
@@ -414,9 +414,9 @@ TEST_F(A3DBSplineForDegreeElevationInDirection2, DoesNotChangeGeometricallyAfter
 }
 
 TEST_F(A3DBSplineForDegreeElevationInDirection2, DoesNotChangeGeometricallyAfterMoreDegreeElevations) {  // NOLINT
-  after_elevation_->ElevateDegree(0);
+  after_elevation_->ElevateDegreeForDimension(0);
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-12), true);
-  after_elevation_->ElevateDegree(1);
+  after_elevation_->ElevateDegreeForDimension(1);
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_, 1e-12), true);
 }
 
@@ -429,7 +429,7 @@ class Random3DBSplineForDegreeElevationInDirection0 : public Test {  // NOLINT
     original_ = std::make_shared<spl::BSpline<3>>(b_spline);
 
     spl::BSpline<3> elevation_spline(b_spline);
-    elevation_spline.ElevateDegree(0);
+    elevation_spline.ElevateDegreeForDimension(0);
     after_elevation_ = std::make_shared<spl::BSpline<3>>(elevation_spline);
   }
 
@@ -465,9 +465,9 @@ TEST_F(Random3DBSplineForDegreeElevationInDirection0, DoesNotChangeGeometrically
 }
 
 TEST_F(Random3DBSplineForDegreeElevationInDirection0, DoesNotChangeGeometricallyAfterMpreDegreeElevation) {  // NOLINT
-  after_elevation_->ElevateDegree(1);
+  after_elevation_->ElevateDegreeForDimension(1);
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
-  after_elevation_->ElevateDegree(2);
+  after_elevation_->ElevateDegreeForDimension(2);
   ASSERT_THAT(after_elevation_->AreGeometricallyEqual(*original_), true);
 }
 
@@ -480,7 +480,7 @@ class Random3DNURBSForDegreeElevationInDirection0 : public Test {  // NOLINT
     original_ = std::make_shared<spl::NURBS<3>>(b_spline);
 
     spl::NURBS<3> elevation_spline(b_spline);
-    elevation_spline.ElevateDegree(0);
+    elevation_spline.ElevateDegreeForDimension(0);
     after_elevation_ = std::make_shared<spl::NURBS<3>>(elevation_spline);
   }
 

@@ -151,38 +151,17 @@ class ParameterSpace {
 
   void InsertKnot(ParamCoord knot, int dimension) {
     knot_vector_[dimension]->InsertKnot(knot);
-    for (int i = 0; i < DIM; i++) {
-      basis_functions_[i].erase(basis_functions_[i].begin(), basis_functions_[i].end());
-      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
-      for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
-        basis_functions_[i].emplace_back(
-            baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
-      }
-    }
+    RecreateBasisFunctions();
   }
 
   void RemoveKnot(ParamCoord knot, int dimension) {
     knot_vector_[dimension]->RemoveKnot(knot);
-    for (int i = 0; i < DIM; i++) {
-      basis_functions_[i].erase(basis_functions_[i].begin(), basis_functions_[i].end());
-      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
-      for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
-        basis_functions_[i].emplace_back(
-            baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
-      }
-    }
+    RecreateBasisFunctions();
   }
 
   void ElevateDegree(int dimension) {
     degree_[dimension] = Degree{degree_[dimension].get() + 1};
-    for (int i = 0; i < DIM; i++) {
-      basis_functions_[i].erase(basis_functions_[i].begin(), basis_functions_[i].end());
-      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
-      for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
-        basis_functions_[i].emplace_back(
-            baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
-      }
-    }
+    RecreateBasisFunctions();
   }
 
   std::array<KnotVectors<DIM>, 2> GetDividedKnotVectors(ParamCoord param_coord, int dimension) const {
@@ -219,6 +198,23 @@ class ParameterSpace {
         if (knot_vector_[i]->GetLastKnot().get() != knot_vector_[i]->GetKnot(j).get()) {
           throw std::runtime_error("The last knot must have multiplicity p+1.");
         }
+      }
+    }
+  }
+
+  void RecreateBasisFunctions() {
+    for (int current_dim = 0; current_dim < DIM; ++current_dim) {
+      auto &basis_functions_current_dim = basis_functions_[current_dim];
+      auto &knot_vector_current_dim = knot_vector_[current_dim];
+      auto &degree_current_dim = degree_[current_dim];
+      basis_functions_current_dim.erase(basis_functions_current_dim.begin(), basis_functions_current_dim.end());
+      basis_functions_current_dim.reserve(knot_vector_current_dim->GetNumberOfKnots() - degree_current_dim.get() - 1);
+      for (int current_basis_function = 0;
+           current_basis_function <
+               (static_cast<int>(knot_vector_current_dim->GetNumberOfKnots()) - degree_current_dim.get() - 1);
+           ++current_basis_function) {
+        basis_functions_current_dim.emplace_back(baf::BasisFunctionFactory::CreateDynamic(
+            *knot_vector_current_dim, KnotSpan{current_basis_function}, degree_current_dim));
       }
     }
   }

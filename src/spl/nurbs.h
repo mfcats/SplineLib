@@ -437,12 +437,34 @@ class NURBS : public Spline<DIM> {
     return true;
   }
 
-  int GetBezierPointLength() const override {
+  int GetPointLength() const override {
     return this->GetPointDim() + 1;
   }
 
-  void SetNewBezierPoint(std::pair<baf::ControlPoint, double> new_bezier_point, std::array<int, DIM> indices) override {
-    physical_space_->SetWeightedControlPoint(indices, new_bezier_point.first, new_bezier_point.second);
+  std::vector<double> GetBezierSegment(int dimension, int segment) const override {
+    util::MultiIndexHandler<DIM> point_handler(this->GetPointsPerDirection());
+    int width = this->GetDegree(dimension).get() + 1;
+    int segment_length = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
+    int point_length = GetPointLength();
+    std::vector<double> bezier_cps(static_cast<size_t>(point_length * width * segment_length));
+    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+      auto index_in_dir = point_handler[dimension];
+      if (index_in_dir >= segment * width && index_in_dir < (segment + 1) * width) {
+        double weight = this->GetWeight(point_handler.GetIndices());
+        auto weight_index = (index_in_dir % width + point_handler.ExtractDimension(dimension) * width) * point_length
+            + this->GetPointDim();
+        bezier_cps[weight_index] = weight;
+        for (int j = 0; j < this->GetPointDim(); ++j) {
+          auto index = (index_in_dir % width + point_handler.ExtractDimension(dimension) * width) * point_length + j;
+          bezier_cps[index] = this->GetControlPoint(point_handler.GetIndices(), j) * weight;
+        }
+      }
+    }
+    return bezier_cps;
+  }
+
+  void SetNewPoint(baf::ControlPoint new_point, double new_weight, std::array<int, DIM> indices) override {
+    physical_space_->SetWeightedControlPoint(indices, new_point, new_weight);
   }
 
   std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_;
