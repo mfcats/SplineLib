@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL__BEZIER_SEGMENT_H_
-#define SRC_SPL__BEZIER_SEGMENT_H_
+#ifndef SRC_SPL_BEZIER_SEGMENT_H_
+#define SRC_SPL_BEZIER_SEGMENT_H_
 
 #include <array>
 #include <functional>
@@ -40,7 +40,7 @@ class BezierSegment {
       throw std::runtime_error(
           "The given number of control points in each dimension doesn't fit the length of the control point vector.");
     }
-  };
+  }
 
   double ReduceDegree(int dimension) {
     // If the spline is not a Bézier spline in the direction of dimension, the degree can't be reduced.
@@ -82,7 +82,7 @@ class BezierSegment {
         auto indices_new_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i - 1);
         indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
         indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i);
-        double alpha = double(i) / double(degrees_[dimension].get() + 1);
+        double alpha = static_cast<double>(i) / static_cast<double>(degrees_[dimension].get() + 1);
         for (uint64_t j = 0; j < indices_new.size(); ++j) {
           control_points_new[indices_new[j]] = (control_points_[indices_old[j]]
               - control_points_new[indices_new_minus_one[j]] * alpha) * (1 / (1 - alpha));
@@ -98,7 +98,7 @@ class BezierSegment {
         auto indices_new_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i + 1);
         indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
         auto indices_old_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i + 1);
-        double alpha = double(i + 1) / double(degrees_[dimension].get() + 1);
+        double alpha = static_cast<double>(i + 1) / static_cast<double>(degrees_[dimension].get() + 1);
         for (uint64_t j = 0; j < indices_new.size(); ++j) {
           control_points_new[indices_new[j]] = (control_points_[indices_old_plus_one[j]]
               - control_points_new[indices_new_plus_one[j]] * (1 - alpha)) * (1 / alpha);
@@ -113,7 +113,7 @@ class BezierSegment {
         auto indices_new_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i - 1);
         indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
         indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i);
-        double alpha = double(i) / double(degrees_[dimension].get() + 1);
+        double alpha = static_cast<double>(i) / static_cast<double>(degrees_[dimension].get() + 1);
         for (uint64_t j = 0; j < indices_new.size(); ++j) {
           control_points_new[indices_new[j]] = (control_points_[indices_old[j]]
               - control_points_new[indices_new_minus_one[j]] * alpha) * (1 / (1 - alpha));
@@ -129,7 +129,7 @@ class BezierSegment {
         auto indices_new_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i + 1);
         indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
         auto indices_old_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i + 1);
-        double alpha = double(i + 1) / double(degrees_[dimension].get() + 1);
+        double alpha = static_cast<double>(i + 1) / static_cast<double>(degrees_[dimension].get() + 1);
         for (uint64_t j = 0; j < indices_new.size(); ++j) {
           control_points_new[indices_new[j]] = (control_points_[indices_old_plus_one[j]]
               - control_points_new[indices_new_plus_one[j]] * (1 - alpha)) * (1 / alpha);
@@ -142,8 +142,8 @@ class BezierSegment {
       auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r + 1);
       auto indices_old_r = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r);
       auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r + 1);
-      double alpha_r = double(r) / double((degrees_[dimension].get() + 1));
-      double alpha_r_plus_one = double(r + 1) / double((degrees_[dimension].get() + 1));
+      double alpha_r = static_cast<double>(r) / static_cast<double>((degrees_[dimension].get() + 1));
+      double alpha_r_plus_one = static_cast<double>(r + 1) / static_cast<double>((degrees_[dimension].get() + 1));
       for (uint64_t j = 0; j < indices_new.size(); ++j) {
         baf::ControlPoint P_r_L = (control_points_[indices_old_r[j]]
             - control_points_new[indices_new_r_minus_one[j]] * alpha_r) * (1 / (1 - alpha_r));
@@ -171,14 +171,14 @@ class BezierSegment {
     control_points_ = control_points_new;
 
     return max_error_bound;
-  };
+  }
 
   void SetDegreeAndNumberOfControlPoints(std::array<Degree, DIM> delta_degrees) {
     for (int i = 0; i < DIM; ++i) {
       degrees_[i] = degrees_[i] + delta_degrees[i];
       num_control_points_[i] += delta_degrees[i].get();
     }
-  };
+  }
 
   baf::ControlPoint GetControlPoint(int index) {
     return control_points_[index];
@@ -196,4 +196,4 @@ class BezierSegment {
 };
 }  // namespace spl
 
-#endif  // SRC_SPL__BEZIER_SEGMENT_H_
+#endif  // SRC_SPL_BEZIER_SEGMENT_H_

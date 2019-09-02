@@ -43,7 +43,6 @@ class BezierSegmentTest : public Test {  // NOLINT
 };
 
 TEST_F(BezierSegmentTest, ReducesDegreeFrom5To4Correctly) {  // NOLINT
-
-  // TODO: Create proper test cases!
+  // TODO(Christoph): Create proper test cases!
   bezier_segment_->ReduceDegree(0);
 }

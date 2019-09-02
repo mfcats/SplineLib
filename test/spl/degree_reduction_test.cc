@@ -104,7 +104,6 @@ class BSpline1DFig5_39 : public Test {  // NOLINT
 };
 
 TEST_F(BSpline1DFig5_39, ReducesDegreeCorrectly) {  // NOLINT
-
   // Elevate the degree of the spline by one and then reduce it to obtain a spline that has not changed geometrically.
   bspline_1d_after_->ElevateDegree(0);
   bool successful = bspline_1d_after_->ReduceDegree(0, 0.0001);
@@ -154,12 +153,8 @@ class A2DBSplineForDegreeReduction : public Test {  // NOLINT
 };
 
 TEST_F(A2DBSplineForDegreeReduction, ReducesDegreeCorrectly) {  // NOLINT
-
-  // Elevate the degree of the spline by one and then reduce it to obtain a spline that has not changed geometrically.
   after_reduction_->ElevateDegree(0);
   bool successful = after_reduction_->ReduceDegree(0, 0.001);
-
-  // The geometry of the spline and its degree should have remained unchanged.
   ASSERT_THAT(successful, true);
   ASSERT_THAT(after_reduction_->GetDegree(1).get(), original_->GetDegree(1).get());
   ASSERT_THAT(after_reduction_->AreGeometricallyEqual(*original_), true);

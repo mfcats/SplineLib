@@ -49,6 +49,7 @@ class MultiIndexHandler {
     return *this;
   }
 
+  // TODO(Christoph): Why does this operator return a const MultiIndexHandler?
   const MultiIndexHandler operator++(int) {
     MultiIndexHandler result(*this);
     ++(*this);
@@ -107,7 +108,7 @@ class MultiIndexHandler {
     return indices;
   }
 
-  int Get1DIndex() const {
+  [[nodiscard]] int Get1DIndex() const {
     int index_1d = 0;
     for (int i = 0; i < DIM; ++i) {
       int temp = current_multi_index_value_[i];
@@ -131,7 +132,7 @@ class MultiIndexHandler {
     return index_1d;
   }
 
-  int Get1DLength() const {
+  [[nodiscard]] int Get1DLength() const {
     int length = 1;
     for (int i = 0; i < DIM; ++i) {
       length *= multi_index_length_[i];
@@ -139,7 +140,7 @@ class MultiIndexHandler {
     return length;
   }
 
-  int ExtractDimension(int dimension) const {
+  [[nodiscard]] int ExtractDimension(int dimension) const {
     std::array<int, DIM> indices, length;
     for (int m = 0; m < DIM; ++m) {
       if (m < dimension) {
@@ -157,10 +158,8 @@ class MultiIndexHandler {
   }
 
   std::vector<int> Get1DIndicesForFixedDimension(int dimension, int value) {
-    // TODO: Reserve memory for the indices vector. Length can be computed prior to filling the vector.
     std::vector<int> indices;
     std::array<int, DIM> old_indices = current_multi_index_value_;
-    // TODO: Does the Set1DIndex function have to iterate through all indices every time?
     Set1DIndex(0);
     for (int i = 0; i < Get1DLength(); ++i, ++(*this)) {
       if (current_multi_index_value_[dimension] == value) {
