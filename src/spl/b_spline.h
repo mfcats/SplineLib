@@ -68,8 +68,8 @@ class BSpline : public Spline<DIM> {
     for (int i = point_handler.Get1DLength() - 1; i >= 0; --i, --point_handler) {
       auto current_point_index = point_handler[dimension];
       std::array<int, DIM> indices = point_handler.GetIndices();
-      baf::ControlPoint
-          new_control_point = GetNewControlPoint(indices, dimension, scaling, current_point_index, first, last);
+      baf::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling,
+                                                               current_point_index, first, last);
       physical_space_->SetControlPoint(indices, new_control_point, dimension,
                                        util::NumericOperations<int>::increment);
     }
