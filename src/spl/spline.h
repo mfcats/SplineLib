@@ -431,7 +431,7 @@ class Spline {
       if (segment == current_segment) {
         auto index = index_in_dir % (width - 1) + point_handler.ExtractDimension(dimension) * width;
         this->SetNewBezierPoint(new_bezier_points[index], point_handler.GetIndices());
-        // TODO: Simplify if-statement below.
+        // TODO(Christoph): Simplify if-statement below.
       } else if ((static_cast<size_t>(current_segment) > GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2)
           && (static_cast<size_t>(segment) == GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2)) {
         auto index = (width - 1) + point_handler.ExtractDimension(dimension) * width;
