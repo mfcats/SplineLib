@@ -229,10 +229,6 @@ class Spline {
     }
     parameter_space_->ElevateDegree(dimension);
     parameter_space_->IncrementMultiplicityOfAllKnots(dimension);
-
-    // TODO(Christoph): CODE CHANGED HERE!
-    // std::transform(diff.begin(), diff.end(), diff.begin(), std::bind(std::plus(), std::placeholders::_1, 1));
-
     RemoveBezierKnots(diff, dimension);
   }
 
@@ -258,7 +254,6 @@ class Spline {
   parameter_space_->DecrementMultiplicityOfAllKnots(dimension);
 
   // Remove the knots to get rid of the decomposition into bezier segments (remove one knot more than inserted).
-    // std::transform(diff.begin(), diff.end(), diff.begin(), std::bind(std::plus(), std::placeholders::_1, 1));
   RemoveBezierKnots(diff, dimension);
 
   return true;
@@ -306,9 +301,6 @@ class Spline {
 
   std::vector<int> ProduceBezierSegments(int dimension) {
     size_t position = GetKnotVector(dimension)->GetNumberOfKnots() - GetDegree(dimension).get() - 2;
-    // TODO(Christoph): In order to decompose the spline into Bézier segments, every inner knot has to be repeated only
-    // p times.
-    // std::vector<int> diff(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2, GetDegree(dimension).get());
     std::vector<int> diff(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2, GetDegree(dimension).get() - 1);
 
     for (size_t i = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2; i > 0; --i, --position) {
@@ -342,24 +334,14 @@ class Spline {
     std::vector<double> bezier_cps(static_cast<size_t>(point_length * width * segment_length));
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
       auto index_in_dir = point_handler[dimension];
-      // TODO(Christoph): If the decomposition into Bézier segments is done correctly (insert knots up to multiplicity
-      // p), the line below has to be modified to catch the right control points for all Bézier segments. As it is it
-      // will only work for the first Bézier segment and will miss the first control point for the following Bézier
-      // segment.
-      // if (index_in_dir >= segment * width && index_in_dir < (segment + 1) * width) {
       if (index_in_dir >= segment * width - segment && index_in_dir < (segment + 1) * width - segment) {
         double weight = this->GetWeight(point_handler.GetIndices());
         if (point_length == GetPointDim() + 1) {
-          // TODO(Christoph): See the comment above to understand the change here!
-          // auto weight_index = (index_in_dir % width + point_handler.ExtractDimension(dimension) * width)
-          //     * point_length + this->GetPointDim();
           auto weight_index = ((index_in_dir + segment) % width
               + point_handler.ExtractDimension(dimension) * width) * point_length + this->GetPointDim();
           bezier_cps[weight_index] = weight;
         }
         for (int j = 0; j < GetPointDim(); ++j) {
-          // TODO(Christoph): See the comment above to understand the change here!
-          // auto index = (index_in_dir % width + point_handler.ExtractDimension(dimension) * width) * point_length + j;
           auto index = ((index_in_dir + segment) % width
               + point_handler.ExtractDimension(dimension) * width) * point_length + j;
           bezier_cps[index] = GetControlPoint(point_handler.GetIndices(), j) * weight;
@@ -437,31 +419,24 @@ class Spline {
   virtual void SetNewBezierPoint(std::pair<baf::ControlPoint, double> new_bezier_point,
                                  std::array<int, DIM> indices) = 0;
 
-  // TODO(Christoph): Does this function have to be a virtual function?
+  // TODO(Christoph): Does this function have to be a virtual function? Also check for other functions concerning
+  //  the degree elevation and reduction.
   virtual void SetNewBezierSegmentControlPoints(
       const std::vector<std::pair<baf::ControlPoint, double>> &new_bezier_points, int dimension, int segment) {
-
-    // TODO(Christoph): Code changed here.
-
     util::MultiIndexHandler<DIM> point_handler(GetPointsPerDirection());
-    // util::MultiIndexHandler<DIM> point_handler(GetPointsPerDirection());
-
-    // TODO(Christoph): Code changed here.
     int width = GetDegree(dimension).get() + 2;
-    // int width = GetDegree(dimension).get() + 1;
-
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
       int index_in_dir = point_handler[dimension];
       int current_segment = index_in_dir / (width - 1);
       if (segment == current_segment) {
         auto index = index_in_dir % (width - 1) + point_handler.ExtractDimension(dimension) * width;
         this->SetNewBezierPoint(new_bezier_points[index], point_handler.GetIndices());
+        // TODO: Simplify if-statement below.
       } else if ((static_cast<size_t>(current_segment) > GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2)
-          && (segment == GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2)) {
+          && (static_cast<size_t>(segment) == GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2)) {
         auto index = (width - 1) + point_handler.ExtractDimension(dimension) * width;
         this->SetNewBezierPoint(new_bezier_points[index], point_handler.GetIndices());
       }
-
     }
   }
 

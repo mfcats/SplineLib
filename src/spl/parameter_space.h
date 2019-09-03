@@ -36,11 +36,12 @@ class ParameterSpace {
   ParameterSpace(const KnotVectors<DIM> &knot_vector, std::array<Degree, DIM> degree)
       : knot_vector_(knot_vector), degree_(degree) {
     ThrowIfKnotVectorDoesNotStartAndEndWith();
-    baf::BasisFunctionFactory factory;
     for (int i = 0; i < DIM; i++) {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
       for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
-        basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
+        basis_functions_[i].emplace_back(baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]),
+                                                                                  KnotSpan{j},
+                                                                                  degree_[i]));
       }
     }
   }
@@ -51,18 +52,19 @@ class ParameterSpace {
       baf::KnotVector knot_vector = *(parameter_space.GetKnotVector(i));
       knot_vector_[i] = std::make_shared<baf::KnotVector>(knot_vector);
     }
-    baf::BasisFunctionFactory factory;
     for (int i = 0; i < DIM; i++) {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
       for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
-        basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
+        basis_functions_[i].emplace_back(baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]),
+                                                                                  KnotSpan{j},
+                                                                                  degree_[i]));
       }
     }
   }
 
   virtual ~ParameterSpace() = default;
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParamCoord param_coord) const {
+  [[nodiscard]] std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParamCoord param_coord) const {
     auto first_non_zero = GetFirstNonZeroKnot(direction, param_coord);
     std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction].get()) + 1, 0.0);
     for (int i = 0; i < degree_[direction].get() + 1; ++i) {
@@ -72,9 +74,9 @@ class ParameterSpace {
     return basis_function_values;
   }
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(int direction,
-                                                                 ParamCoord param_coord,
-                                                                 int derivative) const {
+  [[nodiscard]] std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(int direction,
+                                                                               ParamCoord param_coord,
+                                                                               int derivative) const {
     auto first_non_zero = GetFirstNonZeroKnot(direction, param_coord);
     std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction].get()) + 1, 0.0);
     for (int i = 0; i < degree_[direction].get() + 1; ++i) {
@@ -95,13 +97,13 @@ class ParameterSpace {
                       });
   }
 
-  std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator
+  [[nodiscard]] std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator
   GetFirstNonZeroKnot(int direction, ParamCoord param_coord) const {
     return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord).get()
         - degree_[direction].get();
   }
 
-  virtual Degree GetDegree(int direction) const {
+  [[nodiscard]] virtual Degree GetDegree(int direction) const {
     return degree_[direction];
   }
 
@@ -109,7 +111,7 @@ class ParameterSpace {
     return degree_;
   }
 
-  virtual std::shared_ptr<baf::KnotVector> GetKnotVector(int direction) const {
+  [[nodiscard]] virtual std::shared_ptr<baf::KnotVector> GetKnotVector(int direction) const {
     return knot_vector_[direction];
   }
 
@@ -150,7 +152,7 @@ class ParameterSpace {
     }
   }
 
-  double GetKnotVectorRange(int direction) const {
+  [[nodiscard]] double GetKnotVectorRange(int direction) const {
     return GetKnotVector(direction)->GetLastKnot().get() - GetKnotVector(direction)->GetKnot(0).get();
   }
 
