@@ -202,6 +202,15 @@ class ParameterSpace {
     }
   }
 
+  void IncrementMultiplicityOfAllKnots(int dim) {
+    std::vector<ParamCoord> unique_knots(GetKnotVector(dim)->GetNumberOfDifferentKnots());
+    auto last = std::unique_copy(GetKnotVector(dim)->begin(), GetKnotVector(dim)->end(), unique_knots.begin());
+    unique_knots.resize(std::distance(unique_knots.begin(), last));
+    for (auto &knot : unique_knots) {
+      InsertKnot(knot, dim);
+    }
+  }
+
   void DecrementMultiplicityOfAllKnots(int dim) {
     std::vector<ParamCoord> unique_knots(GetKnotVector(dim)->GetNumberOfDifferentKnots());
     auto last = std::unique_copy(GetKnotVector(dim)->begin(), GetKnotVector(dim)->end(), unique_knots.begin());
