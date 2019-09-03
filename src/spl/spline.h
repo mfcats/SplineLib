@@ -57,7 +57,7 @@ class Spline {
 
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();
-      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus());
+      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
       for (size_t j = 0; j < dimensions.size(); ++j) {
         evaluated_point[j] += GetEvaluatedControlPoint(param_coord, indices, dimensions[j]);
       }
@@ -76,7 +76,7 @@ class Spline {
 
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();
-      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus());
+      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
       for (size_t j = 0; j < dimensions.size(); ++j) {
         evaluated_point[j] += GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
       }
