@@ -241,11 +241,10 @@ class Spline {
   uint64_t num_bezier_segments = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1;
   std::vector<spl::BezierSegment<DIM>> bezier_segments;
   bezier_segments.reserve(num_bezier_segments);
-  double total_error = 0.0;
   for (uint64_t i = 0; i < num_bezier_segments; ++i) {
     bezier_segments.emplace_back(GetBezierSegment2(dimension, i));
-    total_error += bezier_segments[i].ReduceDegree(dimension);
-    if (total_error > tolerance) return false;
+    double error = bezier_segments[i].ReduceDegree(dimension);
+    if (error > tolerance) return false;
   }
 
   // Assemble the control points of the degree reduced bezier segments back into the physical space of the spline.
@@ -382,27 +381,16 @@ class Spline {
     for (int k = 0; k < point_handler.Get1DLength(); ++k, ++point_handler) {
       auto index = point_handler[0];
       auto pos = point_handler.Get1DIndex();
-      // TODO(Christoph): Invalid read of size 8 in line below.
-      /* double new_weight = point_length == GetPointDim() ? 1.0 :
-                          (1 - alpha[index]) * bezier_cps[pos * point_length + this->GetPointDim()]
-                              + alpha[index] * bezier_cps[(pos - 1) * point_length + this->GetPointDim()]; */
-      /// -------------------------------------------------------------------------------------------------------------
       double new_weight = 1.0;
       if (point_length != GetPointDim()) {
         double val1 = (1 - alpha[index]) * bezier_cps[pos * point_length + this->GetPointDim()];
         double val2 = alpha[index] == 0 ? 0 : alpha[index] * bezier_cps[(pos - 1) * point_length + this->GetPointDim()];
         new_weight = val1 + val2;
       }
-      /// -------------------------------------------------------------------------------------------------------------
       for (int j = 0; j < GetPointDim(); ++j) {
-        // TODO(Christoph): Invalid read of size 8 in line below.
-        /* coord[j] = ((1 - alpha[index]) * bezier_cps[pos * point_length + j]
-            + alpha[index] * bezier_cps[(pos - 1) * point_length + j]) / new_weight; */
-        /// -----------------------------------------------------------------------------------------------------------
         double val1 = (1 - alpha[index]) * bezier_cps[pos * point_length + j];
         double val2 = alpha[index] == 0 ? 0 : alpha[index] * bezier_cps[(pos - 1) * point_length + j];
         coord[j] = (val1 + val2) / new_weight;
-        /// -----------------------------------------------------------------------------------------------------------
       }
       weighted_cps.emplace_back(std::make_pair(baf::ControlPoint(coord), new_weight));
       if (point_handler[0] == GetDegree(dimension).get()) {
