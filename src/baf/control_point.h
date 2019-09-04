@@ -27,9 +27,12 @@ class ControlPoint {
  public:
   explicit ControlPoint(std::initializer_list<double> coordinates);
   explicit ControlPoint(std::vector<double> coordinates);
+  explicit ControlPoint(uint64_t dimension);
 
   [[nodiscard]] int GetDimension() const;
   [[nodiscard]] double GetValue(int dimension) const;
+
+  void SetValue(int dimension, double value);
 
   ControlPoint operator+(const ControlPoint &control_point) const;
   ControlPoint operator-(const ControlPoint &control_point) const;

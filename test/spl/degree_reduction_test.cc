@@ -67,10 +67,10 @@ class ALinearBSpline : public Test {  // NOLINT
 };
 
 TEST_F(ALinearBSpline, DoesNotChangeGeometricallyAfterDegreeReduction) {  // NOLINT
-  b_spline_after_->ElevateDegree(0);
-  b_spline_after_->ElevateDegree(0);
-  bool successful = b_spline_after_->ReduceDegree(0, 0.0001);
-  successful = successful && b_spline_after_->ReduceDegree(0, 0.0001);
+  b_spline_after_->ElevateDegreeForDimension(0);
+  b_spline_after_->ElevateDegreeForDimension(0);
+  bool successful = b_spline_after_->ReduceDegreeForDimension(0, 0.0001);
+  successful = successful && b_spline_after_->ReduceDegreeForDimension(0, 0.0001);
   ASSERT_THAT(successful, true);
   ASSERT_THAT(b_spline_after_->AreGeometricallyEqual(*b_spline_before_), true);
 }
@@ -105,8 +105,8 @@ class BSpline1DFig5_39 : public Test {  // NOLINT
 
 TEST_F(BSpline1DFig5_39, ReducesDegreeCorrectly) {  // NOLINT
   // Elevate the degree of the spline by one and then reduce it to obtain a spline that has not changed geometrically.
-  bspline_1d_after_->ElevateDegree(0);
-  bool successful = bspline_1d_after_->ReduceDegree(0, 0.0001);
+  bspline_1d_after_->ElevateDegreeForDimension(0);
+  bool successful = bspline_1d_after_->ReduceDegreeForDimension(0, 0.0001);
 
   // Print degree, knot vector and control points of the degree reduced spline to the console.
   // PrintSpline(bspline_1d_after_);
@@ -153,8 +153,8 @@ class A2DBSplineForDegreeReduction : public Test {  // NOLINT
 };
 
 TEST_F(A2DBSplineForDegreeReduction, ReducesDegreeCorrectly) {  // NOLINT
-  after_reduction_->ElevateDegree(0);
-  bool successful = after_reduction_->ReduceDegree(0, 0.001);
+  after_reduction_->ElevateDegreeForDimension(0);
+  bool successful = after_reduction_->ReduceDegreeForDimension(0, 0.001);
   ASSERT_THAT(successful, true);
   ASSERT_THAT(after_reduction_->GetDegree(1).get(), original_->GetDegree(1).get());
   ASSERT_THAT(after_reduction_->AreGeometricallyEqual(*original_), true);
@@ -176,11 +176,11 @@ class Random3DBSplineForDegreeReduction : public Test {  // NOLINT
 };
 
 TEST_F(Random3DBSplineForDegreeReduction, ReducesDegreeCorrectly) {  // NOLINT
-  b_spline_after_->ElevateDegree(0);
-  b_spline_after_->ElevateDegree(1);
-  b_spline_after_->ElevateDegree(2);
-  b_spline_after_->ReduceDegree(0, 1e-10);
-  b_spline_after_->ReduceDegree(1, 1e-10);
-  b_spline_after_->ReduceDegree(2, 1e-10);
+  b_spline_after_->ElevateDegreeForDimension(0);
+  b_spline_after_->ElevateDegreeForDimension(1);
+  b_spline_after_->ElevateDegreeForDimension(2);
+  b_spline_after_->ReduceDegreeForDimension(0, 1e-10);
+  b_spline_after_->ReduceDegreeForDimension(1, 1e-10);
+  b_spline_after_->ReduceDegreeForDimension(2, 1e-10);
   ASSERT_THAT(b_spline_after_->AreGeometricallyEqual(*b_spline_before_), true);
 }

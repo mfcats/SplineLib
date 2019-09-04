@@ -43,24 +43,17 @@ class BezierSegment {
   }
 
   double ReduceDegree(int dimension) {
-    // If the spline is not a Bézier spline in the direction of dimension, the degree can't be reduced.
     if (!is_bezier_in_direction_[dimension]) {
       throw std::runtime_error(
           "The degree in this direction cannot be reduced! The spline is not a Bézier spline in that direction!");
     }
-    // Maximum error bound of the degree reduction.
     double max_error_bound = 0.0;
-    // Create MultiIndexHandler for old number of control points, decrement the degree of dimension together with the
-    // number of control points of that dimension, create MultiIndexHandler for the new number of control points and
-    // reserve memory for the new control points.
     util::MultiIndexHandler<DIM> cp_handler_old(num_control_points_);
     std::array<Degree, DIM> delta_degrees{};
     delta_degrees[dimension] = Degree{-1};
     SetDegreeAndNumberOfControlPoints(delta_degrees);
     util::MultiIndexHandler<DIM> cp_handler_new(num_control_points_);
     std::vector<baf::ControlPoint> control_points_new(cp_handler_new.Get1DLength(), baf::ControlPoint({0.0}));
-    // Copy the first and last control points in the direction of dimension to the new control point vector since
-    // they remain unchanged when reducing the degree of the Bézier segment.
     auto indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, 0);
     auto indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, 0);
     for (uint64_t i = 0; i < indices_new.size(); ++i) {
@@ -71,72 +64,32 @@ class BezierSegment {
     for (uint64_t i = 0; i < indices_new.size(); ++i) {
       control_points_new[indices_new[i]] = control_points_[indices_old[i]];
     }
-    // Compute the new inner control points of the Bézier segment. The computation varies for even and odd degree.
     int r = (degrees_[dimension].get()) / 2;
-    if ((degrees_[dimension].get() + 1) % 2 == 0) {
-      // Loop through the new control points P_{i,j,k,...} for i = 1,...,r.
-      for (int i = 1; i <= r; ++i) {
-        // Get 1D indices for all P_{i,j,k,...}, P_{i-1,j,k,...} (new control points) and for all
-        // Q_{i,j,k} (old control points) for the current value of i. Afterwards, the degree elevation coefficient
-        // and the new control points are computed.
-        auto indices_new_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i - 1);
-        indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
-        indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i);
-        double alpha = static_cast<double>(i) / static_cast<double>(degrees_[dimension].get() + 1);
-        for (uint64_t j = 0; j < indices_new.size(); ++j) {
-          control_points_new[indices_new[j]] = (control_points_[indices_old[j]]
-              - control_points_new[indices_new_minus_one[j]] * alpha) * (1 / (1 - alpha));
-        }
+    int end_of_first_loop = r;
+    if ((degrees_[dimension].get() + 1) % 2 != 0) end_of_first_loop = r - 1;
+    for (int i = 1; i <= end_of_first_loop; ++i) {
+      auto indices_new_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i - 1);
+      indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
+      indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i);
+      double alpha = static_cast<double>(i) / static_cast<double>(degrees_[dimension].get() + 1);
+      for (uint64_t j = 0; j < indices_new.size(); ++j) {
+        control_points_new[indices_new[j]] = (control_points_[indices_old[j]]
+            - control_points_new[indices_new_minus_one[j]] * alpha) * (1 / (1 - alpha));
       }
-      // Loop backwards through the new control points P_{i,j,k,...} for i = p-2,...,r+1.
-      int lower = static_cast<int>(r + 1);
-      int upper = degrees_[dimension].get() - 1;
-      for (int i = upper; i >= lower; --i) {
-        // Get 1D indices for all P_{i,j,k,...}, P_{i+1,j,k,...} (new control points) and for all
-        // Q_{i+1,j,k} (old control points) for the current value of i. Afterwards, the degree elevation coefficient
-        // and the new control points are computed.
-        auto indices_new_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i + 1);
-        indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
-        auto indices_old_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i + 1);
-        double alpha = static_cast<double>(i + 1) / static_cast<double>(degrees_[dimension].get() + 1);
-        for (uint64_t j = 0; j < indices_new.size(); ++j) {
-          control_points_new[indices_new[j]] = (control_points_[indices_old_plus_one[j]]
-              - control_points_new[indices_new_plus_one[j]] * (1 - alpha)) * (1 / alpha);
-        }
+    }
+    int lower = static_cast<int>(r + 1);
+    int upper = degrees_[dimension].get() - 1;
+    for (int i = upper; i >= lower; --i) {
+      auto indices_new_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i + 1);
+      indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
+      auto indices_old_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i + 1);
+      double alpha = static_cast<double>(i + 1) / static_cast<double>(degrees_[dimension].get() + 1);
+      for (uint64_t j = 0; j < indices_new.size(); ++j) {
+        control_points_new[indices_new[j]] = (control_points_[indices_old_plus_one[j]]
+            - control_points_new[indices_new_plus_one[j]] * (1 - alpha)) * (1 / alpha);
       }
-    } else if ((degrees_[dimension].get() + 1) % 2 != 0) {
-      // Loop through the new control points P_{i,j,k,...} for i = 1,...,r-1.
-      for (int i = 1; i <= r - 1; ++i) {
-        // Get 1D indices for all P_{i,j,k,...}, P_{i-1,j,k,...} (new control points) and for all
-        // Q_{i,j,k} (old control points) for the current value of i. Afterwards, the degree elevation coefficient
-        // and the new control points are computed.
-        auto indices_new_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i - 1);
-        indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
-        indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i);
-        double alpha = static_cast<double>(i) / static_cast<double>(degrees_[dimension].get() + 1);
-        for (uint64_t j = 0; j < indices_new.size(); ++j) {
-          control_points_new[indices_new[j]] = (control_points_[indices_old[j]]
-              - control_points_new[indices_new_minus_one[j]] * alpha) * (1 / (1 - alpha));
-        }
-      }
-      // Loop backwards through the new control points P_{i,j,k,...} for i = p-2,...,r+1.
-      int lower = static_cast<int>(r + 1);
-      int upper = degrees_[dimension].get() - 1;
-      for (int i = upper; i >= lower; --i) {
-        // Get 1D indices for all P_{i,j,k,...}, P_{i+1,j,k,...} (new control points) and for all
-        // Q_{i+1,j,k} (old control points) for the current value of i. Afterwards, the degree elevation coefficient
-        // and the new control points are computed.
-        auto indices_new_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i + 1);
-        indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
-        auto indices_old_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i + 1);
-        double alpha = static_cast<double>(i + 1) / static_cast<double>(degrees_[dimension].get() + 1);
-        for (uint64_t j = 0; j < indices_new.size(); ++j) {
-          control_points_new[indices_new[j]] = (control_points_[indices_old_plus_one[j]]
-              - control_points_new[indices_new_plus_one[j]] * (1 - alpha)) * (1 / alpha);
-        }
-      }
-      // Compute all control points P_{r,j,k} that lie in the center of the Bézier segment as well as the maximum
-      // error bound of the degree reduction.
+    }
+    if ((degrees_[dimension].get() + 1) % 2 != 0) {
       auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r);
       auto indices_new_r_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r - 1);
       auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r + 1);
@@ -153,8 +106,6 @@ class BezierSegment {
         if ((P_r_L - P_r_R).GetEuclideanNorm() > max_error_bound) max_error_bound = (P_r_L - P_r_R).GetEuclideanNorm();
       }
     }
-
-    // Compute the maximum error bound of the degree reduction for the case that the degree is even.
     if ((degrees_[dimension].get() + 1) % 2 == 0) {
       auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r);
       auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r + 1);
@@ -166,10 +117,7 @@ class BezierSegment {
         if (current_max_error_bound > max_error_bound) max_error_bound = current_max_error_bound;
       }
     }
-
-    // Replace the control points of the Bézier segment by the new ones.
     control_points_ = control_points_new;
-
     return max_error_bound;
   }
 

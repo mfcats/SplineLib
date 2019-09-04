@@ -18,8 +18,22 @@ baf::ControlPoint::ControlPoint(std::initializer_list<double> coordinates) : coo
 
 baf::ControlPoint::ControlPoint(std::vector<double> coordinates) : coordinates_(std::move(coordinates)) {}
 
+baf::ControlPoint::ControlPoint(uint64_t dimension) : coordinates_(std::vector(dimension, 0.0)) {}
+
 int baf::ControlPoint::GetDimension() const {
   return static_cast<int>(coordinates_.size());
+}
+
+double baf::ControlPoint::GetValue(int dimension) const {
+#ifdef DEBUG
+  return coordinates_.at(dimension);
+#else
+  return coordinates_[dimension];
+#endif
+}
+
+void baf::ControlPoint::SetValue(int dimension, double value) {
+  coordinates_[dimension] = value;
 }
 
 baf::ControlPoint baf::ControlPoint::operator+(const baf::ControlPoint &control_point) const {
@@ -65,12 +79,4 @@ double baf::ControlPoint::GetEuclideanNorm() const {
   }
   euclidean_norm = sqrt(euclidean_norm);
   return euclidean_norm;
-}
-
-double baf::ControlPoint::GetValue(int dimension) const {
-#ifdef DEBUG
-  return coordinates_.at(dimension);
-#else
-  return coordinates_[dimension];
-#endif
 }
