@@ -32,7 +32,6 @@ install(
 
 install(FILES
         alias.h
-        bezier_segment.h
         b_spline.h
         b_spline_generator.h
         nurbs.h

@@ -23,7 +23,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 
-#include "bezier_segment.h"
 #include "control_point.h"
 #include "knot_vector.h"
 #include "multi_index_handler.h"
@@ -232,24 +231,106 @@ class Spline {
   bool ReduceDegreeForDimension(int dimension, double tolerance) {
     std::vector<int> diff = ProduceBezierSegments(dimension);
     uint64_t num_bezier_segments = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1;
-    std::vector<spl::BezierSegment<DIM>> bezier_segments;
+    std::vector<std::vector<baf::ControlPoint>> bezier_segments;
     bezier_segments.reserve(num_bezier_segments);
     for (uint64_t i = 0; i < num_bezier_segments; ++i) {
-      bezier_segments.emplace_back(GetBezierSegment2(dimension, i));
-      double error = bezier_segments[i].ReduceDegree(dimension);
-      if (error > tolerance) return false;
+      bezier_segments.emplace_back(GetBezierSegment(dimension, i));
+      if (!ReduceDegree(dimension, bezier_segments[i], tolerance)) {
+        RemoveBezierKnots(diff, dimension);
+        return false;
+      }
     }
-
-    // Assemble the control points of the degree reduced bezier segments back into the physical space of the spline.
-    SetNewBezierSegmentControlPoints2(bezier_segments, dimension);
+    std::array<int, DIM> cps_per_dir = GetPointsPerDirection();
+    cps_per_dir[dimension] -= num_bezier_segments;
+    GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
+    util::MultiIndexHandler<DIM> point_handler(cps_per_dir);
+    int delta_num_cps = GetPhysicalSpace()->GetNumberOfControlPoints() - point_handler.Get1DLength();
+    GetPhysicalSpace()->RemoveControlPoints(delta_num_cps);
     parameter_space_->ReduceDegree(dimension);
     parameter_space_->DecrementMultiplicityOfAllKnots(dimension);
-
-    // Remove the knots to get rid of the decomposition into bezier segments (remove one knot more than inserted).
+    SetNewBezierSegmentControlPoints(bezier_segments, dimension);
     RemoveBezierKnots(diff, dimension);
-
     return true;
-}
+  }
+
+  bool ReduceDegree(int dimension, std::vector<baf::ControlPoint> &bezier_cps, double tolerance) {
+    double max_error_bound = 0.0;
+    int new_degree_in_dimension = GetDegree(dimension).get() - 1;
+    int width = GetDegree(dimension).get() + 1;
+
+    std::array<int, DIM> points_per_dir = GetPointsPerDirection();
+    points_per_dir[dimension] = width;
+    util::MultiIndexHandler<DIM> cp_handler_old(points_per_dir);
+    points_per_dir[dimension]--;
+    util::MultiIndexHandler<DIM> cp_handler_new(points_per_dir);
+
+    std::vector<baf::ControlPoint> control_points_new(cp_handler_new.Get1DLength(), baf::ControlPoint({0.0}));
+    auto indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, 0);
+    auto indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, 0);
+    for (uint64_t i = 0; i < indices_new.size(); ++i) {
+      control_points_new[indices_new[i]] = bezier_cps[indices_old[i]];
+    }
+    indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, new_degree_in_dimension);
+    indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, new_degree_in_dimension + 1);
+    for (uint64_t i = 0; i < indices_new.size(); ++i) {
+      control_points_new[indices_new[i]] = bezier_cps[indices_old[i]];
+    }
+    int r = new_degree_in_dimension / 2;
+    int end_of_first_loop = r;
+    if ((new_degree_in_dimension + 1) % 2 != 0) end_of_first_loop = r - 1;
+    for (int i = 1; i <= end_of_first_loop; ++i) {
+      auto indices_new_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i - 1);
+      indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
+      indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i);
+      double alpha = static_cast<double>(i) / static_cast<double>(new_degree_in_dimension + 1);
+      for (uint64_t j = 0; j < indices_new.size(); ++j) {
+        control_points_new[indices_new[j]] = (bezier_cps[indices_old[j]]
+            - control_points_new[indices_new_minus_one[j]] * alpha) * (1 / (1 - alpha));
+      }
+    }
+    int lower = static_cast<int>(r + 1);
+    int upper = new_degree_in_dimension - 1;
+    for (int i = upper; i >= lower; --i) {
+      auto indices_new_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i + 1);
+      indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
+      auto indices_old_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i + 1);
+      double alpha = static_cast<double>(i + 1) / static_cast<double>(new_degree_in_dimension + 1);
+      for (uint64_t j = 0; j < indices_new.size(); ++j) {
+        control_points_new[indices_new[j]] = (bezier_cps[indices_old_plus_one[j]]
+            - control_points_new[indices_new_plus_one[j]] * (1 - alpha)) * (1 / alpha);
+      }
+    }
+    if ((new_degree_in_dimension + 1) % 2 != 0) {
+      auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r);
+      auto indices_new_r_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r - 1);
+      auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r + 1);
+      auto indices_old_r = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r);
+      auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r + 1);
+      double alpha_r = static_cast<double>(r) / static_cast<double>((new_degree_in_dimension + 1));
+      double alpha_r_plus_one = static_cast<double>(r + 1) / static_cast<double>((new_degree_in_dimension + 1));
+      for (uint64_t j = 0; j < indices_new.size(); ++j) {
+        baf::ControlPoint P_r_L = (bezier_cps[indices_old_r[j]]
+            - control_points_new[indices_new_r_minus_one[j]] * alpha_r) * (1 / (1 - alpha_r));
+        baf::ControlPoint P_r_R = (bezier_cps[indices_old_r_plus_one[j]]
+            - control_points_new[indices_new_r_plus_one[j]] * (1 - alpha_r_plus_one)) * (1 / alpha_r_plus_one);
+        control_points_new[indices_new_r[j]] = (P_r_L + P_r_R) * 0.5;
+        if ((P_r_L - P_r_R).GetEuclideanNorm() > max_error_bound) max_error_bound = (P_r_L - P_r_R).GetEuclideanNorm();
+      }
+    }
+    if ((new_degree_in_dimension + 1) % 2 == 0) {
+      auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r);
+      auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r + 1);
+      auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r + 1);
+      for (uint64_t j = 0; j < indices_new.size(); ++j) {
+        double current_max_error_bound =
+            (bezier_cps[indices_old_r_plus_one[j]] - ((control_points_new[indices_new_r[j]]
+                + control_points_new[indices_new_r_plus_one[j]]) * 0.5)).GetEuclideanNorm();
+        if (current_max_error_bound > max_error_bound) max_error_bound = current_max_error_bound;
+      }
+    }
+    bezier_cps = control_points_new;
+    return max_error_bound < tolerance;
+  }
 
   virtual void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) = 0;
   virtual bool RemoveControlPoints(std::vector<double> scaling,
@@ -336,28 +417,8 @@ class Spline {
     return bezier_cps;
   }
 
-  spl::BezierSegment<DIM> GetBezierSegment2(int dimension, int segment) const {
-    util::MultiIndexHandler<DIM> point_handler(GetPointsPerDirection());
-    int width = GetDegree(dimension).get() + 1;
-    int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
-    std::vector<baf::ControlPoint> bezier_cps(static_cast<size_t>(width * segment_length), baf::ControlPoint({0.0}));
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      auto index_in_dir = point_handler[dimension];
-      if (point_handler[dimension] >= segment * width - segment && index_in_dir < (segment + 1) * width - segment) {
-        auto index = ((index_in_dir + segment) % width + point_handler.ExtractDimension(dimension) * width);
-          bezier_cps[index] = GetControlPoint(point_handler.GetIndices());
-      }
-    }
-    std::array<bool, DIM> is_bezier_in_direction = {};
-    is_bezier_in_direction[dimension] = true;
-    std::array<int, DIM> num_control_points = GetPointsPerDirection();
-    num_control_points[dimension] = width;
-    return spl::BezierSegment<DIM>(parameter_space_->GetDegrees(), bezier_cps, is_bezier_in_direction,
-        num_control_points);
-  }
-
   [[nodiscard]] std::vector<baf::ControlPoint> DegreeElevateBezierSegment(
-      const std::vector<baf::ControlPoint>& bezier_cps, std::vector<double> alpha, int dimension) const {
+      const std::vector<baf::ControlPoint> &bezier_cps, std::vector<double> alpha, int dimension) const {
     int width = GetDegree(dimension).get() + 2;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     util::MultiIndexHandler<2> point_handler({width, segment_length});
@@ -396,27 +457,6 @@ class Spline {
         cps.SetValue(j, bezier_segments[segment][index].GetValue(j) / weight);
       }
       this->SetNewBezierPoint(cps, weight, point_handler.GetIndices());
-    }
-  }
-  
-  void SetNewBezierSegmentControlPoints2(std::vector<spl::BezierSegment<DIM>> bezier_segments, int dimension) {
-    std::array<int, DIM> cps_per_dir = GetPointsPerDirection();
-    cps_per_dir[dimension] -= (GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1);
-    GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
-    util::MultiIndexHandler<DIM> point_handler(cps_per_dir);
-    int delta_num_cps = GetPhysicalSpace()->GetNumberOfControlPoints() - point_handler.Get1DLength();
-    GetPhysicalSpace()->RemoveControlPoints(delta_num_cps);
-    int width = bezier_segments[0].GetDegree(dimension).get() + 1;
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      int index_in_dir = point_handler[dimension];
-      int segment = index_in_dir / (width - 1);
-      int index = index_in_dir % (width - 1) + point_handler.ExtractDimension(dimension) * width;
-      if (static_cast<size_t>(segment) > bezier_segments.size() - 1) {
-        segment--;
-        index = (width - 1) + point_handler.ExtractDimension(dimension) * width;
-      }
-      this->GetPhysicalSpace()->SetControlPoint(point_handler.GetIndices(),
-          bezier_segments[segment].GetControlPoint(index));
     }
   }
 
