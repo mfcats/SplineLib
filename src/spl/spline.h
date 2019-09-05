@@ -286,34 +286,37 @@ class Spline {
 
   std::vector<double> ComputeBezierDegreeElevationCoeffients(int dimension) const {
     std::vector<double> alpha;
-    for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
-      alpha.push_back(static_cast<double>(i) / (GetDegree(dimension).get() + 1));
+    for (int current_bezier_point = 0; current_bezier_point < GetDegree(dimension).get() + 2; ++current_bezier_point) {
+      alpha.emplace_back(static_cast<double>(current_bezier_point) / (GetDegree(dimension).get() + 1));
     }
     return alpha;
   }
 
   std::vector<int> ProduceBezierSegments(int dimension) {
-    size_t position = GetKnotVector(dimension)->GetNumberOfKnots() - GetDegree(dimension).get() - 2;
+    uint64_t current_knot = GetDegree(dimension).get() + 1;
     std::vector<int> diff(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2, GetDegree(dimension).get() - 1);
-
-    for (size_t i = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2; i > 0; --i, --position) {
-      while (GetKnotVector(dimension)->GetKnot(position) == GetKnotVector(dimension)->GetKnot(position - 1)) {
-        --position;
-        --diff[i - 1];
+    for (int current_knot_span = 0; current_knot_span < GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2;
+         ++current_knot_span, ++current_knot) {
+      while (GetKnotVector(dimension)->GetKnot(current_knot) == GetKnotVector(dimension)->GetKnot(current_knot + 1)) {
+        ++current_knot;
+        --diff[current_knot_span];
       }
-      InsertKnot(GetKnotVector(dimension)->GetKnot(position), dimension, static_cast<size_t>(diff[i - 1]));
+      InsertKnot(GetKnotVector(dimension)->GetKnot(current_knot), dimension,
+                 static_cast<size_t>(diff[current_knot_span]));
+      current_knot += diff[current_knot_span];
     }
     return diff;
   }
 
   void RemoveBezierKnots(std::vector<int> diff, int dimension) {
-    size_t position = GetKnotVector(dimension)->GetNumberOfKnots() - GetDegree(dimension).get() - 2;
-    for (size_t i = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2; i > 0; --i, --position) {
-      while (GetKnotVector(dimension)->GetKnot(position) == GetKnotVector(dimension)->GetKnot(position - 1)) {
-        --position;
+    auto current_knot = GetDegree(dimension).get() + 1;
+    for (int current_knot_span = 0; current_knot_span < GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2;
+         ++current_knot_span, ++current_knot) {
+      RemoveKnot(GetKnotVector(dimension)->GetKnot(current_knot), dimension,
+                 util::NumericSettings<double>::kEpsilon(), static_cast<size_t>(diff[current_knot_span]));
+      while (GetKnotVector(dimension)->GetKnot(current_knot) == GetKnotVector(dimension)->GetKnot(current_knot + 1)) {
+        ++current_knot;
       }
-      RemoveKnot(GetKnotVector(dimension)->GetKnot(position), dimension, util::NumericSettings<double>::kEpsilon(),
-                 static_cast<size_t>(diff[i - 1]));
     }
   }
 
@@ -337,8 +340,8 @@ class Spline {
     return bezier_cps;
   }
 
-  std::vector<baf::ControlPoint> DegreeElevateBezierSegment(
-      const std::vector<baf::ControlPoint> &bezier_cps, std::vector<double> alpha, int dimension) const {
+  std::vector<baf::ControlPoint> DegreeElevateBezierSegment(const std::vector<baf::ControlPoint> &bezier_cps,
+                                                            std::vector<double> alpha, int dimension) const {
     int width = GetDegree(dimension).get() + 2;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     util::MultiIndexHandler<2> point_handler({width, segment_length});
@@ -358,7 +361,7 @@ class Spline {
   }
 
   std::vector<baf::ControlPoint> DegreeReduceBezierSegment(const std::vector<baf::ControlPoint> &bezier_cps,
-      double tolerance, int dimension, bool* successful) {
+                                                           double tolerance, int dimension, bool* successful) {
     double max_error_bound = 0.0;
     int new_degree_in_dimension = GetDegree(dimension).get() - 1;
     int width = GetDegree(dimension).get() + 1;
