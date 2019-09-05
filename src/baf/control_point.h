@@ -29,8 +29,8 @@ class ControlPoint {
   explicit ControlPoint(std::vector<double> coordinates);
   explicit ControlPoint(uint64_t dimension);
 
-  [[nodiscard]] int GetDimension() const;
-  [[nodiscard]] double GetValue(int dimension) const;
+  int GetDimension() const;
+  double GetValue(int dimension) const;
 
   void SetValue(int dimension, double value);
 
@@ -38,9 +38,9 @@ class ControlPoint {
   ControlPoint operator-(const ControlPoint &control_point) const;
   ControlPoint operator*(const double &scalar) const;
 
-  [[nodiscard]] ControlPoint Transform(std::array<std::array<double, 4>, 4> TransMatrix,
+  ControlPoint Transform(std::array<std::array<double, 4>, 4> TransMatrix,
                                        std::array<double, 3> scaling) const;
-  [[nodiscard]] double GetEuclideanNorm() const;
+  double GetEuclideanNorm() const;
 
  protected:
   std::vector<double> coordinates_;

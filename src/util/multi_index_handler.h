@@ -108,7 +108,7 @@ class MultiIndexHandler {
     return indices;
   }
 
-  [[nodiscard]] int Get1DIndex() const {
+  int Get1DIndex() const {
     int index_1d = 0;
     for (int i = 0; i < DIM; ++i) {
       int temp = current_multi_index_value_[i];
@@ -132,7 +132,7 @@ class MultiIndexHandler {
     return index_1d;
   }
 
-  [[nodiscard]] int Get1DLength() const {
+  int Get1DLength() const {
     int length = 1;
     for (int i = 0; i < DIM; ++i) {
       length *= multi_index_length_[i];
@@ -140,7 +140,7 @@ class MultiIndexHandler {
     return length;
   }
 
-  [[nodiscard]] int ExtractDimension(int dimension) const {
+  int ExtractDimension(int dimension) const {
     std::array<int, DIM> indices, length;
     for (int m = 0; m < DIM; ++m) {
       if (m < dimension) {

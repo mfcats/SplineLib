@@ -286,7 +286,7 @@ class Spline {
     return total_length;
   }
 
-  [[nodiscard]] std::vector<double> ComputeBezierDegreeElevationCoeffients(int dimension) const {
+  std::vector<double> ComputeBezierDegreeElevationCoeffients(int dimension) const {
     std::vector<double> alpha;
     for (int i = 0; i < GetDegree(dimension).get() + 2; ++i) {
       alpha.push_back(static_cast<double>(i) / (GetDegree(dimension).get() + 1));
@@ -319,7 +319,7 @@ class Spline {
     }
   }
 
-  [[nodiscard]] std::vector<baf::ControlPoint> GetBezierSegment(int dimension, int segment) const {
+  std::vector<baf::ControlPoint> GetBezierSegment(int dimension, int segment) const {
     util::MultiIndexHandler<DIM> point_handler(GetPointsPerDirection());
     int width = GetDegree(dimension).get() + 1;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
@@ -339,7 +339,7 @@ class Spline {
     return bezier_cps;
   }
 
-  [[nodiscard]] std::vector<baf::ControlPoint> DegreeElevateBezierSegment(
+  std::vector<baf::ControlPoint> DegreeElevateBezierSegment(
       const std::vector<baf::ControlPoint> &bezier_cps, std::vector<double> alpha, int dimension) const {
     int width = GetDegree(dimension).get() + 2;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
