@@ -57,7 +57,7 @@ class Spline {
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();
       std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
-      for (size_t j = 0; j < dimensions.size(); ++j) {
+      for (uint64_t j = 0; j < dimensions.size(); ++j) {
         evaluated_point[j] += GetEvaluatedControlPoint(param_coord, indices, dimensions[j]);
       }
     }
@@ -76,20 +76,20 @@ class Spline {
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();
       std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
-      for (size_t j = 0; j < dimensions.size(); ++j) {
+      for (uint64_t j = 0; j < dimensions.size(); ++j) {
         evaluated_point[j] += GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
       }
     }
     return evaluated_point;
   }
 
-  [[nodiscard]] std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParamCoord param_coord) const {
+  std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParamCoord param_coord) const {
     return parameter_space_->EvaluateAllNonZeroBasisFunctions(direction, param_coord);
   }
 
-  [[nodiscard]] std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(int direction,
-                                                                               ParamCoord param_coord,
-                                                                               int derivative) const {
+  std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(int direction,
+                                                                 ParamCoord param_coord,
+                                                                 int derivative) const {
     return parameter_space_->EvaluateAllNonZeroBasisFunctionDerivatives(direction, param_coord, derivative);
   }
 
@@ -120,19 +120,19 @@ class Spline {
     return true;
   }
 
-  [[nodiscard]] Degree GetDegree(int i) const {
+  Degree GetDegree(int i) const {
     return parameter_space_->GetDegree(i);
   }
 
-  [[nodiscard]] std::shared_ptr<baf::KnotVector> GetKnotVector(int i) const {
+  std::shared_ptr<baf::KnotVector> GetKnotVector(int i) const {
     return parameter_space_->GetKnotVector(i);
   }
 
-  [[nodiscard]] double GetKnotVectorRange(int direction) const {
+  double GetKnotVectorRange(int direction) const {
     return parameter_space_->GetKnotVectorRange(direction);
   }
 
-  [[nodiscard]] int GetNumberOfControlPoints() const {
+  int GetNumberOfControlPoints() const {
     return GetPhysicalSpace()->GetNumberOfControlPoints();
   }
 
@@ -140,7 +140,7 @@ class Spline {
     return GetPhysicalSpace()->GetPointsPerDirection();
   }
 
-  [[nodiscard]] int GetPointDim() const {
+  int GetPointDim() const {
     return GetPhysicalSpace()->GetDimension();
   }
 
@@ -152,7 +152,7 @@ class Spline {
     return GetPhysicalSpace()->GetControlPoint(indices);
   }
 
-  [[nodiscard]] double GetExpansion() const {
+  double GetExpansion() const {
     return GetPhysicalSpace()->GetExpansion();
   }
 
@@ -164,9 +164,7 @@ class Spline {
     KnotSpan knot_span = GetKnotVector(dimension)->GetKnotSpan(knot);
     Degree degree = GetDegree(dimension);
     for (size_t i = 1; i <= multiplicity; ++i) {
-      if (GetKnotVector(dimension)->IsLastKnot(knot)) {
-        knot_span = knot_span + KnotSpan{1};
-      }
+      if (GetKnotVector(dimension)->IsLastKnot(knot)) knot_span = knot_span + KnotSpan{1};
       auto last = knot_span.get() - GetKnotVector(dimension)->GetMultiplicity(knot);
       auto first = knot_span.get() - degree.get() + i;
       std::vector<double> scaling;
@@ -182,7 +180,7 @@ class Spline {
     }
   }
 
-  void RefineKnots(const std::vector<ParamCoord> &new_knots, int dimension) {
+  void RefineKnots(std::vector<ParamCoord> new_knots, int dimension) {
     for (const auto &knot : new_knots) {
       this->InsertKnot(knot, dimension);
     }
