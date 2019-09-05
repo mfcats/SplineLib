@@ -226,7 +226,7 @@ class Spline {
     RemoveBezierKnots(diff, dimension);
   }
 
-  bool ReduceDegreeForDimension(int dimension, double tolerance) {
+  bool ReduceDegreeForDimension(int dimension, double tolerance = util::NumericSettings<double>::kEpsilon()) {
     std::vector<int> diff = ProduceBezierSegments(dimension);
     uint64_t num_bezier_segments = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1;
     std::vector<std::vector<baf::ControlPoint>> bezier_segments;

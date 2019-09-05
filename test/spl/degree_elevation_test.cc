@@ -181,12 +181,9 @@ class Random2DNURBSForDegreeElevationForDimension0 : public Test {  // NOLINT
   Random2DNURBSForDegreeElevationForDimension0() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
     spl::RandomNURBSGenerator<2> spline_generator(limits, 3, 3);
-    spl::NURBS<2> b_spline(spline_generator);
-    original_ = std::make_shared<spl::NURBS<2>>(b_spline);
-
-    spl::NURBS<2> elevation_spline(b_spline);
-    elevation_spline.ElevateDegreeForDimension(0);
-    elevated_ = std::make_shared<spl::NURBS<2>>(elevation_spline);
+    original_ = std::make_shared<spl::NURBS<2>>(spline_generator);
+    elevated_ = std::make_shared<spl::NURBS<2>>(*original_);
+    elevated_->ElevateDegreeForDimension(0);
   }
 
  protected:
@@ -223,12 +220,9 @@ class Random3DBSplineForDegreeElevationForDimension0 : public Test {  // NOLINT
   Random3DBSplineForDegreeElevationForDimension0() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
     spl::RandomBSplineGenerator<3> spline_generator(limits, 4, 3);
-    spl::BSpline<3> b_spline(spline_generator);
-    original_ = std::make_shared<spl::BSpline<3>>(b_spline);
-
-    spl::BSpline<3> elevation_spline(b_spline);
-    elevation_spline.ElevateDegreeForDimension(0);
-    elevated_ = std::make_shared<spl::BSpline<3>>(elevation_spline);
+    original_ = std::make_shared<spl::BSpline<3>>(spline_generator);
+    elevated_ = std::make_shared<spl::BSpline<3>>(*original_);
+    elevated_->ElevateDegreeForDimension(0);
   }
 
  protected:
@@ -274,12 +268,9 @@ class Random3DNURBSForDegreeElevationForDimension1 : public Test {  // NOLINT
   Random3DNURBSForDegreeElevationForDimension1() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
     spl::RandomNURBSGenerator<3> spline_generator(limits, 3, 3);
-    spl::NURBS<3> b_spline(spline_generator);
-    original_ = std::make_shared<spl::NURBS<3>>(b_spline);
-
-    spl::NURBS<3> elevation_spline(b_spline);
-    elevation_spline.ElevateDegreeForDimension(1);
-    elevated_ = std::make_shared<spl::NURBS<3>>(elevation_spline);
+    original_ = std::make_shared<spl::NURBS<3>>(spline_generator);
+    elevated_ = std::make_shared<spl::NURBS<3>>(*original_);
+    elevated_->ElevateDegreeForDimension(1);
   }
 
  protected:

@@ -12,18 +12,71 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <memory>
+
 #include "gmock/gmock.h"
 
 #include "b_spline.h"
-#include "random_b_spline_generator.h"
 #include "nurbs.h"
-#include "vtk_writer.h"
+#include "random_b_spline_generator.h"
+#include "random_nurbs_generator.h"
 
 using testing::Test;
 
-class ALinearBSpline : public Test {  // NOLINT
+class BSplineFig5_35ForDegreeElevationAndReductionForDimension0 : public Test {  // NOLINT
  public:
-  ALinearBSpline() {
+  BSplineFig5_35ForDegreeElevationAndReductionForDimension0() {
+    std::array<Degree, 1> degree = {Degree{3}};
+    KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
+        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6},
+                         ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    std::vector<baf::ControlPoint> control_points = {
+        baf::ControlPoint(std::vector<double>({1.0, 0.0})),
+        baf::ControlPoint(std::vector<double>({0.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
+        baf::ControlPoint(std::vector<double>({4.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({3.0, 0.0}))
+    };
+    original_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
+    elevated_and_reduced_ = std::make_shared<spl::BSpline<1>>(*original_);
+    elevated_and_reduced_->ElevateDegreeForDimension(0);
+    successful_ = elevated_and_reduced_->ReduceDegreeForDimension(0);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<1>> original_;
+  std::shared_ptr<spl::BSpline<1>> elevated_and_reduced_;
+  bool successful_;
+};
+
+TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, DegreeReductionWasSuccessful) {  // NOLINT
+  ASSERT_THAT(successful_, true);
+}
+
+TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, HasUnchangedDegreeInDimension0) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), elevated_and_reduced_->GetDegree(0).get());
+}
+
+TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfKnotsInDimension0) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots());
+}
+
+TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfControlPoints) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetNumberOfControlPoints(), original_->GetNumberOfControlPoints());
+}
+
+TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0,
+       DoesNotChangeGeometricallyAfterDegreeElevationAndReduction) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
+}
+
+class ALinearNURBSForDegreeElevationAndReductionForDimension0 : public Test {  // NOLINT
+ public:
+  ALinearNURBSForDegreeElevationAndReductionForDimension0() {
     std::array<Degree, 1> degree = {Degree{1}};
     KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{1},
@@ -34,63 +87,46 @@ class ALinearBSpline : public Test {  // NOLINT
         baf::ControlPoint(std::vector<double>({2.0, 2.0})),
         baf::ControlPoint(std::vector<double>({2.0, 3.0}))
     };
-    b_spline_before_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
-    b_spline_after_ = std::make_shared<spl::BSpline<1>>(*b_spline_before_);
+    std::vector<double> weights = {1.0, 1.5, 0.5, 1.0};
+    original_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
+    elevated_and_reduced_ = std::make_shared<spl::NURBS<1>>(*original_);
+    elevated_and_reduced_->ElevateDegreeForDimension(0);
+    successful_ = elevated_and_reduced_->ReduceDegreeForDimension(0);
   }
 
  protected:
-  std::shared_ptr<spl::BSpline<1>> b_spline_before_;
-  std::shared_ptr<spl::BSpline<1>> b_spline_after_;
+  std::shared_ptr<spl::NURBS<1>> original_;
+  std::shared_ptr<spl::NURBS<1>> elevated_and_reduced_;
+  bool successful_;
 };
 
-TEST_F(ALinearBSpline, DoesNotChangeGeometricallyAfterDegreeReduction) {  // NOLINT
-  b_spline_after_->ElevateDegreeForDimension(0);
-  b_spline_after_->ElevateDegreeForDimension(0);
-  bool successful = b_spline_after_->ReduceDegreeForDimension(0, 0.0001);
-  successful = successful && b_spline_after_->ReduceDegreeForDimension(0, 0.0001);
-  ASSERT_THAT(successful, true);
-  ASSERT_THAT(b_spline_after_->AreGeometricallyEqual(*b_spline_before_), true);
+TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, DegreeReductionWasSuccessful) {  // NOLINT
+  ASSERT_THAT(successful_, true);
 }
 
-class BSpline1DFig5_39 : public Test {  // NOLINT
- public:
-  BSpline1DFig5_39() {
-    std::array<Degree, 1> degree = {Degree{4}};
-    KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
-        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3},
-                         ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1},
-                         ParamCoord{1}, ParamCoord{1}}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({-0.5, 0.0})),
-        baf::ControlPoint(std::vector<double>({-1.0, 0.5})),
-        baf::ControlPoint(std::vector<double>({-2.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({-1.0, 1.5})),
-        baf::ControlPoint(std::vector<double>({0.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 1.5})),
-        baf::ControlPoint(std::vector<double>({2.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 0.5})),
-        baf::ControlPoint(std::vector<double>({0.5, 0.0}))
-    };
-    bspline_1d_before_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
-    bspline_1d_after_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
-  }
-
- protected:
-  std::shared_ptr<spl::BSpline<1>> bspline_1d_before_;
-  std::shared_ptr<spl::BSpline<1>> bspline_1d_after_;
-};
-
-TEST_F(BSpline1DFig5_39, ReducesDegreeCorrectly) {  // NOLINT
-  bspline_1d_after_->ElevateDegreeForDimension(0);
-  bool successful = bspline_1d_after_->ReduceDegreeForDimension(0, 0.0001);
-  ASSERT_THAT(successful, true);
-  ASSERT_THAT(bspline_1d_after_->GetDegree(0).get(), bspline_1d_before_->GetDegree(0).get());
-  ASSERT_THAT(bspline_1d_after_->AreGeometricallyEqual(*bspline_1d_before_), true);
+TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedDegreeInDimension0) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), original_->GetDegree(0).get());
 }
 
-class A2DBSplineForDegreeReduction : public Test {  // NOLINT
+TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfKnotsInDimension0) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots());
+}
+
+TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfControlPoints) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetNumberOfControlPoints(), original_->GetNumberOfControlPoints());
+}
+
+TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0,
+    DoesNotChangeGeometricallyAfterDegreeElevationAndReduction) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
+}
+
+class A2DBSplineForDegreeElevationAndReductionForDimension0 : public Test {  // NOLINT
  public:
-  A2DBSplineForDegreeReduction() {
+  A2DBSplineForDegreeElevationAndReductionForDimension0() {
     std::array<Degree, 2> degree = {Degree{2}, Degree{1}};
     KnotVectors<2> knot_vector_before = {
         std::make_shared<baf::KnotVector>(
@@ -99,52 +135,239 @@ class A2DBSplineForDegreeReduction : public Test {  // NOLINT
         std::make_shared<baf::KnotVector>(
             baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0})), baf::ControlPoint(std::vector<double>({0.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({0.0, 2.0})), baf::ControlPoint(std::vector<double>({0.0, 3.0})),
-        baf::ControlPoint(std::vector<double>({0.0, 4.0})), baf::ControlPoint(std::vector<double>({0.0, 5.0})),
-
-        baf::ControlPoint(std::vector<double>({2.0, 0.0})), baf::ControlPoint(std::vector<double>({2.0, 1.0})),
+        baf::ControlPoint(std::vector<double>({1.0, 1.0})), baf::ControlPoint(std::vector<double>({1.0, 2.0})),
         baf::ControlPoint(std::vector<double>({2.0, 2.0})), baf::ControlPoint(std::vector<double>({2.0, 3.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 4.0})), baf::ControlPoint(std::vector<double>({2.0, 5.0}))
+        baf::ControlPoint(std::vector<double>({3.0, 3.0})), baf::ControlPoint(std::vector<double>({3.0, 4.0})),
+
+        baf::ControlPoint(std::vector<double>({2.0, 1.0})), baf::ControlPoint(std::vector<double>({1.5, 2.5})),
+        baf::ControlPoint(std::vector<double>({2.0, 3.0})), baf::ControlPoint(std::vector<double>({2.5, 3.5})),
+        baf::ControlPoint(std::vector<double>({3.5, 4.0})), baf::ControlPoint(std::vector<double>({5.0, 5.0}))
     };
     original_ = std::make_shared<spl::BSpline<2>>(knot_vector_before, degree, control_points);
-    after_reduction_ = std::make_shared<spl::BSpline<2>>(*original_);
+    elevated_and_reduced_ = std::make_shared<spl::BSpline<2>>(*original_);
+    elevated_and_reduced_->ElevateDegreeForDimension(0);
+    successful_ = elevated_and_reduced_->ReduceDegreeForDimension(0);
   }
 
  protected:
   std::shared_ptr<spl::BSpline<2>> original_;
-  std::shared_ptr<spl::BSpline<2>> after_reduction_;
+  std::shared_ptr<spl::BSpline<2>> elevated_and_reduced_;
+  bool successful_;
 };
 
-TEST_F(A2DBSplineForDegreeReduction, ReducesDegreeCorrectly) {  // NOLINT
-  after_reduction_->ElevateDegreeForDimension(0);
-  bool successful = after_reduction_->ReduceDegreeForDimension(0, 0.001);
-  ASSERT_THAT(successful, true);
-  ASSERT_THAT(after_reduction_->GetDegree(1).get(), original_->GetDegree(1).get());
-  ASSERT_THAT(after_reduction_->AreGeometricallyEqual(*original_), true);
+TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, DegreeReductionForDimension0WasSuccessful) {  // NOLINT
+  ASSERT_THAT(successful_, true);
 }
 
-class Random3DBSplineForDegreeReduction : public Test {  // NOLINT
+TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, HasUnchangedDegreeInAllDimensions) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), original_->GetDegree(0).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).get(), original_->GetDegree(1).get());
+}
+
+TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfKnotsInAllDimensions) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(1)->GetNumberOfKnots(),
+              original_->GetKnotVector(1)->GetNumberOfKnots());
+}
+
+TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0,
+       HasUnchangedNumberOfControlPointsInAllDirections) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
+  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+}
+
+TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0,
+       DoesNotChangeGeometricallyAfterDegreeElevationAndRedution) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0,
+       DoesNotChangeGeometricallyAfterMoreDegreeElevationsAndReductions) {  // NOLINT
+  elevated_and_reduced_->ElevateDegreeForDimension(1);
+  elevated_and_reduced_->ElevateDegreeForDimension(0);
+  elevated_and_reduced_->ElevateDegreeForDimension(1);
+  successful_ = elevated_and_reduced_->ReduceDegreeForDimension(0);
+  successful_ = successful_ && elevated_and_reduced_->ReduceDegreeForDimension(1);
+  successful_ = successful_ && elevated_and_reduced_->ReduceDegreeForDimension(1);
+  ASSERT_THAT(successful_, true);
+  ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
+}
+
+class Random2DNURBSForDegreeElevationAndReductionForDimension0 : public Test {  // NOLINT
  public:
-  Random3DBSplineForDegreeReduction() {
+  Random2DNURBSForDegreeElevationAndReductionForDimension0() {
     std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
-    spl::RandomBSplineGenerator<3> spline_generator(limits, 4, 3);
-    spl::BSpline<3> b_spline(spline_generator);
-    b_spline_before_ = std::make_shared<spl::BSpline<3>>(b_spline);
-    b_spline_after_ = std::make_shared<spl::BSpline<3>>(b_spline);
+    spl::RandomNURBSGenerator<2> spline_generator(limits, 3, 3);
+    original_ = std::make_shared<spl::NURBS<2>>(spline_generator);
+    elevated_and_reduced_ = std::make_shared<spl::NURBS<2>>(*original_);
+    elevated_and_reduced_->ElevateDegreeForDimension(0);
+    successful_ = elevated_and_reduced_->ReduceDegreeForDimension(0);
   }
 
  protected:
-  std::shared_ptr<spl::BSpline<3>> b_spline_before_;
-  std::shared_ptr<spl::BSpline<3>> b_spline_after_;
+  std::shared_ptr<spl::NURBS<2>> original_;
+  std::shared_ptr<spl::NURBS<2>> elevated_and_reduced_;
+  bool successful_;
 };
 
-TEST_F(Random3DBSplineForDegreeReduction, ReducesDegreeCorrectly) {  // NOLINT
-  b_spline_after_->ElevateDegreeForDimension(0);
-  b_spline_after_->ElevateDegreeForDimension(1);
-  b_spline_after_->ElevateDegreeForDimension(2);
-  b_spline_after_->ReduceDegreeForDimension(0, 1e-10);
-  b_spline_after_->ReduceDegreeForDimension(1, 1e-10);
-  b_spline_after_->ReduceDegreeForDimension(2, 1e-10);
-  ASSERT_THAT(b_spline_after_->AreGeometricallyEqual(*b_spline_before_), true);
+TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, DegreeReductionForDimension0WasSuccessful) {  // NOLINT
+  ASSERT_THAT(successful_, true);
+}
+
+TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedDegreeInAllDimensions) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), original_->GetDegree(0).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).get(), original_->GetDegree(1).get());
+}
+
+TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfKnotsInAllDimensions) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(1)->GetNumberOfKnots(),
+              original_->GetKnotVector(1)->GetNumberOfKnots());
+}
+
+TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0,
+       HasUnchangedNumberOfControlPointsInAllDimensions) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
+  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+}
+
+TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0,
+       DoesNotChangeGeometricallyAfterDegreeElevationAndReduction) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
+}
+
+class Random3DBSplineForDegreeElevationAndReductionForDimension0 : public Test {  // NOLINT
+ public:
+  Random3DBSplineForDegreeElevationAndReductionForDimension0() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomBSplineGenerator<3> spline_generator(limits, 4, 3);
+    original_ = std::make_shared<spl::BSpline<3>>(spline_generator);
+    elevated_and_reduced_ = std::make_shared<spl::BSpline<3>>(*original_);
+    elevated_and_reduced_->ElevateDegreeForDimension(0);
+    successful_ = elevated_and_reduced_->ReduceDegreeForDimension(0);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<3>> original_;
+  std::shared_ptr<spl::BSpline<3>> elevated_and_reduced_;
+  bool successful_;
+};
+
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0,
+       DegreeReductionForDimension0WasSuccessful) {  // NOLINT
+  ASSERT_THAT(successful_, true);
+}
+
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, HasUnchangedDegreeInAllDimensions) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), original_->GetDegree(0).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).get(), original_->GetDegree(1).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(2).get(), original_->GetDegree(2).get());
+}
+
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0,
+       HasUnchangedNumberOfKnotsInAllDimensions) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(1)->GetNumberOfKnots(),
+              original_->GetKnotVector(1)->GetNumberOfKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(2)->GetNumberOfKnots(),
+              original_->GetKnotVector(2)->GetNumberOfKnots());
+}
+
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0,
+       HasUnchangedNumberOfControlPointsInAllDimensions) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
+  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+}
+
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0,
+       DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0,
+       DoesNotChangeGeometricallyAfterMoreDegreeElevationsAndReductions) {  // NOLINT
+  elevated_and_reduced_->ElevateDegreeForDimension(2);
+  elevated_and_reduced_->ElevateDegreeForDimension(2);
+  elevated_and_reduced_->ElevateDegreeForDimension(1);
+  elevated_and_reduced_->ElevateDegreeForDimension(0);
+  successful_ = elevated_and_reduced_->ReduceDegreeForDimension(1);
+  successful_ = successful_ && elevated_and_reduced_->ReduceDegreeForDimension(0);
+  successful_ = successful_ && elevated_and_reduced_->ReduceDegreeForDimension(2);
+  successful_ = successful_ && elevated_and_reduced_->ReduceDegreeForDimension(2);
+  ASSERT_THAT(successful_, true);
+  ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
+}
+
+class Random3DNURBSForDegreeElevationAndReductionForDimension1 : public Test {  // NOLINT
+ public:
+  Random3DNURBSForDegreeElevationAndReductionForDimension1() {
+    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    spl::RandomNURBSGenerator<3> spline_generator(limits, 3, 3);
+    original_ = std::make_shared<spl::NURBS<3>>(spline_generator);
+    elevated_and_reduced_ = std::make_shared<spl::NURBS<3>>(*original_);
+    elevated_and_reduced_->ElevateDegreeForDimension(1);
+    successful_ = elevated_and_reduced_->ReduceDegreeForDimension(1);
+  }
+
+ protected:
+  std::shared_ptr<spl::NURBS<3>> original_;
+  std::shared_ptr<spl::NURBS<3>> elevated_and_reduced_;
+  bool successful_;
+};
+
+TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, DegreeReductionForDimension1WasSuccessful) {  // NOLINT
+  ASSERT_THAT(successful_, true);
+}
+
+TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, HasUnchangedDegreeInAllDimensions) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), original_->GetDegree(0).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).get(), original_->GetDegree(1).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(2).get(), original_->GetDegree(2).get());
+}
+
+TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1,
+       HasUnchangedNumberOfKnotsInAllDimensions) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfKnots(),
+              original_->GetKnotVector(0)->GetNumberOfKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(1)->GetNumberOfDifferentKnots(),
+              original_->GetKnotVector(1)->GetNumberOfDifferentKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(1)->GetNumberOfKnots(),
+              original_->GetKnotVector(1)->GetNumberOfKnots());
+  ASSERT_THAT(elevated_and_reduced_->GetKnotVector(2)->GetNumberOfKnots(),
+              original_->GetKnotVector(2)->GetNumberOfKnots());
+}
+
+TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1,
+       HasUnchangedNumberOfControlPointsInAllDimensions) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
+  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[2], original_->GetPointsPerDirection()[2]);
+}
+
+TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1,
+       DoesNotChangeGeometricallyAfterDegreeElevationAndReduction) {  // NOLINT
+  ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1,
+       DoesNotChangeGeometricallyAfterMoreDegreeElevationsAndReductions) {  // NOLINT
+  elevated_and_reduced_->ElevateDegreeForDimension(2);
+  elevated_and_reduced_->ElevateDegreeForDimension(2);
+  elevated_and_reduced_->ElevateDegreeForDimension(1);
+  elevated_and_reduced_->ElevateDegreeForDimension(0);
+  successful_ = elevated_and_reduced_->ReduceDegreeForDimension(1);
+  successful_ = successful_ && elevated_and_reduced_->ReduceDegreeForDimension(0);
+  successful_ = successful_ && elevated_and_reduced_->ReduceDegreeForDimension(2);
+  successful_ = successful_ && elevated_and_reduced_->ReduceDegreeForDimension(2);
+  ASSERT_THAT(successful_, true);
+  ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
 }
