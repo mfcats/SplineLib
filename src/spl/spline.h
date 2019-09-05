@@ -438,7 +438,7 @@ class Spline {
     return control_points_new;
   }
 
-  virtual void SetNewBezierPoint(baf::ControlPoint control_point, double weight, std::array<int, DIM> indices) = 0;
+  virtual void SetNewControlPoint(baf::ControlPoint control_point, double weight, std::array<int, DIM> indices) = 0;
 
   void SetNewBezierSegmentControlPoints(const std::vector<std::vector<baf::ControlPoint>> &bezier_segments,
                                         int dimension) {
@@ -452,12 +452,12 @@ class Spline {
         segment--;
         index = (width - 1) + point_handler.ExtractDimension(dimension) * width;
       }
-      baf::ControlPoint cps(GetPointDim());
+      baf::ControlPoint cp(GetPointDim());
       double weight = bezier_segments[segment][index].GetValue(GetPointDim());
       for (int j = 0; j < GetPointDim(); ++j) {
-        cps.SetValue(j, bezier_segments[segment][index].GetValue(j) / weight);
+        cp.SetValue(j, bezier_segments[segment][index].GetValue(j) / weight);
       }
-      this->SetNewBezierPoint(cps, weight, point_handler.GetIndices());
+      this->SetNewControlPoint(cp, weight, point_handler.GetIndices());
     }
   }
 

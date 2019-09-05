@@ -437,7 +437,7 @@ class NURBS : public Spline<DIM> {
     return true;
   }
 
-  void SetNewBezierPoint(baf::ControlPoint control_point, double weight, std::array<int, DIM> indices) override {
+  void SetNewControlPoint(baf::ControlPoint control_point, double weight, std::array<int, DIM> indices) override {
     physical_space_->SetWeightedControlPoint(indices, control_point, weight);
   }
 

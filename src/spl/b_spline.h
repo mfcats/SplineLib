@@ -238,7 +238,7 @@ class BSpline : public Spline<DIM> {
     return true;
   }
 
-  void SetNewBezierPoint(baf::ControlPoint control_point, double /*weight*/, std::array<int, DIM> indices) override {
+  void SetNewControlPoint(baf::ControlPoint control_point, double /*weight*/, std::array<int, DIM> indices) override {
     physical_space_->SetControlPoint(indices, control_point);
   }
 
