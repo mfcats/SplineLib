@@ -49,7 +49,6 @@ class MultiIndexHandler {
     return *this;
   }
 
-  // TODO(Christoph): Why does this operator return a const MultiIndexHandler?
   const MultiIndexHandler operator++(int) {
     MultiIndexHandler result(*this);
     ++(*this);
