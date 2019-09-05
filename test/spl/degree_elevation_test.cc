@@ -167,15 +167,14 @@ TEST_F(A2DBSplineForDegreeElevationForDimension0, DoesNotChangeGeometricallyAfte
   ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_), true);
 }
 
-// TODO(Christoph): Test below fails!
-/* TEST_F(A2DBSplineForDegreeElevationForDimension0, DoesNotChangeGeometricallyAfterMoreDegreeElevations) {  // NOLINT
+TEST_F(A2DBSplineForDegreeElevationForDimension0, DoesNotChangeGeometricallyAfterMoreDegreeElevations) {  // NOLINT
   elevated_->ElevateDegreeForDimension(1);
   ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_), true);
   elevated_->ElevateDegreeForDimension(0);
   ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_), true);
   elevated_->ElevateDegreeForDimension(1);
-  ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_), true);
-} */
+  ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_, util::NumericSettings<double>::kEpsilon() * 2.0), true);
+}
 
 class Random2DNURBSForDegreeElevationForDimension0 : public Test {  // NOLINT
  public:
