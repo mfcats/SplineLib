@@ -362,22 +362,21 @@ class Spline {
 
   std::vector<baf::ControlPoint> DegreeReduceBezierSegment(const std::vector<baf::ControlPoint> &bezier_cps,
                                                            double tolerance, int dimension, bool* successful) {
+    int width = GetDegree(dimension).get() + 1;
+    int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
+    util::MultiIndexHandler<2> cp_handler_old({width, segment_length});
+    util::MultiIndexHandler<2> cp_handler_new({width - 1, segment_length});
     double max_error_bound = 0.0;
     int new_degree_in_dimension = GetDegree(dimension).get() - 1;
-    int width = GetDegree(dimension).get() + 1;
-    std::array<int, DIM> points_per_dir = GetPointsPerDirection();
-    points_per_dir[dimension] = width;
-    util::MultiIndexHandler<DIM> cp_handler_old(points_per_dir);
-    points_per_dir[dimension]--;
-    util::MultiIndexHandler<DIM> cp_handler_new(points_per_dir);
-    std::vector<baf::ControlPoint> control_points_new(cp_handler_new.Get1DLength(), baf::ControlPoint({0.0}));
-    auto indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, 0);
-    auto indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, 0);
+    std::vector<baf::ControlPoint> control_points_new(cp_handler_new.Get1DLength(),
+                                                      baf::ControlPoint(GetPointDim() + 1));
+    auto indices_new = cp_handler_new.Get1DIndicesForFixedDimension(0, 0);
+    auto indices_old = cp_handler_old.Get1DIndicesForFixedDimension(0, 0);
     for (uint64_t i = 0; i < indices_new.size(); ++i) {
       control_points_new[indices_new[i]] = bezier_cps[indices_old[i]];
     }
-    indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, new_degree_in_dimension);
-    indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, new_degree_in_dimension + 1);
+    indices_new = cp_handler_new.Get1DIndicesForFixedDimension(0, new_degree_in_dimension);
+    indices_old = cp_handler_old.Get1DIndicesForFixedDimension(0, new_degree_in_dimension + 1);
     for (uint64_t i = 0; i < indices_new.size(); ++i) {
       control_points_new[indices_new[i]] = bezier_cps[indices_old[i]];
     }
@@ -385,9 +384,9 @@ class Spline {
     int end_of_first_loop = r;
     if ((new_degree_in_dimension + 1) % 2 != 0) end_of_first_loop = r - 1;
     for (int i = 1; i <= end_of_first_loop; ++i) {
-      auto indices_new_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i - 1);
-      indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
-      indices_old = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i);
+      auto indices_new_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(0, i - 1);
+      indices_new = cp_handler_new.Get1DIndicesForFixedDimension(0, i);
+      indices_old = cp_handler_old.Get1DIndicesForFixedDimension(0, i);
       double alpha = static_cast<double>(i) / static_cast<double>(new_degree_in_dimension + 1);
       for (uint64_t j = 0; j < indices_new.size(); ++j) {
         control_points_new[indices_new[j]] = (bezier_cps[indices_old[j]]
@@ -397,9 +396,9 @@ class Spline {
     int lower = static_cast<int>(r + 1);
     int upper = new_degree_in_dimension - 1;
     for (int i = upper; i >= lower; --i) {
-      auto indices_new_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i + 1);
-      indices_new = cp_handler_new.Get1DIndicesForFixedDimension(dimension, i);
-      auto indices_old_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, i + 1);
+      auto indices_new_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(0, i + 1);
+      indices_new = cp_handler_new.Get1DIndicesForFixedDimension(0, i);
+      auto indices_old_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(0, i + 1);
       double alpha = static_cast<double>(i + 1) / static_cast<double>(new_degree_in_dimension + 1);
       for (uint64_t j = 0; j < indices_new.size(); ++j) {
         control_points_new[indices_new[j]] = (bezier_cps[indices_old_plus_one[j]]
@@ -407,11 +406,11 @@ class Spline {
       }
     }
     if ((new_degree_in_dimension + 1) % 2 != 0) {
-      auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r);
-      auto indices_new_r_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r - 1);
-      auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r + 1);
-      auto indices_old_r = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r);
-      auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r + 1);
+      auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(0, r);
+      auto indices_new_r_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(0, r - 1);
+      auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(0, r + 1);
+      auto indices_old_r = cp_handler_old.Get1DIndicesForFixedDimension(0, r);
+      auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(0, r + 1);
       double alpha_r = static_cast<double>(r) / static_cast<double>((new_degree_in_dimension + 1));
       double alpha_r_plus_one = static_cast<double>(r + 1) / static_cast<double>((new_degree_in_dimension + 1));
       for (uint64_t j = 0; j < indices_new.size(); ++j) {
@@ -424,9 +423,9 @@ class Spline {
       }
     }
     if ((new_degree_in_dimension + 1) % 2 == 0) {
-      auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r);
-      auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(dimension, r + 1);
-      auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(dimension, r + 1);
+      auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(0, r);
+      auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(0, r + 1);
+      auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(0, r + 1);
       for (uint64_t j = 0; j < indices_new.size(); ++j) {
         double current_max_error_bound =
             (bezier_cps[indices_old_r_plus_one[j]] - ((control_points_new[indices_new_r[j]]
