@@ -190,7 +190,7 @@ class NURBS : public Spline<DIM> {
     double sum = 0;
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();
-      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
+      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
       sum += GetEvaluatedWeight(param_coord, indices);
     }
     return sum;
@@ -203,7 +203,7 @@ class NURBS : public Spline<DIM> {
     double sum = 0;
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();
-      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<double>());
+      std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
       sum += GetEvaluatedDerivativeWeight(param_coord, derivative, indices);
     }
     return sum;
