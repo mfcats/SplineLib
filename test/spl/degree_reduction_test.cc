@@ -248,7 +248,7 @@ TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, // NOLINT
   ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
 }
 
-TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0,
+TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, // NOLINT
        DoesNotChangeGeometricallyAfterDegreeElevationAndReduction) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
 }
