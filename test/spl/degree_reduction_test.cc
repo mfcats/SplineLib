@@ -69,7 +69,7 @@ TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, HasUnchangedNu
   ASSERT_THAT(elevated_and_reduced_->GetNumberOfControlPoints(), original_->GetNumberOfControlPoints());
 }
 
-TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0,
+TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, // NOLINT
        DoesNotChangeGeometricallyAfterDegreeElevationAndReduction) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
 }
@@ -119,7 +119,7 @@ TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedNumb
   ASSERT_THAT(elevated_and_reduced_->GetNumberOfControlPoints(), original_->GetNumberOfControlPoints());
 }
 
-TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0,
+TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, // NOLINT
     DoesNotChangeGeometricallyAfterDegreeElevationAndReduction) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
 }
@@ -173,18 +173,18 @@ TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, HasUnchangedNumber
               original_->GetKnotVector(1)->GetNumberOfKnots());
 }
 
-TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0,
+TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
        HasUnchangedNumberOfControlPointsInAllDirections) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
   ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
 }
 
-TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0,
+TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
        DoesNotChangeGeometricallyAfterDegreeElevationAndRedution) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
 }
 
-TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0,
+TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
        DoesNotChangeGeometricallyAfterMoreDegreeElevationsAndReductions) {  // NOLINT
   elevated_and_reduced_->ElevateDegreeForDimension(1);
   elevated_and_reduced_->ElevateDegreeForDimension(0);
@@ -259,7 +259,7 @@ class Random3DBSplineForDegreeElevationAndReductionForDimension0 : public Test {
   bool successful_;
 };
 
-TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0,
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
        DegreeReductionForDimension0WasSuccessful) {  // NOLINT
   ASSERT_THAT(successful_, true);
 }
@@ -270,7 +270,7 @@ TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, HasUnchangedD
   ASSERT_THAT(elevated_and_reduced_->GetDegree(2).get(), original_->GetDegree(2).get());
 }
 
-TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0,
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
        HasUnchangedNumberOfKnotsInAllDimensions) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfDifferentKnots(),
               original_->GetKnotVector(0)->GetNumberOfDifferentKnots());
@@ -282,18 +282,18 @@ TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0,
               original_->GetKnotVector(2)->GetNumberOfKnots());
 }
 
-TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0,
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
        HasUnchangedNumberOfControlPointsInAllDimensions) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
   ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
 }
 
-TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0,
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
        DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
 }
 
-TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0,
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
        DoesNotChangeGeometricallyAfterMoreDegreeElevationsAndReductions) {  // NOLINT
   elevated_and_reduced_->ElevateDegreeForDimension(2);
   elevated_and_reduced_->ElevateDegreeForDimension(2);
@@ -334,7 +334,7 @@ TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, HasUnchangedDeg
   ASSERT_THAT(elevated_and_reduced_->GetDegree(2).get(), original_->GetDegree(2).get());
 }
 
-TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1,
+TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, // NOLINT
        HasUnchangedNumberOfKnotsInAllDimensions) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->GetKnotVector(0)->GetNumberOfKnots(),
               original_->GetKnotVector(0)->GetNumberOfKnots());
@@ -346,19 +346,19 @@ TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1,
               original_->GetKnotVector(2)->GetNumberOfKnots());
 }
 
-TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1,
+TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, // NOLINT
        HasUnchangedNumberOfControlPointsInAllDimensions) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
   ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
   ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[2], original_->GetPointsPerDirection()[2]);
 }
 
-TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1,
+TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, // NOLINT
        DoesNotChangeGeometricallyAfterDegreeElevationAndReduction) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
 }
 
-TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1,
+TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, // NOLINT
        DoesNotChangeGeometricallyAfterMoreDegreeElevationsAndReductions) {  // NOLINT
   elevated_and_reduced_->ElevateDegreeForDimension(2);
   elevated_and_reduced_->ElevateDegreeForDimension(2);
