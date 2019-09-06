@@ -208,7 +208,7 @@ class Spline {
 
   void ElevateDegreeForDimension(int dimension) {
     uint64_t num_bezier_segments = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1;
-    std::vector<double> alpha = ComputeBezierDegreeElevationCoeffients(dimension);
+    std::vector<double> alpha = ComputeBezierDegreeElevationCoefficients(dimension);
     auto diff = ProduceBezierSegments(dimension);
     std::vector<std::vector<baf::ControlPoint>> bezier_segments(num_bezier_segments);
     for (uint64_t i = 0; i < num_bezier_segments; ++i) {
@@ -284,7 +284,7 @@ class Spline {
     return total_length;
   }
 
-  std::vector<double> ComputeBezierDegreeElevationCoeffients(int dimension) const {
+  std::vector<double> ComputeBezierDegreeElevationCoefficients(int dimension) const {
     std::vector<double> alpha;
     for (int current_bezier_point = 0; current_bezier_point < GetDegree(dimension).get() + 2; ++current_bezier_point) {
       alpha.emplace_back(static_cast<double>(current_bezier_point) / (GetDegree(dimension).get() + 1));
