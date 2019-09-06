@@ -50,6 +50,17 @@ class BSplineFig5_35ForDegreeElevationAndReductionForDimension0 : public Test { 
   bool successful_;
 };
 
+TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, // NOLINT
+    DegreeReductionWithoutPreviousDegreeElevationFails) { // NOLINT
+  std::shared_ptr<spl::BSpline<1>> test_spline = std::make_shared<spl::BSpline<1>>(*original_);
+  bool successful = test_spline->ReduceDegreeForDimension(0);
+  ASSERT_THAT(successful, false);
+  ASSERT_THAT(test_spline->GetDegree(0), original_->GetDegree(0));
+  ASSERT_THAT(test_spline->GetKnotVector(0)->GetNumberOfKnots(), original_->GetKnotVector(0)->GetNumberOfKnots());
+  ASSERT_THAT(test_spline->GetNumberOfControlPoints(), original_->GetNumberOfControlPoints());
+  ASSERT_THAT(test_spline->AreGeometricallyEqual(*original_), true);
+}
+
 TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, DegreeReductionWasSuccessful) {  // NOLINT
   ASSERT_THAT(successful_, true);
 }
