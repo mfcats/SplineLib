@@ -108,15 +108,11 @@ class MultiIndexHandler {
   }
 
   int Get1DIndex() const {
-    int index_1d = 0;
-    for (int i = 0; i < DIM; ++i) {
-      int temp = current_multi_index_value_[i];
-      for (int j = i - 1; j >= 0; --j) {
-        temp *= multi_index_length_[j];
-      }
-      index_1d += temp;
-    }
     return Get1DIndex(multi_index_length_, current_multi_index_value_);
+  }
+
+  int Get1DIndex(const std::array<int, DIM> &indices) const {
+    return Get1DIndex(multi_index_length_, indices);
   }
 
   int Get1DIndex(const std::array<int, DIM> &length, const std::array<int, DIM> &indices) const {
@@ -154,19 +150,6 @@ class MultiIndexHandler {
       }
     }
     return Get1DIndex(length, indices);
-  }
-
-  std::vector<int> Get1DIndicesForFixedDimension(int dimension, int value) {
-    std::vector<int> indices;
-    std::array<int, DIM> old_indices = current_multi_index_value_;
-    Set1DIndex(0);
-    for (int i = 0; i < Get1DLength(); ++i, ++(*this)) {
-      if (current_multi_index_value_[dimension] == value) {
-        indices.emplace_back(Get1DIndex());
-      }
-    }
-    current_multi_index_value_ = old_indices;
-    return indices;
   }
 
  private:

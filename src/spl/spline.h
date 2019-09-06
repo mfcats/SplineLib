@@ -344,17 +344,15 @@ class Spline {
                                                             std::vector<double> alpha, int dimension) const {
     int width = GetDegree(dimension).get() + 2;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
-    util::MultiIndexHandler<2> point_handler({width, segment_length});
-    std::vector<baf::ControlPoint> new_cps;
-    for (int k = 0; k < point_handler.Get1DLength(); ++k, ++point_handler) {
-      auto index = point_handler[0];
-      auto pos = point_handler.Get1DIndex() - point_handler[1];
-      if (alpha[index] == 0) {
-        new_cps.emplace_back(bezier_cps[pos] * (1 - alpha[index]));
-      } else if (alpha[index] == 1) {
-        new_cps.emplace_back(bezier_cps[pos - 1] * alpha[index]);
-      } else {
-        new_cps.emplace_back(bezier_cps[pos] * (1 - alpha[index]) + bezier_cps[pos - 1] * alpha[index]);
+    util::MultiIndexHandler<2> cp_handler_new({width, segment_length});
+    util::MultiIndexHandler<2> cp_handler_old({width - 1, segment_length});
+    std::vector<baf::ControlPoint> new_cps(cp_handler_new.Get1DLength(), baf::ControlPoint(GetPointDim() + 1));
+    for (int i = 0; i < segment_length; ++i) {
+      new_cps[cp_handler_new.Get1DIndex({0, i})] = bezier_cps[cp_handler_old.Get1DIndex({0, i})];
+      new_cps[cp_handler_new.Get1DIndex({width - 1, i})] = bezier_cps[cp_handler_old.Get1DIndex({width - 2, i})];
+      for (int j = 1; j < GetDegree(dimension).get(); ++j) {
+        new_cps[cp_handler_new.Get1DIndex({j, i})] = bezier_cps[cp_handler_old.Get1DIndex({j, i})] * (1 - alpha[j]) +
+            bezier_cps[cp_handler_old.Get1DIndex({j - 1, i})] * alpha[j];
       }
     }
     return new_cps;
@@ -362,79 +360,46 @@ class Spline {
 
   std::vector<baf::ControlPoint> DegreeReduceBezierSegment(const std::vector<baf::ControlPoint> &bezier_cps,
                                                            double tolerance, int dimension, bool* successful) {
-    int width = GetDegree(dimension).get() + 1;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
-    util::MultiIndexHandler<2> cp_handler_old({width, segment_length});
-    util::MultiIndexHandler<2> cp_handler_new({width - 1, segment_length});
+    util::MultiIndexHandler<2> cp_handler_old({GetDegree(dimension).get() + 1, segment_length});
+    util::MultiIndexHandler<2> cp_handler_new({GetDegree(dimension).get(), segment_length});
     double max_error_bound = 0.0;
-    int new_degree_in_dimension = GetDegree(dimension).get() - 1;
-    std::vector<baf::ControlPoint> control_points_new(cp_handler_new.Get1DLength(),
-                                                      baf::ControlPoint(GetPointDim() + 1));
-    auto indices_new = cp_handler_new.Get1DIndicesForFixedDimension(0, 0);
-    auto indices_old = cp_handler_old.Get1DIndicesForFixedDimension(0, 0);
-    for (uint64_t i = 0; i < indices_new.size(); ++i) {
-      control_points_new[indices_new[i]] = bezier_cps[indices_old[i]];
-    }
-    indices_new = cp_handler_new.Get1DIndicesForFixedDimension(0, new_degree_in_dimension);
-    indices_old = cp_handler_old.Get1DIndicesForFixedDimension(0, new_degree_in_dimension + 1);
-    for (uint64_t i = 0; i < indices_new.size(); ++i) {
-      control_points_new[indices_new[i]] = bezier_cps[indices_old[i]];
-    }
-    int r = new_degree_in_dimension / 2;
+    int new_degree = GetDegree(dimension).get() - 1;
+    std::vector<baf::ControlPoint> new_cps(cp_handler_new.Get1DLength(), baf::ControlPoint(GetPointDim() + 1));
+    int r = new_degree / 2;
+    double alpha_r = static_cast<double>(r) / static_cast<double>((new_degree + 1));
+    double alpha_r_plus = static_cast<double>(r + 1) / static_cast<double>((new_degree + 1));
     int end_of_first_loop = r;
-    if ((new_degree_in_dimension + 1) % 2 != 0) end_of_first_loop = r - 1;
-    for (int i = 1; i <= end_of_first_loop; ++i) {
-      auto indices_new_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(0, i - 1);
-      indices_new = cp_handler_new.Get1DIndicesForFixedDimension(0, i);
-      indices_old = cp_handler_old.Get1DIndicesForFixedDimension(0, i);
-      double alpha = static_cast<double>(i) / static_cast<double>(new_degree_in_dimension + 1);
-      for (uint64_t j = 0; j < indices_new.size(); ++j) {
-        control_points_new[indices_new[j]] = (bezier_cps[indices_old[j]]
-            - control_points_new[indices_new_minus_one[j]] * alpha) * (1 / (1 - alpha));
+    if ((new_degree + 1) % 2 != 0) end_of_first_loop = r - 1;
+    for (int i = 0; i < segment_length; ++i) {
+      new_cps[cp_handler_new.Get1DIndex({0, i})] = bezier_cps[cp_handler_old.Get1DIndex({0, i})];
+      new_cps[cp_handler_new.Get1DIndex({new_degree, i})] = bezier_cps[cp_handler_old.Get1DIndex({new_degree + 1, i})];
+      for (int j = 1; j <= end_of_first_loop; ++j) {
+        double alpha = static_cast<double>(j) / static_cast<double>(new_degree + 1);
+        new_cps[cp_handler_new.Get1DIndex({j, i})] = (bezier_cps[cp_handler_old.Get1DIndex({j, i})] -
+            new_cps[cp_handler_new.Get1DIndex({j - 1, i})] * alpha) * (1 / (1 - alpha));
       }
-    }
-    int lower = static_cast<int>(r + 1);
-    int upper = new_degree_in_dimension - 1;
-    for (int i = upper; i >= lower; --i) {
-      auto indices_new_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(0, i + 1);
-      indices_new = cp_handler_new.Get1DIndicesForFixedDimension(0, i);
-      auto indices_old_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(0, i + 1);
-      double alpha = static_cast<double>(i + 1) / static_cast<double>(new_degree_in_dimension + 1);
-      for (uint64_t j = 0; j < indices_new.size(); ++j) {
-        control_points_new[indices_new[j]] = (bezier_cps[indices_old_plus_one[j]]
-            - control_points_new[indices_new_plus_one[j]] * (1 - alpha)) * (1 / alpha);
+      for (int j = new_degree - 1; j >= r + 1; --j) {
+        double alpha = static_cast<double>(j + 1) / static_cast<double>(new_degree + 1);
+        new_cps[cp_handler_new.Get1DIndex({j, i})] = (bezier_cps[cp_handler_old.Get1DIndex({j + 1, i})] -
+            new_cps[cp_handler_new.Get1DIndex({j + 1, i})] * (1 - alpha)) * (1 / alpha);
       }
-    }
-    if ((new_degree_in_dimension + 1) % 2 != 0) {
-      auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(0, r);
-      auto indices_new_r_minus_one = cp_handler_new.Get1DIndicesForFixedDimension(0, r - 1);
-      auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(0, r + 1);
-      auto indices_old_r = cp_handler_old.Get1DIndicesForFixedDimension(0, r);
-      auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(0, r + 1);
-      double alpha_r = static_cast<double>(r) / static_cast<double>((new_degree_in_dimension + 1));
-      double alpha_r_plus_one = static_cast<double>(r + 1) / static_cast<double>((new_degree_in_dimension + 1));
-      for (uint64_t j = 0; j < indices_new.size(); ++j) {
-        baf::ControlPoint P_r_L = (bezier_cps[indices_old_r[j]]
-            - control_points_new[indices_new_r_minus_one[j]] * alpha_r) * (1 / (1 - alpha_r));
-        baf::ControlPoint P_r_R = (bezier_cps[indices_old_r_plus_one[j]]
-            - control_points_new[indices_new_r_plus_one[j]] * (1 - alpha_r_plus_one)) * (1 / alpha_r_plus_one);
-        control_points_new[indices_new_r[j]] = (P_r_L + P_r_R) * 0.5;
+      if ((new_degree + 1) % 2 != 0) {
+        baf::ControlPoint P_r_L = (bezier_cps[cp_handler_old.Get1DIndex({r, i})] -
+            new_cps[cp_handler_new.Get1DIndex({r - 1, i})] * alpha_r) * (1 / (1 - alpha_r));
+        baf::ControlPoint P_r_R = (bezier_cps[cp_handler_old.Get1DIndex({r + 1, i})] -
+            new_cps[cp_handler_new.Get1DIndex({r + 1, i})] * (1 - alpha_r_plus)) * (1 / alpha_r_plus);
+        new_cps[cp_handler_new.Get1DIndex({r, i})] = (P_r_L + P_r_R) * 0.5;
         if ((P_r_L - P_r_R).GetEuclideanNorm() > max_error_bound) max_error_bound = (P_r_L - P_r_R).GetEuclideanNorm();
-      }
-    }
-    if ((new_degree_in_dimension + 1) % 2 == 0) {
-      auto indices_new_r = cp_handler_new.Get1DIndicesForFixedDimension(0, r);
-      auto indices_new_r_plus_one = cp_handler_new.Get1DIndicesForFixedDimension(0, r + 1);
-      auto indices_old_r_plus_one = cp_handler_old.Get1DIndicesForFixedDimension(0, r + 1);
-      for (uint64_t j = 0; j < indices_new.size(); ++j) {
+      } else {
         double current_max_error_bound =
-            (bezier_cps[indices_old_r_plus_one[j]] - ((control_points_new[indices_new_r[j]]
-                + control_points_new[indices_new_r_plus_one[j]]) * 0.5)).GetEuclideanNorm();
+            (bezier_cps[cp_handler_old.Get1DIndex({r + 1, i})] - ((new_cps[cp_handler_new.Get1DIndex({r, i})] +
+                new_cps[cp_handler_new.Get1DIndex({r + 1, i})]) * 0.5)).GetEuclideanNorm();
         if (current_max_error_bound > max_error_bound) max_error_bound = current_max_error_bound;
       }
     }
     *successful = max_error_bound < tolerance;
-    return control_points_new;
+    return new_cps;
   }
 
   virtual void SetNewControlPoint(baf::ControlPoint control_point, double weight, std::array<int, DIM> indices) = 0;
