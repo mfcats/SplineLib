@@ -242,7 +242,7 @@ TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedNum
               original_->GetKnotVector(1)->GetNumberOfKnots());
 }
 
-TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0,
+TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, // NOLINT
        HasUnchangedNumberOfControlPointsInAllDimensions) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
   ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
