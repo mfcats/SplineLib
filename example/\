@@ -1,0 +1,5 @@
+#!/bin/bash
+
+environment=123
+docker build -t splinelibtests:test -f Dockerfile.test .
+docker run -te "TERM=xterm-256color" -e environment=987 --rm --name test splinelibtests:test # test.exe

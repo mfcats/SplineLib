@@ -173,7 +173,7 @@ TEST_F(A2DBSplineForDegreeElevationForDimension0, DoesNotChangeGeometricallyAfte
   elevated_->ElevateDegreeForDimension(0);
   ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_), true);
   elevated_->ElevateDegreeForDimension(1);
-  ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_), true);
+  ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_, 1e-10), true);
 }
 class Random2DNURBSForDegreeElevationForDimension0 : public Test {  // NOLINT
  public:
