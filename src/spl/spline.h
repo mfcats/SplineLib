@@ -287,7 +287,7 @@ class Spline {
   std::vector<double> ComputeBezierDegreeElevationCoefficients(int dimension) const {
     std::vector<double> alpha;
     for (int current_bezier_point = 0; current_bezier_point < GetDegree(dimension).get() + 2; ++current_bezier_point) {
-      alpha.emplace_back(static_cast<double>(current_bezier_point) / (GetDegree(dimension).get() + 1));
+      alpha.emplace_back(current_bezier_point) / (GetDegree(dimension).get() + 1.0);
     }
     return alpha;
   }
@@ -413,7 +413,7 @@ class Spline {
       int segment = index_in_dir / (width - 1);
       int index = index_in_dir % (width - 1) + point_handler.ExtractDimension(dimension) * width;
       if (static_cast<size_t>(segment) > bezier_segments.size() - 1) {
-        segment--;
+        --segment;
         index = (width - 1) + point_handler.ExtractDimension(dimension) * width;
       }
       baf::ControlPoint cp(GetPointDim());

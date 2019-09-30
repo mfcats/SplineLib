@@ -153,7 +153,7 @@ void baf::KnotVector::RemoveKnot(const ParamCoord &param_coord) {
   KnotSpan knot_span = GetKnotSpan(param_coord);
   if (!IsLastKnot(param_coord)) {
     knots_.erase(knots_.begin() + knot_span.get());
-  } else if (IsLastKnot(param_coord)) {
+  } else {
     knots_.erase(knots_.end() - 1);
   }
 }

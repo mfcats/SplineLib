@@ -56,9 +56,7 @@ TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, // NOLINT
   bool successful = test_spline->ReduceDegreeForDimension(0);
   ASSERT_THAT(successful, false);
   ASSERT_THAT(test_spline->GetDegree(0), original_->GetDegree(0));
-  ASSERT_THAT(test_spline->GetKnotVector(0)->GetNumberOfKnots(), original_->GetKnotVector(0)->GetNumberOfKnots());
-  ASSERT_THAT(test_spline->GetNumberOfControlPoints(), original_->GetNumberOfControlPoints());
-  ASSERT_THAT(test_spline->AreGeometricallyEqual(*original_), true);
+  ASSERT_THAT(original_->AreGeometricallyEqual(*elevated_and_reduced_), true);
 }
 
 TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, DegreeReductionWasSuccessful) {  // NOLINT
