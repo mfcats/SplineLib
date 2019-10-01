@@ -112,6 +112,14 @@ size_t baf::KnotVector::GetNumberOfKnots() const {
   return knots_.size();
 }
 
+int baf::KnotVector::GetNumberOfDifferentKnots() const {
+  int number = 1;
+  for (size_t i = 1; i < knots_.size(); ++i) {
+    if (knots_[i].get() > knots_[i - 1].get()) ++number;
+  }
+  return number;
+}
+
 baf::KnotVector::ConstKnotIterator baf::KnotVector::begin() const {
   return knots_.begin();
 }
@@ -143,5 +151,9 @@ void baf::KnotVector::InsertKnot(const ParamCoord &param_coord) {
 
 void baf::KnotVector::RemoveKnot(const ParamCoord &param_coord) {
   KnotSpan knot_span = GetKnotSpan(param_coord);
-  knots_.erase(knots_.begin() + knot_span.get());
+  if (!IsLastKnot(param_coord)) {
+    knots_.erase(knots_.begin() + knot_span.get());
+  } else {
+    knots_.erase(knots_.end() - 1);
+  }
 }

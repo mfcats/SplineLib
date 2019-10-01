@@ -56,6 +56,7 @@ class KnotVector {
   virtual KnotSpan GetKnotSpan(ParamCoord param_coord) const;
   virtual size_t GetMultiplicity(ParamCoord param_coord) const;
   virtual size_t GetNumberOfKnots() const;
+  int GetNumberOfDifferentKnots() const;
 
   ConstKnotIterator begin() const;
   ConstKnotIterator end() const;

@@ -53,7 +53,8 @@ class VectorUtils {
   }
 
   static std::vector<T> ScaleVector(std::vector<T> vectorA, T factor) {
-    std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(), std::bind1st(std::multiplies<T>(), factor));
+    std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(),
+                   std::bind(std::multiplies<T>(), factor, std::placeholders::_1));
     return vectorA;
   }
 

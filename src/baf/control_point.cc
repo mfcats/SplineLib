@@ -18,8 +18,22 @@ baf::ControlPoint::ControlPoint(std::initializer_list<double> coordinates) : coo
 
 baf::ControlPoint::ControlPoint(std::vector<double> coordinates) : coordinates_(std::move(coordinates)) {}
 
+baf::ControlPoint::ControlPoint(uint64_t dimension) : coordinates_(std::vector(dimension, 0.0)) {}
+
 int baf::ControlPoint::GetDimension() const {
   return static_cast<int>(coordinates_.size());
+}
+
+double baf::ControlPoint::GetValue(int dimension) const {
+#ifdef DEBUG
+  return coordinates_.at(dimension);
+#else
+  return coordinates_[dimension];
+#endif
+}
+
+void baf::ControlPoint::SetValue(int dimension, double value) {
+  coordinates_[dimension] = value;
 }
 
 baf::ControlPoint baf::ControlPoint::operator+(const baf::ControlPoint &control_point) const {
@@ -28,6 +42,22 @@ baf::ControlPoint baf::ControlPoint::operator+(const baf::ControlPoint &control_
   for (int i = 0; i < this->GetDimension(); ++i) {
     coordinates_new.push_back(this->GetValue(i) + control_point.GetValue(i));
   }
+  return ControlPoint(coordinates_new);
+}
+
+baf::ControlPoint baf::ControlPoint::operator-(const baf::ControlPoint &control_point) const {
+  std::vector<double> coordinates_new;
+  coordinates_new.reserve(this->GetDimension());
+  for (int i = 0; i < this->GetDimension(); ++i) {
+    coordinates_new.push_back(this->GetValue(i) - control_point.GetValue(i));
+  }
+  return ControlPoint(coordinates_new);
+}
+
+baf::ControlPoint baf::ControlPoint::operator*(const double &scalar) const {
+  std::vector<double> coordinates_new(this->GetDimension());
+  std::transform(coordinates_.begin(), coordinates_.end(), coordinates_new.begin(),
+      std::bind(std::multiplies<>(), std::placeholders::_1, scalar));
   return ControlPoint(coordinates_new);
 }
 
@@ -42,10 +72,11 @@ baf::ControlPoint baf::ControlPoint::Transform(std::array<std::array<double, 4>,
   return ControlPoint(coordinates_new);
 }
 
-double baf::ControlPoint::GetValue(int dimension) const {
-#ifdef DEBUG
-  return coordinates_.at(dimension);
-#else
-  return coordinates_[dimension];
-#endif
+double baf::ControlPoint::GetEuclideanNorm() const {
+  double euclidean_norm = 0.0;
+  for (auto &coordinate : coordinates_) {
+    euclidean_norm += pow(coordinate, 2);
+  }
+  euclidean_norm = sqrt(euclidean_norm);
+  return euclidean_norm;
 }

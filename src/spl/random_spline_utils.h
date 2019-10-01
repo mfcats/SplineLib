@@ -77,7 +77,7 @@ class RandomSplineUtils {
     std::vector<double> weights;
     util::MultiIndexHandler<DIM> point_handler(number_of_points);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      weights.emplace_back(util::Random::GetBinomialRandom<double>(0.1, 5, 0.1));
+      weights.emplace_back(util::Random::GetBinomialRandom<double>(0.1, 2, 0.1));
     }
     return weights;
   }

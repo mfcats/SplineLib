@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_UTIL_MULTI_INDEX_HANDLER_H_
 
 #include <array>
+#include <vector>
 
 namespace util {
 template<int DIM>
@@ -107,15 +108,11 @@ class MultiIndexHandler {
   }
 
   int Get1DIndex() const {
-    int index_1d = 0;
-    for (int i = 0; i < DIM; ++i) {
-      int temp = current_multi_index_value_[i];
-      for (int j = i - 1; j >= 0; --j) {
-        temp *= multi_index_length_[j];
-      }
-      index_1d += temp;
-    }
     return Get1DIndex(multi_index_length_, current_multi_index_value_);
+  }
+
+  int Get1DIndex(const std::array<int, DIM> &indices) const {
+    return Get1DIndex(multi_index_length_, indices);
   }
 
   int Get1DIndex(const std::array<int, DIM> &length, const std::array<int, DIM> &indices) const {

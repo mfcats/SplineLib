@@ -15,7 +15,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_BAF_CONTROL_POINT_H_
 #define SRC_BAF_CONTROL_POINT_H_
 
+#include <algorithm>
 #include <array>
+#include <cmath>
+#include <functional>
 #include <initializer_list>
 #include <vector>
 
@@ -24,13 +27,20 @@ class ControlPoint {
  public:
   explicit ControlPoint(std::initializer_list<double> coordinates);
   explicit ControlPoint(std::vector<double> coordinates);
+  explicit ControlPoint(uint64_t dimension);
 
   int GetDimension() const;
   double GetValue(int dimension) const;
 
-  ControlPoint operator+(const ControlPoint& control_point) const;
+  void SetValue(int dimension, double value);
 
-  ControlPoint Transform(std::array<std::array<double, 4>, 4> TransMatrix, std::array<double, 3> scaling) const;
+  ControlPoint operator+(const ControlPoint &control_point) const;
+  ControlPoint operator-(const ControlPoint &control_point) const;
+  ControlPoint operator*(const double &scalar) const;
+
+  ControlPoint Transform(std::array<std::array<double, 4>, 4> TransMatrix,
+                                       std::array<double, 3> scaling) const;
+  double GetEuclideanNorm() const;
 
  protected:
   std::vector<double> coordinates_;
