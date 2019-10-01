@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <ctime>
 
-namespace util {
+namespace splinelib::src::util {
 class SystemOperations {
  public:
   static struct tm GetTime() {
@@ -28,6 +28,6 @@ class SystemOperations {
     return timeinfo;
   }
 };
-}  // namespace util
+}  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_SYSTEM_OPERATIONS_H_

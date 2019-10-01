@@ -29,7 +29,7 @@ class BSpline1DFig5_26 : public Test {  // NOLINT
   BSpline1DFig5_26() {
     std::array<baf::Degree, 1> degree = {baf::Degree{3}};
     baf::ParamCoord zero(0), one(1), two(2);
-    KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
+    baf::KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({zero, zero, zero, zero, one, one, one, two, two, two, two}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint({0.0, 0.0}), baf::ControlPoint({0.0, 1.5}), baf::ControlPoint({1.0, 2.0}),

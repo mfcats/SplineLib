@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <random>
 
-namespace util {
+namespace splinelib::src::util {
 class Random {
  public:
   template<class T>
@@ -34,6 +34,6 @@ class Random {
     return distribution(generator);
   }
 };
-}  // namespace util
+}  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_RANDOM_H_

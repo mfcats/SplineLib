@@ -19,8 +19,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 
+using namespace splinelib::src;
+
 std::unique_ptr<spl::BSpline<1>> GenerateSpline() {
-  std::array<Degree, 1> degree = {Degree{2}};
+  std::array<baf::Degree, 1> degree = {baf::Degree{2}};
   std::vector<baf::ControlPoint> control_points = {
       baf::ControlPoint(std::vector<double>({0.0, 0.0})),
       baf::ControlPoint(std::vector<double>({0.0, 1.0})),
@@ -31,11 +33,11 @@ std::unique_ptr<spl::BSpline<1>> GenerateSpline() {
       baf::ControlPoint(std::vector<double>({4.0, 1.5})),
       baf::ControlPoint(std::vector<double>({4.0, 0.0}))
   };
-  KnotVectors<1> knot_vector_ptr = {
-      std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                         ParamCoord{2}, ParamCoord{3},
-                                                         ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5},
-                                                         ParamCoord{5}}))};
+  baf::KnotVectors<1> knot_vector_ptr = {
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+          {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{2},
+           baf::ParamCoord{3}, baf::ParamCoord{4}, baf::ParamCoord{4}, baf::ParamCoord{5}, baf::ParamCoord{5},
+           baf::ParamCoord{5}}))};
   return std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
 }
 
@@ -45,7 +47,7 @@ int main() {
   int repetitions = 20000000;
   std::chrono::system_clock::time_point before = std::chrono::system_clock::now();
   for (int i = 0; i < repetitions; i++) {
-    b_spline->Evaluate({ParamCoord{i * 5.0 / repetitions}}, {0});
+    b_spline->Evaluate({baf::ParamCoord{i * 5.0 / repetitions}}, {0});
   }
   std::chrono::system_clock::time_point after = std::chrono::system_clock::now();
   double duration = std::chrono::duration_cast<std::chrono::milliseconds>(after - before).count();

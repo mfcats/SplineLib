@@ -26,7 +26,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 #include "writer.h"
 
-namespace io {
+namespace splinelib::src::io {
 class IGESWriter : public Writer {
  public:
   IGESWriter() = default;
@@ -80,6 +80,6 @@ class IGESWriter : public Writer {
 
   double GetHighestValue(std::vector<std::any> splines) const;
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_IGES_WRITER_H_

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <any>
 #include <vector>
 
-namespace io {
+namespace splinelib::src::io {
 class Writer {
  public:
   Writer() = default;
@@ -26,6 +26,6 @@ class Writer {
 
   virtual void WriteFile(const std::vector<std::any> &splines, const char *filename) const = 0;
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_WRITER_H_

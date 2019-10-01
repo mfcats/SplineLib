@@ -14,16 +14,17 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function.h"
 
-double baf::BasisFunction::Evaluate(const ParamCoord &paramCoord) const {
+namespace splinelib::src::baf {
+double BasisFunction::Evaluate(const ParamCoord &paramCoord) const {
   return IsCoordinateInSupport(paramCoord) ? this->EvaluateOnSupport(paramCoord) : 0.0;
 }
 
-double baf::BasisFunction::EvaluateDerivative(const ParamCoord &param_coord, const Derivative &derivative) const {
+double BasisFunction::EvaluateDerivative(const ParamCoord &param_coord, const Derivative &derivative) const {
   return derivative.get() == 0 ? Evaluate(param_coord) :
          (IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0);
 }
 
-baf::BasisFunction::BasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support)
+BasisFunction::BasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support)
     : degree_(degree) {
   auto start_index = static_cast<size_t>(start_of_support.get());
   auto degree_index = static_cast<size_t>(degree.get());
@@ -32,19 +33,20 @@ baf::BasisFunction::BasisFunction(const KnotVector &knot_vector, const Degree &d
   end_knot_is_last_knot_ = knot_vector.IsLastKnot(end_knot_);
 }
 
-Degree baf::BasisFunction::GetDegree() const {
+Degree BasisFunction::GetDegree() const {
   return degree_;
 }
 
-ParamCoord baf::BasisFunction::GetStartKnot() const {
+ParamCoord BasisFunction::GetStartKnot() const {
   return start_knot_;
 }
 
-ParamCoord baf::BasisFunction::GetEndKnot() const {
+ParamCoord BasisFunction::GetEndKnot() const {
   return end_knot_;
 }
 
-bool baf::BasisFunction::IsCoordinateInSupport(const ParamCoord &param_coord) const {
+bool BasisFunction::IsCoordinateInSupport(const ParamCoord &param_coord) const {
   return (start_knot_ <= param_coord && param_coord < end_knot_)
       || (end_knot_is_last_knot_ && param_coord == end_knot_);
 }
+}  // namespace splinelib::src::baf

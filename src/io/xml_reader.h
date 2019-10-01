@@ -25,7 +25,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 #include "reader.h"
 
-namespace io {
+namespace splinelib::src::io {
 class XMLReader : public Reader {
  public:
   XMLReader() = default;
@@ -46,6 +46,6 @@ class XMLReader : public Reader {
 
   int FindCoordinatePosition(const std::string &string);
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_XML_READER_H_

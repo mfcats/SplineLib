@@ -21,11 +21,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "named_type.h"
 
+namespace splinelib::src::baf {
+
 using ParamCoord = util::NamedType<double, struct ParamCoordParameter>;
 using KnotSpan = util::NamedType<int, struct KnotSpanParameter>;
 using Degree = util::NamedType<int, struct DegreeParameter>;
-
-namespace baf {
 
 class KnotVector {
  public:
@@ -73,6 +73,6 @@ class KnotVector {
  private:
   std::vector<ParamCoord> knots_;
 };
-}  // namespace baf
+}  // namespace splinelib::src::splinelib::src::baf
 
 #endif  // SRC_BAF_KNOT_VECTOR_H_

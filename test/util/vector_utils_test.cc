@@ -20,6 +20,8 @@ using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
+using namespace splinelib::src;
+
 class Vectors : public Test {
  public:
   Vectors() : int_vectorA({2, 3, 4, 5}),

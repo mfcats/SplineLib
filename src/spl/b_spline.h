@@ -28,11 +28,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "spline_generator.h"
 #include "vector_utils.h"
 
-namespace spl {
+namespace splinelib::src::spl {
 template<int DIM>
 class BSpline : public Spline<DIM> {
  public:
-  BSpline(KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree,
+  BSpline(baf::KnotVectors<DIM> knot_vector, std::array<baf::Degree, DIM> degree,
           const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
@@ -90,11 +90,12 @@ class BSpline : public Spline<DIM> {
     return true;
   }
 
-  std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> SudivideSpline(ParamCoord param_coord, int dimension) {
+  std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> SudivideSpline(baf::ParamCoord param_coord, int dimension) {
     this->InsertKnot(param_coord, dimension, this->GetDegree(dimension).get() + 1
                          - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
-    std::array<KnotVectors<DIM>, 2> new_knots = this->parameter_space_->GetDividedKnotVectors(param_coord, dimension);
-    std::array<Degree, DIM> degrees;
+    std::array<baf::KnotVectors<DIM>, 2> new_knots =
+        this->parameter_space_->GetDividedKnotVectors(param_coord, dimension);
+    std::array<baf::Degree, DIM> degrees;
     for (int i = 0; i < DIM; ++i) {
       degrees[i] = this->GetDegree(i);
     }
@@ -115,13 +116,13 @@ class BSpline : public Spline<DIM> {
     return physical_space_;
   }
 
-  double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
+  double GetEvaluatedControlPoint(std::array<baf::ParamCoord, DIM> param_coord,
                                   std::array<int, DIM> indices,
                                   int dimension) const override {
     return this->parameter_space_->GetBasisFunctions(indices, param_coord) * this->GetControlPoint(indices, dimension);
   }
 
-  double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,
+  double GetEvaluatedDerivativeControlPoint(std::array<baf::ParamCoord, DIM> param_coord,
                                             std::array<int, DIM> derivative,
                                             std::array<int, DIM> indices,
                                             int dimension) const override {
@@ -244,6 +245,6 @@ class BSpline : public Spline<DIM> {
 
   std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
 };
-}  // namespace spl
+}  // namespace splinelib::src::spl
 
 #endif  // SRC_SPL_B_SPLINE_H_

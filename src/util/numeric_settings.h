@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "named_type.h"
 
-namespace util {
+namespace splinelib::src::util {
 template<typename T>
 class NumericSettings {
  public:
@@ -41,6 +41,6 @@ class NumericSettings {
 
   constexpr static double kEpsilonFactor_ = 10.0;
 };
-}  // namespace util
+}  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_NUMERIC_SETTINGS_H_

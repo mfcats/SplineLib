@@ -18,10 +18,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "knot_vector.h"
 #include "named_type.h"
 
+namespace splinelib::src::baf {
+
 using Degree = util::NamedType<int, struct DegreeParameter>;
 using Derivative = util::NamedType<int, struct DerivativeParameter>;
 
-namespace baf {
 class BasisFunction {
  public:
   virtual ~BasisFunction() = default;
@@ -51,6 +52,6 @@ class BasisFunction {
   ParamCoord end_knot_{1};
   bool end_knot_is_last_knot_{false};
 };
-}  // namespace baf
+}  // namespace splinelib::src::splinelib::src::baf
 
 #endif  // SRC_BAF_BASIS_FUNCTION_H_

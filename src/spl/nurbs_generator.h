@@ -20,14 +20,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "spline_generator.h"
 #include "weighted_physical_space.h"
 
-namespace spl {
+namespace splinelib::src::spl {
 template<int DIM>
 class NURBSGenerator : public SplineGenerator<DIM> {
  public:
   NURBSGenerator() = default;
   virtual ~NURBSGenerator() = default;
 
-  NURBSGenerator(KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree,
+  NURBSGenerator(baf::KnotVectors<DIM> knot_vector, std::array<baf::Degree, DIM> degree,
                  const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
@@ -51,6 +51,6 @@ class NURBSGenerator : public SplineGenerator<DIM> {
  protected:
   std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_;
 };
-}  // namespace spl
+}  // namespace splinelib::src::spl
 
 #endif  // SRC_SPL_NURBS_GENERATOR_H_

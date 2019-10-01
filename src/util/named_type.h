@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_UTIL_NAMED_TYPE_H_
 #define SRC_UTIL_NAMED_TYPE_H_
 
-namespace util {
+namespace splinelib::src::util {
 template<typename T, typename Parameter>
 class NamedType {
  public:
@@ -62,6 +62,6 @@ class NamedType {
  private:
   T value_;
 };
-}  // namespace util
+}  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_NAMED_TYPE_H_

@@ -24,18 +24,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 #include "string_operations.h"
 
-namespace io {
+namespace splinelib::src::io {
 template<int DIM>
 class XMLReaderUtils {
  public:
-  static std::array<Degree, DIM> GetDegrees(pugi::xml_node *spline) {
+  static std::array<baf::Degree, DIM> GetDegrees(pugi::xml_node *spline) {
     return StringVectorToDegreeArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
   }
 
-  static KnotVectors<DIM> GetKnotVectors(pugi::xml_node *spline) {
-    KnotVectors<DIM> knot_vector;
+  static baf::KnotVectors<DIM> GetKnotVectors(pugi::xml_node *spline) {
+    baf::KnotVectors<DIM> knot_vector;
     for (int i = 0; i < DIM; i++) {
-      knot_vector[i] = std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord(0.5)}));
+      knot_vector[i] = std::make_shared<baf::KnotVector>(baf::KnotVector({baf::ParamCoord(0.5)}));
     }
     for (int i = 0; i < DIM; i++) {
       pugi::xml_node child = spline->child("kntVecs").first_child();
@@ -43,21 +43,21 @@ class XMLReaderUtils {
         child = child.next_sibling();
       }
       knot_vector[i] = std::make_shared<baf::KnotVector>(
-          baf::KnotVector(util::StringOperations::StringVectorToNumberVector<ParamCoord>(
+          baf::KnotVector(util::StringOperations::StringVectorToNumberVector<baf::ParamCoord>(
               util::StringOperations::split(child.first_child().value(), ' '))));
     }
     return knot_vector;
   }
 
-  static std::array<Degree, DIM> StringVectorToDegreeArray(const std::vector<std::string> &string_vector) {
-    std::array<Degree, DIM> converted;
+  static std::array<baf::Degree, DIM> StringVectorToDegreeArray(const std::vector<std::string> &string_vector) {
+    std::array<baf::Degree, DIM> converted;
     for (int i = 0; i < DIM; i++) {
       auto a = string_vector[i];
-      converted[i] = Degree{std::stoi(string_vector[i])};
+      converted[i] = baf::Degree{std::stoi(string_vector[i])};
     }
     return converted;
   }
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_XML_READER_UTILS_H_

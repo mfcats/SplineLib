@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "multi_index_handler.h"
 #include "spline.h"
 
-namespace util {
+namespace splinelib::src::util {
 template<int DIM>
 class ElementGenerator {
  public:
@@ -44,6 +44,6 @@ class ElementGenerator {
   std::shared_ptr<spl::Spline<DIM>> spl_;
   std::array<std::vector<util::Element>, DIM> elements_;
 };
-}  // namespace util
+}  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_ELEMENT_GENERATOR_H_

@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 #include "nurbs.h"
 
-namespace io {
+namespace splinelib::src::io {
 template<int DIM>
 class IRITWriterUtils {
  public:
@@ -74,6 +74,6 @@ class IRITWriterUtils {
     return string;
   }
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_IRIT_WRITER_UTILS_H_

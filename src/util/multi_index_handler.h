@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <vector>
 
-namespace util {
+namespace splinelib::src::util {
 template<int DIM>
 class MultiIndexHandler {
  public:
@@ -156,6 +156,6 @@ class MultiIndexHandler {
   std::array<int, DIM> multi_index_length_;
   std::array<int, DIM> current_multi_index_value_;
 };
-}  // namespace util
+}  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_MULTI_INDEX_HANDLER_H_

@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "physical_space.h"
 
-namespace spl {
+namespace splinelib::src::spl {
 template<int DIM>
 class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
  public:
@@ -121,6 +121,6 @@ class WeightedPhysicalSpace : public PhysicalSpace<DIM> {
  private:
   std::vector<double> weights_;
 };
-}  // namespace spl
+}  // namespace splinelib::src::spl
 
 #endif  // SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H_

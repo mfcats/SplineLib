@@ -14,20 +14,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "io_converter.h"
 
-io::IOConverter::IOConverter(const char *input_filename, const char *output_filename)
+namespace splinelib::src::io {
+IOConverter::IOConverter(const char *input_filename, const char *output_filename)
     : input_filename_(input_filename),
       output_filename_(output_filename),
       input_format_(GetFileFormat(input_filename)),
       output_format_(GetFileFormat(output_filename)) {}
 
-std::vector<int> io::IOConverter::ConvertFile(const std::vector<int> &positions,
+std::vector<int> IOConverter::ConvertFile(const std::vector<int> &positions,
                                               const std::vector<std::vector<int>> &scattering) {
   std::vector<std::any> splines = GetReader()->ReadFile(input_filename_);
   GetWriter(splines, positions, scattering);
   return written_;
 }
 
-std::vector<int> io::IOConverter::GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines,
+std::vector<int> IOConverter::GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines,
                                                                        int max_dim) {
   std::vector<int> spline_positions_with_max_dim;
   for (size_t i = 0; i < splines.size(); ++i) {
@@ -38,7 +39,7 @@ std::vector<int> io::IOConverter::GetSplinePositionsOfCorrectDimension(const std
   return spline_positions_with_max_dim;
 }
 
-io::IOConverter::file_format io::IOConverter::GetFileFormat(const char *filename) const {
+IOConverter::file_format IOConverter::GetFileFormat(const char *filename) const {
   if (util::StringOperations::EndsWith(filename, ".iges")) {
     return iges;
   }
@@ -54,48 +55,48 @@ io::IOConverter::file_format io::IOConverter::GetFileFormat(const char *filename
   return error;
 }
 
-io::Reader *io::IOConverter::GetReader() const {
+Reader *IOConverter::GetReader() const {
   if (input_format_ == iges) {
-    return new io::IGESReader;
+    return new IGESReader;
   }
   if (input_format_ == irit) {
-    return new io::IRITReader;
+    return new IRITReader;
   }
   if (input_format_ == xml) {
-    return new io::XMLReader;
+    return new XMLReader;
   }
   throw std::runtime_error(R"(Only files of format ".iges", ".itd" and ".xml" can be read.)");
 }
 
-void io::IOConverter::GetWriter(const std::vector<std::any> &splines, const std::vector<int> &positions,
+void IOConverter::GetWriter(const std::vector<std::any> &splines, const std::vector<int> &positions,
                                 const std::vector<std::vector<int>> &scattering) {
   if (output_format_ == iges) {
-    std::shared_ptr<io::IGESWriter> ptr = std::make_shared<io::IGESWriter>(io::IGESWriter());
-    WriteFile(splines, positions, 2, std::dynamic_pointer_cast<io::Writer>(ptr));
+    std::shared_ptr<IGESWriter> ptr = std::make_shared<IGESWriter>(IGESWriter());
+    WriteFile(splines, positions, 2, std::dynamic_pointer_cast<Writer>(ptr));
   } else if (output_format_ == irit) {
-    std::shared_ptr<io::IRITWriter> ptr = std::make_shared<io::IRITWriter>(io::IRITWriter());
-    WriteFile(splines, positions, 3, std::dynamic_pointer_cast<io::Writer>(ptr));
+    std::shared_ptr<IRITWriter> ptr = std::make_shared<IRITWriter>(IRITWriter());
+    WriteFile(splines, positions, 3, std::dynamic_pointer_cast<Writer>(ptr));
   } else if (output_format_ == vtk) {
-    std::shared_ptr<io::VTKWriter> ptr = std::make_shared<io::VTKWriter>(io::VTKWriter());
+    std::shared_ptr<VTKWriter> ptr = std::make_shared<VTKWriter>(VTKWriter());
     GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 3));
     std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
     ptr->WriteFile(splines_with_max_dim, output_filename_, GetScattering(scattering, positions, written_));
   } else if (output_format_ == xml) {
-    std::shared_ptr<io::XMLWriter> ptr = std::make_shared<io::XMLWriter>(io::XMLWriter());
-    WriteFile(splines, positions, 4, std::dynamic_pointer_cast<io::Writer>(ptr));
+    std::shared_ptr<XMLWriter> ptr = std::make_shared<XMLWriter>(XMLWriter());
+    WriteFile(splines, positions, 4, std::dynamic_pointer_cast<Writer>(ptr));
   } else {
     throw std::runtime_error(R"(Only files of format ".iges", ".itd", ".vtk" and ".xml" can be written.)");
   }
 }
 
-void io::IOConverter::WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions, int max_dim,
-                                const std::shared_ptr<io::Writer> &writer) {
+void IOConverter::WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions, int max_dim,
+                                const std::shared_ptr<Writer> &writer) {
   GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, max_dim));
   std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, written_);
   writer->WriteFile(splines_with_max_dim, output_filename_);
 }
 
-void io::IOConverter::GetPositions(const std::vector<int> &positions,
+void IOConverter::GetPositions(const std::vector<int> &positions,
                                    const std::vector<int> &possible_positions) {
   if (positions.empty()) {
     written_ = possible_positions;
@@ -108,7 +109,7 @@ void io::IOConverter::GetPositions(const std::vector<int> &positions,
   }
 }
 
-std::vector<std::vector<int>> io::IOConverter::GetScattering(const std::vector<std::vector<int>> &scattering,
+std::vector<std::vector<int>> IOConverter::GetScattering(const std::vector<std::vector<int>> &scattering,
                                                              const std::vector<int> &positions,
                                                              const std::vector<int> &written) {
   std::vector<int> indices;
@@ -123,3 +124,4 @@ std::vector<std::vector<int>> io::IOConverter::GetScattering(const std::vector<s
   }
   return util::VectorUtils<std::vector<int>>::FilterVector(scattering, indices);
 }
+}  // namespace splinelib::src::io

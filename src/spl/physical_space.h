@@ -23,7 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "numeric_settings.h"
 #include "vector_utils.h"
 
-namespace spl {
+namespace splinelib::src::spl {
 template<int DIM>
 class PhysicalSpace {
  public:
@@ -178,6 +178,6 @@ class PhysicalSpace {
   std::array<int, DIM> number_of_points_;
   std::vector<double> control_points_;
 };
-}  // namespace spl
+}  // namespace splinelib::src::spl
 
 #endif  // SRC_SPL_PHYSICAL_SPACE_H_

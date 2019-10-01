@@ -22,7 +22,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 #include "string_operations.h"
 
-std::vector<std::any> io::IGESReader::ReadFile(const char *filename) {
+namespace splinelib::src::io {
+std::vector<std::any> IGESReader::ReadFile(const char *filename) {
   std::ifstream newFile;
   newFile.open(filename);
   if (!newFile.good()) {
@@ -55,11 +56,11 @@ std::vector<std::any> io::IGESReader::ReadFile(const char *filename) {
   return splines;
 }
 
-std::any io::IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
+std::any IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
   auto upperSumIndex = static_cast<int>(parameterData[1]);
-  std::array<Degree, 1> degree{};
-  degree[0] = Degree{static_cast<int>(parameterData[2])};
-  KnotVectors<1> knot_vector;
+  std::array<baf::Degree, 1> degree{};
+  degree[0] = baf::Degree{static_cast<int>(parameterData[2])};
+  baf::KnotVectors<1> knot_vector;
   std::vector<double> weights;
   std::vector<baf::ControlPoint> control_points;
   std::array<int, 2> knotsStartEnd{};
@@ -71,7 +72,7 @@ std::any io::IGESReader::Create1DSpline(const std::vector<double> &parameterData
   weightsStartEnd[1] = weightsStartEnd[0] + upperSumIndex;
   controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
   controlPointsStartEnd[1] = controlPointsStartEnd[0] + (3 * upperSumIndex) + 2;
-  std::vector<ParamCoord> knots;
+  std::vector<baf::ParamCoord> knots;
   for (int i = knotsStartEnd[0]; i <= knotsStartEnd[1]; ++i) {
     knots.emplace_back(parameterData[i]);
   }
@@ -100,14 +101,14 @@ std::any io::IGESReader::Create1DSpline(const std::vector<double> &parameterData
   return std::make_any<std::shared_ptr<spl::NURBS<1>>>(spl);
 }
 
-std::any io::IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
+std::any IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
   std::array<int, 2> upperSumIndex{};
   upperSumIndex[0] = static_cast<int>(parameterData[1]);
   upperSumIndex[1] = static_cast<int>(parameterData[2]);
-  std::array<Degree, 2> degree{};
-  degree[0] = Degree{static_cast<int>(parameterData[3])};
-  degree[1] = Degree{static_cast<int>(parameterData[4])};
-  KnotVectors<2> knot_vector;
+  std::array<baf::Degree, 2> degree{};
+  degree[0] = baf::Degree{static_cast<int>(parameterData[3])};
+  degree[1] = baf::Degree{static_cast<int>(parameterData[4])};
+  baf::KnotVectors<2> knot_vector;
   std::vector<double> weights;
   std::vector<baf::ControlPoint> control_points;
   std::array<std::array<int, 2>, 2> knotsStartEnd{};
@@ -121,12 +122,12 @@ std::any io::IGESReader::Create2DSpline(const std::vector<double> &parameterData
   weightsStartEnd[1] = weightsStartEnd[0] - 1 + ((1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
   controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
   controlPointsStartEnd[1] = controlPointsStartEnd[0] - 1 + (3 * (1 + upperSumIndex[0]) * (1 + upperSumIndex[1])) + 2;
-  std::array<std::vector<ParamCoord>, 2> knots;
+  std::array<std::vector<baf::ParamCoord>, 2> knots;
   for (int i = knotsStartEnd[0][0]; i <= knotsStartEnd[0][1]; ++i) {
-    knots[0].push_back(ParamCoord{parameterData[i]});
+    knots[0].push_back(baf::ParamCoord{parameterData[i]});
   }
   for (int i = knotsStartEnd[1][0]; i <= knotsStartEnd[1][1]; ++i) {
-    knots[1].push_back(ParamCoord{parameterData[i]});
+    knots[1].push_back(baf::ParamCoord{parameterData[i]});
   }
   knot_vector[0] = std::make_shared<baf::KnotVector>(knots[0]);
   knot_vector[1] = std::make_shared<baf::KnotVector>(knots[1]);
@@ -154,7 +155,7 @@ std::any io::IGESReader::Create2DSpline(const std::vector<double> &parameterData
   return std::make_any<std::shared_ptr<spl::NURBS<2>>>(spl);
 }
 
-std::array<int, 2> io::IGESReader::GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection,
+std::array<int, 2> IGESReader::GetParameterSectionStartEndPointers(std::vector<std::string> directoryEntrySection,
                                                                        int entityToBeRead) {
   std::string parameterDataStartPointer = trim(directoryEntrySection[entityToBeRead * 2].substr(8, 8));
   std::string parameterDataLineCount = trim(directoryEntrySection[entityToBeRead * 2 + 1].substr(24, 8));
@@ -165,7 +166,7 @@ std::array<int, 2> io::IGESReader::GetParameterSectionStartEndPointers(std::vect
   return ParameterSectionStartEndPointers;
 }
 
-std::vector<double> io::IGESReader::ParameterSectionToVector(std::vector<std::string> parameterSection,
+std::vector<double> IGESReader::ParameterSectionToVector(std::vector<std::string> parameterSection,
                                                              std::array<int, 2> ParameterSectionStartEndPointers) {
   int first = ParameterSectionStartEndPointers[0] - 1;
   int last = ParameterSectionStartEndPointers[1] - 1;
@@ -176,6 +177,7 @@ std::vector<double> io::IGESReader::ParameterSectionToVector(std::vector<std::st
   return util::StringOperations::DelimitedStringToVector(temp);
 }
 
-std::string io::IGESReader::trim(std::string s) {
+std::string IGESReader::trim(std::string s) {
   return util::StringOperations::trim(std::move(s));
 }
+}  // namespace splinelib::src::io

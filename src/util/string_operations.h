@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
-namespace util {
+namespace splinelib::src::util {
 class StringOperations {
  public:
   static std::vector<std::string> split(const std::string &string, char delimiter) {
@@ -115,6 +115,6 @@ class StringOperations {
     return sign * result;
   }
 };
-}  // namespace util
+}  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_STRING_OPERATIONS_H_

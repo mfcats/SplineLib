@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <initializer_list>
 #include <vector>
 
-namespace baf {
+namespace splinelib::src::baf {
 class ControlPoint {
  public:
   explicit ControlPoint(std::initializer_list<double> coordinates);
@@ -45,6 +45,6 @@ class ControlPoint {
  protected:
   std::vector<double> coordinates_;
 };
-}  // namespace baf
+}  // namespace splinelib::src::splinelib::src::baf
 
 #endif  // SRC_BAF_CONTROL_POINT_H_

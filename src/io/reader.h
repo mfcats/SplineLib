@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <any>
 #include <vector>
 
-namespace io {
+namespace splinelib::src::io {
 class Reader {
  public:
   Reader() = default;
@@ -26,6 +26,6 @@ class Reader {
 
   virtual std::vector<std::any> ReadFile(const char *filename) = 0;
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_READER_H_

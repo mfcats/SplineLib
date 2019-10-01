@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 #include "reader.h"
 
-namespace io {
+namespace splinelib::src::io {
 class IRITReader : public Reader {
  public:
   IRITReader() = default;
@@ -47,6 +47,6 @@ class IRITReader : public Reader {
 
   int GetPositionOfFirstControlPoint(int start, const std::vector<std::string> &entries) const;
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_IRIT_READER_H_

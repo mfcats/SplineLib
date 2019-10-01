@@ -22,9 +22,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "system_operations.h"
 #include "vector_utils.h"
 
-io::ConverterLog::ConverterLog() : log_file_("") {}
+namespace splinelib::src::io {
+ConverterLog::ConverterLog() : log_file_("") {}
 
-io::ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
+ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
   std::ifstream log;
   log.open(log_file);
   if (!log.good()) {
@@ -57,15 +58,15 @@ io::ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
   }
 }
 
-const char *io::ConverterLog::GetInput() const {
+const char *ConverterLog::GetInput() const {
   return input_.c_str();
 }
 
-const char *io::ConverterLog::GetOutput() const {
+const char *ConverterLog::GetOutput() const {
   return output_.c_str();
 }
 
-std::vector<int> io::ConverterLog::GetPositions(std::vector<int> possible_positions) {
+std::vector<int> ConverterLog::GetPositions(std::vector<int> possible_positions) {
   if (positions_[0] == -1) {
     written_ = possible_positions;
   } else {
@@ -80,7 +81,7 @@ std::vector<int> io::ConverterLog::GetPositions(std::vector<int> possible_positi
   return written_;
 }
 
-std::vector<std::vector<int>> io::ConverterLog::GetScattering() {
+std::vector<std::vector<int>> ConverterLog::GetScattering() {
   std::vector<int> indices;
   if (positions_[0] != -1) {
     for (int i = 0; i < static_cast<int>(positions_.size()); ++i) {
@@ -94,7 +95,7 @@ std::vector<std::vector<int>> io::ConverterLog::GetScattering() {
   return util::VectorUtils<std::vector<int>>::FilterVector(scattering_, indices);
 }
 
-void io::ConverterLog::WriteLog() const {
+void ConverterLog::WriteLog() const {
   std::ofstream log;
   log.open(log_file_, std::ios_base::app);
   log << "\n\nlog:\n" << GetTime();
@@ -110,7 +111,7 @@ void io::ConverterLog::WriteLog() const {
   log << " in file " << input_ << (OneSpline() ? " has" : " have") << " been written to " << output_;
 }
 
-void io::ConverterLog::PrintHelp() const {
+void ConverterLog::PrintHelp() const {
   std::cout << "The log file has to be of the following format:" << std::endl
             << "input:\n# path to input file\n" << std::endl
             << "output:\n# path to output file\n" << std::endl
@@ -123,11 +124,12 @@ void io::ConverterLog::PrintHelp() const {
             << "log:\n# time date\n# spline positions in input file that have been written to output file.\n";
 }
 
-std::string io::ConverterLog::GetTime() const {
+std::string ConverterLog::GetTime() const {
   struct tm timeinfo = util::SystemOperations::GetTime();
   return asctime(&timeinfo);
 }
 
-bool io::ConverterLog::OneSpline() const {
+bool ConverterLog::OneSpline() const {
   return written_.size() == 1;
 }
+}  // namespace splinelib::src::io

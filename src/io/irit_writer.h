@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "writer.h"
 
-namespace io {
+namespace splinelib::src::io {
 class IRITWriter : public Writer {
  public:
   IRITWriter() = default;
@@ -38,6 +38,6 @@ class IRITWriter : public Writer {
 
   std::string GetPointType(bool rational, int space_dimension) const;
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_IRIT_WRITER_H_

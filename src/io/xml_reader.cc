@@ -19,7 +19,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "string_operations.h"
 #include "xml_reader_utils.h"
 
-std::vector<std::any> io::XMLReader::ReadFile(const char *filename) {
+namespace splinelib::src::io {
+std::vector<std::any> XMLReader::ReadFile(const char *filename) {
   std::vector<std::any> vector_of_splines;
   pugi::xml_document xml_document;
   pugi::xml_parse_result result = xml_document.load_file(filename);
@@ -34,7 +35,7 @@ std::vector<std::any> io::XMLReader::ReadFile(const char *filename) {
   return vector_of_splines;
 }
 
-void io::XMLReader::AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines) {
+void XMLReader::AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines) {
   std::vector<baf::ControlPoint> control_points = GetControlPoints(spline);
   int dimension = std::stoi(spline->attribute("splDim").value());
   if (dimension == 1) {
@@ -48,9 +49,9 @@ void io::XMLReader::AddSpline(pugi::xml_node *spline, std::vector<std::any> *spl
   }
 }
 
-std::any io::XMLReader::Get1DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
-  KnotVectors<1> knot_vectors = io::XMLReaderUtils<1>::GetKnotVectors(spline);
-  std::array<Degree, 1> degrees = io::XMLReaderUtils<1>::GetDegrees(spline);
+std::any XMLReader::Get1DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+  baf::KnotVectors<1> knot_vectors = XMLReaderUtils<1>::GetKnotVectors(spline);
+  std::array<baf::Degree, 1> degrees = XMLReaderUtils<1>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<1>>>(
         std::make_shared<spl::BSpline<1>>(knot_vectors, degrees, control_points));
@@ -59,9 +60,9 @@ std::any io::XMLReader::Get1DSpline(pugi::xml_node *spline, const std::vector<ba
       std::make_shared<spl::NURBS<1>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
-std::any io::XMLReader::Get2DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
-  KnotVectors<2> knot_vectors = io::XMLReaderUtils<2>::GetKnotVectors(spline);
-  std::array<Degree, 2> degrees = io::XMLReaderUtils<2>::GetDegrees(spline);
+std::any XMLReader::Get2DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+  baf::KnotVectors<2> knot_vectors = XMLReaderUtils<2>::GetKnotVectors(spline);
+  std::array<baf::Degree, 2> degrees = XMLReaderUtils<2>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<2>>>(
         std::make_shared<spl::BSpline<2>>(knot_vectors, degrees, control_points));
@@ -70,9 +71,9 @@ std::any io::XMLReader::Get2DSpline(pugi::xml_node *spline, const std::vector<ba
       std::make_shared<spl::NURBS<2>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
-std::any io::XMLReader::Get3DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
-  KnotVectors<3> knot_vectors = io::XMLReaderUtils<3>::GetKnotVectors(spline);
-  std::array<Degree, 3> degrees = io::XMLReaderUtils<3>::GetDegrees(spline);
+std::any XMLReader::Get3DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+  baf::KnotVectors<3> knot_vectors = XMLReaderUtils<3>::GetKnotVectors(spline);
+  std::array<baf::Degree, 3> degrees = XMLReaderUtils<3>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<3>>>(
         std::make_shared<spl::BSpline<3>>(knot_vectors, degrees, control_points));
@@ -81,9 +82,9 @@ std::any io::XMLReader::Get3DSpline(pugi::xml_node *spline, const std::vector<ba
       std::make_shared<spl::NURBS<3>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
-std::any io::XMLReader::Get4DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
-  KnotVectors<4> knot_vectors = io::XMLReaderUtils<4>::GetKnotVectors(spline);
-  std::array<Degree, 4> degrees = io::XMLReaderUtils<4>::GetDegrees(spline);
+std::any XMLReader::Get4DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+  baf::KnotVectors<4> knot_vectors = XMLReaderUtils<4>::GetKnotVectors(spline);
+  std::array<baf::Degree, 4> degrees = XMLReaderUtils<4>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<4>>>(
         std::make_shared<spl::BSpline<4>>(knot_vectors, degrees, control_points));
@@ -92,7 +93,7 @@ std::any io::XMLReader::Get4DSpline(pugi::xml_node *spline, const std::vector<ba
       std::make_shared<spl::NURBS<4>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
-std::vector<baf::ControlPoint> io::XMLReader::GetControlPoints(pugi::xml_node *spline) {
+std::vector<baf::ControlPoint> XMLReader::GetControlPoints(pugi::xml_node *spline) {
   std::vector<double> vars = util::StringOperations::StringVectorToNumberVector<double>(
       util::StringOperations::split(spline->child("cntrlPntVars").first_child().value(), ' '));
   int start = FindCoordinatePosition(spline->child("cntrlPntVarNames").first_child().value());
@@ -110,12 +111,12 @@ std::vector<baf::ControlPoint> io::XMLReader::GetControlPoints(pugi::xml_node *s
   return points;
 }
 
-std::vector<double> io::XMLReader::GetWeights(pugi::xml_node *spline) {
+std::vector<double> XMLReader::GetWeights(pugi::xml_node *spline) {
   return util::StringOperations::StringVectorToNumberVector<double>(
       util::StringOperations::split(spline->child("wght").first_child().value(), ' '));
 }
 
-int io::XMLReader::FindCoordinatePosition(const std::string &string) {
+int XMLReader::FindCoordinatePosition(const std::string &string) {
   std::vector<std::string> vars = util::StringOperations::split(string, ' ');
   for (int i = 0; i < static_cast<int>(vars.size()); i++) {
     if (vars[i] == "x") {
@@ -124,3 +125,4 @@ int io::XMLReader::FindCoordinatePosition(const std::string &string) {
   }
   return 0;
 }
+}  // namespace splinelib::src::io

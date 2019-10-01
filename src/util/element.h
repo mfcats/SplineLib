@@ -21,22 +21,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "control_point.h"
 #include "knot_vector.h"
 
-namespace util {
+namespace splinelib::src::util {
 class Element {
  public:
-  explicit Element(const std::array<ParamCoord, 2> &nodes) : nodes_(nodes) {}
+  explicit Element(const std::array<baf::ParamCoord, 2> &nodes) : nodes_(nodes) {}
 
-  ParamCoord GetLowerBound() const {
+  baf::ParamCoord GetLowerBound() const {
     return nodes_[0];
   }
 
-  ParamCoord GetUpperBound() const {
+  baf::ParamCoord GetUpperBound() const {
     return nodes_[1];
   }
 
  private:
-  std::array<ParamCoord, 2> nodes_;
+  std::array<baf::ParamCoord, 2> nodes_;
 };
-}  // namespace util
+}  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_ELEMENT_H_

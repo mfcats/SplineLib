@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs_generator.h"
 #include "nurbs.h"
 
-namespace spl {
+namespace splinelib::src::spl {
 class SurfaceGenerator : public NURBSGenerator<2> {
  public:
   SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T, std::shared_ptr<NURBS<1>> const &nurbs_C);
@@ -57,6 +57,6 @@ class SurfaceGenerator : public NURBSGenerator<2> {
                                                          std::array<double, 3> prev_z,
                                                          int index);
 };
-}  // namespace spl
+}  // namespace splinelib::src::spl
 
 #endif  // SRC_SPL_SURFACE_GENERATOR_H_

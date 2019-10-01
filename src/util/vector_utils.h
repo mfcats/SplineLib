@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <numeric>
 #include <vector>
 
-namespace util {
+namespace splinelib::src::util {
 template<typename T>
 class VectorUtils {
  public:
@@ -78,6 +78,6 @@ class VectorUtils {
     return output;
   }
 };
-}  // namespace util
+}  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_VECTOR_UTILS_H_

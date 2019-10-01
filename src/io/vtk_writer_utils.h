@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "any_casts.h"
 #include "spline.h"
 
-namespace io {
+namespace splinelib::src::io {
 template<int DIM>
 class VTKWriterUtils {
  public:
@@ -54,9 +54,9 @@ class VTKWriterUtils {
     std::array<double, 2 * DIM> knots = GetEdgeKnots(spline_ptr);
     util::MultiIndexHandler<DIM> point_handler(GetPointHandlerLength(scattering));
     for (int i = 0; i < point_handler.Get1DLength(); ++point_handler, ++i) {
-      std::array<ParamCoord, DIM> coords{};
+      std::array<baf::ParamCoord, DIM> coords{};
       for (int j = 0; j < DIM; ++j) {
-        coords[j] = ParamCoord(knots[j] + point_handler[j] * (knots[j + DIM] - knots[j]) / scattering[j]);
+        coords[j] = baf::ParamCoord(knots[j] + point_handler[j] * (knots[j + DIM] - knots[j]) / scattering[j]);
       }
       for (int k = 0; k < 3; ++k) {
         file << (k < spline_ptr->GetPointDim() ? spline_ptr->Evaluate(coords, {k})[0] : 0) << (k < 2 ? " " : "\n");
@@ -70,6 +70,6 @@ class VTKWriterUtils {
     }
   }
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_VTK_WRITER_UTILS_H_

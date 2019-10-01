@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function.h"
 
-namespace baf {
+namespace splinelib::src::baf {
 class BSplineBasisFunction : public BasisFunction {
  public:
   BSplineBasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support);
@@ -43,6 +43,6 @@ class BSplineBasisFunction : public BasisFunction {
   std::unique_ptr<BasisFunction> left_lower_degree_;
   std::unique_ptr<BasisFunction> right_lower_degree_;
 };
-}  // namespace baf
+}  // namespace splinelib::src::splinelib::src::baf
 
 #endif  // SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_

@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "reader.h"
 
-namespace io {
+namespace splinelib::src::io {
 class IGESReader : public Reader {
  public:
   IGESReader() = default;
@@ -41,6 +41,6 @@ class IGESReader : public Reader {
 
   static inline std::string trim(std::string s);
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_IGES_READER_H_

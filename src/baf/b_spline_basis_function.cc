@@ -17,7 +17,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "basis_function_factory.h"
 #include "numeric_settings.h"
 
-baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
+namespace splinelib::src::baf {
+BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
                                                 const Degree &degree,
                                                 const KnotSpan &start_of_support)
     : BasisFunction(knot_vector, degree, start_of_support) {
@@ -30,19 +31,19 @@ baf::BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
   SetLowerDegreeBasisFunctions(knot_vector, degree, start_of_support);
 }
 
-double baf::BSplineBasisFunction::EvaluateOnSupport(const ParamCoord &param_coord) const {
+double BSplineBasisFunction::EvaluateOnSupport(const ParamCoord &param_coord) const {
   return ComputeLeftQuotient(param_coord) * left_lower_degree_->Evaluate(param_coord)
       + ComputeRightQuotient(param_coord) * right_lower_degree_->Evaluate(param_coord);
 }
 
-double baf::BSplineBasisFunction::EvaluateDerivativeOnSupport(const ParamCoord &param_coord,
+double BSplineBasisFunction::EvaluateDerivativeOnSupport(const ParamCoord &param_coord,
                                                               const Derivative &derivative) const {
   return GetDegree().get()
       * (left_denom_inv_ * left_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1})
           - right_denom_inv_ * right_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1}));
 }
 
-void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
+void BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
                                                              const Degree &degree,
                                                              const KnotSpan &start_of_support) {
   left_lower_degree_.reset(BasisFunctionFactory::CreateDynamic(knot_vector, start_of_support, degree - Degree{1}));
@@ -51,14 +52,15 @@ void baf::BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &k
                                                                 degree - Degree{1}));
 }
 
-double baf::BSplineBasisFunction::ComputeLeftQuotient(const ParamCoord &param_coord) const {
+double BSplineBasisFunction::ComputeLeftQuotient(const ParamCoord &param_coord) const {
   return (param_coord - GetStartKnot()).get() * left_denom_inv_;
 }
 
-double baf::BSplineBasisFunction::ComputeRightQuotient(const ParamCoord &param_coord) const {
+double BSplineBasisFunction::ComputeRightQuotient(const ParamCoord &param_coord) const {
   return (GetEndKnot() - param_coord).get() * right_denom_inv_;
 }
 
-double baf::BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {
+double BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {
   return std::abs(denominator) < util::NumericSettings<double>::kEpsilon() ? 0.0 : 1.0 / denominator;
 }
+}  // namespace splinelib::src::baf

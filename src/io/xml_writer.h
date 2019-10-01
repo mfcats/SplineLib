@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "writer.h"
 
-namespace io {
+namespace splinelib::src::io {
 class XMLWriter : public Writer {
  public:
   XMLWriter() = default;
@@ -44,6 +44,6 @@ class XMLWriter : public Writer {
 
   void AddControlPointVarNames(pugi::xml_node *spline_node, int space_dimension) const;
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_XML_WRITER_H_

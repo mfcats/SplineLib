@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 #include "nurbs.h"
 
-namespace util {
+namespace splinelib::src::util {
 class AnyCasts {
  public:
   template<int DIM>
@@ -77,6 +77,6 @@ class AnyCasts {
     }
   }
 };
-}  // namespace util
+}  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_ANY_CASTS_H_

@@ -29,13 +29,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "parameter_space.h"
 #include "physical_space.h"
 
-namespace spl {
+namespace splinelib::src::spl {
 template<int DIM>
 class Spline {
  public:
   virtual ~Spline() = default;
   Spline() = default;
-  Spline(KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree) {
+  Spline(baf::KnotVectors<DIM> knot_vector, std::array<baf::Degree, DIM> degree) {
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
   }
   explicit Spline(std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
@@ -46,7 +46,7 @@ class Spline {
     parameter_space_ = std::make_shared<ParameterSpace<DIM>>(parameter_space);
   }
 
-  virtual std::vector<double> Evaluate(std::array<ParamCoord, DIM> param_coord,
+  virtual std::vector<double> Evaluate(std::array<baf::ParamCoord, DIM> param_coord,
                                        const std::vector<int> &dimensions) const {
     this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
 
@@ -64,7 +64,7 @@ class Spline {
     return evaluated_point;
   }
 
-  virtual std::vector<double> EvaluateDerivative(std::array<ParamCoord, DIM> param_coord,
+  virtual std::vector<double> EvaluateDerivative(std::array<baf::ParamCoord, DIM> param_coord,
                                                  const std::vector<int> &dimensions,
                                                  std::array<int, DIM> derivative) const {
     this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
@@ -83,12 +83,12 @@ class Spline {
     return evaluated_point;
   }
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParamCoord param_coord) const {
+  std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, baf::ParamCoord param_coord) const {
     return parameter_space_->EvaluateAllNonZeroBasisFunctions(direction, param_coord);
   }
 
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(int direction,
-                                                                 ParamCoord param_coord,
+                                                                 baf::ParamCoord param_coord,
                                                                  int derivative) const {
     return parameter_space_->EvaluateAllNonZeroBasisFunctionDerivatives(direction, param_coord, derivative);
   }
@@ -106,10 +106,10 @@ class Spline {
     }
     util::MultiIndexHandler<DIM> point_handler(points);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      std::array<ParamCoord, DIM> param_coord;
+      std::array<baf::ParamCoord, DIM> param_coord;
       for (int dim = 0; dim < DIM; ++dim) {
         double span = GetKnotVector(dim)->GetLastKnot().get() - GetKnotVector(dim)->GetKnot(0).get();
-        param_coord[dim] = ParamCoord(span / number * point_handler[dim]);
+        param_coord[dim] = baf::ParamCoord(span / number * point_handler[dim]);
       }
       std::vector<double> evaluate_this = Evaluate(param_coord, dimensions);
       std::vector<double> evaluate_rhs = rhs.Evaluate(param_coord, dimensions);
@@ -120,7 +120,7 @@ class Spline {
     return true;
   }
 
-  Degree GetDegree(int i) const {
+  baf::Degree GetDegree(int i) const {
     return parameter_space_->GetDegree(i);
   }
 
@@ -160,17 +160,17 @@ class Spline {
     return GetPhysicalSpace()->GetWeight(indices);
   }
 
-  void InsertKnot(ParamCoord knot, int dimension, size_t multiplicity = 1) {
-    KnotSpan knot_span = GetKnotVector(dimension)->GetKnotSpan(knot);
-    Degree degree = GetDegree(dimension);
+  void InsertKnot(baf::ParamCoord knot, int dimension, size_t multiplicity = 1) {
+    baf::KnotSpan knot_span = GetKnotVector(dimension)->GetKnotSpan(knot);
+    baf::Degree degree = GetDegree(dimension);
     for (size_t i = 1; i <= multiplicity; ++i) {
-      if (GetKnotVector(dimension)->IsLastKnot(knot)) knot_span = knot_span + KnotSpan{1};
+      if (GetKnotVector(dimension)->IsLastKnot(knot)) knot_span = knot_span + baf::KnotSpan{1};
       auto last = knot_span.get() - GetKnotVector(dimension)->GetMultiplicity(knot);
       auto first = knot_span.get() - degree.get() + i;
       std::vector<double> scaling;
       for (auto j = static_cast<size_t>(first); j <= last; ++j) {
-        ParamCoord low_knot = GetKnotVector(dimension)->GetKnot(j);
-        ParamCoord upper_knot = GetKnotVector(dimension)->GetKnot(j + degree.get() - i + 1);
+        baf::ParamCoord low_knot = GetKnotVector(dimension)->GetKnot(j);
+        baf::ParamCoord upper_knot = GetKnotVector(dimension)->GetKnot(j + degree.get() - i + 1);
         scaling.emplace_back((knot.get() - low_knot.get()) / (upper_knot.get() - low_knot.get()));
       }
       this->AdjustControlPoints(scaling, static_cast<int>(first), static_cast<int>(last), dimension);
@@ -180,23 +180,23 @@ class Spline {
     }
   }
 
-  void RefineKnots(std::vector<ParamCoord> new_knots, int dimension) {
+  void RefineKnots(std::vector<baf::ParamCoord> new_knots, int dimension) {
     for (const auto &knot : new_knots) {
       this->InsertKnot(knot, dimension);
     }
   }
 
-  size_t RemoveKnot(ParamCoord knot, int dimension, double tolerance, size_t multiplicity = 1) {
+  size_t RemoveKnot(baf::ParamCoord knot, int dimension, double tolerance, size_t multiplicity = 1) {
     size_t count = 0;
     for (; count < multiplicity; ++count) {
-      KnotSpan knot_span = GetKnotVector(dimension)->GetKnotSpan(knot);
-      Degree degree = GetDegree(dimension);
+      baf::KnotSpan knot_span = GetKnotVector(dimension)->GetKnotSpan(knot);
+      baf::Degree degree = GetDegree(dimension);
       auto last = knot_span.get() - GetKnotVector(dimension)->GetMultiplicity(knot);
       auto first = knot_span.get() - degree.get();
       std::vector<double> scaling;
       for (auto i = static_cast<size_t>(first); i <= last; ++i) {
-        ParamCoord low_knot = GetKnotVector(dimension)->GetKnot(i);
-        ParamCoord upper_knot = GetKnotVector(dimension)->GetKnot(i + degree.get() + 1);
+        baf::ParamCoord low_knot = GetKnotVector(dimension)->GetKnot(i);
+        baf::ParamCoord upper_knot = GetKnotVector(dimension)->GetKnot(i + degree.get() + 1);
         scaling.emplace_back((knot.get() - low_knot.get()) / (upper_knot.get() - low_knot.get()));
       }
       bool is_removed = this->RemoveControlPoints(scaling, first, static_cast<int>(last), dimension, tolerance);
@@ -257,22 +257,22 @@ class Spline {
                                    int first, int last, int dimension, double tolerance) = 0;
 
  protected:
-  void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, DIM> param_coord) const {
+  void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<baf::ParamCoord, DIM> param_coord) const {
     parameter_space_->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
   }
 
-  virtual double GetEvaluatedControlPoint(std::array<ParamCoord, DIM> param_coord,
+  virtual double GetEvaluatedControlPoint(std::array<baf::ParamCoord, DIM> param_coord,
                                           std::array<int, DIM> indices,
                                           int dimension) const = 0;
 
-  virtual double GetEvaluatedDerivativeControlPoint(std::array<ParamCoord, DIM> param_coord,
+  virtual double GetEvaluatedDerivativeControlPoint(std::array<baf::ParamCoord, DIM> param_coord,
                                                     std::array<int, DIM> derivative,
                                                     std::array<int, DIM> indices,
                                                     int dimension) const = 0;
 
   virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;
 
-  std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
+  std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<baf::ParamCoord, DIM> param_coord) const {
     return parameter_space_->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
   }
 
@@ -427,6 +427,6 @@ class Spline {
 
   std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
 };
-}  // namespace spl
+}  // namespace splinelib::src::spl
 
 #endif  // SRC_SPL_SPLINE_H_

@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
-namespace io {
+namespace splinelib::src::io {
 class ConverterLog {
  public:
   ConverterLog();
@@ -43,6 +43,6 @@ class ConverterLog {
   std::vector<int> not_written_;
   std::vector<std::vector<int>> scattering_;
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_EXECUTABLES_CONVERTER_LOG_H_

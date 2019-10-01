@@ -20,7 +20,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 #include "string_operations.h"
 
-std::vector<std::any> io::IRITReader::ReadFile(const char *filename) {
+namespace splinelib::src::io {
+std::vector<std::any> IRITReader::ReadFile(const char *filename) {
   std::vector<std::any> vector_of_splines;
   std::ifstream newFile;
   newFile.open(filename);
@@ -46,7 +47,7 @@ std::vector<std::any> io::IRITReader::ReadFile(const char *filename) {
   return vector_of_splines;
 }
 
-std::vector<int> io::IRITReader::GetSplinePositions(const std::vector<std::string> &entries) const {
+std::vector<int> IRITReader::GetSplinePositions(const std::vector<std::string> &entries) const {
   std::vector<int> spline_positions;
   for (auto i = 0u; i < entries.size(); i++) {
     if (entries[i] == "BSPLINE") {
@@ -56,14 +57,14 @@ std::vector<int> io::IRITReader::GetSplinePositions(const std::vector<std::strin
   return spline_positions;
 }
 
-int io::IRITReader::GetDimension(const std::string &type) {
+int IRITReader::GetDimension(const std::string &type) {
   return type == "[CURVE" ? 1 : (type == "[SURFACE" ? 2 : (type == "[TRIVAR" ? 3 : 0));
 }
 
-std::any io::IRITReader::Get1DSpline(int start, const std::vector<std::string> &entries) const {
-  KnotVectors<1> knot_vector = io::IRITReaderUtils::GetKnotVectors<1>(start, entries);
-  std::array<Degree, 1> degree = io::IRITReaderUtils::GetDegrees<1>(start, entries);
-  bool rational = io::IRITReaderUtils::IsRational<1>(start, entries);
+std::any IRITReader::Get1DSpline(int start, const std::vector<std::string> &entries) const {
+  baf::KnotVectors<1> knot_vector = IRITReaderUtils::GetKnotVectors<1>(start, entries);
+  std::array<baf::Degree, 1> degree = IRITReaderUtils::GetDegrees<1>(start, entries);
+  bool rational = IRITReaderUtils::IsRational<1>(start, entries);
   auto weights = GetWeights(start, entries, rational);
   std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
   if (!rational) {
@@ -74,10 +75,10 @@ std::any io::IRITReader::Get1DSpline(int start, const std::vector<std::string> &
       std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights));
 }
 
-std::any io::IRITReader::Get2DSpline(int start, const std::vector<std::string> &entries) const {
-  KnotVectors<2> knot_vector = io::IRITReaderUtils::GetKnotVectors<2>(start, entries);
-  std::array<Degree, 2> degree = io::IRITReaderUtils::GetDegrees<2>(start, entries);
-  bool rational = io::IRITReaderUtils::IsRational<2>(start, entries);
+std::any IRITReader::Get2DSpline(int start, const std::vector<std::string> &entries) const {
+  baf::KnotVectors<2> knot_vector = IRITReaderUtils::GetKnotVectors<2>(start, entries);
+  std::array<baf::Degree, 2> degree = IRITReaderUtils::GetDegrees<2>(start, entries);
+  bool rational = IRITReaderUtils::IsRational<2>(start, entries);
   auto weights = GetWeights(start, entries, rational);
   std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
   if (!rational) {
@@ -88,10 +89,10 @@ std::any io::IRITReader::Get2DSpline(int start, const std::vector<std::string> &
       std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights));
 }
 
-std::any io::IRITReader::Get3DSpline(int start, const std::vector<std::string> &entries) const {
-  KnotVectors<3> knot_vector = io::IRITReaderUtils::GetKnotVectors<3>(start, entries);
-  std::array<Degree, 3> degree = io::IRITReaderUtils::GetDegrees<3>(start, entries);
-  bool rational = io::IRITReaderUtils::IsRational<3>(start, entries);
+std::any IRITReader::Get3DSpline(int start, const std::vector<std::string> &entries) const {
+  baf::KnotVectors<3> knot_vector = IRITReaderUtils::GetKnotVectors<3>(start, entries);
+  std::array<baf::Degree, 3> degree = IRITReaderUtils::GetDegrees<3>(start, entries);
+  bool rational = IRITReaderUtils::IsRational<3>(start, entries);
   auto weights = GetWeights(start, entries, rational);
   std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
   if (!rational) {
@@ -102,7 +103,7 @@ std::any io::IRITReader::Get3DSpline(int start, const std::vector<std::string> &
       std::make_shared<spl::NURBS<3>>(knot_vector, degree, control_points, weights));
 }
 
-int io::IRITReader::GetNumberOfControlPoints(int start, const std::vector<std::string> &entries) {
+int IRITReader::GetNumberOfControlPoints(int start, const std::vector<std::string> &entries) {
   int total_number_of_points = 1;
   for (int i = 0; i < GetDimension(entries[start]); i++) {
     total_number_of_points *= util::StringOperations::StringVectorToNumberVector<int>({entries[start + 2 + i]})[0];
@@ -110,7 +111,7 @@ int io::IRITReader::GetNumberOfControlPoints(int start, const std::vector<std::s
   return total_number_of_points;
 }
 
-std::vector<baf::ControlPoint> io::IRITReader::GetControlPoints(int start,
+std::vector<baf::ControlPoint> IRITReader::GetControlPoints(int start,
                                                                 const std::vector<std::string> &entries,
                                                                 bool rational,
                                                                 std::vector<double> weights) const {
@@ -133,7 +134,7 @@ std::vector<baf::ControlPoint> io::IRITReader::GetControlPoints(int start,
   return control_points;
 }
 
-std::vector<double> io::IRITReader::GetWeights(int start,
+std::vector<double> IRITReader::GetWeights(int start,
                                                const std::vector<std::string> &entries,
                                                bool rational) const {
   auto number_of_control_points = static_cast<size_t>(GetNumberOfControlPoints(start, entries));
@@ -148,7 +149,7 @@ std::vector<double> io::IRITReader::GetWeights(int start,
   return weights;
 }
 
-int io::IRITReader::GetPositionOfFirstControlPoint(int start, const std::vector<std::string> &entries) const {
+int IRITReader::GetPositionOfFirstControlPoint(int start, const std::vector<std::string> &entries) const {
   ++start;
   while (!util::StringOperations::StartsWith(entries[start], "[")
       || util::StringOperations::StartsWith(entries[start], "[KV")) {
@@ -156,3 +157,4 @@ int io::IRITReader::GetPositionOfFirstControlPoint(int start, const std::vector<
   }
   return start;
 }
+}  // namespace splinelib::src::io

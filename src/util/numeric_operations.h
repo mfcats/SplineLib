@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_UTIL_NUMERIC_OPERATIONS_H_
 #define SRC_UTIL_NUMERIC_OPERATIONS_H_
 
-namespace util {
+namespace splinelib::src::util {
 template<typename T>
 class NumericOperations {
  public:
@@ -27,6 +27,6 @@ class NumericOperations {
     return --value;
   }
 };
-}  // namespace util
+}  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_NUMERIC_OPERATIONS_H_

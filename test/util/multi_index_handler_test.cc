@@ -19,6 +19,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::Eq;
 
+using namespace splinelib::src;
+
 class MultiHandler1D : public Test {
  public:
   MultiHandler1D() {

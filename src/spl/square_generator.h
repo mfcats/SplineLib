@@ -17,11 +17,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 #include "knot_vector.h"
 
-namespace spl {
+namespace splinelib::src::spl {
 class SquareGenerator {
  public:
   SquareGenerator();
-  SquareGenerator(Degree degree, u_int64_t number_of_knots);
+  SquareGenerator(baf::Degree degree, u_int64_t number_of_knots);
 
   std::unique_ptr<BSpline<2>> CreateSquare() const;
 
@@ -30,11 +30,11 @@ class SquareGenerator {
 
   spl::PhysicalSpace<2> GeneratePhysicalSpace() const;
 
-  Degree degree_;
+  baf::Degree degree_;
   u_int64_t number_of_knots_;
-  ParamCoord one_{1};
-  ParamCoord zero_{0};
+  baf::ParamCoord one_{1};
+  baf::ParamCoord zero_{0};
 };
-}  // namespace spl
+}  // namespace splinelib::src::spl
 
 #endif  // SRC_SPL_SQUARE_GENERATOR_H_

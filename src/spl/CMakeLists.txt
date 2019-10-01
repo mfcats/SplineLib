@@ -31,7 +31,6 @@ install(
 )
 
 install(FILES
-        alias.h
         b_spline.h
         b_spline_generator.h
         nurbs.h

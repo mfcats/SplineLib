@@ -12,15 +12,17 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_SPL_ALIAS_H_
-#define SRC_SPL_ALIAS_H_
+#ifndef SRC_BAF_ALIAS_H_
+#define SRC_BAF_ALIAS_H_
 
 #include <array>
 #include <memory>
 
 #include "knot_vector.h"
 
+namespace splinelib::src::baf {
 template<int DIM>
-using KnotVectors = std::array<std::shared_ptr<baf::KnotVector>, DIM>;
+using KnotVectors = std::array<std::shared_ptr<KnotVector>, DIM>;
+}  // namespace splinelib::src::baf
 
 #endif  // SRC_SPL_ALIAS_H_

@@ -16,24 +16,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "surface_generator.h"
 
-spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
-                                        std::shared_ptr<spl::NURBS<1>> const &nurbs_C) {
+namespace splinelib::src::spl {
+SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
+                                        std::shared_ptr<NURBS<1>> const &nurbs_C) {
   this->parameter_space_ = JoinParameterSpaces(nurbs_T, nurbs_C);
   this->physical_space_ = JoinPhysicalSpaces(nurbs_T, nurbs_C);
 }
 
-std::shared_ptr<spl::ParameterSpace<2>>
-spl::SurfaceGenerator::JoinParameterSpaces(std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
-                                           std::shared_ptr<spl::NURBS<1>> const &nurbs_C) const {
+std::shared_ptr<ParameterSpace<2>>
+SurfaceGenerator::JoinParameterSpaces(std::shared_ptr<NURBS<1>> const &nurbs_T,
+                                           std::shared_ptr<NURBS<1>> const &nurbs_C) const {
   std::array<std::shared_ptr<baf::KnotVector>, 2>
       joined_knot_vector = {nurbs_T->GetKnotVector(0), nurbs_C->GetKnotVector(0)};
-  std::array<Degree, 2> joined_degree = {nurbs_T->GetDegree(0), nurbs_C->GetDegree(0)};
+  std::array<baf::Degree, 2> joined_degree = {nurbs_T->GetDegree(0), nurbs_C->GetDegree(0)};
   return std::make_shared<ParameterSpace<2>>(ParameterSpace<2>(joined_knot_vector, joined_degree));
 }
 
-std::shared_ptr<spl::WeightedPhysicalSpace<2>> spl::SurfaceGenerator::JoinPhysicalSpaces(
-    std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
-    std::shared_ptr<spl::NURBS<1>> const &nurbs_C) const {
+std::shared_ptr<WeightedPhysicalSpace<2>> SurfaceGenerator::JoinPhysicalSpaces(
+    std::shared_ptr<NURBS<1>> const &nurbs_T,
+    std::shared_ptr<NURBS<1>> const &nurbs_C) const {
   std::array<int, 2> j_number_of_points =
       {nurbs_T->GetNumberOfControlPoints(), nurbs_C->GetNumberOfControlPoints()};
   std::vector<baf::ControlPoint> j_control_points;
@@ -47,15 +48,15 @@ std::shared_ptr<spl::WeightedPhysicalSpace<2>> spl::SurfaceGenerator::JoinPhysic
       joined_weights.emplace_back(nurbs_T->GetWeight(index_space_1) * nurbs_C->GetWeight(index_space_2));
     }
   }
-  return std::make_shared<spl::WeightedPhysicalSpace<2>>(spl::WeightedPhysicalSpace<2>(
+  return std::make_shared<WeightedPhysicalSpace<2>>(WeightedPhysicalSpace<2>(
       j_control_points, joined_weights, j_number_of_points));
 }
 
-spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nurbs_T,
-                                        std::shared_ptr<spl::NURBS<1>> const &nurbs_C,
+SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
+                                        std::shared_ptr<NURBS<1>> const &nurbs_C,
                                         int nbInter, std::vector<std::array<double, 3>> scaling) {
   double step_size = nurbs_T->GetKnotVectorRange(0) / (nbInter - 1);
-  std::vector<ParamCoord> v_i;
+  std::vector<baf::ParamCoord> v_i;
   std::vector<double> dT_v;
   std::vector<double> ddT_v;
   std::vector<double> t_v;
@@ -72,11 +73,11 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
   std::vector<double> j_weights(nbInter * m, 0.0);
   v_i.reserve(nbInter);
   for (int i = 0; i < nbInter; ++i) {
-    v_i.emplace_back(ParamCoord{i * step_size});
-    t_v = nurbs_T->Evaluate(std::array<ParamCoord, 1>({v_i[i]}), dimensions);
-    weight_v = nurbs_T->Evaluate(std::array<ParamCoord, 1>({v_i[i]}), std::vector<int>({3}))[0];
-    dT_v = nurbs_T->EvaluateDerivative(std::array<ParamCoord, 1>({v_i[i]}), dimensions, first_derivative);
-    ddT_v = nurbs_T->EvaluateDerivative(std::array<ParamCoord, 1>({v_i[i]}), dimensions, second_derivative);
+    v_i.emplace_back(baf::ParamCoord{i * step_size});
+    t_v = nurbs_T->Evaluate(std::array<baf::ParamCoord, 1>({v_i[i]}), dimensions);
+    weight_v = nurbs_T->Evaluate(std::array<baf::ParamCoord, 1>({v_i[i]}), std::vector<int>({3}))[0];
+    dT_v = nurbs_T->EvaluateDerivative(std::array<baf::ParamCoord, 1>({v_i[i]}), dimensions, first_derivative);
+    ddT_v = nurbs_T->EvaluateDerivative(std::array<baf::ParamCoord, 1>({v_i[i]}), dimensions, second_derivative);
     transMatrix = GetTransformation(t_v,
                                     dT_v,
                                     ddT_v,
@@ -94,28 +95,28 @@ spl::SurfaceGenerator::SurfaceGenerator(std::shared_ptr<spl::NURBS<1>> const &nu
   std::array<std::shared_ptr<baf::KnotVector>, 2> joined_knot_vector =
       {knot_vector_t_ptr, nurbs_C->GetKnotVector(0)};
   std::array<int, 2> j_number_of_points = {nbInter, m};
-  std::array<Degree, 2> joined_degree = {nurbs_T->GetDegree(0), nurbs_C->GetDegree(0)};
+  std::array<baf::Degree, 2> joined_degree = {nurbs_T->GetDegree(0), nurbs_C->GetDegree(0)};
   this->parameter_space_ = std::make_shared<ParameterSpace<2>>(ParameterSpace<2>(
       joined_knot_vector, joined_degree));
-  this->physical_space_ = std::make_shared<spl::WeightedPhysicalSpace<2>>(spl::WeightedPhysicalSpace<2>(
+  this->physical_space_ = std::make_shared<WeightedPhysicalSpace<2>>(WeightedPhysicalSpace<2>(
       j_control_points, j_weights, j_number_of_points));
 }
 
-std::array<double, 3> spl::SurfaceGenerator::CrossProduct(std::vector<double> a, std::vector<double> b) const {
+std::array<double, 3> SurfaceGenerator::CrossProduct(std::vector<double> a, std::vector<double> b) const {
   std::array<double, 3> result = {a[1] * b[2] - a[2] * b[1],
                                   a[2] * b[0] - a[0] * b[2],
                                   a[0] * b[1] - a[1] * b[0]};
   return result;
 }
 
-std::array<double, 3> spl::SurfaceGenerator::CrossProduct(std::array<double, 3> a, std::array<double, 3> b) const {
+std::array<double, 3> SurfaceGenerator::CrossProduct(std::array<double, 3> a, std::array<double, 3> b) const {
   std::array<double, 3> result = {a[1] * b[2] - a[2] * b[1],
                                   a[2] * b[0] - a[0] * b[2],
                                   a[0] * b[1] - a[1] * b[0]};
   return result;
 }
 
-double spl::SurfaceGenerator::DotProduct(std::array<double, 3> a, std::array<double, 3> b) const {
+double SurfaceGenerator::DotProduct(std::array<double, 3> a, std::array<double, 3> b) const {
   double dotProduct = 0.0;
   for (int i = 0; i < 3; ++i) {
     dotProduct += a[i] * b[i];
@@ -123,7 +124,7 @@ double spl::SurfaceGenerator::DotProduct(std::array<double, 3> a, std::array<dou
   return dotProduct;
 }
 
-double spl::SurfaceGenerator::DotProduct(std::array<double, 3> a, std::vector<double> b) const {
+double SurfaceGenerator::DotProduct(std::array<double, 3> a, std::vector<double> b) const {
   double dotProduct = 0.0;
   for (int i = 0; i < 3; ++i) {
     dotProduct += a[i] * b[i];
@@ -131,7 +132,7 @@ double spl::SurfaceGenerator::DotProduct(std::array<double, 3> a, std::vector<do
   return dotProduct;
 }
 
-double spl::SurfaceGenerator::ComputeNorm(std::vector<double> a) {
+double SurfaceGenerator::ComputeNorm(std::vector<double> a) {
   double norm = 0.0;
   for (double i : a) {
     norm += std::pow(i, 2);
@@ -139,7 +140,7 @@ double spl::SurfaceGenerator::ComputeNorm(std::vector<double> a) {
   return std::sqrt(norm);
 }
 
-double spl::SurfaceGenerator::ComputeNorm(std::array<double, 3> a) {
+double SurfaceGenerator::ComputeNorm(std::array<double, 3> a) {
   double norm = 0.0;
   for (double i : a) {
     norm += std::pow(i, 2);
@@ -147,7 +148,7 @@ double spl::SurfaceGenerator::ComputeNorm(std::array<double, 3> a) {
   return std::sqrt(norm);
 }
 
-std::array<double, 3> spl::SurfaceGenerator::ComputeNormal(std::vector<double> T,
+std::array<double, 3> SurfaceGenerator::ComputeNormal(std::vector<double> T,
                                                            std::vector<double> dT,
                                                            std::vector<double> ddT,
                                                            std::array<double, 3> previous,
@@ -180,7 +181,7 @@ std::array<double, 3> spl::SurfaceGenerator::ComputeNormal(std::vector<double> T
   return crossProduct;
 }
 
-std::array<std::array<double, 4>, 4> spl::SurfaceGenerator::GetTransformation(std::vector<double> t,
+std::array<std::array<double, 4>, 4> SurfaceGenerator::GetTransformation(std::vector<double> t,
                                                                               std::vector<double> dT,
                                                                               std::vector<double> ddT,
                                                                               std::array<double, 3> prev_z,
@@ -207,6 +208,4 @@ std::array<std::array<double, 4>, 4> spl::SurfaceGenerator::GetTransformation(st
   }
   return transformation;
 }
-
-
-
+}  // namespace splinelib::src::spl

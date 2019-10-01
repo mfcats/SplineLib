@@ -19,6 +19,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "vector_utils.h"
 #include "vtk_writer.h"
 
+using namespace splinelib::src;
+
 int main(int argc, char *argv[]) {
   if (argc != 2) {
     throw std::runtime_error("Exactly one name of the log file is required as command line argument.");

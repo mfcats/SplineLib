@@ -19,6 +19,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleEq;
 
+using namespace splinelib::src;
+
 class StringOperations : public Test {
  public:
   StringOperations() = default;

@@ -17,13 +17,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "basis_function.h"
 
-namespace baf {
+namespace splinelib::src::baf {
 class BasisFunctionFactory {
  public:
   static BasisFunction *CreateDynamic(const KnotVector &knot_vector,
                                       const KnotSpan &start_of_support,
                                       const Degree &degree);
 };
-}  // namespace baf
+}  // namespace splinelib::src::splinelib::src::baf
 
 #endif  // SRC_BAF_BASIS_FUNCTION_FACTORY_H_

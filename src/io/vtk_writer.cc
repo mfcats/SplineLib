@@ -17,7 +17,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "any_casts.h"
 #include "vtk_writer_utils.h"
 
-void io::VTKWriter::WriteFile(const std::vector<std::any> &splines,
+namespace splinelib::src::io {
+void VTKWriter::WriteFile(const std::vector<std::any> &splines,
                               const std::string &filename,
                               const std::vector<std::vector<int>> &scattering) const {
   std::ofstream newFile;
@@ -45,7 +46,7 @@ void io::VTKWriter::WriteFile(const std::vector<std::any> &splines,
   }
 }
 
-std::vector<int> io::VTKWriter::GetSplineDimensions(const std::vector<std::any> &splines) const {
+std::vector<int> VTKWriter::GetSplineDimensions(const std::vector<std::any> &splines) const {
   std::vector<int> dimensions(splines.size());
   for (size_t i = 0; i < splines.size(); ++i) {
     dimensions[i] = util::AnyCasts::GetSplineDimension(splines[i]);
@@ -53,7 +54,7 @@ std::vector<int> io::VTKWriter::GetSplineDimensions(const std::vector<std::any> 
   return dimensions;
 }
 
-void io::VTKWriter::ThrowIfScatteringHasWrongSizes(std::vector<std::vector<int>> scattering,
+void VTKWriter::ThrowIfScatteringHasWrongSizes(std::vector<std::vector<int>> scattering,
                                                    std::vector<int> dimensions) const {
   if (scattering.size() != dimensions.size()) {
     throw std::runtime_error("There have to be as many scattering entries as splines to be written to vtk.");
@@ -65,7 +66,7 @@ void io::VTKWriter::ThrowIfScatteringHasWrongSizes(std::vector<std::vector<int>>
   }
 }
 
-std::vector<int> io::VTKWriter::GetNumberOfAllPoints(const std::vector<int> &dimensions,
+std::vector<int> VTKWriter::GetNumberOfAllPoints(const std::vector<int> &dimensions,
                                                      const std::vector<std::vector<int>> &scattering) const {
   std::vector<int> points(dimensions.size());
   for (auto i = 0u; i < dimensions.size(); ++i) {
@@ -76,7 +77,7 @@ std::vector<int> io::VTKWriter::GetNumberOfAllPoints(const std::vector<int> &dim
   return points;
 }
 
-std::vector<int> io::VTKWriter::GetNumberOfAllCells(const std::vector<int> &dimensions,
+std::vector<int> VTKWriter::GetNumberOfAllCells(const std::vector<int> &dimensions,
                                                     const std::vector<std::vector<int>> &scattering) const {
   std::vector<int> cells(dimensions.size());
   for (auto i = 0u; i < dimensions.size(); ++i) {
@@ -87,7 +88,7 @@ std::vector<int> io::VTKWriter::GetNumberOfAllCells(const std::vector<int> &dime
   return cells;
 }
 
-int io::VTKWriter::GetNumberOfCellEntries(const std::vector<int> &dimensions, const std::vector<int> &cells) const {
+int VTKWriter::GetNumberOfCellEntries(const std::vector<int> &dimensions, const std::vector<int> &cells) const {
   int sum = 0;
   for (auto i = 0u; i < dimensions.size(); ++i) {
     sum += cells[i] * (dimensions[i] == 1 ? 3 : (dimensions[i] == 2 ? 5 : 9));
@@ -95,7 +96,7 @@ int io::VTKWriter::GetNumberOfCellEntries(const std::vector<int> &dimensions, co
   return sum;
 }
 
-void io::VTKWriter::AddPoints(std::ofstream &file,
+void VTKWriter::AddPoints(std::ofstream &file,
                               const std::any &spline,
                               const std::vector<int> &scattering,
                               int spl_dim) const {
@@ -110,7 +111,7 @@ void io::VTKWriter::AddPoints(std::ofstream &file,
   }
 }
 
-void io::VTKWriter::AddCells(std::ofstream &file, const std::vector<int> &scattering, int offset, int spl_dim) const {
+void VTKWriter::AddCells(std::ofstream &file, const std::vector<int> &scattering, int offset, int spl_dim) const {
   if (spl_dim == 1) {
     Write1DCells(file, scattering[0], offset);
   } else if (spl_dim == 2) {
@@ -120,7 +121,7 @@ void io::VTKWriter::AddCells(std::ofstream &file, const std::vector<int> &scatte
   }
 }
 
-void io::VTKWriter::AddCellTypes(std::ofstream &file, const std::vector<int> &scattering, int spl_dim) const {
+void VTKWriter::AddCellTypes(std::ofstream &file, const std::vector<int> &scattering, int spl_dim) const {
   if (spl_dim == 1) {
     VTKWriterUtils<1>::WriteCellTypes(file, {scattering[0]}, 3);
   } else if (spl_dim == 2) {
@@ -130,13 +131,13 @@ void io::VTKWriter::AddCellTypes(std::ofstream &file, const std::vector<int> &sc
   }
 }
 
-void io::VTKWriter::Write1DCells(std::ofstream &file, int scattering, int offset) const {
+void VTKWriter::Write1DCells(std::ofstream &file, int scattering, int offset) const {
   for (int i = 0; i < scattering; ++i) {
     file << "2 " << i + offset << " " << i + 1 + offset << "\n";
   }
 }
 
-void io::VTKWriter::Write2DCells(std::ofstream &file, std::array<int, 2> scattering, int offset) const {
+void VTKWriter::Write2DCells(std::ofstream &file, std::array<int, 2> scattering, int offset) const {
   util::MultiIndexHandler<2> point_handler({scattering[0] + 1, scattering[1] + 1});
   for (int j = 0; j < scattering[1]; ++j) {
     for (int i = 0; i <= scattering[0]; ++i, ++point_handler) {
@@ -151,7 +152,7 @@ void io::VTKWriter::Write2DCells(std::ofstream &file, std::array<int, 2> scatter
   }
 }
 
-void io::VTKWriter::Write3DCells(std::ofstream &file, std::array<int, 3> scattering, int offset) const {
+void VTKWriter::Write3DCells(std::ofstream &file, std::array<int, 3> scattering, int offset) const {
   util::MultiIndexHandler<3> point_handler({scattering[0] + 1, scattering[1] + 1, scattering[2] + 1});
   for (; point_handler.Get1DIndex() < point_handler.Get1DLength() - 1; ++point_handler) {
     if (point_handler.GetIndices()[0] != scattering[0] && point_handler.GetIndices()[1] != scattering[1]
@@ -167,3 +168,4 @@ void io::VTKWriter::Write3DCells(std::ofstream &file, std::array<int, 3> scatter
     }
   }
 }
+}  // namespace splinelib::src::io

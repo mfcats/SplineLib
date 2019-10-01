@@ -22,25 +22,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 #include "string_operations.h"
 
-namespace io {
+namespace splinelib::src::io {
 class IRITReaderUtils {
  public:
   template<int DIM>
-  static std::array<Degree, DIM> GetDegrees(int start, const std::vector<std::string> &entries) {
-    std::array<Degree, DIM> degrees;
+  static std::array<baf::Degree, DIM> GetDegrees(int start, const std::vector<std::string> &entries) {
+    std::array<baf::Degree, DIM> degrees;
     for (int i = 0; i < DIM; i++) {
       degrees[i] =
-          Degree(util::StringOperations::StringVectorToNumberVector<int>({entries[start + DIM + 2 + i]})[0] - 1);
+          baf::Degree(util::StringOperations::StringVectorToNumberVector<int>({entries[start + DIM + 2 + i]})[0] - 1);
     }
     return degrees;
   }
 
   template<int DIM>
-  static KnotVectors<DIM> GetKnotVectors(int start, const std::vector<std::string> &entries) {
-    KnotVectors<DIM> knot_vectors;
+  static baf::KnotVectors<DIM> GetKnotVectors(int start, const std::vector<std::string> &entries) {
+    baf::KnotVectors<DIM> knot_vectors;
     for (int i = 0; i < DIM; i++) {
       while (!util::StringOperations::StartsWith(entries[start++], "[KV")) {}
-      std::vector<ParamCoord> knots;
+      std::vector<baf::ParamCoord> knots;
       while (!util::StringOperations::StartsWith(entries[start], "[")) {
         knots.emplace_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
       }
@@ -54,6 +54,6 @@ class IRITReaderUtils {
     return util::StringOperations::StartsWith(entries[start_of_spline + 2 * DIM + 2], "P");
   }
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_IRIT_READER_UTILS_H_

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "basis_function.h"
 #include "knot_vector.h"
 
-namespace baf {
+namespace splinelib::src::baf {
 class ZeroDegBSplBasFnc : public baf::BasisFunction {
  public:
   ZeroDegBSplBasFnc(const baf::KnotVector &knot_vector, const KnotSpan &start_of_support);
@@ -27,6 +27,6 @@ class ZeroDegBSplBasFnc : public baf::BasisFunction {
   double EvaluateOnSupport(const ParamCoord &param_coord) const override;
   double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const override;
 };
-}  // namespace baf
+}  // namespace splinelib::src::splinelib::src::baf
 
 #endif  // SRC_BAF_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_

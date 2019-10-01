@@ -19,7 +19,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline_basis_function.h"
 #include "zero_degree_b_spline_basis_function.h"
 
-baf::BasisFunction *baf::BasisFunctionFactory::CreateDynamic(const KnotVector &knot_vector,
+namespace splinelib::src::baf {
+BasisFunction *BasisFunctionFactory::CreateDynamic(const KnotVector &knot_vector,
                                                              const KnotSpan &start_of_support,
                                                              const Degree &degree) {
   if (degree < Degree{0}) {
@@ -28,7 +29,8 @@ baf::BasisFunction *baf::BasisFunctionFactory::CreateDynamic(const KnotVector &k
     throw std::runtime_error(msg);
   }
   if (degree == Degree{0}) {
-    return new baf::ZeroDegBSplBasFnc(knot_vector, start_of_support);
+    return new ZeroDegBSplBasFnc(knot_vector, start_of_support);
   }
-  return new baf::BSplineBasisFunction(knot_vector, degree, start_of_support);
+  return new BSplineBasisFunction(knot_vector, degree, start_of_support);
 }
+}  // namespace splinelib::src::baf

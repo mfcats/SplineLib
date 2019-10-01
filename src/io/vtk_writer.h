@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
-namespace io {
+namespace splinelib::src::io {
 class VTKWriter {
  public:
   VTKWriter() = default;
@@ -49,6 +49,6 @@ class VTKWriter {
   void Write2DCells(std::ofstream &file, std::array<int, 2> scattering, int offset) const;
   void Write3DCells(std::ofstream &file, std::array<int, 3> scattering, int offset) const;
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_VTK_WRITER_H_

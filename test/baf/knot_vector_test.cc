@@ -146,8 +146,8 @@ TEST_F(AKnotVector, CanBeUsedWithNonConstRangeBasedForLoop) { // NOLINT
 
 TEST_F(AKnotVector, CanBeMovedInAssignment) { // NOLINT
   baf::KnotVector knot_vector;
-  knot_vector = KnotVector({baf::ParamCoord{0.0}, baf::ParamCoord{0.25}, ParamCoord{0.5}});
-  ASSERT_THAT(knot_vector, Eq(KnotVector({baf::ParamCoord{0.0}, baf::ParamCoord{0.25}, ParamCoord{0.5}})));
+  knot_vector = baf::KnotVector({baf::ParamCoord{0.0}, baf::ParamCoord{0.25}, baf::ParamCoord{0.5}});
+  ASSERT_THAT(knot_vector, Eq(baf::KnotVector({baf::ParamCoord{0.0}, baf::ParamCoord{0.25}, baf::ParamCoord{0.5}})));
 }
 
 TEST_F(AKnotVector, CanBeAssignedByIterators) { // NOLINT

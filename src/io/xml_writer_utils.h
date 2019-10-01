@@ -23,7 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline.h"
 #include "nurbs.h"
 
-namespace io {
+namespace splinelib::src::io {
 template<int DIM>
 class XMLWriterUtils {
  public:
@@ -42,7 +42,7 @@ class XMLWriterUtils {
       pugi::xml_node knots = knot_vectors.append_child("kntVec");
       baf::KnotVector knot_vector = *spline_ptr->GetKnotVector(i);
       std::string string;
-      for (ParamCoord knot : knot_vector) {
+      for (baf::ParamCoord knot : knot_vector) {
         string += "\n        " + std::to_string(knot.get());
       }
       knots.append_child(pugi::node_pcdata).text() = (string + "\n      ").c_str();
@@ -75,6 +75,6 @@ class XMLWriterUtils {
     weights.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_XML_WRITER_UTILS_H_

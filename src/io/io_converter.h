@@ -29,7 +29,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "xml_reader.h"
 #include "xml_writer.h"
 
-namespace io {
+namespace splinelib::src::io {
 class IOConverter {
  public:
   IOConverter(const char *input_filename, const char *output_filename);
@@ -61,6 +61,6 @@ class IOConverter {
   file_format output_format_;
   std::vector<int> written_;
 };
-}  // namespace io
+}  // namespace splinelib::src::splinelib::src::io
 
 #endif  // SRC_IO_IO_CONVERTER_H_
