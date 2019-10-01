@@ -19,6 +19,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleEq;
 
+using namespace splinelib::src;
+
 class A1DWeightedPhysicalSpace : public Test {
  public:
   A1DWeightedPhysicalSpace() {

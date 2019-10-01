@@ -22,11 +22,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleEq;
 
+using namespace splinelib::src;
+
 class BSpline1DFig5_26 : public Test {  // NOLINT
  public:
   BSpline1DFig5_26() {
-    std::array<Degree, 1> degree = {Degree{3}};
-    ParamCoord zero(0), one(1), two(2);
+    std::array<baf::Degree, 1> degree = {baf::Degree{3}};
+    baf::ParamCoord zero(0), one(1), two(2);
     KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({zero, zero, zero, zero, one, one, one, two, two, two, two}))};
     std::vector<baf::ControlPoint> control_points = {
@@ -45,7 +47,7 @@ class BSpline1DFig5_26 : public Test {  // NOLINT
 };
 
 TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
-  ASSERT_THAT(bspline_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.1), 1);
+  ASSERT_THAT(bspline_1d_after_->RemoveKnot(baf::ParamCoord(1), 0, 0.1), 1);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(2));
@@ -62,7 +64,7 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
 }
 
 TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyTwoTimes) {  // NOLINT
-  ASSERT_THAT(bspline_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.0, 2), 2);
+  ASSERT_THAT(bspline_1d_after_->RemoveKnot(baf::ParamCoord(1), 0, 0.0, 2), 2);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 2);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(5).get(), DoubleEq(2));
@@ -79,7 +81,7 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyTwoTimes) {  // NOLINT
 }
 
 TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyThreeTimesAtOnce) {  // NOLINT
-  ASSERT_THAT(bspline_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.5, 3), 3);
+  ASSERT_THAT(bspline_1d_after_->RemoveKnot(baf::ParamCoord(1), 0, 0.5, 3), 3);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 3);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(4).get(), DoubleEq(2));
@@ -97,16 +99,17 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyThreeTimesAtOnce) {  // NOLINT
 }
 
 TEST_F(BSpline1DFig5_26, RemovesOnlyTwoKnots1_0CorrectlyWithTolerance0_1) {  // NOLINT
-  ASSERT_THAT(bspline_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.1, 3), 2);
+  ASSERT_THAT(bspline_1d_after_->RemoveKnot(baf::ParamCoord(1), 0, 0.1, 3), 2);
 }
 
 class NURBS1DFig5_26 : public Test {  // NOLINT
  public:
   NURBS1DFig5_26() {
-    std::array<Degree, 1> degree = {Degree{3}};
-    KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
-        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1},
-                         ParamCoord{1}, ParamCoord{2}, ParamCoord{2}, ParamCoord{2}, ParamCoord{2}}))};
+    std::array<baf::Degree, 1> degree = {baf::Degree{3}};
+    baf::KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1},
+         baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{2}, baf::ParamCoord{2}, baf::ParamCoord{2},
+         baf::ParamCoord{2}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.5})),
@@ -128,7 +131,7 @@ class NURBS1DFig5_26 : public Test {  // NOLINT
 };
 
 TEST_F(NURBS1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
-  nurbs_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.81);
+  nurbs_1d_after_->RemoveKnot(baf::ParamCoord(1), 0, 0.81);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               nurbs_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetKnot(6).get(), DoubleEq(2));
@@ -153,20 +156,20 @@ TEST_F(NURBS1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
 }
 
 TEST_F(NURBS1DFig5_26, RemovesOnlyOneKnot1_0CorrectlyWithTolerance0_81) {  // NOLINT
-  ASSERT_THAT(nurbs_1d_after_->RemoveKnot(ParamCoord(1), 0, 0.81, 2), 1);
+  ASSERT_THAT(nurbs_1d_after_->RemoveKnot(baf::ParamCoord(1), 0, 0.81, 2), 1);
 }
 
 class BSpline2DFig5_28 : public Test {  // NOLINT
  public:
   BSpline2DFig5_28() {
-    std::array<Degree, 2> degree = {Degree{2}, Degree{3}};
-    ParamCoord zero(0), one(1);
-    KnotVectors<2> knot_vector_before = {
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({zero, zero, zero, ParamCoord{0.25}, ParamCoord{0.5}, ParamCoord{0.75}, one, one, one})),
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({zero, zero, zero, zero, ParamCoord{0.3}, ParamCoord{0.3}, ParamCoord{0.3}, ParamCoord{0.7},
-                             one, one, one, one}))};
+    std::array<baf::Degree, 2> degree = {baf::Degree{2}, baf::Degree{3}};
+    baf::ParamCoord zero(0), one(1);
+    baf::KnotVectors<2> knot_vector_before = {
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {zero, zero, zero, baf::ParamCoord{0.25}, baf::ParamCoord{0.5}, baf::ParamCoord{0.75}, one, one, one})),
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {zero, zero, zero, zero, baf::ParamCoord{0.3}, baf::ParamCoord{0.3}, baf::ParamCoord{0.3}, baf::ParamCoord{0.7},
+         one, one, one, one}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint({0, 1, 4}), baf::ControlPoint({1, 1, 4.5}), baf::ControlPoint({2.5, 1, 3.5}),
         baf::ControlPoint({3.5, 1, 2.5}), baf::ControlPoint({5, 1, 2}), baf::ControlPoint({6.5, 1, 2.5}),
@@ -203,7 +206,7 @@ class BSpline2DFig5_28 : public Test {  // NOLINT
 };
 
 TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
-  ASSERT_THAT(bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.075), 1);
+  ASSERT_THAT(bspline_2d_after_->RemoveKnot(baf::ParamCoord(0.3), 1, 0.075), 1);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 1);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetKnot(6).get(), DoubleEq(0.7));
@@ -213,7 +216,7 @@ TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
 }
 
 TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
-  ASSERT_THAT(bspline_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 0.12, 2), 2);
+  ASSERT_THAT(bspline_2d_after_->RemoveKnot(baf::ParamCoord(0.3), 1, 0.12, 2), 2);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 2);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetKnot(5).get(), DoubleEq(0.7));
@@ -225,14 +228,14 @@ TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
 class NURBS2DFig5_28 : public Test {  // NOLINT
  public:
   NURBS2DFig5_28() {
-    std::array<Degree, 2> degree = {Degree{2}, Degree{3}};
-    ParamCoord zero(0), one(1);
-    KnotVectors<2> knot_vector_before = {
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({zero, zero, zero, ParamCoord{0.25}, ParamCoord{0.5}, ParamCoord{0.75}, one, one, one})),
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({zero, zero, zero, zero, ParamCoord{0.3}, ParamCoord{0.3}, ParamCoord{0.3}, ParamCoord{0.7},
-                             one, one, one, one}))};
+    std::array<baf::Degree, 2> degree = {baf::Degree{2}, baf::Degree{3}};
+    baf::ParamCoord zero(0), one(1);
+    baf::KnotVectors<2> knot_vector_before = {
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {zero, zero, zero, baf::ParamCoord{0.25}, baf::ParamCoord{0.5}, baf::ParamCoord{0.75}, one, one, one})),
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {zero, zero, zero, zero, baf::ParamCoord{0.3}, baf::ParamCoord{0.3}, baf::ParamCoord{0.3}, baf::ParamCoord{0.7},
+         one, one, one, one}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint({0, 1, 4}), baf::ControlPoint({1, 1, 4.5}), baf::ControlPoint({2.5, 1, 3.5}),
         baf::ControlPoint({3.5, 1, 2.5}), baf::ControlPoint({5, 1, 2}), baf::ControlPoint({6.5, 1, 2.5}),
@@ -277,7 +280,7 @@ class NURBS2DFig5_28 : public Test {  // NOLINT
 };
 
 TEST_F(NURBS2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
-  ASSERT_THAT(nurbs_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 2.2), 1);
+  ASSERT_THAT(nurbs_2d_after_->RemoveKnot(baf::ParamCoord(0.3), 1, 2.2), 1);
   ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               nurbs_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 1);
   ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetKnot(6).get(), DoubleEq(0.7));
@@ -287,7 +290,7 @@ TEST_F(NURBS2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
 }
 
 TEST_F(NURBS2DFig5_28, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
-  ASSERT_THAT(nurbs_2d_after_->RemoveKnot(ParamCoord(0.3), 1, 2.2, 2), 2);
+  ASSERT_THAT(nurbs_2d_after_->RemoveKnot(baf::ParamCoord(0.3), 1, 2.2, 2), 2);
   ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               nurbs_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 2);
   ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetKnot(5).get(), DoubleEq(0.7));
@@ -299,13 +302,13 @@ TEST_F(NURBS2DFig5_28, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
 class A3DBSplineForKnotRemoval : public Test {  // NOLINT
  public:
   A3DBSplineForKnotRemoval() {
-    std::array<Degree, 3> degree = {Degree{2}, Degree{1}, Degree{2}};
-    ParamCoord zero(0), one(1);
-    KnotVectors<3> knot_vector_before = {
+    std::array<baf::Degree, 3> degree = {baf::Degree{2}, baf::Degree{1}, baf::Degree{2}};
+    baf::ParamCoord zero(0), one(1);
+    baf::KnotVectors<3> knot_vector_before = {
         std::make_shared<baf::KnotVector>(baf::KnotVector({zero, zero, zero, one, one, one})),
         std::make_shared<baf::KnotVector>(baf::KnotVector({zero, zero, one, one})),
         std::make_shared<baf::KnotVector>(
-            baf::KnotVector({zero, zero, zero, ParamCoord{0.3}, ParamCoord{0.3}, one, one, one}))};
+            baf::KnotVector({zero, zero, zero, baf::ParamCoord{0.3}, baf::ParamCoord{0.3}, one, one, one}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint({0, 1, 4}), baf::ControlPoint({1, 1, 4.5}), baf::ControlPoint({2.5, 1, 3.5}),
         baf::ControlPoint({0, 1, 6}), baf::ControlPoint({1, 1, 6.5}), baf::ControlPoint({2.5, 1, 5.5}),
@@ -333,7 +336,7 @@ class A3DBSplineForKnotRemoval : public Test {  // NOLINT
 };
 
 TEST_F(A3DBSplineForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
-  ASSERT_THAT(bspline_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 0.21), 1);
+  ASSERT_THAT(bspline_3d_after_->RemoveKnot(baf::ParamCoord(0.3), 2, 0.21), 1);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
               bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 1);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(5).get(), DoubleEq(1));
@@ -343,7 +346,7 @@ TEST_F(A3DBSplineForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
 }
 
 TEST_F(A3DBSplineForKnotRemoval, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
-  ASSERT_THAT(bspline_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 0.28, 2), 2);
+  ASSERT_THAT(bspline_3d_after_->RemoveKnot(baf::ParamCoord(0.3), 2, 0.28, 2), 2);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
               bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 2);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(4).get(), DoubleEq(1));
@@ -355,13 +358,13 @@ TEST_F(A3DBSplineForKnotRemoval, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
 class A3DNURBSForKnotRemoval : public Test {  // NOLINT
  public:
   A3DNURBSForKnotRemoval() {
-    std::array<Degree, 3> degree = {Degree{2}, Degree{1}, Degree{2}};
-    ParamCoord zero(0), one(1);
-    KnotVectors<3> knot_vector_before = {
+    std::array<baf::Degree, 3> degree = {baf::Degree{2}, baf::Degree{1}, baf::Degree{2}};
+    baf::ParamCoord zero(0), one(1);
+    baf::KnotVectors<3> knot_vector_before = {
         std::make_shared<baf::KnotVector>(baf::KnotVector({zero, zero, zero, one, one, one})),
         std::make_shared<baf::KnotVector>(baf::KnotVector({zero, zero, one, one})),
         std::make_shared<baf::KnotVector>(
-            baf::KnotVector({zero, zero, zero, ParamCoord{0.3}, ParamCoord{0.3}, one, one, one}))};
+            baf::KnotVector({zero, zero, zero, baf::ParamCoord{0.3}, baf::ParamCoord{0.3}, one, one, one}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint({0, 1, 4}), baf::ControlPoint({1, 1, 4.5}), baf::ControlPoint({2.5, 1, 3.5}),
         baf::ControlPoint({0, 1, 6}), baf::ControlPoint({1, 1, 6.5}), baf::ControlPoint({2.5, 1, 5.5}),
@@ -394,7 +397,7 @@ class A3DNURBSForKnotRemoval : public Test {  // NOLINT
 };
 
 TEST_F(A3DNURBSForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
-  ASSERT_THAT(nurbs_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 3.86), 1);
+  ASSERT_THAT(nurbs_3d_after_->RemoveKnot(baf::ParamCoord(0.3), 2, 3.86), 1);
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
               nurbs_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 1);
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetKnot(5).get(), DoubleEq(1));
@@ -404,7 +407,7 @@ TEST_F(A3DNURBSForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
 }
 
 TEST_F(A3DNURBSForKnotRemoval, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
-  ASSERT_THAT(nurbs_3d_after_->RemoveKnot(ParamCoord(0.3), 2, 5.3, 2), 2);
+  ASSERT_THAT(nurbs_3d_after_->RemoveKnot(baf::ParamCoord(0.3), 2, 5.3, 2), 2);
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
               nurbs_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 2);
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetKnot(4).get(), DoubleEq(1));

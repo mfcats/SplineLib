@@ -23,13 +23,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::Test;
 
+using namespace splinelib::src;
+
 class BSplineFig5_35ForDegreeElevationForDimension0 : public Test {  // NOLINT
  public:
   BSplineFig5_35ForDegreeElevationForDimension0() {
-    std::array<Degree, 1> degree = {Degree{3}};
-    KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
-        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6},
-                         ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    std::array<baf::Degree, 1> degree = {baf::Degree{3}};
+    baf::KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.3},
+         baf::ParamCoord{0.6}, baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({1.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, 2.0})),
@@ -72,10 +74,10 @@ TEST_F(BSplineFig5_35ForDegreeElevationForDimension0, DoesNotChangeGeometrically
 class ALinearNURBSForDegreeElevationForDimension0 : public Test {  // NOLINT
  public:
   ALinearNURBSForDegreeElevationForDimension0() {
-    std::array<Degree, 1> degree = {Degree{1}};
-    KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
-        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6}, ParamCoord{1},
-                         ParamCoord{1}}))};
+    std::array<baf::Degree, 1> degree = {baf::Degree{1}};
+    baf::KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.3}, baf::ParamCoord{0.6}, baf::ParamCoord{1},
+         baf::ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({1.0, 1.0})),
         baf::ControlPoint(std::vector<double>({1.0, 2.0})),
@@ -117,13 +119,13 @@ TEST_F(ALinearNURBSForDegreeElevationForDimension0, DoesNotChangeGeometricallyAf
 class A2DBSplineForDegreeElevationForDimension0 : public Test {  // NOLINT
  public:
   A2DBSplineForDegreeElevationForDimension0() {
-    std::array<Degree, 2> degree = {Degree{2}, Degree{1}};
-    KnotVectors<2> knot_vector_before = {
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.3}, ParamCoord{0.6},
-                             ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+    std::array<baf::Degree, 2> degree = {baf::Degree{2}, baf::Degree{1}};
+    baf::KnotVectors<2> knot_vector_before = {
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.3}, baf::ParamCoord{0.6},
+         baf::ParamCoord{0.6}, baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({1.0, 1.0})), baf::ControlPoint(std::vector<double>({1.0, 2.0})),
         baf::ControlPoint(std::vector<double>({2.0, 2.0})), baf::ControlPoint(std::vector<double>({2.0, 3.0})),
@@ -179,7 +181,7 @@ TEST_F(A2DBSplineForDegreeElevationForDimension0, DoesNotChangeGeometricallyAfte
 class Random2DNURBSForDegreeElevationForDimension0 : public Test {  // NOLINT
  public:
   Random2DNURBSForDegreeElevationForDimension0() {
-    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0.0}, baf::ParamCoord{1.0}};
     spl::RandomNURBSGenerator<2> spline_generator(limits, 3, 3);
     original_ = std::make_shared<spl::NURBS<2>>(spline_generator);
     elevated_ = std::make_shared<spl::NURBS<2>>(*original_);
@@ -218,7 +220,7 @@ TEST_F(Random2DNURBSForDegreeElevationForDimension0, DoesNotChangeGeometricallyA
 class Random3DBSplineForDegreeElevationForDimension0 : public Test {  // NOLINT
  public:
   Random3DBSplineForDegreeElevationForDimension0() {
-    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0.0}, baf::ParamCoord{1.0}};
     spl::RandomBSplineGenerator<3> spline_generator(limits, 4, 3);
     original_ = std::make_shared<spl::BSpline<3>>(spline_generator);
     elevated_ = std::make_shared<spl::BSpline<3>>(*original_);
@@ -266,7 +268,7 @@ TEST_F(Random3DBSplineForDegreeElevationForDimension0, DoesNotChangeGeometricall
 class Random3DNURBSForDegreeElevationForDimension1 : public Test {  // NOLINT
  public:
   Random3DNURBSForDegreeElevationForDimension1() {
-    std::array<ParamCoord, 2> limits = {ParamCoord{0.0}, ParamCoord{1.0}};
+    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0.0}, baf::ParamCoord{1.0}};
     spl::RandomNURBSGenerator<3> spline_generator(limits, 3, 3);
     original_ = std::make_shared<spl::NURBS<3>>(spline_generator);
     elevated_ = std::make_shared<spl::NURBS<3>>(*original_);

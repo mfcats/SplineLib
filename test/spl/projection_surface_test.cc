@@ -21,15 +21,20 @@ using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
+using namespace splinelib::src;
+
 class ABSplineSurface : public Test {
  public:
   ABSplineSurface() {
-    std::array<baf::KnotVector, 2> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1},
-                          ParamCoord{1}, ParamCoord{1}}),
-         baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.25}, ParamCoord{0.5},
-                          ParamCoord{0.75}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
-    std::array<Degree, 2> degree = {Degree{3}, Degree{3}};
+    std::array<baf::KnotVector, 2> knot_vector = {
+      baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1},
+         baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1}}),
+       baf::KnotVector(
+           {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.25},
+            baf::ParamCoord{0.5}, baf::ParamCoord{0.75}, baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1},
+            baf::ParamCoord{1}})};
+    std::array<baf::Degree, 2> degree = {baf::Degree{3}, baf::Degree{3}};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({-236, -197, -22})),
         baf::ControlPoint(std::vector<double>({-206, -117, -22})),
@@ -60,7 +65,7 @@ class ABSplineSurface : public Test {
         baf::ControlPoint(std::vector<double>({214, -7, 8})),
         baf::ControlPoint(std::vector<double>({239, 102, -22}))
     };
-    KnotVectors<2> knot_vector_ptr =
+    baf::KnotVectors<2> knot_vector_ptr =
         {std::make_shared<baf::KnotVector>(knot_vector[0]), std::make_shared<baf::KnotVector>(knot_vector[1])};
     b_spline_ = std::make_shared<spl::BSpline<2>>(knot_vector_ptr, degree, control_points);
   }
@@ -70,32 +75,32 @@ class ABSplineSurface : public Test {
 };
 
 TEST_F(ABSplineSurface, ComputesCorrectProjectionCloseToCenter) { // NOLINT
-  std::array<ParamCoord, 2>
+  std::array<baf::ParamCoord, 2>
       param_coords = spl::Projection<2>::ProjectionOnSurface({120, 10, 100}, b_spline_, {100, 100});
   ASSERT_THAT(param_coords[0].get(), DoubleNear(0.55852, 0.00001));
   ASSERT_THAT(param_coords[1].get(), DoubleNear(0.8614466, 0.00001));
 }
 
 TEST_F(ABSplineSurface, ComputesCorrectProjectionBelowBothFirstKnots) { // NOLINT
-  std::array<ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({-250, -200, -20}, b_spline_);
+  std::array<baf::ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({-250, -200, -20}, b_spline_);
   ASSERT_THAT(param_coords[0].get(), DoubleEq(0));
   ASSERT_THAT(param_coords[1].get(), DoubleEq(0));
 }
 
 TEST_F(ABSplineSurface, ComputesCorrectProjectionAboveBothLastKnots) { // NOLINT
-  std::array<ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({250, 110, -20}, b_spline_);
+  std::array<baf::ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({250, 110, -20}, b_spline_);
   ASSERT_THAT(param_coords[0].get(), DoubleEq(1));
   ASSERT_THAT(param_coords[1].get(), DoubleEq(1));
 }
 
 TEST_F(ABSplineSurface, ComputesCorrectProjectionBelowFirstKnotOfFirstVectorAndAboveLastKnotOfSecondVector) { // NOLINT
-  std::array<ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({220, -220, -40}, b_spline_);
+  std::array<baf::ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({220, -220, -40}, b_spline_);
   ASSERT_THAT(param_coords[0].get(), DoubleEq(0));
   ASSERT_THAT(param_coords[1].get(), DoubleEq(1));
 }
 
 TEST_F(ABSplineSurface, ComputesCorrectProjectionAboveLastKnotOfFirstVectorAndBelowFirstKnotOfSecondVector) { // NOLINT
-  std::array<ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({-260, 80, -30}, b_spline_);
+  std::array<baf::ParamCoord, 2> param_coords = spl::Projection<2>::ProjectionOnSurface({-260, 80, -30}, b_spline_);
   ASSERT_THAT(param_coords[0].get(), DoubleEq(1));
   ASSERT_THAT(param_coords[1].get(), DoubleEq(0));
 }

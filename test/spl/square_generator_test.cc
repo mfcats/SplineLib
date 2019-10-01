@@ -22,6 +22,8 @@ using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
+using namespace splinelib::src;
+
 class ASquare : public Test {
  public:
   ASquare() {
@@ -34,8 +36,8 @@ class ASquare : public Test {
 };
 
 TEST_F(ASquare, ReturnsCorrectDegree) { // NOLINT
-  ASSERT_THAT(square_->GetDegree(0), Degree{2});
-  ASSERT_THAT(square_->GetDegree(1), Degree{2});
+  ASSERT_THAT(square_->GetDegree(0), baf::Degree{2});
+  ASSERT_THAT(square_->GetDegree(1), baf::Degree{2});
 }
 
 TEST_F(ASquare, ReturnsCorrectKnotVectorSizes) { // NOLINT
@@ -44,39 +46,39 @@ TEST_F(ASquare, ReturnsCorrectKnotVectorSizes) { // NOLINT
 }
 
 TEST_F(ASquare, ReturnsCorrectLeftLowerCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{0}}, {0})[0], DoubleEq(-1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{0}}, {1})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{0}}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{0}}, {1})[0], DoubleEq(-1));
 }
 
 TEST_F(ASquare, ReturnsCorrectLeftUpperCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{1}}, {0})[0], DoubleEq(-1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{1}}, {1})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{1}}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{1}}, {1})[0], DoubleEq(1));
 }
 
 TEST_F(ASquare, ReturnsCorrectMiddle) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {0})[0], DoubleEq(0));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {1})[0], DoubleEq(0));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {0})[0], DoubleEq(0));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {1})[0], DoubleEq(0));
 }
 
 TEST_F(ASquare, ReturnsCorrectCoordinatesOfRandomPoint) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.2}, ParamCoord{0.75}}, {0})[0], DoubleEq(-0.6));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.2}, ParamCoord{0.75}}, {1})[0], DoubleEq(0.5));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.2}, baf::ParamCoord{0.75}}, {0})[0], DoubleEq(-0.6));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.2}, baf::ParamCoord{0.75}}, {1})[0], DoubleEq(0.5));
 }
 
 TEST_F(ASquare, ReturnsCorrectRightLowerCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{0}}, {0})[0], DoubleEq(1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{0}}, {1})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{0}}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{0}}, {1})[0], DoubleEq(-1));
 }
 
 TEST_F(ASquare, ReturnsCorrectRightUpperCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{1}}, {0})[0], DoubleEq(1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{1}}, {1})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{1}}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{1}}, {1})[0], DoubleEq(1));
 }
 
 class ASquareWithDegree3And8Knots : public Test {
  public:
   ASquareWithDegree3And8Knots() {
-    spl::SquareGenerator squareGenerator = spl::SquareGenerator(Degree{3}, 8);
+    spl::SquareGenerator squareGenerator = spl::SquareGenerator(baf::Degree{3}, 8);
     square_ = squareGenerator.CreateSquare();
   }
 
@@ -85,8 +87,8 @@ class ASquareWithDegree3And8Knots : public Test {
 };
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectDegree) { // NOLINT
-  ASSERT_THAT(square_->GetDegree(0), Degree{3});
-  ASSERT_THAT(square_->GetDegree(1), Degree{3});
+  ASSERT_THAT(square_->GetDegree(0), baf::Degree{3});
+  ASSERT_THAT(square_->GetDegree(1), baf::Degree{3});
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectKnotVectorSizes) { // NOLINT
@@ -95,41 +97,41 @@ TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectKnotVectorSizes) { // NOLINT
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectLeftLowerCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{0}}, {0})[0], DoubleEq(-1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{0}}, {1})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{0}}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{0}}, {1})[0], DoubleEq(-1));
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectLeftUpperCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{1}}, {0})[0], DoubleEq(-1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{1}}, {1})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{1}}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{1}}, {1})[0], DoubleEq(1));
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectMiddle) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {0})[0],
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {0})[0],
               DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {1})[0],
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {1})[0],
               DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectCoordinatesOfRandomPoint) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.2}, ParamCoord{0.75}}, {0})[0], DoubleEq(-0.6));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.2}, ParamCoord{0.75}}, {1})[0], DoubleEq(0.5));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.2}, baf::ParamCoord{0.75}}, {0})[0], DoubleEq(-0.6));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.2}, baf::ParamCoord{0.75}}, {1})[0], DoubleEq(0.5));
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectRightLowerCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{0}}, {0})[0], DoubleEq(1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{0}}, {1})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{0}}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{0}}, {1})[0], DoubleEq(-1));
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectRightUpperCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{1}}, {0})[0], DoubleEq(1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{1}}, {1})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{1}}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{1}}, {1})[0], DoubleEq(1));
 }
 
 class ASquareWithDegree3And10Knots : public Test {
  public:
   ASquareWithDegree3And10Knots() {
-    spl::SquareGenerator squareGenerator = spl::SquareGenerator(Degree{3}, 10);
+    spl::SquareGenerator squareGenerator = spl::SquareGenerator(baf::Degree{3}, 10);
     square_ = squareGenerator.CreateSquare();
   }
 
@@ -138,8 +140,8 @@ class ASquareWithDegree3And10Knots : public Test {
 };
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectDegree) { // NOLINT
-  ASSERT_THAT(square_->GetDegree(0), Degree{3});
-  ASSERT_THAT(square_->GetDegree(1), Degree{3});
+  ASSERT_THAT(square_->GetDegree(0), baf::Degree{3});
+  ASSERT_THAT(square_->GetDegree(1), baf::Degree{3});
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectKnotVectorSizes) { // NOLINT
@@ -148,34 +150,34 @@ TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectKnotVectorSizes) { // NOLINT
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectLeftLowerCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{0}}, {0})[0], DoubleEq(-1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{0}}, {1})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{0}}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{0}}, {1})[0], DoubleEq(-1));
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectLeftUpperCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{1}}, {0})[0], DoubleEq(-1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0}, ParamCoord{1}}, {1})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{1}}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0}, baf::ParamCoord{1}}, {1})[0], DoubleEq(1));
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectMiddle) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {0})[0],
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {0})[0],
               DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.5}, ParamCoord{0.5}}, {1})[0],
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {1})[0],
               DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectCoordinatesOfRandomPoint) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.2}, ParamCoord{0.75}}, {0})[0],
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.2}, baf::ParamCoord{0.75}}, {0})[0],
               DoubleNear(-0.46, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{0.2}, ParamCoord{0.7}}, {1})[0], DoubleEq(0.2845));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{0.2}, baf::ParamCoord{0.7}}, {1})[0], DoubleEq(0.2845));
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectRightLowerCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{0}}, {0})[0], DoubleEq(1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{0}}, {1})[0], DoubleEq(-1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{0}}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{0}}, {1})[0], DoubleEq(-1));
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectRightUpperCorner) { // NOLINT
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{1}}, {0})[0], DoubleEq(1));
-  ASSERT_THAT(square_->Evaluate({ParamCoord{1}, ParamCoord{1}}, {1})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{1}}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(square_->Evaluate({baf::ParamCoord{1}, baf::ParamCoord{1}}, {1})[0], DoubleEq(1));
 }

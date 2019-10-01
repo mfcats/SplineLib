@@ -21,6 +21,8 @@ using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
+using namespace splinelib::src;
+
 class A1DRandomBSplineGenerator : public Test {  // NOLINT
  public:
   A1DRandomBSplineGenerator() {
@@ -29,7 +31,7 @@ class A1DRandomBSplineGenerator : public Test {  // NOLINT
 
  protected:
   spl::RandomBSplineGenerator<1> b_spline_generator_;
-  const std::array<ParamCoord, 2> limits_{{ParamCoord{0.5}, ParamCoord{2.75}}};
+  const std::array<baf::ParamCoord, 2> limits_{{baf::ParamCoord{0.5}, baf::ParamCoord{2.75}}};
   const int max_degree_{10};
   const int dimension_{2};
 };
@@ -68,7 +70,7 @@ class A2DRandomBSplineGenerator : public Test {  // NOLINT
 
  protected:
   spl::RandomBSplineGenerator<2> b_spline_generator_;
-  const std::array<ParamCoord, 2> limits_{{ParamCoord{0.0}, ParamCoord{10.0}}};
+  const std::array<baf::ParamCoord, 2> limits_{{baf::ParamCoord{0.0}, baf::ParamCoord{10.0}}};
   const int max_degree_{8};
   const int dimension_{3};
 };
@@ -99,7 +101,7 @@ class A3DRandomBSplineGenerator : public Test {  // NOLINT
 
  protected:
   spl::RandomBSplineGenerator<3> b_spline_generator_;
-  const std::array<ParamCoord, 2> limits_{{ParamCoord{2.0}, ParamCoord{3.0}}};
+  const std::array<baf::ParamCoord, 2> limits_{{baf::ParamCoord{2.0}, baf::ParamCoord{3.0}}};
   const int max_degree_{20};
   const int dimension_{4};
 };

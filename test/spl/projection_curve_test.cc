@@ -21,14 +21,16 @@ using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
+using namespace splinelib::src;
+
 class ABSpline2 : public Test {
  public:
   ABSpline2() {
-    std::array<baf::KnotVector, 1> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.2}, ParamCoord{0.4},
-                          ParamCoord{0.6}, ParamCoord{0.8}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1},
-                          ParamCoord{1}})};
-    std::array<Degree, 1> degree = {Degree{3}};
+    std::array<baf::KnotVector, 1> knot_vector = {baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.2},
+         baf::ParamCoord{0.4}, baf::ParamCoord{0.6}, baf::ParamCoord{0.8}, baf::ParamCoord{1}, baf::ParamCoord{1},
+         baf::ParamCoord{1}, baf::ParamCoord{1}})};
+    std::array<baf::Degree, 1> degree = {baf::Degree{3}};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({100, 100})),
         baf::ControlPoint(std::vector<double>({140, 196})),
@@ -45,7 +47,7 @@ class ABSpline2 : public Test {
 
  protected:
   std::shared_ptr<spl::Spline<1>> b_spline;
-  KnotVectors<1> knot_vector_ptr;
+  baf::KnotVectors<1> knot_vector_ptr;
 };
 
 TEST_F(ABSpline2, ComputesCorrectProjectionCloseToCenter) { // NOLINT

@@ -25,14 +25,16 @@ using ::testing::Return;
 using ::testing::Throw;
 using ::testing::NiceMock;
 
+using namespace splinelib::src;
+
 class MockParameterSpace : public spl::ParameterSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetDegree, Degree(int));
-  MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 1>, std::array<ParamCoord, 1>));
+  MOCK_CONST_METHOD1(GetDegree, baf::Degree(int));
+  MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 1>, std::array<baf::ParamCoord, 1>));
   MOCK_CONST_METHOD3(GetBasisFunctionDerivatives,
-                     double(std::array<int, 1>, std::array<ParamCoord, 1>, std::array<int, 1>));
-  MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 1>(std::array<ParamCoord, 1>));
-  MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<ParamCoord, 1>));
+                     double(std::array<int, 1>, std::array<baf::ParamCoord, 1>, std::array<int, 1>));
+  MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 1>(std::array<baf::ParamCoord, 1>));
+  MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<baf::ParamCoord, 1>));
 };
 
 class MockPhysicalSpace : public spl::PhysicalSpace<1> {
@@ -61,64 +63,71 @@ void mock_physicalSpace(const std::shared_ptr<NiceMock<MockPhysicalSpace>> &phys
 
 void set_throw_method(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
   ON_CALL(*parameter_space,
-          ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, 1>{ParamCoord{-1.0}}))
+          ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<baf::ParamCoord, 1>{baf::ParamCoord{-1.0}}))
       .WillByDefault(Throw(std::range_error("Out of knotvector range")));
   ON_CALL(*parameter_space,
-          ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParamCoord, 1>{ParamCoord{6.0}}))
+          ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<baf::ParamCoord, 1>{baf::ParamCoord{6.0}}))
       .WillByDefault(Throw(std::range_error("Out of knotvector range")));
 }
 
 void set_get_basis_function(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{0}, std::array<ParamCoord, 1>{ParamCoord{0.0}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{0},
+      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}}))
       .WillByDefault(Return(0.0));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{2}, std::array<ParamCoord, 1>{ParamCoord{2.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{2},
+      std::array<baf::ParamCoord, 1>{baf::ParamCoord{2.5}}))
       .WillByDefault(Return(0.125));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{3}, std::array<ParamCoord, 1>{ParamCoord{2.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{3},
+      std::array<baf::ParamCoord, 1>{baf::ParamCoord{2.5}}))
       .WillByDefault(Return(0.75));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{4}, std::array<ParamCoord, 1>{ParamCoord{2.5}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{4},
+      std::array<baf::ParamCoord, 1>{baf::ParamCoord{2.5}}))
       .WillByDefault(Return(0.125));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{5}, std::array<ParamCoord, 1>{ParamCoord{5.0}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{5},
+      std::array<baf::ParamCoord, 1>{baf::ParamCoord{5.0}}))
       .WillByDefault(Return(0.0));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{6}, std::array<ParamCoord, 1>{ParamCoord{5.0}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{6},
+      std::array<baf::ParamCoord, 1>{baf::ParamCoord{5.0}}))
       .WillByDefault(Return(0.0));
-  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{7}, std::array<ParamCoord, 1>{ParamCoord{5.0}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{7},
+      std::array<baf::ParamCoord, 1>{baf::ParamCoord{5.0}}))
       .WillByDefault(Return(1.0));
 }
 
 void set_basis_function_derivative1(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{0},
-                                      std::array<ParamCoord, 1>{ParamCoord{0.0}},
+                                      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}},
                                       std::array<int, 1>{1})).WillByDefault(Return(-2.0));
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{1},
-                                      std::array<ParamCoord, 1>{ParamCoord{0.0}},
+                                      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}},
                                       std::array<int, 1>{1})).WillByDefault(Return(2.0));
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{2},
-                                      std::array<ParamCoord, 1>{ParamCoord{0.0}},
+                                      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}},
                                       std::array<int, 1>{1})).WillByDefault(Return(0.0));
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{5},
-                                      std::array<ParamCoord, 1>{ParamCoord{5.0}},
+                                      std::array<baf::ParamCoord, 1>{baf::ParamCoord{5.0}},
                                       std::array<int, 1>{1})).WillByDefault(Return(0.0));
 }
 
 void set_basis_function_derivative2(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
   ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 1>{6},
-                                                        std::array<ParamCoord, 1>{ParamCoord{5.0}},
+                                                        std::array<baf::ParamCoord, 1>{baf::ParamCoord{5.0}},
                                                         std::array<int, 1>{1})).WillByDefault(Return(-2.0));
   ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 1>{7},
-                                                        std::array<ParamCoord, 1>{ParamCoord{5.0}},
+                                                        std::array<baf::ParamCoord, 1>{baf::ParamCoord{5.0}},
                                                         std::array<int, 1>{1})).WillByDefault(Return(2.0));
   ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 1>{2},
-                                                        std::array<ParamCoord, 1>{ParamCoord{2.25}},
+                                                        std::array<baf::ParamCoord, 1>{baf::ParamCoord{2.25}},
                                                         std::array<int, 1>{1})).WillByDefault(Return(-0.75));
   ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 1>{3},
-      std::array<ParamCoord, 1>{ParamCoord{2.25}},
+      std::array<baf::ParamCoord, 1>{baf::ParamCoord{2.25}},
                                       std::array<int, 1>{1})).WillByDefault(Return(0.5));
   ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 1>{4},
-                                      std::array<ParamCoord, 1>{ParamCoord{2.25}},
+                                      std::array<baf::ParamCoord, 1>{baf::ParamCoord{2.25}},
                                       std::array<int, 1>{1})).WillByDefault(Return(0.25));
 }
 
@@ -127,16 +136,16 @@ void mock_parameterSpace(const std::shared_ptr<NiceMock<MockParameterSpace>> &pa
   set_get_basis_function(parameter_space);
   set_basis_function_derivative1(parameter_space);
   set_basis_function_derivative2(parameter_space);
-  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{0.0}}))
+  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}}))
       .WillByDefault(Return(std::array<int, 1>{0}));
-  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{2.25}}))
+  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<baf::ParamCoord, 1>{baf::ParamCoord{2.25}}))
       .WillByDefault(Return(std::array<int, 1>{2}));
-  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{2.5}}))
+  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<baf::ParamCoord, 1>{baf::ParamCoord{2.5}}))
       .WillByDefault(Return(std::array<int, 1>{2}));
-  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<ParamCoord, 1>{ParamCoord{5.0}}))
+  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<baf::ParamCoord, 1>{baf::ParamCoord{5.0}}))
       .WillByDefault(Return(std::array<int, 1>{5}));
   ON_CALL(*parameter_space, GetDegree(0))
-      .WillByDefault(Return(Degree{2}));
+      .WillByDefault(Return(baf::Degree{2}));
 }
 
 // U = {0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 5}
@@ -158,93 +167,94 @@ class ABSpline : public Test {
 TEST_F(ABSpline, Returns0_0For0AndDim0) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THAT(b_spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({baf::ParamCoord{0.0}}, {0})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns0_0For0AndDim1) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THAT(b_spline->Evaluate({ParamCoord{0.0}}, {1})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({baf::ParamCoord{0.0}}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns4_0For5AndDim0) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THAT(b_spline->Evaluate({ParamCoord{5.0}}, {0})[0], DoubleEq(4.0));
+  ASSERT_THAT(b_spline->Evaluate({baf::ParamCoord{5.0}}, {0})[0], DoubleEq(4.0));
 }
 
 TEST_F(ABSpline, Returns0_0For5AndDim1) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THAT(b_spline->Evaluate({ParamCoord{5.0}}, {1})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({baf::ParamCoord{5.0}}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns1_5For2_5AndDim0) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THAT(b_spline->Evaluate({ParamCoord{2.5}}, {0})[0], DoubleEq(1.5));
+  ASSERT_THAT(b_spline->Evaluate({baf::ParamCoord{2.5}}, {0})[0], DoubleEq(1.5));
 }
 
 TEST_F(ABSpline, Returns0_0For0_0Dim0AndDer1) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{0.0}}, {0}, {1})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({baf::ParamCoord{0.0}}, {0}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns1_0For0_0Dim1AndDer1) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{0.0}}, {1}, {1})[0], DoubleEq(2.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({baf::ParamCoord{0.0}}, {1}, {1})[0], DoubleEq(2.0));
 }
 
 TEST_F(ABSpline, Returns12_0For5_0Dim0AndDer1) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{5.0}}, {0}, {1})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->EvaluateDerivative({baf::ParamCoord{5.0}}, {0}, {1})[0], DoubleEq(0.0));
 }
 
 TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THAT(b_spline->EvaluateDerivative({ParamCoord{2.25}}, {1}, {1})[0], DoubleEq(0.325));
+  ASSERT_THAT(b_spline->EvaluateDerivative({baf::ParamCoord{2.25}}, {1}, {1})[0], DoubleEq(0.325));
 }
 
 TEST_F(ABSpline, CanBeConstructedWithAPhysicalAndAParameterSpace) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THAT(b_spline->Evaluate({ParamCoord{5.0}}, {0})[0], DoubleEq(4.0));
+  ASSERT_THAT(b_spline->Evaluate({baf::ParamCoord{5.0}}, {0})[0], DoubleEq(4.0));
 }
 
 TEST_F(ABSpline, ThrowsExceptionForEvaluationAt6_0) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THROW(b_spline->Evaluate({ParamCoord{6.0}}, {0}), std::runtime_error);
+  ASSERT_THROW(b_spline->Evaluate({baf::ParamCoord{6.0}}, {0}), std::runtime_error);
 }
 
 TEST_F(ABSpline, ThrowsExceptionForEvaluationAtMinus1_0) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THROW(b_spline->Evaluate({ParamCoord{-1.0}}, {0}), std::runtime_error);
+  ASSERT_THROW(b_spline->Evaluate({baf::ParamCoord{-1.0}}, {0}), std::runtime_error);
 }
 
 TEST_F(ABSpline, ThrowsExceptionForDerivativeEvaluationAt6_0) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THROW(b_spline->EvaluateDerivative({ParamCoord{6.0}}, {0}, {1}), std::runtime_error);
+  ASSERT_THROW(b_spline->EvaluateDerivative({baf::ParamCoord{6.0}}, {0}, {1}), std::runtime_error);
 }
 
 TEST_F(ABSpline, ThrowsExceptionForDerivativeEvaluationAtMinus1_0) { // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
-  ASSERT_THROW(b_spline->EvaluateDerivative({ParamCoord{-1.0}}, {0}, {1}), std::runtime_error);
+  ASSERT_THROW(b_spline->EvaluateDerivative({baf::ParamCoord{-1.0}}, {0}, {1}), std::runtime_error);
 }
 
 class ABSplineWithSplineGenerator : public Test {
  public:
-  ABSplineWithSplineGenerator() : degree_{Degree{2}} {
-    std::array<baf::KnotVector, 1> knot_vector =
-        {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{2}, ParamCoord{3},
-                          ParamCoord{4}, ParamCoord{4}, ParamCoord{5}, ParamCoord{5}, ParamCoord{5}})};
+  ABSplineWithSplineGenerator() : degree_{baf::Degree{2}} {
+    std::array<baf::KnotVector, 1> knot_vector = {baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{2},
+         baf::ParamCoord{3}, baf::ParamCoord{4}, baf::ParamCoord{4}, baf::ParamCoord{5}, baf::ParamCoord{5},
+         baf::ParamCoord{5}})};
     control_points_ = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0})),
@@ -262,11 +272,11 @@ class ABSplineWithSplineGenerator : public Test {
 
  protected:
   std::unique_ptr<spl::BSpline<1>> b_spline;
-  KnotVectors<1> knot_vector_;
-  std::array<Degree, 1> degree_;
+  baf::KnotVectors<1> knot_vector_;
+  std::array<baf::Degree, 1> degree_;
   std::vector<baf::ControlPoint> control_points_;
 };
 
 TEST_F(ABSplineWithSplineGenerator, Returns0_0For0AndDim0) { // NOLINT
-  ASSERT_THAT(b_spline->Evaluate({ParamCoord{0.0}}, {0})[0], DoubleEq(0.0));
+  ASSERT_THAT(b_spline->Evaluate({baf::ParamCoord{0.0}}, {0})[0], DoubleEq(0.0));
 }

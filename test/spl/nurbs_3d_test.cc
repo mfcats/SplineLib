@@ -23,6 +23,8 @@ using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
+using namespace splinelib::src;
+
 /* 3-dimensional nurbs spline with following properties :
  * KnotVector = {{0, 0, 0, 1, 1, 1}, {0, 0, 1, 1}, {0, 0, 1, 1}}
  * ControlPoints = {{0, 0}, {1, 0}, {3, 0}, {-1, 0.5}, {2, 2}, {4, 1},
@@ -55,29 +57,26 @@ TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_5And0
   mock_parameterSpace_nurbs3d(parameter_space);
   mock_physicalSpace3d(physical_space);
   mock_weightedPhysicalSpace3d(w_physical_space);
-  ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.5}}, {0}, {1, 1, 0})[0],
-              DoubleEq(bspline_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.5}, ParamCoord{0.5}},
-                                                    {0},
-                                                    {1, 1, 0})[0]));
+  ASSERT_THAT(nurbs_->EvaluateDerivative({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {0},
+      {1, 1, 0})[0], DoubleEq(bspline_->EvaluateDerivative({baf::ParamCoord{0.5}, baf::ParamCoord{0.5},
+                                                            baf::ParamCoord{0.5}},{0}, {1, 1, 0})[0]));
 }
 
 TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And1And1) { // NOLINT
   mock_parameterSpace_nurbs3d(parameter_space);
   mock_physicalSpace3d(physical_space);
   mock_weightedPhysicalSpace3d(w_physical_space);
-  ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.8}, ParamCoord{0.1}}, {0}, {1, 1, 1})[0],
-              DoubleEq(bspline_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.8}, ParamCoord{0.1}},
-                                                    {0},
-                                                    {1, 1, 1})[0]));
+  ASSERT_THAT(nurbs_->EvaluateDerivative({baf::ParamCoord{0.5}, baf::ParamCoord{0.8}, baf::ParamCoord{0.1}}, {0},
+      {1, 1, 1})[0], DoubleEq(bspline_->EvaluateDerivative({baf::ParamCoord{0.5}, baf::ParamCoord{0.8},
+                                                            baf::ParamCoord{0.1}}, {0}, {1, 1, 1})[0]));
 }
 
 TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And2And1) { // NOLINT
   mock_parameterSpace_nurbs3d(parameter_space);
   mock_physicalSpace3d(physical_space);
   mock_weightedPhysicalSpace3d(w_physical_space);
-  ASSERT_THAT(nurbs_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.8}, ParamCoord{0.1}}, {0}, {1, 2, 1})[0],
-              DoubleNear(bspline_->EvaluateDerivative({ParamCoord{0.5}, ParamCoord{0.8}, ParamCoord{0.1}},
-                                                      {0},
-                                                      {1, 2, 1})[0],
-                         util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs_->EvaluateDerivative({baf::ParamCoord{0.5}, baf::ParamCoord{0.8}, baf::ParamCoord{0.1}}, {0},
+      {1, 2, 1})[0], DoubleNear(bspline_->EvaluateDerivative({baf::ParamCoord{0.5}, baf::ParamCoord{0.8},
+                                                              baf::ParamCoord{0.1}}, {0}, {1, 2, 1})[0],
+                                                                  util::NumericSettings<double>::kEpsilon()));
 }
