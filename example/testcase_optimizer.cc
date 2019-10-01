@@ -23,11 +23,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "knot_vector.h"
 #include "vtk_writer.h"
 
+using namespace splinelib::src;
+
 void createVTKFromControlPoints(std::vector<baf::ControlPoint> control_points, std::string fileName) {
-  std::array<Degree, 1> degree = {Degree{2}};
+  std::array<baf::Degree, 1> degree = baf::{Degree{2}};
   std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector_ptr = {
-      std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0},
-                                                         ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+      std::make_shared<baf::KnotVector>(baf::KnotVector({baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0},
+                                                         baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
   spl::BSpline<1> b_spline(knot_vector_ptr, degree, control_points);
   std::shared_ptr<spl::BSpline<1>> b_spline_ptr = std::make_shared<spl::BSpline<1>>(b_spline);
 
