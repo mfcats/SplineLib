@@ -23,12 +23,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleEq;
 
+using namespace splinelib::src;
+
 class A1DBSplineForXML {  // NOLINT
  public:
   A1DBSplineForXML() {
-    std::array<Degree, 1> degree = {Degree{1}};
-    KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(
-        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}}))};
+    std::array<baf::Degree, 1> degree = {baf::Degree{1}};
+    baf::KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.5}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0})),
         baf::ControlPoint(std::vector<double>({0.5})),
@@ -45,10 +47,9 @@ class A1DBSplineForXML {  // NOLINT
 class A1DNURBSForXML {  // NOLINT
  public:
   A1DNURBSForXML() {
-    std::array<Degree, 1> degree = {Degree{1}};
-    KnotVectors<1>
-        knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
-                                                                          ParamCoord{1}, ParamCoord{1}}))};
+    std::array<baf::Degree, 1> degree = {baf::Degree{1}};
+    baf::KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.5}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.0, 1.0})),
@@ -66,12 +67,13 @@ class A1DNURBSForXML {  // NOLINT
 class A2DBSplineForXML {  // NOLINT
  public:
   A2DBSplineForXML() {
-    std::array<Degree, 2> degree = {Degree{1}, Degree{2}};
-    KnotVectors<2> knot_vector = {
-        std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+    std::array<baf::Degree, 2> degree = {baf::Degree{1}, baf::Degree{2}};
+    baf::KnotVectors<2> knot_vector = {
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.5}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1},
+         baf::ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({1.0, 0.0, 1.0})),
@@ -94,12 +96,13 @@ class A2DBSplineForXML {  // NOLINT
 class A2DNURBSForXML {  // NOLINT
  public:
   A2DNURBSForXML() {
-    std::array<Degree, 2> degree = {Degree{1}, Degree{2}};
-    KnotVectors<2> knot_vector =
-        {std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5},
-                                                            ParamCoord{1}, ParamCoord{1}})),
-         std::make_unique<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                            ParamCoord{1}, ParamCoord{1}}))};
+    std::array<baf::Degree, 2> degree = {baf::Degree{1}, baf::Degree{2}};
+    baf::KnotVectors<2> knot_vector = {
+      std::make_unique<baf::KnotVector>(baf::KnotVector(
+          {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.5}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
+      std::make_unique<baf::KnotVector>(baf::KnotVector(
+          {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1},
+           baf::ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({1.0, 0.0})),
@@ -124,14 +127,15 @@ class A2DNURBSForXML {  // NOLINT
 class A3DBSplineForXML {  // NOLINT
  public:
   A3DBSplineForXML() {
-    std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{2}};
-    KnotVectors<3> knot_vector = {
+    std::array<baf::Degree, 3> degree = {baf::Degree{1}, baf::Degree{1}, baf::Degree{2}};
+    baf::KnotVectors<3> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
+            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1},
+             baf::ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.1, 0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({0.2, 0.0, 1.0})),
@@ -157,14 +161,15 @@ class A3DBSplineForXML {  // NOLINT
 class A3DNURBSForXML {  // NOLINT
  public:
   A3DNURBSForXML() {
-    std::array<Degree, 3> degree = {Degree{1}, Degree{2}, Degree{1}};
-    KnotVectors<3> knot_vector =
+    std::array<baf::Degree, 3> degree = {baf::Degree{1}, baf::Degree{2}, baf::Degree{1}};
+    baf::KnotVectors<3> knot_vector =
         {std::make_unique<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
          std::make_unique<baf::KnotVector>(baf::KnotVector(
-             {ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})),
+             {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1},
+              baf::ParamCoord{1}})),
          std::make_unique<baf::KnotVector>(baf::KnotVector(
-             {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+             {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.3, 0.0, 0.3, 0.0})),
         baf::ControlPoint(std::vector<double>({0.6, 0.0, 0.6, 0.0})),
@@ -192,16 +197,16 @@ class A3DNURBSForXML {  // NOLINT
 class A4DNURBSForXML {  // NOLINT
  public:
   A4DNURBSForXML() {
-    std::array<Degree, 4> degree = {Degree{1}, Degree{1}, Degree{1}, Degree{1}};
-    KnotVectors<4> knot_vector =
+    std::array<baf::Degree, 4> degree = {baf::Degree{1}, baf::Degree{1}, baf::Degree{1}, baf::Degree{1}};
+    baf::KnotVectors<4> knot_vector =
         {std::make_unique<baf::KnotVector>(baf::KnotVector(
-            {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
          std::make_unique<baf::KnotVector>(baf::KnotVector(
-             {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+             {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
          std::make_unique<baf::KnotVector>(baf::KnotVector(
-             {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+             {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
          std::make_unique<baf::KnotVector>(baf::KnotVector(
-             {ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
+             {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.1, 0.0, 0.3, 0.0})),
         baf::ControlPoint(std::vector<double>({0.2, 0.0, 0.6, 0.0})),
@@ -335,50 +340,50 @@ TEST_F(AnXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  
   auto bspline_3d_after = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(xml_reader->ReadFile("splines.xml")[4]);
   auto nurbs_3d_after = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(xml_reader->ReadFile("splines.xml")[5]);
   auto nurbs_4d_after = std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile("splines.xml")[6]);
-  ASSERT_THAT(b_spline_1d_->Evaluate({ParamCoord(0.75839)}, {0})[0],
-              DoubleEq(bspline_1d_after->Evaluate({ParamCoord(0.75839)}, {0})[0]));
+  ASSERT_THAT(b_spline_1d_->Evaluate({baf::ParamCoord(0.75839)}, {0})[0],
+              DoubleEq(bspline_1d_after->Evaluate({baf::ParamCoord(0.75839)}, {0})[0]));
 
-  ASSERT_THAT(nurbs_1d_->Evaluate({ParamCoord(0.13697)}, {0})[0],
-              DoubleEq(nurbs_1d_after->Evaluate({ParamCoord(0.13697)}, {0})[0]));
-  ASSERT_THAT(nurbs_1d_->Evaluate({ParamCoord(0.13697)}, {1})[0],
-              DoubleEq(nurbs_1d_after->Evaluate({ParamCoord(0.13697)}, {1})[0]));
+  ASSERT_THAT(nurbs_1d_->Evaluate({baf::ParamCoord(0.13697)}, {0})[0],
+              DoubleEq(nurbs_1d_after->Evaluate({baf::ParamCoord(0.13697)}, {0})[0]));
+  ASSERT_THAT(nurbs_1d_->Evaluate({baf::ParamCoord(0.13697)}, {1})[0],
+              DoubleEq(nurbs_1d_after->Evaluate({baf::ParamCoord(0.13697)}, {1})[0]));
 
-  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.47681)}, {0})[0],
-              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.47681)}, {0})[0]));
-  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.47681)}, {1})[0],
-              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.47681)}, {1})[0]));
-  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.47681)}, {2})[0],
-              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.47681)}, {2})[0]));
+  ASSERT_THAT(b_spline_2d_->Evaluate({baf::ParamCoord(0.47681)}, {0})[0],
+              DoubleEq(bspline_2d_after->Evaluate({baf::ParamCoord(0.47681)}, {0})[0]));
+  ASSERT_THAT(b_spline_2d_->Evaluate({baf::ParamCoord(0.47681)}, {1})[0],
+              DoubleEq(bspline_2d_after->Evaluate({baf::ParamCoord(0.47681)}, {1})[0]));
+  ASSERT_THAT(b_spline_2d_->Evaluate({baf::ParamCoord(0.47681)}, {2})[0],
+              DoubleEq(bspline_2d_after->Evaluate({baf::ParamCoord(0.47681)}, {2})[0]));
 
-  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.27856)}, {0})[0],
-              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.27856)}, {0})[0]));
-  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.27856)}, {1})[0],
-              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.27856)}, {1})[0]));
+  ASSERT_THAT(nurbs_2d_->Evaluate({baf::ParamCoord(0.27856)}, {0})[0],
+              DoubleEq(nurbs_2d_after->Evaluate({baf::ParamCoord(0.27856)}, {0})[0]));
+  ASSERT_THAT(nurbs_2d_->Evaluate({baf::ParamCoord(0.27856)}, {1})[0],
+              DoubleEq(nurbs_2d_after->Evaluate({baf::ParamCoord(0.27856)}, {1})[0]));
 
-  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.78781)}, {0})[0],
-              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.78781)}, {0})[0]));
-  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.78781)}, {1})[0],
-              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.78781)}, {1})[0]));
-  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.78781)}, {2})[0],
-              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.78781)}, {2})[0]));
+  ASSERT_THAT(b_spline_3d_->Evaluate({baf::ParamCoord(0.78781)}, {0})[0],
+              DoubleEq(bspline_3d_after->Evaluate({baf::ParamCoord(0.78781)}, {0})[0]));
+  ASSERT_THAT(b_spline_3d_->Evaluate({baf::ParamCoord(0.78781)}, {1})[0],
+              DoubleEq(bspline_3d_after->Evaluate({baf::ParamCoord(0.78781)}, {1})[0]));
+  ASSERT_THAT(b_spline_3d_->Evaluate({baf::ParamCoord(0.78781)}, {2})[0],
+              DoubleEq(bspline_3d_after->Evaluate({baf::ParamCoord(0.78781)}, {2})[0]));
 
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.90069)}, {0})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.90069)}, {0})[0]));
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.90069)}, {1})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.90069)}, {1})[0]));
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.90069)}, {2})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.90069)}, {2})[0]));
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.90069)}, {3})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.90069)}, {3})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({baf::ParamCoord(0.90069)}, {0})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({baf::ParamCoord(0.90069)}, {0})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({baf::ParamCoord(0.90069)}, {1})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({baf::ParamCoord(0.90069)}, {1})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({baf::ParamCoord(0.90069)}, {2})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({baf::ParamCoord(0.90069)}, {2})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({baf::ParamCoord(0.90069)}, {3})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({baf::ParamCoord(0.90069)}, {3})[0]));
 
-  ASSERT_THAT(nurbs_4d_->Evaluate({ParamCoord(0.3574)}, {0})[0],
-              DoubleEq(nurbs_4d_after->Evaluate({ParamCoord(0.3574)}, {0})[0]));
-  ASSERT_THAT(nurbs_4d_->Evaluate({ParamCoord(0.3574)}, {1})[0],
-              DoubleEq(nurbs_4d_after->Evaluate({ParamCoord(0.3574)}, {1})[0]));
-  ASSERT_THAT(nurbs_4d_->Evaluate({ParamCoord(0.3574)}, {2})[0],
-              DoubleEq(nurbs_4d_after->Evaluate({ParamCoord(0.3574)}, {2})[0]));
-  ASSERT_THAT(nurbs_4d_->Evaluate({ParamCoord(0.3574)}, {3})[0],
-              DoubleEq(nurbs_4d_after->Evaluate({ParamCoord(0.3574)}, {3})[0]));
+  ASSERT_THAT(nurbs_4d_->Evaluate({baf::ParamCoord(0.3574)}, {0})[0],
+              DoubleEq(nurbs_4d_after->Evaluate({baf::ParamCoord(0.3574)}, {0})[0]));
+  ASSERT_THAT(nurbs_4d_->Evaluate({baf::ParamCoord(0.3574)}, {1})[0],
+              DoubleEq(nurbs_4d_after->Evaluate({baf::ParamCoord(0.3574)}, {1})[0]));
+  ASSERT_THAT(nurbs_4d_->Evaluate({baf::ParamCoord(0.3574)}, {2})[0],
+              DoubleEq(nurbs_4d_after->Evaluate({baf::ParamCoord(0.3574)}, {2})[0]));
+  ASSERT_THAT(nurbs_4d_->Evaluate({baf::ParamCoord(0.3574)}, {3})[0],
+              DoubleEq(nurbs_4d_after->Evaluate({baf::ParamCoord(0.3574)}, {3})[0]));
   remove("splines.xml");
 }
 

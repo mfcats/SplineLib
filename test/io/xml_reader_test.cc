@@ -24,6 +24,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::DoubleEq;
 
+using namespace splinelib::src;
+
 class AnXMLReader : public Test {
  public:
   AnXMLReader() : xml_reader(std::make_unique<io::XMLReader>()) {}
@@ -101,35 +103,35 @@ TEST_F(AnXMLReader, GetsCorrectKnots) {  // NOLINT
 }
 
 TEST_F(AnXMLReader, EvaluatesSplinesCorrectly) {  // NOLINT
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
-      xml_reader->ReadFile(path_to_xml_file)[0])->Evaluate({ParamCoord(1), ParamCoord(1)}, {0})[0], DoubleEq(0));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
-      xml_reader->ReadFile(path_to_xml_file)[0])->Evaluate({ParamCoord(1), ParamCoord(1)}, {1})[0], DoubleEq(1));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
-      xml_reader->ReadFile(path_to_xml_file)[0])->Evaluate({ParamCoord(1), ParamCoord(1)}, {2})[0], DoubleEq(4));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_reader->ReadFile(path_to_xml_file)[0])->Evaluate(
+      {baf::ParamCoord(1), baf::ParamCoord(1)}, {0})[0], DoubleEq(0));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_reader->ReadFile(path_to_xml_file)[0])->Evaluate(
+      {baf::ParamCoord(1), baf::ParamCoord(1)}, {1})[0], DoubleEq(1));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(xml_reader->ReadFile(path_to_xml_file)[0])->Evaluate(
+      {baf::ParamCoord(1), baf::ParamCoord(1)}, {2})[0], DoubleEq(4));
 
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
-      xml_reader->ReadFile(path_to_xml_file)[1])->Evaluate({ParamCoord(0), ParamCoord(0)}, {0})[0], DoubleEq(-1));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
-      xml_reader->ReadFile(path_to_xml_file)[1])->Evaluate({ParamCoord(0), ParamCoord(0)}, {1})[0], DoubleEq(-2));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
-      xml_reader->ReadFile(path_to_xml_file)[1])->Evaluate({ParamCoord(0), ParamCoord(0)}, {2})[0], DoubleEq(3));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_reader->ReadFile(path_to_xml_file)[1])->Evaluate(
+      {baf::ParamCoord(0), baf::ParamCoord(0)}, {0})[0], DoubleEq(-1));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_reader->ReadFile(path_to_xml_file)[1])->Evaluate(
+      {baf::ParamCoord(0), baf::ParamCoord(0)}, {1})[0], DoubleEq(-2));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(xml_reader->ReadFile(path_to_xml_file)[1])->Evaluate(
+      {baf::ParamCoord(0), baf::ParamCoord(0)}, {2})[0], DoubleEq(3));
 
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<4>>>(xml_reader->ReadFile(path_to_xml_file)[2])->
-      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {0})[0], DoubleEq(-1));
+      Evaluate({baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0)}, {0})[0], DoubleEq(-1));
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<4>>>(xml_reader->ReadFile(path_to_xml_file)[2])->
-      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {1})[0], DoubleEq(-1));
+      Evaluate({baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0)}, {1})[0], DoubleEq(-1));
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<4>>>(xml_reader->ReadFile(path_to_xml_file)[2])->
-      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {2})[0], DoubleEq(0));
+      Evaluate({baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0)}, {2})[0], DoubleEq(0));
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<4>>>(xml_reader->ReadFile(path_to_xml_file)[2])->
-      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {3})[0], DoubleEq(1));
+      Evaluate({baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0)}, {3})[0], DoubleEq(1));
 
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->
-      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {0})[0], DoubleEq(1));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->
-      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {1})[0], DoubleEq(0.5));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->
-      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {2})[0], DoubleEq(0.2));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->
-      Evaluate({ParamCoord(0), ParamCoord(0), ParamCoord(0), ParamCoord(0)}, {3})[0], DoubleEq(0.8));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->Evaluate(
+      {baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0)}, {0})[0], DoubleEq(1));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->Evaluate(
+      {baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0)}, {1})[0], DoubleEq(0.5));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->Evaluate(
+      {baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0)}, {2})[0], DoubleEq(0.2));
+  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<4>>>(xml_reader->ReadFile(path_to_xml_file)[3])->Evaluate(
+      {baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(0)}, {3})[0], DoubleEq(0.8));
 }

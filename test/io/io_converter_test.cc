@@ -25,6 +25,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::Ne;
 
+using namespace splinelib::src;
+
 class AnIGEStoIRITConverter : public Test {
  public:
   AnIGEStoIRITConverter() : io_converter_(std::make_unique<io::IOConverter>(iges_read_2, "converted_irit_file.itd")) {}

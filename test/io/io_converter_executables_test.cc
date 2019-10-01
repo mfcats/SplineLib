@@ -30,6 +30,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 using testing::Test;
 using testing::Ne;
 
+using namespace splinelib::src;
+
 std::string GetCommandOutput(const std::string &command) {
   std::string result, file;
   FILE *pipe{popen(command.c_str(), "r")};  // NOLINT

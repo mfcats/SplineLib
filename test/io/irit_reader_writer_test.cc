@@ -26,14 +26,16 @@ using testing::DoubleEq;
 using testing::DoubleNear;
 using testing::Ne;
 
+using namespace splinelib::src;
+
 class A1DBSplineForIRIT {  // NOLINT
  public:
   A1DBSplineForIRIT() {
-    KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(
-        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.16666666666667},
-                         ParamCoord{0.33333333333333}, ParamCoord{0.5}, ParamCoord{0.66666666666667},
-                         ParamCoord{0.83333333333333}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
-    std::array<Degree, 1> degree = {Degree{2}};
+    baf::KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.16666666666667},
+         baf::ParamCoord{0.33333333333333}, baf::ParamCoord{0.5}, baf::ParamCoord{0.66666666666667},
+         baf::ParamCoord{0.83333333333333}, baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
+    std::array<baf::Degree, 1> degree = {baf::Degree{2}};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0, 0, 0})),
         baf::ControlPoint(std::vector<double>({0.5, 0.5, 0})),
@@ -55,10 +57,10 @@ class A1DBSplineForIRIT {  // NOLINT
 class A1DNURBSForIRIT {  // NOLINT
  public:
   A1DNURBSForIRIT() {
-    KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(
-        baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.25}, ParamCoord{0.5},
-                         ParamCoord{0.75}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}))};
-    std::array<Degree, 1> degree = {Degree{2}};
+    baf::KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.25}, baf::ParamCoord{0.5},
+         baf::ParamCoord{0.75}, baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
+    std::array<baf::Degree, 1> degree = {baf::Degree{2}};
     std::vector<double> weights = {0.5, 0.5, 0.5, 1, 1, 1};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0, 0})),
@@ -79,12 +81,14 @@ class A1DNURBSForIRIT {  // NOLINT
 class A2DBSplineForIRIT {  // NOLINT
  public:
   A2DBSplineForIRIT() {
-    KnotVectors<2> knot_vector = {
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                           ParamCoord{1}, ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                           ParamCoord{1}, ParamCoord{1}}))};
-    std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
+    baf::KnotVectors<2> knot_vector = {
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1},
+         baf::ParamCoord{1}})),
+       std::make_shared<baf::KnotVector>(baf::KnotVector(
+         {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1},
+          baf::ParamCoord{1}}))};
+    std::array<baf::Degree, 2> degree = {baf::Degree{2}, baf::Degree{2}};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0, 0, 0})),
         baf::ControlPoint(std::vector<double>({0, 1, 0.3})),
@@ -107,12 +111,14 @@ class A2DBSplineForIRIT {  // NOLINT
 class A2DNURBSForIRIT {  // NOLINT
  public:
   A2DNURBSForIRIT() {
-    KnotVectors<2> knot_vector = {
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                           ParamCoord{1}, ParamCoord{1}})),
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                                           ParamCoord{1}, ParamCoord{1}}))};
-    std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
+    baf::KnotVectors<2> knot_vector = {
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1},
+         baf::ParamCoord{1}})),
+      std::make_shared<baf::KnotVector>(baf::KnotVector(
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1},
+         baf::ParamCoord{1}}))};
+    std::array<baf::Degree, 2> degree = {baf::Degree{2}, baf::Degree{2}};
     std::vector<double> weights = {0.5, 0.5, 0.5, 1, 1, 1, 2, 2, 2};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0, 0})),
@@ -136,14 +142,14 @@ class A2DNURBSForIRIT {  // NOLINT
 class A3DBSplineForIRIT {  // NOLINT
  public:
   A3DBSplineForIRIT() {
-    KnotVectors<3> knot_vector = {
+    baf::KnotVectors<3> knot_vector = {
         std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+            baf::KnotVector({baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+            baf::KnotVector({baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
-    std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{1}};
+            baf::KnotVector({baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
+    std::array<baf::Degree, 3> degree = {baf::Degree{1}, baf::Degree{1}, baf::Degree{1}};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0, 0, 0})),
         baf::ControlPoint(std::vector<double>({1, 0, 0})),
@@ -165,14 +171,14 @@ class A3DBSplineForIRIT {  // NOLINT
 class A3DNURBSForIRIT {  // NOLINT
  public:
   A3DNURBSForIRIT() {
-    KnotVectors<3> knot_vector = {
+    baf::KnotVectors<3> knot_vector = {
         std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+            baf::KnotVector({baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}})),
+            baf::KnotVector({baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
         std::make_shared<baf::KnotVector>(
-            baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}}))};
-    std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{1}};
+            baf::KnotVector({baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
+    std::array<baf::Degree, 3> degree = {baf::Degree{1}, baf::Degree{1}, baf::Degree{1}};
     std::vector<double> weights = {0.2, 0.3, 0.5, 0.75, 1, 1.3, 1.5, 2};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0, 0, 0})),
@@ -226,18 +232,24 @@ TEST_F(AnIRITReader, ReturnsCorrectDegree) {  // NOLINT
 
 TEST_F(AnIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT
   std::vector<std::any> spline_vector = irit_reader->ReadFile(path_to_irit_file);
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline_vector[0])->Evaluate({ParamCoord{0.5}}, {0})[0],
-              DoubleEq(b_spline_1d_->Evaluate({ParamCoord{0.5}}, {0})[0]));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline_vector[1])->Evaluate({ParamCoord{0.123}}, {0})[0],
-              DoubleEq(nurbs_1d_->Evaluate({ParamCoord{0.123}}, {0})[0]));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline_vector[2])->Evaluate({ParamCoord{0.5}}, {1})[0],
-              DoubleEq(b_spline_2d_->Evaluate({ParamCoord{0.5}}, {1})[0]));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline_vector[3])->Evaluate({ParamCoord{0.375}}, {1})[0],
-              DoubleEq(nurbs_2d_->Evaluate({ParamCoord{0.375}}, {1})[0]));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline_vector[4])->Evaluate({ParamCoord{0.999}}, {2})[0],
-              DoubleEq(b_spline_3d_->Evaluate({ParamCoord{0.999}}, {2})[0]));
-  ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(spline_vector[5])->Evaluate({ParamCoord{0.007}}, {2})[0],
-              DoubleEq(nurbs_3d_->Evaluate({ParamCoord{0.007}}, {2})[0]));
+  ASSERT_THAT(
+      std::any_cast<std::shared_ptr<spl::BSpline<1>>>(spline_vector[0])->Evaluate({baf::ParamCoord{0.5}}, {0})[0],
+      DoubleEq(b_spline_1d_->Evaluate({baf::ParamCoord{0.5}}, {0})[0]));
+  ASSERT_THAT(
+      std::any_cast<std::shared_ptr<spl::NURBS<1>>>(spline_vector[1])->Evaluate({baf::ParamCoord{0.123}}, {0})[0],
+      DoubleEq(nurbs_1d_->Evaluate({baf::ParamCoord{0.123}}, {0})[0]));
+  ASSERT_THAT(
+      std::any_cast<std::shared_ptr<spl::BSpline<2>>>(spline_vector[2])->Evaluate({baf::ParamCoord{0.5}}, {1})[0],
+      DoubleEq(b_spline_2d_->Evaluate({baf::ParamCoord{0.5}}, {1})[0]));
+  ASSERT_THAT(
+      std::any_cast<std::shared_ptr<spl::NURBS<2>>>(spline_vector[3])->Evaluate({baf::ParamCoord{0.375}}, {1})[0],
+      DoubleEq(nurbs_2d_->Evaluate({baf::ParamCoord{0.375}}, {1})[0]));
+  ASSERT_THAT(
+      std::any_cast<std::shared_ptr<spl::BSpline<3>>>(spline_vector[4])->Evaluate({baf::ParamCoord{0.999}}, {2})[0],
+      DoubleEq(b_spline_3d_->Evaluate({baf::ParamCoord{0.999}}, {2})[0]));
+  ASSERT_THAT(
+      std::any_cast<std::shared_ptr<spl::NURBS<3>>>(spline_vector[5])->Evaluate({baf::ParamCoord{0.007}}, {2})[0],
+      DoubleEq(nurbs_3d_->Evaluate({baf::ParamCoord{0.007}}, {2})[0]));
 }
 
 class AnIRITWriter : public Test, public A1DBSplineForIRIT, public A1DNURBSForIRIT, public A2DBSplineForIRIT,
@@ -294,43 +306,43 @@ TEST_F(AnIRITWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingIRITFile) {
   auto nurbs_2d_after = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(irit_reader->ReadFile("splines.itd")[3]);
   auto bspline_3d_after = std::any_cast<std::shared_ptr<spl::BSpline<3>>>(irit_reader->ReadFile("splines.itd")[4]);
   auto nurbs_3d_after = std::any_cast<std::shared_ptr<spl::NURBS<3>>>(irit_reader->ReadFile("splines.itd")[5]);
-  ASSERT_THAT(b_spline_1d_->Evaluate({ParamCoord(0.75839)}, {0})[0],
-              DoubleNear(bspline_1d_after->Evaluate({ParamCoord(0.75839)}, {0})[0], 0.00001));
-  ASSERT_THAT(b_spline_1d_->Evaluate({ParamCoord(0.75839)}, {1})[0],
-              DoubleNear(bspline_1d_after->Evaluate({ParamCoord(0.75839)}, {1})[0], 0.00001));
-  ASSERT_THAT(b_spline_1d_->Evaluate({ParamCoord(0.75839)}, {2})[0],
-              DoubleNear(bspline_1d_after->Evaluate({ParamCoord(0.75839)}, {2})[0], 0.00001));
+  ASSERT_THAT(b_spline_1d_->Evaluate({baf::ParamCoord(0.75839)}, {0})[0],
+              DoubleNear(bspline_1d_after->Evaluate({baf::ParamCoord(0.75839)}, {0})[0], 0.00001));
+  ASSERT_THAT(b_spline_1d_->Evaluate({baf::ParamCoord(0.75839)}, {1})[0],
+              DoubleNear(bspline_1d_after->Evaluate({baf::ParamCoord(0.75839)}, {1})[0], 0.00001));
+  ASSERT_THAT(b_spline_1d_->Evaluate({baf::ParamCoord(0.75839)}, {2})[0],
+              DoubleNear(bspline_1d_after->Evaluate({baf::ParamCoord(0.75839)}, {2})[0], 0.00001));
 
-  ASSERT_THAT(nurbs_1d_->Evaluate({ParamCoord(0.22004)}, {0})[0],
-              DoubleEq(nurbs_1d_after->Evaluate({ParamCoord(0.22004)}, {0})[0]));
-  ASSERT_THAT(nurbs_1d_->Evaluate({ParamCoord(0.22004)}, {1})[0],
-              DoubleEq(nurbs_1d_after->Evaluate({ParamCoord(0.22004)}, {1})[0]));
+  ASSERT_THAT(nurbs_1d_->Evaluate({baf::ParamCoord(0.22004)}, {0})[0],
+              DoubleEq(nurbs_1d_after->Evaluate({baf::ParamCoord(0.22004)}, {0})[0]));
+  ASSERT_THAT(nurbs_1d_->Evaluate({baf::ParamCoord(0.22004)}, {1})[0],
+              DoubleEq(nurbs_1d_after->Evaluate({baf::ParamCoord(0.22004)}, {1})[0]));
 
-  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.85111)}, {0})[0],
-              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.85111)}, {0})[0]));
-  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.85111)}, {1})[0],
-              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.85111)}, {1})[0]));
-  ASSERT_THAT(b_spline_2d_->Evaluate({ParamCoord(0.85111)}, {2})[0],
-              DoubleEq(bspline_2d_after->Evaluate({ParamCoord(0.85111)}, {2})[0]));
+  ASSERT_THAT(b_spline_2d_->Evaluate({baf::ParamCoord(0.85111)}, {0})[0],
+              DoubleEq(bspline_2d_after->Evaluate({baf::ParamCoord(0.85111)}, {0})[0]));
+  ASSERT_THAT(b_spline_2d_->Evaluate({baf::ParamCoord(0.85111)}, {1})[0],
+              DoubleEq(bspline_2d_after->Evaluate({baf::ParamCoord(0.85111)}, {1})[0]));
+  ASSERT_THAT(b_spline_2d_->Evaluate({baf::ParamCoord(0.85111)}, {2})[0],
+              DoubleEq(bspline_2d_after->Evaluate({baf::ParamCoord(0.85111)}, {2})[0]));
 
-  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.33359)}, {0})[0],
-              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.33359)}, {0})[0]));
-  ASSERT_THAT(nurbs_2d_->Evaluate({ParamCoord(0.33359)}, {1})[0],
-              DoubleEq(nurbs_2d_after->Evaluate({ParamCoord(0.33359)}, {1})[0]));
+  ASSERT_THAT(nurbs_2d_->Evaluate({baf::ParamCoord(0.33359)}, {0})[0],
+              DoubleEq(nurbs_2d_after->Evaluate({baf::ParamCoord(0.33359)}, {0})[0]));
+  ASSERT_THAT(nurbs_2d_->Evaluate({baf::ParamCoord(0.33359)}, {1})[0],
+              DoubleEq(nurbs_2d_after->Evaluate({baf::ParamCoord(0.33359)}, {1})[0]));
 
-  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.89463)}, {0})[0],
-              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.89463)}, {0})[0]));
-  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.89463)}, {1})[0],
-              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.89463)}, {1})[0]));
-  ASSERT_THAT(b_spline_3d_->Evaluate({ParamCoord(0.89463)}, {2})[0],
-              DoubleEq(bspline_3d_after->Evaluate({ParamCoord(0.89463)}, {2})[0]));
+  ASSERT_THAT(b_spline_3d_->Evaluate({baf::ParamCoord(0.89463)}, {0})[0],
+              DoubleEq(bspline_3d_after->Evaluate({baf::ParamCoord(0.89463)}, {0})[0]));
+  ASSERT_THAT(b_spline_3d_->Evaluate({baf::ParamCoord(0.89463)}, {1})[0],
+              DoubleEq(bspline_3d_after->Evaluate({baf::ParamCoord(0.89463)}, {1})[0]));
+  ASSERT_THAT(b_spline_3d_->Evaluate({baf::ParamCoord(0.89463)}, {2})[0],
+              DoubleEq(bspline_3d_after->Evaluate({baf::ParamCoord(0.89463)}, {2})[0]));
 
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.00021)}, {0})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {0})[0]));
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.00021)}, {1})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {1})[0]));
-  ASSERT_THAT(nurbs_3d_->Evaluate({ParamCoord(0.00021)}, {2})[0],
-              DoubleEq(nurbs_3d_after->Evaluate({ParamCoord(0.00021)}, {2})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({baf::ParamCoord(0.00021)}, {0})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({baf::ParamCoord(0.00021)}, {0})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({baf::ParamCoord(0.00021)}, {1})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({baf::ParamCoord(0.00021)}, {1})[0]));
+  ASSERT_THAT(nurbs_3d_->Evaluate({baf::ParamCoord(0.00021)}, {2})[0],
+              DoubleEq(nurbs_3d_after->Evaluate({baf::ParamCoord(0.00021)}, {2})[0]));
   remove("splines.itd");
 }
 
