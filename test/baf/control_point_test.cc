@@ -20,6 +20,8 @@ using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
+using namespace splinelib::src;
+
 class AControlPoint : public Test {
  public:
   AControlPoint() : control_point({1.0, 2.0}), control_point_b({2.0, -1.0}), control_point_c({1.0, 0.7, 1.9}),

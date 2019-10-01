@@ -20,16 +20,19 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::Test;
 
+using namespace splinelib::src;
+
 class ABasisFunctionFactory : public Test {
  public:
-  ABasisFunctionFactory() : degree_{Degree{-1}},
-      knot_vector_({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-      start_of_support_{KnotSpan{4}} {}
+  ABasisFunctionFactory() : degree_{baf::Degree{-1}},
+      knot_vector_({baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1},
+                    baf::ParamCoord{1}}),
+      start_of_support_{baf::KnotSpan{4}} {}
 
  protected:
-  Degree degree_;
+  baf::Degree degree_;
   baf::KnotVector knot_vector_;
-  KnotSpan start_of_support_;
+  baf::KnotSpan start_of_support_;
   baf::BasisFunctionFactory basis_function_factory;
 };
 
