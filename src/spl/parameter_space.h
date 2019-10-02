@@ -21,7 +21,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <sstream>
 #include <vector>
 
-#include "alias.h"
 #include "basis_function.h"
 #include "basis_function_factory.h"
 #include "knot_vector.h"

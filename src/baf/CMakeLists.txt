@@ -40,7 +40,6 @@ install(
 )
 
 install(FILES
-		alias.h
         b_spline_basis_function.h
         basis_function.h
         basis_function_factory.h

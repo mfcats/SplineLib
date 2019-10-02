@@ -73,6 +73,9 @@ class KnotVector {
  private:
   std::vector<ParamCoord> knots_;
 };
+
+template<int DIM>
+using KnotVectors = std::array<std::shared_ptr<KnotVector>, DIM>;
 }  // namespace splinelib::src::baf
 
 #endif  // SRC_BAF_KNOT_VECTOR_H_
