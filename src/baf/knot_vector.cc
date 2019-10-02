@@ -30,8 +30,8 @@ KnotVector::KnotVector(KnotVector &&knotVector) noexcept : knots_(std::move(knot
 
 KnotVector::KnotVector(std::initializer_list<ParamCoord> knots) noexcept : knots_(knots) {}
 
-KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<ParamCoord>(begin,
-                                                                                                             end)) {}
+KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<ParamCoord>(begin, end)) {}
+
 KnotVector::KnotVector(std::vector<ParamCoord> coords, Degree degree, int nbControlPoints) {
   for (int i = 0; i <= degree.get(); ++i) {
     knots_.emplace_back(ParamCoord{0.0});

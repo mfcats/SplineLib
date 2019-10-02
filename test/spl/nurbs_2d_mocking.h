@@ -118,7 +118,7 @@ void set_get_basis_function_nurbs(const std::shared_ptr<NiceMock<MockParameterSp
 void set_basis_function_derivative1(const std::shared_ptr<NiceMock<MockParameterSpace1>> &parameter_space) {
   ON_CALL(*parameter_space, GetBasisFunctionDerivatives(_, _, _)).WillByDefault(Return(0.0));
   ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{0, 2},
-      std::array<baf::ParamCoord, 2>{baf::ParamCoord{0.0}, baf::ParamCoord{1.0}},std::array<int, 2>{1, 0}))
+      std::array<baf::ParamCoord, 2>{baf::ParamCoord{0.0}, baf::ParamCoord{1.0}}, std::array<int, 2>{1, 0}))
       .WillByDefault(Return(-2.0));
   ON_CALL(*parameter_space, GetBasisFunctionDerivatives(std::array<int, 2>{1, 2},
       std::array<baf::ParamCoord, 2>{baf::ParamCoord{0.0}, baf::ParamCoord{1.0}}, std::array<int, 2>{1, 0}))

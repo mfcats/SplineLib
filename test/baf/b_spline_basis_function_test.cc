@@ -28,12 +28,8 @@ class MockKnotVector000111 : public baf::KnotVector {
   }
 
  private:
-  const std::vector<baf::ParamCoord> knts = {baf::ParamCoord{0},
-                                        baf::ParamCoord{0},
-                                        baf::ParamCoord{0},
-                                        baf::ParamCoord{1},
-                                        baf::ParamCoord{1},
-                                        baf::ParamCoord{1}};
+  const std::vector<baf::ParamCoord> knts = {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0},
+                                             baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1}};
 };
 
 // Test basis function N_{0,1} from NURBS book example 2.1
