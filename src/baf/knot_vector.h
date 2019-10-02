@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_BAF_KNOT_VECTOR_H_
 #define SRC_BAF_KNOT_VECTOR_H_
 
+#include <array>
 #include <initializer_list>
 #include <utility>
 #include <vector>
