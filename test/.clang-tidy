@@ -1,4 +1,4 @@
-Checks: '*,-hicpp-braces-around-statements,-readability-braces-around-statements,-android-*,-llvm-include-order,-fuchsia-overloaded-operator,-fuchsia-default-arguments,-cppcoreguidelines-pro-bounds-constant-array-index,-google-build-using-namespace'
+Checks: '*,-hicpp-braces-around-statements,-readability-braces-around-statements,-android-*,-llvm-include-order,-fuchsia-overloaded-operator,-fuchsia-default-arguments,-cppcoreguidelines-pro-bounds-constant-array-index,-google-readability-namespace-comments,-llvm-namespace-comment,-google-build-using-namespace'
 FormatStyle: google
 WarningsAsErrors: '*'
 CheckOptions:
