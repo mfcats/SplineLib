@@ -191,7 +191,8 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
 
   double GetEvaluatedWeightSum(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
     auto first_non_zero = this->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> basisFunctionHandler(
+        this->GetNumberOfBasisFunctionsToEvaluate());
     double sum = 0;
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetIndices();

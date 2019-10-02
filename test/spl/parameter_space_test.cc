@@ -80,7 +80,7 @@ TEST_F(A1DParameterSpace, ReturnsCorrectBasisFunctionValuesForParametricCoordina
   }
 }
 
-TEST_F(A1DParameterSpace,
+TEST_F(A1DParameterSpace,  // NOLINT
        ReturnsCorrectBasisFunctionDerivativeValuesForParametricCoordinate0_5AndDerivative1) {  // NOLINT
   std::vector<double> values = {-1, 0.5, 0.5, 0, 0, 0, 0, 0};
   for (int i = 0; i < 8; ++i) {
