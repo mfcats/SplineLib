@@ -26,23 +26,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 
 namespace iga {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class ElementIntegralCalculator {
  public:
-  explicit ElementIntegralCalculator(std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {
-    baf_handler_ = std::make_shared<iga::BasisFunctionHandler<DIM>>(spline_);
-    connectivity_handler_ = std::make_shared<iga::ConnectivityHandler<DIM>>(spline_);
+  explicit ElementIntegralCalculator(std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spl) : spline_(std::move(spl)) {
+    baf_handler_ = std::make_shared<iga::BasisFunctionHandler<PARAMETRIC_DIMENSIONALITY>>(spline_);
+    connectivity_handler_ = std::make_shared<iga::ConnectivityHandler<PARAMETRIC_DIMENSIONALITY>>(spline_);
   }
 
   void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
       const std::shared_ptr<arma::dmat> &matA, double thermal_conductivity = 1.0) const {
-    std::vector<iga::elm::ElementIntegrationPoint<DIM>> elm_intgr_pnts =
+    std::vector<iga::elm::ElementIntegrationPoint<PARAMETRIC_DIMENSIONALITY>> elm_intgr_pnts =
         baf_handler_->EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(element_number, rule);
     for (auto &p : elm_intgr_pnts) {
       for (int j = 0; j < p.GetNumberOfNonZeroBasisFunctionDerivatives(0); ++j) {
         for (int k = 0; k < p.GetNumberOfNonZeroBasisFunctionDerivatives(0); ++k) {
           double temp = 0;
-          for (int i = 0; i < DIM; ++i) {
+          for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
             temp += p.GetBasisFunctionDerivativeValue(j, i) * p.GetBasisFunctionDerivativeValue(k, i);
           }
           temp *= p.GetWeight() * p.GetJacobianDeterminant() * thermal_conductivity;
@@ -55,7 +55,7 @@ class ElementIntegralCalculator {
 
   void GetLaplaceElementIntegral(int element_number, const iga::itg::IntegrationRule &rule,
       const std::shared_ptr<arma::dvec> &vecB, const std::shared_ptr<arma::dvec> &srcCp) const {
-    std::vector<iga::elm::ElementIntegrationPoint<DIM>> elm_intgr_pnts =
+    std::vector<iga::elm::ElementIntegrationPoint<PARAMETRIC_DIMENSIONALITY>> elm_intgr_pnts =
         baf_handler_->EvaluateAllElementNonZeroNURBSBasisFunctions(element_number, rule);
     for (auto &p : elm_intgr_pnts) {
       double bc_int_pnt = 0;
@@ -71,9 +71,9 @@ class ElementIntegralCalculator {
   }
 
  private:
-  std::shared_ptr<spl::NURBS<DIM>> spline_;
-  std::shared_ptr<iga::BasisFunctionHandler<DIM>> baf_handler_;
-  std::shared_ptr<iga::ConnectivityHandler<DIM>> connectivity_handler_;
+  std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spline_;
+  std::shared_ptr<iga::BasisFunctionHandler<PARAMETRIC_DIMENSIONALITY>> baf_handler_;
+  std::shared_ptr<iga::ConnectivityHandler<PARAMETRIC_DIMENSIONALITY>> connectivity_handler_;
 };
 }  // namespace iga
 

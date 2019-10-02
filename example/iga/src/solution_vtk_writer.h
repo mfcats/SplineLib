@@ -26,28 +26,28 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "vtk_writer.h"
 
 namespace iga {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class SolutionVTKWriter {
  public:
   SolutionVTKWriter() = default;
 
-  void WriteSolutionToVTK(const std::shared_ptr<spl::NURBS<DIM>> &spl, const arma::dvec &solution,
+  void WriteSolutionToVTK(const std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> &spl, const arma::dvec &solution,
                           const std::vector<std::vector<int>> &scattering, const std::string &filename) const {
-    iga::SolutionSpline<DIM> sol_spl(spl, solution);
-    std::shared_ptr<spl::NURBS<DIM>> solution_spl = sol_spl.GetSolutionSpline();
+    iga::SolutionSpline<PARAMETRIC_DIMENSIONALITY> sol_spl(spl, solution);
+    std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> solution_spl = sol_spl.GetSolutionSpline();
     int cp_dim = spl->GetPointDim();
     std::vector<double> dxi;
-    std::array<int, DIM> num_pnts{};
-    for (int i = 0; i < DIM; ++i) {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> num_pnts{};
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       baf::KnotVector knots = *spl->GetKnotVector(i);
       dxi.emplace_back((knots.GetKnot(knots.GetNumberOfKnots() - 1) - knots.GetKnot(0)).get() / scattering[0][i]);
       num_pnts[i] = scattering[0][i] + 1;
     }
     std::vector<double> point_data;
-    util::MultiIndexHandler<DIM> mih(num_pnts);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mih(num_pnts);
     while (true) {
-      std::array<ParametricCoordinate, DIM> param_coords{};
-      for (int i = 0; i < DIM; ++i) {
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coords{};
+      for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
         param_coords[i] = spl->GetKnotVector(i)->GetKnot(0) + ParametricCoordinate{mih[i] * dxi[i]};
       }
       point_data.emplace_back(solution_spl->Evaluate(param_coords, {cp_dim})[0]);
@@ -55,7 +55,7 @@ class SolutionVTKWriter {
       ++mih;
     }
     io::VTKWriter vtk_writer;
-    std::vector<std::any> splines = {std::make_any<std::shared_ptr<spl::NURBS<DIM>>>(spl)};
+    std::vector<std::any> splines = {std::make_any<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spl)};
     vtk_writer.WriteFile(splines, filename, scattering);
     std::ofstream newFile;
     newFile.open(filename, std::ofstream::out | std::ofstream::app);

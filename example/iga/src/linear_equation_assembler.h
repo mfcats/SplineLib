@@ -25,39 +25,39 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 
 namespace iga {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class LinearEquationAssembler {
  public:
-  explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {
-    elm_gen_ = std::make_shared<iga::elm::ElementGenerator<DIM>>(spline_);
+  explicit LinearEquationAssembler(std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spl) : spline_(std::move(spl)) {
+    elm_gen_ = std::make_shared<iga::elm::ElementGenerator<PARAMETRIC_DIMENSIONALITY>>(spline_);
   }
 
   void GetLeftSide(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dmat> &matA,
-      const iga::ElementIntegralCalculator<DIM> &elm_itg_calc, double thermal_conductivity = 1.0) const {
+      const iga::ElementIntegralCalculator<PARAMETRIC_DIMENSIONALITY> &elm_itg_calc, double thermal_conductivity = 1.0) const {
     for (int e = 0; e < elm_gen_->GetNumberOfElements(); ++e) {
       elm_itg_calc.GetLaplaceElementIntegral(e, rule, matA, thermal_conductivity);
     }
   }
 
   void GetRightSide(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dvec> &vecB,
-      const iga::ElementIntegralCalculator<DIM> &elm_itg_calc, const std::shared_ptr<arma::dvec> &srcCp) const {
+      const iga::ElementIntegralCalculator<PARAMETRIC_DIMENSIONALITY> &elm_itg_calc, const std::shared_ptr<arma::dvec> &srcCp) const {
     for (int e = 0; e < elm_gen_->GetNumberOfElements(); ++e) {
       elm_itg_calc.GetLaplaceElementIntegral(e, rule, vecB, srcCp);
     }
   }
 
   void GetRightSideNeumann(const iga::itg::IntegrationRule &rule, const std::shared_ptr<arma::dvec> &vecB,
-      const std::array<std::array<std::shared_ptr<arma::dvec>, 2>, DIM> &NeumannCp) const {
-    if (DIM == 1) throw std::runtime_error("Neumann boundary conditions are not implemented for 1d splines!");
-    std::array<std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, 2>, DIM> boundary_splines = GetBoundarySplines();
-    std::array<std::array<std::vector<int>, 2>, DIM> boundary_spline_connectivity = GetBoundarySplineConnectivity();
+      const std::array<std::array<std::shared_ptr<arma::dvec>, 2>, PARAMETRIC_DIMENSIONALITY> &NeumannCp) const {
+    if (PARAMETRIC_DIMENSIONALITY == 1) throw std::runtime_error("Neumann boundary conditions are not implemented for 1d splines!");
+    std::array<std::array<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY - 1>>, 2>, PARAMETRIC_DIMENSIONALITY> boundary_splines = GetBoundarySplines();
+    std::array<std::array<std::vector<int>, 2>, PARAMETRIC_DIMENSIONALITY> boundary_spline_connectivity = GetBoundarySplineConnectivity();
     for (int i = 0; i < boundary_splines.size(); ++i) {
       for (int j = 0; j < boundary_splines[i].size(); ++j) {
-        iga::elm::ElementGenerator<DIM - 1> elm_gen(boundary_splines[i][j]);
-        iga::BasisFunctionHandler<DIM - 1> baf_handler(boundary_splines[i][j]);
-        iga::ConnectivityHandler<DIM - 1> connectivity_handler(boundary_splines[i][j]);
+        iga::elm::ElementGenerator<PARAMETRIC_DIMENSIONALITY - 1> elm_gen(boundary_splines[i][j]);
+        iga::BasisFunctionHandler<PARAMETRIC_DIMENSIONALITY - 1> baf_handler(boundary_splines[i][j]);
+        iga::ConnectivityHandler<PARAMETRIC_DIMENSIONALITY - 1> connectivity_handler(boundary_splines[i][j]);
         for (int e = 0; e < elm_gen.GetNumberOfElements(); ++e) {
-          std::vector<iga::elm::ElementIntegrationPoint<DIM - 1>> elm_intgr_pnts =
+          std::vector<iga::elm::ElementIntegrationPoint<PARAMETRIC_DIMENSIONALITY - 1>> elm_intgr_pnts =
               baf_handler.EvaluateAllElementNonZeroNURBSBasisFunctions(e, rule);
           for (auto &p : elm_intgr_pnts) {
             double bc_int_pnt = 0;
@@ -76,15 +76,15 @@ class LinearEquationAssembler {
     }
   }
 
-  std::array<std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, 2>, DIM> GetBoundarySplines() const {
-    std::array<int, DIM> points_per_dir = spline_->GetPointsPerDirection();
-    std::array<std::array<std::shared_ptr<spl::NURBS<DIM - 1>>, 2>, DIM> boundary_splines;
-    std::array<std::array<std::vector<int>, 2>, DIM> boundary_spline_connectivity = GetBoundarySplineConnectivity();
-    for (int i = 0; i < DIM; ++i) {
-      std::array<Degree, DIM - 1> degree;
-      std::array<std::shared_ptr<baf::KnotVector>, DIM - 1> kv_ptr;
+  std::array<std::array<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY - 1>>, 2>, PARAMETRIC_DIMENSIONALITY> GetBoundarySplines() const {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> points_per_dir = spline_->GetPointsPerDirection();
+    std::array<std::array<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY - 1>>, 2>, PARAMETRIC_DIMENSIONALITY> boundary_splines;
+    std::array<std::array<std::vector<int>, 2>, PARAMETRIC_DIMENSIONALITY> boundary_spline_connectivity = GetBoundarySplineConnectivity();
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
+      std::array<Degree, PARAMETRIC_DIMENSIONALITY - 1> degree;
+      std::array<std::shared_ptr<baf::KnotVector>, PARAMETRIC_DIMENSIONALITY - 1> kv_ptr;
       int m = 0;
-      for (int j = 0; j < DIM; ++j) {
+      for (int j = 0; j < PARAMETRIC_DIMENSIONALITY; ++j) {
         if (j != i) {
           kv_ptr[m] = spline_->GetKnotVector(m);
           degree[m] = spline_->GetDegree(m);
@@ -93,24 +93,24 @@ class LinearEquationAssembler {
       }
       std::array<std::vector<baf::ControlPoint>, 2> control_points;
       std::array<std::vector<double>, 2> weights;
-      util::MultiIndexHandler<DIM> mih(points_per_dir);
+      util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mih(points_per_dir);
       for (int k = 0; k < boundary_spline_connectivity[i].size(); ++k) {
         for (int n = 0; n < boundary_spline_connectivity[i][k].size(); ++n) {
           mih.Set1DIndex(boundary_spline_connectivity[i][k][n]);
           control_points[k].emplace_back(spline_->GetControlPoint(mih.GetIndices()));
           weights[k].emplace_back(spline_->GetWeight(mih.GetIndices()));
         }
-        boundary_splines[i][k] = std::make_shared<spl::NURBS<DIM - 1>>(kv_ptr, degree, control_points[k], weights[k]);
+        boundary_splines[i][k] = std::make_shared<spl::NURBS<PARAMETRIC_DIMENSIONALITY - 1>>(kv_ptr, degree, control_points[k], weights[k]);
       }
     }
     return boundary_splines;
   }
 
-  std::array<std::array<std::vector<int>, 2>, DIM> GetBoundarySplineConnectivity() const {
-    std::array<int, DIM> points_per_dir = spline_->GetPointsPerDirection();
-    std::array<std::array<std::vector<int>, 2>, DIM> boundary_spl_connectivity;
-    for (int i = 0; i < DIM; ++i) {
-      util::MultiIndexHandler<DIM> mih(points_per_dir);
+  std::array<std::array<std::vector<int>, 2>, PARAMETRIC_DIMENSIONALITY> GetBoundarySplineConnectivity() const {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> points_per_dir = spline_->GetPointsPerDirection();
+    std::array<std::array<std::vector<int>, 2>, PARAMETRIC_DIMENSIONALITY> boundary_spl_connectivity;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
+      util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mih(points_per_dir);
       for (int k = 0; k < mih.Get1DLength(); ++k) {
         if (mih[i] == 0) {
           boundary_spl_connectivity[i][0].emplace_back(mih.Get1DIndex());
@@ -125,10 +125,10 @@ class LinearEquationAssembler {
   }
 
   void SetZeroBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB) {
-    util::MultiIndexHandler<DIM> mih(spline_->GetPointsPerDirection());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mih(spline_->GetPointsPerDirection());
     while (true) {
       bool on_boundary = false;
-      for (int i = 0; i < DIM; ++i) {
+      for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
         if (!((mih[i] > 0) && (mih.GetDifferenceIndices()[i] > 0))) {
           on_boundary = true;
         }
@@ -145,12 +145,12 @@ class LinearEquationAssembler {
 
   void SetDirichletBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB,
                       std::shared_ptr<arma::dvec> Dirichlet = nullptr) {
-    util::MultiIndexHandler<DIM> mih(spline_->GetPointsPerDirection());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mih(spline_->GetPointsPerDirection());
     uint64_t num_boundary_cp = 0;
     if (Dirichlet == nullptr) Dirichlet = std::make_shared<arma::dvec>((*vecB).size(), arma::fill::zeros);
     while (true) {
       bool on_boundary = false;
-      for (int i = 0; i < DIM; ++i) {
+      for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
         if (!((mih[i] > 0) && (mih.GetDifferenceIndices()[i] > 0))) {
           on_boundary = true;
         }
@@ -194,8 +194,8 @@ class LinearEquationAssembler {
   }*/
 
 private:
-std::shared_ptr<spl::NURBS<DIM>> spline_;
-std::shared_ptr<iga::elm::ElementGenerator<DIM>> elm_gen_;
+std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spline_;
+std::shared_ptr<iga::elm::ElementGenerator<PARAMETRIC_DIMENSIONALITY>> elm_gen_;
 };
 }  // namespace iga
 

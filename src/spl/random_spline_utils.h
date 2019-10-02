@@ -23,25 +23,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "physical_space.h"
 
 namespace splinelib::src::spl {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class RandomSplineUtils {
  public:
   RandomSplineUtils() = default;
   virtual ~RandomSplineUtils() = default;
 
-  static std::array<Degree, DIM> GetRandomDegrees(int max_degree) {
-    std::array<Degree, DIM> degrees;
-    for (int i = 0; i < DIM; ++i) {
+  static std::array<Degree, PARAMETRIC_DIMENSIONALITY> GetRandomDegrees(int max_degree) {
+    std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       degrees[i] = Degree{util::Random::GetBinomialRandom<int>(1, max_degree, 1)};
     }
     return degrees;
   }
 
-  static baf::KnotVectors<DIM> GetRandomKnotVectors(std::array<ParametricCoordinate, 2> coord_limits,
-                                               const std::array<Degree, DIM> &degree) {
-    baf::KnotVectors<DIM> knot_vectors;
-    std::array<int, DIM> number_of_knots = GetNumberOfKnots(degree);
-    for (int i = 0; i < DIM; ++i) {
+  static baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> GetRandomKnotVectors(
+      std::array<ParametricCoordinate, 2> coord_limits, const std::array<Degree, PARAMETRIC_DIMENSIONALITY> &degree) {
+    baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vectors;
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_knots = GetNumberOfKnots(degree);
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       std::vector<ParametricCoordinate> param_coord_vector;
       for (int j = 0; j < degree[i].get() + 1; ++j) {
         param_coord_vector.push_back(coord_limits[0]);
@@ -60,9 +60,9 @@ class RandomSplineUtils {
   }
 
   static std::vector<baf::ControlPoint> GetRandomControlPoints(int dimension,
-                                                               const std::array<int, DIM> &number_of_points) {
+      const std::array<int, PARAMETRIC_DIMENSIONALITY> &number_of_points) {
     std::vector<baf::ControlPoint> control_points;
-    util::MultiIndexHandler<DIM> point_handler(number_of_points);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(number_of_points);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
       std::vector<double> coordinates;
       for (int j = 0; j < dimension; ++j) {
@@ -73,28 +73,30 @@ class RandomSplineUtils {
     return control_points;
   }
 
-  static std::vector<double> GetRandomWeights(const std::array<int, DIM> &number_of_points) {
+  static std::vector<double> GetRandomWeights(const std::array<int, PARAMETRIC_DIMENSIONALITY> &number_of_points) {
     std::vector<double> weights;
-    util::MultiIndexHandler<DIM> point_handler(number_of_points);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(number_of_points);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
       weights.emplace_back(util::Random::GetBinomialRandom<double>(0.1, 2, 0.1));
     }
     return weights;
   }
 
-  static std::array<int, DIM> GetNumberOfPoints(const std::array<Degree, DIM> &degrees,
-                                                const baf::KnotVectors<DIM> &knot_vectors) {
-    std::array<int, DIM> number_of_points;
-    for (int i = 0; i < DIM; ++i) {
+  static std::array<int, PARAMETRIC_DIMENSIONALITY> GetNumberOfPoints(
+      const std::array<Degree, PARAMETRIC_DIMENSIONALITY> &degrees,
+      const baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> &knot_vectors) {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       number_of_points[i] = knot_vectors[i]->GetNumberOfKnots() - degrees[i].get() - 1;
     }
     return number_of_points;
   }
 
  private:
-  static std::array<int, DIM> GetNumberOfKnots(const std::array<Degree, DIM> &degree) {
-    std::array<int, DIM> number_of_knots;
-    for (int i = 0; i < DIM; ++i) {
+  static std::array<int, PARAMETRIC_DIMENSIONALITY> GetNumberOfKnots(
+      const std::array<Degree, PARAMETRIC_DIMENSIONALITY> &degree) {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_knots;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       number_of_knots[i] = util::Random::GetBinomialRandom<int>(2 * degree[i].get() + 2, 4 * degree[i].get(), 1);
     }
     return number_of_knots;

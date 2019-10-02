@@ -27,16 +27,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "numeric_settings.h"
 
 namespace splinelib::src::spl {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class ParameterSpace {
  public:
   ParameterSpace() = default;
 
-  ParameterSpace(const baf::KnotVectors<DIM> &knot_vector, std::array<Degree, DIM> degree)
-      : knot_vector_(knot_vector), degree_(degree) {
+  ParameterSpace(const baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> &knot_vector,
+      std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree) : knot_vector_(knot_vector), degree_(degree) {
     ThrowIfKnotVectorDoesNotStartAndEndWith();
     baf::BasisFunctionFactory factory;
-    for (int i = 0; i < DIM; i++) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
       for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
         basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
@@ -44,14 +44,14 @@ class ParameterSpace {
     }
   }
 
-  ParameterSpace(const ParameterSpace<DIM> &parameter_space) {
+  ParameterSpace(const ParameterSpace<PARAMETRIC_DIMENSIONALITY> &parameter_space) {
     degree_ = parameter_space.degree_;
-    for (int i = 0; i < DIM; ++i) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       baf::KnotVector knot_vector = *(parameter_space.GetKnotVector(i));
       knot_vector_[i] = std::make_shared<baf::KnotVector>(knot_vector);
     }
     baf::BasisFunctionFactory factory;
-    for (int i = 0; i < DIM; i++) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
       for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
         basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
@@ -83,7 +83,8 @@ class ParameterSpace {
     return basis_function_values;
   }
 
-  bool AreEqual(const ParameterSpace<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+  bool AreEqual(const ParameterSpace<PARAMETRIC_DIMENSIONALITY> &rhs,
+      double tolerance = util::NumericSettings<double>::kEpsilon()) const {
     return std::equal(degree_.begin(), degree_.end(), rhs.degree_.begin(), rhs.degree_.end(),
                       [&](Degree degree_a, Degree degree_b) {
                         return util::NumericSettings<double>::AreEqual(degree_a.get(), degree_b.get());
@@ -108,35 +109,37 @@ class ParameterSpace {
     return knot_vector_[direction];
   }
 
-  virtual double GetBasisFunctions(std::array<int, DIM> indices, std::array<ParametricCoordinate, DIM> param_coord) const {
+  virtual double GetBasisFunctions(std::array<int, PARAMETRIC_DIMENSIONALITY> indices,
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
     double value = 1;
-    for (int i = 0; i < DIM; ++i) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       value *= basis_functions_[i][indices[i]]->Evaluate(param_coord[i]);
     }
     return value;
   }
 
-  virtual double GetBasisFunctionDerivatives(std::array<int, DIM> indices,
-                                             std::array<ParametricCoordinate, DIM> param_coord,
-                                             std::array<int, DIM> derivative) const {
+  virtual double GetBasisFunctionDerivatives(std::array<int, PARAMETRIC_DIMENSIONALITY> indices,
+                                             std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord,
+                                             std::array<int, PARAMETRIC_DIMENSIONALITY> derivative) const {
     double value = 1;
-    for (int i = 0; i < DIM; ++i) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       value *= basis_functions_[i][indices[i]]->EvaluateDerivative(param_coord[i], Derivative{derivative[i]});
     }
     return value;
   }
 
-  virtual std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(
-      std::array<ParametricCoordinate, DIM> param_coord) const {
-    std::array<int, DIM> first_non_zero;
-    for (int i = 0; i < DIM; ++i) {
+  virtual std::array<int, PARAMETRIC_DIMENSIONALITY> GetArrayOfFirstNonZeroBasisFunctions(
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> first_non_zero;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       first_non_zero[i] = GetKnotVector(i)->GetKnotSpan(param_coord[i]).get() - GetDegree(i).get();
     }
     return first_non_zero;
   }
 
-  virtual void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParametricCoordinate, DIM> param_coord) const {
-    for (int dim = 0; dim < DIM; dim++) {
+  virtual void ThrowIfParametricCoordinateOutsideKnotVectorRange(
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
+    for (int dim = 0; dim < PARAMETRIC_DIMENSIONALITY; dim++) {
       if (!this->GetKnotVector(dim)->IsInKnotVectorRange(param_coord[dim])) {
         std::stringstream message;
         message << "The parametric coordinate " << param_coord[dim].get() << " is outside the knot vector range from "
@@ -188,13 +191,14 @@ class ParameterSpace {
     }
   }
 
-  std::array<baf::KnotVectors<DIM>, 2> GetDividedKnotVectors(ParametricCoordinate param_coord, int dimension) const {
+  std::array<baf::KnotVectors<PARAMETRIC_DIMENSIONALITY>, 2> GetDividedKnotVectors(ParametricCoordinate param_coord,
+      int dimension) const {
     auto knot_span = GetKnotVector(dimension)->GetKnotSpan(param_coord).get();
     std::array<int, 2> first_knot = {0, knot_span - GetDegree(dimension).get()};
     std::array<int, 2> last_knot = {knot_span + 1, static_cast<int>(knot_vector_[dimension]->GetNumberOfKnots())};
-    std::array<baf::KnotVectors<DIM>, 2> new_knot_vectors;
+    std::array<baf::KnotVectors<PARAMETRIC_DIMENSIONALITY>, 2> new_knot_vectors;
     for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < DIM; ++j) {
+      for (int j = 0; j < PARAMETRIC_DIMENSIONALITY; ++j) {
         new_knot_vectors[i][j] = GetKnotVector(j);
       }
       std::array<std::vector<ParametricCoordinate>, 2> new_knots;
@@ -208,7 +212,7 @@ class ParameterSpace {
 
  private:
   void ThrowIfKnotVectorDoesNotStartAndEndWith() {
-    for (int i = 0; i < DIM; i++) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       if (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) < 2 * degree_[i].get() + 2) {
         throw std::runtime_error("There have to be at least 2p + 2 knots.");
       }
@@ -227,7 +231,7 @@ class ParameterSpace {
   }
 
   void RecreateBasisFunctions() {
-    for (int current_dim = 0; current_dim < DIM; ++current_dim) {
+    for (int current_dim = 0; current_dim < PARAMETRIC_DIMENSIONALITY; ++current_dim) {
       auto &basis_functions_current_dim = basis_functions_[current_dim];
       auto &knot_vector_current_dim = knot_vector_[current_dim];
       auto &degree_current_dim = degree_[current_dim];
@@ -243,9 +247,9 @@ class ParameterSpace {
     }
   }
 
-  baf::KnotVectors<DIM> knot_vector_;
-  std::array<Degree, DIM> degree_;
-  std::array<std::vector<std::shared_ptr<baf::BasisFunction>>, DIM> basis_functions_;
+  baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector_;
+  std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree_;
+  std::array<std::vector<std::shared_ptr<baf::BasisFunction>>, PARAMETRIC_DIMENSIONALITY> basis_functions_;
 };
 }  // namespace splinelib::src::spl
 

@@ -22,11 +22,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 
 namespace splinelib::src::io {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class IRITWriterUtils {
  public:
-  static std::string GetNumberOfControlPoints(std::shared_ptr<spl::Spline<DIM>> spline) {
-    std::array<int, DIM> number_of_points = spline->GetPointsPerDirection();
+  static std::string GetNumberOfControlPoints(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline) {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points = spline->GetPointsPerDirection();
     std::string string;
     for (const auto &points : number_of_points) {
       string += std::to_string(points) + " ";
@@ -34,17 +34,17 @@ class IRITWriterUtils {
     return string;
   }
 
-  static std::string GetOrder(std::shared_ptr<spl::Spline<DIM>> spline) {
+  static std::string GetOrder(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline) {
     std::string string;
-    for (int i = 0; i < DIM; i++) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       string += std::to_string(spline->GetDegree(i).get() + 1) + " ";
     }
     return string;
   }
 
-  static std::string GetKnotVectors(std::shared_ptr<spl::Spline<DIM>> spline) {
+  static std::string GetKnotVectors(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline) {
     std::string string;
-    for (int dimension = 0; dimension < DIM; dimension++) {
+    for (int dimension = 0; dimension < PARAMETRIC_DIMENSIONALITY; dimension++) {
       string += "      [KV ";
       std::shared_ptr<baf::KnotVector> knot_vector = spline->GetKnotVector(dimension);
       for (size_t knot = 0; knot < knot_vector->GetNumberOfKnots(); knot++) {
@@ -55,13 +55,13 @@ class IRITWriterUtils {
     return string;
   }
 
-  static std::string
-  GetControlPoints(bool rational, std::shared_ptr<spl::Spline<DIM>> spline_ptr, const std::any &spline) {
+  static std::string GetControlPoints(bool rational, std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline_ptr,
+      const std::any &spline) {
     std::string string;
-    util::MultiIndexHandler<DIM> point_handler(spline_ptr->GetPointsPerDirection());
-    std::shared_ptr<spl::NURBS<DIM>> nurbs;
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(spline_ptr->GetPointsPerDirection());
+    std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> nurbs;
     if (rational) {
-      nurbs = std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
+      nurbs = std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
     }
     for (int control_point = 0; control_point < point_handler.Get1DLength(); ++control_point, point_handler++) {
       string += "      [" + (rational ? std::to_string(nurbs->GetWeight(point_handler.GetIndices())) + " " : "");

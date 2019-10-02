@@ -20,13 +20,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "linear_equation_assembler.h"
 
 namespace iga {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class BDFHandler {
  public:
-  BDFHandler(std::shared_ptr<spl::NURBS<DIM>> spl, const iga::itg::IntegrationRule &rule) : spline_(std::move(spl)) {
-    elm_gen_ = std::make_shared<iga::elm::ElementGenerator<DIM>>(spline_);
-    baf_handler_ = std::make_shared<iga::BasisFunctionHandler<DIM>>(spline_);
-    connectivity_handler_ = std::make_shared<iga::ConnectivityHandler<DIM>>(spline_);
+  BDFHandler(std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spl, const iga::itg::IntegrationRule &rule) : spline_(std::move(spl)) {
+    elm_gen_ = std::make_shared<iga::elm::ElementGenerator<PARAMETRIC_DIMENSIONALITY>>(spline_);
+    baf_handler_ = std::make_shared<iga::BasisFunctionHandler<PARAMETRIC_DIMENSIONALITY>>(spline_);
+    connectivity_handler_ = std::make_shared<iga::ConnectivityHandler<PARAMETRIC_DIMENSIONALITY>>(spline_);
     time_discr_mat_ = std::make_shared<arma::dmat>(GetTimeDiscretizationMatrix(rule));
   }
 
@@ -46,7 +46,7 @@ class BDFHandler {
     auto num_cp = static_cast<uint64_t>(spline_->GetNumberOfControlPoints());
     arma::dmat A(num_cp, num_cp, arma::fill::zeros);
     for (int e = 0; e < elm_gen_->GetNumberOfElements(); ++e) {
-      std::vector<iga::elm::ElementIntegrationPoint<DIM>> elm_intgr_pnts =
+      std::vector<iga::elm::ElementIntegrationPoint<PARAMETRIC_DIMENSIONALITY>> elm_intgr_pnts =
           baf_handler_->EvaluateAllElementNonZeroNURBSBasisFunctions(e, rule);
       for (auto &p : elm_intgr_pnts) {
         for (int j = 0; j < p.GetNumberOfNonZeroBasisFunctions(); ++j) {
@@ -62,10 +62,10 @@ class BDFHandler {
     return A;
   }
 
-  std::shared_ptr<spl::NURBS<DIM>> spline_;
-  std::shared_ptr<iga::elm::ElementGenerator<DIM>> elm_gen_;
-  std::shared_ptr<iga::ConnectivityHandler<DIM>> connectivity_handler_;
-  std::shared_ptr<iga::BasisFunctionHandler<DIM>> baf_handler_;
+  std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spline_;
+  std::shared_ptr<iga::elm::ElementGenerator<PARAMETRIC_DIMENSIONALITY>> elm_gen_;
+  std::shared_ptr<iga::ConnectivityHandler<PARAMETRIC_DIMENSIONALITY>> connectivity_handler_;
+  std::shared_ptr<iga::BasisFunctionHandler<PARAMETRIC_DIMENSIONALITY>> baf_handler_;
   std::shared_ptr<arma::dmat> time_discr_mat_;
 };
 }  // namespace iga

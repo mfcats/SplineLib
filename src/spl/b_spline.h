@@ -29,45 +29,50 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "vector_utils.h"
 
 namespace splinelib::src::spl {
-template<int DIM>
-class BSpline : public Spline<DIM> {
+template<int PARAMETRIC_DIMENSIONALITY>
+class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
  public:
-  BSpline(baf::KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree,
-          const std::vector<baf::ControlPoint> &control_points) : Spline<DIM>(knot_vector, degree) {
-    std::array<int, DIM> number_of_points;
-    for (int i = 0; i < DIM; ++i) {
+  BSpline(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector, std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree,
+          const std::vector<baf::ControlPoint> &control_points)
+          : Spline<PARAMETRIC_DIMENSIONALITY>(knot_vector, degree) {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
-    physical_space_ = std::make_shared<PhysicalSpace<DIM>>(PhysicalSpace<DIM>(control_points, number_of_points));
+    physical_space_ = std::make_shared<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(
+        PhysicalSpace<PARAMETRIC_DIMENSIONALITY>(control_points, number_of_points));
   }
 
-  explicit BSpline(BSplineGenerator<DIM> b_spline_generator) : Spline<DIM>(b_spline_generator.GetParameterSpace()) {
+  explicit BSpline(BSplineGenerator<PARAMETRIC_DIMENSIONALITY> b_spline_generator) : Spline<PARAMETRIC_DIMENSIONALITY>(
+      b_spline_generator.GetParameterSpace()) {
     physical_space_ = b_spline_generator.GetPhysicalSpace();
   }
 
-  BSpline(const BSpline<DIM> &bspline) : Spline<DIM>(bspline) {
-    PhysicalSpace<DIM> physical_space(*bspline.GetPhysicalSpace());
-    physical_space_ = std::make_shared<PhysicalSpace<DIM>>(physical_space);
+  BSpline(const BSpline<PARAMETRIC_DIMENSIONALITY> &bspline) : Spline<PARAMETRIC_DIMENSIONALITY>(bspline) {
+    PhysicalSpace<PARAMETRIC_DIMENSIONALITY> physical_space(*bspline.GetPhysicalSpace());
+    physical_space_ = std::make_shared<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(physical_space);
   }
 
   virtual ~BSpline() = default;
 
-  bool AreEqual(const BSpline<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+  bool AreEqual(const BSpline<PARAMETRIC_DIMENSIONALITY> &rhs,
+      double tolerance = util::NumericSettings<double>::kEpsilon()) const {
     return this->parameter_space_->AreEqual(*rhs.parameter_space_.get(), tolerance)
         && physical_space_->AreEqual(*rhs.physical_space_.get(), tolerance);
   }
 
   void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
-    std::array<int, DIM> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
     ++point_handler_length[dimension];
-    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
-    std::array<int, DIM> maximum_point_index = physical_space_->GetMaximumPointIndexInEachDirection();
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
+    std::array<int, PARAMETRIC_DIMENSIONALITY> maximum_point_index =
+        physical_space_->GetMaximumPointIndexInEachDirection();
     ++maximum_point_index[dimension];
     point_handler.SetIndices(maximum_point_index);
     physical_space_->AddControlPoints(this->GetNumberOfControlPoints() / maximum_point_index[dimension]);
     for (int i = point_handler.Get1DLength() - 1; i >= 0; --i, --point_handler) {
       auto current_point_index = point_handler[dimension];
-      std::array<int, DIM> indices = point_handler.GetIndices();
+      std::array<int, PARAMETRIC_DIMENSIONALITY> indices = point_handler.GetIndices();
       baf::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling,
                                                                current_point_index, first, last);
       physical_space_->SetControlPoint(indices, new_control_point, dimension,
@@ -90,53 +95,54 @@ class BSpline : public Spline<DIM> {
     return true;
   }
 
-  std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> SudivideSpline(ParametricCoordinate param_coord, int dimension) {
+  std::array<std::shared_ptr<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>, 2> SudivideSpline(
+      ParametricCoordinate param_coord, int dimension) {
     this->InsertKnot(param_coord, dimension, this->GetDegree(dimension).get() + 1
                          - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
-    std::array<baf::KnotVectors<DIM>, 2> new_knots =
+    std::array<baf::KnotVectors<PARAMETRIC_DIMENSIONALITY>, 2> new_knots =
         this->parameter_space_->GetDividedKnotVectors(param_coord, dimension);
-    std::array<Degree, DIM> degrees;
-    for (int i = 0; i < DIM; ++i) {
+    std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       degrees[i] = this->GetDegree(i);
     }
-    std::array<std::shared_ptr<spl::BSpline<DIM>>, 2> subdivided_splines;
+    std::array<std::shared_ptr<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>, 2> subdivided_splines;
     int first = 0;
     for (int i = 0; i < 2; ++i) {
       int length = new_knots[i][dimension]->GetNumberOfKnots() - this->GetDegree(dimension).get() - 1;
       std::vector<baf::ControlPoint> points = physical_space_->GetDividedControlPoints(first, length, dimension);
-      spl::BSpline<DIM> spline(new_knots[i], degrees, points);
-      subdivided_splines[i] = std::make_shared<spl::BSpline<DIM>>(spline);
+      spl::BSpline<PARAMETRIC_DIMENSIONALITY> spline(new_knots[i], degrees, points);
+      subdivided_splines[i] = std::make_shared<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>(spline);
       first = length;
     }
     return subdivided_splines;
   }
 
  private:
-  std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const override {
+  std::shared_ptr<spl::PhysicalSpace<PARAMETRIC_DIMENSIONALITY>> GetPhysicalSpace() const override {
     return physical_space_;
   }
 
-  double GetEvaluatedControlPoint(std::array<ParametricCoordinate, DIM> param_coord,
-                                  std::array<int, DIM> indices,
+  double GetEvaluatedControlPoint(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord,
+                                  std::array<int, PARAMETRIC_DIMENSIONALITY> indices,
                                   int dimension) const override {
     return this->parameter_space_->GetBasisFunctions(indices, param_coord) * this->GetControlPoint(indices, dimension);
   }
 
-  double GetEvaluatedDerivativeControlPoint(std::array<ParametricCoordinate, DIM> param_coord,
-                                            std::array<int, DIM> derivative,
-                                            std::array<int, DIM> indices,
+  double GetEvaluatedDerivativeControlPoint(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord,
+                                            std::array<int, PARAMETRIC_DIMENSIONALITY> derivative,
+                                            std::array<int, PARAMETRIC_DIMENSIONALITY> indices,
                                             int dimension) const override {
     return this->parameter_space_->GetBasisFunctionDerivatives(indices, param_coord, derivative)
         * this->GetControlPoint(indices, dimension);
   }
 
-  baf::ControlPoint GetNewControlPoint(std::array<int, DIM> indices, int dimension, std::vector<double> scaling,
-                                       int current_point_index, int first, int last) {
+  baf::ControlPoint GetNewControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, int dimension,
+      std::vector<double> scaling, int current_point_index, int first, int last) {
     if (current_point_index > last) {
       --indices[dimension];
       return this->GetControlPoint(indices);
     } else if (current_point_index >= first) {
-      std::array<int, DIM> lower_indices = indices;
+      std::array<int, PARAMETRIC_DIMENSIONALITY> lower_indices = indices;
       --lower_indices[dimension];
       baf::ControlPoint upper_control_point = this->GetControlPoint(indices);
       baf::ControlPoint lower_control_point = this->GetControlPoint(lower_indices);
@@ -152,8 +158,8 @@ class BSpline : public Spline<DIM> {
   }
 
   void SetNewControlPoints(const std::vector<double> &temp, int last, int ii, int off, int dimension) {
-    std::array<int, DIM> point_handler_length = this->GetPointsPerDirection();
-    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     for (int m = 0; m < point_handler.Get1DLength(); ++m, ++point_handler) {
       int k = point_handler[dimension];
       if (k - off >= 1 && k - off != ii && k < last + 2) {
@@ -175,8 +181,8 @@ class BSpline : public Spline<DIM> {
 
   std::vector<double> GetTempNewControlPoints(const std::vector<double> &scaling, int off, int last,
                                               int i, int j, int dimension) const {
-    std::array<int, DIM> point_handler_length = this->GetPointsPerDirection();
-    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     int new_points = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
     std::vector<double> temp(new_points * this->GetPointDim() * (last - off + 2), 0);
     std::shared_ptr<std::vector<double>> temp_ptr = std::make_shared<std::vector<double>>(temp);
@@ -200,7 +206,7 @@ class BSpline : public Spline<DIM> {
     return *temp_ptr;
   }
 
-  void SetTempNewControlPoint(const util::MultiIndexHandler<DIM> &point_handler,
+  void SetTempNewControlPoint(const util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> &point_handler,
                               const std::shared_ptr<std::vector<double>> &temp_ptr,
                               double alpha, int x, int off, int last, int dimension, int shift) const {
     int index = point_handler.ExtractDimension(dimension) * (last - off + 2);
@@ -212,9 +218,9 @@ class BSpline : public Spline<DIM> {
 
   bool IsKnotRemovable(double alfi, const std::vector<double> &temp, double tolerance,
                        int i, int j, int off, int dimension) const {
-    std::array<int, DIM> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
     point_handler_length[dimension] = 0;
-    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     int new_points = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
     size_t temp_length = temp.size() / new_points;
     for (int l = 0; l < new_points; ++l, ++point_handler) {
@@ -239,11 +245,12 @@ class BSpline : public Spline<DIM> {
     return true;
   }
 
-  void SetNewControlPoint(baf::ControlPoint control_point, double /*weight*/, std::array<int, DIM> indices) override {
+  void SetNewControlPoint(baf::ControlPoint control_point, double /*weight*/,
+      std::array<int, PARAMETRIC_DIMENSIONALITY> indices) override {
     physical_space_->SetControlPoint(indices, control_point);
   }
 
-  std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
+  std::shared_ptr<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>> physical_space_;
 };
 }  // namespace splinelib::src::spl
 

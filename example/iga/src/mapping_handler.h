@@ -22,25 +22,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 
 namespace iga {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class MappingHandler {
  public:
-  explicit MappingHandler(std::shared_ptr<spl::NURBS<DIM>> spl) : spline_(std::move(spl)) {}
+  explicit MappingHandler(std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spl) : spline_(std::move(spl)) {}
 
-  arma::dmat GetDxiDx(std::array<ParametricCoordinate, DIM> param_coord) const {
-    arma::dmat dx_dxi_sq = GetDxDxi(param_coord).submat(0, 0, static_cast<uint64_t>(DIM - 1),
-                                                        static_cast<uint64_t>(DIM - 1));
+  arma::dmat GetDxiDx(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
+    arma::dmat dx_dxi_sq = GetDxDxi(param_coord).submat(0, 0, static_cast<uint64_t>(PARAMETRIC_DIMENSIONALITY - 1),
+                                                        static_cast<uint64_t>(PARAMETRIC_DIMENSIONALITY - 1));
     return dx_dxi_sq.i();
   }
 
-  double GetJacobianDeterminant(std::array<ParametricCoordinate, DIM> param_coord) const {
+  double GetJacobianDeterminant(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
     return pow(abs(arma::det(GetDxDxitilde(param_coord).t() * GetDxDxitilde(param_coord))), 0.5);
   }
 
-  std::array<ParametricCoordinate, DIM> Reference2ParameterSpace(int element_number, std::array<double, DIM> itg_pnts) const {
-    iga::elm::ElementGenerator<DIM> elm_gen(spline_);
-    std::array<ParametricCoordinate, DIM> param_coords{};
-    for (int i = 0; i < DIM; ++i) {
+  std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> Reference2ParameterSpace(int element_number, std::array<double, PARAMETRIC_DIMENSIONALITY> itg_pnts) const {
+    iga::elm::ElementGenerator<PARAMETRIC_DIMENSIONALITY> elm_gen(spline_);
+    std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coords{};
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       iga::elm::Element elm = elm_gen.GetElementList(i)[elm_gen.GetElementIndices(element_number)[i]];
       param_coords[i] = ParametricCoordinate{((elm.GetUpperBound() - elm.GetLowerBound()).get() * itg_pnts[i] +
           (elm.GetUpperBound() + elm.GetLowerBound()).get()) / 2.0};
@@ -49,16 +49,16 @@ class MappingHandler {
   }
 
  private:
-  arma::dmat GetDxDxitilde(std::array<ParametricCoordinate, DIM> param_coord) const {
+  arma::dmat GetDxDxitilde(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
     return GetDxDxi(param_coord) * GetDxiDxitilde(param_coord);
   }
 
-  arma::dmat GetDxDxi(std::array<ParametricCoordinate, DIM> param_coord) const {
+  arma::dmat GetDxDxi(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
     int cp_dim = spline_->GetPointDim();
-    arma::dmat dx_dxi(static_cast<uint64_t>(cp_dim), static_cast<uint64_t>(DIM), arma::fill::zeros);
+    arma::dmat dx_dxi(static_cast<uint64_t>(cp_dim), static_cast<uint64_t>(PARAMETRIC_DIMENSIONALITY), arma::fill::zeros);
     for (int i = 0; i < cp_dim; ++i) {
-      for (int j = 0; j < DIM; ++j) {
-        std::array<int, DIM> derivative{};
+      for (int j = 0; j < PARAMETRIC_DIMENSIONALITY; ++j) {
+        std::array<int, PARAMETRIC_DIMENSIONALITY> derivative{};
         derivative[j] = 1;
         dx_dxi(static_cast<uint64_t>(i), static_cast<uint64_t>(j)) =
             spline_->EvaluateDerivative(param_coord, {i}, derivative)[0];
@@ -67,10 +67,10 @@ class MappingHandler {
     return dx_dxi;
   }
 
-  arma::dmat GetDxiDxitilde(std::array<ParametricCoordinate, DIM> param_coord) const {
-    arma::dmat dxi_dxitilde(static_cast<uint64_t>(DIM), static_cast<uint64_t>(DIM), arma::fill::zeros);
-    std::array<size_t, DIM> knot_span{};
-    for (int i = 0; i < DIM; ++i) {
+  arma::dmat GetDxiDxitilde(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
+    arma::dmat dxi_dxitilde(static_cast<uint64_t>(PARAMETRIC_DIMENSIONALITY), static_cast<uint64_t>(PARAMETRIC_DIMENSIONALITY), arma::fill::zeros);
+    std::array<size_t, PARAMETRIC_DIMENSIONALITY> knot_span{};
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       knot_span[i] = static_cast<size_t>(spline_->GetKnotVector(i)->GetKnotSpan(param_coord[i]).get());
       dxi_dxitilde(static_cast<uint64_t>(i), static_cast<uint64_t>(i)) =
           (spline_->GetKnotVector(i)->GetKnot(knot_span[i] + 1).get() -
@@ -79,7 +79,7 @@ class MappingHandler {
     return dxi_dxitilde;
   }
 
-  std::shared_ptr<spl::NURBS<DIM>> spline_;
+  std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spline_;
 };
 }  // namespace iga
 

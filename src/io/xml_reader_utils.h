@@ -25,19 +25,19 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "string_operations.h"
 
 namespace splinelib::src::io {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class XMLReaderUtils {
  public:
-  static std::array<Degree, DIM> GetDegrees(pugi::xml_node *spline) {
+  static std::array<Degree, PARAMETRIC_DIMENSIONALITY> GetDegrees(pugi::xml_node *spline) {
     return StringVectorToDegreeArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
   }
 
-  static baf::KnotVectors<DIM> GetKnotVectors(pugi::xml_node *spline) {
-    baf::KnotVectors<DIM> knot_vector;
-    for (int i = 0; i < DIM; i++) {
+  static baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> GetKnotVectors(pugi::xml_node *spline) {
+    baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       knot_vector[i] = std::make_shared<baf::KnotVector>(baf::KnotVector({ParametricCoordinate(0.5)}));
     }
-    for (int i = 0; i < DIM; i++) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       pugi::xml_node child = spline->child("kntVecs").first_child();
       for (int j = 0; j < i; j++) {
         child = child.next_sibling();
@@ -49,9 +49,10 @@ class XMLReaderUtils {
     return knot_vector;
   }
 
-  static std::array<Degree, DIM> StringVectorToDegreeArray(const std::vector<std::string> &string_vector) {
-    std::array<Degree, DIM> converted;
-    for (int i = 0; i < DIM; i++) {
+  static std::array<Degree, PARAMETRIC_DIMENSIONALITY> StringVectorToDegreeArray(
+      const std::vector<std::string> &string_vector) {
+    std::array<Degree, PARAMETRIC_DIMENSIONALITY> converted;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       auto a = string_vector[i];
       converted[i] = Degree{std::stoi(string_vector[i])};
     }

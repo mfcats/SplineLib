@@ -22,33 +22,34 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "spline_generator.h"
 
 namespace splinelib::src::spl {
-template<int DIM>
-class BSplineGenerator : public SplineGenerator<DIM> {
+template<int PARAMETRIC_DIMENSIONALITY>
+class BSplineGenerator : public SplineGenerator<PARAMETRIC_DIMENSIONALITY> {
  public:
   BSplineGenerator() = default;
   virtual ~BSplineGenerator() = default;
 
-  BSplineGenerator(baf::KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree,
-                   const std::vector<baf::ControlPoint> &control_points) : SplineGenerator<DIM>(knot_vector, degree) {
-    std::array<int, DIM> number_of_points;
-    for (int i = 0; i < DIM; ++i) {
+  BSplineGenerator(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector,
+      std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree, const std::vector<baf::ControlPoint> &control_points)
+      : SplineGenerator<PARAMETRIC_DIMENSIONALITY>(knot_vector, degree) {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
-    physical_space_ = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
+    physical_space_ = std::make_shared<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(control_points, number_of_points);
   }
 
-  BSplineGenerator(std::shared_ptr<PhysicalSpace<DIM>> physical_space,
-                   std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
+  BSplineGenerator(std::shared_ptr<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>> physical_space,
+                   std::shared_ptr<ParameterSpace<PARAMETRIC_DIMENSIONALITY>> parameter_space) {
     this->parameter_space_ = parameter_space;
     physical_space_ = physical_space;
   }
 
-  std::shared_ptr<PhysicalSpace<DIM>> GetPhysicalSpace() const {
+  std::shared_ptr<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>> GetPhysicalSpace() const {
     return physical_space_;
   }
 
  protected:
-  std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
+  std::shared_ptr<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>> physical_space_;
 };
 }  //  namespace splinelib::src::spl
 

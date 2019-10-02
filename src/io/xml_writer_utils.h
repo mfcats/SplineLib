@@ -24,21 +24,23 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 
 namespace splinelib::src::io {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class XMLWriterUtils {
  public:
-  static void AddDegrees(pugi::xml_node *spline_node, std::shared_ptr<spl::Spline<DIM>> spline_ptr) {
+  static void AddDegrees(pugi::xml_node *spline_node,
+      std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline_ptr) {
     pugi::xml_node degrees = spline_node->append_child("deg");
     std::string string;
-    for (int i = 0; i < DIM; i++) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       string = string + "\n      " + std::to_string(spline_ptr->GetDegree(i).get());
     }
     degrees.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
 
-  static void AddKnotVectors(pugi::xml_node *spline_node, std::shared_ptr<spl::Spline<DIM>> spline_ptr) {
+  static void AddKnotVectors(pugi::xml_node *spline_node,
+      std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline_ptr) {
     pugi::xml_node knot_vectors = spline_node->append_child("kntVecs");
-    for (int i = 0; i < DIM; i++) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       pugi::xml_node knots = knot_vectors.append_child("kntVec");
       baf::KnotVector knot_vector = *spline_ptr->GetKnotVector(i);
       std::string string;
@@ -49,10 +51,11 @@ class XMLWriterUtils {
     }
   }
 
-  static void AddControlPointVars(pugi::xml_node *spline_node, std::shared_ptr<spl::Spline<DIM>> spline_ptr) {
+  static void AddControlPointVars(pugi::xml_node *spline_node,
+      std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline_ptr) {
     pugi::xml_node values = spline_node->append_child("cntrlPntVars");
     std::string string;
-    util::MultiIndexHandler<DIM> point_handler(spline_ptr->GetPointsPerDirection());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(spline_ptr->GetPointsPerDirection());
     for (int i = 0; i < point_handler.Get1DLength(); ++i, point_handler++) {
       auto indices = point_handler.GetIndices();
       string += "\n      ";
@@ -66,8 +69,9 @@ class XMLWriterUtils {
   static void AddWeights(pugi::xml_node *spline_node, const std::any &spline) {
     pugi::xml_node weights = spline_node->append_child("wght");
     std::string string;
-    std::shared_ptr<spl::NURBS<DIM>> nurbs = std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
-    util::MultiIndexHandler<DIM> weight_handler(nurbs->GetPointsPerDirection());
+    std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> nurbs =
+        std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> weight_handler(nurbs->GetPointsPerDirection());
     for (int i = 0; i < weight_handler.Get1DLength(); ++i, weight_handler++) {
       auto indices = weight_handler.GetIndices();
       string += "\n      " + std::to_string(nurbs->GetWeight(indices)) + "  ";

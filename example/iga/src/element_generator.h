@@ -23,11 +23,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace iga {
 namespace elm {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class ElementGenerator {
  public:
-  explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spl_(std::move(spl)) {
-    for (int i = 0; i < DIM; ++i) {
+  explicit ElementGenerator(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spl) : spl_(std::move(spl)) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       for (uint64_t j = 0; j < spl_->GetKnotVector(i)->GetNumberOfKnots() - spl_->GetDegree(i).get() - 1; ++j) {
         if ((spl_->GetKnotVector(i)->GetKnot(j).get() - spl_->GetKnotVector(i)->GetKnot(j + 1).get()) != 0) {
           elements_[i].emplace_back(Element({spl_->GetKnotVector(i)->GetKnot(j),
@@ -41,9 +41,9 @@ class ElementGenerator {
     return elements_[dir];
   }
 
-  std::array<int, DIM> GetNumElementsPerParamDir() const {
-    std::array<int, DIM> num_elms{};
-    for (int i = 0; i < DIM; ++i) {
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetNumElementsPerParamDir() const {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> num_elms{};
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       num_elms[i] = elements_[i].size();
     }
     return num_elms;
@@ -51,17 +51,17 @@ class ElementGenerator {
 
   int GetNumberOfElements() const {
     int num_elms = 1;
-    for (int i = 0; i < DIM; ++i) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       num_elms *= elements_[i].size();
     }
     return num_elms;
   }
 
-  std::array<int, DIM> GetKnotMultiplicityIndexShift(int elm_num) const {
-    std::array<int, DIM> index_shift{};
-    std::array<std::vector<ParametricCoordinate>, DIM> internal = GetInternalKnots();
-    std::array<std::vector<ParametricCoordinate>, DIM> unique = GetUniqueKnots();
-    for (int i = 0; i < DIM; ++i) {
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetKnotMultiplicityIndexShift(int elm_num) const {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> index_shift{};
+    std::array<std::vector<ParametricCoordinate>, PARAMETRIC_DIMENSIONALITY> internal = GetInternalKnots();
+    std::array<std::vector<ParametricCoordinate>, PARAMETRIC_DIMENSIONALITY> unique = GetUniqueKnots();
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       ParametricCoordinate lower_bound = unique[i][GetElementIndices(elm_num)[i]];
       internal[i].erase(
           std::find(internal[i].rbegin(), internal[i].rend(), lower_bound).base(), internal[i].rbegin().base());
@@ -71,31 +71,31 @@ class ElementGenerator {
     return index_shift;
   }
 
-  int GetElementNumberAtParametricCoordinate(std::array<ParametricCoordinate, DIM> param_coords) const {
-    std::array<int, DIM> element_indices{};
-    for (int i = 0; i < DIM; ++i) {
+  int GetElementNumberAtParametricCoordinate(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coords) const {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> element_indices{};
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       baf::KnotVector unique_kv(GetUniqueKnots()[i]);
       element_indices[i] = unique_kv.GetKnotSpan(param_coords[i]).get();
     }
     return Get1DElementIndex(element_indices);
   }
 
-  std::array<int, DIM> GetElementIndices(int element_index) const {
-    util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumElementsPerParamDir());
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetElementIndices(int element_index) const {
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mult_ind_handl_elm(GetNumElementsPerParamDir());
     mult_ind_handl_elm = mult_ind_handl_elm + element_index;
     return mult_ind_handl_elm.GetIndices();
   }
 
-  int Get1DElementIndex(std::array<int, DIM> element_indices) const {
-    util::MultiIndexHandler<DIM> mult_ind_handl_elm(GetNumElementsPerParamDir());
+  int Get1DElementIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> element_indices) const {
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mult_ind_handl_elm(GetNumElementsPerParamDir());
     mult_ind_handl_elm.SetIndices(element_indices);
     return mult_ind_handl_elm.Get1DIndex();
   }
 
  private:
-  std::array<std::vector<ParametricCoordinate>, DIM> GetInternalKnots() const {
-    std::array<std::vector<ParametricCoordinate>, DIM> internal_knots;
-    for (int i = 0; i < DIM; ++i) {
+  std::array<std::vector<ParametricCoordinate>, PARAMETRIC_DIMENSIONALITY> GetInternalKnots() const {
+    std::array<std::vector<ParametricCoordinate>, PARAMETRIC_DIMENSIONALITY> internal_knots;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
 //      std::vector<ParametricCoordinate> knots = spl_->GetKnotVector(i)->  //spl_->GetKnots()[i];
       auto first = spl_->GetKnotVector(i)->begin() + spl_->GetDegree(i).get();
       auto last = spl_->GetKnotVector(i)->end() - spl_->GetDegree(i).get();
@@ -104,16 +104,16 @@ class ElementGenerator {
     return internal_knots;
   }
 
-  std::array<std::vector<ParametricCoordinate>, DIM> GetUniqueKnots() const {
-    std::array<std::vector<ParametricCoordinate>, DIM> internal_knots = GetInternalKnots();
-    for (int i = 0; i < DIM; ++i) {
+  std::array<std::vector<ParametricCoordinate>, PARAMETRIC_DIMENSIONALITY> GetUniqueKnots() const {
+    std::array<std::vector<ParametricCoordinate>, PARAMETRIC_DIMENSIONALITY> internal_knots = GetInternalKnots();
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       internal_knots[i].erase(unique(internal_knots[i].begin(), internal_knots[i].end()), internal_knots[i].end());
     }
     return internal_knots;
   }
 
-  std::shared_ptr<spl::Spline<DIM>> spl_;
-  std::array<std::vector<iga::elm::Element>, DIM> elements_;
+  std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spl_;
+  std::array<std::vector<iga::elm::Element>, PARAMETRIC_DIMENSIONALITY> elements_;
 };
 }  // namespace elm
 }  // namespace iga

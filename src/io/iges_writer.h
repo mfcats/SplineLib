@@ -49,8 +49,9 @@ class IGESWriter : public Writer {
   void GetParameterData1D(std::string *contents, const std::string &delimiter, const std::any &spline) const;
   void GetParameterData2D(std::string *contents, const std::string &delimiter, const std::any &spline) const;
 
-  template<int DIM>
-  double Get3DControlPoint(std::shared_ptr<spl::Spline<DIM>> spline, int index, int direction) const;
+  template<int PARAMETRIC_DIMENSIONALITY>
+  double Get3DControlPoint(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline, int index,
+      int direction) const;
 
   std::vector<std::string> GetDataEntry(int paramStart, int paramLength, const std::any &spline, int *dLine) const;
   std::vector<std::string> GetDataEntrySectionLayout(const std::string *contents, int *dLine) const;

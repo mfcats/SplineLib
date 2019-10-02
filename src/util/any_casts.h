@@ -24,13 +24,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::util {
 class AnyCasts {
  public:
-  template<int DIM>
-  static std::shared_ptr<spl::Spline<DIM>> GetSpline(std::any spline) {
+  template<int PARAMETRIC_DIMENSIONALITY>
+  static std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> GetSpline(std::any spline) {
     try {
-      return std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(spline);
+      return std::any_cast<std::shared_ptr<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>>(spline);
     } catch (std::bad_any_cast &msg) {
       try {
-        return std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
+        return std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
       } catch (std::bad_any_cast &msg) {
         throw std::runtime_error("Input has to be a shared pointer to a b-spline or nurbs of declared dimension");
       }
@@ -62,14 +62,14 @@ class AnyCasts {
     }
   }
 
-  template<int DIM>
+  template<int PARAMETRIC_DIMENSIONALITY>
   static bool IsRational(std::any spline) {
     try {
-      std::any_cast<std::shared_ptr<spl::NURBS<DIM>>>(spline);
+      std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
       return true;
     } catch (std::bad_any_cast &msg) {
       try {
-        std::any_cast<std::shared_ptr<spl::BSpline<DIM>>>(spline);
+        std::any_cast<std::shared_ptr<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>>(spline);
         return false;
       } catch (std::bad_any_cast &msg) {
         throw std::runtime_error("Input has to be a shared pointer to a b-spline or nurbs of declared dimension");

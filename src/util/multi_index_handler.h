@@ -19,11 +19,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 namespace splinelib::src::util {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class MultiIndexHandler {
  public:
   MultiIndexHandler() = default;
-  explicit MultiIndexHandler(const std::array<int, DIM> &multi_index_length) : multi_index_length_(multi_index_length) {
+  explicit MultiIndexHandler(const std::array<int, PARAMETRIC_DIMENSIONALITY> &multi_index_length)
+      : multi_index_length_(multi_index_length) {
     for (auto &index : current_multi_index_value_) {
       index = 0;
     }
@@ -38,7 +39,7 @@ class MultiIndexHandler {
   }
 
   MultiIndexHandler &operator++() {
-    for (int i = 0; i < DIM; ++i) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       if (current_multi_index_value_[i] == multi_index_length_[i] - 1 || multi_index_length_[i] == 0) {
         current_multi_index_value_[i] = 0;
       } else {
@@ -56,7 +57,7 @@ class MultiIndexHandler {
   }
 
   MultiIndexHandler &operator--() {
-    for (int i = 0; i < DIM; ++i) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       if (current_multi_index_value_[i] == 0) {
         current_multi_index_value_[i] = multi_index_length_[i] - 1;
       } else {
@@ -81,8 +82,8 @@ class MultiIndexHandler {
     return *this;
   }
 
-  void SetIndices(const std::array<int, DIM> &indices) {
-    for (int i = 0; i < DIM; ++i) {
+  void SetIndices(const std::array<int, PARAMETRIC_DIMENSIONALITY> &indices) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       current_multi_index_value_[i] = indices[i];
     }
   }
@@ -95,13 +96,13 @@ class MultiIndexHandler {
     }
   }
 
-  std::array<int, DIM> GetIndices() const {
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetIndices() const {
     return current_multi_index_value_;
   }
 
-  std::array<int, DIM> GetDifferenceIndices() const {
-    std::array<int, DIM> indices;
-    for (int i = 0; i < DIM; ++i) {
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetDifferenceIndices() const {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> indices;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       indices[i] = multi_index_length_[i] - current_multi_index_value_[i] - 1;
     }
     return indices;
@@ -111,13 +112,14 @@ class MultiIndexHandler {
     return Get1DIndex(multi_index_length_, current_multi_index_value_);
   }
 
-  int Get1DIndex(const std::array<int, DIM> &indices) const {
+  int Get1DIndex(const std::array<int, PARAMETRIC_DIMENSIONALITY> &indices) const {
     return Get1DIndex(multi_index_length_, indices);
   }
 
-  int Get1DIndex(const std::array<int, DIM> &length, const std::array<int, DIM> &indices) const {
+  int Get1DIndex(const std::array<int, PARAMETRIC_DIMENSIONALITY> &length,
+      const std::array<int, PARAMETRIC_DIMENSIONALITY> &indices) const {
     int index_1d = 0;
-    for (int i = 0; i < DIM; ++i) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       int temp = indices[i];
       for (int j = i - 1; j >= 0; --j) {
         temp *= length[j];
@@ -129,19 +131,19 @@ class MultiIndexHandler {
 
   int Get1DLength() const {
     int length = 1;
-    for (int i = 0; i < DIM; ++i) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       length *= multi_index_length_[i];
     }
     return length;
   }
 
   int ExtractDimension(int dimension) const {
-    std::array<int, DIM> indices, length;
-    for (int m = 0; m < DIM; ++m) {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> indices, length;
+    for (int m = 0; m < PARAMETRIC_DIMENSIONALITY; ++m) {
       if (m < dimension) {
         indices[m] = current_multi_index_value_[m];
         length[m] = multi_index_length_[m];
-      } else if (m == DIM - 1) {
+      } else if (m == PARAMETRIC_DIMENSIONALITY - 1) {
         indices[m] = 0;
         length[m] = 0;
       } else if (m >= dimension) {
@@ -153,8 +155,8 @@ class MultiIndexHandler {
   }
 
  private:
-  std::array<int, DIM> multi_index_length_;
-  std::array<int, DIM> current_multi_index_value_;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> multi_index_length_;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> current_multi_index_value_;
 };
 }  // namespace splinelib::src::util
 

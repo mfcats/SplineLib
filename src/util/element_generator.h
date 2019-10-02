@@ -22,11 +22,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "spline.h"
 
 namespace splinelib::src::util {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class ElementGenerator {
  public:
-  explicit ElementGenerator(std::shared_ptr<spl::Spline<DIM>> spl) : spl_(std::move(spl)) {
-    for (int i = 0; i < DIM; ++i) {
+  explicit ElementGenerator(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spl) : spl_(std::move(spl)) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       for (uint64_t j = 0; j < spl_->GetKnotVector(i)->GetNumberOfKnots() - spl_->GetDegree(i).get() - 1; ++j) {
         if ((spl_->GetKnotVector(i)->GetKnot(j).get() - spl_->GetKnotVector(i)->GetKnot(j + 1).get()) != 0) {
           elements_[i].emplace_back(Element({spl_->GetKnotVector(i)->GetKnot(j),
@@ -41,8 +41,8 @@ class ElementGenerator {
   }
 
  private:
-  std::shared_ptr<spl::Spline<DIM>> spl_;
-  std::array<std::vector<util::Element>, DIM> elements_;
+  std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spl_;
+  std::array<std::vector<util::Element>, PARAMETRIC_DIMENSIONALITY> elements_;
 };
 }  // namespace splinelib::src::util
 

@@ -22,20 +22,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "random_spline_utils.h"
 
 namespace splinelib::src::spl {
-template<int DIM>
-class RandomBSplineGenerator : public BSplineGenerator<DIM> {
+template<int PARAMETRIC_DIMENSIONALITY>
+class RandomBSplineGenerator : public BSplineGenerator<PARAMETRIC_DIMENSIONALITY> {
  public:
   RandomBSplineGenerator() = default;
   virtual ~RandomBSplineGenerator() = default;
 
   RandomBSplineGenerator(std::array<ParametricCoordinate, 2> coord_limits, int max_degree, int dimension) {
-    std::array<Degree, DIM> degrees = RandomSplineUtils<DIM>::GetRandomDegrees(max_degree);
-    baf::KnotVectors<DIM> knot_vectors = RandomSplineUtils<DIM>::GetRandomKnotVectors(coord_limits, degrees);
-    std::array<int, DIM> number_of_points = RandomSplineUtils<DIM>::GetNumberOfPoints(degrees, knot_vectors);
+    std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees =
+        RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetRandomDegrees(max_degree);
+    baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vectors =
+        RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetRandomKnotVectors(coord_limits, degrees);
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points =
+        RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetNumberOfPoints(degrees, knot_vectors);
     std::vector<baf::ControlPoint>
-        control_points = RandomSplineUtils<DIM>::GetRandomControlPoints(dimension, number_of_points);
-    this->physical_space_ = std::make_shared<PhysicalSpace<DIM>>(control_points, number_of_points);
-    this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(knot_vectors, degrees);
+        control_points =
+            RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetRandomControlPoints(dimension, number_of_points);
+    this->physical_space_ =
+        std::make_shared<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(control_points, number_of_points);
+    this->parameter_space_ = std::make_shared<ParameterSpace<PARAMETRIC_DIMENSIONALITY>>(knot_vectors, degrees);
   }
 };
 }  // namespace splinelib::src::spl

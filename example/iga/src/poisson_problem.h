@@ -24,13 +24,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "spline.h"
 
 namespace iga {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class PoissonProblem {
  public:
-  PoissonProblem(std::shared_ptr<spl::NURBS<DIM>> spl, const iga::itg::IntegrationRule &rule) :
+  PoissonProblem(std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spl, const iga::itg::IntegrationRule &rule) :
   spline_(std::move(spl)), num_cp_(spline_->GetNumberOfControlPoints()), rule_(rule) {
-    linear_equation_assembler_ = std::make_shared<iga::LinearEquationAssembler<DIM>>(spline_);
-    elm_itg_calc_ = std::make_shared<iga::ElementIntegralCalculator<DIM>>(spline_);
+    linear_equation_assembler_ = std::make_shared<iga::LinearEquationAssembler<PARAMETRIC_DIMENSIONALITY>>(spline_);
+    elm_itg_calc_ = std::make_shared<iga::ElementIntegralCalculator<PARAMETRIC_DIMENSIONALITY>>(spline_);
     matA_ = std::make_shared<arma::dmat>(num_cp_, num_cp_, arma::fill::zeros);
     vecB_ = std::make_shared<arma::dvec>(num_cp_, arma::fill::zeros);
     srcCp_ = std::make_shared<arma::dvec>(num_cp_, arma::fill::ones);
@@ -63,11 +63,11 @@ class PoissonProblem {
   }
 
  private:
-  std::shared_ptr<spl::NURBS<DIM>> spline_;
+  std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spline_;
   int num_cp_;
   iga::itg::IntegrationRule rule_;
-  std::shared_ptr<iga::LinearEquationAssembler<DIM>> linear_equation_assembler_;
-  std::shared_ptr<iga::ElementIntegralCalculator<DIM>> elm_itg_calc_;
+  std::shared_ptr<iga::LinearEquationAssembler<PARAMETRIC_DIMENSIONALITY>> linear_equation_assembler_;
+  std::shared_ptr<iga::ElementIntegralCalculator<PARAMETRIC_DIMENSIONALITY>> elm_itg_calc_;
   std::shared_ptr<arma::dmat> matA_;
   std::shared_ptr<arma::dvec> vecB_;
   std::shared_ptr<arma::dvec> srcCp_;

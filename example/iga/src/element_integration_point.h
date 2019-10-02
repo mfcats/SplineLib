@@ -20,13 +20,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace iga {
 namespace elm {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class ElementIntegrationPoint {
  public:
   ElementIntegrationPoint(std::vector<double> basis_functions, double weight,
       double jac_det) : non_zero_basis_functions_(std::move(basis_functions)), weight_(weight), jac_det_(jac_det) {}
 
-  ElementIntegrationPoint(std::array<std::vector<double>, DIM> basis_function_derivatives, double weight,
+  ElementIntegrationPoint(std::array<std::vector<double>, PARAMETRIC_DIMENSIONALITY> basis_function_derivatives, double weight,
       double jac_det) : non_zero_basis_function_derivatives_(std::move(basis_function_derivatives)),
       weight_(weight), jac_det_(jac_det) {}
 
@@ -64,7 +64,7 @@ class ElementIntegrationPoint {
 
  private:
   std::vector<double> non_zero_basis_functions_;
-  std::array<std::vector<double>, DIM> non_zero_basis_function_derivatives_;
+  std::array<std::vector<double>, PARAMETRIC_DIMENSIONALITY> non_zero_basis_function_derivatives_;
   double weight_;
   double jac_det_;
 };

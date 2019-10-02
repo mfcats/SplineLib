@@ -21,13 +21,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "nurbs.h"
 
 namespace iga {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class SolutionSpline {
  public:
-  SolutionSpline(const std::shared_ptr<spl::NURBS<DIM>> &spl, const arma::dvec &solution) {
+  SolutionSpline(const std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> &spl, const arma::dvec &solution) {
     std::vector<baf::ControlPoint> control_points;
-    std::array<int, DIM> points_per_direction = spl->GetPointsPerDirection();
-    util::MultiIndexHandler<DIM> point_handler(points_per_direction);
+    std::array<int, PARAMETRIC_DIMENSIONALITY> points_per_direction = spl->GetPointsPerDirection();
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(points_per_direction);
     for (uint64_t i = 0, l = 0; i < static_cast<uint64_t>(spl->GetNumberOfControlPoints()); ++i, ++point_handler, ++l) {
       std::vector<double> temp;
       for (int j = 0; j < spl->GetPointDim(); ++j) {
@@ -36,15 +36,15 @@ class SolutionSpline {
       temp.emplace_back(solution(l));
       control_points.emplace_back(baf::ControlPoint(temp));
     }
-    solution_spl_ = std::make_shared<spl::NURBS<DIM>>(*spl.get(), control_points);
+    solution_spl_ = std::make_shared<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>(*spl.get(), control_points);
   }
 
-  std::shared_ptr<spl::NURBS<DIM>> GetSolutionSpline() {
+  std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> GetSolutionSpline() {
     return solution_spl_;
   }
 
  private:
-  std::shared_ptr<spl::NURBS<DIM>> solution_spl_;
+  std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> solution_spl_;
 };
 }  // namespace iga
 

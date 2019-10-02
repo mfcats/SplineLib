@@ -23,17 +23,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "vector_utils.h"
 
 namespace splinelib::src::spl {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class Projection {
  public:
-  static std::array<ParametricCoordinate, DIM> ProjectionOnSurface(const std::vector<double> &point_phys_coords,
-                                                         std::shared_ptr<spl::Spline<DIM>> spline,
-                                                         std::array<int, 2> scattering = {10, 10},
-                                                         double tolerance = 0.00001) {
+  static std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> ProjectionOnSurface(
+      const std::vector<double> &point_phys_coords, std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline,
+      std::array<int, 2> scattering = {10, 10}, double tolerance = 0.00001) {
     int iteration = 0;
     bool converged = false;
     std::vector<int> dimensions = GetDimensions(point_phys_coords);
-    std::array<ParametricCoordinate, DIM> param_coords =
+    std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coords =
         FindInitialValue2D(scattering, point_phys_coords, spline, dimensions);
     while (!converged) {
       std::vector<double> derivative_dir1 = spline->EvaluateDerivative(param_coords, dimensions, {1, 0});
@@ -50,17 +49,18 @@ class Projection {
     return param_coords;
   }
 
-  static std::array<ParametricCoordinate, DIM> ProjectionOnCurve(const std::vector<double> &point_phys_coords,
-                                                       std::shared_ptr<spl::Spline<DIM>> spline,
-                                                       double tolerance = 0.0001) {
+  static std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> ProjectionOnCurve(
+      const std::vector<double> &point_phys_coords, std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline,
+      double tolerance = 0.0001) {
     int iteration = 0;
     bool converged = false;
     std::vector<int> dimensions = GetDimensions(point_phys_coords);
-    std::array<ParametricCoordinate, DIM> param_coords = FindInitialValue1D(point_phys_coords, spline, dimensions);
+    std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coords =
+        FindInitialValue1D(point_phys_coords, spline, dimensions);
     while (!converged) {
       std::vector<double> derivative = spline->EvaluateDerivative(param_coords, dimensions, {1});
       std::vector<double> current_point = spline->Evaluate(param_coords, dimensions);
-      std::array<double, DIM> delta = GetDelta1D(current_point, derivative, point_phys_coords);
+      std::array<double, PARAMETRIC_DIMENSIONALITY> delta = GetDelta1D(current_point, derivative, point_phys_coords);
       param_coords = UpdateProjectedPoint(param_coords, delta);
       param_coords = CheckParametricCoordinates(param_coords, spline);
       converged = UpdateConverged(delta, tolerance);
@@ -80,16 +80,17 @@ class Projection {
     return dimensions;
   }
 
-  static std::array<ParametricCoordinate, DIM> FindInitialValue1D(const std::vector<double> &point_phys_coords,
-                                                        const std::shared_ptr<spl::Spline<DIM>> &spline,
-                                                        const std::vector<int> &dimensions) {
+  static std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> FindInitialValue1D(
+      const std::vector<double> &point_phys_coords,
+      const std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> &spline, const std::vector<int> &dimensions) {
     util::ElementGenerator<1> element_generator(spline);
     std::vector<util::Element> elements = element_generator.GetElementList(0);
-    std::array<ParametricCoordinate, DIM> ParametricCoordinates = {ParametricCoordinate{0}};
+    std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> ParametricCoordinates = {ParametricCoordinate{0}};
     std::vector<double> splinePhysicalCoords = spline->Evaluate({ParametricCoordinate{(0.5 * (
         elements[0].GetUpperBound() - elements[0].GetLowerBound()).get())}}, dimensions);
     double distance = util::VectorUtils<double>::ComputeDistance(point_phys_coords, splinePhysicalCoords);
-    ParametricCoordinates[0] = ParametricCoordinate{{0.5 * (elements[0].GetUpperBound() - elements[0].GetLowerBound()).get()}};
+    ParametricCoordinates[0] =
+        ParametricCoordinate{{0.5 * (elements[0].GetUpperBound() - elements[0].GetLowerBound()).get()}};
     for (auto i = 1u; i < elements.size(); ++i) {
       splinePhysicalCoords = spline->Evaluate({ParametricCoordinate{0.5 * (
           elements[i].GetUpperBound() - elements[i].GetLowerBound()).get() + elements[i].GetLowerBound().get()}},
@@ -111,7 +112,8 @@ class Projection {
     double last_knot1 = spline->GetKnotVector(0)->GetLastKnot().get();
     double first_knot2 = spline->GetKnotVector(1)->GetKnot(0).get();
     double last_knot2 = spline->GetKnotVector(1)->GetLastKnot().get();
-    std::array<ParametricCoordinate, 2> param_coords = {ParametricCoordinate(first_knot1), ParametricCoordinate(first_knot2)};
+    std::array<ParametricCoordinate, 2> param_coords =
+        {ParametricCoordinate(first_knot1), ParametricCoordinate(first_knot2)};
     std::vector<double> physical_coords = spline->Evaluate(param_coords, dimensions);
     double distance = util::VectorUtils<double>::ComputeDistance(point_phys_coords, physical_coords);
     for (int i = 1; i <= scattering[0]; ++i) {
@@ -131,16 +133,18 @@ class Projection {
     return param_coords;
   }
 
-  static std::array<ParametricCoordinate, DIM> UpdateProjectedPoint(std::array<ParametricCoordinate, DIM> param_coords,
-                                                          const std::array<double, DIM> delta) {
-    for (int i = 0; i < DIM; ++i) {
+  static std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> UpdateProjectedPoint(
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coords,
+      const std::array<double, PARAMETRIC_DIMENSIONALITY> delta) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       param_coords[i] = param_coords[i] + ParametricCoordinate{delta[i]};
     }
     return param_coords;
   }
 
-  static std::array<ParametricCoordinate, DIM> CheckParametricCoordinates(std::array<ParametricCoordinate, DIM> param_coords,
-                                                                const std::shared_ptr<spl::Spline<DIM>> &spline) {
+  static std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> CheckParametricCoordinates(
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coords,
+      const std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> &spline) {
     for (auto &coord : param_coords) {
       if (coord < spline->GetKnotVector(0)->GetKnot(0)) {
         coord = spline->GetKnotVector(0)->GetKnot(0);
@@ -151,7 +155,7 @@ class Projection {
     return param_coords;
   }
 
-  static bool UpdateConverged(const std::array<double, DIM> &delta, double tolerance) {
+  static bool UpdateConverged(const std::array<double, PARAMETRIC_DIMENSIONALITY> &delta, double tolerance) {
     bool is_below_tolerance = true;
     for (const auto &i : delta) {
       if (std::abs(i) >= tolerance) {

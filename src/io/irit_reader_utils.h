@@ -25,20 +25,22 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::io {
 class IRITReaderUtils {
  public:
-  template<int DIM>
-  static std::array<Degree, DIM> GetDegrees(int start, const std::vector<std::string> &entries) {
-    std::array<Degree, DIM> degrees;
-    for (int i = 0; i < DIM; i++) {
+  template<int PARAMETRIC_DIMENSIONALITY>
+  static std::array<Degree, PARAMETRIC_DIMENSIONALITY> GetDegrees(int start, const std::vector<std::string> &entries) {
+    std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       degrees[i] =
-          Degree(util::StringOperations::StringVectorToNumberVector<int>({entries[start + DIM + 2 + i]})[0] - 1);
+          Degree(util::StringOperations::StringVectorToNumberVector<int>({entries[start + PARAMETRIC_DIMENSIONALITY + 2
+              + i]})[0] - 1);
     }
     return degrees;
   }
 
-  template<int DIM>
-  static baf::KnotVectors<DIM> GetKnotVectors(int start, const std::vector<std::string> &entries) {
-    baf::KnotVectors<DIM> knot_vectors;
-    for (int i = 0; i < DIM; i++) {
+  template<int PARAMETRIC_DIMENSIONALITY>
+  static baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> GetKnotVectors(int start,
+                                                                    const std::vector<std::string> &entries) {
+    baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vectors;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       while (!util::StringOperations::StartsWith(entries[start++], "[KV")) {}
       std::vector<ParametricCoordinate> knots;
       while (!util::StringOperations::StartsWith(entries[start], "[")) {
@@ -49,9 +51,9 @@ class IRITReaderUtils {
     return knot_vectors;
   }
 
-  template<int DIM>
+  template<int PARAMETRIC_DIMENSIONALITY>
   static bool IsRational(int start_of_spline, const std::vector<std::string> &entries) {
-    return util::StringOperations::StartsWith(entries[start_of_spline + 2 * DIM + 2], "P");
+    return util::StringOperations::StartsWith(entries[start_of_spline + 2 * PARAMETRIC_DIMENSIONALITY + 2], "P");
   }
 };
 }  // namespace splinelib::src::io

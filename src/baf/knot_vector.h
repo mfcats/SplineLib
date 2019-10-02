@@ -69,8 +69,8 @@ class KnotVector {
   std::vector<ParametricCoordinate> knots_;
 };
 
-template<int DIM>
-using KnotVectors = std::array<std::shared_ptr<KnotVector>, DIM>;
+template<int PARAMETRIC_DIMENSIONALITY>
+using KnotVectors = std::array<std::shared_ptr<KnotVector>, PARAMETRIC_DIMENSIONALITY>;
 }  // namespace splinelib::src::baf
 
 #endif  // SRC_BAF_KNOT_VECTOR_H_

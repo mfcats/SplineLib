@@ -30,28 +30,31 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "physical_space.h"
 
 namespace splinelib::src::spl {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class Spline {
  public:
   virtual ~Spline() = default;
   Spline() = default;
-  Spline(baf::KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree) {
-    parameter_space_ = std::make_shared<ParameterSpace<DIM>>(ParameterSpace<DIM>(knot_vector, degree));
+  Spline(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector,
+      std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree) {
+    parameter_space_ = std::make_shared<ParameterSpace<PARAMETRIC_DIMENSIONALITY>>(
+        ParameterSpace<PARAMETRIC_DIMENSIONALITY>(knot_vector, degree));
   }
-  explicit Spline(std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
+  explicit Spline(std::shared_ptr<ParameterSpace<PARAMETRIC_DIMENSIONALITY>> parameter_space) {
     parameter_space_ = parameter_space;
   }
-  Spline(const Spline<DIM> &spline) {
-    ParameterSpace<DIM> parameter_space(*spline.parameter_space_);
-    parameter_space_ = std::make_shared<ParameterSpace<DIM>>(parameter_space);
+  Spline(const Spline<PARAMETRIC_DIMENSIONALITY> &spline) {
+    ParameterSpace<PARAMETRIC_DIMENSIONALITY> parameter_space(*spline.parameter_space_);
+    parameter_space_ = std::make_shared<ParameterSpace<PARAMETRIC_DIMENSIONALITY>>(parameter_space);
   }
 
-  virtual std::vector<double> Evaluate(std::array<ParametricCoordinate, DIM> param_coord,
+  virtual std::vector<double> Evaluate(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord,
                                        const std::vector<int> &dimensions) const {
     this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
 
     auto first_non_zero = GetArrayOfFirstNonZeroBasisFunctions(param_coord);
-    util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> basisFunctionHandler(
+        this->GetNumberOfBasisFunctionsToEvaluate());
     std::vector<double> evaluated_point(dimensions.size(), 0);
 
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
@@ -64,13 +67,14 @@ class Spline {
     return evaluated_point;
   }
 
-  virtual std::vector<double> EvaluateDerivative(std::array<ParametricCoordinate, DIM> param_coord,
-                                                 const std::vector<int> &dimensions,
-                                                 std::array<int, DIM> derivative) const {
+  virtual std::vector<double> EvaluateDerivative(
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord, const std::vector<int> &dimensions,
+      std::array<int, PARAMETRIC_DIMENSIONALITY> derivative) const {
     this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
 
     auto first_non_zero = this->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
-    util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> basisFunctionHandler(
+        this->GetNumberOfBasisFunctionsToEvaluate());
     std::vector<double> evaluated_point(dimensions.size(), 0);
 
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
@@ -93,21 +97,21 @@ class Spline {
     return parameter_space_->EvaluateAllNonZeroBasisFunctionDerivatives(direction, param_coord, derivative);
   }
 
-  bool AreGeometricallyEqual(const spl::Spline<DIM> &rhs,
+  bool AreGeometricallyEqual(const spl::Spline<PARAMETRIC_DIMENSIONALITY> &rhs,
                              double tolerance = util::NumericSettings<double>::kEpsilon()) const {
-    double number = ceil(pow(100, 1.0 / DIM));
-    std::array<int, DIM> points = std::array<int, DIM>();
+    double number = ceil(pow(100, 1.0 / PARAMETRIC_DIMENSIONALITY));
+    std::array<int, PARAMETRIC_DIMENSIONALITY> points = std::array<int, PARAMETRIC_DIMENSIONALITY>();
     std::vector<int> dimensions;
-    for (int i = 0; i < DIM; ++i) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       points[i] = number + 1;
     }
     for (int i = 0; i < GetPointDim(); ++i) {
       dimensions.push_back(i);
     }
-    util::MultiIndexHandler<DIM> point_handler(points);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(points);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      std::array<ParametricCoordinate, DIM> param_coord;
-      for (int dim = 0; dim < DIM; ++dim) {
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord;
+      for (int dim = 0; dim < PARAMETRIC_DIMENSIONALITY; ++dim) {
         double span = GetKnotVector(dim)->GetLastKnot().get() - GetKnotVector(dim)->GetKnot(0).get();
         param_coord[dim] = ParametricCoordinate(span / number * point_handler[dim]);
       }
@@ -136,7 +140,7 @@ class Spline {
     return GetPhysicalSpace()->GetNumberOfControlPoints();
   }
 
-  std::array<int, DIM> GetPointsPerDirection() const {
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetPointsPerDirection() const {
     return GetPhysicalSpace()->GetPointsPerDirection();
   }
 
@@ -144,11 +148,11 @@ class Spline {
     return GetPhysicalSpace()->GetDimension();
   }
 
-  double GetControlPoint(std::array<int, DIM> indices, int dimension) const {
+  double GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, int dimension) const {
     return GetPhysicalSpace()->GetControlPoint(indices).GetValue(dimension);
   }
 
-  baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const {
+  baf::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
     return GetPhysicalSpace()->GetControlPoint(indices);
   }
 
@@ -156,7 +160,7 @@ class Spline {
     return GetPhysicalSpace()->GetExpansion();
   }
 
-  double GetWeight(std::array<int, DIM> indices) const {
+  double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
     return GetPhysicalSpace()->GetWeight(indices);
   }
 
@@ -214,9 +218,9 @@ class Spline {
     for (uint64_t i = 0; i < num_bezier_segments; ++i) {
       bezier_segments[i] = DegreeElevateBezierSegment(GetBezierSegment(dimension, i), alpha, dimension);
     }
-    std::array<int, DIM> cps_per_dir = GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> cps_per_dir = GetPointsPerDirection();
     cps_per_dir[dimension] += (GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1);
-    util::MultiIndexHandler<DIM> cp_handler(cps_per_dir);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> cp_handler(cps_per_dir);
     GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
     int delta_num_cps = cp_handler.Get1DLength() - GetPhysicalSpace()->GetNumberOfControlPoints();
     GetPhysicalSpace()->AddControlPoints(delta_num_cps);
@@ -239,10 +243,10 @@ class Spline {
         return false;
       }
     }
-    std::array<int, DIM> cps_per_dir = GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> cps_per_dir = GetPointsPerDirection();
     cps_per_dir[dimension] -= num_bezier_segments;
     GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
-    util::MultiIndexHandler<DIM> point_handler(cps_per_dir);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(cps_per_dir);
     int delta_num_cps = GetPhysicalSpace()->GetNumberOfControlPoints() - point_handler.Get1DLength();
     GetPhysicalSpace()->RemoveControlPoints(delta_num_cps);
     parameter_space_->ReduceDegree(dimension);
@@ -257,28 +261,30 @@ class Spline {
                                    int first, int last, int dimension, double tolerance) = 0;
 
  protected:
-  void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParametricCoordinate, DIM> param_coord) const {
+  void ThrowIfParametricCoordinateOutsideKnotVectorRange(
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
     parameter_space_->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
   }
 
-  virtual double GetEvaluatedControlPoint(std::array<ParametricCoordinate, DIM> param_coord,
-                                          std::array<int, DIM> indices,
+  virtual double GetEvaluatedControlPoint(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord,
+                                          std::array<int, PARAMETRIC_DIMENSIONALITY> indices,
                                           int dimension) const = 0;
 
-  virtual double GetEvaluatedDerivativeControlPoint(std::array<ParametricCoordinate, DIM> param_coord,
-                                                    std::array<int, DIM> derivative,
-                                                    std::array<int, DIM> indices,
-                                                    int dimension) const = 0;
+  virtual double GetEvaluatedDerivativeControlPoint(
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord,
+      std::array<int, PARAMETRIC_DIMENSIONALITY> derivative, std::array<int, PARAMETRIC_DIMENSIONALITY> indices,
+      int dimension) const = 0;
 
-  virtual std::shared_ptr<spl::PhysicalSpace<DIM>> GetPhysicalSpace() const = 0;
+  virtual std::shared_ptr<spl::PhysicalSpace<PARAMETRIC_DIMENSIONALITY>> GetPhysicalSpace() const = 0;
 
-  std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(std::array<ParametricCoordinate, DIM> param_coord) const {
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetArrayOfFirstNonZeroBasisFunctions(
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
     return parameter_space_->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
   }
 
-  std::array<int, DIM> GetNumberOfBasisFunctionsToEvaluate() const {
-    std::array<int, DIM> total_length;
-    for (int i = 0; i < DIM; ++i) {
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetNumberOfBasisFunctionsToEvaluate() const {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> total_length;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       total_length[i] = parameter_space_->GetDegree(i).get() + 1;
     }
     return total_length;
@@ -321,7 +327,7 @@ class Spline {
   }
 
   std::vector<baf::ControlPoint> GetBezierSegment(int dimension, int segment) const {
-    util::MultiIndexHandler<DIM> point_handler(GetPointsPerDirection());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointsPerDirection());
     int width = GetDegree(dimension).get() + 1;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     std::vector<baf::ControlPoint> bezier_cps(static_cast<size_t>(width * segment_length),
@@ -402,11 +408,12 @@ class Spline {
     return new_cps;
   }
 
-  virtual void SetNewControlPoint(baf::ControlPoint control_point, double weight, std::array<int, DIM> indices) = 0;
+  virtual void SetNewControlPoint(baf::ControlPoint control_point, double weight,
+      std::array<int, PARAMETRIC_DIMENSIONALITY> indices) = 0;
 
   void SetNewBezierSegmentControlPoints(const std::vector<std::vector<baf::ControlPoint>> &bezier_segments,
                                         int dimension) {
-    util::MultiIndexHandler<DIM> point_handler(GetPointsPerDirection());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointsPerDirection());
     int width = GetDegree(dimension).get() + 1;
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
       int index_in_dir = point_handler[dimension];
@@ -425,7 +432,7 @@ class Spline {
     }
   }
 
-  std::shared_ptr<ParameterSpace<DIM>> parameter_space_;
+  std::shared_ptr<ParameterSpace<PARAMETRIC_DIMENSIONALITY>> parameter_space_;
 };
 }  // namespace splinelib::src::spl
 

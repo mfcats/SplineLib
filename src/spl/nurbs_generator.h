@@ -21,35 +21,37 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "weighted_physical_space.h"
 
 namespace splinelib::src::spl {
-template<int DIM>
-class NURBSGenerator : public SplineGenerator<DIM> {
+template<int PARAMETRIC_DIMENSIONALITY>
+class NURBSGenerator : public SplineGenerator<PARAMETRIC_DIMENSIONALITY> {
  public:
   NURBSGenerator() = default;
   virtual ~NURBSGenerator() = default;
 
-  NURBSGenerator(baf::KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree,
-                 const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights) {
-    std::array<int, DIM> number_of_points;
-    for (int i = 0; i < DIM; ++i) {
+  NURBSGenerator(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector,
+      std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree, const std::vector<baf::ControlPoint> &control_points,
+      std::vector<double> weights) {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points;
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
     }
 
-    this->physical_space_ = std::make_shared<WeightedPhysicalSpace<DIM>>(control_points, weights, number_of_points);
-    this->parameter_space_ = std::make_shared<ParameterSpace<DIM>>(knot_vector, degree);
+    this->physical_space_ =
+        std::make_shared<WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(control_points, weights, number_of_points);
+    this->parameter_space_ = std::make_shared<ParameterSpace<PARAMETRIC_DIMENSIONALITY>>(knot_vector, degree);
   }
 
-  NURBSGenerator(std::shared_ptr<WeightedPhysicalSpace<DIM>> weighted_physical_space,
-                 std::shared_ptr<ParameterSpace<DIM>> parameter_space) {
+  NURBSGenerator(std::shared_ptr<WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>> weighted_physical_space,
+                 std::shared_ptr<ParameterSpace<PARAMETRIC_DIMENSIONALITY>> parameter_space) {
     this->physical_space_ = weighted_physical_space;
     this->parameter_space_ = parameter_space;
   }
 
-  std::shared_ptr<WeightedPhysicalSpace<DIM>> GetWeightedPhysicalSpace() {
+  std::shared_ptr<WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>> GetWeightedPhysicalSpace() {
     return physical_space_;
   }
 
  protected:
-  std::shared_ptr<WeightedPhysicalSpace<DIM>> physical_space_;
+  std::shared_ptr<WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>> physical_space_;
 };
 }  // namespace splinelib::src::spl
 

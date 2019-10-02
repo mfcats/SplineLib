@@ -193,8 +193,9 @@ void IGESWriter::GetParameterData2D(std::string *contents,
   }
 }
 
-template<int DIM>
-double IGESWriter::Get3DControlPoint(std::shared_ptr<spl::Spline<DIM>> spline, int index, int direction) const {
+template<int PARAMETRIC_DIMENSIONALITY>
+double IGESWriter::Get3DControlPoint(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline, int index,
+    int direction) const {
   if (direction < spline->GetPointDim()) {
     return spline->GetControlPoint({index}, direction);
   }

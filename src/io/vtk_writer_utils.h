@@ -22,41 +22,48 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "spline.h"
 
 namespace splinelib::src::io {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class VTKWriterUtils {
  public:
-  static std::array<double, 2 * DIM> GetEdgeKnots(std::shared_ptr<spl::Spline<DIM>> spline_ptr) {
-    std::array<double, 2 * DIM> knots{};
-    for (int i = 0; i < 2 * DIM; ++i) {
-      knots[i] = i < DIM ? spline_ptr->GetKnotVector(i)->GetKnot(0).get()
-                         : spline_ptr->GetKnotVector(i - DIM)->GetLastKnot().get();
+  static std::array<double, 2 * PARAMETRIC_DIMENSIONALITY> GetEdgeKnots(
+      std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline_ptr) {
+    std::array<double, 2 * PARAMETRIC_DIMENSIONALITY> knots{};
+    for (int i = 0; i < 2 * PARAMETRIC_DIMENSIONALITY; ++i) {
+      knots[i] = i < PARAMETRIC_DIMENSIONALITY ? spline_ptr->GetKnotVector(i)->GetKnot(0).get()
+                                               : spline_ptr->GetKnotVector(
+              i - PARAMETRIC_DIMENSIONALITY)->GetLastKnot().get();
     }
     return knots;
   }
 
-  static int NumberOfCells(std::array<int, DIM> scattering) {
+  static int NumberOfCells(std::array<int, PARAMETRIC_DIMENSIONALITY> scattering) {
     int product = 1;
-    for (int i = 0; i < DIM; ++i) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       product *= scattering[i];
     }
     return product;
   }
 
-  static std::array<int, DIM> GetPointHandlerLength(std::array<int, DIM> scattering) {
-    for (int i = 0; i < DIM; ++i) {
+  static std::array<int, PARAMETRIC_DIMENSIONALITY> GetPointHandlerLength(
+      std::array<int, PARAMETRIC_DIMENSIONALITY> scattering) {
+    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       ++scattering[i];
     }
     return scattering;
   }
 
-  static void WritePoints(std::ofstream &file, const std::any &spline, std::array<int, DIM> scattering) {
-    std::shared_ptr<spl::Spline<DIM>> spline_ptr = util::AnyCasts::GetSpline<DIM>(spline);
-    std::array<double, 2 * DIM> knots = GetEdgeKnots(spline_ptr);
-    util::MultiIndexHandler<DIM> point_handler(GetPointHandlerLength(scattering));
+  static void WritePoints(std::ofstream &file,
+                          const std::any &spline,
+                          std::array<int, PARAMETRIC_DIMENSIONALITY> scattering) {
+    std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>>
+        spline_ptr = util::AnyCasts::GetSpline<PARAMETRIC_DIMENSIONALITY>(spline);
+    std::array<double, 2 * PARAMETRIC_DIMENSIONALITY> knots = GetEdgeKnots(spline_ptr);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointHandlerLength(scattering));
     for (int i = 0; i < point_handler.Get1DLength(); ++point_handler, ++i) {
-      std::array<ParametricCoordinate, DIM> coords{};
-      for (int j = 0; j < DIM; ++j) {
-        coords[j] = ParametricCoordinate(knots[j] + point_handler[j] * (knots[j + DIM] - knots[j]) / scattering[j]);
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> coords{};
+      for (int j = 0; j < PARAMETRIC_DIMENSIONALITY; ++j) {
+        coords[j] = ParametricCoordinate(
+            knots[j] + point_handler[j] * (knots[j + PARAMETRIC_DIMENSIONALITY] - knots[j]) / scattering[j]);
       }
       for (int k = 0; k < 3; ++k) {
         file << (k < spline_ptr->GetPointDim() ? spline_ptr->Evaluate(coords, {k})[0] : 0) << (k < 2 ? " " : "\n");
@@ -64,7 +71,9 @@ class VTKWriterUtils {
     }
   }
 
-  static void WriteCellTypes(std::ofstream &file, std::array<int, DIM> scattering, int cell_type) {
+  static void WriteCellTypes(std::ofstream &file,
+                             std::array<int, PARAMETRIC_DIMENSIONALITY> scattering,
+                             int cell_type) {
     for (int i = 0; i < NumberOfCells(scattering); ++i) {
       file << cell_type << "\n";
     }

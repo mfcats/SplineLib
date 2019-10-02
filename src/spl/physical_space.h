@@ -24,15 +24,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "vector_utils.h"
 
 namespace splinelib::src::spl {
-template<int DIM>
+template<int PARAMETRIC_DIMENSIONALITY>
 class PhysicalSpace {
  public:
   PhysicalSpace() = default;
   virtual ~PhysicalSpace() = default;
-  PhysicalSpace(const std::vector<baf::ControlPoint> &control_points, std::array<int, DIM> number_of_points)
-      : dimension_(control_points[0].GetDimension()), number_of_points_(number_of_points) {
+  PhysicalSpace(const std::vector<baf::ControlPoint> &control_points,
+      std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points) : dimension_(control_points[0].GetDimension()),
+      number_of_points_(number_of_points) {
     uint64_t total_number_of_points = 1;
-    for (int dim = 0; dim < DIM; dim++) {
+    for (int dim = 0; dim < PARAMETRIC_DIMENSIONALITY; dim++) {
       total_number_of_points *= number_of_points[dim];
     }
     if (total_number_of_points != control_points.size()) {
@@ -53,7 +54,8 @@ class PhysicalSpace {
                                                        number_of_points_(physical_space.number_of_points_),
                                                        control_points_(physical_space.control_points_) {}
 
-  bool AreEqual(const PhysicalSpace<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+  bool AreEqual(const PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs,
+      double tolerance = util::NumericSettings<double>::kEpsilon()) const {
     return std::equal(control_points_.begin(), control_points_.end(),
                       rhs.control_points_.begin(), rhs.control_points_.end(),
                       [&](double cp_a, double cp_b) {
@@ -66,9 +68,10 @@ class PhysicalSpace {
                       });
   }
 
-  virtual baf::ControlPoint GetControlPoint(std::array<int, DIM> indices) const {
+  virtual baf::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
     std::vector<double> coordinates;
-    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler =
+        util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
     point_handler.SetIndices(indices);
     int first = dimension_ * point_handler.Get1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
@@ -77,11 +80,13 @@ class PhysicalSpace {
     return baf::ControlPoint(coordinates);
   }
 
-  void SetControlPoint(std::array<int, DIM> indices, const baf::ControlPoint &control_point, int dimension = 0,
+  void SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, const baf::ControlPoint &control_point,
+      int dimension = 0,
                        int (*before)(int) = nullptr) {
-    const std::array<int, DIM> number_of_points_before(number_of_points_);
+    const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_);
     if (before) number_of_points_[dimension] = before(number_of_points_[dimension]);
-    util::MultiIndexHandler<DIM> point_handler = util::MultiIndexHandler<DIM>(number_of_points_);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler =
+        util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
     point_handler.SetIndices(indices);
     int first = dimension_ * point_handler.Get1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
@@ -106,12 +111,12 @@ class PhysicalSpace {
     return static_cast<int>(control_points_.size()) / dimension_;
   }
 
-  std::array<int, DIM> GetPointsPerDirection() const {
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetPointsPerDirection() const {
     return number_of_points_;
   }
 
-  std::array<int, DIM> GetMaximumPointIndexInEachDirection() const {
-    std::array<int, DIM> maximum_index = number_of_points_;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetMaximumPointIndexInEachDirection() const {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> maximum_index = number_of_points_;
     for (auto &index : maximum_index) {
       --index;
     }
@@ -134,7 +139,7 @@ class PhysicalSpace {
     return dimension_;
   }
 
-  virtual double GetWeight(std::array<int, DIM>) const {
+  virtual double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY>) const {
     return 1.0;
   }
 
@@ -162,9 +167,9 @@ class PhysicalSpace {
 
   std::vector<baf::ControlPoint> GetDividedControlPoints(int first, int length, int dimension) {
     std::vector<baf::ControlPoint> points;
-    std::array<int, DIM> point_handler_length = GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = GetPointsPerDirection();
     point_handler_length[dimension] = length;
-    util::MultiIndexHandler<DIM> point_handler(point_handler_length);
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
       auto indices = point_handler.GetIndices();
       indices[dimension] += first;
@@ -175,7 +180,7 @@ class PhysicalSpace {
 
  protected:
   int dimension_;
-  std::array<int, DIM> number_of_points_;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_;
   std::vector<double> control_points_;
 };
 }  // namespace splinelib::src::spl
