@@ -51,7 +51,7 @@ void XMLReader::AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines
 
 std::any XMLReader::Get1DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
   baf::KnotVectors<1> knot_vectors = XMLReaderUtils<1>::GetKnotVectors(spline);
-  std::array<baf::Degree, 1> degrees = XMLReaderUtils<1>::GetDegrees(spline);
+  std::array<Degree, 1> degrees = XMLReaderUtils<1>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<1>>>(
         std::make_shared<spl::BSpline<1>>(knot_vectors, degrees, control_points));
@@ -62,7 +62,7 @@ std::any XMLReader::Get1DSpline(pugi::xml_node *spline, const std::vector<baf::C
 
 std::any XMLReader::Get2DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
   baf::KnotVectors<2> knot_vectors = XMLReaderUtils<2>::GetKnotVectors(spline);
-  std::array<baf::Degree, 2> degrees = XMLReaderUtils<2>::GetDegrees(spline);
+  std::array<Degree, 2> degrees = XMLReaderUtils<2>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<2>>>(
         std::make_shared<spl::BSpline<2>>(knot_vectors, degrees, control_points));
@@ -73,7 +73,7 @@ std::any XMLReader::Get2DSpline(pugi::xml_node *spline, const std::vector<baf::C
 
 std::any XMLReader::Get3DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
   baf::KnotVectors<3> knot_vectors = XMLReaderUtils<3>::GetKnotVectors(spline);
-  std::array<baf::Degree, 3> degrees = XMLReaderUtils<3>::GetDegrees(spline);
+  std::array<Degree, 3> degrees = XMLReaderUtils<3>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<3>>>(
         std::make_shared<spl::BSpline<3>>(knot_vectors, degrees, control_points));
@@ -84,7 +84,7 @@ std::any XMLReader::Get3DSpline(pugi::xml_node *spline, const std::vector<baf::C
 
 std::any XMLReader::Get4DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
   baf::KnotVectors<4> knot_vectors = XMLReaderUtils<4>::GetKnotVectors(spline);
-  std::array<baf::Degree, 4> degrees = XMLReaderUtils<4>::GetDegrees(spline);
+  std::array<Degree, 4> degrees = XMLReaderUtils<4>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
     return std::make_any<std::shared_ptr<spl::BSpline<4>>>(
         std::make_shared<spl::BSpline<4>>(knot_vectors, degrees, control_points));

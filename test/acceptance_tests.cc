@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 using namespace splinelib::src;
 
 std::unique_ptr<spl::BSpline<1>> GenerateSpline() {
-  std::array<baf::Degree, 1> degree = {baf::Degree{2}};
+  std::array<Degree, 1> degree = {Degree{2}};
   std::vector<baf::ControlPoint> control_points = {
       baf::ControlPoint(std::vector<double>({0.0, 0.0})),
       baf::ControlPoint(std::vector<double>({0.0, 1.0})),
@@ -35,9 +35,11 @@ std::unique_ptr<spl::BSpline<1>> GenerateSpline() {
   };
   baf::KnotVectors<1> knot_vector_ptr = {
       std::make_shared<baf::KnotVector>(baf::KnotVector(
-          {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{2},
-           baf::ParamCoord{3}, baf::ParamCoord{4}, baf::ParamCoord{4}, baf::ParamCoord{5}, baf::ParamCoord{5},
-           baf::ParamCoord{5}}))};
+          {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1},
+           ParametricCoordinate{2},
+           ParametricCoordinate{3}, ParametricCoordinate{4}, ParametricCoordinate{4}, ParametricCoordinate{5},
+           ParametricCoordinate{5},
+           ParametricCoordinate{5}}))};
   return std::make_unique<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);
 }
 
@@ -47,7 +49,7 @@ int main() {
   int repetitions = 20000000;
   std::chrono::system_clock::time_point before = std::chrono::system_clock::now();
   for (int i = 0; i < repetitions; i++) {
-    b_spline->Evaluate({baf::ParamCoord{i * 5.0 / repetitions}}, {0});
+    b_spline->Evaluate({ParametricCoordinate{i * 5.0 / repetitions}}, {0});
   }
   std::chrono::system_clock::time_point after = std::chrono::system_clock::now();
   double duration = std::chrono::duration_cast<std::chrono::milliseconds>(after - before).count();

@@ -30,9 +30,9 @@ using testing::DoubleNear;
 class ALine : public Test {
  public:
   std::array<baf::KnotVector, 1> knot_vector =
-      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.1}, ParamCoord{0.2},
-                        ParamCoord{0.3}, ParamCoord{0.4}, ParamCoord{0.5}, ParamCoord{0.6}, ParamCoord{0.7},
-                        ParamCoord{0.8}, ParamCoord{0.9}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
+      {baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.1}, ParametricCoordinate{0.2},
+                        ParametricCoordinate{0.3}, ParametricCoordinate{0.4}, ParametricCoordinate{0.5}, ParametricCoordinate{0.6}, ParametricCoordinate{0.7},
+                        ParametricCoordinate{0.8}, ParametricCoordinate{0.9}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}})};
   std::array<Degree, 1> degree = {Degree{3}};
   std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
   std::vector<baf::ControlPoint> control_points = {
@@ -73,10 +73,10 @@ TEST_F(ALine, Test) { // NOLINT
 /*class ASquarePlate : public Test {
  public:
   std::array<baf::KnotVector, 2> knot_vector =
-      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.4}, ParamCoord{0.5},
-                        ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-       baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.4}, ParamCoord{0.5},
-                        ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
+      {baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.4}, ParametricCoordinate{0.5},
+                        ParametricCoordinate{0.6}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}),
+       baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.4}, ParametricCoordinate{0.5},
+                        ParametricCoordinate{0.6}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}})};
   std::array<Degree, 2> degree = {Degree{3}, Degree{3}};
   std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1,
                                  1, 1, 1, 1, 1, 1, 1,

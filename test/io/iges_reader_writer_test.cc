@@ -27,15 +27,18 @@ class AnIGESReaderAndWriter : public Test {
  public:
   AnIGESReaderAndWriter() {
     baf::KnotVectors<2> knot_vector = {
-      std::make_shared<baf::KnotVector>(baf::KnotVector(
-        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.25}, baf::ParamCoord{0.25},
-         baf::ParamCoord{0.5}, baf::ParamCoord{0.5}, baf::ParamCoord{0.75}, baf::ParamCoord{0.75}, baf::ParamCoord{1},
-         baf::ParamCoord{1}, baf::ParamCoord{1}})),
-       std::make_shared<baf::KnotVector>(baf::KnotVector(
-         {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.5}, baf::ParamCoord{0.5},
-          baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.25},
+             ParametricCoordinate{0.25},
+             ParametricCoordinate{0.5}, ParametricCoordinate{0.5}, ParametricCoordinate{0.75},
+             ParametricCoordinate{0.75}, ParametricCoordinate{1},
+             ParametricCoordinate{1}, ParametricCoordinate{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5},
+             ParametricCoordinate{0.5},
+             ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}))};
 
-    std::array<baf::Degree, 2> degree = {baf::Degree{2}, baf::Degree{2}};
+    std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
 
     std::vector<double> weights = {1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 1.0, 0.70710678118654757,
                                    1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 0.50000000000000011,
@@ -111,66 +114,66 @@ class AnIGESReaderAndWriter : public Test {
 
 TEST_F(AnIGESReaderAndWriter, Read1DBSplineFromIGESFile) { // NOLINT
   auto b_spline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_reader_->ReadFile(iges_read)[1]);
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{1.0}}, {0})[0], DoubleNear(-1.3353, 0.0005));
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{1.0}}, {1})[0], DoubleNear(0.450443, 0.0005));
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{1.0}}, {0})[0], DoubleNear(-1.3353, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{1.0}}, {1})[0], DoubleNear(0.450443, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
 }
 
 TEST_F(AnIGESReaderAndWriter, Read1DNURBSWithWeigthsOneFromIGESFile) { // NOLINT
   auto nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(iges_reader_->ReadFile(iges_read_2)[1]);
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{1.0}}, {0})[0], DoubleNear(-1.3353, 0.0005));
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{1.0}}, {1})[0], DoubleNear(0.450443, 0.0005));
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{1.0}}, {0})[0], DoubleNear(-1.3353, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{1.0}}, {1})[0], DoubleNear(0.450443, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
 }
 
 TEST_F(AnIGESReaderAndWriter, Read2DNURBSFromIGESFile) { // NOLINT
   auto nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_reader_->ReadFile(iges_read)[0]);
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {0})[0],
-              DoubleEq(nurbs_->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {0})[0]));
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {1})[0],
-              DoubleEq(nurbs_->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {1})[0]));
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {2})[0],
-              DoubleEq(nurbs_->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {2})[0]));
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {0})[0],
-              DoubleEq(nurbs_->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {0})[0]));
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {1})[0],
-              DoubleEq(nurbs_->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {1})[0]));
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {2})[0],
-              DoubleEq(nurbs_->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {2})[0]));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {0})[0],
+              DoubleEq(nurbs_->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {0})[0]));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {1})[0],
+              DoubleEq(nurbs_->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {1})[0]));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {2})[0],
+              DoubleEq(nurbs_->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {2})[0]));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {0})[0],
+              DoubleEq(nurbs_->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {0})[0]));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {1})[0],
+              DoubleEq(nurbs_->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {1})[0]));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {2})[0],
+              DoubleEq(nurbs_->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {2})[0]));
 }
 
 TEST_F(AnIGESReaderAndWriter, Read2DBSplineFromIGESFile) { // NOLINT
   auto b_spline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(iges_reader_->ReadFile(iges_read_2)[0]);
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {0})[0],
-              DoubleEq(b_spline_->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {0})[0]));
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {1})[0],
-              DoubleEq(b_spline_->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {1})[0]));
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {2})[0],
-              DoubleEq(b_spline_->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {2})[0]));
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {0})[0],
-              DoubleEq(b_spline_->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {0})[0]));
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {1})[0],
-              DoubleEq(b_spline_->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {1})[0]));
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {2})[0],
-              DoubleEq(b_spline_->Evaluate({baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}, {2})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {0})[0],
+              DoubleEq(b_spline_->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {0})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {1})[0],
+              DoubleEq(b_spline_->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {1})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {2})[0],
+              DoubleEq(b_spline_->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {2})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {0})[0],
+              DoubleEq(b_spline_->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {0})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {1})[0],
+              DoubleEq(b_spline_->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {1})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {2})[0],
+              DoubleEq(b_spline_->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {2})[0]));
 }
 
 TEST_F(AnIGESReaderAndWriter, Write1DBSplineToIGESFile) { // NOLINT
   auto splines = iges_reader_->ReadFile(iges_read);
   iges_writer_->WriteFile(splines, "write.iges");
   auto b_spline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_reader_->ReadFile("write.iges")[1]);
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{1.0}}, {0})[0], DoubleNear(-1.3353, 0.0005));
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{1.0}}, {1})[0], DoubleNear(0.450443, 0.0005));
-  ASSERT_THAT(b_spline_1d->Evaluate({baf::ParamCoord{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{1.0}}, {0})[0], DoubleNear(-1.3353, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{1.0}}, {1})[0], DoubleNear(0.450443, 0.0005));
+  ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
   remove("write.iges");
 }
 
@@ -178,12 +181,12 @@ TEST_F(AnIGESReaderAndWriter, Write1DNURBSToIGESFile) { // NOLINT
   auto splines = iges_reader_->ReadFile(iges_read_2);
   iges_writer_->WriteFile(splines, "write.iges");
   auto nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(iges_reader_->ReadFile("write.iges")[1]);
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{1.0}}, {0})[0], DoubleNear(-1.3353, 0.0005));
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{1.0}}, {1})[0], DoubleNear(0.450443, 0.0005));
-  ASSERT_THAT(nurbs_1d->Evaluate({baf::ParamCoord{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{0.0}}, {2})[0], DoubleNear(-0.51255, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{1.0}}, {0})[0], DoubleNear(-1.3353, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{1.0}}, {1})[0], DoubleNear(0.450443, 0.0005));
+  ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
   remove("write.iges");
 }
 
@@ -191,18 +194,18 @@ TEST_F(AnIGESReaderAndWriter, Write2DNURBSToIGESFile) { // NOLINT
   auto splines = iges_reader_->ReadFile(iges_read);
   iges_writer_->WriteFile(splines, "write.iges");
   auto nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_reader_->ReadFile("write.iges")[0]);
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {0})[0],
-              DoubleNear(nurbs_->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {0})[0], 0.0005));
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {1})[0],
-              DoubleNear(nurbs_->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {1})[0], 0.0005));
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {2})[0],
-              DoubleNear(nurbs_->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {2})[0], 0.0005));
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {0})[0],
-              DoubleNear(nurbs_->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {0})[0], 0.0005));
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {1})[0],
-              DoubleNear(nurbs_->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {1})[0], 0.0005));
-  ASSERT_THAT(nurbs_2d->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {2})[0],
-              DoubleNear(nurbs_->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {2})[0], 0.0005));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {0})[0],
+              DoubleNear(nurbs_->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {0})[0], 0.0005));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {1})[0],
+              DoubleNear(nurbs_->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {1})[0], 0.0005));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {2})[0],
+              DoubleNear(nurbs_->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {2})[0], 0.0005));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {0})[0],
+              DoubleNear(nurbs_->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {0})[0], 0.0005));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {1})[0],
+              DoubleNear(nurbs_->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {1})[0], 0.0005));
+  ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {2})[0],
+              DoubleNear(nurbs_->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {2})[0], 0.0005));
   remove("write.iges");
 }
 
@@ -210,18 +213,18 @@ TEST_F(AnIGESReaderAndWriter, Write2DBSplineToIGESFile) { // NOLINT
   auto splines = iges_reader_->ReadFile(iges_read_2);
   iges_writer_->WriteFile(splines, "write.iges");
   auto b_spline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(iges_reader_->ReadFile("write.iges")[0]);
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {0})[0],
-              DoubleEq(b_spline_->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {0})[0]));
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {1})[0],
-              DoubleEq(b_spline_->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {1})[0]));
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {2})[0],
-              DoubleEq(b_spline_->Evaluate({baf::ParamCoord{0.1}, baf::ParamCoord{0.1}}, {2})[0]));
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {0})[0],
-              DoubleEq(b_spline_->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {0})[0]));
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {1})[0],
-              DoubleNear(b_spline_->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {1})[0], 0.0001));
-  ASSERT_THAT(b_spline_2d->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {2})[0],
-              DoubleEq(b_spline_->Evaluate({baf::ParamCoord{0.9}, baf::ParamCoord{0.9}}, {2})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {0})[0],
+              DoubleEq(b_spline_->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {0})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {1})[0],
+              DoubleEq(b_spline_->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {1})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {2})[0],
+              DoubleEq(b_spline_->Evaluate({ParametricCoordinate{0.1}, ParametricCoordinate{0.1}}, {2})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {0})[0],
+              DoubleEq(b_spline_->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {0})[0]));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {1})[0],
+              DoubleNear(b_spline_->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {1})[0], 0.0001));
+  ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {2})[0],
+              DoubleEq(b_spline_->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{0.9}}, {2})[0]));
   remove("write.iges");
 }
 

@@ -27,10 +27,12 @@ class ABSpline2 : public Test {
  public:
   ABSpline2() {
     std::array<baf::KnotVector, 1> knot_vector = {baf::KnotVector(
-        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.2},
-         baf::ParamCoord{0.4}, baf::ParamCoord{0.6}, baf::ParamCoord{0.8}, baf::ParamCoord{1}, baf::ParamCoord{1},
-         baf::ParamCoord{1}, baf::ParamCoord{1}})};
-    std::array<baf::Degree, 1> degree = {baf::Degree{3}};
+        {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0},
+         ParametricCoordinate{0.2},
+         ParametricCoordinate{0.4}, ParametricCoordinate{0.6}, ParametricCoordinate{0.8}, ParametricCoordinate{1},
+         ParametricCoordinate{1},
+         ParametricCoordinate{1}, ParametricCoordinate{1}})};
+    std::array<Degree, 1> degree = {Degree{3}};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({100, 100})),
         baf::ControlPoint(std::vector<double>({140, 196})),

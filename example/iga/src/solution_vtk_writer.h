@@ -46,9 +46,9 @@ class SolutionVTKWriter {
     std::vector<double> point_data;
     util::MultiIndexHandler<DIM> mih(num_pnts);
     while (true) {
-      std::array<ParamCoord, DIM> param_coords{};
+      std::array<ParametricCoordinate, DIM> param_coords{};
       for (int i = 0; i < DIM; ++i) {
-        param_coords[i] = spl->GetKnotVector(i)->GetKnot(0) + ParamCoord{mih[i] * dxi[i]};
+        param_coords[i] = spl->GetKnotVector(i)->GetKnot(0) + ParametricCoordinate{mih[i] * dxi[i]};
       }
       point_data.emplace_back(solution_spl->Evaluate(param_coords, {cp_dim})[0]);
       if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;

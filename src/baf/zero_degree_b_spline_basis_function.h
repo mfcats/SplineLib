@@ -24,8 +24,9 @@ class ZeroDegBSplBasFnc : public baf::BasisFunction {
   ZeroDegBSplBasFnc(const baf::KnotVector &knot_vector, const KnotSpan &start_of_support);
 
  protected:
-  double EvaluateOnSupport(const ParamCoord &param_coord) const override;
-  double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const override;
+  double EvaluateOnSupport(const ParametricCoordinate &param_coord) const override;
+  double EvaluateDerivativeOnSupport(const ParametricCoordinate &param_coord,
+                                     const Derivative &derivative) const override;
 };
 }  // namespace splinelib::src::baf
 

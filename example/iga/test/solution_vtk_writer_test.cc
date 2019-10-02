@@ -36,8 +36,8 @@ TEST_F(AnIGATestSpline, TestSolutionVTKWriter) { // NOLINT
 /*class ALine : public Test {
  public:
   std::array<baf::KnotVector, 1> knot_vector =
-      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.4}, ParamCoord{0.5},
-                        ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
+      {baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.4}, ParametricCoordinate{0.5},
+                        ParametricCoordinate{0.6}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}})};
   std::array<Degree, 1> degree = {Degree{3}};
   std::vector<double> weights = {1, 1, 1, 1, 1, 1, 1};
   std::vector<baf::ControlPoint> control_points = {
@@ -72,9 +72,9 @@ TEST_F(ALine, Test) { // NOLINT
 class ACube : public Test {
  public:
   std::array<baf::KnotVector, 3> knot_vector =
-      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-       baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-       baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
+      {baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}),
+       baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}),
+       baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}})};
 
   std::array<Degree, 3> degree = {Degree{2}, Degree{2}, Degree{2}};
 

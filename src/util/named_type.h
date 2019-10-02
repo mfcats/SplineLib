@@ -64,4 +64,15 @@ class NamedType {
 };
 }  // namespace splinelib::src::util
 
+namespace splinelib::src {
+using Degree = util::NamedType<int, struct DegreeName>;
+using Derivative = util::NamedType<int, struct DerivativeName>;
+using Dimension = util::NamedType<int, struct DimensionName>;
+using KnotSpan = util::NamedType<int, struct KnotSpanName>;
+using Multiplicity = util::NamedType<int, struct MultiplicityName>;
+using ParametricCoordinate = util::NamedType<double, struct ParametricCoordinateName>;
+using Tolerance = util::NamedType<double, struct ToleranceName>;
+using Weight = util::NamedType<double, struct WeightName>;
+}  // namespace splinelib::src
+
 #endif  // SRC_UTIL_NAMED_TYPE_H_

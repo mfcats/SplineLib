@@ -22,7 +22,7 @@ using testing::DoubleEq;
 
 class A1DElement : public Test {
  public:
-  A1DElement() : element({ParamCoord(0.5), ParamCoord(1.0)}) {}
+  A1DElement() : element({ParametricCoordinate(0.5), ParametricCoordinate(1.0)}) {}
 
  protected:
   iga::elm::Element element;

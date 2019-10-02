@@ -29,20 +29,20 @@ class RandomSplineUtils {
   RandomSplineUtils() = default;
   virtual ~RandomSplineUtils() = default;
 
-  static std::array<baf::Degree, DIM> GetRandomDegrees(int max_degree) {
-    std::array<baf::Degree, DIM> degrees;
+  static std::array<Degree, DIM> GetRandomDegrees(int max_degree) {
+    std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; ++i) {
-      degrees[i] = baf::Degree{util::Random::GetBinomialRandom<int>(1, max_degree, 1)};
+      degrees[i] = Degree{util::Random::GetBinomialRandom<int>(1, max_degree, 1)};
     }
     return degrees;
   }
 
-  static baf::KnotVectors<DIM> GetRandomKnotVectors(std::array<baf::ParamCoord, 2> coord_limits,
-                                               const std::array<baf::Degree, DIM> &degree) {
+  static baf::KnotVectors<DIM> GetRandomKnotVectors(std::array<ParametricCoordinate, 2> coord_limits,
+                                               const std::array<Degree, DIM> &degree) {
     baf::KnotVectors<DIM> knot_vectors;
     std::array<int, DIM> number_of_knots = GetNumberOfKnots(degree);
     for (int i = 0; i < DIM; ++i) {
-      std::vector<baf::ParamCoord> param_coord_vector;
+      std::vector<ParametricCoordinate> param_coord_vector;
       for (int j = 0; j < degree[i].get() + 1; ++j) {
         param_coord_vector.push_back(coord_limits[0]);
       }
@@ -82,7 +82,7 @@ class RandomSplineUtils {
     return weights;
   }
 
-  static std::array<int, DIM> GetNumberOfPoints(const std::array<baf::Degree, DIM> &degrees,
+  static std::array<int, DIM> GetNumberOfPoints(const std::array<Degree, DIM> &degrees,
                                                 const baf::KnotVectors<DIM> &knot_vectors) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {
@@ -92,7 +92,7 @@ class RandomSplineUtils {
   }
 
  private:
-  static std::array<int, DIM> GetNumberOfKnots(const std::array<baf::Degree, DIM> &degree) {
+  static std::array<int, DIM> GetNumberOfKnots(const std::array<Degree, DIM> &degree) {
     std::array<int, DIM> number_of_knots;
     for (int i = 0; i < DIM; ++i) {
       number_of_knots[i] = util::Random::GetBinomialRandom<int>(2 * degree[i].get() + 2, 4 * degree[i].get(), 1);

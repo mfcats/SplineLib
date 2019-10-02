@@ -32,14 +32,14 @@ class ParameterSpace {
  public:
   ParameterSpace() = default;
 
-  ParameterSpace(const baf::KnotVectors<DIM> &knot_vector, std::array<baf::Degree, DIM> degree)
+  ParameterSpace(const baf::KnotVectors<DIM> &knot_vector, std::array<Degree, DIM> degree)
       : knot_vector_(knot_vector), degree_(degree) {
     ThrowIfKnotVectorDoesNotStartAndEndWith();
     baf::BasisFunctionFactory factory;
     for (int i = 0; i < DIM; i++) {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
       for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
-        basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), baf::KnotSpan{j}, degree_[i]));
+        basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
       }
     }
   }
@@ -54,14 +54,14 @@ class ParameterSpace {
     for (int i = 0; i < DIM; i++) {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
       for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
-        basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), baf::KnotSpan{j}, degree_[i]));
+        basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
       }
     }
   }
 
   virtual ~ParameterSpace() = default;
 
-  std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, baf::ParamCoord param_coord) const {
+  std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParametricCoordinate param_coord) const {
     auto first_non_zero = GetFirstNonZeroKnot(direction, param_coord);
     std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction].get()) + 1, 0.0);
     for (int i = 0; i < degree_[direction].get() + 1; ++i) {
@@ -72,12 +72,12 @@ class ParameterSpace {
   }
 
   std::vector<double> EvaluateAllNonZeroBasisFunctionDerivatives(int direction,
-                                                                 baf::ParamCoord param_coord,
+                                                                 ParametricCoordinate param_coord,
                                                                  int derivative) const {
     auto first_non_zero = GetFirstNonZeroKnot(direction, param_coord);
     std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction].get()) + 1, 0.0);
     for (int i = 0; i < degree_[direction].get() + 1; ++i) {
-      basis_function_values[i] = (*first_non_zero)->EvaluateDerivative(param_coord, baf::Derivative{derivative});
+      basis_function_values[i] = (*first_non_zero)->EvaluateDerivative(param_coord, Derivative{derivative});
       ++first_non_zero;
     }
     return basis_function_values;
@@ -85,7 +85,7 @@ class ParameterSpace {
 
   bool AreEqual(const ParameterSpace<DIM> &rhs, double tolerance = util::NumericSettings<double>::kEpsilon()) const {
     return std::equal(degree_.begin(), degree_.end(), rhs.degree_.begin(), rhs.degree_.end(),
-                      [&](baf::Degree degree_a, baf::Degree degree_b) {
+                      [&](Degree degree_a, Degree degree_b) {
                         return util::NumericSettings<double>::AreEqual(degree_a.get(), degree_b.get());
                       })
         && std::equal(knot_vector_.begin(), knot_vector_.end(), rhs.knot_vector_.begin(), rhs.knot_vector_.end(),
@@ -95,12 +95,12 @@ class ParameterSpace {
   }
 
   std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator
-  GetFirstNonZeroKnot(int direction, baf::ParamCoord param_coord) const {
+  GetFirstNonZeroKnot(int direction, ParametricCoordinate param_coord) const {
     return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord).get()
         - degree_[direction].get();
   }
 
-  virtual baf::Degree GetDegree(int direction) const {
+  virtual Degree GetDegree(int direction) const {
     return degree_[direction];
   }
 
@@ -108,7 +108,7 @@ class ParameterSpace {
     return knot_vector_[direction];
   }
 
-  virtual double GetBasisFunctions(std::array<int, DIM> indices, std::array<baf::ParamCoord, DIM> param_coord) const {
+  virtual double GetBasisFunctions(std::array<int, DIM> indices, std::array<ParametricCoordinate, DIM> param_coord) const {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
       value *= basis_functions_[i][indices[i]]->Evaluate(param_coord[i]);
@@ -117,17 +117,17 @@ class ParameterSpace {
   }
 
   virtual double GetBasisFunctionDerivatives(std::array<int, DIM> indices,
-                                             std::array<baf::ParamCoord, DIM> param_coord,
+                                             std::array<ParametricCoordinate, DIM> param_coord,
                                              std::array<int, DIM> derivative) const {
     double value = 1;
     for (int i = 0; i < DIM; ++i) {
-      value *= basis_functions_[i][indices[i]]->EvaluateDerivative(param_coord[i], baf::Derivative{derivative[i]});
+      value *= basis_functions_[i][indices[i]]->EvaluateDerivative(param_coord[i], Derivative{derivative[i]});
     }
     return value;
   }
 
   virtual std::array<int, DIM> GetArrayOfFirstNonZeroBasisFunctions(
-      std::array<baf::ParamCoord, DIM> param_coord) const {
+      std::array<ParametricCoordinate, DIM> param_coord) const {
     std::array<int, DIM> first_non_zero;
     for (int i = 0; i < DIM; ++i) {
       first_non_zero[i] = GetKnotVector(i)->GetKnotSpan(param_coord[i]).get() - GetDegree(i).get();
@@ -135,7 +135,7 @@ class ParameterSpace {
     return first_non_zero;
   }
 
-  virtual void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<baf::ParamCoord, DIM> param_coord) const {
+  virtual void ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParametricCoordinate, DIM> param_coord) const {
     for (int dim = 0; dim < DIM; dim++) {
       if (!this->GetKnotVector(dim)->IsInKnotVectorRange(param_coord[dim])) {
         std::stringstream message;
@@ -150,28 +150,28 @@ class ParameterSpace {
     return GetKnotVector(direction)->GetLastKnot().get() - GetKnotVector(direction)->GetKnot(0).get();
   }
 
-  void InsertKnot(baf::ParamCoord knot, int dimension) {
+  void InsertKnot(ParametricCoordinate knot, int dimension) {
     knot_vector_[dimension]->InsertKnot(knot);
     RecreateBasisFunctions();
   }
 
-  void RemoveKnot(baf::ParamCoord knot, int dimension) {
+  void RemoveKnot(ParametricCoordinate knot, int dimension) {
     knot_vector_[dimension]->RemoveKnot(knot);
     RecreateBasisFunctions();
   }
 
   void ElevateDegree(int dimension) {
-    degree_[dimension] = baf::Degree{degree_[dimension].get() + 1};
+    degree_[dimension] = Degree{degree_[dimension].get() + 1};
     RecreateBasisFunctions();
   }
 
   void ReduceDegree(int dimension) {
-    degree_[dimension] = baf::Degree{degree_[dimension].get() - 1};
+    degree_[dimension] = Degree{degree_[dimension].get() - 1};
     RecreateBasisFunctions();
   }
 
   void IncrementMultiplicityOfAllKnots(int dim) {
-    std::vector<baf::ParamCoord> unique_knots(GetKnotVector(dim)->GetNumberOfDifferentKnots());
+    std::vector<ParametricCoordinate> unique_knots(GetKnotVector(dim)->GetNumberOfDifferentKnots());
     auto last = std::unique_copy(GetKnotVector(dim)->begin(), GetKnotVector(dim)->end(), unique_knots.begin());
     unique_knots.resize(std::distance(unique_knots.begin(), last));
     for (auto &knot : unique_knots) {
@@ -180,7 +180,7 @@ class ParameterSpace {
   }
 
   void DecrementMultiplicityOfAllKnots(int dim) {
-    std::vector<baf::ParamCoord> unique_knots(GetKnotVector(dim)->GetNumberOfDifferentKnots());
+    std::vector<ParametricCoordinate> unique_knots(GetKnotVector(dim)->GetNumberOfDifferentKnots());
     auto last = std::unique_copy(GetKnotVector(dim)->begin(), GetKnotVector(dim)->end(), unique_knots.begin());
     unique_knots.resize(std::distance(unique_knots.begin(), last));
     for (auto &knot : unique_knots) {
@@ -188,7 +188,7 @@ class ParameterSpace {
     }
   }
 
-  std::array<baf::KnotVectors<DIM>, 2> GetDividedKnotVectors(baf::ParamCoord param_coord, int dimension) const {
+  std::array<baf::KnotVectors<DIM>, 2> GetDividedKnotVectors(ParametricCoordinate param_coord, int dimension) const {
     auto knot_span = GetKnotVector(dimension)->GetKnotSpan(param_coord).get();
     std::array<int, 2> first_knot = {0, knot_span - GetDegree(dimension).get()};
     std::array<int, 2> last_knot = {knot_span + 1, static_cast<int>(knot_vector_[dimension]->GetNumberOfKnots())};
@@ -197,7 +197,7 @@ class ParameterSpace {
       for (int j = 0; j < DIM; ++j) {
         new_knot_vectors[i][j] = GetKnotVector(j);
       }
-      std::array<std::vector<baf::ParamCoord>, 2> new_knots;
+      std::array<std::vector<ParametricCoordinate>, 2> new_knots;
       for (int j = first_knot[i]; j < last_knot[i]; ++j) {
         new_knots[i].push_back(knot_vector_[dimension]->GetKnot(j));
       }
@@ -238,13 +238,13 @@ class ParameterSpace {
                (static_cast<int>(knot_vector_current_dim->GetNumberOfKnots()) - degree_current_dim.get() - 1);
            ++current_basis_function) {
         basis_functions_current_dim.emplace_back(baf::BasisFunctionFactory::CreateDynamic(
-            *knot_vector_current_dim, baf::KnotSpan{current_basis_function}, degree_current_dim));
+            *knot_vector_current_dim, KnotSpan{current_basis_function}, degree_current_dim));
       }
     }
   }
 
   baf::KnotVectors<DIM> knot_vector_;
-  std::array<baf::Degree, DIM> degree_;
+  std::array<Degree, DIM> degree_;
   std::array<std::vector<std::shared_ptr<baf::BasisFunction>>, DIM> basis_functions_;
 };
 }  // namespace splinelib::src::spl

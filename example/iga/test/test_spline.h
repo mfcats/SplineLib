@@ -29,10 +29,10 @@ using testing::Test;
 class AnIGATestSpline : public Test {
  public:
   std::array<baf::KnotVector, 2> knot_vector =
-      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.4}, ParamCoord{0.5},
-                        ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-       baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{0.5},
-                        ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
+      {baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.4}, ParametricCoordinate{0.5},
+                        ParametricCoordinate{0.6}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}),
+       baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5}, ParametricCoordinate{0.5},
+                        ParametricCoordinate{0.5}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}})};
 
   std::array<Degree, 2> degree = {Degree{3}, Degree{3}};
 
@@ -119,10 +119,10 @@ class AnIGATestSpline : public Test {
 class AnIGATestSpline2 : public Test {
  public:
   std::array<baf::KnotVector, 2> knot_vector =
-      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.33}, ParamCoord{0.66},
-                        ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-       baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.33}, ParamCoord{0.66},
-                        ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})};
+      {baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.33}, ParametricCoordinate{0.66},
+                        ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}),
+       baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.33}, ParametricCoordinate{0.66},
+                        ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}})};
 
   std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
 
@@ -180,12 +180,12 @@ class AnIGATestSpline2 : public Test {
 class AnIGATestSpline3 : public Test {
  public:
   std::array<baf::KnotVector, 3> knot_vector =
-      {baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.4}, ParamCoord{0.5},
-                        ParamCoord{0.6}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-       baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{0.5},
-                        ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}}),
-       baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{0.5}, ParamCoord{0.5},
-                        ParamCoord{0.5}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}, ParamCoord{1}})
+      {baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.4}, ParametricCoordinate{0.5},
+                        ParametricCoordinate{0.6}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}),
+       baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5}, ParametricCoordinate{0.5},
+                        ParametricCoordinate{0.5}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}),
+       baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5}, ParametricCoordinate{0.5},
+                        ParametricCoordinate{0.5}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}})
       };
 
   std::array<Degree, 3> degree = {Degree{3}, Degree{3}, Degree{3}};

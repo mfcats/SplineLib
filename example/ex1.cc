@@ -20,10 +20,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "control_point.h"
 #include "knot_vector.h"
 
-using ParamCoord = splinelib::src::baf::ParamCoord;
+using ParametricCoordinate = splinelib::src::ParametricCoordinate;
 
 int main() {
-  std::array<splinelib::src::baf::Degree, 1> degree = {splinelib::src::baf::Degree{2}};
+  std::array<splinelib::src::Degree, 1> degree = {splinelib::src::Degree{2}};
   std::vector<splinelib::src::baf::ControlPoint> control_points = {
       splinelib::src::baf::ControlPoint(std::vector<double>({4.0, 2.0})),
       splinelib::src::baf::ControlPoint(std::vector<double>({7.0, 1.5})),
@@ -35,12 +35,14 @@ int main() {
       splinelib::src::baf::ControlPoint(std::vector<double>({8.0, 1.0}))
   };
   splinelib::src::baf::KnotVectors<1> knot_vector_ptr = {std::make_shared<splinelib::src::baf::KnotVector>(
-      splinelib::src::baf::KnotVector({ParamCoord{0}, ParamCoord{0}, ParamCoord{0}, ParamCoord{1},
-                                       ParamCoord{2}, ParamCoord{3}, ParamCoord{4}, ParamCoord{4},
-                                       ParamCoord{5}, ParamCoord{5}, ParamCoord{5}}))};
+      splinelib::src::baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0},
+                                       ParametricCoordinate{1},
+                                       ParametricCoordinate{2}, ParametricCoordinate{3}, ParametricCoordinate{4},
+                                       ParametricCoordinate{4},
+                                       ParametricCoordinate{5}, ParametricCoordinate{5}, ParametricCoordinate{5}}))};
   splinelib::src::spl::BSpline<1> b_spline(knot_vector_ptr, degree, control_points);
 
-  b_spline.Evaluate({ParamCoord{1.0}}, {0});
+  b_spline.Evaluate({ParametricCoordinate{1.0}}, {0});
 
   return 0;
 }

@@ -30,7 +30,7 @@ namespace splinelib::src::spl {
 template<int DIM>
 class NURBS : public Spline<DIM> {
  public:
-  NURBS(baf::KnotVectors<DIM> knot_vector, std::array<baf::Degree, DIM> degree,
+  NURBS(baf::KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree,
         const std::vector<baf::ControlPoint> &control_points,
         std::vector<double> weights) : Spline<DIM>(knot_vector, degree) {
     std::array<int, DIM> number_of_points;
@@ -104,13 +104,13 @@ class NURBS : public Spline<DIM> {
     return true;
   }
 
-  std::array<std::shared_ptr<spl::NURBS<DIM>>, 2> SudivideSpline(baf::ParamCoord param_coord, int dimension) {
+  std::array<std::shared_ptr<spl::NURBS<DIM>>, 2> SudivideSpline(ParametricCoordinate param_coord, int dimension) {
     this->InsertKnot(param_coord, dimension,
                      this->GetDegree(dimension).get() + 1
                          - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
     std::array<baf::KnotVectors<DIM>, 2>
         new_knot_vectors = this->parameter_space_->GetDividedKnotVectors(param_coord, dimension);
-    std::array<baf::Degree, DIM> degrees;
+    std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; ++i) {
       degrees[i] = this->GetDegree(i);
     }
@@ -132,7 +132,7 @@ class NURBS : public Spline<DIM> {
     return physical_space_;
   }
 
-  double GetEvaluatedControlPoint(std::array<baf::ParamCoord, DIM> param_coord,
+  double GetEvaluatedControlPoint(std::array<ParametricCoordinate, DIM> param_coord,
                                   std::array<int, DIM> indices,
                                   int dimension) const override {
     if (this->GetPointDim() == dimension) {
@@ -145,7 +145,7 @@ class NURBS : public Spline<DIM> {
     }
   }
 
-  double GetEvaluatedDerivativeControlPoint(std::array<baf::ParamCoord, DIM> param_coord,
+  double GetEvaluatedDerivativeControlPoint(std::array<ParametricCoordinate, DIM> param_coord,
                                             std::array<int, DIM> derivative,
                                             std::array<int, DIM> indices,
                                             int dimension) const override {
@@ -153,7 +153,7 @@ class NURBS : public Spline<DIM> {
         * physical_space_->GetControlPoint(indices).GetValue(dimension);
   }
 
-  double GetRationalBasisFunctionDerivative(std::array<baf::ParamCoord, DIM> param_coord,
+  double GetRationalBasisFunctionDerivative(std::array<ParametricCoordinate, DIM> param_coord,
                                             std::array<int, DIM> derivative,
                                             std::array<int, DIM> indices,
                                             int dimension) const {
@@ -166,7 +166,7 @@ class NURBS : public Spline<DIM> {
         / GetEvaluatedWeightSum(param_coord);
   }
 
-  double GetDerivativesSum(std::array<baf::ParamCoord, DIM> param_coord,
+  double GetDerivativesSum(std::array<ParametricCoordinate, DIM> param_coord,
                            std::array<int, DIM> derivative,
                            std::array<int, DIM> indices,
                            int dimension) const {
@@ -184,7 +184,7 @@ class NURBS : public Spline<DIM> {
     return sum;
   }
 
-  double GetEvaluatedWeightSum(std::array<baf::ParamCoord, DIM> param_coord) const {
+  double GetEvaluatedWeightSum(std::array<ParametricCoordinate, DIM> param_coord) const {
     auto first_non_zero = this->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
     util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
     double sum = 0;
@@ -196,7 +196,7 @@ class NURBS : public Spline<DIM> {
     return sum;
   }
 
-  double GetEvaluatedDerivativeWeightSum(std::array<baf::ParamCoord, DIM> param_coord,
+  double GetEvaluatedDerivativeWeightSum(std::array<ParametricCoordinate, DIM> param_coord,
                                          std::array<int, DIM> derivative) const {
     auto first_non_zero = this->GetArrayOfFirstNonZeroBasisFunctions(param_coord);
     util::MultiIndexHandler<DIM> basisFunctionHandler(this->GetNumberOfBasisFunctionsToEvaluate());
@@ -209,11 +209,11 @@ class NURBS : public Spline<DIM> {
     return sum;
   }
 
-  double GetEvaluatedWeight(std::array<baf::ParamCoord, DIM> param_coord, std::array<int, DIM> indices) const {
+  double GetEvaluatedWeight(std::array<ParametricCoordinate, DIM> param_coord, std::array<int, DIM> indices) const {
     return this->parameter_space_->GetBasisFunctions(indices, param_coord) * physical_space_->GetWeight(indices);
   }
 
-  double GetEvaluatedDerivativeWeight(std::array<baf::ParamCoord, DIM> param_coord,
+  double GetEvaluatedDerivativeWeight(std::array<ParametricCoordinate, DIM> param_coord,
                                       std::array<int, DIM> derivative,
                                       std::array<int, DIM> indices) const {
     return this->parameter_space_->GetBasisFunctionDerivatives(indices, param_coord, derivative)

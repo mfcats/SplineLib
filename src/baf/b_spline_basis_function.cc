@@ -31,12 +31,12 @@ BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
   SetLowerDegreeBasisFunctions(knot_vector, degree, start_of_support);
 }
 
-double BSplineBasisFunction::EvaluateOnSupport(const ParamCoord &param_coord) const {
+double BSplineBasisFunction::EvaluateOnSupport(const ParametricCoordinate &param_coord) const {
   return ComputeLeftQuotient(param_coord) * left_lower_degree_->Evaluate(param_coord)
       + ComputeRightQuotient(param_coord) * right_lower_degree_->Evaluate(param_coord);
 }
 
-double BSplineBasisFunction::EvaluateDerivativeOnSupport(const ParamCoord &param_coord,
+double BSplineBasisFunction::EvaluateDerivativeOnSupport(const ParametricCoordinate &param_coord,
                                                               const Derivative &derivative) const {
   return GetDegree().get()
       * (left_denom_inv_ * left_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1})
@@ -52,11 +52,11 @@ void BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_v
                                                                 degree - Degree{1}));
 }
 
-double BSplineBasisFunction::ComputeLeftQuotient(const ParamCoord &param_coord) const {
+double BSplineBasisFunction::ComputeLeftQuotient(const ParametricCoordinate &param_coord) const {
   return (param_coord - GetStartKnot()).get() * left_denom_inv_;
 }
 
-double BSplineBasisFunction::ComputeRightQuotient(const ParamCoord &param_coord) const {
+double BSplineBasisFunction::ComputeRightQuotient(const ParametricCoordinate &param_coord) const {
   return (GetEndKnot() - param_coord).get() * right_denom_inv_;
 }
 

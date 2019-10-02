@@ -58,8 +58,8 @@ std::vector<std::any> IGESReader::ReadFile(const char *filename) {
 
 std::any IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
   auto upperSumIndex = static_cast<int>(parameterData[1]);
-  std::array<baf::Degree, 1> degree{};
-  degree[0] = baf::Degree{static_cast<int>(parameterData[2])};
+  std::array<Degree, 1> degree{};
+  degree[0] = Degree{static_cast<int>(parameterData[2])};
   baf::KnotVectors<1> knot_vector;
   std::vector<double> weights;
   std::vector<baf::ControlPoint> control_points;
@@ -72,7 +72,7 @@ std::any IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
   weightsStartEnd[1] = weightsStartEnd[0] + upperSumIndex;
   controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
   controlPointsStartEnd[1] = controlPointsStartEnd[0] + (3 * upperSumIndex) + 2;
-  std::vector<baf::ParamCoord> knots;
+  std::vector<ParametricCoordinate> knots;
   for (int i = knotsStartEnd[0]; i <= knotsStartEnd[1]; ++i) {
     knots.emplace_back(parameterData[i]);
   }
@@ -105,9 +105,9 @@ std::any IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
   std::array<int, 2> upperSumIndex{};
   upperSumIndex[0] = static_cast<int>(parameterData[1]);
   upperSumIndex[1] = static_cast<int>(parameterData[2]);
-  std::array<baf::Degree, 2> degree{};
-  degree[0] = baf::Degree{static_cast<int>(parameterData[3])};
-  degree[1] = baf::Degree{static_cast<int>(parameterData[4])};
+  std::array<Degree, 2> degree{};
+  degree[0] = Degree{static_cast<int>(parameterData[3])};
+  degree[1] = Degree{static_cast<int>(parameterData[4])};
   baf::KnotVectors<2> knot_vector;
   std::vector<double> weights;
   std::vector<baf::ControlPoint> control_points;
@@ -122,12 +122,12 @@ std::any IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
   weightsStartEnd[1] = weightsStartEnd[0] - 1 + ((1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
   controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
   controlPointsStartEnd[1] = controlPointsStartEnd[0] - 1 + (3 * (1 + upperSumIndex[0]) * (1 + upperSumIndex[1])) + 2;
-  std::array<std::vector<baf::ParamCoord>, 2> knots;
+  std::array<std::vector<ParametricCoordinate>, 2> knots;
   for (int i = knotsStartEnd[0][0]; i <= knotsStartEnd[0][1]; ++i) {
-    knots[0].push_back(baf::ParamCoord{parameterData[i]});
+    knots[0].push_back(ParametricCoordinate{parameterData[i]});
   }
   for (int i = knotsStartEnd[1][0]; i <= knotsStartEnd[1][1]; ++i) {
-    knots[1].push_back(baf::ParamCoord{parameterData[i]});
+    knots[1].push_back(ParametricCoordinate{parameterData[i]});
   }
   knot_vector[0] = std::make_shared<baf::KnotVector>(knots[0]);
   knot_vector[1] = std::make_shared<baf::KnotVector>(knots[1]);

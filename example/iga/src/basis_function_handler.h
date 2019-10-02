@@ -55,7 +55,7 @@ class BasisFunctionHandler {
         itg_pnt_coords[i] = itg_pnts[i][mih[i]].GetCoordinate();
         itg_pnt_weight *= itg_pnts[i][mih[i]].GetWeight();
       }
-      std::array<ParamCoord, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
+      std::array<ParametricCoordinate, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
           element_number, itg_pnt_coords);
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint<DIM>(
           EvaluateAllNonZeroNURBSBasisFunctions(param_coords), itg_pnt_weight,
@@ -83,7 +83,7 @@ class BasisFunctionHandler {
         itg_pnt_coords[i] = itg_pnts[i][mih[i]].GetCoordinate();
         itg_pnt_weight *= itg_pnts[i][mih[i]].GetWeight();
       }
-      std::array<ParamCoord, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
+      std::array<ParametricCoordinate, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
           element_number, itg_pnt_coords);
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint<DIM>(
           EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coords), itg_pnt_weight,
@@ -111,7 +111,7 @@ class BasisFunctionHandler {
         itg_pnt_coords[i] = itg_pnts[i][mih[i]].GetCoordinate();
         itg_pnt_weight *= itg_pnts[i][mih[i]].GetWeight();
       }
-      std::array<ParamCoord, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
+      std::array<ParametricCoordinate, DIM> param_coords = mapping_handler_->Reference2ParameterSpace(
           element_number, itg_pnt_coords);
       element_integration_points.emplace_back(iga::elm::ElementIntegrationPoint<DIM>(
           EvaluateAllNonZeroNURBSBafDerivativesPhysical(param_coords), itg_pnt_weight,
@@ -123,7 +123,7 @@ class BasisFunctionHandler {
   }
 
  private:
-  std::vector<double> EvaluateAllNonZeroNURBSBasisFunctions(std::array<ParamCoord, DIM> param_coord) const {
+  std::vector<double> EvaluateAllNonZeroNURBSBasisFunctions(std::array<ParametricCoordinate, DIM> param_coord) const {
     std::array<std::vector<double>, DIM> basis_functions{};
     std::array<int, DIM> num_baf{};
     for (int i = 0; i < DIM; ++i) {
@@ -150,7 +150,7 @@ class BasisFunctionHandler {
   }
 
   std::array<std::vector<double>, DIM> EvaluateAllNonZeroNURBSBasisFunctionDerivatives(
-      std::array<ParamCoord, DIM> param_coord) const {
+      std::array<ParametricCoordinate, DIM> param_coord) const {
     std::array<std::vector<double>, DIM> basis_functions{};
     std::array<std::vector<double>, DIM> basis_function_derivatives{};
     std::array<int, DIM> num_baf{};
@@ -197,7 +197,7 @@ class BasisFunctionHandler {
   }
 
   std::array<std::vector<double>, DIM> EvaluateAllNonZeroNURBSBafDerivativesPhysical(
-      std::array<ParamCoord, DIM> param_coord) const {
+      std::array<ParametricCoordinate, DIM> param_coord) const {
     std::array<std::vector<double>, DIM> dr_dx;
     std::array<std::vector<double>, DIM> dr_dxi = EvaluateAllNonZeroNURBSBasisFunctionDerivatives(param_coord);
     arma::dmat dxi_dx = mapping_handler_->GetDxiDx(param_coord);
@@ -213,9 +213,9 @@ class BasisFunctionHandler {
     return dr_dx;
   }
 
-  double GetWeight(std::array<ParamCoord, DIM> param_coord, int local_index) const {
+  double GetWeight(std::array<ParametricCoordinate, DIM> param_coord, int local_index) const {
     iga::ConnectivityHandler<DIM> connectivity_handler(spline_);
-    return spline_->GetWeight({connectivity_handler.GetGlobalIndex(element_generator_->GetElementNumberAtParamCoord(
+    return spline_->GetWeight({connectivity_handler.GetGlobalIndex(element_generator_->GetElementNumberAtParametricCoordinate(
         param_coord), local_index) - 1});
   }
 

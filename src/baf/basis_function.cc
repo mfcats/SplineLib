@@ -15,11 +15,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "basis_function.h"
 
 namespace splinelib::src::baf {
-double BasisFunction::Evaluate(const ParamCoord &paramCoord) const {
-  return IsCoordinateInSupport(paramCoord) ? this->EvaluateOnSupport(paramCoord) : 0.0;
+double BasisFunction::Evaluate(const ParametricCoordinate &ParametricCoordinate) const {
+  return IsCoordinateInSupport(ParametricCoordinate) ? this->EvaluateOnSupport(ParametricCoordinate) : 0.0;
 }
 
-double BasisFunction::EvaluateDerivative(const ParamCoord &param_coord, const Derivative &derivative) const {
+double BasisFunction::EvaluateDerivative(const ParametricCoordinate &param_coord, const Derivative &derivative) const {
   return derivative.get() == 0 ? Evaluate(param_coord) :
          (IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0);
 }
@@ -37,15 +37,15 @@ Degree BasisFunction::GetDegree() const {
   return degree_;
 }
 
-ParamCoord BasisFunction::GetStartKnot() const {
+ParametricCoordinate BasisFunction::GetStartKnot() const {
   return start_knot_;
 }
 
-ParamCoord BasisFunction::GetEndKnot() const {
+ParametricCoordinate BasisFunction::GetEndKnot() const {
   return end_knot_;
 }
 
-bool BasisFunction::IsCoordinateInSupport(const ParamCoord &param_coord) const {
+bool BasisFunction::IsCoordinateInSupport(const ParametricCoordinate &param_coord) const {
   return (start_knot_ <= param_coord && param_coord < end_knot_)
       || (end_knot_is_last_knot_ && param_coord == end_knot_);
 }

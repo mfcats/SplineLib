@@ -28,7 +28,7 @@ class BSplineGenerator : public SplineGenerator<DIM> {
   BSplineGenerator() = default;
   virtual ~BSplineGenerator() = default;
 
-  BSplineGenerator(baf::KnotVectors<DIM> knot_vector, std::array<baf::Degree, DIM> degree,
+  BSplineGenerator(baf::KnotVectors<DIM> knot_vector, std::array<Degree, DIM> degree,
                    const std::vector<baf::ControlPoint> &control_points) : SplineGenerator<DIM>(knot_vector, degree) {
     std::array<int, DIM> number_of_points;
     for (int i = 0; i < DIM; ++i) {

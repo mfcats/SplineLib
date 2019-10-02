@@ -28,7 +28,7 @@ SurfaceGenerator::JoinParameterSpaces(std::shared_ptr<NURBS<1>> const &nurbs_T,
                                            std::shared_ptr<NURBS<1>> const &nurbs_C) const {
   std::array<std::shared_ptr<baf::KnotVector>, 2>
       joined_knot_vector = {nurbs_T->GetKnotVector(0), nurbs_C->GetKnotVector(0)};
-  std::array<baf::Degree, 2> joined_degree = {nurbs_T->GetDegree(0), nurbs_C->GetDegree(0)};
+  std::array<Degree, 2> joined_degree = {nurbs_T->GetDegree(0), nurbs_C->GetDegree(0)};
   return std::make_shared<ParameterSpace<2>>(ParameterSpace<2>(joined_knot_vector, joined_degree));
 }
 
@@ -56,7 +56,7 @@ SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
                                         std::shared_ptr<NURBS<1>> const &nurbs_C,
                                         int nbInter, std::vector<std::array<double, 3>> scaling) {
   double step_size = nurbs_T->GetKnotVectorRange(0) / (nbInter - 1);
-  std::vector<baf::ParamCoord> v_i;
+  std::vector<ParametricCoordinate> v_i;
   std::vector<double> dT_v;
   std::vector<double> ddT_v;
   std::vector<double> t_v;
@@ -73,11 +73,11 @@ SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
   std::vector<double> j_weights(nbInter * m, 0.0);
   v_i.reserve(nbInter);
   for (int i = 0; i < nbInter; ++i) {
-    v_i.emplace_back(baf::ParamCoord{i * step_size});
-    t_v = nurbs_T->Evaluate(std::array<baf::ParamCoord, 1>({v_i[i]}), dimensions);
-    weight_v = nurbs_T->Evaluate(std::array<baf::ParamCoord, 1>({v_i[i]}), std::vector<int>({3}))[0];
-    dT_v = nurbs_T->EvaluateDerivative(std::array<baf::ParamCoord, 1>({v_i[i]}), dimensions, first_derivative);
-    ddT_v = nurbs_T->EvaluateDerivative(std::array<baf::ParamCoord, 1>({v_i[i]}), dimensions, second_derivative);
+    v_i.emplace_back(ParametricCoordinate{i * step_size});
+    t_v = nurbs_T->Evaluate(std::array<ParametricCoordinate, 1>({v_i[i]}), dimensions);
+    weight_v = nurbs_T->Evaluate(std::array<ParametricCoordinate, 1>({v_i[i]}), std::vector<int>({3}))[0];
+    dT_v = nurbs_T->EvaluateDerivative(std::array<ParametricCoordinate, 1>({v_i[i]}), dimensions, first_derivative);
+    ddT_v = nurbs_T->EvaluateDerivative(std::array<ParametricCoordinate, 1>({v_i[i]}), dimensions, second_derivative);
     transMatrix = GetTransformation(t_v,
                                     dT_v,
                                     ddT_v,
@@ -95,7 +95,7 @@ SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
   std::array<std::shared_ptr<baf::KnotVector>, 2> joined_knot_vector =
       {knot_vector_t_ptr, nurbs_C->GetKnotVector(0)};
   std::array<int, 2> j_number_of_points = {nbInter, m};
-  std::array<baf::Degree, 2> joined_degree = {nurbs_T->GetDegree(0), nurbs_C->GetDegree(0)};
+  std::array<Degree, 2> joined_degree = {nurbs_T->GetDegree(0), nurbs_C->GetDegree(0)};
   this->parameter_space_ = std::make_shared<ParameterSpace<2>>(ParameterSpace<2>(
       joined_knot_vector, joined_degree));
   this->physical_space_ = std::make_shared<WeightedPhysicalSpace<2>>(WeightedPhysicalSpace<2>(

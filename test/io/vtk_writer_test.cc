@@ -25,9 +25,10 @@ using namespace splinelib::src;
 class A1DNURBSForVTKWriter {  // NOLINT
  public:
   A1DNURBSForVTKWriter() {
-    std::array<baf::Degree, 1> degree = {baf::Degree{1}};
+    std::array<Degree, 1> degree = {Degree{1}};
     baf::KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector(
-        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.5}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
+        {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5}, ParametricCoordinate{1},
+         ParametricCoordinate{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({4.0, -1.0})),
         baf::ControlPoint(std::vector<double>({5.0, 0.0})),
@@ -44,12 +45,14 @@ class A1DNURBSForVTKWriter {  // NOLINT
 class A2DNURBSForVTKWriter {  // NOLINT
  public:
   A2DNURBSForVTKWriter() {
-    std::array<baf::Degree, 2> degree = {baf::Degree{1}, baf::Degree{1}};
+    std::array<Degree, 2> degree = {Degree{1}, Degree{1}};
     baf::KnotVectors<2> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.5}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5}, ParametricCoordinate{1},
+             ParametricCoordinate{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.5}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5}, ParametricCoordinate{1},
+             ParametricCoordinate{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({-5.0, 0.0, 1.0})),
         baf::ControlPoint(std::vector<double>({-4.0, 0.3, 2.0})),
@@ -72,14 +75,14 @@ class A2DNURBSForVTKWriter {  // NOLINT
 class A3DNURBSForVTKWriter {  // NOLINT
  public:
   A3DNURBSForVTKWriter() {
-    std::array<baf::Degree, 3> degree = {baf::Degree{1}, baf::Degree{1}, baf::Degree{1}};
+    std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{1}};
     baf::KnotVectors<3> knot_vector = {
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.0})),
         baf::ControlPoint(std::vector<double>({2.0, 0.3, -0.1})),

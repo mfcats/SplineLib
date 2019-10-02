@@ -28,14 +28,16 @@ using namespace splinelib::src;
 class BSplineFig5_9 : public Test {  // NOLINT
  public:
   BSplineFig5_9() {
-    std::array<baf::Degree, 2> degree = {baf::Degree{3}, baf::Degree{2}};
+    std::array<Degree, 2> degree = {Degree{3}, Degree{2}};
     baf::KnotVectors<2> knot_vector = {
-      std::make_shared<baf::KnotVector>(baf::KnotVector(
-        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1},
-         baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1}})),
-      std::make_shared<baf::KnotVector>(baf::KnotVector(
-        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.5}, baf::ParamCoord{1},
-         baf::ParamCoord{1}, baf::ParamCoord{1}}))};
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0},
+             ParametricCoordinate{1},
+             ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5},
+             ParametricCoordinate{1},
+             ParametricCoordinate{1}, ParametricCoordinate{1}}))};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({5.0, 0.0, 2.0})),
         baf::ControlPoint(std::vector<double>({2.0, 0.0, 2.0})),
@@ -65,7 +67,7 @@ class BSplineFig5_9 : public Test {  // NOLINT
 };
 
 TEST_F(BSplineFig5_9, IsSubdividedAtKnot0_7InFirstDirection) {  // NOLINT
-  auto splines = bspline_2d_->SudivideSpline(baf::ParamCoord{0.7}, 0);
+  auto splines = bspline_2d_->SudivideSpline(ParametricCoordinate{0.7}, 0);
   ASSERT_THAT(splines[0]->GetKnotVector(0)->GetNumberOfKnots(), 8);
   ASSERT_THAT(splines[1]->GetKnotVector(0)->GetNumberOfKnots(), 8);
   ASSERT_THAT(splines[0]->GetKnotVector(0)->GetKnot(0).get(), DoubleEq(0));
@@ -78,8 +80,8 @@ TEST_F(BSplineFig5_9, IsSubdividedAtKnot0_7InFirstDirection) {  // NOLINT
   ASSERT_THAT(splines[1]->GetKnotVector(0)->GetKnot(7).get(), DoubleEq(1));
   double steps = 100;
   for (int i = 0; i <= steps; ++i) {
-    baf::ParamCoord coord2 = baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-    std::array<baf::ParamCoord, 2> param_coord{baf::ParamCoord(i / steps), coord2};
+    ParametricCoordinate coord2 = ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+    std::array<ParametricCoordinate, 2> param_coord{ParametricCoordinate(i / steps), coord2};
     int spline_number = i / steps >= 0.7 ? 1 : 0;
     std::vector<double> evaluated_splitted_spline = splines[spline_number]->Evaluate(param_coord, {0, 1});
     std::vector<double> original_spline = bspline_2d_->Evaluate(param_coord, {0, 1});
@@ -92,7 +94,7 @@ TEST_F(BSplineFig5_9, IsSubdividedAtKnot0_7InFirstDirection) {  // NOLINT
 class Random1DBSplineToSplit : public Test {  // NOLINT
  public:
   Random1DBSplineToSplit() {
-    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0}, baf::ParamCoord{1}};
+    std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0}, ParametricCoordinate{1}};
     spl::RandomBSplineGenerator<1> spline_generator(limits, 10, 2);
     spl::BSpline<1> b_spline(spline_generator);
     b_spline_1d_ = std::make_shared<spl::BSpline<1>>(b_spline);
@@ -103,10 +105,10 @@ class Random1DBSplineToSplit : public Test {  // NOLINT
 };
 
 TEST_F(Random1DBSplineToSplit, IsSubdividedAtKnot0_25) {  // NOLINT
-  auto splines = b_spline_1d_->SudivideSpline(baf::ParamCoord{0.25}, 0);
+  auto splines = b_spline_1d_->SudivideSpline(ParametricCoordinate{0.25}, 0);
   double steps = 100;
   for (int i = 0; i <= steps; ++i) {
-    std::array<baf::ParamCoord, 1> param_coord{baf::ParamCoord(i / steps)};
+    std::array<ParametricCoordinate, 1> param_coord{ParametricCoordinate(i / steps)};
     int spline_number = i / steps >= 0.25 ? 1 : 0;
     double evaluated_splitted_spline = splines[spline_number]->Evaluate(param_coord, {0})[0];
     double original_spline = b_spline_1d_->Evaluate(param_coord, {0})[0];
@@ -117,7 +119,7 @@ TEST_F(Random1DBSplineToSplit, IsSubdividedAtKnot0_25) {  // NOLINT
 class Random1DNURBSToSplit : public Test {  // NOLINT
  public:
   Random1DNURBSToSplit() {
-    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0}, baf::ParamCoord{1}};
+    std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0}, ParametricCoordinate{1}};
     spl::RandomNURBSGenerator<1> spline_generator(limits, 10, 3);
     spl::NURBS<1> nurbs(spline_generator);
     nurbs_1d_ = std::make_shared<spl::NURBS<1>>(nurbs);
@@ -128,10 +130,10 @@ class Random1DNURBSToSplit : public Test {  // NOLINT
 };
 
 TEST_F(Random1DNURBSToSplit, IsSubdividedAtKnot0_99) {  // NOLINT
-  auto splines = nurbs_1d_->SudivideSpline(baf::ParamCoord{0.99}, 0);
+  auto splines = nurbs_1d_->SudivideSpline(ParametricCoordinate{0.99}, 0);
   double steps = 100;
   for (int i = 0; i <= steps; ++i) {
-    std::array<baf::ParamCoord, 1> param_coord{baf::ParamCoord(i / steps)};
+    std::array<ParametricCoordinate, 1> param_coord{ParametricCoordinate(i / steps)};
     int spline_number = i / steps >= 0.99 ? 1 : 0;
     double evaluated_splitted_spline = splines[spline_number]->Evaluate(param_coord, {0})[0];
     double original_spline = nurbs_1d_->Evaluate(param_coord, {0})[0];
@@ -142,7 +144,7 @@ TEST_F(Random1DNURBSToSplit, IsSubdividedAtKnot0_99) {  // NOLINT
 class Random2DBSplineToSplit : public Test {  // NOLINT
  public:
   Random2DBSplineToSplit() {
-    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0}, baf::ParamCoord{1}};
+    std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0}, ParametricCoordinate{1}};
     spl::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
     spl::BSpline<2> b_spline(spline_generator);
     b_spline_2d_ = std::make_shared<spl::BSpline<2>>(b_spline);
@@ -153,11 +155,11 @@ class Random2DBSplineToSplit : public Test {  // NOLINT
 };
 
 TEST_F(Random2DBSplineToSplit, IsSubdividedAtKnot0_1InFirstDirection) {  // NOLINT
-  auto splines = b_spline_2d_->SudivideSpline(baf::ParamCoord{0.1}, 0);
+  auto splines = b_spline_2d_->SudivideSpline(ParametricCoordinate{0.1}, 0);
   double steps = 50;
   for (int i = 0; i <= steps; ++i) {
-    baf::ParamCoord coord2 = baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-    std::array<baf::ParamCoord, 2> param_coord{baf::ParamCoord(i / steps), coord2};
+    ParametricCoordinate coord2 = ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+    std::array<ParametricCoordinate, 2> param_coord{ParametricCoordinate(i / steps), coord2};
     int spline_number = i / steps >= 0.1 ? 1 : 0;
     std::vector<double> evaluated_splitted_spline = splines[spline_number]->Evaluate(param_coord, {0, 1});
     std::vector<double> original_spline = b_spline_2d_->Evaluate(param_coord, {0, 1});
@@ -170,7 +172,7 @@ TEST_F(Random2DBSplineToSplit, IsSubdividedAtKnot0_1InFirstDirection) {  // NOLI
 class Random2DNURBSToSplit : public Test {  // NOLINT
  public:
   Random2DNURBSToSplit() {
-    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0}, baf::ParamCoord{1}};
+    std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0}, ParametricCoordinate{1}};
     spl::RandomNURBSGenerator<2> spline_generator(limits, 10, 3);
     spl::NURBS<2> nurbs(spline_generator);
     nurbs_2d_ = std::make_shared<spl::NURBS<2>>(nurbs);
@@ -181,11 +183,11 @@ class Random2DNURBSToSplit : public Test {  // NOLINT
 };
 
 TEST_F(Random2DNURBSToSplit, IsSubdividedAtKnot0_5InSecondDirection) {  // NOLINT
-  auto splines = nurbs_2d_->SudivideSpline(baf::ParamCoord{0.5}, 1);
+  auto splines = nurbs_2d_->SudivideSpline(ParametricCoordinate{0.5}, 1);
   double steps = 50;
   for (int i = 0; i <= steps; ++i) {
-    baf::ParamCoord coord1 = baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-    std::array<baf::ParamCoord, 2> param_coord{coord1, baf::ParamCoord(i / steps)};
+    ParametricCoordinate coord1 = ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+    std::array<ParametricCoordinate, 2> param_coord{coord1, ParametricCoordinate(i / steps)};
     int spline_number = i / steps >= 0.5 ? 1 : 0;
     std::vector<double> evaluated_splitted_spline = splines[spline_number]->Evaluate(param_coord, {0, 1});
     std::vector<double> original_spline = nurbs_2d_->Evaluate(param_coord, {0, 1});
@@ -198,7 +200,7 @@ TEST_F(Random2DNURBSToSplit, IsSubdividedAtKnot0_5InSecondDirection) {  // NOLIN
 class Random3DBSplineToSplit : public Test {  // NOLINT
  public:
   Random3DBSplineToSplit() {
-    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0}, baf::ParamCoord{1}};
+    std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0}, ParametricCoordinate{1}};
     spl::RandomBSplineGenerator<3> spline_generator(limits, 10, 3);
     spl::BSpline<3> b_spline(spline_generator);
     b_spline_3d_ = std::make_shared<spl::BSpline<3>>(b_spline);
@@ -209,12 +211,12 @@ class Random3DBSplineToSplit : public Test {  // NOLINT
 };
 
 TEST_F(Random3DBSplineToSplit, IsSubdividedAtKnot0_4InSecondDirection) {  // NOLINT
-  auto splines = b_spline_3d_->SudivideSpline(baf::ParamCoord{0.4}, 1);
+  auto splines = b_spline_3d_->SudivideSpline(ParametricCoordinate{0.4}, 1);
   double steps = 25;
   for (int i = 0; i <= steps; ++i) {
-    baf::ParamCoord coord1 = baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-    baf::ParamCoord coord3 = baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-    std::array<baf::ParamCoord, 3> param_coord{coord1, baf::ParamCoord(i / steps), coord3};
+    ParametricCoordinate coord1 = ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+    ParametricCoordinate coord3 = ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+    std::array<ParametricCoordinate, 3> param_coord{coord1, ParametricCoordinate(i / steps), coord3};
     int spline_number = i / steps >= 0.4 ? 1 : 0;
     std::vector<double> evaluated_splitted_spline = splines[spline_number]->Evaluate(param_coord, {0, 1, 2});
     std::vector<double> original_spline = b_spline_3d_->Evaluate(param_coord, {0, 1, 2});

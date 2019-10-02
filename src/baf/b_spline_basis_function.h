@@ -25,16 +25,17 @@ class BSplineBasisFunction : public BasisFunction {
   BSplineBasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support);
 
  protected:
-  double EvaluateOnSupport(const ParamCoord &param_coord) const override;
-  double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const override;
+  double EvaluateOnSupport(const ParametricCoordinate &param_coord) const override;
+  double EvaluateDerivativeOnSupport(const ParametricCoordinate &param_coord,
+                                     const Derivative &derivative) const override;
 
  private:
   void SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
                                     const Degree &degree,
                                     const KnotSpan &start_of_support);
 
-  double ComputeLeftQuotient(const ParamCoord &param_coord) const;
-  double ComputeRightQuotient(const ParamCoord &param_coord) const;
+  double ComputeLeftQuotient(const ParametricCoordinate &param_coord) const;
+  double ComputeRightQuotient(const ParametricCoordinate &param_coord) const;
 
   double InverseWithPossiblyZeroDenominator(double denominator) const;
 

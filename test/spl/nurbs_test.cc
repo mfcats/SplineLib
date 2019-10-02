@@ -29,10 +29,10 @@ using namespace splinelib::src;
 
 class MockParameterSpace14111 : public spl::ParameterSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetDegree, baf::Degree(int));
-  MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 1>, std::array<baf::ParamCoord, 1>));
-  MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 1>(std::array<baf::ParamCoord, 1>));
-  MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<baf::ParamCoord, 1>));
+  MOCK_CONST_METHOD1(GetDegree, Degree(int));
+  MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 1>, std::array<ParametricCoordinate, 1>));
+  MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 1>(std::array<ParametricCoordinate, 1>));
+  MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<ParametricCoordinate, 1>));
 };
 
 class MockWeightedPhysicalSpace14111 : public spl::WeightedPhysicalSpace<1> {
@@ -68,19 +68,20 @@ void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysi
 }
 
 void set_get_basis_function_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace14111>> &parameter_space) {
-  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0}}))
       .WillByDefault(Return(0.5));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{3},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0}}))
       .WillByDefault(Return(0));
 }
 
 void mock_parameterSpace_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace14111>> &parameter_space) {
   set_get_basis_function_nurbs(parameter_space);
-  ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0}}))
+  ON_CALL(*parameter_space,
+          GetArrayOfFirstNonZeroBasisFunctions(std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0}}))
       .WillByDefault(Return(std::array<int, 1>{1}));
   ON_CALL(*parameter_space, GetDegree(0))
-      .WillByDefault(Return(baf::Degree{2}));
+      .WillByDefault(Return(Degree{2}));
 }
 
 /* 1-dimensional nurbs spline with following properties :
@@ -107,30 +108,30 @@ class NurbsEx4_1 : public Test {
 TEST_F(NurbsEx4_1, Returns1_4For1AndDim0) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0}}, {0})[0],
-      DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {0})[0],
+              DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(NurbsEx4_1, Returns1_2For1AndDim1) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0}}, {1})[0],
-      DoubleNear(1.2, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {1})[0],
+              DoubleNear(1.2, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(NurbsEx4_1, Returns1For1AndWeight) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0}}, {2})[0],
-      DoubleNear(2.5, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {2})[0],
+              DoubleNear(2.5, util::NumericSettings<double>::kEpsilon()));
 }
 
 class MockParameterSpace1009 : public spl::ParameterSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetDegree, baf::Degree(int));
-  MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 1>, std::array<baf::ParamCoord, 1>));
-  MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 1>(std::array<baf::ParamCoord, 1>));
-  MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<baf::ParamCoord, 1>));
+  MOCK_CONST_METHOD1(GetDegree, Degree(int));
+  MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 1>, std::array<ParametricCoordinate, 1>));
+  MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 1>(std::array<ParametricCoordinate, 1>));
+  MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<ParametricCoordinate, 1>));
 };
 
 class MockWeightedPhysicalSpace1009 : public spl::WeightedPhysicalSpace<1> {
@@ -183,49 +184,51 @@ void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysi
 
 void set_throw_method(const std::shared_ptr<NiceMock<MockParameterSpace1009>> &parameter_space) {
   ON_CALL(*parameter_space,
-          ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.2}}))
+          ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParametricCoordinate, 1>{
+              ParametricCoordinate{1.2}}))
       .WillByDefault(Throw(std::range_error("Out of knotvector range")));
   ON_CALL(*parameter_space,
-          ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<baf::ParamCoord, 1>{baf::ParamCoord{-0.1}}))
+          ThrowIfParametricCoordinateOutsideKnotVectorRange(std::array<ParametricCoordinate, 1>{
+              ParametricCoordinate{-0.1}}))
       .WillByDefault(Throw(std::range_error("Out of knotvector range")));
 }
 
 void set_get_basis_function_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace1009>> &parameter_space) {
-  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.0}}))
       .WillByDefault(Return(0));
-  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.25}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.25}}))
       .WillByDefault(Return(0.5));
-  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<baf::ParamCoord, 1>{baf::ParamCoord{1}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<ParametricCoordinate, 1>{ParametricCoordinate{1}}))
       .WillByDefault(Return(0));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{0},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.0}}))
       .WillByDefault(Return(1));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{3},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.25}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.25}}))
       .WillByDefault(Return(0));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{1},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0 / 3.0}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0 / 3.0}}))
       .WillByDefault(Return(2.0 / 9.0));
 }
 
 void set_get_basis_function_nurbs_2(const std::shared_ptr<NiceMock<MockParameterSpace1009>> &parameter_space) {
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{2},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0 / 3.0}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0 / 3.0}}))
       .WillByDefault(Return(65.0 / 90.0));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{3},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0 / 3.0}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0 / 3.0}}))
       .WillByDefault(Return(5.0 / 90.0));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{1},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0 / 3.0}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0 / 3.0}}))
       .WillByDefault(Return(2.0 / 9.0));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{2},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0 / 3.0}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0 / 3.0}}))
       .WillByDefault(Return(65.0 / 90.0));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{3},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0 / 3.0}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0 / 3.0}}))
       .WillByDefault(Return(5.0 / 90.0));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{6},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{1}}))
       .WillByDefault(Return(1));
 }
 
@@ -234,19 +237,19 @@ void mock_parameterSpace_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace
   set_get_basis_function_nurbs_2(parameter_space);
   set_throw_method(parameter_space);
   ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}}))
+      std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.0}}))
       .WillByDefault(Return(std::array<int, 1>{0}));
   ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.25}}))
+      std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.25}}))
       .WillByDefault(Return(std::array<int, 1>{1}));
   ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0 / 3.0}}))
+      std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0 / 3.0}}))
       .WillByDefault(Return(std::array<int, 1>{1}));
   ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0}}))
+      std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0}}))
       .WillByDefault(Return(std::array<int, 1>{4}));
   ON_CALL(*parameter_space, GetDegree(0))
-      .WillByDefault(Return(baf::Degree{2}));
+      .WillByDefault(Return(Degree{2}));
 }
 
 /* 1-dimensional nurbs spline with following properties :
@@ -274,70 +277,70 @@ class ANurbs : public Test {
 TEST_F(ANurbs, ReturnsCorrectCurvePointForFirstKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{0.0}}, {0})[0],
-      DoubleNear(0.5, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{0.0}}, {1})[0],
-      DoubleNear(3.0, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{0.0}}, {2})[0],
-      DoubleNear(1.0, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{0.0}}, {3})[0],
-      DoubleNear(1.0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.0}}, {0})[0],
+              DoubleNear(0.5, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.0}}, {1})[0],
+              DoubleNear(3.0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.0}}, {2})[0],
+              DoubleNear(1.0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.0}}, {3})[0],
+              DoubleNear(1.0, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(ANurbs, ReturnsCorrectCurvePointForInnerKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{0.25}}, {0})[0],
-      DoubleNear(2.8125, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{0.25}}, {1})[0],
-      DoubleNear(5.5, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{0.25}}, {2})[0],
-      DoubleNear(2.29375, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{0.25}}, {3})[0],
-      DoubleNear(0.8, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.25}}, {0})[0],
+              DoubleNear(2.8125, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.25}}, {1})[0],
+              DoubleNear(5.5, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.25}}, {2})[0],
+              DoubleNear(2.29375, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.25}}, {3})[0],
+              DoubleNear(0.8, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(ANurbs, ReturnsCorrectCurvePointForValueBetweenTwoKnots) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0 / 3.0}}, {0})[0],
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0 / 3.0}}, {0})[0],
               DoubleNear(3.625, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0 / 3.0}}, {1})[0], DoubleNear(5.34848, 0.000005));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0 / 3.0}}, {2})[0], DoubleNear(1.23561, 0.000005));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0 / 3.0}}, {3})[0], DoubleNear(0.73333, 0.000005));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0 / 3.0}}, {1})[0], DoubleNear(5.34848, 0.000005));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0 / 3.0}}, {2})[0], DoubleNear(1.23561, 0.000005));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0 / 3.0}}, {3})[0], DoubleNear(0.73333, 0.000005));
 }
 
 TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0}}, {0})[0],
-      DoubleNear(8.5, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0}}, {1})[0],
-      DoubleNear(4.5, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0}}, {2})[0],
-      DoubleNear(0.0, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0}}, {3})[0],
-      DoubleNear(2.0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {0})[0],
+              DoubleNear(8.5, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {1})[0],
+              DoubleNear(4.5, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {2})[0],
+              DoubleNear(0.0, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {3})[0],
+              DoubleNear(2.0, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(ANurbs, ThrowsExceptionForEvaluationAt1_2) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
-  ASSERT_THROW(nurbs->Evaluate({baf::ParamCoord{1.2}}, {0}), std::runtime_error);
+  ASSERT_THROW(nurbs->Evaluate({ParametricCoordinate{1.2}}, {0}), std::runtime_error);
 }
 
 TEST_F(ANurbs, ThrowsExceptionForEvaluationAtMinus0_1) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
-  ASSERT_THROW(nurbs->Evaluate({baf::ParamCoord{-0.1}}, {0}), std::runtime_error);
+  ASSERT_THROW(nurbs->Evaluate({ParametricCoordinate{-0.1}}, {0}), std::runtime_error);
 }
 
 class MockParameterSpace112 : public spl::ParameterSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetDegree, baf::Degree(int));
-  MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 1>, std::array<baf::ParamCoord, 1>));
+  MOCK_CONST_METHOD1(GetDegree, Degree(int));
+  MOCK_CONST_METHOD2(GetBasisFunctions, double(std::array<int, 1>, std::array<ParametricCoordinate, 1>));
   MOCK_CONST_METHOD3(GetBasisFunctionDerivatives,
-                     double(std::array<int, 1>, std::array<baf::ParamCoord, 1>, std::array<int, 1>));
-  MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 1>(std::array<baf::ParamCoord, 1>));
-  MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<baf::ParamCoord, 1>));
+                     double(std::array<int, 1>, std::array<ParametricCoordinate, 1>, std::array<int, 1>));
+  MOCK_CONST_METHOD1(GetArrayOfFirstNonZeroBasisFunctions, std::array<int, 1>(std::array<ParametricCoordinate, 1>));
+  MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<ParametricCoordinate, 1>));
 };
 
 class MockWeightedPhysicalSpace112 : public spl::WeightedPhysicalSpace<1> {
@@ -367,22 +370,22 @@ void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysi
 }
 
 void set_get_basis_function_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace112>> &parameter_space) {
-  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}}))
+  ON_CALL(*parameter_space, GetBasisFunctions(_, std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.0}}))
       .WillByDefault(Return(0));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{0},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.0}}))
       .WillByDefault(Return(1));
   ON_CALL(*parameter_space, GetBasisFunctions(_,
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.5}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.5}}))
       .WillByDefault(Return(0.25));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{1},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.5}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.5}}))
       .WillByDefault(Return(0.5));
   ON_CALL(*parameter_space, GetBasisFunctions(_,
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{1}}))
       .WillByDefault(Return(0));
   ON_CALL(*parameter_space, GetBasisFunctions(std::array<int, 1>{2},
-      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0}}))
+                                              std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0}}))
       .WillByDefault(Return(1));
 }
 
@@ -391,30 +394,30 @@ void set_basis_function_derivative1_nurbs(const std::shared_ptr<NiceMock<MockPar
           GetBasisFunctionDerivatives(_, _, _)).WillByDefault(Return(0.0));
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{0},
-                                      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}},
+                                      std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.0}},
                                       std::array<int, 1>{1})).WillByDefault(Return(-2.0));
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{1},
-                                      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.0}},
+                                      std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.0}},
                                       std::array<int, 1>{1})).WillByDefault(Return(2.0));
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{0},
-                                      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.5}},
+                                      std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.5}},
                                       std::array<int, 1>{1})).WillByDefault(Return(-1.0));
 }
 
 void set_basis_function_derivative1_nurbs_2(const std::shared_ptr<NiceMock<MockParameterSpace112>> &parameter_space) {
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{2},
-                                      std::array<baf::ParamCoord, 1>{baf::ParamCoord{0.5}},
+                                      std::array<ParametricCoordinate, 1>{ParametricCoordinate{0.5}},
                                       std::array<int, 1>{1})).WillByDefault(Return(1.0));
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{1},
-                                      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0}},
+                                      std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0}},
                                       std::array<int, 1>{1})).WillByDefault(Return(-2.0));
   ON_CALL(*parameter_space,
           GetBasisFunctionDerivatives(std::array<int, 1>{2},
-                                      std::array<baf::ParamCoord, 1>{baf::ParamCoord{1.0}},
+                                      std::array<ParametricCoordinate, 1>{ParametricCoordinate{1.0}},
                                       std::array<int, 1>{1})).WillByDefault(Return(2.0));
 }
 
@@ -435,7 +438,7 @@ void mock_parameterSpace_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace
   ON_CALL(*parameter_space, GetArrayOfFirstNonZeroBasisFunctions(_))
       .WillByDefault(Return(std::array<int, 1>{0}));
   ON_CALL(*parameter_space, GetDegree(0))
-      .WillByDefault(Return(baf::Degree{2}));
+      .WillByDefault(Return(Degree{2}));
 }
 
 /* 1-dimensional nurbs spline with following properties :
@@ -462,68 +465,68 @@ class NurbsDerivativeEx4_2 : public Test {
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtFirstKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.0}}, {0}, {1})[0], 0.0);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.0}}, {1}, {1})[0], 2.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {0}, {1})[0], 0.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {1}, {1})[0], 2.0);
 }
 
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtValueBetweenKnots) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.5}}, {0}, {1})[0], -1.28);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.5}}, {1}, {1})[0], 0.96);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {0}, {1})[0], -1.28);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {1}, {1})[0], 0.96);
 }
 
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtLastKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{1.0}}, {0}, {1})[0], -1.0);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{1.0}}, {1}, {1})[0], 0.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{1.0}}, {0}, {1})[0], -1.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{1.0}}, {1}, {1})[0], 0.0);
 }
 
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtFirstKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.0}}, {0}, {2})[0], -4.0);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.0}}, {1}, {2})[0], 0.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {0}, {2})[0], -4.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {1}, {2})[0], 0.0);
 }
 
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtValueBetweenKnots) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.5}}, {0}, {2})[0],
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {0}, {2})[0],
               DoubleNear(-0.512, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.5}}, {1}, {2})[0],
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {1}, {2})[0],
               DoubleNear(-2.816, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtLastKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{1.0}}, {0}, {2})[0], 1.0);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{1.0}}, {1}, {2})[0], -1.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{1.0}}, {0}, {2})[0], 1.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{1.0}}, {1}, {2})[0], -1.0);
 }
 
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtFirstKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.0}}, {0}, {3})[0], 0.0);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.0}}, {1}, {3})[0], -12.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {0}, {3})[0], 0.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {1}, {3})[0], -12.0);
 }
 
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtValueBetweenKnots) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.5}}, {0}, {3})[0],
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {0}, {3})[0],
               DoubleNear(7.3728, util::NumericSettings<double>::kEpsilon()));
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{0.5}}, {1}, {3})[0],
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {1}, {3})[0],
               DoubleNear(2.1504, util::NumericSettings<double>::kEpsilon()));
 }
 
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtLastKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{1.0}}, {0}, {3})[0], 0.0);
-  ASSERT_THAT(nurbs->EvaluateDerivative({baf::ParamCoord{1.0}}, {1}, {3})[0], 3.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{1.0}}, {0}, {3})[0], 0.0);
+  ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{1.0}}, {1}, {3})[0], 3.0);
 }
 
 class ANURBSWithSplineGenerator : public Test {
@@ -531,9 +534,10 @@ class ANURBSWithSplineGenerator : public Test {
   ANURBSWithSplineGenerator() {
     baf::KnotVectors<1> knot_vector =
         {std::make_shared<baf::KnotVector>(baf::KnotVector(
-            {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{2},
-             baf::ParamCoord{3}, baf::ParamCoord{3}, baf::ParamCoord{3}}))};
-    std::array<baf::Degree, 1> degree = {baf::Degree{2}};
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1},
+             ParametricCoordinate{2},
+             ParametricCoordinate{3}, ParametricCoordinate{3}, ParametricCoordinate{3}}))};
+    std::array<Degree, 1> degree = {Degree{2}};
     std::vector<double> weights = {1, 4, 1, 1, 1};
     std::vector<baf::ControlPoint> control_points = {
         baf::ControlPoint(std::vector<double>({0.0, 0.0})),
@@ -551,6 +555,6 @@ class ANURBSWithSplineGenerator : public Test {
 };
 
 TEST_F(ANURBSWithSplineGenerator, Returns1_4For1AndDim0) { // NOLINT
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0}}, {0})[0],
-      DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {0})[0],
+              DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
 }

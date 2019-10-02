@@ -22,23 +22,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "named_type.h"
 
 namespace splinelib::src::baf {
-
-using ParamCoord = util::NamedType<double, struct ParamCoordParameter>;
-using KnotSpan = util::NamedType<int, struct KnotSpanParameter>;
-using Degree = util::NamedType<int, struct DegreeParameter>;
-
 class KnotVector {
  public:
-  using ConstKnotIterator = std::vector<ParamCoord>::const_iterator;
-  using KnotIterator = std::vector<ParamCoord>::iterator;
+  using ConstKnotIterator = std::vector<ParametricCoordinate>::const_iterator;
+  using KnotIterator = std::vector<ParametricCoordinate>::iterator;
 
   KnotVector() = default;
   KnotVector(const KnotVector &knotVector);
   KnotVector(KnotVector &&knotVector) noexcept;
-  explicit KnotVector(std::vector<ParamCoord> knots);
-  KnotVector(std::initializer_list<ParamCoord> knots) noexcept;
+  explicit KnotVector(std::vector<ParametricCoordinate> knots);
+  KnotVector(std::initializer_list<ParametricCoordinate> knots) noexcept;
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
-  KnotVector(std::vector<ParamCoord> coords, Degree degree, int nbControlPoints);
+  KnotVector(std::vector<ParametricCoordinate> coords, Degree degree, int nbControlPoints);
 
   virtual ~KnotVector() = default;
 
@@ -49,12 +44,12 @@ class KnotVector {
   // NumericSettings.
   bool operator==(const KnotVector &rhs) const;
   bool AreEqual(const KnotVector &rhs, double tolerance) const;
-  ParamCoord &operator[](size_t index);
+  ParametricCoordinate &operator[](size_t index);
 
-  virtual ParamCoord GetKnot(size_t index) const;
-  ParamCoord GetLastKnot() const;
-  virtual KnotSpan GetKnotSpan(ParamCoord param_coord) const;
-  virtual size_t GetMultiplicity(ParamCoord param_coord) const;
+  virtual ParametricCoordinate GetKnot(size_t index) const;
+  ParametricCoordinate GetLastKnot() const;
+  virtual KnotSpan GetKnotSpan(ParametricCoordinate param_coord) const;
+  virtual size_t GetMultiplicity(ParametricCoordinate param_coord) const;
   virtual size_t GetNumberOfKnots() const;
   int GetNumberOfDifferentKnots() const;
 
@@ -64,14 +59,14 @@ class KnotVector {
   KnotIterator begin();
   KnotIterator end();
 
-  virtual bool IsInKnotVectorRange(const ParamCoord &param_coord) const;
-  virtual bool IsLastKnot(const ParamCoord &param_coord) const;
+  virtual bool IsInKnotVectorRange(const ParametricCoordinate &param_coord) const;
+  virtual bool IsLastKnot(const ParametricCoordinate &param_coord) const;
 
-  void InsertKnot(const ParamCoord &param_coord);
-  void RemoveKnot(const ParamCoord &param_coord);
+  void InsertKnot(const ParametricCoordinate &param_coord);
+  void RemoveKnot(const ParametricCoordinate &param_coord);
 
  private:
-  std::vector<ParamCoord> knots_;
+  std::vector<ParametricCoordinate> knots_;
 };
 
 template<int DIM>

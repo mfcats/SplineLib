@@ -24,15 +24,16 @@ using namespace splinelib::src;
 
 class ABasisFunctionFactory : public Test {
  public:
-  ABasisFunctionFactory() : degree_{baf::Degree{-1}},
-      knot_vector_({baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{1}, baf::ParamCoord{1},
-                    baf::ParamCoord{1}}),
-      start_of_support_{baf::KnotSpan{4}} {}
+  ABasisFunctionFactory() : degree_{Degree{-1}},
+                            knot_vector_({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0},
+                                          ParametricCoordinate{1}, ParametricCoordinate{1},
+                                          ParametricCoordinate{1}}),
+                            start_of_support_{KnotSpan{4}} {}
 
  protected:
-  baf::Degree degree_;
+  Degree degree_;
   baf::KnotVector knot_vector_;
-  baf::KnotSpan start_of_support_;
+  KnotSpan start_of_support_;
   baf::BasisFunctionFactory basis_function_factory;
 };
 

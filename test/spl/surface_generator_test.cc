@@ -35,11 +35,11 @@ using namespace splinelib::src;
 
 class MockParameterSpaceSection : public spl::ParameterSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetDegree, baf::Degree(int));
+  MOCK_CONST_METHOD1(GetDegree, Degree(int));
   MOCK_CONST_METHOD1(GetKnotVector, std::shared_ptr<baf::KnotVector>(int));
 };
 
-class MockWeightedPhysicalSpaceSection: public spl::WeightedPhysicalSpace<1> {
+class MockWeightedPhysicalSpaceSection : public spl::WeightedPhysicalSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
   MOCK_CONST_METHOD0(GetNumberOfControlPoints, int());
@@ -47,7 +47,7 @@ class MockWeightedPhysicalSpaceSection: public spl::WeightedPhysicalSpace<1> {
   MOCK_CONST_METHOD0(GetDimension, int());
 };
 
-class MockWeightedPhysicalSpaceTrajectory: public spl::WeightedPhysicalSpace<1> {
+class MockWeightedPhysicalSpaceTrajectory : public spl::WeightedPhysicalSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
   MOCK_CONST_METHOD0(GetNumberOfControlPoints, int());
@@ -96,7 +96,7 @@ void mock_controlPointSection(const std::shared_ptr<NiceMock<MockWeightedPhysica
 }
 
 void mock_controlPointTrajectory(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceTrajectory>>
-    &w_physical_space) {
+                                 &w_physical_space) {
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 1>{0}))
       .WillByDefault(Return(baf::ControlPoint({0.0, 0.0, 0.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 1>{1}))
@@ -111,7 +111,7 @@ void mock_homogenousTrajectory(const std::shared_ptr<NiceMock<MockWeightedPhysic
 }
 
 void mock_weightedPhysicalSpaceSection(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceSection>>
-                                &w_physical_space) {
+                                       &w_physical_space) {
   mock_weightsSection(w_physical_space);
   mock_controlPointSection(w_physical_space);
   ON_CALL(*w_physical_space, GetNumberOfControlPoints()).WillByDefault(Return(9));
@@ -119,7 +119,7 @@ void mock_weightedPhysicalSpaceSection(const std::shared_ptr<NiceMock<MockWeight
 }
 
 void mock_weightedPhysicalSpaceTrajectory(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceTrajectory>>
-                                &w_physical_space) {
+                                          &w_physical_space) {
   mock_weightsTrajectory(w_physical_space);
   mock_homogenousTrajectory(w_physical_space);
   mock_controlPointTrajectory(w_physical_space);
@@ -128,12 +128,13 @@ void mock_weightedPhysicalSpaceTrajectory(const std::shared_ptr<NiceMock<MockWei
 }
 
 void mock_parameterSpaceSection(const std::shared_ptr<NiceMock<MockParameterSpaceSection>> &parameter_space) {
-  ON_CALL(*parameter_space, GetDegree(0)).WillByDefault(Return(baf::Degree{2}));
+  ON_CALL(*parameter_space, GetDegree(0)).WillByDefault(Return(Degree{2}));
   ON_CALL(*parameter_space, GetKnotVector(0))
       .WillByDefault(Return(std::make_shared<baf::KnotVector>(baf::KnotVector(
-          {baf::ParamCoord{0.0}, baf::ParamCoord{0.0}, baf::ParamCoord{0.0}, baf::ParamCoord{0.25},
-           baf::ParamCoord{0.25}, baf::ParamCoord{0.5}, baf::ParamCoord{0.5}, baf::ParamCoord{0.75},
-           baf::ParamCoord{0.75}, baf::ParamCoord{1.0}, baf::ParamCoord{1.0}, baf::ParamCoord{1.0}}))));
+          {ParametricCoordinate{0.0}, ParametricCoordinate{0.0}, ParametricCoordinate{0.0}, ParametricCoordinate{0.25},
+           ParametricCoordinate{0.25}, ParametricCoordinate{0.5}, ParametricCoordinate{0.5}, ParametricCoordinate{0.75},
+           ParametricCoordinate{0.75}, ParametricCoordinate{1.0}, ParametricCoordinate{1.0},
+           ParametricCoordinate{1.0}}))));
 }
 
 /* Two 1-dimensional nurbs spline with following properties :
@@ -152,31 +153,32 @@ void mock_parameterSpaceSection(const std::shared_ptr<NiceMock<MockParameterSpac
 class ASurface : public Test {
  public:
   ASurface() :
-        degree1_{baf::Degree{1}},
-        knot_vector1_{
-          std::make_shared<baf::KnotVector>(baf::KnotVector({baf::ParamCoord{0}, baf::ParamCoord{0},
-                                                             baf::ParamCoord{1}, baf::ParamCoord{1}}))},
-        parameter_trajectory(std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(
-            knot_vector1_, degree1_))),
-        w_physical_section(std::make_shared<NiceMock<MockWeightedPhysicalSpaceSection>>()),
-        w_physical_trajectory(std::make_shared<NiceMock<MockWeightedPhysicalSpaceTrajectory>>()),
-        parameter_section(std::make_shared<NiceMock<MockParameterSpaceSection>>()) {
-      nbInter = 11;
-      nbInterCmp = 2;
-      spl::NURBSGenerator<1> nurbs_generator1(w_physical_trajectory, parameter_trajectory);
-      spl::NURBSGenerator<1> nurbs_generator2(w_physical_section, parameter_section);
-      nurbs1 = std::make_shared<spl::NURBS<1>>(nurbs_generator1);
-      nurbs2 = std::make_shared<spl::NURBS<1>>(nurbs_generator2);
+      degree1_{Degree{1}},
+      knot_vector1_{
+          std::make_shared<baf::KnotVector>(baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0},
+                                                             ParametricCoordinate{1}, ParametricCoordinate{1}}))},
+      parameter_trajectory(std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(
+          knot_vector1_, degree1_))),
+      w_physical_section(std::make_shared<NiceMock<MockWeightedPhysicalSpaceSection>>()),
+      w_physical_trajectory(std::make_shared<NiceMock<MockWeightedPhysicalSpaceTrajectory>>()),
+      parameter_section(std::make_shared<NiceMock<MockParameterSpaceSection>>()) {
+    nbInter = 11;
+    nbInterCmp = 2;
+    spl::NURBSGenerator<1> nurbs_generator1(w_physical_trajectory, parameter_trajectory);
+    spl::NURBSGenerator<1> nurbs_generator2(w_physical_section, parameter_section);
+    nurbs1 = std::make_shared<spl::NURBS<1>>(nurbs_generator1);
+    nurbs2 = std::make_shared<spl::NURBS<1>>(nurbs_generator2);
 
     mock_weightedPhysicalSpaceSection(w_physical_section);
     mock_weightedPhysicalSpaceTrajectory(w_physical_trajectory);
     mock_parameterSpaceSection(parameter_section);
     spl::SurfaceGenerator surfaceGenerator = spl::SurfaceGenerator(nurbs1, nurbs2);
-      nurbsJoined = std::make_shared<spl::NURBS<2>>(surfaceGenerator);
-      std::vector<std::array<double, 3>> scaling = {{1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0},
-          {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5},
-          {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}};
-      std::vector<std::array<double, 3>> scalingCmp(nbInterCmp, {1.0, 1.0, 1.0});
+    nurbsJoined = std::make_shared<spl::NURBS<2>>(surfaceGenerator);
+    std::vector<std::array<double, 3>> scaling = {{1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0},
+                                                  {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5},
+                                                  {0.5, 0.5, 0.5},
+                                                  {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}};
+    std::vector<std::array<double, 3>> scalingCmp(nbInterCmp, {1.0, 1.0, 1.0});
 
     spl::SurfaceGenerator surfaceGeneratorScaled = spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling);
     spl::SurfaceGenerator surfaceGeneratorScaledCmp = spl::SurfaceGenerator(nurbs1, nurbs2, nbInterCmp, scalingCmp);
@@ -186,7 +188,7 @@ class ASurface : public Test {
 
  protected:
   int nbInter, nbInterCmp;
-  std::array<baf::Degree, 1> degree1_;
+  std::array<Degree, 1> degree1_;
   baf::KnotVectors<1> knot_vector1_;
   std::shared_ptr<spl::ParameterSpace<1>> parameter_trajectory;
   std::shared_ptr<spl::NURBS<1>> nurbs1;
@@ -253,7 +255,7 @@ TEST_F(ASurface, CompareBothMethods_nbControlPoints) { // NOLINT
 
 TEST_F(ASurface, CompareBothMethods_nbKnots) { // NOLINT
   ASSERT_THAT(nurbsJoined->GetKnotVector(0)->GetNumberOfKnots(),
-      nurbsJoinedScaledCmp->GetKnotVector(0)->GetNumberOfKnots());
+              nurbsJoinedScaledCmp->GetKnotVector(0)->GetNumberOfKnots());
 }
 
 TEST_F(ASurface, CompareBothMethods_ControlPoint) { // NOLINT
@@ -276,7 +278,7 @@ TEST_F(ASurface, ReturnsCorrectVTK) { // NOLINT
   remove("splines2.vtk");
 }
 
-class MockWeightedPhysicalSpaceSectionC: public spl::WeightedPhysicalSpace<1> {
+class MockWeightedPhysicalSpaceSectionC : public spl::WeightedPhysicalSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
   MOCK_CONST_METHOD0(GetNumberOfControlPoints, int());
@@ -284,7 +286,7 @@ class MockWeightedPhysicalSpaceSectionC: public spl::WeightedPhysicalSpace<1> {
   MOCK_CONST_METHOD0(GetDimension, int());
 };
 
-class MockWeightedPhysicalSpaceTrajectoryC: public spl::WeightedPhysicalSpace<1> {
+class MockWeightedPhysicalSpaceTrajectoryC : public spl::WeightedPhysicalSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
   MOCK_CONST_METHOD0(GetNumberOfControlPoints, int());
@@ -337,7 +339,7 @@ void mock_controlPointSectionC(const std::shared_ptr<NiceMock<MockWeightedPhysic
 }
 
 void mock_controlPointTrajectoryC(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceTrajectoryC>>
-    &w_physical_space) {
+                                  &w_physical_space) {
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 1>{0}))
       .WillByDefault(Return(baf::ControlPoint({2.0, 0.0, 1.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 1>{1}))
@@ -355,7 +357,7 @@ void mock_controlPointTrajectoryC(const std::shared_ptr<NiceMock<MockWeightedPhy
 }
 
 void mock_homogenousTrajectoryC(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceTrajectoryC>>
-    &w_physical_space) {
+                                &w_physical_space) {
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{0}))
       .WillByDefault(Return(baf::ControlPoint({2.0, 0.0, 1.0, 1.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 1>{1}))
@@ -373,7 +375,7 @@ void mock_homogenousTrajectoryC(const std::shared_ptr<NiceMock<MockWeightedPhysi
 }
 
 void mock_weightedPhysicalSpaceSectionC(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceSectionC>>
-                                &w_physical_space) {
+                                        &w_physical_space) {
   mock_weightsSectionC(w_physical_space);
   mock_controlPointSectionC(w_physical_space);
   ON_CALL(*w_physical_space, GetNumberOfControlPoints()).WillByDefault(Return(9));
@@ -381,14 +383,13 @@ void mock_weightedPhysicalSpaceSectionC(const std::shared_ptr<NiceMock<MockWeigh
 }
 
 void mock_weightedPhysicalSpaceTrajectoryC(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceTrajectoryC>>
-                                &w_physical_space) {
+                                           &w_physical_space) {
   mock_weightsTrajectoryC(w_physical_space);
   mock_homogenousTrajectoryC(w_physical_space);
   mock_controlPointTrajectoryC(w_physical_space);
   ON_CALL(*w_physical_space, GetNumberOfControlPoints()).WillByDefault(Return(7));
   ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(3));
 }
-
 
 /* Two 1-dimensional nurbs spline with following properties :
  * ---Trajectory---
@@ -407,12 +408,16 @@ void mock_weightedPhysicalSpaceTrajectoryC(const std::shared_ptr<NiceMock<MockWe
 class AComplexSurface : public Test {
  public:
   AComplexSurface() :
-      degree1_{baf::Degree{3}},
+      degree1_{Degree{3}},
       knot_vector1_{
           std::make_shared<baf::KnotVector>(baf::KnotVector({
-            baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.25},
-            baf::ParamCoord{0.5}, baf::ParamCoord{0.75}, baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1},
-            baf::ParamCoord{1}}))},
+                                                                ParametricCoordinate{0}, ParametricCoordinate{0},
+                                                                ParametricCoordinate{0}, ParametricCoordinate{0},
+                                                                ParametricCoordinate{0.25},
+                                                                ParametricCoordinate{0.5}, ParametricCoordinate{0.75},
+                                                                ParametricCoordinate{1}, ParametricCoordinate{1},
+                                                                ParametricCoordinate{1},
+                                                                ParametricCoordinate{1}}))},
       parameter_trajectory(std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(knot_vector1_, degree1_))),
       w_physical_section(std::make_shared<NiceMock<MockWeightedPhysicalSpaceSectionC>>()),
       w_physical_trajectory(std::make_shared<NiceMock<MockWeightedPhysicalSpaceTrajectoryC>>()),
@@ -438,7 +443,7 @@ class AComplexSurface : public Test {
   }
 
  protected:
-  std::array<baf::Degree, 1> degree1_;
+  std::array<Degree, 1> degree1_;
   int nbInter;
   std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector1_;
   std::shared_ptr<spl::ParameterSpace<1>> parameter_trajectory;
@@ -505,11 +510,13 @@ TEST_F(AComplexSurface, ReturnsCorrectControlPointAfterScalingAtIndices_77_1) { 
 class AComplexSurface2 : public Test {
  public:
   AComplexSurface2() :
-      degree1_{baf::Degree{2}},
+      degree1_{Degree{2}},
       knot_vector1_{std::make_shared<baf::KnotVector>(baf::KnotVector(
-          {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.25},
-           baf::ParamCoord{0.5}, baf::ParamCoord{0.75}, baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1},
-           baf::ParamCoord{1}}))},
+          {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0},
+           ParametricCoordinate{0.25},
+           ParametricCoordinate{0.5}, ParametricCoordinate{0.75}, ParametricCoordinate{1}, ParametricCoordinate{1},
+           ParametricCoordinate{1},
+           ParametricCoordinate{1}}))},
       parameter_trajectory(std::make_shared<spl::ParameterSpace<1>>(spl::ParameterSpace<1>(knot_vector1_, degree1_))),
       parameter_section(std::make_shared<NiceMock<MockParameterSpaceSection>>()),
       w_physical_section(std::make_shared<NiceMock<MockWeightedPhysicalSpaceSectionC>>()),
@@ -525,7 +532,7 @@ class AComplexSurface2 : public Test {
   }
 
  protected:
-  std::array<baf::Degree, 1> degree1_;
+  std::array<Degree, 1> degree1_;
   int nbInter;
   std::array<std::shared_ptr<baf::KnotVector>, 1> knot_vector1_;
   std::shared_ptr<spl::ParameterSpace<1>> parameter_trajectory;
@@ -539,6 +546,6 @@ class AComplexSurface2 : public Test {
 TEST_F(AComplexSurface2, ThrowsExceptionIfDegreeTooLow) { // NOLINT
   std::vector<std::array<double, 3>> scaling(nbInter, {1.0, 1.0, 1.0});
   ASSERT_THROW(spl::SurfaceGenerator surfaceGenerator =
-      spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling), std::runtime_error);
+                   spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling), std::runtime_error);
 }
 

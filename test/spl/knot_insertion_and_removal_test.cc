@@ -27,8 +27,8 @@ using namespace splinelib::src;
 class Random1DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
   Random1DBSplineForKnotInsertionAndRemoval()
-      : removed_{0}, param_coord_(baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}) {
-    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0.0}, baf::ParamCoord{1.0}};
+      : removed_{0}, param_coord_(ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)}) {
+    std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
     spl::RandomBSplineGenerator<1> spline_generator(limits, 10, 3);
     spl::BSpline<1> b_spline(spline_generator);
     original_ = std::make_shared<spl::BSpline<1>>(b_spline);
@@ -44,7 +44,7 @@ class Random1DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
 
  protected:
   size_t removed_;
-  baf::ParamCoord param_coord_;
+  ParametricCoordinate param_coord_;
   std::shared_ptr<spl::BSpline<1>> original_;
   std::shared_ptr<spl::BSpline<1>> after_insertion_;
   std::shared_ptr<spl::BSpline<1>> after_removal_;
@@ -61,7 +61,8 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneMoreControlPointAfterKno
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 100; ++evaluated_point) {
-    std::array<baf::ParamCoord, 1> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 1>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
@@ -84,7 +85,8 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneLessControlPointAfterKno
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 100; ++evaluated_point) {
-    std::array<baf::ParamCoord, 1> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 1>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
@@ -99,8 +101,8 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertio
 class Random1DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
   Random1DNURBSForKnotInsertionAndRemoval()
-      : removed_{0}, param_coord_(baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}) {
-    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0.0}, baf::ParamCoord{1.0}};
+      : removed_{0}, param_coord_(ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)}) {
+    std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
     spl::RandomNURBSGenerator<1> spline_generator(limits, 10, 3);
     spl::NURBS<1> nurbs(spline_generator);
     original_ = std::make_shared<spl::NURBS<1>>(nurbs);
@@ -116,7 +118,7 @@ class Random1DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
 
  protected:
   size_t removed_;
-  baf::ParamCoord param_coord_;
+  ParametricCoordinate param_coord_;
   std::shared_ptr<spl::NURBS<1>> original_;
   std::shared_ptr<spl::NURBS<1>> after_insertion_;
   std::shared_ptr<spl::NURBS<1>> after_removal_;
@@ -133,7 +135,8 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, HasOneMoreControlPointAfterKnotI
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 100; ++evaluated_point) {
-    std::array<baf::ParamCoord, 1> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 1>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
@@ -160,7 +163,8 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionA
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 100; ++evaluated_point) {
-    std::array<baf::ParamCoord, 1> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 1>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
@@ -171,10 +175,10 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
 class Random2DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
   Random2DBSplineForKnotInsertionAndRemoval() : removed_({0}), param_coord_{
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
-    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0.0}, baf::ParamCoord{1.0}};
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)},
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)},
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
+    std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
     spl::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
     spl::BSpline<2> b_spline(spline_generator);
     original_ = std::make_shared<spl::BSpline<2>>(b_spline);
@@ -194,7 +198,7 @@ class Random2DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
 
  protected:
   std::array<size_t, 3> removed_;
-  std::array<baf::ParamCoord, 3> param_coord_;
+  std::array<ParametricCoordinate, 3> param_coord_;
   std::shared_ptr<spl::BSpline<2>> original_;
   std::shared_ptr<spl::BSpline<2>> after_insertion_;
   std::shared_ptr<spl::BSpline<2>> after_removal_;
@@ -214,8 +218,9 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, HasOneMoreControlPointPerDirec
 
 TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 25; ++evaluated_point) {
-    std::array<baf::ParamCoord, 2> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 2>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
@@ -247,8 +252,9 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertio
 
 TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 25; ++evaluated_point) {
-    std::array<baf::ParamCoord, 2> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 2>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
@@ -259,10 +265,10 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
 class Random2DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
   Random2DNURBSForKnotInsertionAndRemoval() : removed_({0}), param_coord_{
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
-    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0.0}, baf::ParamCoord{1.0}};
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)},
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)},
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
+    std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
     spl::RandomNURBSGenerator<2> spline_generator(limits, 8, 3);
     spl::NURBS<2> nurbs(spline_generator);
     original_ = std::make_shared<spl::NURBS<2>>(nurbs);
@@ -282,7 +288,7 @@ class Random2DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
 
  protected:
   std::array<size_t, 3> removed_;
-  std::array<baf::ParamCoord, 3> param_coord_;
+  std::array<ParametricCoordinate, 3> param_coord_;
   std::shared_ptr<spl::NURBS<2>> original_;
   std::shared_ptr<spl::NURBS<2>> after_insertion_;
   std::shared_ptr<spl::NURBS<2>> after_removal_;
@@ -302,8 +308,9 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, HasOneMoreControlPointPerDirecti
 
 TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 10; ++evaluated_point) {
-    std::array<baf::ParamCoord, 2> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 2>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
@@ -330,8 +337,9 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionA
 
 TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 10; ++evaluated_point) {
-    std::array<baf::ParamCoord, 2> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 2>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
@@ -342,10 +350,10 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
 class Random3DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
   Random3DBSplineForKnotInsertionAndRemoval() : removed_({0}), param_coord_{
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
-    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0.0}, baf::ParamCoord{1.0}};
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)},
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)},
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
+    std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
     spl::RandomBSplineGenerator<3> spline_generator(limits, 10, 3);
     spl::BSpline<3> b_spline(spline_generator);
     original_ = std::make_shared<spl::BSpline<3>>(b_spline);
@@ -365,7 +373,7 @@ class Random3DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
 
  protected:
   std::array<size_t, 3> removed_;
-  std::array<baf::ParamCoord, 3> param_coord_;
+  std::array<ParametricCoordinate, 3> param_coord_;
   std::shared_ptr<spl::BSpline<3>> original_;
   std::shared_ptr<spl::BSpline<3>> after_insertion_;
   std::shared_ptr<spl::BSpline<3>> after_removal_;
@@ -388,9 +396,10 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, HasOneMoreControlPointPerDirec
 
 TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 10; ++evaluated_point) {
-    std::array<baf::ParamCoord, 3> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 3>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
@@ -425,9 +434,10 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertio
 
 TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 10; ++evaluated_point) {
-    std::array<baf::ParamCoord, 3> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 3>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
@@ -438,10 +448,10 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
 class Random3DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
   Random3DNURBSForKnotInsertionAndRemoval() : removed_({0}), param_coord_{
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)},
-      baf::ParamCoord{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
-    std::array<baf::ParamCoord, 2> limits = {baf::ParamCoord{0.0}, baf::ParamCoord{1.0}};
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)},
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)},
+      ParametricCoordinate{util::Random::GetUniformRandom<double>(0.01, 0.99)}} {
+    std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
     spl::RandomNURBSGenerator<3> spline_generator(limits, 5, 3);
     spl::NURBS<3> nurbs(spline_generator);
     original_ = std::make_shared<spl::NURBS<3>>(nurbs);
@@ -461,7 +471,7 @@ class Random3DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
 
  protected:
   std::array<size_t, 3> removed_;
-  std::array<baf::ParamCoord, 3> param_coord_;
+  std::array<ParametricCoordinate, 3> param_coord_;
   std::shared_ptr<spl::NURBS<3>> original_;
   std::shared_ptr<spl::NURBS<3>> after_insertion_;
   std::shared_ptr<spl::NURBS<3>> after_removal_;
@@ -484,9 +494,10 @@ TEST_F(Random3DNURBSForKnotInsertionAndRemoval, HasOneMoreControlPointPerDirecti
 
 TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 10; ++evaluated_point) {
-    std::array<baf::ParamCoord, 3> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 3>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_insertion_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
@@ -521,9 +532,10 @@ TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionA
 
 TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
   for (int evaluated_point = 0; evaluated_point < 10; ++evaluated_point) {
-    std::array<baf::ParamCoord, 3> param_coord{baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)},
-                                          baf::ParamCoord{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
+    std::array<ParametricCoordinate, 3>
+        param_coord{ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)}};
     for (int j = 0; j < original_->GetPointDim(); ++j) {
       ASSERT_THAT(after_removal_->Evaluate(param_coord, {j})[0],
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));

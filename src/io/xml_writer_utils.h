@@ -42,7 +42,7 @@ class XMLWriterUtils {
       pugi::xml_node knots = knot_vectors.append_child("kntVec");
       baf::KnotVector knot_vector = *spline_ptr->GetKnotVector(i);
       std::string string;
-      for (baf::ParamCoord knot : knot_vector) {
+      for (ParametricCoordinate knot : knot_vector) {
         string += "\n        " + std::to_string(knot.get());
       }
       knots.append_child(pugi::node_pcdata).text() = (string + "\n      ").c_str();

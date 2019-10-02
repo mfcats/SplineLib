@@ -18,11 +18,11 @@ namespace splinelib::src::baf {
 ZeroDegBSplBasFnc::ZeroDegBSplBasFnc(const KnotVector &knot_vector, const KnotSpan &start_of_support) :
     BasisFunction(knot_vector, Degree{0}, start_of_support) {}
 
-double ZeroDegBSplBasFnc::EvaluateOnSupport(const ParamCoord /*param_coord*/&) const {
+double ZeroDegBSplBasFnc::EvaluateOnSupport(const ParametricCoordinate /*param_coord*/&) const {
   return 1.0;
 }
 
-double ZeroDegBSplBasFnc::EvaluateDerivativeOnSupport(const ParamCoord /*param_coord*/&,
+double ZeroDegBSplBasFnc::EvaluateDerivativeOnSupport(const ParametricCoordinate /*param_coord*/&,
                                                            const Derivative /*degree*/&) const {
   return 0.0;
 }

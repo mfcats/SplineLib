@@ -25,18 +25,18 @@ namespace iga {
 namespace elm {
 class Element {
  public:
-  explicit Element(const std::array<ParamCoord, 2> &nodes) : nodes_(nodes) {}
+  explicit Element(const std::array<ParametricCoordinate, 2> &nodes) : nodes_(nodes) {}
 
-  ParamCoord GetLowerBound() const {
+  ParametricCoordinate GetLowerBound() const {
     return nodes_[0];
   }
 
-  ParamCoord GetUpperBound() const {
+  ParametricCoordinate GetUpperBound() const {
     return nodes_[1];
   }
 
  private:
-  std::array<ParamCoord, 2> nodes_;
+  std::array<ParametricCoordinate, 2> nodes_;
 };
 }  // namespace elm
 }  // namespace iga

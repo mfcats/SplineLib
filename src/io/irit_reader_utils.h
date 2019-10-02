@@ -26,11 +26,11 @@ namespace splinelib::src::io {
 class IRITReaderUtils {
  public:
   template<int DIM>
-  static std::array<baf::Degree, DIM> GetDegrees(int start, const std::vector<std::string> &entries) {
-    std::array<baf::Degree, DIM> degrees;
+  static std::array<Degree, DIM> GetDegrees(int start, const std::vector<std::string> &entries) {
+    std::array<Degree, DIM> degrees;
     for (int i = 0; i < DIM; i++) {
       degrees[i] =
-          baf::Degree(util::StringOperations::StringVectorToNumberVector<int>({entries[start + DIM + 2 + i]})[0] - 1);
+          Degree(util::StringOperations::StringVectorToNumberVector<int>({entries[start + DIM + 2 + i]})[0] - 1);
     }
     return degrees;
   }
@@ -40,7 +40,7 @@ class IRITReaderUtils {
     baf::KnotVectors<DIM> knot_vectors;
     for (int i = 0; i < DIM; i++) {
       while (!util::StringOperations::StartsWith(entries[start++], "[KV")) {}
-      std::vector<baf::ParamCoord> knots;
+      std::vector<ParametricCoordinate> knots;
       while (!util::StringOperations::StartsWith(entries[start], "[")) {
         knots.emplace_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
       }

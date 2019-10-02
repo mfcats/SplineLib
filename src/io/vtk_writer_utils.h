@@ -54,9 +54,9 @@ class VTKWriterUtils {
     std::array<double, 2 * DIM> knots = GetEdgeKnots(spline_ptr);
     util::MultiIndexHandler<DIM> point_handler(GetPointHandlerLength(scattering));
     for (int i = 0; i < point_handler.Get1DLength(); ++point_handler, ++i) {
-      std::array<baf::ParamCoord, DIM> coords{};
+      std::array<ParametricCoordinate, DIM> coords{};
       for (int j = 0; j < DIM; ++j) {
-        coords[j] = baf::ParamCoord(knots[j] + point_handler[j] * (knots[j + DIM] - knots[j]) / scattering[j]);
+        coords[j] = ParametricCoordinate(knots[j] + point_handler[j] * (knots[j + DIM] - knots[j]) / scattering[j]);
       }
       for (int k = 0; k < 3; ++k) {
         file << (k < spline_ptr->GetPointDim() ? spline_ptr->Evaluate(coords, {k})[0] : 0) << (k < 2 ? " " : "\n");

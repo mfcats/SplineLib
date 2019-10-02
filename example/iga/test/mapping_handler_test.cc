@@ -21,6 +21,6 @@ using testing::DoubleNear;
 
 TEST_F(AnIGATestSpline, TestMappingHandler) { // NOLINT
   iga::MappingHandler<2> mapping_handler(nurbs_);
-  double j = mapping_handler.GetJacobianDeterminant(std::array<ParamCoord, 2>({ParamCoord{0.367}, ParamCoord{0.893}}));
+  double j = mapping_handler.GetJacobianDeterminant(std::array<ParametricCoordinate, 2>({ParametricCoordinate{0.367}, ParametricCoordinate{0.893}}));
   ASSERT_THAT(j, DoubleNear(0.0905, 0.00005));
 }

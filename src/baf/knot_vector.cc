@@ -22,28 +22,29 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "numeric_settings.h"
 
 namespace splinelib::src::baf {
-KnotVector::KnotVector(std::vector<ParamCoord> knots) : knots_(std::move(knots)) {}
+KnotVector::KnotVector(std::vector<ParametricCoordinate> knots) : knots_(std::move(knots)) {}
 
 KnotVector::KnotVector(const KnotVector &knotVector) = default;
 
 KnotVector::KnotVector(KnotVector &&knotVector) noexcept : knots_(std::move(knotVector.knots_)) {}
 
-KnotVector::KnotVector(std::initializer_list<ParamCoord> knots) noexcept : knots_(knots) {}
+KnotVector::KnotVector(std::initializer_list<ParametricCoordinate> knots) noexcept : knots_(knots) {}
 
-KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(std::vector<ParamCoord>(begin, end)) {}
+KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(
+    std::vector<ParametricCoordinate>(begin, end)) {}
 
-KnotVector::KnotVector(std::vector<ParamCoord> coords, Degree degree, int nbControlPoints) {
+KnotVector::KnotVector(std::vector<ParametricCoordinate> coords, Degree degree, int nbControlPoints) {
   for (int i = 0; i <= degree.get(); ++i) {
-    knots_.emplace_back(ParamCoord{0.0});
+    knots_.emplace_back(ParametricCoordinate{0.0});
   }
-  double curParamCoord;
+  double curParametricCoordinate;
   for (int i = 1; i <= nbControlPoints - 1 - degree.get(); ++i) {
-    curParamCoord = 0;
+    curParametricCoordinate = 0;
     for (int j = i; j < i + degree.get(); ++j) {
-      curParamCoord += coords[j].get();
+      curParametricCoordinate += coords[j].get();
     }
-    curParamCoord /= degree.get();
-    knots_.emplace_back(ParamCoord{curParamCoord});
+    curParametricCoordinate /= degree.get();
+    knots_.emplace_back(ParametricCoordinate{curParametricCoordinate});
   }
   for (int i = 0; i <= degree.get(); ++i) {
     knots_.emplace_back(coords[coords.size() - 1]);
@@ -51,7 +52,7 @@ KnotVector::KnotVector(std::vector<ParamCoord> coords, Degree degree, int nbCont
 }
 
 KnotVector KnotVector::operator-(const KnotVector &rhs) const {
-  std::vector<ParamCoord> differences(GetNumberOfKnots(), ParamCoord{0.0});
+  std::vector<ParametricCoordinate> differences(GetNumberOfKnots(), ParametricCoordinate{0.0});
   std::transform(begin(), end(), rhs.begin(), differences.begin(), std::minus<>());
   return KnotVector(differences);
 }
@@ -65,20 +66,20 @@ KnotVector &KnotVector::operator=(KnotVector &&other) noexcept {
 
 bool KnotVector::operator==(const KnotVector &rhs) const {
   return std::equal(this->begin(), this->end(), rhs.begin(), rhs.end(),
-                    [&](ParamCoord knot_a, ParamCoord knot_b) {
+                    [&](ParametricCoordinate knot_a, ParametricCoordinate knot_b) {
                       return util::NumericSettings<double>::AreEqual(knot_a.get(), knot_b.get());
                     });
 }
 
 bool KnotVector::AreEqual(const KnotVector &rhs,
-                               double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+                          double tolerance = util::NumericSettings<double>::kEpsilon()) const {
   return std::equal(this->begin(), this->end(), rhs.begin(), rhs.end(),
-                    [&](ParamCoord knot_a, ParamCoord knot_b) {
+                    [&](ParametricCoordinate knot_a, ParametricCoordinate knot_b) {
                       return util::NumericSettings<double>::AreEqual(knot_a.get(), knot_b.get(), tolerance);
                     });
 }
 
-ParamCoord &KnotVector::operator[](size_t index) {
+ParametricCoordinate &KnotVector::operator[](size_t index) {
 #ifdef DEBUG
   return knots_.at(index);
 #else
@@ -86,7 +87,7 @@ ParamCoord &KnotVector::operator[](size_t index) {
 #endif
 }
 
-ParamCoord KnotVector::GetKnot(size_t index) const {
+ParametricCoordinate KnotVector::GetKnot(size_t index) const {
 #ifdef DEBUG
   return knots_.at(index);
 #else
@@ -94,18 +95,18 @@ ParamCoord KnotVector::GetKnot(size_t index) const {
 #endif
 }
 
-ParamCoord KnotVector::GetLastKnot() const {
+ParametricCoordinate KnotVector::GetLastKnot() const {
   return knots_.back();
 }
 
-KnotSpan KnotVector::GetKnotSpan(ParamCoord param_coord) const {
+KnotSpan KnotVector::GetKnotSpan(ParametricCoordinate param_coord) const {
   if (IsLastKnot(param_coord)) {
     return KnotSpan{static_cast<int>(std::lower_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1)};
   }
   return KnotSpan{static_cast<int>(std::upper_bound(knots_.begin(), knots_.end(), param_coord) - knots_.begin() - 1)};
 }
 
-size_t KnotVector::GetMultiplicity(ParamCoord param_coord) const {
+size_t KnotVector::GetMultiplicity(ParametricCoordinate param_coord) const {
   return static_cast<size_t>(std::count(knots_.begin(), knots_.end(), param_coord));
 }
 
@@ -137,20 +138,20 @@ KnotVector::KnotIterator KnotVector::end() {
   return knots_.end();
 }
 
-bool KnotVector::IsInKnotVectorRange(const ParamCoord &param_coord) const {
+bool KnotVector::IsInKnotVectorRange(const ParametricCoordinate &param_coord) const {
   return param_coord >= knots_.front() && param_coord <= knots_.back();
 }
 
-bool KnotVector::IsLastKnot(const ParamCoord &param_coord) const {
+bool KnotVector::IsLastKnot(const ParametricCoordinate &param_coord) const {
   return util::NumericSettings<double>::AreEqual(param_coord.get(), knots_.back().get());
 }
 
-void KnotVector::InsertKnot(const ParamCoord &param_coord) {
+void KnotVector::InsertKnot(const ParametricCoordinate &param_coord) {
   KnotSpan knot_span = GetKnotSpan(param_coord);
   knots_.insert(knots_.begin() + knot_span.get() + 1, param_coord);
 }
 
-void KnotVector::RemoveKnot(const ParamCoord &param_coord) {
+void KnotVector::RemoveKnot(const ParametricCoordinate &param_coord) {
   KnotSpan knot_span = GetKnotSpan(param_coord);
   if (!IsLastKnot(param_coord)) {
     knots_.erase(knots_.begin() + knot_span.get());

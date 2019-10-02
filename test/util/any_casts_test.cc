@@ -24,16 +24,17 @@ using namespace splinelib::src;
 class AnySplines : public Test {
  public:
   AnySplines() {
-    std::array<baf::Degree, 1> degree = {baf::Degree(1)};
+    std::array<Degree, 1> degree = {Degree(1)};
     baf::KnotVectors<1> knot_vector_ptr =
-        {std::make_shared<baf::KnotVector>(baf::KnotVector({baf::ParamCoord(0), baf::ParamCoord(0), baf::ParamCoord(1),
-                                                            baf::ParamCoord(1)}))};
+        {std::make_shared<baf::KnotVector>(baf::KnotVector({ParametricCoordinate(0), ParametricCoordinate(0),
+                                                            ParametricCoordinate(1),
+                                                            ParametricCoordinate(1)}))};
     std::vector<baf::ControlPoint> control_points = {baf::ControlPoint{0.0}, baf::ControlPoint{1.2}};
     spl::BSpline<1> b_spline_1d(knot_vector_ptr, degree, control_points);
     std::shared_ptr<spl::BSpline<1>> b_spline_1d_ptr = std::make_shared<spl::BSpline<1>>(b_spline_1d);
     b_spline_1d_any_ = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_1d_ptr);
 
-    std::array<baf::Degree, 2> degrees = {baf::Degree(1), baf::Degree(1)};
+    std::array<Degree, 2> degrees = {Degree(1), Degree(1)};
     baf::KnotVectors<2> knot_vector_ptrs = {knot_vector_ptr[0], knot_vector_ptr[0]};
     control_points = {baf::ControlPoint{0.0}, baf::ControlPoint{1.0}, baf::ControlPoint{2.0}, baf::ControlPoint{3.0}};
     std::vector<double> weights = {0.9, 0.8, 1.0, 1.2};

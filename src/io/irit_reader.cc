@@ -63,7 +63,7 @@ int IRITReader::GetDimension(const std::string &type) {
 
 std::any IRITReader::Get1DSpline(int start, const std::vector<std::string> &entries) const {
   baf::KnotVectors<1> knot_vector = IRITReaderUtils::GetKnotVectors<1>(start, entries);
-  std::array<baf::Degree, 1> degree = IRITReaderUtils::GetDegrees<1>(start, entries);
+  std::array<Degree, 1> degree = IRITReaderUtils::GetDegrees<1>(start, entries);
   bool rational = IRITReaderUtils::IsRational<1>(start, entries);
   auto weights = GetWeights(start, entries, rational);
   std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
@@ -77,7 +77,7 @@ std::any IRITReader::Get1DSpline(int start, const std::vector<std::string> &entr
 
 std::any IRITReader::Get2DSpline(int start, const std::vector<std::string> &entries) const {
   baf::KnotVectors<2> knot_vector = IRITReaderUtils::GetKnotVectors<2>(start, entries);
-  std::array<baf::Degree, 2> degree = IRITReaderUtils::GetDegrees<2>(start, entries);
+  std::array<Degree, 2> degree = IRITReaderUtils::GetDegrees<2>(start, entries);
   bool rational = IRITReaderUtils::IsRational<2>(start, entries);
   auto weights = GetWeights(start, entries, rational);
   std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
@@ -91,7 +91,7 @@ std::any IRITReader::Get2DSpline(int start, const std::vector<std::string> &entr
 
 std::any IRITReader::Get3DSpline(int start, const std::vector<std::string> &entries) const {
   baf::KnotVectors<3> knot_vector = IRITReaderUtils::GetKnotVectors<3>(start, entries);
-  std::array<baf::Degree, 3> degree = IRITReaderUtils::GetDegrees<3>(start, entries);
+  std::array<Degree, 3> degree = IRITReaderUtils::GetDegrees<3>(start, entries);
   bool rational = IRITReaderUtils::IsRational<3>(start, entries);
   auto weights = GetWeights(start, entries, rational);
   std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);

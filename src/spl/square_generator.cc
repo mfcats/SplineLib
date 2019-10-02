@@ -11,9 +11,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "square_generator.h"
 
 namespace splinelib::src::spl {
-SquareGenerator::SquareGenerator() : degree_(baf::Degree{2}), number_of_knots_(6) {}
+SquareGenerator::SquareGenerator() : degree_(Degree{2}), number_of_knots_(6) {}
 
-SquareGenerator::SquareGenerator(baf::Degree degree, u_int64_t number_of_knots) : degree_(degree),
+SquareGenerator::SquareGenerator(Degree degree, u_int64_t number_of_knots) : degree_(degree),
                                                                                   number_of_knots_(number_of_knots) {}
 
 std::unique_ptr<BSpline<2>> SquareGenerator::CreateSquare() const {
@@ -24,9 +24,9 @@ std::unique_ptr<BSpline<2>> SquareGenerator::CreateSquare() const {
 }
 
 ParameterSpace<2> SquareGenerator::GenerateParameterSpace() const {
-  std::vector<baf::ParamCoord> knots(number_of_knots_, zero_);
+  std::vector<ParametricCoordinate> knots(number_of_knots_, zero_);
   for (auto knot = knots.begin() + degree_.get() + 1; knot != knots.end() - degree_.get() - 1; ++knot) {
-    *knot = *(knot - 1) + baf::ParamCoord{1.0 / (number_of_knots_ - 2.0 * degree_.get() - 1)};
+    *knot = *(knot - 1) + ParametricCoordinate{1.0 / (number_of_knots_ - 2.0 * degree_.get() - 1)};
   }
   std::fill(knots.end() - degree_.get() - 1, knots.end(), one_);
   std::array<std::shared_ptr<baf::KnotVector>, 2> knot_vectors = {

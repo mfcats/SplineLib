@@ -28,8 +28,8 @@ class RandomNURBSGenerator : public NURBSGenerator<DIM> {
   RandomNURBSGenerator() = default;
   virtual ~RandomNURBSGenerator() = default;
 
-  RandomNURBSGenerator(std::array<baf::ParamCoord, 2> coord_limits, int max_degree, int dimension) {
-    std::array<baf::Degree, DIM> degrees = RandomSplineUtils<DIM>::GetRandomDegrees(max_degree);
+  RandomNURBSGenerator(std::array<ParametricCoordinate, 2> coord_limits, int max_degree, int dimension) {
+    std::array<Degree, DIM> degrees = RandomSplineUtils<DIM>::GetRandomDegrees(max_degree);
     baf::KnotVectors<DIM> knot_vectors = RandomSplineUtils<DIM>::GetRandomKnotVectors(coord_limits, degrees);
     std::array<int, DIM> number_of_points = RandomSplineUtils<DIM>::GetNumberOfPoints(degrees, knot_vectors);
     std::vector<baf::ControlPoint>

@@ -31,7 +31,7 @@ class A1DRandomNURBSGenerator : public Test {  // NOLINT
 
  protected:
   spl::RandomNURBSGenerator<1> nurbs_generator_;
-  const std::array<baf::ParamCoord, 2> limits_{{baf::ParamCoord{0.5}, baf::ParamCoord{2.75}}};
+  const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{0.5}, ParametricCoordinate{2.75}}};
   const int max_degree_{10};
   const int dimension_{2};
 };
@@ -70,7 +70,7 @@ class A2DRandomNURBSGenerator : public Test {  // NOLINT
 
  protected:
   spl::RandomNURBSGenerator<2> nurbs_generator_;
-  const std::array<baf::ParamCoord, 2> limits_{{baf::ParamCoord{0.0}, baf::ParamCoord{10.0}}};
+  const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{0.0}, ParametricCoordinate{10.0}}};
   const int max_degree_{8};
   const int dimension_{3};
 };
@@ -101,7 +101,7 @@ class A3DRandomNURBSGenerator : public Test {  // NOLINT
 
  protected:
   spl::RandomNURBSGenerator<3> nurbs_generator_;
-  const std::array<baf::ParamCoord, 2> limits_{{baf::ParamCoord{2.0}, baf::ParamCoord{3.0}}};
+  const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{2.0}, ParametricCoordinate{3.0}}};
   const int max_degree_{20};
   const int dimension_{4};
 };

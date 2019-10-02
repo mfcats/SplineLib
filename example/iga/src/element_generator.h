@@ -59,10 +59,10 @@ class ElementGenerator {
 
   std::array<int, DIM> GetKnotMultiplicityIndexShift(int elm_num) const {
     std::array<int, DIM> index_shift{};
-    std::array<std::vector<ParamCoord>, DIM> internal = GetInternalKnots();
-    std::array<std::vector<ParamCoord>, DIM> unique = GetUniqueKnots();
+    std::array<std::vector<ParametricCoordinate>, DIM> internal = GetInternalKnots();
+    std::array<std::vector<ParametricCoordinate>, DIM> unique = GetUniqueKnots();
     for (int i = 0; i < DIM; ++i) {
-      ParamCoord lower_bound = unique[i][GetElementIndices(elm_num)[i]];
+      ParametricCoordinate lower_bound = unique[i][GetElementIndices(elm_num)[i]];
       internal[i].erase(
           std::find(internal[i].rbegin(), internal[i].rend(), lower_bound).base(), internal[i].rbegin().base());
       unique[i].erase(std::find(unique[i].rbegin(), unique[i].rend(), lower_bound).base(), unique[i].rbegin().base());
@@ -71,7 +71,7 @@ class ElementGenerator {
     return index_shift;
   }
 
-  int GetElementNumberAtParamCoord(std::array<ParamCoord, DIM> param_coords) const {
+  int GetElementNumberAtParametricCoordinate(std::array<ParametricCoordinate, DIM> param_coords) const {
     std::array<int, DIM> element_indices{};
     for (int i = 0; i < DIM; ++i) {
       baf::KnotVector unique_kv(GetUniqueKnots()[i]);
@@ -93,19 +93,19 @@ class ElementGenerator {
   }
 
  private:
-  std::array<std::vector<ParamCoord>, DIM> GetInternalKnots() const {
-    std::array<std::vector<ParamCoord>, DIM> internal_knots;
+  std::array<std::vector<ParametricCoordinate>, DIM> GetInternalKnots() const {
+    std::array<std::vector<ParametricCoordinate>, DIM> internal_knots;
     for (int i = 0; i < DIM; ++i) {
-//      std::vector<ParamCoord> knots = spl_->GetKnotVector(i)->  //spl_->GetKnots()[i];
+//      std::vector<ParametricCoordinate> knots = spl_->GetKnotVector(i)->  //spl_->GetKnots()[i];
       auto first = spl_->GetKnotVector(i)->begin() + spl_->GetDegree(i).get();
       auto last = spl_->GetKnotVector(i)->end() - spl_->GetDegree(i).get();
-      internal_knots[i] = std::vector<ParamCoord>(first, last);
+      internal_knots[i] = std::vector<ParametricCoordinate>(first, last);
     }
     return internal_knots;
   }
 
-  std::array<std::vector<ParamCoord>, DIM> GetUniqueKnots() const {
-    std::array<std::vector<ParamCoord>, DIM> internal_knots = GetInternalKnots();
+  std::array<std::vector<ParametricCoordinate>, DIM> GetUniqueKnots() const {
+    std::array<std::vector<ParametricCoordinate>, DIM> internal_knots = GetInternalKnots();
     for (int i = 0; i < DIM; ++i) {
       internal_knots[i].erase(unique(internal_knots[i].begin(), internal_knots[i].end()), internal_knots[i].end());
     }

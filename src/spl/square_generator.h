@@ -21,7 +21,7 @@ namespace splinelib::src::spl {
 class SquareGenerator {
  public:
   SquareGenerator();
-  SquareGenerator(baf::Degree degree, u_int64_t number_of_knots);
+  SquareGenerator(Degree degree, u_int64_t number_of_knots);
 
   std::unique_ptr<BSpline<2>> CreateSquare() const;
 
@@ -30,10 +30,10 @@ class SquareGenerator {
 
   spl::PhysicalSpace<2> GeneratePhysicalSpace() const;
 
-  baf::Degree degree_;
+  Degree degree_;
   u_int64_t number_of_knots_;
-  baf::ParamCoord one_{1};
-  baf::ParamCoord zero_{0};
+  ParametricCoordinate one_{1};
+  ParametricCoordinate zero_{0};
 };
 }  // namespace splinelib::src::spl
 

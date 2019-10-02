@@ -50,118 +50,140 @@ class A2DBSpline : public Test {
 TEST_F(A2DBSpline, Corner) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {0})[0], -1.0, 0.00005);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {1})[0], -1.0, 0.00005);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {2})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {0})[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {1})[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {2})[0], 0.0, 0.00005);
 }
 
 TEST_F(A2DBSpline, EdgeDim0) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.33333}}, {0})[0], -1.0, 0.00005);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.33333}}, {1})[0], -0.33333, 0.00005);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.0}, baf::ParamCoord{0.33333}}, {2})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.33333}}, {0})[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.33333}}, {1})[0],
+              -0.33333,
+              0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.33333}}, {2})[0], 0.0, 0.00005);
 }
 
 TEST_F(A2DBSpline, EdgeDim1) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.33333}, baf::ParamCoord{0.0}}, {0})[0], -0.33333, 0.00005);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.33333}, baf::ParamCoord{0.0}}, {1})[0], -1.0, 0.00005);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.33333}, baf::ParamCoord{0.0}}, {2})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.33333}, ParametricCoordinate{0.0}}, {0})[0],
+              -0.33333,
+              0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.33333}, ParametricCoordinate{0.0}}, {1})[0], -1.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.33333}, ParametricCoordinate{0.0}}, {2})[0], 0.0, 0.00005);
 }
 
 TEST_F(A2DBSpline, Center) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {0})[0], 0.0, 0.00005);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {1})[0], 0.0, 0.00005);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {2})[0], 0.25, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.5}, ParametricCoordinate{0.5}}, {0})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.5}, ParametricCoordinate{0.5}}, {1})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.5}, ParametricCoordinate{0.5}}, {2})[0], 0.25, 0.00005);
 }
 
 TEST_F(A2DBSpline, Random) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {0})[0], 0.5, 0.00005);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {1})[0], -0.5, 0.00005);
-  ASSERT_NEAR(b_spline->Evaluate({baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {2})[0], 0.14063, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {0})[0], 0.5, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {1})[0], -0.5, 0.00005);
+  ASSERT_NEAR(b_spline->Evaluate({ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {2})[0], 0.14063, 0.00005);
 }
 
 TEST_F(A2DBSpline, CornerDer10) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {0}, {1, 0})[0], 2.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {1}, {1, 0})[0], 0.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {2}, {1, 0})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {0}, {1, 0})[0],
+              2.0,
+              0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {1}, {1, 0})[0],
+              0.0,
+              0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {2}, {1, 0})[0],
+              0.0,
+              0.00005);
 }
 
 TEST_F(A2DBSpline, CornerDer01) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {0}, {0, 1})[0], 0.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {1}, {0, 1})[0], 2.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({baf::ParamCoord{0.0}, baf::ParamCoord{0.0}}, {2}, {0, 1})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {0}, {0, 1})[0],
+              0.0,
+              0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {1}, {0, 1})[0],
+              2.0,
+              0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {2}, {0, 1})[0],
+              0.0,
+              0.00005);
 }
 
 TEST_F(A2DBSpline, EdgeDim0Der10) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.0}, baf::ParamCoord{0.33333}}, {0}, {1, 0})[0], 2.0, 0.00005);
+      {ParametricCoordinate{0.0}, ParametricCoordinate{0.33333}}, {0}, {1, 0})[0], 2.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.0}, baf::ParamCoord{0.33333}}, {1}, {1, 0})[0], 0.0, 0.00005);
+      {ParametricCoordinate{0.0}, ParametricCoordinate{0.33333}}, {1}, {1, 0})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.0}, baf::ParamCoord{0.33333}}, {2}, {1, 0})[0], 0.888889, 0.00005);
+      {ParametricCoordinate{0.0}, ParametricCoordinate{0.33333}}, {2}, {1, 0})[0], 0.888889, 0.00005);
 }
 
 TEST_F(A2DBSpline, EdgeDim0Der01) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.0}, baf::ParamCoord{0.33333}}, {0}, {0, 1})[0], 0.0, 0.00005);
+      {ParametricCoordinate{0.0}, ParametricCoordinate{0.33333}}, {0}, {0, 1})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.0}, baf::ParamCoord{0.33333}}, {1}, {0, 1})[0], 2.0, 0.00005);
+      {ParametricCoordinate{0.0}, ParametricCoordinate{0.33333}}, {1}, {0, 1})[0], 2.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.0}, baf::ParamCoord{0.33333}}, {2}, {0, 1})[0], 0.0, 0.00005);
+      {ParametricCoordinate{0.0}, ParametricCoordinate{0.33333}}, {2}, {0, 1})[0], 0.0, 0.00005);
 }
 
 TEST_F(A2DBSpline, CenterDer10) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {0}, {1, 0})[0], 2.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {1}, {1, 0})[0], 0.0, 0.00005);
-  ASSERT_NEAR(b_spline->EvaluateDerivative({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {2}, {1, 0})[0], 0.0, 0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({ParametricCoordinate{0.5}, ParametricCoordinate{0.5}}, {0}, {1, 0})[0],
+              2.0,
+              0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({ParametricCoordinate{0.5}, ParametricCoordinate{0.5}}, {1}, {1, 0})[0],
+              0.0,
+              0.00005);
+  ASSERT_NEAR(b_spline->EvaluateDerivative({ParametricCoordinate{0.5}, ParametricCoordinate{0.5}}, {2}, {1, 0})[0],
+              0.0,
+              0.00005);
 }
 
 TEST_F(A2DBSpline, RandomDer10) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {0}, {1, 0})[0], 2.000, 0.00005);
+      {ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {0}, {1, 0})[0], 2.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {1}, {1, 0})[0], 0.000, 0.00005);
+      {ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {1}, {1, 0})[0], 0.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {2}, {1, 0})[0], -0.375, 0.00005);
+      {ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {2}, {1, 0})[0], -0.375, 0.00005);
 }
 
 TEST_F(A2DBSpline, RandomDer01) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {0}, {0, 1})[0], 0.000, 0.00005);
+      {ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {0}, {0, 1})[0], 0.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {1}, {0, 1})[0], 2.000, 0.00005);
+      {ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {1}, {0, 1})[0], 2.000, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {2}, {0, 1})[0], 0.375, 0.00005);
+      {ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {2}, {0, 1})[0], 0.375, 0.00005);
 }
 
 TEST_F(A2DBSpline, RandomDer12) { // NOLINT
   mock_2dphysicalSpace(physical_space);
   mock_2dparameterSpace(parameter_space);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {0}, {1, 2})[0], 0.0, 0.00005);
+      {ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {0}, {1, 2})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {1}, {1, 2})[0], 0.0, 0.00005);
+      {ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {1}, {1, 2})[0], 0.0, 0.00005);
   ASSERT_NEAR(b_spline->EvaluateDerivative(
-      {baf::ParamCoord{0.75}, baf::ParamCoord{0.25}}, {2}, {1, 2})[0], 4.0, 0.00005);
+      {ParametricCoordinate{0.75}, ParametricCoordinate{0.25}}, {2}, {1, 2})[0], 4.0, 0.00005);
 }
