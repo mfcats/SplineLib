@@ -27,6 +27,6 @@ class ZeroDegBSplBasFnc : public baf::BasisFunction {
   double EvaluateOnSupport(const ParamCoord &param_coord) const override;
   double EvaluateDerivativeOnSupport(const ParamCoord &param_coord, const Derivative &derivative) const override;
 };
-}  // namespace splinelib::src::splinelib::src::baf
+}  // namespace splinelib::src::baf
 
 #endif  // SRC_BAF_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_

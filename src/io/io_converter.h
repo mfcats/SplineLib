@@ -61,6 +61,6 @@ class IOConverter {
   file_format output_format_;
   std::vector<int> written_;
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_IO_CONVERTER_H_

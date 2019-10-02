@@ -17,7 +17,7 @@ using testing::Test;
 
 using namespace splinelib::src;
 
- class MockKnotVector000111 : public baf::KnotVector {
+class MockKnotVector000111 : public baf::KnotVector {
  public:
   baf::ParamCoord GetKnot(size_t knot_num) const override {
     return knts[knot_num];

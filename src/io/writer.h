@@ -26,6 +26,6 @@ class Writer {
 
   virtual void WriteFile(const std::vector<std::any> &splines, const char *filename) const = 0;
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_WRITER_H_

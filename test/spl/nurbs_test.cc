@@ -551,5 +551,6 @@ class ANURBSWithSplineGenerator : public Test {
 };
 
 TEST_F(ANURBSWithSplineGenerator, Returns1_4For1AndDim0) { // NOLINT
-  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0}}, {0})[0], DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
+  ASSERT_THAT(nurbs->Evaluate({baf::ParamCoord{1.0}}, {0})[0],
+      DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
 }

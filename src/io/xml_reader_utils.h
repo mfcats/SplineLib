@@ -58,6 +58,6 @@ class XMLReaderUtils {
     return converted;
   }
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_XML_READER_UTILS_H_

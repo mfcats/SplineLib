@@ -74,6 +74,6 @@ class IRITWriterUtils {
     return string;
   }
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_IRIT_WRITER_UTILS_H_

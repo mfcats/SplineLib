@@ -46,6 +46,6 @@ class XMLReader : public Reader {
 
   int FindCoordinatePosition(const std::string &string);
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_XML_READER_H_

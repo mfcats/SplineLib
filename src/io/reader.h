@@ -26,6 +26,6 @@ class Reader {
 
   virtual std::vector<std::any> ReadFile(const char *filename) = 0;
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_READER_H_

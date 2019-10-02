@@ -43,6 +43,6 @@ class ConverterLog {
   std::vector<int> not_written_;
   std::vector<std::vector<int>> scattering_;
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_EXECUTABLES_CONVERTER_LOG_H_

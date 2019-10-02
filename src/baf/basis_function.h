@@ -52,6 +52,6 @@ class BasisFunction {
   ParamCoord end_knot_{1};
   bool end_knot_is_last_knot_{false};
 };
-}  // namespace splinelib::src::splinelib::src::baf
+}  // namespace splinelib::src::baf
 
 #endif  // SRC_BAF_BASIS_FUNCTION_H_

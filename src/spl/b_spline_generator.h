@@ -50,6 +50,6 @@ class BSplineGenerator : public SplineGenerator<DIM> {
  protected:
   std::shared_ptr<PhysicalSpace<DIM>> physical_space_;
 };
-}  //  namespace spl
+}  //  namespace splinelib::src::spl
 
 #endif  //  SRC_SPL_B_SPLINE_GENERATOR_H_

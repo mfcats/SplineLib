@@ -43,6 +43,6 @@ class BSplineBasisFunction : public BasisFunction {
   std::unique_ptr<BasisFunction> left_lower_degree_;
   std::unique_ptr<BasisFunction> right_lower_degree_;
 };
-}  // namespace splinelib::src::splinelib::src::baf
+}  // namespace splinelib::src::baf
 
 #endif  // SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_

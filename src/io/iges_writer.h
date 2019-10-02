@@ -80,6 +80,6 @@ class IGESWriter : public Writer {
 
   double GetHighestValue(std::vector<std::any> splines) const;
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_IGES_WRITER_H_

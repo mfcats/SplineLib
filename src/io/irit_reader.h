@@ -47,6 +47,6 @@ class IRITReader : public Reader {
 
   int GetPositionOfFirstControlPoint(int start, const std::vector<std::string> &entries) const;
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_IRIT_READER_H_

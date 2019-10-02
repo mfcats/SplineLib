@@ -75,6 +75,6 @@ class XMLWriterUtils {
     weights.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_XML_WRITER_UTILS_H_

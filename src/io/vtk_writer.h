@@ -49,6 +49,6 @@ class VTKWriter {
   void Write2DCells(std::ofstream &file, std::array<int, 2> scattering, int offset) const;
   void Write3DCells(std::ofstream &file, std::array<int, 3> scattering, int offset) const;
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_VTK_WRITER_H_

@@ -41,6 +41,6 @@ class IGESReader : public Reader {
 
   static inline std::string trim(std::string s);
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_IGES_READER_H_

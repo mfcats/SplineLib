@@ -44,6 +44,6 @@ class XMLWriter : public Writer {
 
   void AddControlPointVarNames(pugi::xml_node *spline_node, int space_dimension) const;
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_XML_WRITER_H_

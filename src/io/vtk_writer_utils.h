@@ -70,6 +70,6 @@ class VTKWriterUtils {
     }
   }
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_VTK_WRITER_UTILS_H_

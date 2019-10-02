@@ -25,4 +25,4 @@ template<int DIM>
 using KnotVectors = std::array<std::shared_ptr<KnotVector>, DIM>;
 }  // namespace splinelib::src::baf
 
-#endif  // SRC_SPL_ALIAS_H_
+#endif  // SRC_BAF_ALIAS_H_

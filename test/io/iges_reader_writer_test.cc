@@ -28,11 +28,11 @@ class AnIGESReaderAndWriter : public Test {
   AnIGESReaderAndWriter() {
     baf::KnotVectors<2> knot_vector = {
       std::make_shared<baf::KnotVector>(baf::KnotVector(
-        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.25}, baf::ParamCoord{0.25}, 
-         baf::ParamCoord{0.5}, baf::ParamCoord{0.5}, baf::ParamCoord{0.75}, baf::ParamCoord{0.75}, baf::ParamCoord{1}, 
+        {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.25}, baf::ParamCoord{0.25},
+         baf::ParamCoord{0.5}, baf::ParamCoord{0.5}, baf::ParamCoord{0.75}, baf::ParamCoord{0.75}, baf::ParamCoord{1},
          baf::ParamCoord{1}, baf::ParamCoord{1}})),
        std::make_shared<baf::KnotVector>(baf::KnotVector(
-         {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.5}, baf::ParamCoord{0.5}, 
+         {baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0}, baf::ParamCoord{0.5}, baf::ParamCoord{0.5},
           baf::ParamCoord{1}, baf::ParamCoord{1}, baf::ParamCoord{1}}))};
 
     std::array<baf::Degree, 2> degree = {baf::Degree{2}, baf::Degree{2}};

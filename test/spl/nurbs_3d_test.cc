@@ -59,7 +59,7 @@ TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_5And0
   mock_weightedPhysicalSpace3d(w_physical_space);
   ASSERT_THAT(nurbs_->EvaluateDerivative({baf::ParamCoord{0.5}, baf::ParamCoord{0.5}, baf::ParamCoord{0.5}}, {0},
       {1, 1, 0})[0], DoubleEq(bspline_->EvaluateDerivative({baf::ParamCoord{0.5}, baf::ParamCoord{0.5},
-                                                            baf::ParamCoord{0.5}},{0}, {1, 1, 0})[0]));
+                                                            baf::ParamCoord{0.5}}, {0}, {1, 1, 0})[0]));
 }
 
 TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And1And1) { // NOLINT

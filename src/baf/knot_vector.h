@@ -73,6 +73,6 @@ class KnotVector {
  private:
   std::vector<ParamCoord> knots_;
 };
-}  // namespace splinelib::src::splinelib::src::baf
+}  // namespace splinelib::src::baf
 
 #endif  // SRC_BAF_KNOT_VECTOR_H_

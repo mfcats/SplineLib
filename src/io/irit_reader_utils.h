@@ -54,6 +54,6 @@ class IRITReaderUtils {
     return util::StringOperations::StartsWith(entries[start_of_spline + 2 * DIM + 2], "P");
   }
 };
-}  // namespace splinelib::src::splinelib::src::io
+}  // namespace splinelib::src::io
 
 #endif  // SRC_IO_IRIT_READER_UTILS_H_
