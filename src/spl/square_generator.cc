@@ -13,8 +13,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::spl {
 SquareGenerator::SquareGenerator() : degree_(Degree{2}), number_of_knots_(6) {}
 
-SquareGenerator::SquareGenerator(Degree degree, u_int64_t number_of_knots) : degree_(degree),
-                                                                                  number_of_knots_(number_of_knots) {}
+SquareGenerator::SquareGenerator(Degree degree, u_int64_t number_of_knots) : degree_(std::move(degree)),
+                                                                             number_of_knots_(number_of_knots) {}
 
 std::unique_ptr<BSpline<2>> SquareGenerator::CreateSquare() const {
   auto parameter_space = std::make_shared<ParameterSpace<2>>(GenerateParameterSpace());
