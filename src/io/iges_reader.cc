@@ -67,7 +67,7 @@ std::any IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
   std::array<int, 2> weightsStartEnd{};
   std::array<int, 2> controlPointsStartEnd{};
   knotsStartEnd[0] = 7;
-  knotsStartEnd[1] = knotsStartEnd[0] + upperSumIndex + degree[0].get() + 1;
+  knotsStartEnd[1] = knotsStartEnd[0] + upperSumIndex + degree[0].Get() + 1;
   weightsStartEnd[0] = knotsStartEnd[1] + 1;
   weightsStartEnd[1] = weightsStartEnd[0] + upperSumIndex;
   controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
@@ -91,7 +91,7 @@ std::any IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
   }
   std::array<int, 1> number_of_points{};
   for (int i = 0; i < 1; ++i) {
-    number_of_points[i] = static_cast<int>(knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1);
+    number_of_points[i] = static_cast<int>(knot_vector[i]->GetNumberOfKnots() - degree[i].Get() - 1);
   }
   if (parameterData[5] == 1) {
     auto spl = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
@@ -115,9 +115,9 @@ std::any IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
   std::array<int, 2> weightsStartEnd{};
   std::array<int, 2> controlPointsStartEnd{};
   knotsStartEnd[0][0] = 10;
-  knotsStartEnd[0][1] = knotsStartEnd[0][0] + upperSumIndex[0] + degree[0].get() + 1;
+  knotsStartEnd[0][1] = knotsStartEnd[0][0] + upperSumIndex[0] + degree[0].Get() + 1;
   knotsStartEnd[1][0] = knotsStartEnd[0][1] + 1;
-  knotsStartEnd[1][1] = knotsStartEnd[1][0] + upperSumIndex[1] + degree[1].get() + 1;
+  knotsStartEnd[1][1] = knotsStartEnd[1][0] + upperSumIndex[1] + degree[1].Get() + 1;
   weightsStartEnd[0] = knotsStartEnd[1][1] + 1;
   weightsStartEnd[1] = weightsStartEnd[0] - 1 + ((1 + upperSumIndex[0]) * (1 + upperSumIndex[1]));
   controlPointsStartEnd[0] = weightsStartEnd[1] + 1;
@@ -145,7 +145,7 @@ std::any IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
   }
   std::array<int, 2> number_of_points{};
   for (int i = 0; i < 2; ++i) {
-    number_of_points[i] = static_cast<int>(knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1);
+    number_of_points[i] = static_cast<int>(knot_vector[i]->GetNumberOfKnots() - degree[i].Get() - 1);
   }
   if (parameterData[7] == 1) {
     auto spl = std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points);

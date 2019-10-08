@@ -34,19 +34,19 @@ KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end) : knots_(
     std::vector<ParametricCoordinate>(begin, end)) {}
 
 KnotVector::KnotVector(std::vector<ParametricCoordinate> coords, Degree degree, int nbControlPoints) {
-  for (int i = 0; i <= degree.get(); ++i) {
+  for (int i = 0; i <= degree.Get(); ++i) {
     knots_.emplace_back(ParametricCoordinate{0.0});
   }
   double curParametricCoordinate;
-  for (int i = 1; i <= nbControlPoints - 1 - degree.get(); ++i) {
+  for (int i = 1; i <= nbControlPoints - 1 - degree.Get(); ++i) {
     curParametricCoordinate = 0;
-    for (int j = i; j < i + degree.get(); ++j) {
-      curParametricCoordinate += coords[j].get();
+    for (int j = i; j < i + degree.Get(); ++j) {
+      curParametricCoordinate += coords[j].Get();
     }
-    curParametricCoordinate /= degree.get();
+    curParametricCoordinate /= degree.Get();
     knots_.emplace_back(ParametricCoordinate{curParametricCoordinate});
   }
-  for (int i = 0; i <= degree.get(); ++i) {
+  for (int i = 0; i <= degree.Get(); ++i) {
     knots_.emplace_back(coords[coords.size() - 1]);
   }
 }
@@ -67,15 +67,15 @@ KnotVector &KnotVector::operator=(KnotVector &&other) noexcept {
 bool KnotVector::operator==(const KnotVector &rhs) const {
   return std::equal(this->begin(), this->end(), rhs.begin(), rhs.end(),
                     [&](ParametricCoordinate knot_a, ParametricCoordinate knot_b) {
-                      return util::NumericSettings<double>::AreEqual(knot_a.get(), knot_b.get());
+                      return util::numeric_settings::AreEqual<double>(knot_a.Get(), knot_b.Get());
                     });
 }
 
 bool KnotVector::AreEqual(const KnotVector &rhs,
-                          double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+                          double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
   return std::equal(this->begin(), this->end(), rhs.begin(), rhs.end(),
                     [&](ParametricCoordinate knot_a, ParametricCoordinate knot_b) {
-                      return util::NumericSettings<double>::AreEqual(knot_a.get(), knot_b.get(), tolerance);
+                      return util::numeric_settings::AreEqual<double>(knot_a.Get(), knot_b.Get(), tolerance);
                     });
 }
 
@@ -117,7 +117,7 @@ size_t KnotVector::GetNumberOfKnots() const {
 int KnotVector::GetNumberOfDifferentKnots() const {
   int number = 1;
   for (size_t i = 1; i < knots_.size(); ++i) {
-    if (knots_[i].get() > knots_[i - 1].get()) ++number;
+    if (knots_[i].Get() > knots_[i - 1].Get()) ++number;
   }
   return number;
 }
@@ -143,18 +143,18 @@ bool KnotVector::IsInKnotVectorRange(const ParametricCoordinate &param_coord) co
 }
 
 bool KnotVector::IsLastKnot(const ParametricCoordinate &param_coord) const {
-  return util::NumericSettings<double>::AreEqual(param_coord.get(), knots_.back().get());
+  return util::numeric_settings::AreEqual<double>(param_coord.Get(), knots_.back().Get());
 }
 
 void KnotVector::InsertKnot(const ParametricCoordinate &param_coord) {
   KnotSpan knot_span = GetKnotSpan(param_coord);
-  knots_.insert(knots_.begin() + knot_span.get() + 1, param_coord);
+  knots_.insert(knots_.begin() + knot_span.Get() + 1, param_coord);
 }
 
 void KnotVector::RemoveKnot(const ParametricCoordinate &param_coord) {
   KnotSpan knot_span = GetKnotSpan(param_coord);
   if (!IsLastKnot(param_coord)) {
-    knots_.erase(knots_.begin() + knot_span.get());
+    knots_.erase(knots_.begin() + knot_span.Get());
   } else {
     knots_.erase(knots_.end() - 1);
   }

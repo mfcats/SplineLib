@@ -37,8 +37,8 @@ class ParameterSpace {
     ThrowIfKnotVectorDoesNotStartAndEndWith();
     baf::BasisFunctionFactory factory;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
-      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
-      for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
+      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].Get() - 1);
+      for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].Get() - 1); ++j) {
         basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
       }
     }
@@ -52,8 +52,8 @@ class ParameterSpace {
     }
     baf::BasisFunctionFactory factory;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
-      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].get() - 1);
-      for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 1); ++j) {
+      basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].Get() - 1);
+      for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].Get() - 1); ++j) {
         basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
       }
     }
@@ -63,8 +63,8 @@ class ParameterSpace {
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParametricCoordinate param_coord) const {
     auto first_non_zero = GetFirstNonZeroKnot(direction, param_coord);
-    std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction].get()) + 1, 0.0);
-    for (int i = 0; i < degree_[direction].get() + 1; ++i) {
+    std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction].Get()) + 1, 0.0);
+    for (int i = 0; i < degree_[direction].Get() + 1; ++i) {
       basis_function_values[i] = (*first_non_zero)->Evaluate(param_coord);
       ++first_non_zero;
     }
@@ -75,8 +75,8 @@ class ParameterSpace {
                                                                  ParametricCoordinate param_coord,
                                                                  int derivative) const {
     auto first_non_zero = GetFirstNonZeroKnot(direction, param_coord);
-    std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction].get()) + 1, 0.0);
-    for (int i = 0; i < degree_[direction].get() + 1; ++i) {
+    std::vector<double> basis_function_values(static_cast<u_int64_t >(degree_[direction].Get()) + 1, 0.0);
+    for (int i = 0; i < degree_[direction].Get() + 1; ++i) {
       basis_function_values[i] = (*first_non_zero)->EvaluateDerivative(param_coord, Derivative{derivative});
       ++first_non_zero;
     }
@@ -84,10 +84,10 @@ class ParameterSpace {
   }
 
   bool AreEqual(const ParameterSpace<PARAMETRIC_DIMENSIONALITY> &rhs,
-      double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+      double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
     return std::equal(degree_.begin(), degree_.end(), rhs.degree_.begin(), rhs.degree_.end(),
                       [&](Degree degree_a, Degree degree_b) {
-                        return util::NumericSettings<double>::AreEqual(degree_a.get(), degree_b.get());
+                        return util::numeric_settings::AreEqual<double>(degree_a.Get(), degree_b.Get());
                       })
         && std::equal(knot_vector_.begin(), knot_vector_.end(), rhs.knot_vector_.begin(), rhs.knot_vector_.end(),
                       [&](std::shared_ptr<baf::KnotVector> kv_a, std::shared_ptr<baf::KnotVector> kv_b) {
@@ -97,8 +97,8 @@ class ParameterSpace {
 
   std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator
   GetFirstNonZeroKnot(int direction, ParametricCoordinate param_coord) const {
-    return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord).get()
-        - degree_[direction].get();
+    return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord).Get()
+        - degree_[direction].Get();
   }
 
   virtual Degree GetDegree(int direction) const {
@@ -132,7 +132,7 @@ class ParameterSpace {
       std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
     std::array<int, PARAMETRIC_DIMENSIONALITY> first_non_zero;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      first_non_zero[i] = GetKnotVector(i)->GetKnotSpan(param_coord[i]).get() - GetDegree(i).get();
+      first_non_zero[i] = GetKnotVector(i)->GetKnotSpan(param_coord[i]).Get() - GetDegree(i).Get();
     }
     return first_non_zero;
   }
@@ -142,15 +142,15 @@ class ParameterSpace {
     for (int dim = 0; dim < PARAMETRIC_DIMENSIONALITY; dim++) {
       if (!this->GetKnotVector(dim)->IsInKnotVectorRange(param_coord[dim])) {
         std::stringstream message;
-        message << "The parametric coordinate " << param_coord[dim].get() << " is outside the knot vector range from "
-                << GetKnotVector(dim)->GetKnot(0).get() << " to " << GetKnotVector(dim)->GetLastKnot().get() << ".";
+        message << "The parametric coordinate " << param_coord[dim].Get() << " is outside the knot vector range from "
+                << GetKnotVector(dim)->GetKnot(0).Get() << " to " << GetKnotVector(dim)->GetLastKnot().Get() << ".";
         throw std::range_error(message.str());
       }
     }
   }
 
   double GetKnotVectorRange(int direction) const {
-    return GetKnotVector(direction)->GetLastKnot().get() - GetKnotVector(direction)->GetKnot(0).get();
+    return GetKnotVector(direction)->GetLastKnot().Get() - GetKnotVector(direction)->GetKnot(0).Get();
   }
 
   void InsertKnot(ParametricCoordinate knot, int dimension) {
@@ -164,12 +164,12 @@ class ParameterSpace {
   }
 
   void ElevateDegree(int dimension) {
-    degree_[dimension] = Degree{degree_[dimension].get() + 1};
+    degree_[dimension] = Degree{degree_[dimension].Get() + 1};
     RecreateBasisFunctions();
   }
 
   void ReduceDegree(int dimension) {
-    degree_[dimension] = Degree{degree_[dimension].get() - 1};
+    degree_[dimension] = Degree{degree_[dimension].Get() - 1};
     RecreateBasisFunctions();
   }
 
@@ -193,8 +193,8 @@ class ParameterSpace {
 
   std::array<baf::KnotVectors<PARAMETRIC_DIMENSIONALITY>, 2> GetDividedKnotVectors(ParametricCoordinate param_coord,
       int dimension) const {
-    auto knot_span = GetKnotVector(dimension)->GetKnotSpan(param_coord).get();
-    std::array<int, 2> first_knot = {0, knot_span - GetDegree(dimension).get()};
+    auto knot_span = GetKnotVector(dimension)->GetKnotSpan(param_coord).Get();
+    std::array<int, 2> first_knot = {0, knot_span - GetDegree(dimension).Get()};
     std::array<int, 2> last_knot = {knot_span + 1, static_cast<int>(knot_vector_[dimension]->GetNumberOfKnots())};
     std::array<baf::KnotVectors<PARAMETRIC_DIMENSIONALITY>, 2> new_knot_vectors;
     for (int i = 0; i < 2; ++i) {
@@ -213,17 +213,17 @@ class ParameterSpace {
  private:
   void ThrowIfKnotVectorDoesNotStartAndEndWith() {
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
-      if (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) < 2 * degree_[i].get() + 2) {
+      if (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) < 2 * degree_[i].Get() + 2) {
         throw std::runtime_error("There have to be at least 2p + 2 knots.");
       }
-      for (int j = 1; j < degree_[i].get() + 1; j++) {
-        if (knot_vector_[i]->GetKnot(0).get() != knot_vector_[i]->GetKnot(j).get()) {
+      for (int j = 1; j < degree_[i].Get() + 1; j++) {
+        if (knot_vector_[i]->GetKnot(0).Get() != knot_vector_[i]->GetKnot(j).Get()) {
           throw std::runtime_error("The first knot must have multiplicity p+1.");
         }
       }
       for (int j = static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - 2;
-           j > static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].get() - 2; j--) {
-        if (knot_vector_[i]->GetLastKnot().get() != knot_vector_[i]->GetKnot(j).get()) {
+           j > static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].Get() - 2; j--) {
+        if (knot_vector_[i]->GetLastKnot().Get() != knot_vector_[i]->GetKnot(j).Get()) {
           throw std::runtime_error("The last knot must have multiplicity p+1.");
         }
       }
@@ -236,10 +236,10 @@ class ParameterSpace {
       auto &knot_vector_current_dim = knot_vector_[current_dim];
       auto &degree_current_dim = degree_[current_dim];
       basis_functions_current_dim.erase(basis_functions_current_dim.begin(), basis_functions_current_dim.end());
-      basis_functions_current_dim.reserve(knot_vector_current_dim->GetNumberOfKnots() - degree_current_dim.get() - 1);
+      basis_functions_current_dim.reserve(knot_vector_current_dim->GetNumberOfKnots() - degree_current_dim.Get() - 1);
       for (int current_basis_function = 0;
            current_basis_function <
-               (static_cast<int>(knot_vector_current_dim->GetNumberOfKnots()) - degree_current_dim.get() - 1);
+               (static_cast<int>(knot_vector_current_dim->GetNumberOfKnots()) - degree_current_dim.Get() - 1);
            ++current_basis_function) {
         basis_functions_current_dim.emplace_back(baf::BasisFunctionFactory::CreateDynamic(
             *knot_vector_current_dim, KnotSpan{current_basis_function}, degree_current_dim));

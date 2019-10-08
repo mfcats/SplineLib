@@ -11,22 +11,12 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#ifndef SRC_UTIL_NUMERIC_SETTINGS_H_
-#define SRC_UTIL_NUMERIC_SETTINGS_H_
-
-#include <cmath>
-#include <cstdlib>
-#include <limits>
-
-namespace splinelib::src::util::numeric_settings {
 template<typename TYPE>
-constexpr TYPE GetEpsilon();
+constexpr TYPE GetEpsilon() {
+  return (kEpsilonFactor_ * std::numeric_limits<TYPE>::epsilon());
+}
+
 template<typename TYPE>
-constexpr bool AreEqual(TYPE const &a, TYPE const &b, const TYPE &tolerance = GetEpsilon<TYPE>());
-
-static constexpr double kEpsilonFactor_ = 1e1;
-
-#include "numeric_settings.inc"
-}  // namespace splinelib::src::util::numeric_settings
-
-#endif  // SRC_UTIL_NUMERIC_SETTINGS_H_
+constexpr bool AreEqual(const TYPE &a, const TYPE &b, const TYPE &tolerance) {
+  return (std::abs(a - b) <= tolerance);
+}

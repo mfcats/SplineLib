@@ -37,7 +37,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
           : Spline<PARAMETRIC_DIMENSIONALITY>(knot_vector, degree) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].Get() - 1;
     }
     physical_space_ = std::make_shared<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(
         PhysicalSpace<PARAMETRIC_DIMENSIONALITY>(control_points, number_of_points));
@@ -56,7 +56,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
   virtual ~BSpline() = default;
 
   bool AreEqual(const BSpline<PARAMETRIC_DIMENSIONALITY> &rhs,
-      double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+      double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
     return this->parameter_space_->AreEqual(*rhs.parameter_space_.get(), tolerance)
         && physical_space_->AreEqual(*rhs.physical_space_.get(), tolerance);
   }
@@ -68,11 +68,11 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     std::array<int, PARAMETRIC_DIMENSIONALITY> maximum_point_index =
         physical_space_->GetMaximumPointIndexInEachDirection();
     ++maximum_point_index[dimension];
-    point_handler.SetIndices(maximum_point_index);
+    point_handler.SetCurrentIndex(maximum_point_index);
     physical_space_->AddControlPoints(this->GetNumberOfControlPoints() / maximum_point_index[dimension]);
     for (int i = point_handler.Get1DLength() - 1; i >= 0; --i, --point_handler) {
-      auto current_point_index = point_handler[dimension];
-      std::array<int, PARAMETRIC_DIMENSIONALITY> indices = point_handler.GetIndices();
+      auto current_point_index = point_handler[Dimension{dimension}];
+      std::array<int, PARAMETRIC_DIMENSIONALITY> indices = point_handler.GetCurrentIndex();
       baf::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling,
                                                                current_point_index, first, last);
       physical_space_->SetControlPoint(indices, new_control_point, dimension,
@@ -97,7 +97,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
 
   std::array<std::shared_ptr<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>, 2> SudivideSpline(
       ParametricCoordinate param_coord, int dimension) {
-    this->InsertKnot(param_coord, dimension, this->GetDegree(dimension).get() + 1
+    this->InsertKnot(param_coord, dimension, this->GetDegree(dimension).Get() + 1
                          - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
     std::array<baf::KnotVectors<PARAMETRIC_DIMENSIONALITY>, 2> new_knots =
         this->parameter_space_->GetDividedKnotVectors(param_coord, dimension);
@@ -108,7 +108,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     std::array<std::shared_ptr<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>, 2> subdivided_splines;
     int first = 0;
     for (int i = 0; i < 2; ++i) {
-      int length = new_knots[i][dimension]->GetNumberOfKnots() - this->GetDegree(dimension).get() - 1;
+      int length = new_knots[i][dimension]->GetNumberOfKnots() - this->GetDegree(dimension).Get() - 1;
       std::vector<baf::ControlPoint> points = physical_space_->GetDividedControlPoints(first, length, dimension);
       spl::BSpline<PARAMETRIC_DIMENSIONALITY> spline(new_knots[i], degrees, points);
       subdivided_splines[i] = std::make_shared<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>(spline);
@@ -161,19 +161,20 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     for (int m = 0; m < point_handler.Get1DLength(); ++m, ++point_handler) {
-      int k = point_handler[dimension];
+      int k = point_handler[Dimension{dimension}];
       if (k - off >= 1 && k - off != ii && k < last + 2) {
-        int index = (point_handler.ExtractDimension(dimension) * (last - off + 2) + k - off) * this->GetPointDim();
+        int index =
+            (point_handler.CollapseDimension(Dimension{dimension}) * (last - off + 2) + k - off) * this->GetPointDim();
         std::vector<double> coordinates(temp.begin() + index, temp.begin() + index + this->GetPointDim());
-        auto indices = point_handler.GetIndices();
+        auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k - off < ii ? k : k - 1;
         physical_space_->SetControlPoint(indices, baf::ControlPoint(coordinates), dimension,
                                          util::NumericOperations<int>::decrement);
       }
       if ((k <= off && k - off < 1) || (k >= last + 1 && k < this->GetPointsPerDirection()[dimension])) {
-        auto indices = point_handler.GetIndices();
+        auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k <= off ? k : k - 1;
-        physical_space_->SetControlPoint(indices, this->GetControlPoint(point_handler.GetIndices()), dimension,
+        physical_space_->SetControlPoint(indices, this->GetControlPoint(point_handler.GetCurrentIndex()), dimension,
                                          util::NumericOperations<int>::decrement);
       }
     }
@@ -187,18 +188,18 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     std::vector<double> temp(new_points * this->GetPointDim() * (last - off + 2), 0);
     std::shared_ptr<std::vector<double>> temp_ptr = std::make_shared<std::vector<double>>(temp);
     for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
-      if (point_handler[dimension] == off || point_handler[dimension] == last + 1) {
-        int diff = point_handler[dimension] == off ? off : last + 1;
+      if (point_handler[Dimension{dimension}] == off || point_handler[Dimension{dimension}] == last + 1) {
+        int diff = point_handler[Dimension{dimension}] == off ? off : last + 1;
         SetTempNewControlPoint(point_handler, temp_ptr, 1, diff, off, last, dimension, 0);
       }
     }
     for (; j - i > 0; ++i, --j) {
-      point_handler.SetIndices({0});
+      point_handler.SetCurrentIndex({0});
       for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
-        if (point_handler[dimension] == i) {
+        if (point_handler[Dimension{dimension}] == i) {
           SetTempNewControlPoint(point_handler, temp_ptr, scaling[i - off - 1], i, off, last, dimension, -1);
         }
-        if (point_handler[dimension] == j) {
+        if (point_handler[Dimension{dimension}] == j) {
           SetTempNewControlPoint(point_handler, temp_ptr, 1 - scaling[j - off - 1], j, off, last, dimension, 1);
         }
       }
@@ -209,9 +210,9 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
   void SetTempNewControlPoint(const util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> &point_handler,
                               const std::shared_ptr<std::vector<double>> &temp_ptr,
                               double alpha, int x, int off, int last, int dimension, int shift) const {
-    int index = point_handler.ExtractDimension(dimension) * (last - off + 2);
+    int index = point_handler.CollapseDimension(Dimension{dimension}) * (last - off + 2);
     for (int k = 0; k < this->GetPointDim(); ++k) {
-      (*temp_ptr)[(index + x - off) * this->GetPointDim() + k] = (this->GetControlPoint(point_handler.GetIndices(), k)
+      (*temp_ptr)[(index + x - off) * this->GetPointDim() + k] = (this->GetControlPoint(point_handler.GetCurrentIndex(), k)
           - (1 - alpha) * (*temp_ptr)[(index + x - off + shift) * this->GetPointDim() + k]) / alpha;
     }
   }
@@ -231,7 +232,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
       }
       if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
         for (int k = 0; k < this->GetPointDim(); ++k) {
-          auto indices = point_handler.GetIndices();
+          auto indices = point_handler.GetCurrentIndex();
           indices[dimension] = i;
           temp1[k] = this->GetControlPoint(indices, k);
           temp2[k] = alfi * temp[l * temp_length + (i - off + 1) * this->GetPointDim() + k]

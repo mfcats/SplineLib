@@ -30,11 +30,16 @@ install(FILES
         any_casts.h
         element.h
         element_generator.h
+        multi_index_handler.h
+        multi_index_handler.inc
         named_type.h
+        named_type.inc
         numeric_operations.h
         numeric_settings.h
-        multi_index_handler.h
+        numeric_settings.inc
         random.h
+        stl_container_access.h
+        stl_container_access.inc
         string_operations.h
         system_operations.h
         vector_utils.h

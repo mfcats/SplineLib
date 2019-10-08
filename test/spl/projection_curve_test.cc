@@ -53,13 +53,13 @@ class ABSpline2 : public Test {
 };
 
 TEST_F(ABSpline2, ComputesCorrectProjectionCloseToCenter) { // NOLINT
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({332, 200}, b_spline)[0].get(), DoubleNear(0.6223419238, 0.0001));
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({332, 200}, b_spline)[0].Get(), DoubleNear(0.6223419238, 0.0001));
 }
 
 TEST_F(ABSpline2, ComputesCorrectProjectionRightOfLastKnot) { // NOLINT
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({800, 200}, b_spline)[0].get(), DoubleEq(1));
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({800, 200}, b_spline)[0].Get(), DoubleEq(1));
 }
 
 TEST_F(ABSpline2, ComputesCorrectProjectionLeftOfFirstKnot) { // NOLINT
-  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({0, 0}, b_spline)[0].get(), DoubleEq(0));
+  ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({0, 0}, b_spline)[0].Get(), DoubleEq(0));
 }

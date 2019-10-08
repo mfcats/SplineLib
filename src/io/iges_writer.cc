@@ -133,13 +133,13 @@ void IGESWriter::GetParameterData1D(std::string *contents,
   }
   AddToContents(contents,
                 {GetString(126),
-                 GetString(spl->GetKnotVector(0)->GetNumberOfKnots() - spl->GetDegree(0).get() - 2),
-                 GetString(spl->GetDegree(0).get()), GetString(0), GetString(0), GetString(isRational),
+                 GetString(spl->GetKnotVector(0)->GetNumberOfKnots() - spl->GetDegree(0).Get() - 2),
+                 GetString(spl->GetDegree(0).Get()), GetString(0), GetString(0), GetString(isRational),
                  GetString(0)}, delimiter);
 
   auto knots = *spl->GetKnotVector(0);
   for (auto &knot : knots) {
-    contents->append(GetString(knot.get()) + delimiter);
+    contents->append(GetString(knot.Get()) + delimiter);
   }
   for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
     contents->append(GetString(spl->GetWeight({i})) + delimiter);
@@ -167,18 +167,18 @@ void IGESWriter::GetParameterData2D(std::string *contents,
   }
   AddToContents(contents,
                 {GetString(128),
-                 GetString(spl->GetKnotVector(0)->GetNumberOfKnots() - spl->GetDegree(0).get() - 2),
-                 GetString(spl->GetKnotVector(1)->GetNumberOfKnots() - spl->GetDegree(1).get() - 2),
-                 GetString(spl->GetDegree(0).get()), GetString(spl->GetDegree(1).get()),
+                 GetString(spl->GetKnotVector(0)->GetNumberOfKnots() - spl->GetDegree(0).Get() - 2),
+                 GetString(spl->GetKnotVector(1)->GetNumberOfKnots() - spl->GetDegree(1).Get() - 2),
+                 GetString(spl->GetDegree(0).Get()), GetString(spl->GetDegree(1).Get()),
                  GetString(0), GetString(0), GetString(isRational), GetString(0), GetString(0)},
                 delimiter);
   auto knots1 = *spl->GetKnotVector(0);
   auto knots2 = *spl->GetKnotVector(1);
   for (auto &i : knots1) {
-    contents->append(GetString(i.get()) + delimiter);
+    contents->append(GetString(i.Get()) + delimiter);
   }
   for (auto &i : knots2) {
-    contents->append(GetString(i.get()) + delimiter);
+    contents->append(GetString(i.Get()) + delimiter);
   }
   for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
     contents->append(GetString(spl->GetWeight({i})) + delimiter);

@@ -38,24 +38,24 @@ class A1DRandomNURBSGenerator : public Test {  // NOLINT
 
 TEST_F(A1DRandomNURBSGenerator, CreatesCorrectKnots) {  // NOLINT
   spl::ParameterSpace<1> parameter_space = *nurbs_generator_.GetParameterSpace();
-  size_t degree = static_cast<size_t>(parameter_space.GetDegree(0).get());
+  size_t degree = static_cast<size_t>(parameter_space.GetDegree(0).Get());
   baf::KnotVector knot_vector = *parameter_space.GetKnotVector(0);
   size_t i = 0;
   for (; i < degree + 1; ++i) {
-    ASSERT_THAT(knot_vector.GetKnot(i).get(), DoubleEq(limits_[0].get()));
+    ASSERT_THAT(knot_vector.GetKnot(i).Get(), DoubleEq(limits_[0].Get()));
   }
   for (; i < knot_vector.GetNumberOfKnots() - degree - 1; ++i) {
-    ASSERT_THAT(knot_vector.GetKnot(i).get() - knot_vector.GetKnot(i - 1).get(),
-                DoubleNear((limits_[1].get() - limits_[0].get()) / (knot_vector.GetNumberOfKnots() - 2 * degree - 1),
+    ASSERT_THAT(knot_vector.GetKnot(i).Get() - knot_vector.GetKnot(i - 1).Get(),
+                DoubleNear((limits_[1].Get() - limits_[0].Get()) / (knot_vector.GetNumberOfKnots() - 2 * degree - 1),
                            0.00000001));
   }
   for (; i < knot_vector.GetNumberOfKnots(); ++i) {
-    ASSERT_THAT(knot_vector.GetKnot(i).get(), DoubleEq(limits_[1].get()));
+    ASSERT_THAT(knot_vector.GetKnot(i).Get(), DoubleEq(limits_[1].Get()));
   }
 }
 
 TEST_F(A1DRandomNURBSGenerator, RegardsMaximalDegree) {  // NOLINT
-  ASSERT_LE(nurbs_generator_.GetParameterSpace()->GetDegree(0).get(), max_degree_);
+  ASSERT_LE(nurbs_generator_.GetParameterSpace()->GetDegree(0).Get(), max_degree_);
 }
 
 TEST_F(A1DRandomNURBSGenerator, RegardsPhysicalDimension) {  // NOLINT
@@ -77,16 +77,16 @@ class A2DRandomNURBSGenerator : public Test {  // NOLINT
 
 TEST_F(A2DRandomNURBSGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
   spl::ParameterSpace<2> parameter_space = *nurbs_generator_.GetParameterSpace();
-  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetKnot(0).get(), DoubleEq(limits_[0].get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetLastKnot().get(), DoubleEq(limits_[1].get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetKnot(0).get(), DoubleEq(limits_[0].get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetLastKnot().get(), DoubleEq(limits_[1].get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetKnot(0).Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetKnot(0).Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
 }
 
 TEST_F(A2DRandomNURBSGenerator, RegardsMaximalDegree) {  // NOLINT
   spl::ParameterSpace<2> parameter_space = *nurbs_generator_.GetParameterSpace();
-  ASSERT_LE(parameter_space.GetDegree(0).get(), max_degree_);
-  ASSERT_LE(parameter_space.GetDegree(1).get(), max_degree_);
+  ASSERT_LE(parameter_space.GetDegree(0).Get(), max_degree_);
+  ASSERT_LE(parameter_space.GetDegree(1).Get(), max_degree_);
 }
 
 TEST_F(A2DRandomNURBSGenerator, RegardsPhysicalDimension) {  // NOLINT
@@ -108,19 +108,19 @@ class A3DRandomNURBSGenerator : public Test {  // NOLINT
 
 TEST_F(A3DRandomNURBSGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
   spl::ParameterSpace<3> parameter_space = *nurbs_generator_.GetParameterSpace();
-  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetKnot(0).get(), DoubleEq(limits_[0].get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetLastKnot().get(), DoubleEq(limits_[1].get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetKnot(0).get(), DoubleEq(limits_[0].get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetLastKnot().get(), DoubleEq(limits_[1].get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(2)->GetKnot(0).get(), DoubleEq(limits_[0].get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(2)->GetLastKnot().get(), DoubleEq(limits_[1].get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetKnot(0).Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetKnot(0).Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(2)->GetKnot(0).Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(2)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
 }
 
 TEST_F(A3DRandomNURBSGenerator, RegardsMaximalDegree) {  // NOLINT
   spl::ParameterSpace<3> parameter_space = *nurbs_generator_.GetParameterSpace();
-  ASSERT_LE(parameter_space.GetDegree(0).get(), max_degree_);
-  ASSERT_LE(parameter_space.GetDegree(1).get(), max_degree_);
-  ASSERT_LE(parameter_space.GetDegree(2).get(), max_degree_);
+  ASSERT_LE(parameter_space.GetDegree(0).Get(), max_degree_);
+  ASSERT_LE(parameter_space.GetDegree(1).Get(), max_degree_);
+  ASSERT_LE(parameter_space.GetDegree(2).Get(), max_degree_);
 }
 
 TEST_F(A3DRandomNURBSGenerator, RegardsPhysicalDimension) {  // NOLINT

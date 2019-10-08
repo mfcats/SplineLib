@@ -31,12 +31,12 @@ class SolutionSpline {
     for (uint64_t i = 0, l = 0; i < static_cast<uint64_t>(spl->GetNumberOfControlPoints()); ++i, ++point_handler, ++l) {
       std::vector<double> temp;
       for (int j = 0; j < spl->GetPointDim(); ++j) {
-        temp.emplace_back(spl->GetControlPoint(point_handler.GetIndices(), j));
+        temp.emplace_back(spl->GetControlPoint(point_handler.GetCurrentIndex(), j));
       }
       temp.emplace_back(solution(l));
       control_points.emplace_back(baf::ControlPoint(temp));
     }
-    solution_spl_ = std::make_shared<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>(*spl.get(), control_points);
+    solution_spl_ = std::make_shared<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>(*spl.Get(), control_points);
   }
 
   std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> GetSolutionSpline() {

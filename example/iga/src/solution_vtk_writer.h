@@ -40,7 +40,7 @@ class SolutionVTKWriter {
     std::array<int, PARAMETRIC_DIMENSIONALITY> num_pnts{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       baf::KnotVector knots = *spl->GetKnotVector(i);
-      dxi.emplace_back((knots.GetKnot(knots.GetNumberOfKnots() - 1) - knots.GetKnot(0)).get() / scattering[0][i]);
+      dxi.emplace_back((knots.GetKnot(knots.GetNumberOfKnots() - 1) - knots.GetKnot(0)).Get() / scattering[0][i]);
       num_pnts[i] = scattering[0][i] + 1;
     }
     std::vector<double> point_data;

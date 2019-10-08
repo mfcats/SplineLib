@@ -108,9 +108,9 @@ TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectLeftUpperCorner) { // NOLINT
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectMiddle) { // NOLINT
   ASSERT_THAT(square_->Evaluate({ParametricCoordinate{0.5}, ParametricCoordinate{0.5}}, {0})[0],
-              DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(0, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(square_->Evaluate({ParametricCoordinate{0.5}, ParametricCoordinate{0.5}}, {1})[0],
-              DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(0, util::numeric_settings::GetEpsilon<double>()));
 }
 
 TEST_F(ASquareWithDegree3And8Knots, ReturnsCorrectCoordinatesOfRandomPoint) { // NOLINT
@@ -161,14 +161,14 @@ TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectLeftUpperCorner) { // NOLINT
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectMiddle) { // NOLINT
   ASSERT_THAT(square_->Evaluate({ParametricCoordinate{0.5}, ParametricCoordinate{0.5}}, {0})[0],
-              DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(0, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(square_->Evaluate({ParametricCoordinate{0.5}, ParametricCoordinate{0.5}}, {1})[0],
-              DoubleNear(0, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(0, util::numeric_settings::GetEpsilon<double>()));
 }
 
 TEST_F(ASquareWithDegree3And10Knots, ReturnsCorrectCoordinatesOfRandomPoint) { // NOLINT
   ASSERT_THAT(square_->Evaluate({ParametricCoordinate{0.2}, ParametricCoordinate{0.75}}, {0})[0],
-              DoubleNear(-0.46, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(-0.46, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(square_->Evaluate({ParametricCoordinate{0.2}, ParametricCoordinate{0.7}}, {1})[0], DoubleEq(0.2845));
 }
 

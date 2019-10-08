@@ -20,14 +20,14 @@ double BasisFunction::Evaluate(const ParametricCoordinate &ParametricCoordinate)
 }
 
 double BasisFunction::EvaluateDerivative(const ParametricCoordinate &param_coord, const Derivative &derivative) const {
-  return derivative.get() == 0 ? Evaluate(param_coord) :
+  return derivative.Get() == 0 ? Evaluate(param_coord) :
          (IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0);
 }
 
 BasisFunction::BasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support)
     : degree_(degree) {
-  auto start_index = static_cast<size_t>(start_of_support.get());
-  auto degree_index = static_cast<size_t>(degree.get());
+  auto start_index = static_cast<size_t>(start_of_support.Get());
+  auto degree_index = static_cast<size_t>(degree.Get());
   start_knot_ = knot_vector.GetKnot(start_index);
   end_knot_ = knot_vector.GetKnot(start_index + degree_index + 1);
   end_knot_is_last_knot_ = knot_vector.IsLastKnot(end_knot_);

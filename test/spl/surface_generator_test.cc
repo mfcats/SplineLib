@@ -458,7 +458,7 @@ class AComplexSurface : public Test {
 
 TEST_F(AComplexSurface, ReturnsCorrectKnotVectorSize) { // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(1)->GetNumberOfKnots(), 12);
-  ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(0)->GetNumberOfKnots(), nbInter + degree1_[0].get() + 1);
+  ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(0)->GetNumberOfKnots(), nbInter + degree1_[0].Get() + 1);
 }
 
 TEST_F(AComplexSurface, ReturnsCorrectVTK) { // NOLINT

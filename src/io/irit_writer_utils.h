@@ -37,7 +37,7 @@ class IRITWriterUtils {
   static std::string GetOrder(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline) {
     std::string string;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
-      string += std::to_string(spline->GetDegree(i).get() + 1) + " ";
+      string += std::to_string(spline->GetDegree(i).Get() + 1) + " ";
     }
     return string;
   }
@@ -48,7 +48,7 @@ class IRITWriterUtils {
       string += "      [KV ";
       std::shared_ptr<baf::KnotVector> knot_vector = spline->GetKnotVector(dimension);
       for (size_t knot = 0; knot < knot_vector->GetNumberOfKnots(); knot++) {
-        string += std::to_string(knot_vector->GetKnot(knot).get()) +
+        string += std::to_string(knot_vector->GetKnot(knot).Get()) +
             (knot < knot_vector->GetNumberOfKnots() - 1 ? " " : "]\n");
       }
     }
@@ -64,10 +64,10 @@ class IRITWriterUtils {
       nurbs = std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
     }
     for (int control_point = 0; control_point < point_handler.Get1DLength(); ++control_point, point_handler++) {
-      string += "      [" + (rational ? std::to_string(nurbs->GetWeight(point_handler.GetIndices())) + " " : "");
+      string += "      [" + (rational ? std::to_string(nurbs->GetWeight(point_handler.GetCurrentIndex())) + " " : "");
       for (int dimension = 0; dimension < spline_ptr->GetPointDim(); dimension++) {
-        string += std::to_string(spline_ptr->GetControlPoint(point_handler.GetIndices(), dimension)
-                                     * (rational ? nurbs->GetWeight(point_handler.GetIndices()) : 1))
+        string += std::to_string(spline_ptr->GetControlPoint(point_handler.GetCurrentIndex(), dimension)
+                                     * (rational ? nurbs->GetWeight(point_handler.GetCurrentIndex()) : 1))
             + (dimension < spline_ptr->GetPointDim() - 1 ? " " : "]\n");
       }
     }

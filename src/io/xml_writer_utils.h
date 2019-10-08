@@ -32,7 +32,7 @@ class XMLWriterUtils {
     pugi::xml_node degrees = spline_node->append_child("deg");
     std::string string;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
-      string = string + "\n      " + std::to_string(spline_ptr->GetDegree(i).get());
+      string = string + "\n      " + std::to_string(spline_ptr->GetDegree(i).Get());
     }
     degrees.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
@@ -45,7 +45,7 @@ class XMLWriterUtils {
       baf::KnotVector knot_vector = *spline_ptr->GetKnotVector(i);
       std::string string;
       for (ParametricCoordinate knot : knot_vector) {
-        string += "\n        " + std::to_string(knot.get());
+        string += "\n        " + std::to_string(knot.Get());
       }
       knots.append_child(pugi::node_pcdata).text() = (string + "\n      ").c_str();
     }
@@ -57,7 +57,7 @@ class XMLWriterUtils {
     std::string string;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(spline_ptr->GetPointsPerDirection());
     for (int i = 0; i < point_handler.Get1DLength(); ++i, point_handler++) {
-      auto indices = point_handler.GetIndices();
+      auto indices = point_handler.GetCurrentIndex();
       string += "\n      ";
       for (int j = 0; j < spline_ptr->GetPointDim(); j++) {
         string += std::to_string(spline_ptr->GetControlPoint(indices, j)) + "  ";
@@ -73,7 +73,7 @@ class XMLWriterUtils {
         std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> weight_handler(nurbs->GetPointsPerDirection());
     for (int i = 0; i < weight_handler.Get1DLength(); ++i, weight_handler++) {
-      auto indices = weight_handler.GetIndices();
+      auto indices = weight_handler.GetCurrentIndex();
       string += "\n      " + std::to_string(nurbs->GetWeight(indices)) + "  ";
     }
     weights.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();

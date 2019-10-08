@@ -32,7 +32,7 @@ class NURBSGenerator : public SplineGenerator<PARAMETRIC_DIMENSIONALITY> {
       std::vector<double> weights) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].Get() - 1;
     }
 
     this->physical_space_ =

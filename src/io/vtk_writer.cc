@@ -141,10 +141,11 @@ void VTKWriter::Write2DCells(std::ofstream &file, std::array<int, 2> scattering,
   util::MultiIndexHandler<2> point_handler({scattering[0] + 1, scattering[1] + 1});
   for (int j = 0; j < scattering[1]; ++j) {
     for (int i = 0; i <= scattering[0]; ++i, ++point_handler) {
-      if (point_handler.GetIndices()[0] != scattering[0] && point_handler.GetIndices()[1] != scattering[1]) {
-        file << "4 " << point_handler.Get1DIndex() + offset << " " << (point_handler + 1).Get1DIndex() + offset << " "
-             << (point_handler + scattering[0] + 1).Get1DIndex() + offset << " "
-             << (point_handler - 1).Get1DIndex() + offset
+      if (point_handler.GetCurrentIndex()[0] != scattering[0] && point_handler.GetCurrentIndex()[1] != scattering[1]) {
+        file << "4 " << point_handler.GetCurrent1DIndex() + offset << " "
+             << (point_handler + 1).GetCurrent1DIndex() + offset << " "
+             << (point_handler + scattering[0] + 1).GetCurrent1DIndex() + offset << " "
+             << (point_handler - 1).GetCurrent1DIndex() + offset
              << "\n";
         point_handler - (scattering[0] + 1);
       }
@@ -154,16 +155,17 @@ void VTKWriter::Write2DCells(std::ofstream &file, std::array<int, 2> scattering,
 
 void VTKWriter::Write3DCells(std::ofstream &file, std::array<int, 3> scattering, int offset) const {
   util::MultiIndexHandler<3> point_handler({scattering[0] + 1, scattering[1] + 1, scattering[2] + 1});
-  for (; point_handler.Get1DIndex() < point_handler.Get1DLength() - 1; ++point_handler) {
-    if (point_handler.GetIndices()[0] != scattering[0] && point_handler.GetIndices()[1] != scattering[1]
-        && point_handler.GetIndices()[2] != scattering[2]) {
-      file << "8 " << point_handler.Get1DIndex() + offset << " " << (point_handler + 1).Get1DIndex() + offset << " "
-           << (point_handler + scattering[0] + 1).Get1DIndex() + offset << " "
-           << (point_handler - 1).Get1DIndex() + offset << " "
-           << (point_handler + scattering[1] * (scattering[0] + 1)).Get1DIndex() + offset << " "
-           << (point_handler + 1).Get1DIndex() + offset << " "
-           << (point_handler + scattering[0] + 1).Get1DIndex() + offset << " "
-           << (point_handler - 1).Get1DIndex() + offset << std::endl;
+  for (; point_handler.GetCurrent1DIndex() < point_handler.Get1DLength() - 1; ++point_handler) {
+    if (point_handler.GetCurrentIndex()[0] != scattering[0] && point_handler.GetCurrentIndex()[1] != scattering[1]
+        && point_handler.GetCurrentIndex()[2] != scattering[2]) {
+      file << "8 " << point_handler.GetCurrent1DIndex() + offset << " "
+           << (point_handler + 1).GetCurrent1DIndex() + offset << " "
+           << (point_handler + scattering[0] + 1).GetCurrent1DIndex() + offset << " "
+           << (point_handler - 1).GetCurrent1DIndex() + offset << " "
+           << (point_handler + scattering[1] * (scattering[0] + 1)).GetCurrent1DIndex() + offset << " "
+           << (point_handler + 1).GetCurrent1DIndex() + offset << " "
+           << (point_handler + scattering[0] + 1).GetCurrent1DIndex() + offset << " "
+           << (point_handler - 1).GetCurrent1DIndex() + offset << std::endl;
       point_handler - (scattering[0] + 1) * (scattering[1] + 2);
     }
   }

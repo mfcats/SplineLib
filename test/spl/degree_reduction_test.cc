@@ -68,7 +68,7 @@ TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, DegreeReductio
 }
 
 TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, HasUnchangedDegreeInDimension0) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), elevated_and_reduced_->GetDegree(0).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).Get(), elevated_and_reduced_->GetDegree(0).Get());
 }
 
 TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfKnotsInDimension0) {  // NOLINT
@@ -119,7 +119,7 @@ TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, DegreeReductionW
 }
 
 TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedDegreeInDimension0) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), original_->GetDegree(0).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).Get(), original_->GetDegree(0).Get());
 }
 
 TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfKnotsInDimension0) {  // NOLINT
@@ -175,8 +175,8 @@ TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, DegreeReductionFor
 }
 
 TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, HasUnchangedDegreeInAllDimensions) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), original_->GetDegree(0).get());
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).get(), original_->GetDegree(1).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).Get(), original_->GetDegree(0).Get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).Get(), original_->GetDegree(1).Get());
 }
 
 TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfKnotsInAllDimensions) {  // NOLINT
@@ -233,8 +233,8 @@ TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, DegreeReduction
 }
 
 TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedDegreeInAllDimensions) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), original_->GetDegree(0).get());
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).get(), original_->GetDegree(1).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).Get(), original_->GetDegree(0).Get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).Get(), original_->GetDegree(1).Get());
 }
 
 TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfKnotsInAllDimensions) {  // NOLINT
@@ -280,9 +280,9 @@ TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
 }
 
 TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, HasUnchangedDegreeInAllDimensions) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), original_->GetDegree(0).get());
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).get(), original_->GetDegree(1).get());
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(2).get(), original_->GetDegree(2).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).Get(), original_->GetDegree(0).Get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).Get(), original_->GetDegree(1).Get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(2).Get(), original_->GetDegree(2).Get());
 }
 
 TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
@@ -344,9 +344,9 @@ TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, DegreeReduction
 }
 
 TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, HasUnchangedDegreeInAllDimensions) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).get(), original_->GetDegree(0).get());
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).get(), original_->GetDegree(1).get());
-  ASSERT_THAT(elevated_and_reduced_->GetDegree(2).get(), original_->GetDegree(2).get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(0).Get(), original_->GetDegree(0).Get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(1).Get(), original_->GetDegree(1).Get());
+  ASSERT_THAT(elevated_and_reduced_->GetDegree(2).Get(), original_->GetDegree(2).Get());
 }
 
 TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, // NOLINT

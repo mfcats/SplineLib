@@ -97,8 +97,8 @@ class LinearEquationAssembler {
       for (int k = 0; k < boundary_spline_connectivity[i].size(); ++k) {
         for (int n = 0; n < boundary_spline_connectivity[i][k].size(); ++n) {
           mih.Set1DIndex(boundary_spline_connectivity[i][k][n]);
-          control_points[k].emplace_back(spline_->GetControlPoint(mih.GetIndices()));
-          weights[k].emplace_back(spline_->GetWeight(mih.GetIndices()));
+          control_points[k].emplace_back(spline_->GetControlPoint(mih.GetCurrentIndex()));
+          weights[k].emplace_back(spline_->GetWeight(mih.GetCurrentIndex()));
         }
         boundary_splines[i][k] = std::make_shared<spl::NURBS<PARAMETRIC_DIMENSIONALITY - 1>>(kv_ptr, degree, control_points[k], weights[k]);
       }

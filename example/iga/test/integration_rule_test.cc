@@ -62,6 +62,6 @@ TEST_F(AnIntegrationRule, ReturnsCorrectPointSum) { // NOLINT
     for (int point = 0; point < points; point++) {
       point_sum += rules_[points - 1].GetIntegrationPoints()[point].GetCoordinate();
     }
-    ASSERT_THAT(point_sum, DoubleNear(0.0, util::NumericSettings<double>::kEpsilon()));
+    ASSERT_THAT(point_sum, DoubleNear(0.0, util::numeric_settings::GetEpsilon<double>()));
   }
 }

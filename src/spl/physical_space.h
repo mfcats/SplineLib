@@ -55,16 +55,16 @@ class PhysicalSpace {
                                                        control_points_(physical_space.control_points_) {}
 
   bool AreEqual(const PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs,
-      double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+      double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
     return std::equal(control_points_.begin(), control_points_.end(),
                       rhs.control_points_.begin(), rhs.control_points_.end(),
                       [&](double cp_a, double cp_b) {
-                        return util::NumericSettings<double>::AreEqual(cp_a, cp_b, tolerance);
+                        return util::numeric_settings::AreEqual<double>(cp_a, cp_b, tolerance);
                       })
         && std::equal(number_of_points_.begin(), number_of_points_.end(),
                       rhs.number_of_points_.begin(), rhs.number_of_points_.end(),
                       [&](int number_a, int number_b) {
-                        return util::NumericSettings<double>::AreEqual(number_a, number_b);
+                        return util::numeric_settings::AreEqual<double>(number_a, number_b);
                       });
   }
 
@@ -72,8 +72,8 @@ class PhysicalSpace {
     std::vector<double> coordinates;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler =
         util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
-    point_handler.SetIndices(indices);
-    int first = dimension_ * point_handler.Get1DIndex();
+    point_handler.SetCurrentIndex(indices);
+    int first = dimension_ * point_handler.GetCurrent1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
       coordinates.push_back(control_points_[first + coordinate]);
     }
@@ -87,8 +87,8 @@ class PhysicalSpace {
     if (before) number_of_points_[dimension] = before(number_of_points_[dimension]);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler =
         util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
-    point_handler.SetIndices(indices);
-    int first = dimension_ * point_handler.Get1DIndex();
+    point_handler.SetCurrentIndex(indices);
+    int first = dimension_ * point_handler.GetCurrent1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
       control_points_[first + coordinate] = control_point.GetValue(coordinate);
     }
@@ -171,7 +171,7 @@ class PhysicalSpace {
     point_handler_length[dimension] = length;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      auto indices = point_handler.GetIndices();
+      auto indices = point_handler.GetCurrentIndex();
       indices[dimension] += first;
       points.emplace_back(GetControlPoint(indices));
     }

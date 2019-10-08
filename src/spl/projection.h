@@ -87,18 +87,18 @@ class Projection {
     std::vector<util::Element> elements = element_generator.GetElementList(0);
     std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> ParametricCoordinates = {ParametricCoordinate{0}};
     std::vector<double> splinePhysicalCoords = spline->Evaluate({ParametricCoordinate{(0.5 * (
-        elements[0].GetUpperBound() - elements[0].GetLowerBound()).get())}}, dimensions);
+        elements[0].GetUpperBound() - elements[0].GetLowerBound()).Get())}}, dimensions);
     double distance = util::VectorUtils<double>::ComputeDistance(point_phys_coords, splinePhysicalCoords);
     ParametricCoordinates[0] =
-        ParametricCoordinate{{0.5 * (elements[0].GetUpperBound() - elements[0].GetLowerBound()).get()}};
+        ParametricCoordinate{{0.5 * (elements[0].GetUpperBound() - elements[0].GetLowerBound()).Get()}};
     for (auto i = 1u; i < elements.size(); ++i) {
       splinePhysicalCoords = spline->Evaluate({ParametricCoordinate{0.5 * (
-          elements[i].GetUpperBound() - elements[i].GetLowerBound()).get() + elements[i].GetLowerBound().get()}},
+          elements[i].GetUpperBound() - elements[i].GetLowerBound()).Get() + elements[i].GetLowerBound().Get()}},
               dimensions);
       if (util::VectorUtils<double>::ComputeDistance(point_phys_coords, splinePhysicalCoords) < distance) {
         distance = util::VectorUtils<double>::ComputeDistance(point_phys_coords, splinePhysicalCoords);
         ParametricCoordinates[0] = ParametricCoordinate{0.5 * (
-                elements[i].GetUpperBound() - elements[i].GetLowerBound()).get() + elements[i].GetLowerBound().get()};
+                elements[i].GetUpperBound() - elements[i].GetLowerBound()).Get() + elements[i].GetLowerBound().Get()};
       }
     }
     return ParametricCoordinates;
@@ -108,10 +108,10 @@ class Projection {
                                                       const std::vector<double> &point_phys_coords,
                                                       const std::shared_ptr<spl::Spline<2>> &spline,
                                                       const std::vector<int> &dimensions) {
-    double first_knot1 = spline->GetKnotVector(0)->GetKnot(0).get();
-    double last_knot1 = spline->GetKnotVector(0)->GetLastKnot().get();
-    double first_knot2 = spline->GetKnotVector(1)->GetKnot(0).get();
-    double last_knot2 = spline->GetKnotVector(1)->GetLastKnot().get();
+    double first_knot1 = spline->GetKnotVector(0)->GetKnot(0).Get();
+    double last_knot1 = spline->GetKnotVector(0)->GetLastKnot().Get();
+    double first_knot2 = spline->GetKnotVector(1)->GetKnot(0).Get();
+    double last_knot2 = spline->GetKnotVector(1)->GetLastKnot().Get();
     std::array<ParametricCoordinate, 2> param_coords =
         {ParametricCoordinate(first_knot1), ParametricCoordinate(first_knot2)};
     std::vector<double> physical_coords = spline->Evaluate(param_coords, dimensions);

@@ -114,7 +114,7 @@ def apply_fixes(args, tmpdir):
 def run_tidy(args, tmpdir, build_path, queue):
     """Takes filenames out of queue and runs clang-tidy on them."""
     while True:
-        name = queue.get()
+        name = queue.Get()
         invocation = get_tidy_invocation(name, args.clang_tidy_binary, args.checks,
                                          tmpdir, build_path, args.header_filter,
                                          args.extra_arg, args.extra_arg_before,

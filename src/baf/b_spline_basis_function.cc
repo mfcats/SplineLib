@@ -22,11 +22,11 @@ BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
                                                 const Degree &degree,
                                                 const KnotSpan &start_of_support)
     : BasisFunction(knot_vector, degree, start_of_support) {
-  auto start_index = static_cast<size_t>(start_of_support.get());
-  auto degree_index = static_cast<size_t>(degree.get());
-  auto left_denom = (knot_vector.GetKnot(start_index + degree_index) - GetStartKnot()).get();
+  auto start_index = static_cast<size_t>(start_of_support.Get());
+  auto degree_index = static_cast<size_t>(degree.Get());
+  auto left_denom = (knot_vector.GetKnot(start_index + degree_index) - GetStartKnot()).Get();
   left_denom_inv_ = InverseWithPossiblyZeroDenominator(left_denom);
-  auto right_denom = (GetEndKnot() - knot_vector.GetKnot(start_index + 1)).get();
+  auto right_denom = (GetEndKnot() - knot_vector.GetKnot(start_index + 1)).Get();
   right_denom_inv_ = InverseWithPossiblyZeroDenominator(right_denom);
   SetLowerDegreeBasisFunctions(knot_vector, degree, start_of_support);
 }
@@ -38,7 +38,7 @@ double BSplineBasisFunction::EvaluateOnSupport(const ParametricCoordinate &param
 
 double BSplineBasisFunction::EvaluateDerivativeOnSupport(const ParametricCoordinate &param_coord,
                                                               const Derivative &derivative) const {
-  return GetDegree().get()
+  return GetDegree().Get()
       * (left_denom_inv_ * left_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1})
           - right_denom_inv_ * right_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1}));
 }
@@ -53,14 +53,14 @@ void BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_v
 }
 
 double BSplineBasisFunction::ComputeLeftQuotient(const ParametricCoordinate &param_coord) const {
-  return (param_coord - GetStartKnot()).get() * left_denom_inv_;
+  return (param_coord - GetStartKnot()).Get() * left_denom_inv_;
 }
 
 double BSplineBasisFunction::ComputeRightQuotient(const ParametricCoordinate &param_coord) const {
-  return (GetEndKnot() - param_coord).get() * right_denom_inv_;
+  return (GetEndKnot() - param_coord).Get() * right_denom_inv_;
 }
 
 double BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {
-  return std::abs(denominator) < util::NumericSettings<double>::kEpsilon() ? 0.0 : 1.0 / denominator;
+  return std::abs(denominator) < util::numeric_settings::GetEpsilon<double>() ? 0.0 : 1.0 / denominator;
 }
 }  // namespace splinelib::src::baf

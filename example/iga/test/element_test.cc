@@ -29,6 +29,6 @@ class A1DElement : public Test {
 };
 
 TEST_F(A1DElement, ReturnsCorrectNode) { // NOLINT
-  ASSERT_THAT(element.GetLowerBound().get(), DoubleEq(0.5));
-  ASSERT_THAT(element.GetUpperBound().get(), DoubleEq(1.0));
+  ASSERT_THAT(element.GetLowerBound().Get(), DoubleEq(0.5));
+  ASSERT_THAT(element.GetUpperBound().Get(), DoubleEq(1.0));
 }

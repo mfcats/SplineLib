@@ -43,15 +43,15 @@ class RandomSplineUtils {
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_knots = GetNumberOfKnots(degree);
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       std::vector<ParametricCoordinate> param_coord_vector;
-      for (int j = 0; j < degree[i].get() + 1; ++j) {
+      for (int j = 0; j < degree[i].Get() + 1; ++j) {
         param_coord_vector.push_back(coord_limits[0]);
       }
-      int number = number_of_knots[i] - 2 * degree[i].get() - 2;
+      int number = number_of_knots[i] - 2 * degree[i].Get() - 2;
       for (int j = 1; j <= number; ++j) {
-        double coord = (coord_limits[1].get() - coord_limits[0].get()) / (number + 1) * j + coord_limits[0].get();
+        double coord = (coord_limits[1].Get() - coord_limits[0].Get()) / (number + 1) * j + coord_limits[0].Get();
         param_coord_vector.emplace_back(coord);
       }
-      for (int j = 0; j < degree[i].get() + 1; ++j) {
+      for (int j = 0; j < degree[i].Get() + 1; ++j) {
         param_coord_vector.push_back(coord_limits[1]);
       }
       knot_vectors[i] = std::make_shared<baf::KnotVector>(param_coord_vector);
@@ -87,7 +87,7 @@ class RandomSplineUtils {
       const baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> &knot_vectors) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      number_of_points[i] = knot_vectors[i]->GetNumberOfKnots() - degrees[i].get() - 1;
+      number_of_points[i] = knot_vectors[i]->GetNumberOfKnots() - degrees[i].Get() - 1;
     }
     return number_of_points;
   }
@@ -97,7 +97,7 @@ class RandomSplineUtils {
       const std::array<Degree, PARAMETRIC_DIMENSIONALITY> &degree) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_knots;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      number_of_knots[i] = util::Random::GetBinomialRandom<int>(2 * degree[i].get() + 2, 4 * degree[i].get(), 1);
+      number_of_knots[i] = util::Random::GetBinomialRandom<int>(2 * degree[i].Get() + 2, 4 * degree[i].Get(), 1);
     }
     return number_of_knots;
   }

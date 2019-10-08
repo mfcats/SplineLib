@@ -53,7 +53,7 @@ class BSplineFig5_35ForDegreeElevationForDimension0 : public Test {  // NOLINT
 };
 
 TEST_F(BSplineFig5_35ForDegreeElevationForDimension0, HasELevatedDegreeInDimension0) {  // NOLINT
-  ASSERT_THAT(elevated_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+  ASSERT_THAT(elevated_->GetDegree(0).Get(), original_->GetDegree(0).Get() + 1);
 }
 
 TEST_F(BSplineFig5_35ForDegreeElevationForDimension0, HasNumberOfDifferentKnotsMoreKnots) {  // NOLINT
@@ -99,7 +99,7 @@ class ALinearNURBSForDegreeElevationForDimension0 : public Test {  // NOLINT
 };
 
 TEST_F(ALinearNURBSForDegreeElevationForDimension0, HasELevatedDegreeInDimension0) {  // NOLINT
-  ASSERT_THAT(elevated_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
+  ASSERT_THAT(elevated_->GetDegree(0).Get(), original_->GetDegree(0).Get() + 1);
 }
 
 TEST_F(ALinearNURBSForDegreeElevationForDimension0, HasNumberOfDifferentKnotsMoreKnots) {  // NOLINT
@@ -150,8 +150,8 @@ class A2DBSplineForDegreeElevationForDimension0 : public Test {  // NOLINT
 };
 
 TEST_F(A2DBSplineForDegreeElevationForDimension0, HasELevatedDegreeInDimension0) {  // NOLINT
-  ASSERT_THAT(elevated_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
-  ASSERT_THAT(elevated_->GetDegree(1).get(), original_->GetDegree(1).get());
+  ASSERT_THAT(elevated_->GetDegree(0).Get(), original_->GetDegree(0).Get() + 1);
+  ASSERT_THAT(elevated_->GetDegree(1).Get(), original_->GetDegree(1).Get());
 }
 
 TEST_F(A2DBSplineForDegreeElevationForDimension0, HasNumberOfDifferentKnotsMoreKnots) {  // NOLINT
@@ -198,8 +198,8 @@ class Random2DNURBSForDegreeElevationForDimension0 : public Test {  // NOLINT
 };
 
 TEST_F(Random2DNURBSForDegreeElevationForDimension0, HasELevatedDegreeInDimension0) {  // NOLINT
-  ASSERT_THAT(elevated_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
-  ASSERT_THAT(elevated_->GetDegree(1).get(), original_->GetDegree(1).get());
+  ASSERT_THAT(elevated_->GetDegree(0).Get(), original_->GetDegree(0).Get() + 1);
+  ASSERT_THAT(elevated_->GetDegree(1).Get(), original_->GetDegree(1).Get());
 }
 
 TEST_F(Random2DNURBSForDegreeElevationForDimension0, HasNumberOfDifferentKnotsMoreKnots) {  // NOLINT
@@ -237,9 +237,9 @@ class Random3DBSplineForDegreeElevationForDimension0 : public Test {  // NOLINT
 };
 
 TEST_F(Random3DBSplineForDegreeElevationForDimension0, HasELevatedDegreeInDimension0) {  // NOLINT
-  ASSERT_THAT(elevated_->GetDegree(0).get(), original_->GetDegree(0).get() + 1);
-  ASSERT_THAT(elevated_->GetDegree(1).get(), original_->GetDegree(1).get());
-  ASSERT_THAT(elevated_->GetDegree(2).get(), original_->GetDegree(2).get());
+  ASSERT_THAT(elevated_->GetDegree(0).Get(), original_->GetDegree(0).Get() + 1);
+  ASSERT_THAT(elevated_->GetDegree(1).Get(), original_->GetDegree(1).Get());
+  ASSERT_THAT(elevated_->GetDegree(2).Get(), original_->GetDegree(2).Get());
 }
 
 TEST_F(Random3DBSplineForDegreeElevationForDimension0, HasNumberOfDifferentKnotsMoreKnots) {  // NOLINT
@@ -285,9 +285,9 @@ class Random3DNURBSForDegreeElevationForDimension1 : public Test {  // NOLINT
 };
 
 TEST_F(Random3DNURBSForDegreeElevationForDimension1, HasELevatedDegreeInDimension1) {  // NOLINT
-  ASSERT_THAT(elevated_->GetDegree(0).get(), original_->GetDegree(0).get());
-  ASSERT_THAT(elevated_->GetDegree(1).get(), original_->GetDegree(1).get() + 1);
-  ASSERT_THAT(elevated_->GetDegree(2).get(), original_->GetDegree(2).get());
+  ASSERT_THAT(elevated_->GetDegree(0).Get(), original_->GetDegree(0).Get());
+  ASSERT_THAT(elevated_->GetDegree(1).Get(), original_->GetDegree(1).Get() + 1);
+  ASSERT_THAT(elevated_->GetDegree(2).Get(), original_->GetDegree(2).Get());
 }
 
 TEST_F(Random3DNURBSForDegreeElevationForDimension1, HasNumberOfDifferentKnotsMoreKnots) {  // NOLINT

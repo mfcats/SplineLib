@@ -84,5 +84,5 @@ TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0
                                          {1, 2, 1})[0],
               DoubleNear(bspline_->EvaluateDerivative({ParametricCoordinate{0.5}, ParametricCoordinate{0.8},
                                                        ParametricCoordinate{0.1}}, {0}, {1, 2, 1})[0],
-                         util::NumericSettings<double>::kEpsilon()));
+                         util::numeric_settings::GetEpsilon<double>()));
 }

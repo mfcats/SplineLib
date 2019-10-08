@@ -109,21 +109,21 @@ TEST_F(NurbsEx4_1, Returns1_4For1AndDim0) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {0})[0],
-              DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(1.4, util::numeric_settings::GetEpsilon<double>()));
 }
 
 TEST_F(NurbsEx4_1, Returns1_2For1AndDim1) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {1})[0],
-              DoubleNear(1.2, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(1.2, util::numeric_settings::GetEpsilon<double>()));
 }
 
 TEST_F(NurbsEx4_1, Returns1For1AndWeight) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {2})[0],
-              DoubleNear(2.5, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(2.5, util::numeric_settings::GetEpsilon<double>()));
 }
 
 class MockParameterSpace1009 : public spl::ParameterSpace<1> {
@@ -278,33 +278,33 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForFirstKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.0}}, {0})[0],
-              DoubleNear(0.5, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(0.5, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.0}}, {1})[0],
-              DoubleNear(3.0, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(3.0, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.0}}, {2})[0],
-              DoubleNear(1.0, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(1.0, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.0}}, {3})[0],
-              DoubleNear(1.0, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(1.0, util::numeric_settings::GetEpsilon<double>()));
 }
 
 TEST_F(ANurbs, ReturnsCorrectCurvePointForInnerKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.25}}, {0})[0],
-              DoubleNear(2.8125, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(2.8125, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.25}}, {1})[0],
-              DoubleNear(5.5, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(5.5, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.25}}, {2})[0],
-              DoubleNear(2.29375, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(2.29375, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.25}}, {3})[0],
-              DoubleNear(0.8, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(0.8, util::numeric_settings::GetEpsilon<double>()));
 }
 
 TEST_F(ANurbs, ReturnsCorrectCurvePointForValueBetweenTwoKnots) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0 / 3.0}}, {0})[0],
-              DoubleNear(3.625, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(3.625, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0 / 3.0}}, {1})[0], DoubleNear(5.34848, 0.000005));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0 / 3.0}}, {2})[0], DoubleNear(1.23561, 0.000005));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0 / 3.0}}, {3})[0], DoubleNear(0.73333, 0.000005));
@@ -314,13 +314,13 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {0})[0],
-              DoubleNear(8.5, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(8.5, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {1})[0],
-              DoubleNear(4.5, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(4.5, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {2})[0],
-              DoubleNear(0.0, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(0.0, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {3})[0],
-              DoubleNear(2.0, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(2.0, util::numeric_settings::GetEpsilon<double>()));
 }
 
 TEST_F(ANurbs, ThrowsExceptionForEvaluationAt1_2) { // NOLINT
@@ -494,9 +494,9 @@ TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtValueBetwe
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {0}, {2})[0],
-              DoubleNear(-0.512, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(-0.512, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {1}, {2})[0],
-              DoubleNear(-2.816, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(-2.816, util::numeric_settings::GetEpsilon<double>()));
 }
 
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtLastKnot) { // NOLINT
@@ -517,9 +517,9 @@ TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtValueBetwee
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {0}, {3})[0],
-              DoubleNear(7.3728, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(7.3728, util::numeric_settings::GetEpsilon<double>()));
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {1}, {3})[0],
-              DoubleNear(2.1504, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(2.1504, util::numeric_settings::GetEpsilon<double>()));
 }
 
 TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtLastKnot) { // NOLINT
@@ -556,5 +556,5 @@ class ANURBSWithSplineGenerator : public Test {
 
 TEST_F(ANURBSWithSplineGenerator, Returns1_4For1AndDim0) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {0})[0],
-              DoubleNear(1.4, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(1.4, util::numeric_settings::GetEpsilon<double>()));
 }

@@ -230,17 +230,17 @@ TEST_F(AnIRITReader, Finds6Splines) {  // NOLINT
 
 TEST_F(AnIRITReader, ReturnsCorrectDegree) {  // NOLINT
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<1>>>(
-      irit_reader->ReadFile(path_to_irit_file)[0])->GetDegree(0).get(), b_spline_1d_->GetDegree(0).get());
+      irit_reader->ReadFile(path_to_irit_file)[0])->GetDegree(0).Get(), b_spline_1d_->GetDegree(0).Get());
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<1>>>(
-      irit_reader->ReadFile(path_to_irit_file)[1])->GetDegree(0).get(), nurbs_1d_->GetDegree(0).get());
+      irit_reader->ReadFile(path_to_irit_file)[1])->GetDegree(0).Get(), nurbs_1d_->GetDegree(0).Get());
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<2>>>(
-      irit_reader->ReadFile(path_to_irit_file)[2])->GetDegree(1).get(), b_spline_2d_->GetDegree(1).get());
+      irit_reader->ReadFile(path_to_irit_file)[2])->GetDegree(1).Get(), b_spline_2d_->GetDegree(1).Get());
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<2>>>(
-      irit_reader->ReadFile(path_to_irit_file)[3])->GetDegree(1).get(), nurbs_2d_->GetDegree(1).get());
+      irit_reader->ReadFile(path_to_irit_file)[3])->GetDegree(1).Get(), nurbs_2d_->GetDegree(1).Get());
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::BSpline<3>>>(
-      irit_reader->ReadFile(path_to_irit_file)[4])->GetDegree(2).get(), b_spline_3d_->GetDegree(2).get());
+      irit_reader->ReadFile(path_to_irit_file)[4])->GetDegree(2).Get(), b_spline_3d_->GetDegree(2).Get());
   ASSERT_THAT(std::any_cast<std::shared_ptr<spl::NURBS<3>>>(
-      irit_reader->ReadFile(path_to_irit_file)[5])->GetDegree(2).get(), nurbs_3d_->GetDegree(2).get());
+      irit_reader->ReadFile(path_to_irit_file)[5])->GetDegree(2).Get(), nurbs_3d_->GetDegree(2).Get());
 }
 
 TEST_F(AnIRITReader, ReturnsSameValuesAsGivenSplines) {  // NOLINT

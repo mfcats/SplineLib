@@ -29,9 +29,9 @@ class VTKWriterUtils {
       std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline_ptr) {
     std::array<double, 2 * PARAMETRIC_DIMENSIONALITY> knots{};
     for (int i = 0; i < 2 * PARAMETRIC_DIMENSIONALITY; ++i) {
-      knots[i] = i < PARAMETRIC_DIMENSIONALITY ? spline_ptr->GetKnotVector(i)->GetKnot(0).get()
+      knots[i] = i < PARAMETRIC_DIMENSIONALITY ? spline_ptr->GetKnotVector(i)->GetKnot(0).Get()
                                                : spline_ptr->GetKnotVector(
-              i - PARAMETRIC_DIMENSIONALITY)->GetLastKnot().get();
+              i - PARAMETRIC_DIMENSIONALITY)->GetLastKnot().Get();
     }
     return knots;
   }
@@ -63,7 +63,7 @@ class VTKWriterUtils {
       std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> coords{};
       for (int j = 0; j < PARAMETRIC_DIMENSIONALITY; ++j) {
         coords[j] = ParametricCoordinate(
-            knots[j] + point_handler[j] * (knots[j + PARAMETRIC_DIMENSIONALITY] - knots[j]) / scattering[j]);
+            knots[j] + point_handler[Dimension{j}] * (knots[j + PARAMETRIC_DIMENSIONALITY] - knots[j]) / scattering[j]);
       }
       for (int k = 0; k < 3; ++k) {
         file << (k < spline_ptr->GetPointDim() ? spline_ptr->Evaluate(coords, {k})[0] : 0) << (k < 2 ? " " : "\n");

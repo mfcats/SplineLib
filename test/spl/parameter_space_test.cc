@@ -70,7 +70,7 @@ TEST_F(A1DParameterSpace, ReturnsCorrectDegree) {  // NOLINT
 }
 
 TEST_F(A1DParameterSpace, Returns3_0ForFifthKnot) {  // NOLINT
-  ASSERT_THAT((*parameter_space.GetKnotVector(0))[5].get(), DoubleEq(3.0));
+  ASSERT_THAT((*parameter_space.GetKnotVector(0))[5].Get(), DoubleEq(3.0));
 }
 
 TEST_F(A1DParameterSpace, ReturnsCorrectBasisFunctionValuesForParametricCoordinate0_5) {  // NOLINT
@@ -154,11 +154,11 @@ TEST_F(A2DParameterSpace, ReturnsDegree1ForSecondDimension) {  // NOLINT
 }
 
 TEST_F(A2DParameterSpace, Returns1_0ForFourthKnotOfFirstKnotVector) {  // NOLINT
-  ASSERT_THAT((*parameter_space.GetKnotVector(0))[3].get(), DoubleEq(1.0));
+  ASSERT_THAT((*parameter_space.GetKnotVector(0))[3].Get(), DoubleEq(1.0));
 }
 
 TEST_F(A2DParameterSpace, Returns2_0ForFourthKnotOfSecondKnotVector) {  // NOLINT
-  ASSERT_THAT((*parameter_space.GetKnotVector(1))[3].get(), DoubleEq(2.0));
+  ASSERT_THAT((*parameter_space.GetKnotVector(1))[3].Get(), DoubleEq(2.0));
 }
 
 TEST_F(A2DParameterSpace, ReturnsCorrectBasisFunctionValue) {  // NOLINT
@@ -216,15 +216,15 @@ TEST_F(A3DParameterSpace, ReturnsDegree1ForThirdDimension) {  // NOLINT
 }
 
 TEST_F(A3DParameterSpace, Returns1_0ForFourthKnotOfFirstKnotVector) {  // NOLINT
-  ASSERT_THAT((*parameter_space.GetKnotVector(0))[3].get(), DoubleEq(1.0));
+  ASSERT_THAT((*parameter_space.GetKnotVector(0))[3].Get(), DoubleEq(1.0));
 }
 
 TEST_F(A3DParameterSpace, Returns0_3ForSecondKnotOfSecondKnotVector) {  // NOLINT
-  ASSERT_THAT((*parameter_space.GetKnotVector(1))[1].get(), DoubleEq(0.3));
+  ASSERT_THAT((*parameter_space.GetKnotVector(1))[1].Get(), DoubleEq(0.3));
 }
 
 TEST_F(A3DParameterSpace, Returns2_0ForFourthKnotOfThirdKnotVector) {  // NOLINT
-  ASSERT_THAT((*parameter_space.GetKnotVector(2))[3].get(), DoubleEq(2.0));
+  ASSERT_THAT((*parameter_space.GetKnotVector(2))[3].Get(), DoubleEq(2.0));
 }
 
 TEST_F(A3DParameterSpace, Returns3_0ForKnotVectorRangeThirdDimension) { // NOLINT

@@ -33,7 +33,7 @@ class BSplineGenerator : public SplineGenerator<PARAMETRIC_DIMENSIONALITY> {
       : SplineGenerator<PARAMETRIC_DIMENSIONALITY>(knot_vector, degree) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].get() - 1;
+      number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].Get() - 1;
     }
     physical_space_ = std::make_shared<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(control_points, number_of_points);
   }

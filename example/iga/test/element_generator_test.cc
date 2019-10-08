@@ -51,7 +51,7 @@ TEST_F(A1DElementGenerator, ReturnsCorrectNumberOfElements) { // NOLINT
 TEST_F(A1DElementGenerator, ReturnsElementsWithCorrectNodes) { // NOLINT
   auto element_list = element_generator.GetElementList(0);
   for (auto element = 0u; element < element_list.size(); element++) {
-    ASSERT_THAT(element_list[element].GetLowerBound().get(), element);
-    ASSERT_THAT(element_list[element].GetUpperBound().get(), element + 1);
+    ASSERT_THAT(element_list[element].GetLowerBound().Get(), element);
+    ASSERT_THAT(element_list[element].GetUpperBound().Get(), element + 1);
   }
 }

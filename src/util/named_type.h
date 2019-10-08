@@ -1,4 +1,4 @@
-/* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+/* Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
 
@@ -9,59 +9,73 @@ SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
-<http://www.gnu.org/licenses/>.
-*/
+<http://www.gnu.org/licenses/>.*/
 
 #ifndef SRC_UTIL_NAMED_TYPE_H_
 #define SRC_UTIL_NAMED_TYPE_H_
 
+#include <utility>
+
+#include "numeric_settings.h"
+
 namespace splinelib::src::util {
-template<typename T, typename Parameter>
+template<typename TYPE, typename NAME>
+class NamedType;
+
+template<typename TYPE, typename NAME>
+constexpr bool operator==(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
+template<typename TYPE, typename NAME>
+constexpr bool operator>(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
+template<typename TYPE, typename NAME>
+constexpr bool operator<(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
+template<typename TYPE, typename NAME>
+constexpr bool operator>=(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
+template<typename TYPE, typename NAME>
+constexpr bool operator<=(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
+template<typename TYPE, typename NAME>
+constexpr NamedType<TYPE, NAME> operator+(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
+template<typename TYPE, typename NAME>
+constexpr NamedType<TYPE, NAME> operator-(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
+
+// NamedType<TYPE, NAME>s are used to check for semantic of arguments (variables) at compile time. Actual definitions of
+// named types are placed at the end of this file.
+// Example (parametric coordinate equal to 0.5):
+//   using ParametricCoordinate = splinelib::src::util::NamedType<double, struct ParametricCoordinateName>;
+//   ParametricCoordinate parametric_coordinate{0.5};
+//   curve.evaluate(parametric_coordinate.Get());  // evaluates 1D spline at 0.5;
+template<typename TYPE, typename NAME>
 class NamedType {
  public:
   NamedType() = default;
+  explicit constexpr NamedType(TYPE const &value);
+  explicit constexpr NamedType(TYPE &&value) noexcept;
+  constexpr NamedType(NamedType const &other) = default;
+  constexpr NamedType(NamedType &&other) noexcept;
+  constexpr NamedType & operator=(NamedType const &rhs) = default;
+  constexpr NamedType & operator=(NamedType &&rhs) noexcept;
+  ~NamedType() = default;
 
-  explicit NamedType(T const &value) : value_(value) {}
-  explicit NamedType(T &&value) noexcept : value_(std::move(value)) {}
+  constexpr NamedType & operator++();
+  constexpr NamedType operator++(int);
+  constexpr NamedType & operator--();
+  constexpr NamedType operator--(int);
+  
+  friend constexpr bool operator== <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
+  friend constexpr bool operator> <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
+  friend constexpr bool operator< <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
+  friend constexpr bool operator>= <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
+  friend constexpr bool operator<= <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
+  friend constexpr NamedType operator+ <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
+  friend constexpr NamedType operator- <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
 
-  constexpr T &get() { return value_; }
-  constexpr T const &get() const { return value_; }
-
-  constexpr NamedType<T, Parameter> operator+(const NamedType<T, Parameter> &rhs) const {
-    return NamedType<T, Parameter>{value_ + rhs.get()};
-  }
-
-  constexpr NamedType<T, Parameter> operator-(const NamedType<T, Parameter> &rhs) const {
-    return NamedType<T, Parameter>{value_ - rhs.get()};
-  }
-
-  constexpr NamedType<T, Parameter> operator*(const NamedType<T, Parameter> &rhs) const {
-    return NamedType<T, Parameter>{value_ * rhs.get()};
-  }
-
-  constexpr bool operator==(const NamedType<T, Parameter> &rhs) const {
-    return value_ == rhs.get();
-  }
-
-  constexpr bool operator>(const NamedType<T, Parameter> &rhs) const {
-    return value_ > rhs.get();
-  }
-
-  constexpr bool operator<(const NamedType<T, Parameter> &rhs) const {
-    return value_ < rhs.get();
-  }
-
-  constexpr bool operator>=(const NamedType<T, Parameter> &rhs) const {
-    return value_ >= rhs.get();
-  }
-
-  constexpr bool operator<=(const NamedType<T, Parameter> &rhs) const {
-    return value_ <= rhs.get();
-  }
+  TYPE & Get();
+  constexpr TYPE const & Get() const;
 
  private:
-  T value_;
+  TYPE value_;
 };
+
+#include "named_type.inc"
 }  // namespace splinelib::src::util
 
 namespace splinelib::src {

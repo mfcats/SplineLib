@@ -39,7 +39,7 @@ class ConnectivityHandler {
     mult_ind_handl_elm = mult_ind_handl_elm + elm_num;
     std::array<int, PARAMETRIC_DIMENSIONALITY> num_non_zero_baf{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      num_non_zero_baf[i] = spline_->GetDegree(i).get() + 1;
+      num_non_zero_baf[i] = spline_->GetDegree(i).Get() + 1;
     }
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mult_ind_handl_baf(num_non_zero_baf);
     mult_ind_handl_baf = mult_ind_handl_baf + local_index;
@@ -53,7 +53,7 @@ class ConnectivityHandler {
 
   int Get1DGlobalIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> global_indices) {
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mult_ind_handl_cp(spline_->GetPointsPerDirection());
-    mult_ind_handl_cp.SetIndices(global_indices);
+    mult_ind_handl_cp.SetCurrentIndex(global_indices);
     return mult_ind_handl_cp.Get1DIndex() + 1;
   }
 

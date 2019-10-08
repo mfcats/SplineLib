@@ -21,11 +21,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace splinelib::src::baf {
 BasisFunction *BasisFunctionFactory::CreateDynamic(const KnotVector &knot_vector,
-                                                             const KnotSpan &start_of_support,
-                                                             const Degree &degree) {
+                                                   const KnotSpan &start_of_support,
+                                                   const Degree &degree) {
   if (degree < Degree{0}) {
     std::string msg;
-    msg = "Basis function degree must be positive. Given degree is " + std::to_string(degree.get());
+    msg = "Basis function degree must be positive. Given degree is " + std::to_string(degree.Get());
     throw std::runtime_error(msg);
   }
   if (degree == Degree{0}) {

@@ -51,14 +51,12 @@ class Spline {
   virtual std::vector<double> Evaluate(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord,
                                        const std::vector<int> &dimensions) const {
     this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
-
     auto first_non_zero = GetArrayOfFirstNonZeroBasisFunctions(param_coord);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> basisFunctionHandler(
         this->GetNumberOfBasisFunctionsToEvaluate());
     std::vector<double> evaluated_point(dimensions.size(), 0);
-
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
-      auto indices = basisFunctionHandler.GetIndices();
+      auto indices = basisFunctionHandler.GetCurrentIndex();
       std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
       for (uint64_t j = 0; j < dimensions.size(); ++j) {
         evaluated_point[j] += GetEvaluatedControlPoint(param_coord, indices, dimensions[j]);
@@ -78,7 +76,7 @@ class Spline {
     std::vector<double> evaluated_point(dimensions.size(), 0);
 
     for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
-      auto indices = basisFunctionHandler.GetIndices();
+      auto indices = basisFunctionHandler.GetCurrentIndex();
       std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
       for (uint64_t j = 0; j < dimensions.size(); ++j) {
         evaluated_point[j] += GetEvaluatedDerivativeControlPoint(param_coord, derivative, indices, dimensions[j]);
@@ -98,7 +96,7 @@ class Spline {
   }
 
   bool AreGeometricallyEqual(const spl::Spline<PARAMETRIC_DIMENSIONALITY> &rhs,
-                             double tolerance = util::NumericSettings<double>::kEpsilon()) const {
+                             double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
     double number = ceil(pow(100, 1.0 / PARAMETRIC_DIMENSIONALITY));
     std::array<int, PARAMETRIC_DIMENSIONALITY> points = std::array<int, PARAMETRIC_DIMENSIONALITY>();
     std::vector<int> dimensions;
@@ -112,8 +110,8 @@ class Spline {
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
       std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord;
       for (int dim = 0; dim < PARAMETRIC_DIMENSIONALITY; ++dim) {
-        double span = GetKnotVector(dim)->GetLastKnot().get() - GetKnotVector(dim)->GetKnot(0).get();
-        param_coord[dim] = ParametricCoordinate(span / number * point_handler[dim]);
+        double span = GetKnotVector(dim)->GetLastKnot().Get() - GetKnotVector(dim)->GetKnot(0).Get();
+        param_coord[dim] = ParametricCoordinate(span / number * point_handler[Dimension{dim}]);
       }
       std::vector<double> evaluate_this = Evaluate(param_coord, dimensions);
       std::vector<double> evaluate_rhs = rhs.Evaluate(param_coord, dimensions);
@@ -169,13 +167,13 @@ class Spline {
     Degree degree = GetDegree(dimension);
     for (size_t i = 1; i <= multiplicity; ++i) {
       if (GetKnotVector(dimension)->IsLastKnot(knot)) knot_span = knot_span + KnotSpan{1};
-      auto last = knot_span.get() - GetKnotVector(dimension)->GetMultiplicity(knot);
-      auto first = knot_span.get() - degree.get() + i;
+      auto last = knot_span.Get() - GetKnotVector(dimension)->GetMultiplicity(knot);
+      auto first = knot_span.Get() - degree.Get() + i;
       std::vector<double> scaling;
       for (auto j = static_cast<size_t>(first); j <= last; ++j) {
         ParametricCoordinate low_knot = GetKnotVector(dimension)->GetKnot(j);
-        ParametricCoordinate upper_knot = GetKnotVector(dimension)->GetKnot(j + degree.get() - i + 1);
-        scaling.emplace_back((knot.get() - low_knot.get()) / (upper_knot.get() - low_knot.get()));
+        ParametricCoordinate upper_knot = GetKnotVector(dimension)->GetKnot(j + degree.Get() - i + 1);
+        scaling.emplace_back((knot.Get() - low_knot.Get()) / (upper_knot.Get() - low_knot.Get()));
       }
       this->AdjustControlPoints(scaling, static_cast<int>(first), static_cast<int>(last), dimension);
     }
@@ -195,13 +193,13 @@ class Spline {
     for (; count < multiplicity; ++count) {
       KnotSpan knot_span = GetKnotVector(dimension)->GetKnotSpan(knot);
       Degree degree = GetDegree(dimension);
-      auto last = knot_span.get() - GetKnotVector(dimension)->GetMultiplicity(knot);
-      auto first = knot_span.get() - degree.get();
+      auto last = knot_span.Get() - GetKnotVector(dimension)->GetMultiplicity(knot);
+      auto first = knot_span.Get() - degree.Get();
       std::vector<double> scaling;
       for (auto i = static_cast<size_t>(first); i <= last; ++i) {
         ParametricCoordinate low_knot = GetKnotVector(dimension)->GetKnot(i);
-        ParametricCoordinate upper_knot = GetKnotVector(dimension)->GetKnot(i + degree.get() + 1);
-        scaling.emplace_back((knot.get() - low_knot.get()) / (upper_knot.get() - low_knot.get()));
+        ParametricCoordinate upper_knot = GetKnotVector(dimension)->GetKnot(i + degree.Get() + 1);
+        scaling.emplace_back((knot.Get() - low_knot.Get()) / (upper_knot.Get() - low_knot.Get()));
       }
       bool is_removed = this->RemoveControlPoints(scaling, first, static_cast<int>(last), dimension, tolerance);
       if (!is_removed) break;
@@ -230,7 +228,7 @@ class Spline {
     RemoveBezierKnots(diff, dimension);
   }
 
-  bool ReduceDegreeForDimension(int dimension, double tolerance = util::NumericSettings<double>::kEpsilon()) {
+  bool ReduceDegreeForDimension(int dimension, double tolerance = util::numeric_settings::GetEpsilon<double>()) {
     std::vector<int> diff = ProduceBezierSegments(dimension);
     uint64_t num_bezier_segments = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1;
     std::vector<std::vector<baf::ControlPoint>> bezier_segments;
@@ -285,22 +283,22 @@ class Spline {
   std::array<int, PARAMETRIC_DIMENSIONALITY> GetNumberOfBasisFunctionsToEvaluate() const {
     std::array<int, PARAMETRIC_DIMENSIONALITY> total_length;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      total_length[i] = parameter_space_->GetDegree(i).get() + 1;
+      total_length[i] = parameter_space_->GetDegree(i).Get() + 1;
     }
     return total_length;
   }
 
   std::vector<double> ComputeBezierDegreeElevationCoefficients(int dimension) const {
     std::vector<double> alpha;
-    for (int current_bezier_point = 0; current_bezier_point < GetDegree(dimension).get() + 2; ++current_bezier_point) {
-      alpha.emplace_back(current_bezier_point / (GetDegree(dimension).get() + 1.0));
+    for (int current_bezier_point = 0; current_bezier_point < GetDegree(dimension).Get() + 2; ++current_bezier_point) {
+      alpha.emplace_back(current_bezier_point / (GetDegree(dimension).Get() + 1.0));
     }
     return alpha;
   }
 
   std::vector<int> ProduceBezierSegments(int dimension) {
-    uint64_t current_knot = GetDegree(dimension).get() + 1;
-    std::vector<int> diff(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2, GetDegree(dimension).get() - 1);
+    uint64_t current_knot = GetDegree(dimension).Get() + 1;
+    std::vector<int> diff(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2, GetDegree(dimension).Get() - 1);
     for (int current_knot_span = 0; current_knot_span < GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2;
          ++current_knot_span, ++current_knot) {
       while (GetKnotVector(dimension)->GetKnot(current_knot) == GetKnotVector(dimension)->GetKnot(current_knot + 1)) {
@@ -315,11 +313,11 @@ class Spline {
   }
 
   void RemoveBezierKnots(std::vector<int> diff, int dimension) {
-    auto current_knot = GetDegree(dimension).get() + 1;
+    auto current_knot = GetDegree(dimension).Get() + 1;
     for (int current_knot_span = 0; current_knot_span < GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2;
          ++current_knot_span, ++current_knot) {
       RemoveKnot(GetKnotVector(dimension)->GetKnot(current_knot), dimension,
-                 util::NumericSettings<double>::kEpsilon(), static_cast<size_t>(diff[current_knot_span]));
+                 util::numeric_settings::GetEpsilon<double>(), static_cast<size_t>(diff[current_knot_span]));
       while (GetKnotVector(dimension)->GetKnot(current_knot) == GetKnotVector(dimension)->GetKnot(current_knot + 1)) {
         ++current_knot;
       }
@@ -328,17 +326,17 @@ class Spline {
 
   std::vector<baf::ControlPoint> GetBezierSegment(int dimension, int segment) const {
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointsPerDirection());
-    int width = GetDegree(dimension).get() + 1;
+    int width = GetDegree(dimension).Get() + 1;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     std::vector<baf::ControlPoint> bezier_cps(static_cast<size_t>(width * segment_length),
                                               baf::ControlPoint(GetPointDim() + 1));
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      auto index_in_dir = point_handler[dimension];
+      auto index_in_dir = point_handler[Dimension{dimension}];
       if (index_in_dir >= segment * width - segment && index_in_dir < (segment + 1) * width - segment) {
-        auto index = ((index_in_dir + segment) % width + point_handler.ExtractDimension(dimension) * width);
-        double weight = GetWeight(point_handler.GetIndices());
+        auto index = ((index_in_dir + segment) % width + point_handler.CollapseDimension(Dimension{dimension}) * width);
+        double weight = GetWeight(point_handler.GetCurrentIndex());
         for (int j = 0; j < GetPointDim(); ++j) {
-          bezier_cps[index].SetValue(j, GetControlPoint(point_handler.GetIndices()).GetValue(j) * weight);
+          bezier_cps[index].SetValue(j, GetControlPoint(point_handler.GetCurrentIndex()).GetValue(j) * weight);
         }
         bezier_cps[index].SetValue(GetPointDim(), weight);
       }
@@ -348,7 +346,7 @@ class Spline {
 
   std::vector<baf::ControlPoint> DegreeElevateBezierSegment(const std::vector<baf::ControlPoint> &bezier_cps,
                                                             std::vector<double> alpha, int dimension) const {
-    int width = GetDegree(dimension).get() + 2;
+    int width = GetDegree(dimension).Get() + 2;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     util::MultiIndexHandler<2> cp_handler_new({width, segment_length});
     util::MultiIndexHandler<2> cp_handler_old({width - 1, segment_length});
@@ -356,7 +354,7 @@ class Spline {
     for (int i = 0; i < segment_length; ++i) {
       new_cps[cp_handler_new.Get1DIndex({0, i})] = bezier_cps[cp_handler_old.Get1DIndex({0, i})];
       new_cps[cp_handler_new.Get1DIndex({width - 1, i})] = bezier_cps[cp_handler_old.Get1DIndex({width - 2, i})];
-      for (int j = 1; j < GetDegree(dimension).get(); ++j) {
+      for (int j = 1; j < GetDegree(dimension).Get(); ++j) {
         new_cps[cp_handler_new.Get1DIndex({j, i})] = bezier_cps[cp_handler_old.Get1DIndex({j, i})] * (1 - alpha[j]) +
             bezier_cps[cp_handler_old.Get1DIndex({j - 1, i})] * alpha[j];
       }
@@ -367,10 +365,10 @@ class Spline {
   std::vector<baf::ControlPoint> DegreeReduceBezierSegment(const std::vector<baf::ControlPoint> &bezier_cps,
                                                            double tolerance, int dimension, bool* successful) {
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
-    util::MultiIndexHandler<2> cp_handler_old({GetDegree(dimension).get() + 1, segment_length});
-    util::MultiIndexHandler<2> cp_handler_new({GetDegree(dimension).get(), segment_length});
+    util::MultiIndexHandler<2> cp_handler_old({GetDegree(dimension).Get() + 1, segment_length});
+    util::MultiIndexHandler<2> cp_handler_new({GetDegree(dimension).Get(), segment_length});
     double max_error_bound = 0.0;
-    int new_degree = GetDegree(dimension).get() - 1;
+    int new_degree = GetDegree(dimension).Get() - 1;
     std::vector<baf::ControlPoint> new_cps(cp_handler_new.Get1DLength(), baf::ControlPoint(GetPointDim() + 1));
     int r = new_degree / 2;
     double alpha_r = static_cast<double>(r) / static_cast<double>((new_degree + 1));
@@ -414,21 +412,21 @@ class Spline {
   void SetNewBezierSegmentControlPoints(const std::vector<std::vector<baf::ControlPoint>> &bezier_segments,
                                         int dimension) {
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointsPerDirection());
-    int width = GetDegree(dimension).get() + 1;
+    int width = GetDegree(dimension).Get() + 1;
     for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
-      int index_in_dir = point_handler[dimension];
+      int index_in_dir = point_handler[Dimension{dimension}];
       int segment = index_in_dir / (width - 1);
-      int index = index_in_dir % (width - 1) + point_handler.ExtractDimension(dimension) * width;
+      int index = index_in_dir % (width - 1) + point_handler.CollapseDimension(Dimension{dimension}) * width;
       if (static_cast<size_t>(segment) > bezier_segments.size() - 1) {
         --segment;
-        index = (width - 1) + point_handler.ExtractDimension(dimension) * width;
+        index = (width - 1) + point_handler.CollapseDimension(Dimension{dimension}) * width;
       }
       baf::ControlPoint cp(GetPointDim());
       double weight = bezier_segments[segment][index].GetValue(GetPointDim());
       for (int j = 0; j < GetPointDim(); ++j) {
         cp.SetValue(j, bezier_segments[segment][index].GetValue(j) / weight);
       }
-      this->SetNewControlPoint(cp, weight, point_handler.GetIndices());
+      this->SetNewControlPoint(cp, weight, point_handler.GetCurrentIndex());
     }
   }
 

@@ -33,13 +33,13 @@ class MultiHandler1D : public Test {
 };
 
 TEST_F(MultiHandler1D, Returns1DIndex0AfterConstruction) { // NOLINT
-  ASSERT_THAT(multiIndexHandler1D->Get1DIndex(), Eq(0));
+  ASSERT_THAT(multiIndexHandler1D->GetCurrent1DIndex(), Eq(0));
 }
 
 TEST_F(MultiHandler1D, Returns1DIndex5AfterSettingCurrentIndexTo5) { // NOLINT
   std::array<int, 1> currentIndex = {5};
-  multiIndexHandler1D->SetIndices(currentIndex);
-  ASSERT_THAT(multiIndexHandler1D->Get1DIndex(), Eq(5));
+  multiIndexHandler1D->SetCurrentIndex(currentIndex);
+  ASSERT_THAT(multiIndexHandler1D->GetCurrent1DIndex(), Eq(5));
 }
 
 class MultiHandler2D : public Test {
@@ -54,19 +54,19 @@ class MultiHandler2D : public Test {
 };
 
 TEST_F(MultiHandler2D, Returns1DIndex0AfterConstruction) { // NOLINT
-  ASSERT_THAT(multiIndexHandler2D->Get1DIndex(), Eq(0));
+  ASSERT_THAT(multiIndexHandler2D->GetCurrent1DIndex(), Eq(0));
 }
 
 TEST_F(MultiHandler2D, Returns1DIndex23AfterSettingCurrentIndexTo3And2) { // NOLINT
   std::array<int, 2> currentIndex = {3, 2};
-  multiIndexHandler2D->SetIndices(currentIndex);
-  ASSERT_THAT(multiIndexHandler2D->Get1DIndex(), Eq(23));
+  multiIndexHandler2D->SetCurrentIndex(currentIndex);
+  ASSERT_THAT(multiIndexHandler2D->GetCurrent1DIndex(), Eq(23));
 }
 
 TEST_F(MultiHandler2D, Returns2DIndex3And2AfterSettingCurrent1DIndexTo23) { // NOLINT
-  multiIndexHandler2D->Set1DIndex(23);
-  ASSERT_THAT(multiIndexHandler2D->GetIndices()[0], Eq(3));
-  ASSERT_THAT(multiIndexHandler2D->GetIndices()[1], Eq(2));
+  multiIndexHandler2D->SetCurrentIndex(23);
+  ASSERT_THAT(multiIndexHandler2D->GetCurrentIndex()[0], Eq(3));
+  ASSERT_THAT(multiIndexHandler2D->GetCurrentIndex()[1], Eq(2));
 }
 
 class MultiHandler3D : public Test {
@@ -80,29 +80,29 @@ class MultiHandler3D : public Test {
 };
 
 TEST_F(MultiHandler3D, Returns1DIndex0AfterConstruction) { // NOLINT
-  ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(0));
+  ASSERT_THAT(multiIndexHandler3D->GetCurrent1DIndex(), Eq(0));
 }
 
 TEST_F(MultiHandler3D, Returns1DIndex30AfterSettingCurrentIndexTo2And1And2) { // NOLINT
   std::array<int, 3> currentIndex = {2, 1, 2};
-  multiIndexHandler3D->SetIndices(currentIndex);
-  ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(30));
+  multiIndexHandler3D->SetCurrentIndex(currentIndex);
+  ASSERT_THAT(multiIndexHandler3D->GetCurrent1DIndex(), Eq(30));
 }
 
 TEST_F(MultiHandler3D, ReturnsIndex3And1And0AfterAdding1DIndex7) { // NOLINT
   *multiIndexHandler3D + 7;
-  ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(7));
-  ASSERT_THAT(multiIndexHandler3D->GetIndices()[0], Eq(3));
-  ASSERT_THAT(multiIndexHandler3D->GetIndices()[1], Eq(1));
-  ASSERT_THAT(multiIndexHandler3D->GetIndices()[2], Eq(0));
+  ASSERT_THAT(multiIndexHandler3D->GetCurrent1DIndex(), Eq(7));
+  ASSERT_THAT(multiIndexHandler3D->GetCurrentIndex()[0], Eq(3));
+  ASSERT_THAT(multiIndexHandler3D->GetCurrentIndex()[1], Eq(1));
+  ASSERT_THAT(multiIndexHandler3D->GetCurrentIndex()[2], Eq(0));
 }
 
 TEST_F(MultiHandler3D, ReturnsDifferenceIndex0And1And4AfterAdding1DIndex7) { // NOLINT
   *multiIndexHandler3D + 7;
-  ASSERT_THAT(multiIndexHandler3D->Get1DIndex(), Eq(7));
-  ASSERT_THAT(multiIndexHandler3D->GetDifferenceIndices()[0], Eq(0));
-  ASSERT_THAT(multiIndexHandler3D->GetDifferenceIndices()[1], Eq(1));
-  ASSERT_THAT(multiIndexHandler3D->GetDifferenceIndices()[2], Eq(4));
+  ASSERT_THAT(multiIndexHandler3D->GetCurrent1DIndex(), Eq(7));
+  ASSERT_THAT(multiIndexHandler3D->GetComplementaryIndex()[0], Eq(0));
+  ASSERT_THAT(multiIndexHandler3D->GetComplementaryIndex()[1], Eq(1));
+  ASSERT_THAT(multiIndexHandler3D->GetComplementaryIndex()[2], Eq(4));
 }
 
 TEST_F(MultiHandler3D, ReturnsCorrectLengthOf60) { // NOLINT
@@ -111,6 +111,6 @@ TEST_F(MultiHandler3D, ReturnsCorrectLengthOf60) { // NOLINT
 
 TEST_F(MultiHandler3D, ReturnsCorrectLengthAfterExtractingDimension1) { // NOLINT
   std::array<int, 3> indices = {2, 1, 3};
-  multiIndexHandler3D->SetIndices(indices);
-  ASSERT_THAT(multiIndexHandler3D->ExtractDimension(1), Eq(14));
+  multiIndexHandler3D->SetCurrentIndex(indices);
+  ASSERT_THAT(multiIndexHandler3D->CollapseDimension(Dimension{1}), Eq(14));
 }

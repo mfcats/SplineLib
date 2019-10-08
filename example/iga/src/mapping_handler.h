@@ -42,8 +42,8 @@ class MappingHandler {
     std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coords{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       iga::elm::Element elm = elm_gen.GetElementList(i)[elm_gen.GetElementIndices(element_number)[i]];
-      param_coords[i] = ParametricCoordinate{((elm.GetUpperBound() - elm.GetLowerBound()).get() * itg_pnts[i] +
-          (elm.GetUpperBound() + elm.GetLowerBound()).get()) / 2.0};
+      param_coords[i] = ParametricCoordinate{((elm.GetUpperBound() - elm.GetLowerBound()).Get() * itg_pnts[i] +
+          (elm.GetUpperBound() + elm.GetLowerBound()).Get()) / 2.0};
     }
     return param_coords;
   }
@@ -71,10 +71,10 @@ class MappingHandler {
     arma::dmat dxi_dxitilde(static_cast<uint64_t>(PARAMETRIC_DIMENSIONALITY), static_cast<uint64_t>(PARAMETRIC_DIMENSIONALITY), arma::fill::zeros);
     std::array<size_t, PARAMETRIC_DIMENSIONALITY> knot_span{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      knot_span[i] = static_cast<size_t>(spline_->GetKnotVector(i)->GetKnotSpan(param_coord[i]).get());
+      knot_span[i] = static_cast<size_t>(spline_->GetKnotVector(i)->GetKnotSpan(param_coord[i]).Get());
       dxi_dxitilde(static_cast<uint64_t>(i), static_cast<uint64_t>(i)) =
-          (spline_->GetKnotVector(i)->GetKnot(knot_span[i] + 1).get() -
-              spline_->GetKnotVector(i)->GetKnot(knot_span[i]).get()) / 2;
+          (spline_->GetKnotVector(i)->GetKnot(knot_span[i] + 1).Get() -
+              spline_->GetKnotVector(i)->GetKnot(knot_span[i]).Get()) / 2;
     }
     return dxi_dxitilde;
   }

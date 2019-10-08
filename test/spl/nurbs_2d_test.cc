@@ -67,14 +67,14 @@ TEST_F(A2DNurbs, Returns2_5For0_5And1_0AndDim0) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->Evaluate({ParametricCoordinate{0.5}, ParametricCoordinate{1.0}}, {0})[0],
-              DoubleNear(2.5, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(2.5, util::numeric_settings::GetEpsilon<double>()));
 }
 
 TEST_F(A2DNurbs, Returns3_0For0_5And1_0AndDim1) { // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->Evaluate({ParametricCoordinate{0.5}, ParametricCoordinate{1.0}}, {1})[0],
-              DoubleNear(3.0, util::NumericSettings<double>::kEpsilon()));
+              DoubleNear(3.0, util::numeric_settings::GetEpsilon<double>()));
 }
 
 TEST_F(A2DNurbs, Returns4_2For0_9And1_0AndDim0) { // NOLINT
