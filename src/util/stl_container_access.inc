@@ -12,7 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.*/
 
 template<typename CONTAINER_TYPE>
-constexpr typename CONTAINER_TYPE::value_type & GetValue(CONTAINER_TYPE &container, typename CONTAINER_TYPE::size_type index) {
+constexpr typename CONTAINER_TYPE::value_type & GetValue(CONTAINER_TYPE &container,
+                                                         typename CONTAINER_TYPE::size_type index) {
 #ifdef DEBUG
   return container.at(index);
 #else

@@ -212,7 +212,8 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
                               double alpha, int x, int off, int last, int dimension, int shift) const {
     int index = point_handler.CollapseDimension(Dimension{dimension}) * (last - off + 2);
     for (int k = 0; k < this->GetPointDim(); ++k) {
-      (*temp_ptr)[(index + x - off) * this->GetPointDim() + k] = (this->GetControlPoint(point_handler.GetCurrentIndex(), k)
+      (*temp_ptr)[(index + x - off) * this->GetPointDim() + k] =
+          (this->GetControlPoint(point_handler.GetCurrentIndex(), k)
           - (1 - alpha) * (*temp_ptr)[(index + x - off + shift) * this->GetPointDim() + k]) / alpha;
     }
   }

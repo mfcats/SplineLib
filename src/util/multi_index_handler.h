@@ -61,13 +61,12 @@ class MultiIndexHandler {
   void SetCurrentIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index);
   void SetCurrentIndex(int index_1d);
 
-  // TODO: Previously named "GetNumberIndices".
   int Get1DLength() const;
   std::array<int, PARAMETRIC_DIMENSIONALITY> GetComplementaryIndex() const;
-  
+
   int CollapseDimension(Dimension const &dimension) const;
+
  private:
-  // TODO: Meaning of function name?
   static int GetCurrentSliceSize(std::array<int, PARAMETRIC_DIMENSIONALITY> const &length,
                                  Dimension const &maximum_dimension);
 

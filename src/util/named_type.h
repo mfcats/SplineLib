@@ -59,7 +59,7 @@ class NamedType {
   constexpr NamedType operator++(int);
   constexpr NamedType & operator--();
   constexpr NamedType operator--(int);
-  
+
   friend constexpr bool operator== <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
   friend constexpr bool operator> <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
   friend constexpr bool operator< <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
