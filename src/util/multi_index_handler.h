@@ -17,8 +17,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <utility>
 
-#include "named_type.h"
-#include "stl_container_access.h"
+#include "src/util/named_type.h"
+#include "src/util/stl_container_access.h"
 
 namespace splinelib::src::util {
 // MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>s map a PARAMETRIC_DIMENSIONALITY-dimensional tensor-product array to an

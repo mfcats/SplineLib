@@ -17,9 +17,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <vector>
 
-#include "element.h"
-#include "multi_index_handler.h"
 #include "spline.h"
+#include "src/util/element.h"
+#include "src/util/multi_index_handler.h"
 
 namespace splinelib::src::util {
 template<int PARAMETRIC_DIMENSIONALITY>

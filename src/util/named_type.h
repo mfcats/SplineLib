@@ -16,7 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <utility>
 
-#include "numeric_settings.h"
+#include "src/util/numeric_settings.h"
 
 namespace splinelib::src::util {
 template<typename TYPE, typename NAME>
@@ -75,7 +75,7 @@ class NamedType {
   TYPE value_;
 };
 
-#include "named_type.inc"
+#include "src/util/named_type.inc"
 }  // namespace splinelib::src::util
 
 namespace splinelib::src {

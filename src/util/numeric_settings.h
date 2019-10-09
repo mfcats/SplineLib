@@ -26,7 +26,7 @@ constexpr bool AreEqual(TYPE const &a, TYPE const &b, const TYPE &tolerance = Ge
 
 static constexpr double kEpsilonFactor_ = 1e1;
 
-#include "numeric_settings.inc"
+#include "src/util/numeric_settings.inc"
 }  // namespace splinelib::src::util::numeric_settings
 
 #endif  // SRC_UTIL_NUMERIC_SETTINGS_H_

@@ -14,7 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_UTIL_STL_CONTAINER_ACCESS_H_
 #define SRC_UTIL_STL_CONTAINER_ACCESS_H_
 
-#include "named_type.h"
+#include "src/util/named_type.h"
 
 namespace splinelib::src::util::stl_container_access {
 template<typename CONTAINER_TYPE>
@@ -29,7 +29,7 @@ template<typename CONTAINER_TYPE, typename NAME>
 constexpr typename CONTAINER_TYPE::value_type const & GetValue(CONTAINER_TYPE const &container,
                                                                NamedType<int, NAME> index);
 
-#include "stl_container_access.inc"
+#include "src/util/stl_container_access.inc"
 }  // namespace splinelib::src::util::stl_container_access
 
 namespace splinelib::src {
