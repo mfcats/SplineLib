@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "irit_reader_utils.h"
 #include "nurbs.h"
-#include "string_operations.h"
+#include "src/util/string_operations.h"
 
 namespace splinelib::src::io {
 std::vector<std::any> IRITReader::ReadFile(const char *filename) {

@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <limits>
 #include <stdexcept>
 
-#include "numeric_settings.h"
+#include "src/util/numeric_settings.h"
 
 namespace splinelib::src::baf {
 KnotVector::KnotVector(std::vector<ParametricCoordinate> knots) : knots_(std::move(knots)) {}

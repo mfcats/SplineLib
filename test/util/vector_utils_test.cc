@@ -12,9 +12,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "vector_utils.h"
-
 #include "gmock/gmock.h"
+
+#include "src/util/vector_utils.h"
 
 using testing::Test;
 using testing::DoubleEq;

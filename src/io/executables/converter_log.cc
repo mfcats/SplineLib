@@ -18,9 +18,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <fstream>
 #include <iostream>
 
-#include "string_operations.h"
-#include "system_operations.h"
-#include "vector_utils.h"
+#include "src/util/string_operations.h"
+#include "src/util/system_operations.h"
+#include "src/util/vector_utils.h"
 
 namespace splinelib::src::io {
 ConverterLog::ConverterLog() : log_file_("") {}

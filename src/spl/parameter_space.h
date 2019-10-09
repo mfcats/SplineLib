@@ -24,7 +24,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "basis_function.h"
 #include "basis_function_factory.h"
 #include "knot_vector.h"
-#include "numeric_settings.h"
+#include "src/util/numeric_settings.h"
 
 namespace splinelib::src::spl {
 template<int PARAMETRIC_DIMENSIONALITY>

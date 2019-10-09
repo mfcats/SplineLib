@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <memory>
 #include <vector>
 
-#include "random.h"
+#include "src/util/random.h"
 #include "parameter_space.h"
 #include "physical_space.h"
 

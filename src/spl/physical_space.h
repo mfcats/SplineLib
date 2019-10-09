@@ -19,9 +19,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "control_point.h"
-#include "multi_index_handler.h"
-#include "numeric_settings.h"
-#include "vector_utils.h"
+#include "src/util/multi_index_handler.h"
+#include "src/util/numeric_settings.h"
+#include "src/util/vector_utils.h"
 
 namespace splinelib::src::spl {
 template<int PARAMETRIC_DIMENSIONALITY>

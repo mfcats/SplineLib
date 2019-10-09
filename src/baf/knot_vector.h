@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 
-#include "named_type.h"
+#include "src/util/named_type.h"
 
 namespace splinelib::src::baf {
 class KnotVector {

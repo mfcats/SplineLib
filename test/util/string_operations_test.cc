@@ -12,9 +12,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "string_operations.h"
-
 #include "gmock/gmock.h"
+
+#include "src/util/string_operations.h"
 
 using testing::Test;
 using testing::DoubleEq;

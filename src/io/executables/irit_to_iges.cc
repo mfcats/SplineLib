@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "converter_log.h"
 #include "io_converter.h"
 #include "irit_reader.h"
-#include "string_operations.h"
+#include "src/util/string_operations.h"
 #include "iges_writer.h"
 
 using namespace splinelib::src;

@@ -25,7 +25,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "control_point.h"
 #include "knot_vector.h"
-#include "multi_index_handler.h"
+#include "src/util/multi_index_handler.h"
 #include "parameter_space.h"
 #include "physical_space.h"
 

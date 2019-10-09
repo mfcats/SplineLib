@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "b_spline_basis_function.h"
 
 #include "basis_function_factory.h"
-#include "numeric_settings.h"
+#include "src/util/numeric_settings.h"
 
 namespace splinelib::src::baf {
 BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,

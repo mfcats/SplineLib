@@ -12,9 +12,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "any_casts.h"
-
 #include "gmock/gmock.h"
+
+#include "src/util/any_casts.h"
 
 using testing::Test;
 using testing::DoubleEq;

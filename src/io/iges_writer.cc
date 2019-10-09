@@ -18,9 +18,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <limits>
 #include <sstream>
 
-#include "any_casts.h"
-#include "multi_index_handler.h"
-#include "system_operations.h"
+#include "src/util/any_casts.h"
+#include "src/util/multi_index_handler.h"
+#include "src/util/system_operations.h"
 
 namespace splinelib::src::io {
 void IGESWriter::WriteFile(const std::vector<std::any> &splines, const char *filename) const {

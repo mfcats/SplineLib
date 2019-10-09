@@ -14,7 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "vtk_writer.h"
 
-#include "any_casts.h"
+#include "src/util/any_casts.h"
 #include "vtk_writer_utils.h"
 
 namespace splinelib::src::io {

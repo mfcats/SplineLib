@@ -12,12 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include <numeric_settings.h>
 #include "gmock/gmock.h"
 
-#include "nurbs.h"
 #include "b_spline.h"
+#include "nurbs.h"
 #include "nurbs_3d_mocking.h"
+#include "src/util/numeric_settings.h"
 
 using testing::Test;
 using testing::DoubleEq;

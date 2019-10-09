@@ -22,11 +22,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "b_spline_generator.h"
-#include "multi_index_handler.h"
-#include "numeric_operations.h"
+#include "src/util/multi_index_handler.h"
+#include "src/util/numeric_operations.h"
 #include "spline.h"
 #include "spline_generator.h"
-#include "vector_utils.h"
+#include "src/util/vector_utils.h"
 
 namespace splinelib::src::spl {
 template<int PARAMETRIC_DIMENSIONALITY>

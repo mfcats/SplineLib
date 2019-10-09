@@ -12,13 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "nurbs_generator.h"
-#include "surface_generator.h"
-#include "nurbs.h"
-
 #include "gmock/gmock.h"
 
-#include "numeric_settings.h"
+#include "nurbs.h"
+#include "nurbs_generator.h"
+#include "surface_generator.h"
+#include "src/util/numeric_settings.h"
 #include "vtk_writer.h"
 
 using testing::Test;

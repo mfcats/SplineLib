@@ -19,12 +19,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
-#include "any_casts.h"
+#include "src/util/any_casts.h"
 #include "iges_reader.h"
 #include "iges_writer.h"
 #include "irit_reader.h"
 #include "irit_writer.h"
-#include "string_operations.h"
+#include "src/util/string_operations.h"
 #include "vtk_writer.h"
 #include "xml_reader.h"
 #include "xml_writer.h"

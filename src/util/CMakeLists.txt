@@ -14,8 +14,7 @@
 #
 
 add_library(splinelibutil INTERFACE)
-target_include_directories(splinelibutil INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_include_directories(splinelibutil INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
 
 install(
         TARGETS splinelibutil

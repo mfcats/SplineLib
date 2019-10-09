@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "nurbs.h"
-#include "string_operations.h"
+#include "src/util/string_operations.h"
 
 namespace splinelib::src::io {
 template<int PARAMETRIC_DIMENSIONALITY>
