@@ -62,6 +62,7 @@ class MultiIndexHandler {
   static int Get1DIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> const &length,
                         std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index);
   int Get1DIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) const;
+  // TODO(): Handling of too high indices --> throw error(e.g. invalid_argument) or convert?
   void SetCurrentIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index);
   void SetCurrentIndex(int index_1d);
 
