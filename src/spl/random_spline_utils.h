@@ -63,7 +63,7 @@ class RandomSplineUtils {
       const std::array<int, PARAMETRIC_DIMENSIONALITY> &number_of_points) {
     std::vector<baf::ControlPoint> control_points;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(number_of_points);
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+    for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       std::vector<double> coordinates;
       for (int j = 0; j < dimension; ++j) {
         coordinates.push_back(util::Random::GetBinomialRandom<double>(-5, 5, 0.01));
@@ -76,7 +76,7 @@ class RandomSplineUtils {
   static std::vector<double> GetRandomWeights(const std::array<int, PARAMETRIC_DIMENSIONALITY> &number_of_points) {
     std::vector<double> weights;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(number_of_points);
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+    for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       weights.emplace_back(util::Random::GetBinomialRandom<double>(0.1, 2, 0.1));
     }
     return weights;

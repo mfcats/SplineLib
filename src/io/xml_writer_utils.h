@@ -56,7 +56,7 @@ class XMLWriterUtils {
     pugi::xml_node values = spline_node->append_child("cntrlPntVars");
     std::string string;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(spline_ptr->GetPointsPerDirection());
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, point_handler++) {
+    for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, point_handler++) {
       auto indices = point_handler.GetCurrentIndex();
       string += "\n      ";
       for (int j = 0; j < spline_ptr->GetPointDim(); j++) {
@@ -72,7 +72,7 @@ class XMLWriterUtils {
     std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> nurbs =
         std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> weight_handler(nurbs->GetPointsPerDirection());
-    for (int i = 0; i < weight_handler.Get1DLength(); ++i, weight_handler++) {
+    for (int i = 0; i < weight_handler.GetNumberOfTotalMultiIndices(); ++i, weight_handler++) {
       auto indices = weight_handler.GetCurrentIndex();
       string += "\n      " + std::to_string(nurbs->GetWeight(indices)) + "  ";
     }

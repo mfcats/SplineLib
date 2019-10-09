@@ -70,7 +70,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     ++maximum_point_index[dimension];
     point_handler.SetCurrentIndex(maximum_point_index);
     physical_space_->AddControlPoints(this->GetNumberOfControlPoints() / maximum_point_index[dimension]);
-    for (int i = point_handler.Get1DLength() - 1; i >= 0; --i, --point_handler) {
+    for (int i = point_handler.GetNumberOfTotalMultiIndices() - 1; i >= 0; --i, --point_handler) {
       auto current_point_index = point_handler[Dimension{dimension}];
       std::array<int, PARAMETRIC_DIMENSIONALITY> indices = point_handler.GetCurrentIndex();
       baf::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling,
@@ -160,7 +160,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
   void SetNewControlPoints(const std::vector<double> &temp, int last, int ii, int off, int dimension) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
-    for (int m = 0; m < point_handler.Get1DLength(); ++m, ++point_handler) {
+    for (int m = 0; m < point_handler.GetNumberOfTotalMultiIndices(); ++m, ++point_handler) {
       int k = point_handler[Dimension{dimension}];
       if (k - off >= 1 && k - off != ii && k < last + 2) {
         int index =
@@ -187,7 +187,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     int new_points = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
     std::vector<double> temp(new_points * this->GetPointDim() * (last - off + 2), 0);
     std::shared_ptr<std::vector<double>> temp_ptr = std::make_shared<std::vector<double>>(temp);
-    for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
+    for (int l = 0; l < point_handler.GetNumberOfTotalMultiIndices(); ++l, ++point_handler) {
       if (point_handler[Dimension{dimension}] == off || point_handler[Dimension{dimension}] == last + 1) {
         int diff = point_handler[Dimension{dimension}] == off ? off : last + 1;
         SetTempNewControlPoint(point_handler, temp_ptr, 1, diff, off, last, dimension, 0);
@@ -195,7 +195,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     }
     for (; j - i > 0; ++i, --j) {
       point_handler.SetCurrentIndex({0});
-      for (int l = 0; l < point_handler.Get1DLength(); ++l, ++point_handler) {
+      for (int l = 0; l < point_handler.GetNumberOfTotalMultiIndices(); ++l, ++point_handler) {
         if (point_handler[Dimension{dimension}] == i) {
           SetTempNewControlPoint(point_handler, temp_ptr, scaling[i - off - 1], i, off, last, dimension, -1);
         }

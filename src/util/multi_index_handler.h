@@ -26,12 +26,16 @@ namespace splinelib::src::util {
 // It also provides "iterator-like" functionality.
 // Example ((mixed) derivatives up to fourth order with respect to three variables (PARAMETRIC_DIMENSIONALITY = 3)):
 //   array<int, 3> maximum_order_derivatives = {3, 2, 2};
-//   MultiIndexHandler<2> derivative_handler(maximum_order_derivatives);  // Initial value of multi-index: {0, 0, 0}.
+//   MultiIndexHandler<3> derivative_handler(maximum_order_derivatives);  // Initial value of multi-index: {0, 0, 0}.
 //   ++derivative_handler;  // Move from {0, 0, 0} to {1, 0, 0}.
 //   array<int, 3> multi_index_d3/dx2dy = {2, 1, 0};
 //   derivative_handler.SetCurrentIndex(multi_index_d3/dx2dy);  // Set multi-index to {2, 1, 0}.
 //   1d_index_d3/dx2dy = Get1DIndex();  // Store 5 in 1d_index_d3/dx2dy.
 //   ++derivative_handler;  // Move from {2, 1, 0} to {0, 0, 1}.
+//   maximum_1d_index = derivative_handler.GetNumberOfTotalMultiIndices();  // Returns number of possible different
+//   multi-indices.
+//   derivative_handler = derivative_handler + 5;  // Move from {0, 0, 1} to maximum multi-index {2, 1, 1}.
+//   ++derivative_handler;  // Move from maximum multi-index {2, 1, 1} back to first multi-index {0, 0, 0}.
 template<int PARAMETRIC_DIMENSIONALITY>
 class MultiIndexHandler {
  public:
@@ -45,9 +49,9 @@ class MultiIndexHandler {
 
   int operator[](Dimension const &dimension) const;
   MultiIndexHandler & operator++();
-  MultiIndexHandler operator++(int);
+  const MultiIndexHandler operator++(int);
   MultiIndexHandler & operator--();
-  MultiIndexHandler operator--(int);
+  const MultiIndexHandler operator--(int);
   // Jumps count multi-index values forwards.
   MultiIndexHandler & operator+(int count);
   // Jumps count multi-index values backwards.
@@ -61,12 +65,15 @@ class MultiIndexHandler {
   void SetCurrentIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index);
   void SetCurrentIndex(int index_1d);
 
-  int Get1DLength() const;
+  // Returns array which contains how often each dimension of the multi-index can still be increased.
   std::array<int, PARAMETRIC_DIMENSIONALITY> GetComplementaryIndex() const;
 
+  int GetNumberOfTotalMultiIndices() const;
+  // Returns 1DIndex for projection of current multi-index onto tensor-product array without given dimension.
   int CollapseDimension(Dimension const &dimension) const;
 
  private:
+  // Counts difference in 1DIndex if the multi-index value of given maximum_dimension is increased by one.
   static int GetCurrentSliceSize(std::array<int, PARAMETRIC_DIMENSIONALITY> const &length,
                                  Dimension const &maximum_dimension);
 

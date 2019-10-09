@@ -114,7 +114,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
     std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
     point_handler_length[dimension] = length;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+    for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       auto indices = point_handler.GetCurrentIndex();
       indices[dimension] += first;
       weights.emplace_back(GetWeight(indices));

@@ -155,7 +155,7 @@ void VTKWriter::Write2DCells(std::ofstream &file, std::array<int, 2> scattering,
 
 void VTKWriter::Write3DCells(std::ofstream &file, std::array<int, 3> scattering, int offset) const {
   util::MultiIndexHandler<3> point_handler({scattering[0] + 1, scattering[1] + 1, scattering[2] + 1});
-  for (; point_handler.GetCurrent1DIndex() < point_handler.Get1DLength() - 1; ++point_handler) {
+  for (; point_handler.GetCurrent1DIndex() < point_handler.GetNumberOfTotalMultiIndices() - 1; ++point_handler) {
     if (point_handler.GetCurrentIndex()[0] != scattering[0] && point_handler.GetCurrentIndex()[1] != scattering[1]
         && point_handler.GetCurrentIndex()[2] != scattering[2]) {
       file << "8 " << point_handler.GetCurrent1DIndex() + offset << " "

@@ -56,14 +56,16 @@ class IRITWriterUtils {
   }
 
   static std::string GetControlPoints(bool rational, std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline_ptr,
-      const std::any &spline) {
+  const std::any &spline
+  ) {
     std::string string;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(spline_ptr->GetPointsPerDirection());
     std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> nurbs;
     if (rational) {
       nurbs = std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
     }
-    for (int control_point = 0; control_point < point_handler.Get1DLength(); ++control_point, point_handler++) {
+    for (int control_point = 0; control_point < point_handler.GetNumberOfTotalMultiIndices();
+         ++control_point, point_handler++) {
       string += "      [" + (rational ? std::to_string(nurbs->GetWeight(point_handler.GetCurrentIndex())) + " " : "");
       for (int dimension = 0; dimension < spline_ptr->GetPointDim(); dimension++) {
         string += std::to_string(spline_ptr->GetControlPoint(point_handler.GetCurrentIndex(), dimension)

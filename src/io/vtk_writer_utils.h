@@ -59,7 +59,7 @@ class VTKWriterUtils {
         spline_ptr = util::AnyCasts::GetSpline<PARAMETRIC_DIMENSIONALITY>(spline);
     std::array<double, 2 * PARAMETRIC_DIMENSIONALITY> knots = GetEdgeKnots(spline_ptr);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointHandlerLength(scattering));
-    for (int i = 0; i < point_handler.Get1DLength(); ++point_handler, ++i) {
+    for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++point_handler, ++i) {
       std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> coords{};
       for (int j = 0; j < PARAMETRIC_DIMENSIONALITY; ++j) {
         coords[j] = ParametricCoordinate(

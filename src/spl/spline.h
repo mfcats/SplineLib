@@ -55,7 +55,7 @@ class Spline {
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> basisFunctionHandler(
         this->GetNumberOfBasisFunctionsToEvaluate());
     std::vector<double> evaluated_point(dimensions.size(), 0);
-    for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
+    for (int i = 0; i < basisFunctionHandler.GetNumberOfTotalMultiIndices(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetCurrentIndex();
       std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
       for (uint64_t j = 0; j < dimensions.size(); ++j) {
@@ -75,7 +75,7 @@ class Spline {
         this->GetNumberOfBasisFunctionsToEvaluate());
     std::vector<double> evaluated_point(dimensions.size(), 0);
 
-    for (int i = 0; i < basisFunctionHandler.Get1DLength(); ++i, basisFunctionHandler++) {
+    for (int i = 0; i < basisFunctionHandler.GetNumberOfTotalMultiIndices(); ++i, basisFunctionHandler++) {
       auto indices = basisFunctionHandler.GetCurrentIndex();
       std::transform(indices.begin(), indices.end(), first_non_zero.begin(), indices.begin(), std::plus<>());
       for (uint64_t j = 0; j < dimensions.size(); ++j) {
@@ -107,7 +107,7 @@ class Spline {
       dimensions.push_back(i);
     }
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(points);
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+    for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord;
       for (int dim = 0; dim < PARAMETRIC_DIMENSIONALITY; ++dim) {
         double span = GetKnotVector(dim)->GetLastKnot().Get() - GetKnotVector(dim)->GetKnot(0).Get();
@@ -220,7 +220,7 @@ class Spline {
     cps_per_dir[dimension] += (GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> cp_handler(cps_per_dir);
     GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
-    int delta_num_cps = cp_handler.Get1DLength() - GetPhysicalSpace()->GetNumberOfControlPoints();
+    int delta_num_cps = cp_handler.GetNumberOfTotalMultiIndices() - GetPhysicalSpace()->GetNumberOfControlPoints();
     GetPhysicalSpace()->AddControlPoints(delta_num_cps);
     parameter_space_->ElevateDegree(dimension);
     parameter_space_->IncrementMultiplicityOfAllKnots(dimension);
@@ -245,7 +245,7 @@ class Spline {
     cps_per_dir[dimension] -= num_bezier_segments;
     GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(cps_per_dir);
-    int delta_num_cps = GetPhysicalSpace()->GetNumberOfControlPoints() - point_handler.Get1DLength();
+    int delta_num_cps = GetPhysicalSpace()->GetNumberOfControlPoints() - point_handler.GetNumberOfTotalMultiIndices();
     GetPhysicalSpace()->RemoveControlPoints(delta_num_cps);
     parameter_space_->ReduceDegree(dimension);
     parameter_space_->DecrementMultiplicityOfAllKnots(dimension);
@@ -330,7 +330,7 @@ class Spline {
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     std::vector<baf::ControlPoint> bezier_cps(static_cast<size_t>(width * segment_length),
                                               baf::ControlPoint(GetPointDim() + 1));
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+    for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       auto index_in_dir = point_handler[Dimension{dimension}];
       if (index_in_dir >= segment * width - segment && index_in_dir < (segment + 1) * width - segment) {
         auto index = ((index_in_dir + segment) % width + point_handler.CollapseDimension(Dimension{dimension}) * width);
@@ -350,7 +350,8 @@ class Spline {
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     util::MultiIndexHandler<2> cp_handler_new({width, segment_length});
     util::MultiIndexHandler<2> cp_handler_old({width - 1, segment_length});
-    std::vector<baf::ControlPoint> new_cps(cp_handler_new.Get1DLength(), baf::ControlPoint(GetPointDim() + 1));
+    std::vector<baf::ControlPoint> new_cps(cp_handler_new.GetNumberOfTotalMultiIndices(),
+                                           baf::ControlPoint(GetPointDim() + 1));
     for (int i = 0; i < segment_length; ++i) {
       new_cps[cp_handler_new.Get1DIndex({0, i})] = bezier_cps[cp_handler_old.Get1DIndex({0, i})];
       new_cps[cp_handler_new.Get1DIndex({width - 1, i})] = bezier_cps[cp_handler_old.Get1DIndex({width - 2, i})];
@@ -369,7 +370,8 @@ class Spline {
     util::MultiIndexHandler<2> cp_handler_new({GetDegree(dimension).Get(), segment_length});
     double max_error_bound = 0.0;
     int new_degree = GetDegree(dimension).Get() - 1;
-    std::vector<baf::ControlPoint> new_cps(cp_handler_new.Get1DLength(), baf::ControlPoint(GetPointDim() + 1));
+    std::vector<baf::ControlPoint> new_cps(cp_handler_new.GetNumberOfTotalMultiIndices(),
+                                           baf::ControlPoint(GetPointDim() + 1));
     int r = new_degree / 2;
     double alpha_r = static_cast<double>(r) / static_cast<double>((new_degree + 1));
     double alpha_r_plus = static_cast<double>(r + 1) / static_cast<double>((new_degree + 1));
@@ -413,7 +415,7 @@ class Spline {
                                         int dimension) {
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointsPerDirection());
     int width = GetDegree(dimension).Get() + 1;
-    for (int i = 0; i < point_handler.Get1DLength(); ++i, ++point_handler) {
+    for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       int index_in_dir = point_handler[Dimension{dimension}];
       int segment = index_in_dir / (width - 1);
       int index = index_in_dir % (width - 1) + point_handler.CollapseDimension(Dimension{dimension}) * width;

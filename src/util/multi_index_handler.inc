@@ -18,9 +18,9 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::MultiIndexHandler(
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::MultiIndexHandler(MultiIndexHandler &&rhs) noexcept :
-    multi_index_length_(std::move(rhs.multi_index_length_)),
-    current_multi_index_value_(std::move(rhs.current_multi_index_value_)) {}
+MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::MultiIndexHandler(MultiIndexHandler &&other) noexcept :
+    multi_index_length_(std::move(other.multi_index_length_)),
+    current_multi_index_value_(std::move(other.current_multi_index_value_)) {}
 
 template<int PARAMETRIC_DIMENSIONALITY>
 MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator=(
@@ -51,7 +51,8 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIME
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-inline MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator++(int) {
+inline const MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>
+MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator++(int) {
   MultiIndexHandler result(*this);
   ++(*this);
   return result;
@@ -72,7 +73,8 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIME
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-inline MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator--(int) {
+inline const MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>
+MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator--(int) {
   MultiIndexHandler result(*this);
   --(*this);
   return result;
@@ -137,7 +139,7 @@ void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndex(int index_1d)
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::Get1DLength() const {
+int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::GetNumberOfTotalMultiIndices() const {
   Dimension const maximum_dimension{PARAMETRIC_DIMENSIONALITY - 1};
   return (GetValue(multi_index_length_, maximum_dimension) *
           GetCurrentSliceSize(multi_index_length_, maximum_dimension));
@@ -155,23 +157,21 @@ std::array<int, PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIO
 
 template<int PARAMETRIC_DIMENSIONALITY>
 int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::CollapseDimension(Dimension const &dimension) const {
-  std::array<int, PARAMETRIC_DIMENSIONALITY> multi_index, length;
-  for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY}; ++current_dimension) {
+  std::array<int, PARAMETRIC_DIMENSIONALITY - 1> multi_index, length;
+  for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY - 1};
+       ++current_dimension) {
     int &current_index = GetValue(multi_index, current_dimension);
     int &current_length = GetValue(length, current_dimension);
     if (current_dimension < dimension) {
       current_index = GetValue(current_multi_index_value_, current_dimension);
       current_length = GetValue(multi_index_length_, current_dimension);
-    } else if (current_dimension == Dimension{PARAMETRIC_DIMENSIONALITY - 1}) {
-      current_index = 0;
-      current_length = 0;
     } else if (current_dimension >= dimension) {
-    Dimension const next_dimension = (current_dimension + Dimension{1});
-    current_index = GetValue(current_multi_index_value_, next_dimension);
-    current_length = GetValue(multi_index_length_, next_dimension);
+      Dimension const next_dimension = (current_dimension + Dimension{1});
+      current_index = GetValue(current_multi_index_value_, next_dimension);
+      current_length = GetValue(multi_index_length_, next_dimension);
     }
   }
-  return Get1DIndex(length, multi_index);
+  return MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1>::Get1DIndex(length, multi_index);
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
