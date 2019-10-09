@@ -12,7 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.*/
 
 template<typename CONTAINER_TYPE>
-constexpr typename CONTAINER_TYPE::value_type & GetValue(CONTAINER_TYPE &container,
+constexpr typename CONTAINER_TYPE::value_type &GetValue(CONTAINER_TYPE &container,  // NOLINT(runtime/references)
                                                          typename CONTAINER_TYPE::size_type index) {
 #ifdef DEBUG
   return container.at(index);
@@ -32,7 +32,8 @@ constexpr typename CONTAINER_TYPE::value_type const & GetValue(CONTAINER_TYPE co
 }
 
 template<typename CONTAINER_TYPE, typename NAME>
-constexpr typename CONTAINER_TYPE::value_type & GetValue(CONTAINER_TYPE &container, NamedType<int, NAME> index) {
+constexpr typename CONTAINER_TYPE::value_type &GetValue(CONTAINER_TYPE &container,  // NOLINT(runtime/references)
+                                                        NamedType<int, NAME> index) {
 #ifdef DEBUG
   return container.at(index.Get());
 #else

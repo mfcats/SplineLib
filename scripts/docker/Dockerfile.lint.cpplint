@@ -5,4 +5,4 @@ ADD . /code
 WORKDIR /code
 
 # execute cpplint
-CMD cpplint --extensions=cc,h --recursive /code/src/* /code/test/*
+CMD cpplint --extensions=cc,h,inc --recursive /code/src/* /code/test/*
