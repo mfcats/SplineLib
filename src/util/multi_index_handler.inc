@@ -93,6 +93,12 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIME
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
+bool MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator==(const MultiIndexHandler &rhs) const {
+  return this->multi_index_length_ == rhs.multi_index_length_ &&
+      this->current_multi_index_value_ == rhs.current_multi_index_value_;
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
 inline std::array<int, PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::GetCurrentIndex()
     const {
   return current_multi_index_value_;

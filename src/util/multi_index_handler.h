@@ -56,6 +56,7 @@ class MultiIndexHandler {
   MultiIndexHandler & operator+(int count);
   // Jumps count multi-index values backwards.
   MultiIndexHandler & operator-(int count);
+  bool operator==(const MultiIndexHandler &rhs) const;
 
   std::array<int, PARAMETRIC_DIMENSIONALITY> GetCurrentIndex() const;
   int GetCurrent1DIndex() const;
