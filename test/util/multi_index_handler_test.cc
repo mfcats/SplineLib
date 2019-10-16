@@ -41,38 +41,36 @@ TEST_F(AMultiIndexHandler1D, CanBeCopied) { // NOLINT
 }
 
 TEST_F(AMultiIndexHandler1D, CanBeAssigned) { // NOLINT
-  util::MultiIndexHandler<1> assigned_multi_index_handler_1D{};
-  assigned_multi_index_handler_1D = *multi_index_handler_1D_;
-  ASSERT_THAT(assigned_multi_index_handler_1D, Eq(*multi_index_handler_1D_));
+  util::MultiIndexHandler<1> multi_index_handler_1D_to_be_assigned{};
+  multi_index_handler_1D_to_be_assigned = *multi_index_handler_1D_;
+  ASSERT_THAT(multi_index_handler_1D_to_be_assigned, Eq(*multi_index_handler_1D_));
 }
 
-TEST_F(AMultiIndexHandler1D, ReturnsIndex1AfterUsingPostIncrementOperator) {  // NOLINT
-  (*multi_index_handler_1D_)++;
+TEST_F(AMultiIndexHandler1D, Returns1DIndex1AfterUsingPostIncrementOperator) {  // NOLINT
+  ASSERT_THAT(((*multi_index_handler_1D_)++).GetCurrent1DIndex(), Eq(0));
   ASSERT_THAT(multi_index_handler_1D_->GetCurrent1DIndex(), Eq(1));
 }
 
-TEST_F(AMultiIndexHandler1D, ReturnsIndex1AfterUsingPreIncrementOperator) {  // NOLINT
-  ++(*multi_index_handler_1D_);
+TEST_F(AMultiIndexHandler1D, Returns1DIndex1AfterUsingPreIncrementOperator) {  // NOLINT
+  ASSERT_THAT((++(*multi_index_handler_1D_)).GetCurrent1DIndex(), Eq(1));
+}
+
+TEST_F(AMultiIndexHandler1D, Returns1DIndex9AfterUsingPostDecrementOperator) {  // NOLINT
+  ASSERT_THAT(((*multi_index_handler_1D_)--).GetCurrent1DIndex(), Eq(0));
+  ASSERT_THAT(multi_index_handler_1D_->GetCurrent1DIndex(), Eq(9));
+}
+
+TEST_F(AMultiIndexHandler1D, Returns1DIndex9AfterUsingPreDecrementOperator) {  // NOLINT
+  ASSERT_THAT((--(*multi_index_handler_1D_)).GetCurrent1DIndex(), Eq(9));
+}
+
+TEST_F(AMultiIndexHandler1D, Returns1DIndex1AfterAdding11) {  // NOLINT
+  (*multi_index_handler_1D_) + 11;
   ASSERT_THAT(multi_index_handler_1D_->GetCurrent1DIndex(), Eq(1));
 }
 
-TEST_F(AMultiIndexHandler1D, ReturnsIndex9AfterUsingPostDecrementOperator) {  // NOLINT
-  (*multi_index_handler_1D_)--;
-  ASSERT_THAT(multi_index_handler_1D_->GetCurrent1DIndex(), Eq(9));
-}
-
-TEST_F(AMultiIndexHandler1D, ReturnsIndex1AfterUsingPreDecrementOperator) {  // NOLINT
-  --(*multi_index_handler_1D_);
-  ASSERT_THAT(multi_index_handler_1D_->GetCurrent1DIndex(), Eq(9));
-}
-
-TEST_F(AMultiIndexHandler1D, ReturnsIndex10AfterAdding10) {  // NOLINT
-  (*multi_index_handler_1D_) = (*multi_index_handler_1D_) + 10;
-  ASSERT_THAT(multi_index_handler_1D_->GetCurrent1DIndex(), Eq(0));
-}
-
-TEST_F(AMultiIndexHandler1D, ReturnsIndex8AfterSubtracting2) {  // NOLINT
-  (*multi_index_handler_1D_) = (*multi_index_handler_1D_) - 2;
+TEST_F(AMultiIndexHandler1D, Returns1DIndex8AfterSubtracting2) {  // NOLINT
+  (*multi_index_handler_1D_) - 2;
   ASSERT_THAT(multi_index_handler_1D_->GetCurrent1DIndex(), Eq(8));
 }
 
@@ -103,37 +101,109 @@ TEST_F(AMultiIndexHandler1D, Returns10AsNumberOfTotalMultiIndices) {  // NOLINT
 }
 
 TEST_F(AMultiIndexHandler1D, Returns0AfterCollapsingDimension0WithCurrentMultiIndex4) {  // NOLINT
-  std::array<int, 1> current_multi_index = {1};
+  std::array<int, 1> current_multi_index = {4};
   multi_index_handler_1D_->SetCurrentIndex(current_multi_index);
   ASSERT_THAT(multi_index_handler_1D_->CollapseDimension(Dimension{0}), Eq(0));
 
 }
 
-class MultiIndexHandler2D : public Test {
+class AMultiIndexHandler2D : public Test {
  public:
-  MultiIndexHandler2D() {
-    std::array<int, 2> last_knot_offset_2D = {10, 3};
-    multi_index_handler_2D_ = std::make_unique<util::MultiIndexHandler<2>>(last_knot_offset_2D);
+  AMultiIndexHandler2D() {
+    std::array<int, 2> number_of_knots_per_dimension = {9, 3};
+    multi_index_handler_2D_ = std::make_unique<util::MultiIndexHandler<2>>(number_of_knots_per_dimension);
   }
 
  protected:
   std::unique_ptr<util::MultiIndexHandler<2>> multi_index_handler_2D_;
 };
 
-TEST_F(MultiIndexHandler2D, Returns1DIndex0AfterConstruction) { // NOLINT
+TEST_F(AMultiIndexHandler2D, Returns1DIndex0AfterConstruction) {  // NOLINT
   ASSERT_THAT(multi_index_handler_2D_->GetCurrent1DIndex(), Eq(0));
 }
 
-TEST_F(MultiIndexHandler2D, Returns1DIndex23AfterSettingCurrentIndexTo3And2) { // NOLINT
-  std::array<int, 2> current_2D_index = {3, 2};
-  multi_index_handler_2D_->SetCurrentIndex(current_2D_index);
-  ASSERT_THAT(multi_index_handler_2D_->GetCurrent1DIndex(), Eq(23));
+TEST_F(AMultiIndexHandler2D, CanBeCopied) { // NOLINT
+  util::MultiIndexHandler<2> copied_multi_index_handler_2D = *multi_index_handler_2D_;
+  ASSERT_THAT(copied_multi_index_handler_2D, Eq(*multi_index_handler_2D_));
 }
 
-TEST_F(MultiIndexHandler2D, Returns2DIndex3And2AfterSettingCurrent1DIndexTo23) { // NOLINT
-  multi_index_handler_2D_->SetCurrentIndex(23);
-  ASSERT_THAT(multi_index_handler_2D_->GetCurrentIndex()[0], Eq(3));
-  ASSERT_THAT(multi_index_handler_2D_->GetCurrentIndex()[1], Eq(2));
+TEST_F(AMultiIndexHandler2D, CanBeAssigned) { // NOLINT
+  util::MultiIndexHandler<2> multi_index_handler_2D_to_be_assigned{};
+  multi_index_handler_2D_to_be_assigned = *multi_index_handler_2D_;
+  ASSERT_THAT(multi_index_handler_2D_to_be_assigned, Eq(*multi_index_handler_2D_));
+}
+
+TEST_F(AMultiIndexHandler2D, ReturnsIndex1And0AfterUsingPostIncrementOperator) {  // NOLINT
+  ASSERT_THAT(((*multi_index_handler_2D_)++).GetCurrent1DIndex(), Eq(0));
+  ASSERT_THAT((*multi_index_handler_2D_)[Dimension{0}], Eq(1));
+  ASSERT_THAT((*multi_index_handler_2D_)[Dimension{1}], Eq(0));
+}
+
+TEST_F(AMultiIndexHandler2D, Returns1DIndex1AfterUsingPreIncrementOperator) {  // NOLINT
+  ASSERT_THAT((++(*multi_index_handler_2D_)).GetCurrent1DIndex(), Eq(1));
+}
+
+TEST_F(AMultiIndexHandler2D, ReturnsIndex8And2AfterUsingPostDecrementOperator) {  // NOLINT
+  ASSERT_THAT(((*multi_index_handler_2D_)--).GetCurrent1DIndex(), Eq(0));
+  ASSERT_THAT((*multi_index_handler_2D_)[Dimension{0}], Eq(8));
+  ASSERT_THAT((*multi_index_handler_2D_)[Dimension{1}], Eq(2));
+}
+
+TEST_F(AMultiIndexHandler2D, Returns1DIndex26AfterUsingPreDecrementOperator) {  // NOLINT
+  ASSERT_THAT((--(*multi_index_handler_2D_)).GetCurrent1DIndex(), Eq(26));
+}
+
+TEST_F(AMultiIndexHandler2D, ReturnsIndex1And1AfterAdding10) {  // NOLINT
+  (*multi_index_handler_2D_) + 10;
+  ASSERT_THAT((*multi_index_handler_2D_)[Dimension{0}], Eq(1));
+  ASSERT_THAT((*multi_index_handler_2D_)[Dimension{1}], Eq(1));
+}
+
+TEST_F(AMultiIndexHandler2D, ReturnsIndex6And1AfterSubtracting12) {  // NOLINT
+  (*multi_index_handler_2D_) - 12;
+  ASSERT_THAT((*multi_index_handler_2D_)[Dimension{0}], Eq(6));
+  ASSERT_THAT((*multi_index_handler_2D_)[Dimension{1}], Eq(1));
+}
+
+TEST_F(AMultiIndexHandler2D, Returns1DIndex21AfterSettingCurrentIndexToIndex3And2) {  // NOLINT
+  std::array<int, 2> current_multi_index = {3, 2};
+  multi_index_handler_2D_->SetCurrentIndex(current_multi_index);
+  ASSERT_THAT(multi_index_handler_2D_->GetCurrent1DIndex(), Eq(21));
+}
+
+TEST_F(AMultiIndexHandler2D, ReturnsIndex3And2AfterSettingCurrentIndexTo1DIndex21) {  // NOLINT
+  multi_index_handler_2D_->SetCurrentIndex(21);
+  ASSERT_THAT((*multi_index_handler_2D_)[Dimension{0}], Eq(3));
+  ASSERT_THAT((*multi_index_handler_2D_)[Dimension{1}], Eq(2));
+}
+
+TEST_F(AMultiIndexHandler2D, Returns1DIndex6ForMultiIndex2And1WithLength4And3) {  // NOLINT
+  std::array<int, 2> length_to_evaluate = {4, 3};
+  std::array<int, 2> multi_index_to_evaluate = {2, 1};
+  ASSERT_THAT(multi_index_handler_2D_->Get1DIndex(length_to_evaluate, multi_index_to_evaluate), Eq(6));
+}
+
+TEST_F(AMultiIndexHandler2D, ReturnsComplementaryIndex3And1AfterSettingCurrentIndexTo5And1) {  // NOLINT
+  std::array<int, 2> current_multi_index = {5, 1};
+  multi_index_handler_2D_->SetCurrentIndex(current_multi_index);
+  ASSERT_THAT(multi_index_handler_2D_->GetComplementaryIndex()[0], Eq(3));
+  ASSERT_THAT(multi_index_handler_2D_->GetComplementaryIndex()[1], Eq(1));
+}
+
+TEST_F(AMultiIndexHandler2D, Returns30AsNumberOfTotalMultiIndices) {  // NOLINT
+  ASSERT_THAT(multi_index_handler_2D_->GetNumberOfTotalMultiIndices(), Eq(27));
+}
+
+TEST_F(AMultiIndexHandler2D, Returns1DIndex1AfterCollapsingDimension0WithCurrentMultiIndex4And1) {  // NOLINT
+  std::array<int, 2> current_multi_index = {4, 1};
+  multi_index_handler_2D_->SetCurrentIndex(current_multi_index);
+  ASSERT_THAT(multi_index_handler_2D_->CollapseDimension(Dimension{0}), Eq(1));
+}
+
+TEST_F(AMultiIndexHandler2D, Returns1DIndex4AfterCollapsingDimension1WithCurrentMultiIndex4And1) {  // NOLINT
+  std::array<int, 2> current_multi_index = {4, 1};
+  multi_index_handler_2D_->SetCurrentIndex(current_multi_index);
+  ASSERT_THAT(multi_index_handler_2D_->CollapseDimension(Dimension{1}), Eq(4));
 }
 
 class MultiIndexHandler3D : public Test {
