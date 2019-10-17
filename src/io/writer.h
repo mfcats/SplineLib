@@ -23,7 +23,7 @@ class Writer {
  public:
   Writer() = default;
   Writer(const Writer &other) = delete;
-  Writer(Writer &&other) = default;
+  Writer(Writer &&/*other*/) = default;
   Writer & operator=(const Writer &rhs) = delete;
   Writer & operator=(Writer &&rhs) = delete;
   virtual ~Writer() = default;

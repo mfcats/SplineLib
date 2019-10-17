@@ -74,6 +74,7 @@ class Projection {
  private:
   static std::vector<int> GetDimensions(const std::vector<double> &point_phys_coords) {
     std::vector<int> dimensions;
+    dimensions.reserve(point_phys_coords.size());
     for (auto i = 0u; i < point_phys_coords.size(); ++i) {
       dimensions.emplace_back(i);
     }

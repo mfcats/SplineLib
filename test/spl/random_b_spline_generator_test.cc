@@ -25,15 +25,13 @@ using namespace splinelib::src;
 
 class A1DRandomBSplineGenerator : public Test {  // NOLINT
  public:
-  A1DRandomBSplineGenerator() {
-    b_spline_generator_ = spl::RandomBSplineGenerator<1>(limits_, max_degree_, dimension_);
-  }
+  A1DRandomBSplineGenerator() : b_spline_generator_(spl::RandomBSplineGenerator<1>(limits_, max_degree_, dimension_)) {}
 
  protected:
-  spl::RandomBSplineGenerator<1> b_spline_generator_;
   const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{0.5}, ParametricCoordinate{2.75}}};
   const int max_degree_{10};
   const int dimension_{2};
+  spl::RandomBSplineGenerator<1> b_spline_generator_;
 };
 
 TEST_F(A1DRandomBSplineGenerator, CreatesCorrectKnots) {  // NOLINT
@@ -64,15 +62,13 @@ TEST_F(A1DRandomBSplineGenerator, RegardsPhysicalDimension) {  // NOLINT
 
 class A2DRandomBSplineGenerator : public Test {  // NOLINT
  public:
-  A2DRandomBSplineGenerator() {
-    b_spline_generator_ = spl::RandomBSplineGenerator<2>(limits_, max_degree_, dimension_);
-  }
+  A2DRandomBSplineGenerator() : b_spline_generator_(spl::RandomBSplineGenerator<2>(limits_, max_degree_, dimension_)) {}
 
  protected:
-  spl::RandomBSplineGenerator<2> b_spline_generator_;
   const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{0.0}, ParametricCoordinate{10.0}}};
   const int max_degree_{8};
   const int dimension_{3};
+  spl::RandomBSplineGenerator<2> b_spline_generator_;
 };
 
 TEST_F(A2DRandomBSplineGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
@@ -95,15 +91,13 @@ TEST_F(A2DRandomBSplineGenerator, RegardsPhysicalDimension) {  // NOLINT
 
 class A3DRandomBSplineGenerator : public Test {  // NOLINT
  public:
-  A3DRandomBSplineGenerator() {
-    b_spline_generator_ = spl::RandomBSplineGenerator<3>(limits_, max_degree_, dimension_);
-  }
+  A3DRandomBSplineGenerator() : b_spline_generator_(spl::RandomBSplineGenerator<3>(limits_, max_degree_, dimension_)) {}
 
  protected:
-  spl::RandomBSplineGenerator<3> b_spline_generator_;
   const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{2.0}, ParametricCoordinate{3.0}}};
   const int max_degree_{20};
   const int dimension_{4};
+  spl::RandomBSplineGenerator<3> b_spline_generator_;
 };
 
 TEST_F(A3DRandomBSplineGenerator, RegardsParametricCoordinateLimits) {  // NOLINT

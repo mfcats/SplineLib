@@ -25,15 +25,13 @@ using namespace splinelib::src;
 
 class A1DRandomNURBSGenerator : public Test {  // NOLINT
  public:
-  A1DRandomNURBSGenerator() {
-    nurbs_generator_ = spl::RandomNURBSGenerator<1>(limits_, max_degree_, dimension_);
-  }
+  A1DRandomNURBSGenerator() : nurbs_generator_(spl::RandomNURBSGenerator<1>(limits_, max_degree_, dimension_)) {}
 
  protected:
-  spl::RandomNURBSGenerator<1> nurbs_generator_;
   const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{0.5}, ParametricCoordinate{2.75}}};
   const int max_degree_{10};
   const int dimension_{2};
+  spl::RandomNURBSGenerator<1> nurbs_generator_;
 };
 
 TEST_F(A1DRandomNURBSGenerator, CreatesCorrectKnots) {  // NOLINT
@@ -64,15 +62,13 @@ TEST_F(A1DRandomNURBSGenerator, RegardsPhysicalDimension) {  // NOLINT
 
 class A2DRandomNURBSGenerator : public Test {  // NOLINT
  public:
-  A2DRandomNURBSGenerator() {
-    nurbs_generator_ = spl::RandomNURBSGenerator<2>(limits_, max_degree_, dimension_);
-  }
+  A2DRandomNURBSGenerator() : nurbs_generator_(spl::RandomNURBSGenerator<2>(limits_, max_degree_, dimension_)) {}
 
  protected:
-  spl::RandomNURBSGenerator<2> nurbs_generator_;
   const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{0.0}, ParametricCoordinate{10.0}}};
   const int max_degree_{8};
   const int dimension_{3};
+  spl::RandomNURBSGenerator<2> nurbs_generator_;
 };
 
 TEST_F(A2DRandomNURBSGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
@@ -95,15 +91,13 @@ TEST_F(A2DRandomNURBSGenerator, RegardsPhysicalDimension) {  // NOLINT
 
 class A3DRandomNURBSGenerator : public Test {  // NOLINT
  public:
-  A3DRandomNURBSGenerator() {
-    nurbs_generator_ = spl::RandomNURBSGenerator<3>(limits_, max_degree_, dimension_);
-  }
+  A3DRandomNURBSGenerator() : nurbs_generator_(spl::RandomNURBSGenerator<3>(limits_, max_degree_, dimension_)) {}
 
  protected:
-  spl::RandomNURBSGenerator<3> nurbs_generator_;
   const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{2.0}, ParametricCoordinate{3.0}}};
   const int max_degree_{20};
   const int dimension_{4};
+  spl::RandomNURBSGenerator<3> nurbs_generator_;
 };
 
 TEST_F(A3DRandomNURBSGenerator, RegardsParametricCoordinateLimits) {  // NOLINT

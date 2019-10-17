@@ -26,18 +26,20 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class RandomBSplineGenerator : public BSplineGenerator<PARAMETRIC_DIMENSIONALITY> {
  public:
   RandomBSplineGenerator() = default;
-  virtual ~RandomBSplineGenerator() = default;
+  RandomBSplineGenerator(const RandomBSplineGenerator<PARAMETRIC_DIMENSIONALITY> &other) = delete;
+  RandomBSplineGenerator(RandomBSplineGenerator<PARAMETRIC_DIMENSIONALITY> &&other) = delete;
+  RandomBSplineGenerator & operator=(const RandomBSplineGenerator<PARAMETRIC_DIMENSIONALITY> &rhs) = delete;
+  RandomBSplineGenerator & operator=(RandomBSplineGenerator<PARAMETRIC_DIMENSIONALITY> &&rhs) = delete;
+  ~RandomBSplineGenerator() override = default;
 
   RandomBSplineGenerator(std::array<ParametricCoordinate, 2> coord_limits, int max_degree, int dimension) {
-    std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees =
-        RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetRandomDegrees(max_degree);
+    std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees = GetRandomDegrees<PARAMETRIC_DIMENSIONALITY>(max_degree);
     baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vectors =
-        RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetRandomKnotVectors(coord_limits, degrees);
+        GetRandomKnotVectors<PARAMETRIC_DIMENSIONALITY>(coord_limits, degrees);
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points =
-        RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetNumberOfPoints(degrees, knot_vectors);
-    std::vector<baf::ControlPoint>
-        control_points =
-            RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetRandomControlPoints(dimension, number_of_points);
+        GetNumberOfPoints<PARAMETRIC_DIMENSIONALITY>(degrees, knot_vectors);
+    std::vector<baf::ControlPoint> control_points =
+            GetRandomControlPoints<PARAMETRIC_DIMENSIONALITY>(dimension, number_of_points);
     this->physical_space_ =
         std::make_shared<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(control_points, number_of_points);
     this->parameter_space_ = std::make_shared<ParameterSpace<PARAMETRIC_DIMENSIONALITY>>(knot_vectors, degrees);

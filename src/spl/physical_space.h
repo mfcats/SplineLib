@@ -182,7 +182,7 @@ class PhysicalSpace {
 
  protected:
   int dimension_{};
-  std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_{};
   std::vector<double> control_points_;
 };
 }  // namespace splinelib::src::spl

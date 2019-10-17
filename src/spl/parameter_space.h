@@ -252,7 +252,7 @@ class ParameterSpace {
   }
 
   baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector_;
-  std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree_;
+  std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree_{};
   std::array<std::vector<std::shared_ptr<baf::BasisFunction>>, PARAMETRIC_DIMENSIONALITY> basis_functions_;
 };
 }  // namespace splinelib::src::spl

@@ -113,7 +113,7 @@ class Spline {
     }
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(points);
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
-      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord;
+      std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord{};
       for (int dim = 0; dim < PARAMETRIC_DIMENSIONALITY; ++dim) {
         double span = GetKnotVector(dim)->GetLastKnot().Get() - GetKnotVector(dim)->GetKnot(0).Get();
         param_coord[dim] = ParametricCoordinate(span / number * point_handler[Dimension{dim}]);

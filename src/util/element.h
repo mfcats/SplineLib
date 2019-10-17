@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_UTIL_ELEMENT_H_
 
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include "control_point.h"
@@ -24,7 +25,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::util {
 class Element {
  public:
-  explicit Element(const std::array<ParametricCoordinate, 2> &nodes) : nodes_(nodes) {}
+  explicit Element(std::array<ParametricCoordinate, 2> nodes) : nodes_(std::move(nodes)) {}
 
   ParametricCoordinate GetLowerBound() const {
     return nodes_[0];
