@@ -1,6 +1,16 @@
-Checks: '*,-hicpp-braces-around-statements,-readability-braces-around-statements,-android-*,-llvm-include-order,-fuchsia-overloaded-operator,-fuchsia-default-arguments,-cppcoreguidelines-pro-bounds-constant-array-index,-google-readability-namespace-comments,-llvm-namespace-comment,-google-build-using-namespace'
+Checks: '*,
+         -hicpp-braces-around-statements,
+         -readability-braces-around-statements,
+         -android-*,-llvm-include-order,
+         -fuchsia-overloaded-operator,
+         -fuchsia-default-arguments,
+         -cppcoreguidelines-pro-bounds-constant-array-index,
+         -google-readability-namespace-comments,
+         -llvm-namespace-comment,
+         -google-build-using-namespace,
+         -llvm-header-guard'
 FormatStyle: google
 WarningsAsErrors: '*'
 CheckOptions:
-    - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
-      value: '1'
+  - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value: '1'
