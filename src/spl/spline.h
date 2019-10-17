@@ -103,10 +103,11 @@ class Spline {
                              double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
     double number = ceil(pow(100, 1.0 / PARAMETRIC_DIMENSIONALITY));
     std::array<int, PARAMETRIC_DIMENSIONALITY> points = std::array<int, PARAMETRIC_DIMENSIONALITY>();
-    std::vector<int> dimensions;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       points[i] = number + 1;
     }
+    std::vector<int> dimensions;
+    dimensions.reserve(GetPointDim());
     for (int i = 0; i < GetPointDim(); ++i) {
       dimensions.emplace_back(i);
     }

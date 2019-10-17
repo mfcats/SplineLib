@@ -51,7 +51,7 @@ class XMLReaderUtils {
 
   static std::array<Degree, PARAMETRIC_DIMENSIONALITY> StringVectorToDegreeArray(
       const std::vector<std::string> &string_vector) {
-    std::array<Degree, PARAMETRIC_DIMENSIONALITY> converted;
+    std::array<Degree, PARAMETRIC_DIMENSIONALITY> converted{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       auto a = string_vector[i];
       converted[i] = Degree{std::stoi(string_vector[i])};

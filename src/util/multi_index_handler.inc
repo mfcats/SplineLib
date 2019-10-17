@@ -164,7 +164,7 @@ int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::GetNumberOfTotalMultiIndices()
 
 template<int PARAMETRIC_DIMENSIONALITY>
 std::array<int, PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::GetComplementaryIndex() const {
-  std::array<int, PARAMETRIC_DIMENSIONALITY> multi_index;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> multi_index{};
   for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY}; ++current_dimension) {
     GetValue(multi_index, current_dimension) = (GetValue(multi_index_length_, current_dimension) -
                                                 GetValue(current_multi_index_value_, current_dimension) - 1);

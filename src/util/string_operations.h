@@ -61,6 +61,7 @@ class StringOperations {
   template<class T>
   static std::vector<T> StringVectorToNumberVector(const std::vector<std::string> &string_vector) {
     std::vector<T> converted;
+    converted.reserve(string_vector.size());
     for (const std::string &string : string_vector) {
       converted.emplace_back(StringToDouble(string));
     }
@@ -77,10 +78,10 @@ class StringOperations {
 
   static inline std::string trim(std::string s) {
     s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](char ch) {
-      return !std::isspace(ch) && ch != '[';
+      return std::isspace(ch) == 0 && ch != '[';
     }));
     s.erase(std::find_if(s.rbegin(), s.rend(), [](char ch) {
-      return !std::isspace(ch) && ch != ']';
+      return std::isspace(ch) == 0 && ch != ']';
     }).base(), s.end());
     return s;
   }

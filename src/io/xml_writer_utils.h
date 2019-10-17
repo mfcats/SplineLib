@@ -32,7 +32,7 @@ class XMLWriterUtils {
     pugi::xml_node degrees = spline_node->append_child("deg");
     std::string string;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
-      string = string + "\n      " + std::to_string(spline_ptr->GetDegree(i).Get());
+      string += "\n      " + std::to_string(spline_ptr->GetDegree(i).Get());
     }
     degrees.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }
@@ -69,8 +69,7 @@ class XMLWriterUtils {
   static void AddWeights(pugi::xml_node *spline_node, const std::any &spline) {
     pugi::xml_node weights = spline_node->append_child("wght");
     std::string string;
-    std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> nurbs =
-        std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
+    auto nurbs = std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> weight_handler(nurbs->GetPointsPerDirection());
     for (int i = 0; i < weight_handler.GetNumberOfTotalMultiIndices(); ++i, weight_handler++) {
       auto indices = weight_handler.GetCurrentIndex();

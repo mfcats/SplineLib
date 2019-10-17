@@ -33,7 +33,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
   NURBS(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector, std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree,
         const std::vector<baf::ControlPoint> &control_points,
         std::vector<double> weights) : Spline<PARAMETRIC_DIMENSIONALITY>(knot_vector, degree) {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points;
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].Get() - 1;
     }
@@ -231,7 +231,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
 
   util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> GetDerivativeHandler(
       const std::array<int, PARAMETRIC_DIMENSIONALITY> &derivative) const {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> derivative_length;
+    std::array<int, PARAMETRIC_DIMENSIONALITY> derivative_length{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       derivative_length[i] = derivative[i] + 1;
     }
@@ -265,6 +265,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
       baf::ControlPoint upper_control_point = physical_space_->GetHomogenousControlPoint(indices);
       baf::ControlPoint lower_control_point = physical_space_->GetHomogenousControlPoint(lower_indices);
       std::vector<double> coordinates;
+      coordinates.reserve(upper_control_point.GetDimension());
       double new_weight = GetNewWeight(indices, dimension, scaling, current_point, first, last);
       for (int j = 0; j < upper_control_point.GetDimension(); ++j) {
         coordinates.emplace_back((scaling[current_point - first] * upper_control_point.GetValue(j)

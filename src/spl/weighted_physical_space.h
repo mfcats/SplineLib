@@ -41,7 +41,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
   WeightedPhysicalSpace(WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY> &&other) noexcept = default;
   WeightedPhysicalSpace & operator=(const WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs) = default;
   WeightedPhysicalSpace & operator=(WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY> &&rhs) noexcept = default;
-  ~WeightedPhysicalSpace() = default;
+  ~WeightedPhysicalSpace() override = default;
 
   bool AreEqual(const WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs,
                 double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
@@ -53,21 +53,20 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
   }
 
   virtual baf::ControlPoint GetHomogenousControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
-    std::vector<double> coordinates;
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler =
-        util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
     point_handler.SetCurrentIndex(indices);
     int first = this->dimension_ * point_handler.GetCurrent1DIndex();
+    std::vector<double> coordinates;
+    coordinates.reserve(this->dimension_);
     for (int coordinate = 0; coordinate < this->dimension_; coordinate++) {
-      coordinates.push_back(this->control_points_[first + coordinate] * weights_[first / this->dimension_]);
+      coordinates.emplace_back(this->control_points_[first + coordinate] * weights_[first / this->dimension_]);
     }
     coordinates.push_back(this->weights_[point_handler.GetCurrent1DIndex()]);
     return baf::ControlPoint(coordinates);
   }
 
   double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const override {
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler =
-        util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
     point_handler.SetCurrentIndex(indices);
     int first = point_handler.GetCurrent1DIndex();
     return weights_[first];
@@ -91,8 +90,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
       int (*before)(int) = nullptr) {
     const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(this->number_of_points_);
     if (before != nullptr) this->number_of_points_[dimension] = before(this->number_of_points_[dimension]);
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler =
-        util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
     point_handler.SetCurrentIndex(indices);
     int first = point_handler.GetCurrent1DIndex();
     weights_[first] = weight;

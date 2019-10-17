@@ -73,10 +73,11 @@ class PhysicalSpace {
   }
 
   virtual baf::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
-    std::vector<double> coordinates;
     auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
     point_handler.SetCurrentIndex(indices);
     int first = dimension_ * point_handler.GetCurrent1DIndex();
+    std::vector<double> coordinates;
+    coordinates.reserve(dimension_);
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
       coordinates.emplace_back(control_points_[first + coordinate]);
     }

@@ -35,7 +35,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
   BSpline(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector, std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree,
           const std::vector<baf::ControlPoint> &control_points)
           : Spline<PARAMETRIC_DIMENSIONALITY>(knot_vector, degree) {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points;
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       number_of_points[i] = knot_vector[i]->GetNumberOfKnots() - degree[i].Get() - 1;
     }
@@ -151,6 +151,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
       baf::ControlPoint upper_control_point = this->GetControlPoint(indices);
       baf::ControlPoint lower_control_point = this->GetControlPoint(lower_indices);
       std::vector<double> coordinates;
+      coordinates.reserve(upper_control_point.GetDimension());
       for (int j = 0; j < upper_control_point.GetDimension(); ++j) {
         coordinates.emplace_back(scaling[current_point_index - first] * upper_control_point.GetValue(j)
             + (1 - scaling[current_point_index - first]) * lower_control_point.GetValue(j));

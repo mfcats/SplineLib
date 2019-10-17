@@ -66,7 +66,7 @@ class VTKWriterUtils {
             knots[j] + point_handler[Dimension{j}] * (knots[j + PARAMETRIC_DIMENSIONALITY] - knots[j]) / scattering[j]);
       }
       for (int k = 0; k < 3; ++k) {
-        file << (k < spline_ptr->GetPointDim() ? spline_ptr->Evaluate(coords, {k})[0] : 0) << (k < 2 ? " " : "\n");
+        file << (k < spline_ptr->GetPointDim() ? spline_ptr->Evaluate(coords, {k})[0] : 0) << (k < 2 ? ' ' : '\n');
       }
     }
   }

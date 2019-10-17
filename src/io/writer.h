@@ -22,6 +22,10 @@ namespace splinelib::src::io {
 class Writer {
  public:
   Writer() = default;
+  Writer(const Writer &other) = delete;
+  Writer(Writer &&other) = default;
+  Writer & operator=(const Writer &rhs) = delete;
+  Writer & operator=(Writer &&rhs) = delete;
   virtual ~Writer() = default;
 
   virtual void WriteFile(const std::vector<std::any> &splines, const char *filename) const = 0;

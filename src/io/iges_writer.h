@@ -15,9 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_IO_IGES_WRITER_H_
 #define SRC_IO_IGES_WRITER_H_
 
-#include <time.h>
-
 #include <any>
+#include <ctime>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -69,7 +68,7 @@ class IGESWriter : public Writer {
   std::string GetBlock(const std::string &str, int width, bool right) const;
 
   template<typename T>
-  std::string GetString(const T value) const;
+  std::string GetString(T value) const;
 
   void WriteFile(std::ofstream &file, const std::vector<std::string> &start,
                  const std::vector<std::string> &global, const std::vector<std::string> &data,

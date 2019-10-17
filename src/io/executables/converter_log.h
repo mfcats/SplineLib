@@ -35,7 +35,7 @@ class ConverterLog {
   std::string GetTime() const;
   bool OneSpline() const;
 
-  const char *log_file_;
+  const char *log_file_{""};
   std::string input_;
   std::string output_;
   std::vector<int> positions_;

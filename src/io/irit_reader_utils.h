@@ -27,7 +27,7 @@ class IRITReaderUtils {
  public:
   template<int PARAMETRIC_DIMENSIONALITY>
   static std::array<Degree, PARAMETRIC_DIMENSIONALITY> GetDegrees(int start, const std::vector<std::string> &entries) {
-    std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees;
+    std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       degrees[i] =
           Degree(util::StringOperations::StringVectorToNumberVector<int>({entries[start + PARAMETRIC_DIMENSIONALITY + 2
