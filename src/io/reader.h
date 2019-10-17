@@ -22,6 +22,10 @@ namespace splinelib::src::io {
 class Reader {
  public:
   Reader() = default;
+  Reader(const Reader &other) = delete;
+  Reader(Reader &&other) = delete;
+  Reader & operator=(const Reader &rhs) = delete;
+  Reader & operator=(Reader &&rhs) = delete;
   virtual ~Reader() = default;
 
   virtual std::vector<std::any> ReadFile(const char *filename) = 0;

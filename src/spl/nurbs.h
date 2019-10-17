@@ -58,7 +58,10 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
     physical_space_ = std::make_shared<WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(weighted_physical_space);
   }
 
-  virtual ~NURBS() = default;
+  NURBS(NURBS<PARAMETRIC_DIMENSIONALITY> &&other) = delete;
+  NURBS & operator=(const NURBS<PARAMETRIC_DIMENSIONALITY> &rhs) = delete;
+  NURBS & operator=(NURBS<PARAMETRIC_DIMENSIONALITY> &&rhs) = delete;
+  ~NURBS() override = default;
 
   bool AreEqual(const NURBS<PARAMETRIC_DIMENSIONALITY> &rhs, double tolerance =
       util::numeric_settings::GetEpsilon<double>()) const {
@@ -143,11 +146,9 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
     if (this->GetPointDim() == dimension) {
       return this->parameter_space_->GetBasisFunctions(indices, param_coord)
           * physical_space_->GetHomogenousControlPoint(indices).GetValue(dimension);
-    } else {
-      return this->parameter_space_->GetBasisFunctions(indices, param_coord)
-          * physical_space_->GetHomogenousControlPoint(indices).GetValue(dimension)
-          / GetEvaluatedWeightSum(param_coord);
     }
+    return this->parameter_space_->GetBasisFunctions(indices, param_coord)
+        * physical_space_->GetHomogenousControlPoint(indices).GetValue(dimension) / GetEvaluatedWeightSum(param_coord);
   }
 
   double GetEvaluatedDerivativeControlPoint(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord,
@@ -257,7 +258,8 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
     if (current_point > last) {
       --indices[dimension];
       return physical_space_->GetControlPoint(indices);
-    } else if (current_point >= first) {
+    }
+    if (current_point >= first) {
       std::array<int, PARAMETRIC_DIMENSIONALITY> lower_indices = indices;
       --lower_indices[dimension];
       baf::ControlPoint upper_control_point = physical_space_->GetHomogenousControlPoint(indices);
@@ -265,13 +267,12 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
       std::vector<double> coordinates;
       double new_weight = GetNewWeight(indices, dimension, scaling, current_point, first, last);
       for (int j = 0; j < upper_control_point.GetDimension(); ++j) {
-        coordinates.push_back((scaling[current_point - first] * upper_control_point.GetValue(j)
+        coordinates.emplace_back((scaling[current_point - first] * upper_control_point.GetValue(j)
             + (1 - scaling[current_point - first]) * lower_control_point.GetValue(j)) / new_weight);
       }
       return baf::ControlPoint(coordinates);
-    } else {
-      return physical_space_->GetControlPoint(indices);
     }
+    return physical_space_->GetControlPoint(indices);
   }
 
   double GetNewWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, int dimension, std::vector<double> scaling,
@@ -279,16 +280,15 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
     if (current_point > last) {
       --indices[dimension];
       return physical_space_->GetWeight(indices);
-    } else if (current_point >= first) {
+    }
+    if (current_point >= first) {
       std::array<int, PARAMETRIC_DIMENSIONALITY> lower_indices = indices;
       --lower_indices[dimension];
       double upper_weight = physical_space_->GetWeight(indices);
       double lower_weight = physical_space_->GetWeight(lower_indices);
       return scaling[current_point - first] * upper_weight + (1 - scaling[current_point - first]) * lower_weight;
-
-    } else {
-      return physical_space_->GetWeight(indices);
     }
+    return physical_space_->GetWeight(indices);
   }
 
   void SetNewControlPoints(const std::vector<double> &temp, int last, int ii, int off, int dimension) {
