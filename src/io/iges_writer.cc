@@ -142,7 +142,7 @@ void IGESWriter::GetParameterData1D(std::string *contents,
     contents->append(GetString(knot.Get()) + delimiter);
   }
   for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
-    contents->append(GetString(spl->GetWeight({i})) + delimiter);
+    contents->append(GetString(spl->GetWeight(i)) + delimiter);
   }
   for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
     for (int j = 0; j < 3; ++j) {
@@ -181,7 +181,7 @@ void IGESWriter::GetParameterData2D(std::string *contents,
     contents->append(GetString(i.Get()) + delimiter);
   }
   for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
-    contents->append(GetString(spl->GetWeight({i})) + delimiter);
+    contents->append(GetString(spl->GetWeight(i)) + delimiter);
   }
   for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
     for (int j = 0; j < 3; ++j) {
@@ -197,7 +197,7 @@ template<int PARAMETRIC_DIMENSIONALITY>
 double IGESWriter::Get3DControlPoint(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline, int index,
     int direction) const {
   if (direction < spline->GetPointDim()) {
-    return spline->GetControlPoint({index}, direction);
+    return spline->GetControlPoint(index, direction);
   }
   return 0.0;
 }

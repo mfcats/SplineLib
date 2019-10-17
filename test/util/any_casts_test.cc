@@ -55,8 +55,8 @@ TEST_F(AnySplines, CanBeCheckedForSplineDimension) {  // NOLINT
 }
 
 TEST_F(AnySplines, CanBeCastedToSplines) {  // NOLINT
-  ASSERT_THAT(util::AnyCasts::GetSpline<1>(b_spline_1d_any_)->GetControlPoint({1}).GetValue(0), DoubleEq(1.2));
-  ASSERT_THAT(util::AnyCasts::GetSpline<2>(nurbs_2d_any_)->GetWeight({1}), DoubleEq(0.8));
+  ASSERT_THAT(util::AnyCasts::GetSpline<1>(b_spline_1d_any_)->GetControlPoint(1).GetValue(0), DoubleEq(1.2));
+  ASSERT_THAT(util::AnyCasts::GetSpline<2>(nurbs_2d_any_)->GetWeight(1), DoubleEq(0.8));
   ASSERT_THROW(util::AnyCasts::GetSpline<1>(std::make_any<int>(8)), std::runtime_error);
 }
 

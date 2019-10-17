@@ -84,12 +84,37 @@ class PhysicalSpace {
     return baf::ControlPoint(coordinates);
   }
 
+  virtual baf::ControlPoint GetControlPoint(int index_1d) const {
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
+    point_handler.SetCurrentIndex(index_1d);
+    int first = dimension_ * point_handler.GetCurrent1DIndex();
+    std::vector<double> coordinates;
+    coordinates.reserve(dimension_);
+    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
+      coordinates.emplace_back(control_points_[first + coordinate]);
+    }
+    return baf::ControlPoint(coordinates);
+  }
+
   void SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, const baf::ControlPoint &control_point,
       int dimension = 0, int (*before)(int) = nullptr) {
     const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_);
     if (before != nullptr) number_of_points_[dimension] = before(number_of_points_[dimension]);
     auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
     point_handler.SetCurrentIndex(indices);
+    int first = dimension_ * point_handler.GetCurrent1DIndex();
+    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
+      control_points_[first + coordinate] = control_point.GetValue(coordinate);
+    }
+    number_of_points_ = number_of_points_before;
+  }
+
+  void SetControlPoint(int index_1d, const baf::ControlPoint &control_point, int dimension = 0,
+      int (*before)(int) = nullptr) {
+    const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_);
+    if (before != nullptr) number_of_points_[dimension] = before(number_of_points_[dimension]);
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
+    point_handler.SetCurrentIndex(index_1d);
     int first = dimension_ * point_handler.GetCurrent1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
       control_points_[first + coordinate] = control_point.GetValue(coordinate);
@@ -142,6 +167,10 @@ class PhysicalSpace {
   }
 
   virtual double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> /*indices*/) const {
+    return 1.0;
+  }
+
+  virtual double GetWeight(int /*index_1d*/) const {
     return 1.0;
   }
 

@@ -16,8 +16,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "b_spline.h"
 #include "nurbs.h"
-#include "random_b_spline_generator.h"
-#include "random_nurbs_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -57,8 +55,8 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
       baf::ControlPoint({3.0, 2.0}), baf::ControlPoint({4.0, 1.5}), baf::ControlPoint({4.0, 0.0})
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
-    ASSERT_THAT(bspline_1d_after_->GetControlPoint({i}, 0), DoubleEq(new_control_points[i].GetValue(0)));
-    ASSERT_THAT(bspline_1d_after_->GetControlPoint({i}, 1), DoubleEq(new_control_points[i].GetValue(1)));
+    ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 0), DoubleEq(new_control_points[i].GetValue(0)));
+    ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 1), DoubleEq(new_control_points[i].GetValue(1)));
   }
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*bspline_1d_after_), true);
 }
@@ -74,8 +72,8 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyTwoTimes) {  // NOLINT
       baf::ControlPoint({4.0, 1.5}), baf::ControlPoint({4.0, 0.0})
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
-    ASSERT_THAT(bspline_1d_after_->GetControlPoint({i}, 0), DoubleEq(new_control_points[i].GetValue(0)));
-    ASSERT_THAT(bspline_1d_after_->GetControlPoint({i}, 1), DoubleEq(new_control_points[i].GetValue(1)));
+    ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 0), DoubleEq(new_control_points[i].GetValue(0)));
+    ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 1), DoubleEq(new_control_points[i].GetValue(1)));
   }
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*bspline_1d_after_), true);
 }
@@ -91,8 +89,8 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyThreeTimesAtOnce) {  // NOLINT
       baf::ControlPoint({4.0, 0.0})
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
-    ASSERT_THAT(bspline_1d_after_->GetControlPoint({i}, 0), DoubleEq(new_control_points[i].GetValue(0)));
-    ASSERT_THAT(bspline_1d_after_->GetControlPoint({i}, 1), DoubleEq(new_control_points[i].GetValue(1)));
+    ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 0), DoubleEq(new_control_points[i].GetValue(0)));
+    ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 1), DoubleEq(new_control_points[i].GetValue(1)));
   }
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*bspline_1d_after_, 0.2), false);
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*bspline_1d_after_, 0.3), true);
@@ -149,9 +147,9 @@ TEST_F(NURBS1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
   std::vector<double> new_weights = {1, 0.8, 1.4, 1.1, 0.8, 1.4};
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
-      ASSERT_THAT(nurbs_1d_after_->GetControlPoint({i}, j), DoubleEq(new_control_points[i].GetValue(j)));
+      ASSERT_THAT(nurbs_1d_after_->GetControlPoint(i, j), DoubleEq(new_control_points[i].GetValue(j)));
     }
-    ASSERT_THAT(nurbs_1d_after_->GetWeight({i}), DoubleEq(new_weights[i]));
+    ASSERT_THAT(nurbs_1d_after_->GetWeight(i), DoubleEq(new_weights[i]));
   }
   ASSERT_THAT(nurbs_1d_before_->AreGeometricallyEqual(*nurbs_1d_after_, 0.1), false);
   ASSERT_THAT(nurbs_1d_before_->AreGeometricallyEqual(*nurbs_1d_after_, 0.13), true);

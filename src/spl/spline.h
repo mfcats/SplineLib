@@ -155,8 +155,16 @@ class Spline {
     return GetPhysicalSpace()->GetControlPoint(indices).GetValue(dimension);
   }
 
+  double GetControlPoint(int index_1d, int dimension) const {
+    return GetPhysicalSpace()->GetControlPoint(index_1d).GetValue(dimension);
+  }
+
   baf::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
     return GetPhysicalSpace()->GetControlPoint(indices);
+  }
+
+  baf::ControlPoint GetControlPoint(int index_1d) const {
+    return GetPhysicalSpace()->GetControlPoint(index_1d);
   }
 
   double GetExpansion() const {
@@ -165,6 +173,10 @@ class Spline {
 
   double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
     return GetPhysicalSpace()->GetWeight(indices);
+  }
+
+  double GetWeight(int index_1d) const {
+    return GetPhysicalSpace()->GetWeight(index_1d);
   }
 
   void InsertKnot(ParametricCoordinate knot, int dimension, size_t multiplicity = 1) {

@@ -135,8 +135,8 @@ inline void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndex(
   for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY}; ++current_dimension) {
     if (GetValue(multi_index, current_dimension) < 0)
       throw std::invalid_argument("All indices have to be non-negative.");
-//    if (GetValue(multi_index, current_dimension) >= GetValue(multi_index_length_, current_dimension))
-//      throw std::invalid_argument("Each indices has to be smaller than the given corresponding maximum index");
+    if (GetValue(multi_index, current_dimension) >= GetValue(multi_index_length_, current_dimension))
+      throw std::invalid_argument("Each index has to be smaller than the given corresponding maximum index.");
   }
   current_multi_index_value_ = multi_index;
 }
@@ -144,8 +144,8 @@ inline void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndex(
 template<int PARAMETRIC_DIMENSIONALITY>
 void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndex(int index_1d) {
   if (index_1d < 0) throw std::invalid_argument("The 1D index has to be non-negative.");
-//  if (index_1d >= GetNumberOfTotalMultiIndices())
-//    throw std::invalid_argument("The 1D index has to be smaller than the number of possible multi-indices.");
+  if (index_1d >= GetNumberOfTotalMultiIndices())
+    throw std::invalid_argument("The 1D index has to be smaller than the number of possible multi-indices.");
   for (Dimension current_dimension{PARAMETRIC_DIMENSIONALITY - 1}; current_dimension >= Dimension{0};
        --current_dimension) {
     int const current_slice_size = GetCurrentSliceSize(multi_index_length_, current_dimension);
