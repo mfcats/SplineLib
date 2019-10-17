@@ -83,7 +83,7 @@ class MultiIndexHandler {
   std::array<int, PARAMETRIC_DIMENSIONALITY> current_multi_index_value_;
 };
 
-#include "multi_index_handler.inc"
+#include "src/util/multi_index_handler.inc"
 }  // namespace splinelib::src::util
 
 #endif  // SRC_UTIL_MULTI_INDEX_HANDLER_H_

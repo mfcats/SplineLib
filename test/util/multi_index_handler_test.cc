@@ -104,7 +104,6 @@ TEST_F(AMultiIndexHandler1D, Returns0AfterCollapsingDimension0WithCurrentMultiIn
   std::array<int, 1> current_multi_index = {4};
   multi_index_handler_1D_->SetCurrentIndex(current_multi_index);
   ASSERT_THAT(multi_index_handler_1D_->CollapseDimension(Dimension{0}), Eq(0));
-
 }
 
 class AMultiIndexHandler2D : public Test {
