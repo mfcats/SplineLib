@@ -11,6 +11,8 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
+// NOLINT(build/header_guard)
+
 template<int PARAMETRIC_DIMENSIONALITY>
 MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::MultiIndexHandler(
     std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index_length) : multi_index_length_(multi_index_length) {

@@ -11,6 +11,9 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
+// NOLINT(build/header_guard)
+
+
 template<typename TYPE, typename NAME>
 constexpr NamedType<TYPE, NAME>::NamedType(TYPE const &value) : value_(value) {}
 
