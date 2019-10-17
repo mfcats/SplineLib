@@ -26,7 +26,11 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class BSplineGenerator : public SplineGenerator<PARAMETRIC_DIMENSIONALITY> {
  public:
   BSplineGenerator() = default;
-  virtual ~BSplineGenerator() = default;
+  BSplineGenerator(const BSplineGenerator<PARAMETRIC_DIMENSIONALITY> &other) = default;
+  BSplineGenerator(BSplineGenerator<PARAMETRIC_DIMENSIONALITY> &&other) = delete;
+  BSplineGenerator & operator=(const BSplineGenerator<PARAMETRIC_DIMENSIONALITY> &rhs) = default;
+  BSplineGenerator & operator=(BSplineGenerator<PARAMETRIC_DIMENSIONALITY> &&rhs) = delete;
+  ~BSplineGenerator() override = default;
 
   BSplineGenerator(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector,
       std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree, const std::vector<baf::ControlPoint> &control_points)

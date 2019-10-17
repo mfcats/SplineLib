@@ -54,6 +54,10 @@ class PhysicalSpace {
                                                        number_of_points_(physical_space.number_of_points_),
                                                        control_points_(physical_space.control_points_) {}
 
+  PhysicalSpace(PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &&other) noexcept = default;
+  PhysicalSpace & operator=(const PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs) = default;
+  PhysicalSpace & operator=(PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &&rhs) noexcept = default;
+
   bool AreEqual(const PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs,
       double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
     return std::equal(control_points_.begin(), control_points_.end(),
@@ -70,23 +74,20 @@ class PhysicalSpace {
 
   virtual baf::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
     std::vector<double> coordinates;
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler =
-        util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
     point_handler.SetCurrentIndex(indices);
     int first = dimension_ * point_handler.GetCurrent1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      coordinates.push_back(control_points_[first + coordinate]);
+      coordinates.emplace_back(control_points_[first + coordinate]);
     }
     return baf::ControlPoint(coordinates);
   }
 
   void SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, const baf::ControlPoint &control_point,
-      int dimension = 0,
-                       int (*before)(int) = nullptr) {
+      int dimension = 0, int (*before)(int) = nullptr) {
     const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_);
-    if (before) number_of_points_[dimension] = before(number_of_points_[dimension]);
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler =
-        util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
+    if (before != nullptr) number_of_points_[dimension] = before(number_of_points_[dimension]);
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
     point_handler.SetCurrentIndex(indices);
     int first = dimension_ * point_handler.GetCurrent1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
@@ -139,7 +140,7 @@ class PhysicalSpace {
     return dimension_;
   }
 
-  virtual double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY>) const {
+  virtual double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> /*indices*/) const {
     return 1.0;
   }
 
@@ -179,7 +180,7 @@ class PhysicalSpace {
   }
 
  protected:
-  int dimension_;
+  int dimension_{};
   std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_;
   std::vector<double> control_points_;
 };

@@ -174,7 +174,7 @@ std::array<int, PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIO
 
 template<int PARAMETRIC_DIMENSIONALITY>
 int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::CollapseDimension(Dimension const &dimension) const {
-  std::array<int, PARAMETRIC_DIMENSIONALITY - 1> multi_index, length;
+  std::array<int, PARAMETRIC_DIMENSIONALITY - 1> multi_index{}, length{};
   for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY - 1};
        ++current_dimension) {
     int &current_index = GetValue(multi_index, current_dimension);

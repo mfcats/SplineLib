@@ -21,6 +21,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::baf {
 class BasisFunction {
  public:
+  BasisFunction(BasisFunction const &other) = delete;
+  BasisFunction(BasisFunction &&other) = delete;
+  virtual BasisFunction & operator=(BasisFunction const &rhs) = delete;
+  virtual BasisFunction & operator=(BasisFunction &&rhs) = delete;
   virtual ~BasisFunction() = default;
 
   // The evaluation of the i-th basis function of degree p > 0 N_{i,p} is a linear combination of the basis functions

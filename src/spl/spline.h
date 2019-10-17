@@ -48,6 +48,10 @@ class Spline {
     parameter_space_ = std::make_shared<ParameterSpace<PARAMETRIC_DIMENSIONALITY>>(parameter_space);
   }
 
+  Spline(Spline<PARAMETRIC_DIMENSIONALITY> &&other) = delete;
+  Spline & operator=(const Spline<PARAMETRIC_DIMENSIONALITY> &rhs) = delete;
+  Spline & operator=(Spline<PARAMETRIC_DIMENSIONALITY> &&rhs) = delete;
+
   virtual std::vector<double> Evaluate(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord,
                                        const std::vector<int> &dimensions) const {
     this->ThrowIfParametricCoordinateOutsideKnotVectorRange(param_coord);
@@ -104,7 +108,7 @@ class Spline {
       points[i] = number + 1;
     }
     for (int i = 0; i < GetPointDim(); ++i) {
-      dimensions.push_back(i);
+      dimensions.emplace_back(i);
     }
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(points);
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
@@ -281,7 +285,7 @@ class Spline {
   }
 
   std::array<int, PARAMETRIC_DIMENSIONALITY> GetNumberOfBasisFunctionsToEvaluate() const {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> total_length;
+    std::array<int, PARAMETRIC_DIMENSIONALITY> total_length{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       total_length[i] = parameter_space_->GetDegree(i).Get() + 1;
     }

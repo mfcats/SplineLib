@@ -56,9 +56,9 @@ class NamedType {
   ~NamedType() = default;
 
   constexpr NamedType & operator++();
-  constexpr NamedType operator++(int);
+  constexpr const NamedType operator++(int);
   constexpr NamedType & operator--();
-  constexpr NamedType operator--(int);
+  constexpr const NamedType operator--(int);
 
   friend constexpr bool operator== <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
   friend constexpr bool operator> <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);

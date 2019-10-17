@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H_
 #define SRC_SPL_WEIGHTED_PHYSICAL_SPACE_H_
 
+#include <utility>
 #include <vector>
 
 #include "physical_space.h"
@@ -24,9 +25,9 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
  public:
   WeightedPhysicalSpace() = default;
-  WeightedPhysicalSpace(const std::vector<baf::ControlPoint> &control_points, const std::vector<double> &weights,
+  WeightedPhysicalSpace(const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights,
       std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points)
-      : PhysicalSpace<PARAMETRIC_DIMENSIONALITY>(control_points, number_of_points), weights_(weights) {
+      : PhysicalSpace<PARAMETRIC_DIMENSIONALITY>(control_points, number_of_points), weights_(std::move(weights)) {
     if (control_points.size() != weights_.size()) {
       throw std::runtime_error("The number of control points and weights has to be the same.");
     }
@@ -36,6 +37,11 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
       : PhysicalSpace<PARAMETRIC_DIMENSIONALITY>(physical_space) {
     this->weights_ = physical_space.weights_;
   }
+
+  WeightedPhysicalSpace(WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY> &&other) noexcept = default;
+  WeightedPhysicalSpace & operator=(const WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs) = default;
+  WeightedPhysicalSpace & operator=(WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY> &&rhs) noexcept = default;
+  ~WeightedPhysicalSpace() = default;
 
   bool AreEqual(const WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs,
                 double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
@@ -84,7 +90,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
   void SetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, double weight, int dimension = 0,
       int (*before)(int) = nullptr) {
     const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(this->number_of_points_);
-    if (before) this->number_of_points_[dimension] = before(this->number_of_points_[dimension]);
+    if (before != nullptr) this->number_of_points_[dimension] = before(this->number_of_points_[dimension]);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler =
         util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
     point_handler.SetCurrentIndex(indices);

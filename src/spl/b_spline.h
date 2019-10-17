@@ -53,7 +53,10 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     physical_space_ = std::make_shared<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(physical_space);
   }
 
-  virtual ~BSpline() = default;
+  BSpline(BSpline<PARAMETRIC_DIMENSIONALITY> &&other) = delete;
+  BSpline & operator=(const BSpline<PARAMETRIC_DIMENSIONALITY> &rhs) = delete;
+  BSpline & operator=(BSpline<PARAMETRIC_DIMENSIONALITY> &&rhs) = delete;
+  ~BSpline() override = default;
 
   bool AreEqual(const BSpline<PARAMETRIC_DIMENSIONALITY> &rhs,
       double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
@@ -141,20 +144,20 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     if (current_point_index > last) {
       --indices[dimension];
       return this->GetControlPoint(indices);
-    } else if (current_point_index >= first) {
+    }
+    if (current_point_index >= first) {
       std::array<int, PARAMETRIC_DIMENSIONALITY> lower_indices = indices;
       --lower_indices[dimension];
       baf::ControlPoint upper_control_point = this->GetControlPoint(indices);
       baf::ControlPoint lower_control_point = this->GetControlPoint(lower_indices);
       std::vector<double> coordinates;
       for (int j = 0; j < upper_control_point.GetDimension(); ++j) {
-        coordinates.push_back(scaling[current_point_index - first] * upper_control_point.GetValue(j)
-                                  + (1 - scaling[current_point_index - first]) * lower_control_point.GetValue(j));
+        coordinates.emplace_back(scaling[current_point_index - first] * upper_control_point.GetValue(j)
+            + (1 - scaling[current_point_index - first]) * lower_control_point.GetValue(j));
       }
       return baf::ControlPoint(coordinates);
-    } else {
-      return this->GetControlPoint(indices);
     }
+    return this->GetControlPoint(indices);
   }
 
   void SetNewControlPoints(const std::vector<double> &temp, int last, int ii, int off, int dimension) {

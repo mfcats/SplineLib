@@ -24,6 +24,10 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class SplineGenerator {
  public:
   SplineGenerator() = default;
+  SplineGenerator(const SplineGenerator<PARAMETRIC_DIMENSIONALITY> &other) = default;
+  SplineGenerator(SplineGenerator<PARAMETRIC_DIMENSIONALITY> &&other) = delete;
+  SplineGenerator & operator=(const SplineGenerator<PARAMETRIC_DIMENSIONALITY> &rhs) = default;
+  SplineGenerator & operator=(SplineGenerator<PARAMETRIC_DIMENSIONALITY> &&rhs) = delete;
   virtual ~SplineGenerator() = default;
 
   SplineGenerator(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector,

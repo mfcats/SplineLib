@@ -32,14 +32,15 @@ class ParameterSpace {
  public:
   ParameterSpace() = default;
 
-  ParameterSpace(const baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> &knot_vector,
-      std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree) : knot_vector_(knot_vector), degree_(degree) {
+  ParameterSpace(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector,
+      std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree) : knot_vector_(std::move(knot_vector)),
+      degree_(std::move(degree)) {
     ThrowIfKnotVectorDoesNotStartAndEndWith();
-    baf::BasisFunctionFactory factory;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].Get() - 1);
       for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].Get() - 1); ++j) {
-        basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
+        basis_functions_[i].emplace_back(
+            baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
       }
     }
   }
@@ -50,15 +51,18 @@ class ParameterSpace {
       baf::KnotVector knot_vector = *(parameter_space.GetKnotVector(i));
       knot_vector_[i] = std::make_shared<baf::KnotVector>(knot_vector);
     }
-    baf::BasisFunctionFactory factory;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].Get() - 1);
       for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].Get() - 1); ++j) {
-        basis_functions_[i].emplace_back(factory.CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
+        basis_functions_[i].emplace_back(
+            baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
       }
     }
   }
 
+  ParameterSpace(ParameterSpace<PARAMETRIC_DIMENSIONALITY> &&other) noexcept = default;
+  ParameterSpace & operator=(const ParameterSpace<PARAMETRIC_DIMENSIONALITY> &rhs) = delete;
+  ParameterSpace & operator=(ParameterSpace<PARAMETRIC_DIMENSIONALITY> &&rhs) = delete;
   virtual ~ParameterSpace() = default;
 
   std::vector<double> EvaluateAllNonZeroBasisFunctions(int direction, ParametricCoordinate param_coord) const {
@@ -130,7 +134,7 @@ class ParameterSpace {
 
   virtual std::array<int, PARAMETRIC_DIMENSIONALITY> GetArrayOfFirstNonZeroBasisFunctions(
       std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> first_non_zero;
+    std::array<int, PARAMETRIC_DIMENSIONALITY> first_non_zero{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       first_non_zero[i] = GetKnotVector(i)->GetKnotSpan(param_coord[i]).Get() - GetDegree(i).Get();
     }

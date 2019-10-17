@@ -36,7 +36,7 @@ constexpr NamedType<TYPE, NAME> & NamedType<TYPE, NAME>::operator++() {
 }
 
 template<typename TYPE, typename NAME>
-constexpr NamedType<TYPE, NAME> NamedType<TYPE, NAME>::operator++(int) {
+constexpr const NamedType<TYPE, NAME> NamedType<TYPE, NAME>::operator++(int) {
   NamedType<TYPE, NAME> result(*this);
   ++(*this);
   return result;
@@ -49,7 +49,7 @@ constexpr NamedType<TYPE, NAME> & NamedType<TYPE, NAME>::operator--() {
 }
 
 template<typename TYPE, typename NAME>
-constexpr NamedType<TYPE, NAME> NamedType<TYPE, NAME>::operator--(int) {
+constexpr const NamedType<TYPE, NAME> NamedType<TYPE, NAME>::operator--(int) {
   NamedType<TYPE, NAME> result(*this);
   --(*this);
   return result;

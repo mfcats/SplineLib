@@ -25,7 +25,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::baf {
 class ControlPoint {
  public:
-  explicit ControlPoint(std::initializer_list<double> coordinates);
+  ControlPoint(std::initializer_list<double> coordinates);
   explicit ControlPoint(std::vector<double> coordinates);
   explicit ControlPoint(uint64_t dimension);
 
