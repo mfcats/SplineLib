@@ -35,12 +35,12 @@ TEST_F(AMultiIndexHandler1D, Returns1DIndex0AfterConstruction) {  // NOLINT
   ASSERT_THAT(multi_index_handler_1D_->GetCurrent1DIndex(), Eq(0));
 }
 
-TEST_F(AMultiIndexHandler1D, CanBeCopied) { // NOLINT
+TEST_F(AMultiIndexHandler1D, CanBeCopied) {  // NOLINT
   util::MultiIndexHandler<1> copied_multi_index_handler_1D = *multi_index_handler_1D_;
   ASSERT_THAT(copied_multi_index_handler_1D, Eq(*multi_index_handler_1D_));
 }
 
-TEST_F(AMultiIndexHandler1D, CanBeAssigned) { // NOLINT
+TEST_F(AMultiIndexHandler1D, CanBeAssigned) {  // NOLINT
   util::MultiIndexHandler<1> multi_index_handler_1D_to_be_assigned{};
   multi_index_handler_1D_to_be_assigned = *multi_index_handler_1D_;
   ASSERT_THAT(multi_index_handler_1D_to_be_assigned, Eq(*multi_index_handler_1D_));
@@ -106,6 +106,15 @@ TEST_F(AMultiIndexHandler1D, Returns0AfterCollapsingDimension0WithCurrentMultiIn
   ASSERT_THAT(multi_index_handler_1D_->CollapseDimension(Dimension{0}), Eq(0));
 }
 
+TEST_F(AMultiIndexHandler1D, CanBeIterated) {  // NOLINT
+  int counter = 0;
+  for (auto multi_index_handler_with_current_indices = multi_index_handler_1D_->begin();
+       multi_index_handler_with_current_indices != multi_index_handler_1D_->end();
+       ++multi_index_handler_with_current_indices, ++counter) {
+    ASSERT_THAT(multi_index_handler_with_current_indices.GetCurrent1DIndex(), Eq(counter));
+  }
+}
+
 class AMultiIndexHandler2D : public Test {
  public:
   AMultiIndexHandler2D() {
@@ -121,12 +130,12 @@ TEST_F(AMultiIndexHandler2D, Returns1DIndex0AfterConstruction) {  // NOLINT
   ASSERT_THAT(multi_index_handler_2D_->GetCurrent1DIndex(), Eq(0));
 }
 
-TEST_F(AMultiIndexHandler2D, CanBeCopied) { // NOLINT
+TEST_F(AMultiIndexHandler2D, CanBeCopied) {  // NOLINT
   util::MultiIndexHandler<2> copied_multi_index_handler_2D = *multi_index_handler_2D_;
   ASSERT_THAT(copied_multi_index_handler_2D, Eq(*multi_index_handler_2D_));
 }
 
-TEST_F(AMultiIndexHandler2D, CanBeAssigned) { // NOLINT
+TEST_F(AMultiIndexHandler2D, CanBeAssigned) {  // NOLINT
   util::MultiIndexHandler<2> multi_index_handler_2D_to_be_assigned{};
   multi_index_handler_2D_to_be_assigned = *multi_index_handler_2D_;
   ASSERT_THAT(multi_index_handler_2D_to_be_assigned, Eq(*multi_index_handler_2D_));
@@ -219,12 +228,12 @@ TEST_F(AMultiIndexHandler3D, Returns1DIndex0AfterConstruction) {  // NOLINT
   ASSERT_THAT(multi_index_handler_3D_->GetCurrent1DIndex(), Eq(0));
 }
 
-TEST_F(AMultiIndexHandler3D, CanBeCopied) { // NOLINT
+TEST_F(AMultiIndexHandler3D, CanBeCopied) {  // NOLINT
   util::MultiIndexHandler<3> copied_multi_index_handler_3D = *multi_index_handler_3D_;
   ASSERT_THAT(copied_multi_index_handler_3D, Eq(*multi_index_handler_3D_));
 }
 
-TEST_F(AMultiIndexHandler3D, CanBeAssigned) { // NOLINT
+TEST_F(AMultiIndexHandler3D, CanBeAssigned) {  // NOLINT
   util::MultiIndexHandler<3> multi_index_handler_3D_to_be_assigned{};
   multi_index_handler_3D_to_be_assigned = *multi_index_handler_3D_;
   ASSERT_THAT(multi_index_handler_3D_to_be_assigned, Eq(*multi_index_handler_3D_));

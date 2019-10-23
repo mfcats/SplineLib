@@ -15,21 +15,36 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 template<int PARAMETRIC_DIMENSIONALITY>
 MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::MultiIndexHandler(
-    std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index_length) : multi_index_length_(multi_index_length) {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index_length) :
+    overflowed_{false}, multi_index_length_(multi_index_length) {
   for (auto &integer : current_multi_index_value_) integer = 0;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
 MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::MultiIndexHandler(MultiIndexHandler &&other) noexcept :
-    multi_index_length_(std::move(other.multi_index_length_)),
+    overflowed_{false}, multi_index_length_(std::move(other.multi_index_length_)),
     current_multi_index_value_(std::move(other.current_multi_index_value_)) {}
 
 template<int PARAMETRIC_DIMENSIONALITY>
 MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator=(
     MultiIndexHandler &&rhs) noexcept {
+  overflowed_ = std::move(rhs.overflowed_);
   multi_index_length_ = std::move(rhs.multi_index_length_);
   current_multi_index_value_ = std::move(rhs.current_multi_index_value_);
   return (*this);
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::begin() {
+  MultiIndexHandler initialized_multi_index_handler(multi_index_length_);
+  return initialized_multi_index_handler;
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::end() {
+  MultiIndexHandler multi_index_handler_with_highest_indices(multi_index_length_);
+  multi_index_handler_with_highest_indices.overflowed_ = true;
+  return multi_index_handler_with_highest_indices;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
@@ -43,6 +58,7 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIME
     int &current_value = GetValue(current_multi_index_value_, current_dimension);
     int const &current_length = GetValue(multi_index_length_, current_dimension);
     if ((current_value == (current_length - 1)) || (current_length == 0)) {
+      if (current_dimension == Dimension{PARAMETRIC_DIMENSIONALITY - 1}) overflowed_ = true;
       current_value = 0;
     } else {
       ++current_value;
@@ -65,6 +81,7 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIME
   for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY}; ++current_dimension) {
     int &current_value = GetValue(current_multi_index_value_, current_dimension);
     if (current_value == 0) {
+      if (current_dimension == Dimension{PARAMETRIC_DIMENSIONALITY - 1}) overflowed_ = false;
       current_value = (GetValue(multi_index_length_, current_dimension) - 1);
     } else {
       --current_value;
@@ -96,8 +113,14 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIME
 
 template<int PARAMETRIC_DIMENSIONALITY>
 bool MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator==(const MultiIndexHandler &rhs) const {
-  return this->multi_index_length_ == rhs.multi_index_length_ &&
+  return this->overflowed_ == rhs.overflowed_ && this->multi_index_length_ == rhs.multi_index_length_ &&
       this->current_multi_index_value_ == rhs.current_multi_index_value_;
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+bool MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator!=(const MultiIndexHandler &rhs) const {
+  return this->overflowed_ != rhs.overflowed_ || this->multi_index_length_ != rhs.multi_index_length_ ||
+      this->current_multi_index_value_ != rhs.current_multi_index_value_;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>

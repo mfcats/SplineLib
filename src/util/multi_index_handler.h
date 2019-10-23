@@ -47,6 +47,9 @@ class MultiIndexHandler {
   MultiIndexHandler & operator=(MultiIndexHandler &&rhs) noexcept;
   ~MultiIndexHandler() = default;
 
+  MultiIndexHandler begin();
+  MultiIndexHandler end();
+
   int operator[](Dimension const &dimension) const;
   MultiIndexHandler & operator++();
   const MultiIndexHandler operator++(int);
@@ -57,6 +60,7 @@ class MultiIndexHandler {
   // Jumps count multi-index values backwards.
   MultiIndexHandler & operator-(int count);
   bool operator==(const MultiIndexHandler &rhs) const;
+  bool operator!=(const MultiIndexHandler &rhs) const;
 
   std::array<int, PARAMETRIC_DIMENSIONALITY> GetCurrentIndex() const;
   int GetCurrent1DIndex() const;
@@ -79,6 +83,7 @@ class MultiIndexHandler {
   static int GetCurrentSliceSize(std::array<int, PARAMETRIC_DIMENSIONALITY> const &length,
                                  Dimension const &maximum_dimension);
 
+  bool overflowed_;
   std::array<int, PARAMETRIC_DIMENSIONALITY> multi_index_length_;
   std::array<int, PARAMETRIC_DIMENSIONALITY> current_multi_index_value_;
 };
