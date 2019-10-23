@@ -31,7 +31,7 @@ class SquareGenerator {
   spl::PhysicalSpace<2> GeneratePhysicalSpace() const;
 
   Degree degree_;
-  u_int64_t number_of_knots_;  // NOLINT(modernize-use-default-member-init)
+  u_int64_t number_of_knots_;  // NOLINT
   ParametricCoordinate one_{1};
   ParametricCoordinate zero_{0};
 };
