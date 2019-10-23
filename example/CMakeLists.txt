@@ -28,4 +28,3 @@ add_executable(TestcaseOptimizer ${OPTIMIZER})
 
 target_link_libraries(ex1 SplineLib::splinelibspl)
 target_link_libraries(TestcaseOptimizer SplineLib::splinelibspl SplineLib::splinelibutil SplineLib::splinelibio)
-

@@ -22,7 +22,7 @@ install(
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
         RUNTIME DESTINATION "${executable_install_dir}"
-        INCLUDES DESTINATION "${include_install_dir}"
+        INCLUDES DESTINATION "${include_install_dir}/src/util"
 )
 
 install(FILES
@@ -42,4 +42,4 @@ install(FILES
         string_operations.h
         system_operations.h
         vector_utils.h
-        DESTINATION "${include_install_dir}")
+        DESTINATION "${include_install_dir}/src/util")
