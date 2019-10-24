@@ -85,14 +85,32 @@ TEST_F(AMultiIndexHandler1D, CanBeIterated) {  // NOLINT
 }
 
 TEST_F(AMultiIndexHandler1D, ReturnsIndex5AtDimension0AfterSettingCurrentIndexTo1DIndex5) {  // NOLINT
-  std::array<int, 1> current_1D_index = {5};
-  multi_index_handler_1D_->SetCurrentIndex(current_1D_index);
+  std::array<int, 1> current_multi_index = {5};
+  multi_index_handler_1D_->SetCurrentIndex(current_multi_index);
   ASSERT_THAT((*multi_index_handler_1D_)[Dimension{0}], Eq(5));
+}
+
+TEST_F(AMultiIndexHandler1D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexToMinus1) {  // NOLINT
+  std::array<int, 1> current_multi_index = {-1};
+  ASSERT_THROW(multi_index_handler_1D_->SetCurrentIndex(current_multi_index), std::invalid_argument);
+}
+
+TEST_F(AMultiIndexHandler1D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexTo10) {  // NOLINT
+  std::array<int, 1> current_multi_index = {10};
+  ASSERT_THROW(multi_index_handler_1D_->SetCurrentIndex(current_multi_index), std::invalid_argument);
 }
 
 TEST_F(AMultiIndexHandler1D, Returns1DIndex5AfterSettingCurrentIndexTo5) {  // NOLINT
   multi_index_handler_1D_->SetCurrentIndex(5);
   ASSERT_THAT(multi_index_handler_1D_->GetCurrent1DIndex(), Eq(5));
+}
+
+TEST_F(AMultiIndexHandler1D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexTo1DIndexMinus1) {  // NOLINT
+  ASSERT_THROW(multi_index_handler_1D_->SetCurrentIndex(-1), std::invalid_argument);
+}
+
+TEST_F(AMultiIndexHandler1D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexTo1DIndex10) {  // NOLINT
+  ASSERT_THROW(multi_index_handler_1D_->SetCurrentIndex(10), std::invalid_argument);
 }
 
 TEST_F(AMultiIndexHandler1D, Returns1DIndex1ForMultiIndex1WithLength2) {  // NOLINT
@@ -196,10 +214,28 @@ TEST_F(AMultiIndexHandler2D, Returns1DIndex21AfterSettingCurrentIndexToIndex3And
   ASSERT_THAT(multi_index_handler_2D_->GetCurrent1DIndex(), Eq(21));
 }
 
+TEST_F(AMultiIndexHandler2D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexTo3AndMinus1) {  // NOLINT
+  std::array<int, 2> current_multi_index = {3, -1};
+  ASSERT_THROW(multi_index_handler_2D_->SetCurrentIndex(current_multi_index), std::invalid_argument);
+}
+
+TEST_F(AMultiIndexHandler2D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexTo9And2) {  // NOLINT
+  std::array<int, 2> current_multi_index = {9, 2};
+  ASSERT_THROW(multi_index_handler_2D_->SetCurrentIndex(current_multi_index), std::invalid_argument);
+}
+
 TEST_F(AMultiIndexHandler2D, ReturnsIndex3And2AfterSettingCurrentIndexTo1DIndex21) {  // NOLINT
   multi_index_handler_2D_->SetCurrentIndex(21);
   ASSERT_THAT((*multi_index_handler_2D_)[Dimension{0}], Eq(3));
   ASSERT_THAT((*multi_index_handler_2D_)[Dimension{1}], Eq(2));
+}
+
+TEST_F(AMultiIndexHandler2D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexTo1DIndexMinus1) {  // NOLINT
+  ASSERT_THROW(multi_index_handler_2D_->SetCurrentIndex(-1), std::invalid_argument);
+}
+
+TEST_F(AMultiIndexHandler2D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexTo1DIndex27) {  // NOLINT
+  ASSERT_THROW(multi_index_handler_2D_->SetCurrentIndex(27), std::invalid_argument);
 }
 
 TEST_F(AMultiIndexHandler2D, Returns1DIndex6ForMultiIndex2And1WithLength4And3) {  // NOLINT
@@ -314,11 +350,29 @@ TEST_F(AMultiIndexHandler3D, Returns1DIndex29AfterSettingCurrentIndexToIndex1And
   ASSERT_THAT(multi_index_handler_3D_->GetCurrent1DIndex(), Eq(29));
 }
 
+TEST_F(AMultiIndexHandler3D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexTo3AndMinus1And3) {  // NOLINT
+  std::array<int, 3> current_multi_index = {3, -1, 3};
+  ASSERT_THROW(multi_index_handler_3D_->SetCurrentIndex(current_multi_index), std::invalid_argument);
+}
+
+TEST_F(AMultiIndexHandler3D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexTo3And3And2) {  // NOLINT
+  std::array<int, 3> current_multi_index = {3, 3, 2};
+  ASSERT_THROW(multi_index_handler_3D_->SetCurrentIndex(current_multi_index), std::invalid_argument);
+}
+
 TEST_F(AMultiIndexHandler3D, ReturnsIndex1And1And2AfterSettingCurrentIndexTo1DIndex29) {  // NOLINT
   multi_index_handler_3D_->SetCurrentIndex(29);
   ASSERT_THAT((*multi_index_handler_3D_)[Dimension{0}], Eq(1));
   ASSERT_THAT((*multi_index_handler_3D_)[Dimension{1}], Eq(1));
   ASSERT_THAT((*multi_index_handler_3D_)[Dimension{2}], Eq(2));
+}
+
+TEST_F(AMultiIndexHandler3D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexTo1DIndexMinus1) {  // NOLINT
+  ASSERT_THROW(multi_index_handler_3D_->SetCurrentIndex(-1), std::invalid_argument);
+}
+
+TEST_F(AMultiIndexHandler3D, ThrowsInvalidArgumentErrorWhenSettingCurrentIndexTo1DIndex60) {  // NOLINT
+  ASSERT_THROW(multi_index_handler_3D_->SetCurrentIndex(60), std::invalid_argument);
 }
 
 TEST_F(AMultiIndexHandler3D, Returns1DIndex17ForMultiIndex2And1And1WithLength3And4And2) {  // NOLINT
