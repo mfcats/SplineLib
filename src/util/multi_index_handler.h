@@ -83,8 +83,8 @@ class MultiIndexHandler {
                                  Dimension const &maximum_dimension);
 
   bool overflowed_{};
-  std::array<int, PARAMETRIC_DIMENSIONALITY> multi_index_length_;
-  std::array<int, PARAMETRIC_DIMENSIONALITY> current_multi_index_value_;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> multi_index_length_{};
+  std::array<int, PARAMETRIC_DIMENSIONALITY> current_multi_index_value_{};
 };
 
 #include "src/util/multi_index_handler.inc"
