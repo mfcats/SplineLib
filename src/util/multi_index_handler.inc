@@ -35,19 +35,6 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIME
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::begin() {
-  MultiIndexHandler initialized_multi_index_handler(multi_index_length_);
-  return initialized_multi_index_handler;
-}
-
-template<int PARAMETRIC_DIMENSIONALITY>
-MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::end() {
-  MultiIndexHandler multi_index_handler_with_highest_indices(multi_index_length_);
-  multi_index_handler_with_highest_indices.overflowed_ = true;
-  return multi_index_handler_with_highest_indices;
-}
-
-template<int PARAMETRIC_DIMENSIONALITY>
 inline int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator[](Dimension const &dimension) const {
   return GetValue(current_multi_index_value_, dimension);
 }
@@ -121,6 +108,19 @@ template<int PARAMETRIC_DIMENSIONALITY>
 bool MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator!=(const MultiIndexHandler &rhs) const {
   return this->overflowed_ != rhs.overflowed_ || this->multi_index_length_ != rhs.multi_index_length_ ||
       this->current_multi_index_value_ != rhs.current_multi_index_value_;
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::begin() {
+  MultiIndexHandler initialized_multi_index_handler(multi_index_length_);
+  return initialized_multi_index_handler;
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::end() {
+  MultiIndexHandler overflowed_multi_index_handler(multi_index_length_);
+  overflowed_multi_index_handler.overflowed_ = true;
+  return overflowed_multi_index_handler;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>

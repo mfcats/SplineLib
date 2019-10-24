@@ -47,9 +47,6 @@ class MultiIndexHandler {
   MultiIndexHandler & operator=(MultiIndexHandler &&rhs) noexcept;
   ~MultiIndexHandler() = default;
 
-  MultiIndexHandler begin();
-  MultiIndexHandler end();
-
   int operator[](Dimension const &dimension) const;
   MultiIndexHandler & operator++();
   const MultiIndexHandler operator++(int);
@@ -62,12 +59,14 @@ class MultiIndexHandler {
   bool operator==(const MultiIndexHandler &rhs) const;
   bool operator!=(const MultiIndexHandler &rhs) const;
 
+  MultiIndexHandler begin();
+  MultiIndexHandler end();
+
   std::array<int, PARAMETRIC_DIMENSIONALITY> GetCurrentIndex() const;
   int GetCurrent1DIndex() const;
   static int Get1DIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> const &length,
                         std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index);
   int Get1DIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) const;
-  // TODO(): Handling of too high indices --> throw error(e.g. invalid_argument) or convert?
   void SetCurrentIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index);
   void SetCurrentIndex(int index_1d);
 
@@ -83,7 +82,7 @@ class MultiIndexHandler {
   static int GetCurrentSliceSize(std::array<int, PARAMETRIC_DIMENSIONALITY> const &length,
                                  Dimension const &maximum_dimension);
 
-  bool overflowed_;
+  bool overflowed_{};
   std::array<int, PARAMETRIC_DIMENSIONALITY> multi_index_length_;
   std::array<int, PARAMETRIC_DIMENSIONALITY> current_multi_index_value_;
 };

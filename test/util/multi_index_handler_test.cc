@@ -74,6 +74,16 @@ TEST_F(AMultiIndexHandler1D, Returns1DIndex8AfterSubtracting2) {  // NOLINT
   ASSERT_THAT(multi_index_handler_1D_->GetCurrent1DIndex(), Eq(8));
 }
 
+TEST_F(AMultiIndexHandler1D, CanBeIterated) {  // NOLINT
+  int counter = 0;
+  for (auto multi_index_handler_with_current_indices = multi_index_handler_1D_->begin();
+       multi_index_handler_with_current_indices != multi_index_handler_1D_->end();
+       ++multi_index_handler_with_current_indices, ++counter) {
+    ASSERT_THAT(multi_index_handler_with_current_indices.GetCurrent1DIndex(), Eq(counter));
+  }
+  ASSERT_THAT(counter, Eq(multi_index_handler_1D_->GetNumberOfTotalMultiIndices()));
+}
+
 TEST_F(AMultiIndexHandler1D, ReturnsIndex5AtDimension0AfterSettingCurrentIndexTo1DIndex5) {  // NOLINT
   std::array<int, 1> current_1D_index = {5};
   multi_index_handler_1D_->SetCurrentIndex(current_1D_index);
@@ -88,7 +98,13 @@ TEST_F(AMultiIndexHandler1D, Returns1DIndex5AfterSettingCurrentIndexTo5) {  // N
 TEST_F(AMultiIndexHandler1D, Returns1DIndex1ForMultiIndex1WithLength2) {  // NOLINT
   std::array<int, 1> length_to_evaluate = {2};
   std::array<int, 1> multi_index_to_evaluate = {1};
-  ASSERT_THAT(multi_index_handler_1D_->Get1DIndex(length_to_evaluate, multi_index_to_evaluate), Eq(1));
+  ASSERT_THAT(util::MultiIndexHandler<1>::Get1DIndex(length_to_evaluate, multi_index_to_evaluate), Eq(1));
+}
+
+TEST_F(AMultiIndexHandler1D, Returns1DIndex1ForMultiIndex1ButCurrent1DIndexIsStill0) {  // NOLINT
+  std::array<int, 1> multi_index_to_evaluate = {1};
+  ASSERT_THAT(multi_index_handler_1D_->Get1DIndex(multi_index_to_evaluate), Eq(1));
+  ASSERT_THAT(multi_index_handler_1D_->GetCurrent1DIndex(), Eq(0));
 }
 
 TEST_F(AMultiIndexHandler1D, ReturnsComplementaryIndex4AfterSettingCurrentIndexTo5) {  // NOLINT
@@ -104,15 +120,6 @@ TEST_F(AMultiIndexHandler1D, Returns0AfterCollapsingDimension0WithCurrentMultiIn
   std::array<int, 1> current_multi_index = {4};
   multi_index_handler_1D_->SetCurrentIndex(current_multi_index);
   ASSERT_THAT(multi_index_handler_1D_->CollapseDimension(Dimension{0}), Eq(0));
-}
-
-TEST_F(AMultiIndexHandler1D, CanBeIterated) {  // NOLINT
-  int counter = 0;
-  for (auto multi_index_handler_with_current_indices = multi_index_handler_1D_->begin();
-       multi_index_handler_with_current_indices != multi_index_handler_1D_->end();
-       ++multi_index_handler_with_current_indices, ++counter) {
-    ASSERT_THAT(multi_index_handler_with_current_indices.GetCurrent1DIndex(), Eq(counter));
-  }
 }
 
 class AMultiIndexHandler2D : public Test {
@@ -173,6 +180,16 @@ TEST_F(AMultiIndexHandler2D, ReturnsIndex6And1AfterSubtracting12) {  // NOLINT
   ASSERT_THAT((*multi_index_handler_2D_)[Dimension{1}], Eq(1));
 }
 
+TEST_F(AMultiIndexHandler2D, CanBeIterated) {  // NOLINT
+  int counter = 0;
+  for (auto multi_index_handler_with_current_indices = multi_index_handler_2D_->begin();
+       multi_index_handler_with_current_indices != multi_index_handler_2D_->end();
+       ++multi_index_handler_with_current_indices, ++counter) {
+    ASSERT_THAT(multi_index_handler_with_current_indices.GetCurrent1DIndex(), Eq(counter));
+  }
+  ASSERT_THAT(counter, Eq(multi_index_handler_2D_->GetNumberOfTotalMultiIndices()));
+}
+
 TEST_F(AMultiIndexHandler2D, Returns1DIndex21AfterSettingCurrentIndexToIndex3And2) {  // NOLINT
   std::array<int, 2> current_multi_index = {3, 2};
   multi_index_handler_2D_->SetCurrentIndex(current_multi_index);
@@ -188,7 +205,13 @@ TEST_F(AMultiIndexHandler2D, ReturnsIndex3And2AfterSettingCurrentIndexTo1DIndex2
 TEST_F(AMultiIndexHandler2D, Returns1DIndex6ForMultiIndex2And1WithLength4And3) {  // NOLINT
   std::array<int, 2> length_to_evaluate = {4, 3};
   std::array<int, 2> multi_index_to_evaluate = {2, 1};
-  ASSERT_THAT(multi_index_handler_2D_->Get1DIndex(length_to_evaluate, multi_index_to_evaluate), Eq(6));
+  ASSERT_THAT(util::MultiIndexHandler<2>::Get1DIndex(length_to_evaluate, multi_index_to_evaluate), Eq(6));
+}
+
+TEST_F(AMultiIndexHandler2D, Returns1DIndex11ForMultiIndex2And1ButCurrent1DIndexIsStill0) {  // NOLINT
+  std::array<int, 2> multi_index_to_evaluate = {2, 1};
+  ASSERT_THAT(multi_index_handler_2D_->Get1DIndex(multi_index_to_evaluate), Eq(11));
+  ASSERT_THAT(multi_index_handler_2D_->GetCurrent1DIndex(), Eq(0));
 }
 
 TEST_F(AMultiIndexHandler2D, ReturnsComplementaryIndex3And1AfterSettingCurrentIndexTo5And1) {  // NOLINT
@@ -275,6 +298,16 @@ TEST_F(AMultiIndexHandler3D, ReturnsIndex6And1AfterSubtracting22) {  // NOLINT
   ASSERT_THAT((*multi_index_handler_3D_)[Dimension{2}], Eq(3));
 }
 
+TEST_F(AMultiIndexHandler3D, CanBeIterated) {  // NOLINT
+  int counter = 0;
+  for (auto multi_index_handler_with_current_indices = multi_index_handler_3D_->begin();
+       multi_index_handler_with_current_indices != multi_index_handler_3D_->end();
+       ++multi_index_handler_with_current_indices, ++counter) {
+    ASSERT_THAT(multi_index_handler_with_current_indices.GetCurrent1DIndex(), Eq(counter));
+  }
+  ASSERT_THAT(counter, Eq(multi_index_handler_3D_->GetNumberOfTotalMultiIndices()));
+}
+
 TEST_F(AMultiIndexHandler3D, Returns1DIndex29AfterSettingCurrentIndexToIndex1And1And2) {  // NOLINT
   std::array<int, 3> current_multi_index = {1, 1, 2};
   multi_index_handler_3D_->SetCurrentIndex(current_multi_index);
@@ -291,7 +324,13 @@ TEST_F(AMultiIndexHandler3D, ReturnsIndex1And1And2AfterSettingCurrentIndexTo1DIn
 TEST_F(AMultiIndexHandler3D, Returns1DIndex17ForMultiIndex2And1And1WithLength3And4And2) {  // NOLINT
   std::array<int, 3> length_to_evaluate = {3, 4, 2};
   std::array<int, 3> multi_index_to_evaluate = {2, 1, 1};
-  ASSERT_THAT(multi_index_handler_3D_->Get1DIndex(length_to_evaluate, multi_index_to_evaluate), Eq(17));
+  ASSERT_THAT(util::MultiIndexHandler<3>::Get1DIndex(length_to_evaluate, multi_index_to_evaluate), Eq(17));
+}
+
+TEST_F(AMultiIndexHandler3D, Returns1DIndex18ForMultiIndex2And1And1ButCurrent1DIndexIsStill0) {  // NOLINT
+  std::array<int, 3> multi_index_to_evaluate = {2, 1, 1};
+  ASSERT_THAT(multi_index_handler_3D_->Get1DIndex(multi_index_to_evaluate), Eq(18));
+  ASSERT_THAT(multi_index_handler_3D_->GetCurrent1DIndex(), Eq(0));
 }
 
 TEST_F(AMultiIndexHandler3D, ReturnsComplementaryIndex1And1And3AfterSettingCurrentIndexTo2And1And1) {  // NOLINT
