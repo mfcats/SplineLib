@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::util::stl_container_access {
 template<typename CONTAINER_TYPE>
 constexpr typename CONTAINER_TYPE::value_type &GetValue(CONTAINER_TYPE &container,  // NOLINT(runtime/references)
-                                                         typename CONTAINER_TYPE::size_type index);
+                                                        typename CONTAINER_TYPE::size_type index);
 template<typename CONTAINER_TYPE>
 constexpr typename CONTAINER_TYPE::value_type const & GetValue(CONTAINER_TYPE const &container,
                                                                typename CONTAINER_TYPE::size_type index);
