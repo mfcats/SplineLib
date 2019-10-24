@@ -116,6 +116,7 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENS
   return initialized_multi_index_handler;
 }
 
+// TODO(all): Is this a good solution how to implement iterator-like behavior?
 template<int PARAMETRIC_DIMENSIONALITY>
 MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::end() {
   MultiIndexHandler overflowed_multi_index_handler(multi_index_length_);

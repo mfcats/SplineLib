@@ -11,6 +11,9 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
+// TODO(all): Should there be tests for every single method or can some of the following tests be excluded?
+// TODO(all): Should there be different files for the different dimensions regarding the length of this file?
+
 #include "gmock/gmock.h"
 
 #include "src/util/multi_index_handler.h"
