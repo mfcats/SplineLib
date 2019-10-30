@@ -30,7 +30,8 @@ bool EndsWith(std::string const &string, std::string const &end_of_string) {
   if (string_length >= end_of_string_length) {
     return (string.compare((string_length - end_of_string_length), end_of_string_length, end_of_string) == 0);
   }
-//  return false;
+  // TODO(all): find out why uncommenting the following line makes tests fail
+  // return false;
   return string.find(end_of_string) == string.length() - end_of_string.length();
 }
 
