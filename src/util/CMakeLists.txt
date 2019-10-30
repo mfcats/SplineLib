@@ -13,8 +13,12 @@
 # <http://www.gnu.org/licenses/>.
 #
 
-add_library(splinelibutil INTERFACE)
-target_include_directories(splinelibutil INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
+set(SOURCES
+        string_operations.cc)
+
+add_library(splinelibutil SHARED ${SOURCES})
+
+target_include_directories(splinelibutil PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
 
 install(
         TARGETS splinelibutil

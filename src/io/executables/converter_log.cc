@@ -33,14 +33,14 @@ ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
   }
   std::string line;
   while (getline(log, line)) {
-    if (util::StringOperations::StartsWith(line, "input:")) {
+    if (util::string_operations::StartsWith(line, "input:")) {
       getline(log, input_);
     }
-    if (util::StringOperations::StartsWith(line, "output:")) {
+    if (util::string_operations::StartsWith(line, "output:")) {
       getline(log, output_);
     }
-    if (util::StringOperations::StartsWith(line, "options:")) {
-      while (getline(log, line) && !util::StringOperations::EndsWith(util::StringOperations::trim(line), ":")) {
+    if (util::string_operations::StartsWith(line, "options:")) {
+      while (getline(log, line) && !util::string_operations::EndsWith(util::string_operations::Trim(line), ":")) {
         if (line == "all") {
           positions_.clear();
           positions_.emplace_back(-1);
@@ -49,10 +49,10 @@ ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
         positions_.push_back(std::stoi(line));
       }
     }
-    if (util::StringOperations::StartsWith(line, "scattering:")) {
-      while (getline(log, line) && !util::StringOperations::EndsWith(util::StringOperations::trim(line), ":")) {
-        std::vector<std::string> strings = util::StringOperations::split(line, ' ');
-        scattering_.emplace_back(util::StringOperations::StringVectorToNumberVector<int>(strings));
+    if (util::string_operations::StartsWith(line, "scattering:")) {
+      while (getline(log, line) && !util::string_operations::EndsWith(util::string_operations::Trim(line), ":")) {
+        std::vector<std::string> strings = util::string_operations::Split(line, ' ');
+        scattering_.emplace_back(util::string_operations::StringVectorToNumberVector<int>(strings));
       }
     }
   }

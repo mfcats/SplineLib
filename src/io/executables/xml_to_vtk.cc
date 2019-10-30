@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     throw std::runtime_error("Exactly one name of the log file is required as command line argument.");
   }
   const char *log_file = argv[1];  // NOLINT
-  if (util::StringOperations::StartsWith(log_file, "--help") || util::StringOperations::StartsWith(log_file, "-h")) {
+  if (util::string_operations::StartsWith(log_file, "--help") || util::string_operations::StartsWith(log_file, "-h")) {
     io::ConverterLog help;
     help.PrintHelp();
     return 0;

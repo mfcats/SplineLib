@@ -30,7 +30,7 @@ class IRITReaderUtils {
     std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       degrees[i] =
-          Degree(util::StringOperations::StringVectorToNumberVector<int>({entries[start + PARAMETRIC_DIMENSIONALITY + 2
+          Degree(util::string_operations::StringVectorToNumberVector<int>({entries[start + PARAMETRIC_DIMENSIONALITY + 2
               + i]})[0] - 1);
     }
     return degrees;
@@ -41,10 +41,10 @@ class IRITReaderUtils {
                                                                     const std::vector<std::string> &entries) {
     baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vectors;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
-      while (!util::StringOperations::StartsWith(entries[start++], "[KV")) {}
+      while (!util::string_operations::StartsWith(entries[start++], "[KV")) {}
       std::vector<ParametricCoordinate> knots;
-      while (!util::StringOperations::StartsWith(entries[start], "[")) {
-        knots.emplace_back(util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])));
+      while (!util::string_operations::StartsWith(entries[start], "[")) {
+        knots.emplace_back(util::string_operations::StringToDouble(util::string_operations::Trim(entries[start++])));
       }
       knot_vectors[i] = std::make_shared<baf::KnotVector>(knots);
     }
@@ -53,7 +53,7 @@ class IRITReaderUtils {
 
   template<int PARAMETRIC_DIMENSIONALITY>
   static bool IsRational(int start_of_spline, const std::vector<std::string> &entries) {
-    return util::StringOperations::StartsWith(entries[start_of_spline + 2 * PARAMETRIC_DIMENSIONALITY + 2], "P");
+    return util::string_operations::StartsWith(entries[start_of_spline + 2 * PARAMETRIC_DIMENSIONALITY + 2], "P");
   }
 };
 }  // namespace splinelib::src::io

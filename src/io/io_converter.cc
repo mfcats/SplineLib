@@ -40,16 +40,16 @@ std::vector<int> IOConverter::GetSplinePositionsOfCorrectDimension(const std::ve
 }
 
 IOConverter::file_format IOConverter::GetFileFormat(const char *filename) const {
-  if (util::StringOperations::EndsWith(filename, ".iges")) {
+  if (util::string_operations::EndsWith(filename, ".iges")) {
     return iges;
   }
-  if (util::StringOperations::EndsWith(filename, ".itd")) {
+  if (util::string_operations::EndsWith(filename, ".itd")) {
     return irit;
   }
-  if (util::StringOperations::EndsWith(filename, ".vtk")) {
+  if (util::string_operations::EndsWith(filename, ".vtk")) {
     return vtk;
   }
-  if (util::StringOperations::EndsWith(filename, ".xml")) {
+  if (util::string_operations::EndsWith(filename, ".xml")) {
     return xml;
   }
   return error;

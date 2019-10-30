@@ -33,7 +33,7 @@ std::vector<std::any> IRITReader::ReadFile(const char *filename) {
   while (getline(newFile, line)) {
     file += line;
   }
-  std::vector<std::string> entries = util::StringOperations::split(file, ' ');
+  std::vector<std::string> entries = util::string_operations::Split(file, ' ');
   std::vector<int> spline_positions = GetSplinePositions(entries);
   for (int &spline_position : spline_positions) {
     if (GetDimension(entries[spline_position]) == 1) {
@@ -106,7 +106,7 @@ std::any IRITReader::Get3DSpline(int start, const std::vector<std::string> &entr
 int IRITReader::GetNumberOfControlPoints(int start, const std::vector<std::string> &entries) {
   int total_number_of_points = 1;
   for (int i = 0; i < GetDimension(entries[start]); i++) {
-    total_number_of_points *= util::StringOperations::StringVectorToNumberVector<int>({entries[start + 2 + i]})[0];
+    total_number_of_points *= util::string_operations::StringVectorToNumberVector<int>({entries[start + 2 + i]})[0];
   }
   return total_number_of_points;
 }
@@ -120,12 +120,12 @@ std::vector<baf::ControlPoint> IRITReader::GetControlPoints(int start,
   start = GetPositionOfFirstControlPoint(start, entries);
   for (int i = 0; i < number_of_control_points; i++) {
     std::vector<double> coordinates;
-    while (!util::StringOperations::EndsWith(entries[start], "]")) {
+    while (!util::string_operations::EndsWith(entries[start], "]")) {
       coordinates.push_back(
-          util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])) / weights[i]);
+          util::string_operations::StringToDouble(util::string_operations::Trim(entries[start++])) / weights[i]);
     }
     coordinates.push_back(
-        util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++])) / weights[i]);
+        util::string_operations::StringToDouble(util::string_operations::Trim(entries[start++])) / weights[i]);
     if (rational) {
       coordinates.erase(coordinates.begin());
     }
@@ -142,8 +142,8 @@ std::vector<double> IRITReader::GetWeights(int start,
   if (rational) {
     start = GetPositionOfFirstControlPoint(start, entries);
     for (auto i = 0u; i < number_of_control_points; i++) {
-      weights[i] = util::StringOperations::StringToDouble(util::StringOperations::trim(entries[start++]));
-      while (!util::StringOperations::EndsWith(entries[start++], "]")) {}
+      weights[i] = util::string_operations::StringToDouble(util::string_operations::Trim(entries[start++]));
+      while (!util::string_operations::EndsWith(entries[start++], "]")) {}
     }
   }
   return weights;
@@ -151,8 +151,8 @@ std::vector<double> IRITReader::GetWeights(int start,
 
 int IRITReader::GetPositionOfFirstControlPoint(int start, const std::vector<std::string> &entries) const {
   ++start;
-  while (!util::StringOperations::StartsWith(entries[start], "[")
-      || util::StringOperations::StartsWith(entries[start], "[KV")) {
+  while (!util::string_operations::StartsWith(entries[start], "[")
+      || util::string_operations::StartsWith(entries[start], "[KV")) {
     ++start;
   }
   return start;

@@ -174,10 +174,10 @@ std::vector<double> IGESReader::ParameterSectionToVector(std::vector<std::string
   for (int i = first; i <= last; ++i) {
     temp.append(parameterSection[i]);
   }
-  return util::StringOperations::DelimitedStringToVector(temp);
+  return util::string_operations::DelimitedStringToVector(temp);
 }
 
 std::string IGESReader::trim(std::string s) {
-  return util::StringOperations::trim(std::move(s));
+  return util::string_operations::Trim(std::move(s));
 }
 }  // namespace splinelib::src::io

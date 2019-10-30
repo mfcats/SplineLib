@@ -94,8 +94,8 @@ std::any XMLReader::Get4DSpline(pugi::xml_node *spline, const std::vector<baf::C
 }
 
 std::vector<baf::ControlPoint> XMLReader::GetControlPoints(pugi::xml_node *spline) {
-  std::vector<double> vars = util::StringOperations::StringVectorToNumberVector<double>(
-      util::StringOperations::split(spline->child("cntrlPntVars").first_child().value(), ' '));
+  std::vector<double> vars = util::string_operations::StringVectorToNumberVector<double>(
+      util::string_operations::Split(spline->child("cntrlPntVars").first_child().value(), ' '));
   int start = FindCoordinatePosition(spline->child("cntrlPntVarNames").first_child().value());
   int dimension = std::stoi(spline->attribute("spaceDim").value());
   int number_of_vars = std::stoi(spline->attribute("numOfCntrlPntVars").value());
@@ -112,12 +112,12 @@ std::vector<baf::ControlPoint> XMLReader::GetControlPoints(pugi::xml_node *splin
 }
 
 std::vector<double> XMLReader::GetWeights(pugi::xml_node *spline) {
-  return util::StringOperations::StringVectorToNumberVector<double>(
-      util::StringOperations::split(spline->child("wght").first_child().value(), ' '));
+  return util::string_operations::StringVectorToNumberVector<double>(
+      util::string_operations::Split(spline->child("wght").first_child().value(), ' '));
 }
 
 int XMLReader::FindCoordinatePosition(const std::string &string) {
-  std::vector<std::string> vars = util::StringOperations::split(string, ' ');
+  std::vector<std::string> vars = util::string_operations::Split(string, ' ');
   for (int i = 0; i < static_cast<int>(vars.size()); i++) {
     if (vars[i] == "x") {
       return i;

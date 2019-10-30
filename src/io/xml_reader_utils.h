@@ -29,7 +29,7 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class XMLReaderUtils {
  public:
   static std::array<Degree, PARAMETRIC_DIMENSIONALITY> GetDegrees(pugi::xml_node *spline) {
-    return StringVectorToDegreeArray(util::StringOperations::split(spline->child("deg").first_child().value(), ' '));
+    return StringVectorToDegreeArray(util::string_operations::Split(spline->child("deg").first_child().value(), ' '));
   }
 
   static baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> GetKnotVectors(pugi::xml_node *spline) {
@@ -43,8 +43,8 @@ class XMLReaderUtils {
         child = child.next_sibling();
       }
       knot_vector[i] = std::make_shared<baf::KnotVector>(
-          baf::KnotVector(util::StringOperations::StringVectorToNumberVector<ParametricCoordinate>(
-              util::StringOperations::split(child.first_child().value(), ' '))));
+          baf::KnotVector(util::string_operations::StringVectorToNumberVector<ParametricCoordinate>(
+              util::string_operations::Split(child.first_child().value(), ' '))));
     }
     return knot_vector;
   }
