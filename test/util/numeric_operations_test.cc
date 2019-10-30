@@ -11,18 +11,28 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#ifndef SRC_UTIL_NUMERIC_OPERATIONS_H_
-#define SRC_UTIL_NUMERIC_OPERATIONS_H_
+#include "gmock/gmock.h"
 
-// TODO(all): check necessity of these functions
-namespace splinelib::src::util::numeric_operations {
-template<typename TYPE>
-TYPE increment(TYPE value);
+#include "src/util/numeric_operations.h"
 
-template<typename TYPE>
-TYPE decrement(TYPE value);
+using testing::Test;
 
-#include "src/util/numeric_operations.inc"
-}  // namespace splinelib::src::util::numeric_operations
+using namespace splinelib::src;
 
-#endif  // SRC_UTIL_NUMERIC_OPERATIONS_H_
+class AnIntegerForNumericOperations : public Test {
+ public:
+  AnIntegerForNumericOperations() : an_integer_(10) {}
+
+ protected:
+  int an_integer_;
+};
+
+TEST_F(AnIntegerForNumericOperations, IsIncrementedTo11) {  // NOLINT
+  an_integer_ = util::numeric_operations::increment(an_integer_);
+  ASSERT_THAT(an_integer_, 11);
+}
+
+TEST_F(AnIntegerForNumericOperations, DecrementedTo9) {  // NOLINT
+  an_integer_ = util::numeric_operations::decrement(an_integer_);
+  ASSERT_THAT(an_integer_, 9);
+}
