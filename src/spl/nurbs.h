@@ -89,8 +89,8 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
       baf::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling, current_point, first, last);
       double new_weight = GetNewWeight(indices, dimension, scaling, current_point, first, last);
       physical_space_->SetControlPoint(indices, new_control_point, dimension,
-                                       util::NumericOperations<int>::increment);
-      physical_space_->SetWeight(indices, new_weight, dimension, util::NumericOperations<int>::increment);
+                                       util::increment<int>);
+      physical_space_->SetWeight(indices, new_weight, dimension, util::increment<int>);
     }
     physical_space_->IncrementNumberOfPoints(dimension);
   }
@@ -304,13 +304,13 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k - off < ii ? k : k - 1;
         physical_space_->SetControlPoint(indices, baf::ControlPoint(coordinates), dimension,
-                                         util::NumericOperations<int>::decrement);
+                                         util::decrement<int>);
       }
       if ((k <= off && k - off < 1) || (k >= last + 1 && k < this->GetPointsPerDirection()[dimension])) {
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k <= off ? k : k - 1;
         physical_space_->SetControlPoint(indices, this->GetControlPoint(point_handler.GetCurrentIndex()), dimension,
-                                         util::NumericOperations<int>::decrement);
+                                         util::decrement<int>);
       }
     }
   }
@@ -324,13 +324,13 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
         int index = point_handler.CollapseDimension(Dimension{dimension}) * (last - off + 2) + k - off;
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k - off < ii ? k : k - 1;
-        physical_space_->SetWeight(indices, temp[index], dimension, util::NumericOperations<int>::decrement);
+        physical_space_->SetWeight(indices, temp[index], dimension, util::decrement<int>);
       }
       if ((k <= off && k - off < 1) || (k >= last + 1 && k < this->GetPointsPerDirection()[dimension])) {
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k <= off ? k : k - 1;
         physical_space_->SetWeight(indices, this->GetWeight(point_handler.GetCurrentIndex()), dimension,
-                                   util::NumericOperations<int>::decrement);
+                                   util::decrement<int>);
       }
     }
   }

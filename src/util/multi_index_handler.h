@@ -70,7 +70,7 @@ class MultiIndexHandler {
   void SetCurrentIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index);
   void SetCurrentIndex(int index_1d);
 
-  // Returns array which contains how often each dimension of the multi-index can still be increased.
+  // Returns array which contains how often each dimension of the multi-index can still be increased before overflowing.
   std::array<int, PARAMETRIC_DIMENSIONALITY> GetComplementaryIndex() const;
 
   int GetNumberOfTotalMultiIndices() const;

@@ -11,17 +11,14 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#ifndef SRC_UTIL_NUMERIC_OPERATIONS_H_
-#define SRC_UTIL_NUMERIC_OPERATIONS_H_
-
-namespace splinelib::src::util {
-template<typename TYPE>
-TYPE increment(TYPE value);
+// NOLINT(build/header_guard)
 
 template<typename TYPE>
-TYPE decrement(TYPE value);
+inline TYPE increment(TYPE value) {
+  return ++value;
+}
 
-#include "numeric_operations.inc"
-}  // namespace splinelib::src::util
-
-#endif  // SRC_UTIL_NUMERIC_OPERATIONS_H_
+template<typename TYPE>
+inline TYPE decrement(TYPE value) {
+  return --value;
+}
