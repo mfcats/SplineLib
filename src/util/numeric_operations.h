@@ -14,7 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_UTIL_NUMERIC_OPERATIONS_H_
 #define SRC_UTIL_NUMERIC_OPERATIONS_H_
 
-namespace splinelib::src::util {
+namespace splinelib::src::util::numeric_operations {
 template<typename TYPE>
 TYPE increment(TYPE value);
 
@@ -22,6 +22,6 @@ template<typename TYPE>
 TYPE decrement(TYPE value);
 
 #include "numeric_operations.inc"
-}  // namespace splinelib::src::util
+}  // namespace splinelib::src::util::numeric_operations
 
 #endif  // SRC_UTIL_NUMERIC_OPERATIONS_H_
