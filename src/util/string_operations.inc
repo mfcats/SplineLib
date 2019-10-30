@@ -13,9 +13,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 // NOLINT(build/header_guard)
 
+#include <string>
+#include <vector>
+
 template<typename TYPE>
 std::vector<TYPE> StringVectorToNumberVector(std::vector<std::string> const &string_vector) {
   std::vector<TYPE> converted;
+  converted.reserve(string_vector.size());
   for (std::string const &string : string_vector) converted.emplace_back(StringToDouble(string));
   return converted;
 }
