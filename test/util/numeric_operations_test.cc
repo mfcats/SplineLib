@@ -21,10 +21,10 @@ using namespace splinelib::src;
 
 class AnIntegerForNumericOperations : public Test {
  public:
-  AnIntegerForNumericOperations() : an_integer_(10) {}
+  AnIntegerForNumericOperations() = default;
 
  protected:
-  int an_integer_;
+  int an_integer_{10};
 };
 
 TEST_F(AnIntegerForNumericOperations, IsIncrementedTo11) {  // NOLINT
