@@ -25,7 +25,7 @@ class StringOperations : public Test {
   StringOperations() = default;
 };
 
-TEST_F(StringOperations, CheckIfStringStartsWithHello) {  // NOLINT
+TEST_F(StringOperations, CheckIfStringStartsWithhello) {  // NOLINT
   ASSERT_THAT(util::string_operations::StartsWith("hello world", "hello"), true);
   ASSERT_THAT(util::string_operations::StartsWith("Hello World", "hello"), false);
   ASSERT_THAT(util::string_operations::StartsWith("Oh hello", "hello"), false);
@@ -33,9 +33,9 @@ TEST_F(StringOperations, CheckIfStringStartsWithHello) {  // NOLINT
   ASSERT_THAT(util::string_operations::StartsWith("hell", "hello"), false);
 }
 
-TEST_F(StringOperations, CheckIfStringEndsWithHello) {  // NOLINT
+TEST_F(StringOperations, CheckIfStringEndsWithhello) {  // NOLINT
   ASSERT_THAT(util::string_operations::EndsWith("hello world", "hello"), false);
-  ASSERT_THAT(util::string_operations::EndsWith("Oh! Hello", "hello"), false);
+  ASSERT_THAT(util::string_operations::EndsWith("Oh Hello", "hello"), false);
   ASSERT_THAT(util::string_operations::EndsWith("Oh hello", "hello"), true);
   ASSERT_THAT(util::string_operations::EndsWith("bello", "hello"), false);
 //  ASSERT_THAT(util::string_operations::EndsWith("ello", "hello"), false);
@@ -48,12 +48,12 @@ TEST_F(StringOperations, SplitStringDelimitedBySpaces) {  // NOLINT
   ASSERT_THAT(divided[3], "be");
 }
 
-TEST_F(StringOperations, TrimString) {  // NOLINT
+TEST_F(StringOperations, TrimStringFromSpacesAndSquareBrackets) {  // NOLINT
   std::string untrimmed = "[ 7.88  ]   ";
   ASSERT_THAT(util::string_operations::TrimSpacesAndSquareBrackets(untrimmed), "7.88");
 }
 
-TEST_F(StringOperations, ConvertStringToDouble) {  // NOLINT
+TEST_F(StringOperations, ConvertStringToDoubleForConvertibleInputFormat) {  // NOLINT
   ASSERT_THROW(util::string_operations::ConvertStringToNumber<double>("8,97"), std::invalid_argument);
   ASSERT_THAT(util::string_operations::ConvertStringToNumber<double>("8.97"), DoubleEq(8.97));
   ASSERT_THAT(util::string_operations::ConvertStringToNumber<double>("8"), DoubleEq(8));
@@ -63,14 +63,14 @@ TEST_F(StringOperations, ConvertStringToDouble) {  // NOLINT
   ASSERT_THAT(util::string_operations::ConvertStringToNumber<double>("8E-5"), DoubleEq(0.00008));
 }
 
-TEST_F(StringOperations, ConvertStringToInt) {  // NOLINT
+TEST_F(StringOperations, ConvertStringToIntForConvertibleInputFormat) {  // NOLINT
   ASSERT_THROW(util::string_operations::ConvertStringToNumber<int>("8,97"), std::invalid_argument);
   ASSERT_THAT(util::string_operations::ConvertStringToNumber<int>("8.97"), 8);
   ASSERT_THAT(util::string_operations::ConvertStringToNumber<int>("8"), 8);
   ASSERT_THAT(util::string_operations::ConvertStringToNumber<int>("8.0e-5"), 0);
 }
 
-TEST_F(StringOperations, ConvertStringToBool) {  // NOLINT
+TEST_F(StringOperations, ConvertStringToBoolForConvertibleInputFormat) {  // NOLINT
   ASSERT_THROW(util::string_operations::ConvertStringToNumber<bool>("8,97"), std::invalid_argument);
   ASSERT_THAT(util::string_operations::ConvertStringToNumber<bool>("8.97"), true);
   ASSERT_THAT(util::string_operations::ConvertStringToNumber<bool>("0"), false);

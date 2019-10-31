@@ -23,38 +23,38 @@ TYPE ConvertStringToNumber(std::string string) {
     sign = -1;
     string.erase(0, 1);
   }
-  int const found_dot = string.find_first_of('.');
-  int exponent = string.find_first_of("Ee");
+  int const found_dot_index = string.find_first_of('.');
+  int exponent_starting_index = string.find_first_of("Ee");
   auto const npos = static_cast<int>(std::string::npos);
   int const string_length = string.length();
-  int end_of_number;
-  if (exponent == npos) {
-    end_of_number = (string_length - 1);
+  int last_mantissa_index;
+  if (exponent_starting_index == npos) {
+    last_mantissa_index = (string_length - 1);
   } else {
-    end_of_number = (exponent - 1);
+    last_mantissa_index = (exponent_starting_index - 1);
   }
   double result = 0, factor;
-  if (found_dot != npos) {
-    factor = pow(10, found_dot - 1);
-  } else if (exponent == npos) {
-    factor = pow(10, string_length - 1);
+  if (found_dot_index != npos) {
+    factor = pow(10, found_dot_index - 1);
+  } else if (exponent_starting_index != npos) {
+    factor = pow(10, exponent_starting_index - 1);
   } else {
-    factor = pow(10, exponent - 1);
+    factor = pow(10, string_length - 1);
   }
-  for (int i = 0; i <= end_of_number; ++i) {
-    if (i != found_dot) {
-      result += (std::stoi(string.substr(i, 1)) * factor);
+  for (int current_digit_index = 0; current_digit_index <= last_mantissa_index; ++current_digit_index) {
+    if (current_digit_index != found_dot_index) {
+      result += (std::stoi(string.substr(current_digit_index, 1)) * factor);
       factor /= 10;
     }
   }
-  if (exponent != npos) {
-    if (string[exponent + 1] == '-') {
+  if (exponent_starting_index != npos) {
+    if (string[exponent_starting_index + 1] == '-') {
       factor = -1;
-      ++exponent;
-    } else if (string[exponent + 1] == '+') {
-      ++exponent;
+      ++exponent_starting_index;
+    } else if (string[exponent_starting_index + 1] == '+') {
+      ++exponent_starting_index;
     }
-    int const potency = std::stoi(string.substr(exponent + 1, string_length - exponent));
+    int const potency = std::stoi(string.substr(exponent_starting_index + 1, string_length - exponent_starting_index));
     if (factor != -1) {
       result *= pow(10, potency);
     } else {
@@ -77,14 +77,14 @@ template<typename TYPE>
 std::vector<TYPE> ConvertDelimitedStringToNumberVector(std::string string) {
   std::vector<TYPE> vector;
   while (!string.empty()) {
-    int const found_comma = string.find_first_of(',');
-    int const found_semicolon = string.find_first_of(';');
-    if (((found_comma < found_semicolon) || (found_semicolon == -1)) && (found_comma > 0)) {
-      vector.push_back(ConvertStringToNumber<TYPE>(TrimSpacesAndSquareBrackets(string.substr(0, found_comma))));
-      string.erase(0, found_comma + 1);
-    } else if (((found_semicolon < found_comma) || (found_comma == -1)) && (found_semicolon > 0)) {
-      vector.push_back(ConvertStringToNumber<TYPE>(TrimSpacesAndSquareBrackets(string.substr(0, found_semicolon))));
-      string.erase(0, found_semicolon + 1);
+    int const comma_index = string.find_first_of(',');
+    int const semicolon_index = string.find_first_of(';');
+    if (((comma_index < semicolon_index) || (semicolon_index == -1)) && (comma_index > 0)) {
+      vector.push_back(ConvertStringToNumber<TYPE>(TrimSpacesAndSquareBrackets(string.substr(0, comma_index))));
+      string.erase(0, comma_index + 1);
+    } else if (((semicolon_index < comma_index) || (comma_index == -1)) && (semicolon_index > 0)) {
+      vector.push_back(ConvertStringToNumber<TYPE>(TrimSpacesAndSquareBrackets(string.substr(0, semicolon_index))));
+      string.erase(0, semicolon_index + 1);
     } else {
       string.erase(0, 1);
     }
