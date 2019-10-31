@@ -11,13 +11,14 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#ifndef SRC_UTIL_SYSTEM_OPERATIONS_H_
-#define SRC_UTIL_SYSTEM_OPERATIONS_H_
-
-#include <ctime>
+#include "src/util/system_operations.h"
 
 namespace splinelib::src::util::system_operations {
-struct tm GetTime();
+struct tm splinelib::src::util::system_operations::GetTime() {
+  struct tm timeinfo{};
+  time_t rawtime;
+  rawtime = time(&rawtime);
+  localtime_r(&rawtime, &timeinfo);
+  return timeinfo;
+}
 }  // namespace splinelib::src::util::system_operations
-
-#endif  // SRC_UTIL_SYSTEM_OPERATIONS_H_
