@@ -14,6 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_UTIL_STRING_OPERATIONS_H_
 #define SRC_UTIL_STRING_OPERATIONS_H_
 
+#include <cmath>
 #include <string>
 #include <vector>
 
@@ -24,8 +25,9 @@ bool EndsWith(std::string const &string, std::string const &end_of_string);
 std::vector<std::string> Split(std::string const &string, char delimiter);
 std::string Trim(std::string string);
 
-double StringToDouble(std::string string);
-template<class TYPE>
+template<typename TYPE>
+double StringToNumber(std::string string);
+template<typename TYPE>
 std::vector<TYPE> StringVectorToNumberVector(std::vector<std::string> const &string_vector);
 std::vector<double> DelimitedStringToVector(std::string string);
 

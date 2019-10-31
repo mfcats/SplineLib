@@ -51,7 +51,7 @@ TEST_F(StringOperations, TrimString) {  // NOLINT
 }
 
 TEST_F(StringOperations, ConvertStringToDouble) {  // NOLINT
-  ASSERT_THROW(util::string_operations::StringToDouble("8,97"), std::invalid_argument);
+  ASSERT_THROW(util::string_operations::StringToNumber<double>("8,97"), std::invalid_argument);
 }
 
 TEST_F(StringOperations, SplitStringDelimitedByCommaOrSemicolonInDoubleVector) {  // NOLINT

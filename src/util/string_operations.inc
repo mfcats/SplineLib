@@ -17,9 +17,55 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 template<typename TYPE>
+double StringToNumber(std::string string) {
+  int sign = 1;
+  if (string[0] == '-') {
+    sign = -1;
+    string.erase(0, 1);
+  }
+  int const found_dot = string.find_first_of('.');
+  int exponent = string.find_first_of("Ee");
+  auto const npos = static_cast<int>(std::string::npos);
+  int const string_length = string.length();
+  int end_of_number;
+  if (exponent == npos) {
+    end_of_number = (string_length - 1);
+  } else {
+    end_of_number = (exponent - 1);
+  }
+  double result = 0, factor;
+  if (found_dot != npos) {
+    factor = pow(10, found_dot - 1);
+  } else {
+    factor = pow(10, string_length - 1);
+  }
+  for (int i = 0; i <= end_of_number; ++i) {
+    if (i != found_dot) {
+      result += (std::stoi(string.substr(i, 1)) * factor);
+      factor /= 10;
+    }
+  }
+  if (exponent != npos) {
+    if (string[exponent + 1] == '-') {
+      factor = -1;
+      ++exponent;
+    } else if (string[exponent + 1] == '+') {
+      ++exponent;
+    }
+    int const potency = std::stoi(string.substr(exponent + 1, string_length - exponent));
+    if (factor != -1) {
+      result *= pow(10, potency);
+    } else {
+      result /= pow(10, potency);
+    }
+  }
+  return (sign * result);
+}
+
+template<typename TYPE>
 std::vector<TYPE> StringVectorToNumberVector(std::vector<std::string> const &string_vector) {
   std::vector<TYPE> converted;
   converted.reserve(string_vector.size());
-  for (std::string const &string : string_vector) converted.emplace_back(StringToDouble(string));
+  for (std::string const &string : string_vector) converted.emplace_back(StringToNumber<double>(string));
   return converted;
 }

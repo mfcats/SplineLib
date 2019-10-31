@@ -14,7 +14,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/util/string_operations.h"
 
 #include <algorithm>
-#include <cmath>
 #include <sstream>
 
 namespace splinelib::src::util::string_operations {
@@ -57,61 +56,16 @@ std::string Trim(std::string string) {
   return string;
 }
 
-double StringToDouble(std::string string) {
-  int sign = 1;
-  if (string[0] == '-') {
-    sign = -1;
-    string.erase(0, 1);
-  }
-  int const found_dot = string.find_first_of('.');
-  int exponent = string.find_first_of("Ee");
-  int const npos = static_cast<int>(std::string::npos);
-  int const string_length = string.length();
-  int end_of_number;
-  if (exponent == npos) {
-    end_of_number = (string_length - 1);
-  } else {
-    end_of_number = (exponent - 1);
-  }
-  double result = 0, factor;
-  if (found_dot != npos) {
-    factor = pow(10, found_dot - 1);
-  } else {
-    factor = pow(10, string_length - 1);
-  }
-  for (int i = 0; i <= end_of_number; ++i) {
-    if (i != found_dot) {
-      result += (std::stoi(string.substr(i, 1)) * factor);
-      factor /= 10;
-    }
-  }
-  if (exponent != npos) {
-    if (string[exponent + 1] == '-') {
-      factor = -1;
-      ++exponent;
-    } else if (string[exponent + 1] == '+') {
-      ++exponent;
-    }
-    int const potency = std::stoi(string.substr(exponent + 1, string_length - exponent));
-    if (factor != -1) {
-      result *= pow(10, potency);
-    } else {
-      result /= pow(10, potency);
-    }
-  }
-  return (sign * result);
-}
-
 std::vector<double> DelimitedStringToVector(std::string string) {
   std::vector<double> vector;
   while (!string.empty()) {
     int const found_comma = string.find_first_of(',');
     int const found_semicolon = string.find_first_of(';');
     if (((found_comma < found_semicolon) || (found_semicolon == -1)) && (found_comma > 0)) {
-      vector.push_back(StringToDouble(Trim(string.substr(0, found_comma))));
+      vector.push_back(StringToNumber<double>(Trim(string.substr(0, found_comma))));
       string.erase(0, found_comma + 1);
     } else if (((found_semicolon < found_comma) || (found_comma == -1)) && (found_semicolon > 0)) {
-      vector.push_back(StringToDouble(Trim(string.substr(0, found_semicolon))));
+      vector.push_back(StringToNumber<double>(Trim(string.substr(0, found_semicolon))));
       string.erase(0, found_semicolon + 1);
     } else {
       string.erase(0, 1);

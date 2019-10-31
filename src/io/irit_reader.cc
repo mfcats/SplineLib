@@ -122,10 +122,11 @@ std::vector<baf::ControlPoint> IRITReader::GetControlPoints(int start,
     std::vector<double> coordinates;
     while (!util::string_operations::EndsWith(entries[start], "]")) {
       coordinates.push_back(
-          util::string_operations::StringToDouble(util::string_operations::Trim(entries[start++])) / weights[i]);
+          util::string_operations::StringToNumber<double>(util::string_operations::Trim(entries[start++])) /
+          weights[i]);
     }
     coordinates.push_back(
-        util::string_operations::StringToDouble(util::string_operations::Trim(entries[start++])) / weights[i]);
+        util::string_operations::StringToNumber<double>(util::string_operations::Trim(entries[start++])) / weights[i]);
     if (rational) {
       coordinates.erase(coordinates.begin());
     }
@@ -142,7 +143,7 @@ std::vector<double> IRITReader::GetWeights(int start,
   if (rational) {
     start = GetPositionOfFirstControlPoint(start, entries);
     for (auto i = 0u; i < number_of_control_points; i++) {
-      weights[i] = util::string_operations::StringToDouble(util::string_operations::Trim(entries[start++]));
+      weights[i] = util::string_operations::StringToNumber<double>(util::string_operations::Trim(entries[start++]));
       while (!util::string_operations::EndsWith(entries[start++], "]")) {}
     }
   }

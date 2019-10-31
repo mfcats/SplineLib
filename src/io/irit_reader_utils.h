@@ -44,7 +44,8 @@ class IRITReaderUtils {
       while (!util::string_operations::StartsWith(entries[start++], "[KV")) {}
       std::vector<ParametricCoordinate> knots;
       while (!util::string_operations::StartsWith(entries[start], "[")) {
-        knots.emplace_back(util::string_operations::StringToDouble(util::string_operations::Trim(entries[start++])));
+        knots.emplace_back(
+            util::string_operations::StringToNumber<double>(util::string_operations::Trim(entries[start++])));
       }
       knot_vectors[i] = std::make_shared<baf::KnotVector>(knots);
     }
