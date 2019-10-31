@@ -79,7 +79,7 @@ void IOConverter::GetWriter(const std::vector<std::any> &splines, const std::vec
   } else if (output_format_ == vtk) {
     std::shared_ptr<VTKWriter> ptr = std::make_shared<VTKWriter>(VTKWriter());
     GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, 3));
-    std::vector<std::any> splines_with_max_dim = util::vector_utils::FilterVector<std::any>(splines, written_);
+    std::vector<std::any> splines_with_max_dim = util::vector_utils::GetEntriesAtIndices<std::any>(splines, written_);
     ptr->WriteFile(splines_with_max_dim, output_filename_, GetScattering(scattering, positions, written_));
   } else if (output_format_ == xml) {
     std::shared_ptr<XMLWriter> ptr = std::make_shared<XMLWriter>(XMLWriter());
@@ -92,7 +92,7 @@ void IOConverter::GetWriter(const std::vector<std::any> &splines, const std::vec
 void IOConverter::WriteFile(const std::vector<std::any> &splines, const std::vector<int> &positions, int max_dim,
                                 const std::shared_ptr<Writer> &writer) {
   GetPositions(positions, GetSplinePositionsOfCorrectDimension(splines, max_dim));
-  std::vector<std::any> splines_with_max_dim = util::vector_utils::FilterVector<std::any>(splines, written_);
+  std::vector<std::any> splines_with_max_dim = util::vector_utils::GetEntriesAtIndices<std::any>(splines, written_);
   writer->WriteFile(splines_with_max_dim, output_filename_);
 }
 
@@ -122,6 +122,6 @@ std::vector<std::vector<int>> IOConverter::GetScattering(const std::vector<std::
   } else {
     indices = written;
   }
-  return util::vector_utils::FilterVector(scattering, indices);
+  return util::vector_utils::GetEntriesAtIndices(scattering, indices);
 }
 }  // namespace splinelib::src::io

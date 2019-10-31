@@ -170,7 +170,7 @@ class Projection {
                                   const std::vector<double> &current_point,
                                   const std::vector<double> &derivative_dir1,
                                   const std::vector<double> &derivative_dir2) {
-    std::vector<double> normal_vector = util::vector_utils::CrossProduct(derivative_dir1, derivative_dir2);
+    std::vector<double> normal_vector = util::vector_utils::ComputeCrossProduct(derivative_dir1, derivative_dir2);
     double length = util::vector_utils::ComputeTwoNorm(normal_vector);
     std::vector<double> normed_normal_vector = util::vector_utils::ScaleVector(normal_vector, 1 / length);
     double distance = util::vector_utils::ComputeScalarProduct(current_point, normed_normal_vector)
