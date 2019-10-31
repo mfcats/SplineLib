@@ -23,11 +23,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 
-#include "control_point.h"
-#include "knot_vector.h"
+#include "src/baf/control_point.h"
+#include "src/baf/knot_vector.h"
 #include "src/util/multi_index_handler.h"
-#include "parameter_space.h"
-#include "physical_space.h"
+#include "src/spl/parameter_space.h"
+#include "src/spl/physical_space.h"
 
 namespace splinelib::src::spl {
 template<int PARAMETRIC_DIMENSIONALITY>

@@ -18,7 +18,7 @@ set(SOURCES
         surface_generator.cc)
 
 add_library(splinelibspl SHARED ${SOURCES})
-target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
 target_link_libraries(splinelibspl splinelibbaf)
 
 install(
@@ -27,7 +27,7 @@ install(
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
         RUNTIME DESTINATION "${executable_install_dir}"
-        INCLUDES DESTINATION "${include_install_dir}"
+        INCLUDES DESTINATION "${include_install_dir}/src/spl"
 )
 
 install(FILES
@@ -46,4 +46,4 @@ install(FILES
         square_generator.h
         surface_generator.h
         weighted_physical_space.h
-        DESTINATION "${include_install_dir}")
+        DESTINATION "${include_install_dir}/src/spl")

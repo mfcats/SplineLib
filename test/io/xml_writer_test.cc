@@ -12,13 +12,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "xml_writer.h"
+#include "src/io/xml_writer.h"
 
 #include <fstream>
 
 #include "gmock/gmock.h"
 
-#include "xml_reader.h"
+#include "src/io/xml_reader.h"
 
 using testing::Test;
 using testing::DoubleEq;

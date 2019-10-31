@@ -21,8 +21,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
-#include "b_spline.h"
-#include "nurbs.h"
+#include "src/spl/b_spline.h"
+#include "src/spl/nurbs.h"
 #include "writer.h"
 
 namespace splinelib::src::io {

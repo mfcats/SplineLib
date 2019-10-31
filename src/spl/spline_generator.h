@@ -15,9 +15,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_SPLINE_GENERATOR_H_
 #define SRC_SPL_SPLINE_GENERATOR_H_
 
-#include "parameter_space.h"
-#include "physical_space.h"
-#include "weighted_physical_space.h"
+#include "src/spl/parameter_space.h"
+#include "src/spl/physical_space.h"
+#include "src/spl/weighted_physical_space.h"
 
 namespace splinelib::src::spl {
 template<int PARAMETRIC_DIMENSIONALITY>

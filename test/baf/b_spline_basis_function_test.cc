@@ -10,7 +10,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "b_spline_basis_function.h"
+#include "src/baf/b_spline_basis_function.h"
 
 using testing::DoubleEq;
 using testing::Test;

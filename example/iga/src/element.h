@@ -18,8 +18,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <memory>
 #include <vector>
 
-#include "control_point.h"
-#include "knot_vector.h"
+#include "src/baf/control_point.h"
+#include "src/baf/knot_vector.h"
 
 namespace iga {
 namespace elm {

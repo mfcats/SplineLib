@@ -14,8 +14,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <config_iges.h>
 #include "gmock/gmock.h"
-#include "iges_reader.h"
-#include "iges_writer.h"
+#include "src/io/iges_reader.h"
+#include "src/io/iges_writer.h"
 
 using testing::Test;
 using testing::DoubleEq;

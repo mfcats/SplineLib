@@ -21,10 +21,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 
-#include "b_spline.h"
-#include "spline.h"
-#include "nurbs_generator.h"
-#include "weighted_physical_space.h"
+#include "src/spl/b_spline.h"
+#include "src/spl/spline.h"
+#include "src/spl/nurbs_generator.h"
+#include "src/spl/weighted_physical_space.h"
 
 namespace splinelib::src::spl {
 template<int PARAMETRIC_DIMENSIONALITY>

@@ -12,12 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "irit_reader.h"
+#include "src/io/irit_reader.h"
 
 #include <fstream>
 
-#include "irit_reader_utils.h"
-#include "nurbs.h"
+#include "src/io/irit_reader_utils.h"
+#include "src/spl/nurbs.h"
 #include "src/util/string_operations.h"
 
 namespace splinelib::src::io {

@@ -14,7 +14,7 @@
 #
 
 add_library(CSigaitg INTERFACE)
-target_include_directories(CSigaitg INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_include_directories(CSigaitg INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
 
 install(
         TARGETS CSigaitg

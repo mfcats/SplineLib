@@ -20,8 +20,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "bdf_handler.h"
 #include "linear_equation_assembler.h"
-#include "nurbs.h"
-#include "spline.h"
+#include "src/spl/nurbs.h"
+#include "src/spl/spline.h"
 
 namespace iga {
 template<int PARAMETRIC_DIMENSIONALITY>

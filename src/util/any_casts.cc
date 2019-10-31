@@ -11,26 +11,31 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#ifndef SRC_UTIL_ANY_CASTS_H_
-#define SRC_UTIL_ANY_CASTS_H_
-
-#include <any>
-#include <memory>
-
-#include "src/spl/b_spline.h"
-#include "src/spl/nurbs.h"
+#include "src/util/any_casts.h"
 
 namespace splinelib::src::util::any_casts {
-// TODO(Corinna, Christoph): Implement Konstantin's version of the function below.
-int GetSplineDimension(const std::any &spline);
-
-template<int PARAMETRIC_DIMENSIONALITY>
-std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> GetSpline(std::any const &spline);
-
-template<int PARAMETRIC_DIMENSIONALITY>
-bool IsRational(std::any const &spline);
-
-#include "src/util/any_casts.inc"
+int GetSplineDimension(const std::any &spline) {
+  try {
+    GetSpline<1>(spline);
+    return 1;
+  } catch (std::runtime_error &e) {
+    try {
+      GetSpline<2>(spline);
+      return 2;
+    } catch (std::runtime_error &e) {
+      try {
+        GetSpline<3>(spline);
+        return 3;
+      } catch (std::runtime_error &e) {
+        try {
+          GetSpline<4>(spline);
+          return 4;
+        } catch (std::runtime_error &e) {
+          throw std::runtime_error(
+              "Input has to be a shared pointer to a b-spline or nurbs of dimension 1, 2, 3 or 4.");
+        }
+      }
+    }
+  }
+}
 }  // namespace splinelib::src::util::any_casts
-
-#endif  // SRC_UTIL_ANY_CASTS_H_

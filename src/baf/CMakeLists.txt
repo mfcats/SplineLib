@@ -22,7 +22,7 @@ set(SOURCES
 		zero_degree_b_spline_basis_function.cc)
 
 add_library(splinelibbaf SHARED ${SOURCES})
-target_include_directories(splinelibbaf PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_include_directories(splinelibbaf PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
 target_link_libraries(splinelibbaf splinelibutil)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_options(splinelibbaf PUBLIC ${RUNTIME_CHECKS_DEBUG} ${WARNING_FLAGS})
@@ -36,7 +36,7 @@ install(
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
         RUNTIME DESTINATION "${executable_install_dir}"
-        INCLUDES DESTINATION "${include_install_dir}"
+        INCLUDES DESTINATION "${include_install_dir}/src/baf"
 )
 
 install(FILES
@@ -46,4 +46,4 @@ install(FILES
         control_point.h
         knot_vector.h
         zero_degree_b_spline_basis_function.h
-        DESTINATION "${include_install_dir}")
+        DESTINATION "${include_install_dir}/src/baf")

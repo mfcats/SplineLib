@@ -14,11 +14,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "nurbs.h"
-#include "nurbs_generator.h"
-#include "surface_generator.h"
+#include "src/spl/nurbs.h"
+#include "src/spl/nurbs_generator.h"
+#include "src/spl/surface_generator.h"
 #include "src/util/numeric_settings.h"
-#include "vtk_writer.h"
+#include "src/io/vtk_writer.h"
 
 using testing::Test;
 using testing::DoubleEq;

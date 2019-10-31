@@ -14,7 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "surface_generator.h"
+#include "src/spl/surface_generator.h"
 
 namespace splinelib::src::spl {
 SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,

@@ -21,9 +21,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <sstream>
 #include <vector>
 
-#include "basis_function.h"
-#include "basis_function_factory.h"
-#include "knot_vector.h"
+#include "src/baf/basis_function.h"
+#include "src/baf/basis_function_factory.h"
+#include "src/baf/knot_vector.h"
 #include "src/util/numeric_settings.h"
 
 namespace splinelib::src::spl {

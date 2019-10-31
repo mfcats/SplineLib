@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_BAF_BASIS_FUNCTION_H_
 #define SRC_BAF_BASIS_FUNCTION_H_
 
-#include "knot_vector.h"
+#include "src/baf/knot_vector.h"
 #include "src/util/named_type.h"
 
 namespace splinelib::src::baf {

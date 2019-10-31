@@ -1,4 +1,4 @@
-/* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+/* Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
 
@@ -9,15 +9,14 @@ SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
-<http://www.gnu.org/licenses/>.
-*/
+<http://www.gnu.org/licenses/>.*/
 
 #ifndef SRC_UTIL_ELEMENT_GENERATOR_H_
 #define SRC_UTIL_ELEMENT_GENERATOR_H_
 
 #include <vector>
 
-#include "spline.h"
+#include "src/spl/spline.h"
 #include "src/util/element.h"
 #include "src/util/multi_index_handler.h"
 

@@ -22,7 +22,7 @@ find_package(SplineLib REQUIRED)
 
 add_library(CSiga INTERFACE)
 target_include_directories(CSiga INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> ${ARMADILLO_INCLUDE_DIRS})
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> ${ARMADILLO_INCLUDE_DIRS})
 target_link_libraries(CSiga INTERFACE CSigaitg SplineLib::splinelibspl SplineLib::splinelibio ${ARMADILLO_LIBRARIES})
 
 install(

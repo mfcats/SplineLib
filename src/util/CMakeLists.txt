@@ -14,11 +14,11 @@
 #
 
 set(SOURCES
+        any_casts.cc
         string_operations.cc
         system_operations.cc)
 
 add_library(splinelibutil SHARED ${SOURCES})
-
 target_include_directories(splinelibutil PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
 
 install(
@@ -32,6 +32,7 @@ install(
 
 install(FILES
         any_casts.h
+        any_casts.inc
         element.h
         element_generator.h
         multi_index_handler.h

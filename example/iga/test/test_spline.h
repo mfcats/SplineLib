@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 #include "basis_function_handler.h"
 #include "linear_equation_assembler.h"
-#include "nurbs.h"
+#include "src/spl/nurbs.h"
 #include "two_point_gauss_legendre.h"
 #include "three_point_gauss_legendre.h"
 

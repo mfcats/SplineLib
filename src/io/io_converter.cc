@@ -12,7 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "io_converter.h"
+#include "src/io/io_converter.h"
 
 namespace splinelib::src::io {
 IOConverter::IOConverter(const char *input_filename, const char *output_filename)
@@ -29,10 +29,10 @@ std::vector<int> IOConverter::ConvertFile(const std::vector<int> &positions,
 }
 
 std::vector<int> IOConverter::GetSplinePositionsOfCorrectDimension(const std::vector<std::any> &splines,
-                                                                       int max_dim) {
+                                                                   int max_dim) {
   std::vector<int> spline_positions_with_max_dim;
   for (size_t i = 0; i < splines.size(); ++i) {
-    if (util::AnyCasts::GetSplineDimension(splines[i]) <= max_dim) {
+    if (util::any_casts::GetSplineDimension(splines[i]) <= max_dim) {
       spline_positions_with_max_dim.emplace_back(i);
     }
   }

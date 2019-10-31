@@ -16,10 +16,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "irit_reader.h"
-#include "irit_writer.h"
-#include "xml_reader.h"
-#include "xml_writer.h"
+#include "src/io/irit_reader.h"
+#include "src/io/irit_writer.h"
+#include "src/io/xml_reader.h"
+#include "src/io/xml_writer.h"
 
 using testing::Test;
 using testing::DoubleEq;

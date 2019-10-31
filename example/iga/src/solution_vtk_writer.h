@@ -21,9 +21,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "multi_index_handler.h"
-#include "nurbs.h"
+#include "src/spl/nurbs.h"
 #include "solution_spline.h"
-#include "vtk_writer.h"
+#include "src/io/vtk_writer.h"
 
 namespace iga {
 template<int PARAMETRIC_DIMENSIONALITY>

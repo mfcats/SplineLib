@@ -18,8 +18,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 #include <cmath>
 
-#include "nurbs_generator.h"
-#include "nurbs.h"
+#include "src/spl/nurbs_generator.h"
+#include "src/spl/nurbs.h"
 
 namespace splinelib::src::spl {
 class SurfaceGenerator : public NURBSGenerator<2> {

@@ -14,7 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "square_generator.h"
+#include "src/spl/square_generator.h"
 #include "src/util/numeric_settings.h"
 
 using testing::Test;

@@ -15,8 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_BAF_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
 #define SRC_BAF_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
 
-#include "basis_function.h"
-#include "knot_vector.h"
+#include "src/baf/basis_function.h"
+#include "src/baf/knot_vector.h"
 
 namespace splinelib::src::baf {
 class ZeroDegBSplBasFnc : public baf::BasisFunction {

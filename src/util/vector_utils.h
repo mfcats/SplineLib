@@ -1,4 +1,4 @@
-/* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+/* Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
 
@@ -9,8 +9,7 @@ SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
-<http://www.gnu.org/licenses/>.
-*/
+<http://www.gnu.org/licenses/>.*/
 
 #ifndef SRC_UTIL_VECTOR_UTILS_H_
 #define SRC_UTIL_VECTOR_UTILS_H_
@@ -40,7 +39,7 @@ template<typename TYPE>
 std::vector<TYPE> ComputeCrossProduct(std::vector<TYPE> const &a, std::vector<TYPE> const &b);
 
 template<typename TYPE>
-std::vector<TYPE> GetEntriesAtIndices(std::vector<TYPE> const &input, std::vector<int> const &positions);
+std::vector<TYPE> GetEntriesAtIndices(std::vector<TYPE> const &input, std::vector<int> const &indices);
 
 #include "src/util/vector_utils.inc"
 }  // namespace splinelib::src::util::vector_utils

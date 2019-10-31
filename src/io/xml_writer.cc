@@ -12,13 +12,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "xml_writer.h"
+#include "src/io/xml_writer.h"
 
 #include <string>
 
 #include "src/util/any_casts.h"
-#include "b_spline.h"
-#include "nurbs.h"
+#include "src/spl/b_spline.h"
+#include "src/spl/nurbs.h"
 #include "xml_writer_utils.h"
 
 namespace splinelib::src::io {
@@ -33,7 +33,7 @@ void XMLWriter::WriteFile(const std::vector<std::any> &splines, const char *file
 }
 
 void XMLWriter::AddSpline(pugi::xml_node *spline_list, const std::any &spline) const {
-  int spline_dimension = util::AnyCasts::GetSplineDimension(spline);
+  int spline_dimension = util::any_casts::GetSplineDimension(spline);
   if (spline_dimension == 1) {
     Add1DSpline(spline_list, spline);
   } else if (spline_dimension == 2) {
@@ -46,12 +46,12 @@ void XMLWriter::AddSpline(pugi::xml_node *spline_list, const std::any &spline) c
 }
 
 void XMLWriter::Add1DSpline(pugi::xml_node *spline_list, const std::any &spline) const {
-  std::shared_ptr<spl::Spline<1>> spline_ptr = util::AnyCasts::GetSpline<1>(spline);
+  std::shared_ptr<spl::Spline<1>> spline_ptr = util::any_casts::GetSpline<1>(spline);
   pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
   AddSplineAttributes(&spline_node, 1, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
   AddControlPointVarNames(&spline_node, spline_ptr->GetPointDim());
   XMLWriterUtils<1>::AddControlPointVars(&spline_node, spline_ptr);
-  if (util::AnyCasts::IsRational<1>(spline)) {
+  if (util::any_casts::IsRational<1>(spline)) {
     XMLWriterUtils<1>::AddWeights(&spline_node, spline);
   }
   XMLWriterUtils<1>::AddDegrees(&spline_node, spline_ptr);
@@ -59,12 +59,12 @@ void XMLWriter::Add1DSpline(pugi::xml_node *spline_list, const std::any &spline)
 }
 
 void XMLWriter::Add2DSpline(pugi::xml_node *spline_list, const std::any &spline) const {
-  std::shared_ptr<spl::Spline<2>> spline_ptr = util::AnyCasts::GetSpline<2>(spline);
+  std::shared_ptr<spl::Spline<2>> spline_ptr = util::any_casts::GetSpline<2>(spline);
   pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
   AddSplineAttributes(&spline_node, 2, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
   AddControlPointVarNames(&spline_node, spline_ptr->GetPointDim());
   XMLWriterUtils<2>::AddControlPointVars(&spline_node, spline_ptr);
-  if (util::AnyCasts::IsRational<2>(spline)) {
+  if (util::any_casts::IsRational<2>(spline)) {
     XMLWriterUtils<2>::AddWeights(&spline_node, spline);
   }
   XMLWriterUtils<2>::AddDegrees(&spline_node, spline_ptr);
@@ -72,12 +72,12 @@ void XMLWriter::Add2DSpline(pugi::xml_node *spline_list, const std::any &spline)
 }
 
 void XMLWriter::Add3DSpline(pugi::xml_node *spline_list, const std::any &spline) const {
-  std::shared_ptr<spl::Spline<3>> spline_ptr = util::AnyCasts::GetSpline<3>(spline);
+  std::shared_ptr<spl::Spline<3>> spline_ptr = util::any_casts::GetSpline<3>(spline);
   pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
   AddSplineAttributes(&spline_node, 3, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
   AddControlPointVarNames(&spline_node, spline_ptr->GetPointDim());
   XMLWriterUtils<3>::AddControlPointVars(&spline_node, spline_ptr);
-  if (util::AnyCasts::IsRational<3>(spline)) {
+  if (util::any_casts::IsRational<3>(spline)) {
     XMLWriterUtils<3>::AddWeights(&spline_node, spline);
   }
   XMLWriterUtils<3>::AddDegrees(&spline_node, spline_ptr);
@@ -85,12 +85,12 @@ void XMLWriter::Add3DSpline(pugi::xml_node *spline_list, const std::any &spline)
 }
 
 void XMLWriter::Add4DSpline(pugi::xml_node *spline_list, const std::any &spline) const {
-  std::shared_ptr<spl::Spline<4>> spline_ptr = util::AnyCasts::GetSpline<4>(spline);
+  std::shared_ptr<spl::Spline<4>> spline_ptr = util::any_casts::GetSpline<4>(spline);
   pugi::xml_node spline_node = spline_list->append_child("SplineEntry");
   AddSplineAttributes(&spline_node, 4, spline_ptr->GetPointDim(), spline_ptr->GetNumberOfControlPoints());
   AddControlPointVarNames(&spline_node, spline_ptr->GetPointDim());
   XMLWriterUtils<4>::AddControlPointVars(&spline_node, spline_ptr);
-  if (util::AnyCasts::IsRational<4>(spline)) {
+  if (util::any_casts::IsRational<4>(spline)) {
     XMLWriterUtils<4>::AddWeights(&spline_node, spline);
   }
   XMLWriterUtils<4>::AddDegrees(&spline_node, spline_ptr);

@@ -12,7 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "zero_degree_b_spline_basis_function.h"
+#include "src/baf/zero_degree_b_spline_basis_function.h"
 
 namespace splinelib::src::baf {
 ZeroDegBSplBasFnc::ZeroDegBSplBasFnc(const KnotVector &knot_vector, const KnotSpan &start_of_support) :

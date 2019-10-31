@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "io_converter.h"
+#include "src/io/io_converter.h"
 
 using testing::Test;
 using testing::Ne;

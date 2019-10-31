@@ -19,11 +19,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
-#include "pugixml.hpp"
+#include "external/pugixml/pugixml.hpp"
 
-#include "b_spline.h"
-#include "nurbs.h"
-#include "reader.h"
+#include "src/spl/b_spline.h"
+#include "src/spl/nurbs.h"
+#include "src/io/reader.h"
 
 namespace splinelib::src::io {
 class XMLReader : public Reader {

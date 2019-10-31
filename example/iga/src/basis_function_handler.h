@@ -27,7 +27,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "integration_rule.h"
 #include "mapping_handler.h"
 #include "multi_index_handler.h"
-#include "nurbs.h"
+#include "src/spl/nurbs.h"
 
 namespace iga {
 template<int PARAMETRIC_DIMENSIONALITY>

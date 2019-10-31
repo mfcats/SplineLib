@@ -12,14 +12,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "irit_writer.h"
+#include "src/io/irit_writer.h"
 
 #include <memory>
 
 #include "src/util/any_casts.h"
-#include "b_spline.h"
-#include "irit_writer_utils.h"
-#include "nurbs.h"
+#include "src/spl/b_spline.h"
+#include "src/io/irit_writer_utils.h"
+#include "src/spl/nurbs.h"
 
 namespace splinelib::src::io {
 void IRITWriter::WriteFile(const std::vector<std::any> &splines, const char *filename) const {
@@ -40,7 +40,7 @@ void IRITWriter::WriteFile(const std::vector<std::any> &splines, const char *fil
 
 void IRITWriter::AddSpline(std::ofstream &file, const std::any &spline, int spline_number) const {
   file << "  [OBJECT SPLINE" + std::to_string(spline_number + 1) + "\n    ";
-  int spline_dimension = util::AnyCasts::GetSplineDimension(spline);
+  int spline_dimension = util::any_casts::GetSplineDimension(spline);
   if (spline_dimension == 1) {
     Write1DSpline(file, spline);
   } else if (spline_dimension == 2) {
@@ -54,30 +54,30 @@ void IRITWriter::AddSpline(std::ofstream &file, const std::any &spline, int spli
 }
 
 void IRITWriter::Write1DSpline(std::ofstream &file, const std::any &spline) const {
-  std::shared_ptr<spl::Spline<1>> spline_ptr = util::AnyCasts::GetSpline<1>(spline);
-  bool rational = util::AnyCasts::IsRational<1>(spline);
+  std::shared_ptr<spl::Spline<1>> spline_ptr = util::any_casts::GetSpline<1>(spline);
+  bool rational = util::any_casts::IsRational<1>(spline);
   file << "[CURVE BSPLINE "
       + IRITWriterUtils<1>::GetNumberOfControlPoints(spline_ptr) + IRITWriterUtils<1>::GetOrder(spline_ptr)
       + GetPointType(rational, spline_ptr->GetPointDim()) + "\n" + IRITWriterUtils<1>::GetKnotVectors(spline_ptr)
-      + IRITWriterUtils<1>::GetControlPoints(util::AnyCasts::IsRational<1>(spline), spline_ptr, spline);
+      + IRITWriterUtils<1>::GetControlPoints(util::any_casts::IsRational<1>(spline), spline_ptr, spline);
 }
 
 void IRITWriter::Write2DSpline(std::ofstream &file, const std::any &spline) const {
-  std::shared_ptr<spl::Spline<2>> spline_ptr = util::AnyCasts::GetSpline<2>(spline);
-  bool rational = util::AnyCasts::IsRational<2>(spline);
+  std::shared_ptr<spl::Spline<2>> spline_ptr = util::any_casts::GetSpline<2>(spline);
+  bool rational = util::any_casts::IsRational<2>(spline);
   file << "[SURFACE BSPLINE "
       + IRITWriterUtils<2>::GetNumberOfControlPoints(spline_ptr) + IRITWriterUtils<2>::GetOrder(spline_ptr)
       + GetPointType(rational, spline_ptr->GetPointDim()) + "\n" + IRITWriterUtils<2>::GetKnotVectors(spline_ptr)
-      + IRITWriterUtils<2>::GetControlPoints(util::AnyCasts::IsRational<2>(spline), spline_ptr, spline);
+      + IRITWriterUtils<2>::GetControlPoints(util::any_casts::IsRational<2>(spline), spline_ptr, spline);
 }
 
 void IRITWriter::Write3DSpline(std::ofstream &file, const std::any &spline) const {
-  std::shared_ptr<spl::Spline<3>> spline_ptr = util::AnyCasts::GetSpline<3>(spline);
-  bool rational = util::AnyCasts::IsRational<3>(spline);
+  std::shared_ptr<spl::Spline<3>> spline_ptr = util::any_casts::GetSpline<3>(spline);
+  bool rational = util::any_casts::IsRational<3>(spline);
   file << "[TRIVAR BSPLINE "
       + IRITWriterUtils<3>::GetNumberOfControlPoints(spline_ptr) + IRITWriterUtils<3>::GetOrder(spline_ptr)
       + GetPointType(rational, spline_ptr->GetPointDim()) + "\n" + IRITWriterUtils<3>::GetKnotVectors(spline_ptr)
-      + IRITWriterUtils<3>::GetControlPoints(util::AnyCasts::IsRational<3>(spline), spline_ptr, spline);
+      + IRITWriterUtils<3>::GetControlPoints(util::any_casts::IsRational<3>(spline), spline_ptr, spline);
 }
 
 std::string IRITWriter::GetPointType(bool rational, int space_dimension) const {

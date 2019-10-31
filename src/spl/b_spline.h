@@ -21,10 +21,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 
-#include "b_spline_generator.h"
+#include "src/spl/b_spline_generator.h"
 #include "src/util/multi_index_handler.h"
 #include "src/util/numeric_operations.h"
-#include "spline.h"
+#include "src/spl/spline.h"
 #include "spline_generator.h"
 #include "src/util/vector_utils.h"
 

@@ -16,9 +16,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <memory>
 #include <vector>
 
-#include "b_spline.h"
-#include "control_point.h"
-#include "knot_vector.h"
+#include "src/spl/b_spline.h"
+#include "src/baf/control_point.h"
+#include "src/baf/knot_vector.h"
 
 using ParametricCoordinate = splinelib::src::ParametricCoordinate;
 

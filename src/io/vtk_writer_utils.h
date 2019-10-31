@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <fstream>
 
 #include "src/util/any_casts.h"
-#include "spline.h"
+#include "src/spl/spline.h"
 
 namespace splinelib::src::io {
 template<int PARAMETRIC_DIMENSIONALITY>
@@ -56,7 +56,7 @@ class VTKWriterUtils {
                           const std::any &spline,
                           std::array<int, PARAMETRIC_DIMENSIONALITY> scattering) {
     std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>>
-        spline_ptr = util::AnyCasts::GetSpline<PARAMETRIC_DIMENSIONALITY>(spline);
+        spline_ptr = util::any_casts::GetSpline<PARAMETRIC_DIMENSIONALITY>(spline);
     std::array<double, 2 * PARAMETRIC_DIMENSIONALITY> knots = GetEdgeKnots(spline_ptr);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointHandlerLength(scattering));
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++point_handler, ++i) {

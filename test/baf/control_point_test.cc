@@ -12,9 +12,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
+#include <functional>
+
 #include "gmock/gmock.h"
 
-#include "control_point.h"
+#include "src/baf/control_point.h"
 
 using testing::Test;
 using testing::DoubleEq;

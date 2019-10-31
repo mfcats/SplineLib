@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <memory>
 #include <vector>
 
-#include "b_spline_generator.h"
+#include "src/spl/b_spline_generator.h"
 #include "random_spline_utils.h"
 
 namespace splinelib::src::spl {

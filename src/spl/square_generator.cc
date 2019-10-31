@@ -8,7 +8,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "square_generator.h"
+#include "src/spl/square_generator.h"
 
 namespace splinelib::src::spl {
 SquareGenerator::SquareGenerator() : degree_(Degree{2}), number_of_knots_(6) {}

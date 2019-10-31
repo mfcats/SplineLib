@@ -17,7 +17,7 @@ set(SOURCES
         pugixml.cpp)
 
 add_library(pugixmllib SHARED ${SOURCES})
-target_include_directories(pugixmllib PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_include_directories(pugixmllib PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
 
 install(
         TARGETS pugixmllib
@@ -25,10 +25,10 @@ install(
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
         RUNTIME DESTINATION "${executable_install_dir}"
-        INCLUDES DESTINATION "${include_install_dir}"
+        INCLUDES DESTINATION "${include_install_dir}/external/pugixml"
 )
 
 install(FILES
         pugiconfig.hpp
         pugixml.hpp
-        DESTINATION "${include_install_dir}")
+        DESTINATION "${include_install_dir}/external/pugixml")

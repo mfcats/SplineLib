@@ -20,14 +20,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "src/util/any_casts.h"
-#include "iges_reader.h"
-#include "iges_writer.h"
-#include "irit_reader.h"
-#include "irit_writer.h"
+#include "src/io/iges_reader.h"
+#include "src/io/iges_writer.h"
+#include "src/io/irit_reader.h"
+#include "src/io/irit_writer.h"
 #include "src/util/string_operations.h"
-#include "vtk_writer.h"
-#include "xml_reader.h"
-#include "xml_writer.h"
+#include "src/io/vtk_writer.h"
+#include "src/io/xml_reader.h"
+#include "src/io/xml_writer.h"
 
 namespace splinelib::src::io {
 class IOConverter {

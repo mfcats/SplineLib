@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "four_point_gauss_legendre.h"
 #include "gmock/gmock.h"
 #include "linear_equation_assembler.h"
-#include "nurbs.h"
+#include "src/spl/nurbs.h"
 #include "poisson_problem.h"
 #include "solution_vtk_writer.h"
 #include "five_point_gauss_legendre.h"

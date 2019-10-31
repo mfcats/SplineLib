@@ -13,9 +13,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "converter_log.h"
-#include "iges_reader.h"
-#include "io_converter.h"
-#include "irit_writer.h"
+#include "src/io/iges_reader.h"
+#include "src/io/io_converter.h"
+#include "src/io/irit_writer.h"
 #include "src/util/string_operations.h"
 #include "src/util/vector_utils.h"
 

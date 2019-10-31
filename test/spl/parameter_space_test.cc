@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "parameter_space.h"
+#include "src/spl/parameter_space.h"
 #include "src/util/numeric_settings.h"
 
 using testing::Test;

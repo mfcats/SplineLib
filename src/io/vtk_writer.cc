@@ -12,7 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "vtk_writer.h"
+#include "src/io/vtk_writer.h"
 
 #include "src/util/any_casts.h"
 #include "vtk_writer_utils.h"
@@ -49,7 +49,7 @@ void VTKWriter::WriteFile(const std::vector<std::any> &splines,
 std::vector<int> VTKWriter::GetSplineDimensions(const std::vector<std::any> &splines) const {
   std::vector<int> dimensions(splines.size());
   for (size_t i = 0; i < splines.size(); ++i) {
-    dimensions[i] = util::AnyCasts::GetSplineDimension(splines[i]);
+    dimensions[i] = util::any_casts::GetSplineDimension(splines[i]);
   }
   return dimensions;
 }

@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <memory>
 
-#include "basis_function.h"
+#include "src/baf/basis_function.h"
 
 namespace splinelib::src::baf {
 class BSplineBasisFunction : public BasisFunction {

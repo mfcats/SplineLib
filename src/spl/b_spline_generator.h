@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <memory>
 #include <vector>
 
-#include "physical_space.h"
+#include "src/spl/physical_space.h"
 #include "spline_generator.h"
 
 namespace splinelib::src::spl {

@@ -49,19 +49,19 @@ class AnySplines : public Test {
 };
 
 TEST_F(AnySplines, CanBeCheckedForSplineDimension) {  // NOLINT
-  ASSERT_THAT(util::AnyCasts::GetSplineDimension(b_spline_1d_any_), 1);
-  ASSERT_THAT(util::AnyCasts::GetSplineDimension(nurbs_2d_any_), 2);
-  ASSERT_THROW(util::AnyCasts::GetSplineDimension(std::make_any<int>(8)), std::runtime_error);
+  ASSERT_THAT(util::any_casts::GetSplineDimension(b_spline_1d_any_), 1);
+  ASSERT_THAT(util::any_casts::GetSplineDimension(nurbs_2d_any_), 2);
+  ASSERT_THROW(util::any_casts::GetSplineDimension(std::make_any<int>(8)), std::runtime_error);
 }
 
 TEST_F(AnySplines, CanBeCastedToSplines) {  // NOLINT
-  ASSERT_THAT(util::AnyCasts::GetSpline<1>(b_spline_1d_any_)->GetControlPoint(1).GetValue(0), DoubleEq(1.2));
-  ASSERT_THAT(util::AnyCasts::GetSpline<2>(nurbs_2d_any_)->GetWeight(1), DoubleEq(0.8));
-  ASSERT_THROW(util::AnyCasts::GetSpline<1>(std::make_any<int>(8)), std::runtime_error);
+  ASSERT_THAT(util::any_casts::GetSpline<1>(b_spline_1d_any_)->GetControlPoint(1).GetValue(0), DoubleEq(1.2));
+  ASSERT_THAT(util::any_casts::GetSpline<2>(nurbs_2d_any_)->GetWeight(1), DoubleEq(0.8));
+  ASSERT_THROW(util::any_casts::GetSpline<1>(std::make_any<int>(8)), std::runtime_error);
 }
 
 TEST_F(AnySplines, CanBeCheckedIfRational) {  // NOLINT
-  ASSERT_THAT(util::AnyCasts::IsRational<1>(b_spline_1d_any_), false);
-  ASSERT_THAT(util::AnyCasts::IsRational<2>(nurbs_2d_any_), true);
-  ASSERT_THROW(util::AnyCasts::IsRational<1>(std::make_any<int>(8)), std::runtime_error);
+  ASSERT_THAT(util::any_casts::IsRational<1>(b_spline_1d_any_), false);
+  ASSERT_THAT(util::any_casts::IsRational<2>(nurbs_2d_any_), true);
+  ASSERT_THROW(util::any_casts::IsRational<1>(std::make_any<int>(8)), std::runtime_error);
 }

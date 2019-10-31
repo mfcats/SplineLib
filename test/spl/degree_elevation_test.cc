@@ -16,10 +16,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "b_spline.h"
-#include "nurbs.h"
-#include "random_b_spline_generator.h"
-#include "random_nurbs_generator.h"
+#include "src/spl/b_spline.h"
+#include "src/spl/nurbs.h"
+#include "src/spl/random_b_spline_generator.h"
+#include "src/spl/random_nurbs_generator.h"
 
 using testing::Test;
 

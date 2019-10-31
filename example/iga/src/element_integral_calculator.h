@@ -23,7 +23,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "element_integration_point.h"
 #include "integration_point.h"
 #include "mapping_handler.h"
-#include "nurbs.h"
+#include "src/spl/nurbs.h"
 
 namespace iga {
 template<int PARAMETRIC_DIMENSIONALITY>

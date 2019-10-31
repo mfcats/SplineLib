@@ -12,9 +12,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "b_spline_basis_function.h"
+#include "src/baf/b_spline_basis_function.h"
 
-#include "basis_function_factory.h"
+#include "src/baf/basis_function_factory.h"
 #include "src/util/numeric_settings.h"
 
 namespace splinelib::src::baf {

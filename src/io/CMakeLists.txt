@@ -27,7 +27,7 @@ set(SOURCES
 
 add_library(splinelibio SHARED ${SOURCES})
 
-target_include_directories(splinelibio PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+target_include_directories(splinelibio PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
 target_link_libraries(splinelibio splinelibspl pugixmllib)
 
 install(
@@ -36,7 +36,7 @@ install(
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
         RUNTIME DESTINATION "${executable_install_dir}"
-        INCLUDES DESTINATION "${include_install_dir}"
+        INCLUDES DESTINATION "${include_install_dir}/src/io"
 )
 
 install(FILES
@@ -56,4 +56,4 @@ install(FILES
         xml_writer.h
         xml_writer_utils.h
         writer.h
-        DESTINATION "${include_install_dir}")
+        DESTINATION "${include_install_dir}/src/io")

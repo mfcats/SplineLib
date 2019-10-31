@@ -12,7 +12,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "iges_writer.h"
+#include "src/io/iges_writer.h"
 
 #include <iomanip>
 #include <limits>
@@ -234,10 +234,10 @@ std::vector<std::string> IGESWriter::GetTerminateSection(int linesS, int linesG,
 }
 
 int IGESWriter::GetDimension(const std::any &spline) const {
-  if (util::AnyCasts::GetSplineDimension(spline) == 1) {
+  if (util::any_casts::GetSplineDimension(spline) == 1) {
     return 126;
   }
-  if (util::AnyCasts::GetSplineDimension(spline) == 2) {
+  if (util::any_casts::GetSplineDimension(spline) == 2) {
     return 128;
   }
   throw std::runtime_error("Only splines of dimensions 1 or 2 can be written to an iges file.");

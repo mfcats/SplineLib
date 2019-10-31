@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "b_spline.h"
+#include "src/spl/b_spline.h"
 
 using testing::Test;
 using testing::DoubleEq;

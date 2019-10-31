@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <armadillo>
 #include <vector>
 
-#include "nurbs.h"
+#include "src/spl/nurbs.h"
 
 namespace iga {
 template<int PARAMETRIC_DIMENSIONALITY>

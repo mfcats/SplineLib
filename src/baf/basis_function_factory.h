@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_BAF_BASIS_FUNCTION_FACTORY_H_
 #define SRC_BAF_BASIS_FUNCTION_FACTORY_H_
 
-#include "basis_function.h"
+#include "src/baf/basis_function.h"
 
 namespace splinelib::src::baf {
 class BasisFunctionFactory {

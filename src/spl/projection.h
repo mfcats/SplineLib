@@ -17,9 +17,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <vector>
 
-#include "b_spline.h"
+#include "src/spl/b_spline.h"
 #include "src/util/element_generator.h"
-#include "knot_vector.h"
+#include "src/baf/knot_vector.h"
 #include "src/util/vector_utils.h"
 
 namespace splinelib::src::spl {
