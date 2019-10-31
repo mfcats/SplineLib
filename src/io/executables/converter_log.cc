@@ -47,7 +47,7 @@ ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
           positions_.emplace_back(-1);
           break;
         }
-        positions_.push_back(std::stoi(line));
+        if (!util::string_operations::TrimSpacesAndSquareBrackets(line).empty()) positions_.push_back(std::stoi(line));
       }
     }
     if (util::string_operations::StartsWith(line, "scattering:")) {

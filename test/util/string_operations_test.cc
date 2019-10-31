@@ -38,7 +38,7 @@ TEST_F(StringOperations, CheckIfStringEndsWithhello) {  // NOLINT
   ASSERT_THAT(util::string_operations::EndsWith("Oh Hello", "hello"), false);
   ASSERT_THAT(util::string_operations::EndsWith("Oh hello", "hello"), true);
   ASSERT_THAT(util::string_operations::EndsWith("bello", "hello"), false);
-//  ASSERT_THAT(util::string_operations::EndsWith("ello", "hello"), false);
+  ASSERT_THAT(util::string_operations::EndsWith("ello", "hello"), false);
 }
 
 TEST_F(StringOperations, SplitStringDelimitedBySpaces) {  // NOLINT
