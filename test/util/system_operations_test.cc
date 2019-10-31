@@ -1,4 +1,4 @@
-/* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+/* Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
 
@@ -9,22 +9,23 @@ SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
-<http://www.gnu.org/licenses/>.
-*/
+<http://www.gnu.org/licenses/>.*/
 
-#ifndef SRC_UTIL_SYSTEM_OPERATIONS_H_
-#define SRC_UTIL_SYSTEM_OPERATIONS_H_
+#include "gmock/gmock.h"
 
-#include <ctime>
+#include "src/util/system_operations.h"
 
-namespace splinelib::src::util::system_operations {
-struct tm GetTime() {
-  struct tm timeinfo{};
-  time_t rawtime;
-  rawtime = time(&rawtime);
-  localtime_r(&rawtime, &timeinfo);
-  return timeinfo;
+using testing::Test;
+
+using namespace splinelib::src;
+
+class SystemOperations : public Test {
+ public:
+  SystemOperations() = default;
+};
+
+TEST_F(SystemOperations, ReturnConsistentTime) {  // NOLINT
+  struct tm time = util::system_operations::GetTime();
+  ASSERT_GE(time.tm_year, 119);
+  ASSERT_NE(time.tm_zone, nullptr);
 }
-}  // namespace splinelib::src::util::system_operations
-
-#endif  // SRC_UTIL_SYSTEM_OPERATIONS_H_

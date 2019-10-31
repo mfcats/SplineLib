@@ -20,5 +20,6 @@ set(TEST_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/numeric_operations_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/stl_container_access_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/string_operations_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/system_operations_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/vector_utils_test.cc
         PARENT_SCOPE)

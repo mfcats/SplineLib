@@ -301,7 +301,7 @@ void IGESWriter::AppendToFile(std::ofstream &file, const std::vector<std::string
 }
 
 std::string IGESWriter::GetTime() const {
-  struct tm ptm = util::SystemOperations::GetTime();
+  struct tm ptm = util::system_operations::GetTime();
   std::string date = GetString((ptm.tm_year + 1900) * 10000 + (ptm.tm_mon + 1) * 100 + ptm.tm_mday);
   std::string time = GetString(ptm.tm_hour * 10000 + ptm.tm_min * 100 + ptm.tm_sec);
   return GetHollerithFormat(date + "." + time);

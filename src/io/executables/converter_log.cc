@@ -127,7 +127,7 @@ void ConverterLog::PrintHelp() const {
 }
 
 std::string ConverterLog::GetTime() const {
-  struct tm timeinfo = util::SystemOperations::GetTime();
+  struct tm timeinfo = util::system_operations::GetTime();
   return asctime(&timeinfo);
 }
 
