@@ -80,7 +80,7 @@ TEST_F(BSplineFig5_9, IsSubdividedAtKnot0_7InFirstDirection) {  // NOLINT
   ASSERT_THAT(splines[1]->GetKnotVector(0)->GetKnot(7).Get(), DoubleEq(1));
   double steps = 100;
   for (int i = 0; i <= steps; ++i) {
-    ParametricCoordinate coord2 = ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+    ParametricCoordinate coord2 = ParametricCoordinate{util::random::GetUniformRandom<double>(0.0, 1.0)};
     std::array<ParametricCoordinate, 2> param_coord{ParametricCoordinate(i / steps), coord2};
     int spline_number = i / steps >= 0.7 ? 1 : 0;
     std::vector<double> evaluated_splitted_spline = splines[spline_number]->Evaluate(param_coord, {0, 1});
@@ -158,7 +158,7 @@ TEST_F(Random2DBSplineToSplit, IsSubdividedAtKnot0_1InFirstDirection) {  // NOLI
   auto splines = b_spline_2d_->SudivideSpline(ParametricCoordinate{0.1}, 0);
   double steps = 50;
   for (int i = 0; i <= steps; ++i) {
-    ParametricCoordinate coord2 = ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+    ParametricCoordinate coord2 = ParametricCoordinate{util::random::GetUniformRandom<double>(0.0, 1.0)};
     std::array<ParametricCoordinate, 2> param_coord{ParametricCoordinate(i / steps), coord2};
     int spline_number = i / steps >= 0.1 ? 1 : 0;
     std::vector<double> evaluated_splitted_spline = splines[spline_number]->Evaluate(param_coord, {0, 1});
@@ -186,7 +186,7 @@ TEST_F(Random2DNURBSToSplit, IsSubdividedAtKnot0_5InSecondDirection) {  // NOLIN
   auto splines = nurbs_2d_->SudivideSpline(ParametricCoordinate{0.5}, 1);
   double steps = 50;
   for (int i = 0; i <= steps; ++i) {
-    ParametricCoordinate coord1 = ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+    ParametricCoordinate coord1 = ParametricCoordinate{util::random::GetUniformRandom<double>(0.0, 1.0)};
     std::array<ParametricCoordinate, 2> param_coord{coord1, ParametricCoordinate(i / steps)};
     int spline_number = i / steps >= 0.5 ? 1 : 0;
     std::vector<double> evaluated_splitted_spline = splines[spline_number]->Evaluate(param_coord, {0, 1});
@@ -214,8 +214,8 @@ TEST_F(Random3DBSplineToSplit, IsSubdividedAtKnot0_4InSecondDirection) {  // NOL
   auto splines = b_spline_3d_->SudivideSpline(ParametricCoordinate{0.4}, 1);
   double steps = 25;
   for (int i = 0; i <= steps; ++i) {
-    ParametricCoordinate coord1 = ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)};
-    ParametricCoordinate coord3 = ParametricCoordinate{util::Random::GetUniformRandom<double>(0.0, 1.0)};
+    ParametricCoordinate coord1 = ParametricCoordinate{util::random::GetUniformRandom<double>(0.0, 1.0)};
+    ParametricCoordinate coord3 = ParametricCoordinate{util::random::GetUniformRandom<double>(0.0, 1.0)};
     std::array<ParametricCoordinate, 3> param_coord{coord1, ParametricCoordinate(i / steps), coord3};
     int spline_number = i / steps >= 0.4 ? 1 : 0;
     std::vector<double> evaluated_splitted_spline = splines[spline_number]->Evaluate(param_coord, {0, 1, 2});

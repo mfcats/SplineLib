@@ -11,20 +11,20 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#ifndef SRC_UTIL_RANDOM_H_
-#define SRC_UTIL_RANDOM_H_
-
-#include <chrono>
-#include <random>
-
-namespace splinelib::src::util::random {
-template<class TYPE>
-TYPE GetBinomialRandom(double min, double max, double distance);
+// NOLINT(build/header_guard)
 
 template<class TYPE>
-TYPE GetUniformRandom(double min, double max);
+TYPE GetBinomialRandom(double min, double max, double distance) {
+  unsigned seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+  static std::default_random_engine generator(seed);
+  std::binomial_distribution<int> distribution(static_cast<int>((max - min) / distance), 0.5);
+  return distribution(generator) * distance + min;
+}
 
-#include "src/util/random.inc"
-}  // namespace splinelib::src::util::random
-
-#endif  // SRC_UTIL_RANDOM_H_
+template<class TYPE>
+TYPE GetUniformRandom(double min, double max) {
+  unsigned seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+  static std::default_random_engine generator(seed);
+  std::uniform_real_distribution<double> distribution(min, max);
+  return distribution(generator);
+}

@@ -14,7 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/util/system_operations.h"
 
 namespace splinelib::src::util::system_operations {
-struct tm splinelib::src::util::system_operations::GetTime() {
+struct tm GetTime() {
   struct tm timeinfo{};
   time_t rawtime;
   rawtime = time(&rawtime);

@@ -14,7 +14,8 @@
 #
 
 set(SOURCES
-        string_operations.cc)
+        string_operations.cc
+        system_operations.cc)
 
 add_library(splinelibutil SHARED ${SOURCES})
 
@@ -38,12 +39,16 @@ install(FILES
         named_type.h
         named_type.inc
         numeric_operations.h
+        numeric_operations.inc
         numeric_settings.h
         numeric_settings.inc
         random.h
+        random.inc
         stl_container_access.h
         stl_container_access.inc
         string_operations.h
+        string_operations.inc
         system_operations.h
         vector_utils.h
+        vector_utils.inc
         DESTINATION "${include_install_dir}/src/util")

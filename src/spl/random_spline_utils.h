@@ -29,7 +29,7 @@ class RandomSplineUtils {
   static std::array<Degree, PARAMETRIC_DIMENSIONALITY> GetRandomDegrees(int max_degree) {
     std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      degrees[i] = Degree{util::Random::GetBinomialRandom<int>(1, max_degree, 1)};
+      degrees[i] = Degree{util::random::GetBinomialRandom<int>(1, max_degree, 1)};
     }
     return degrees;
   }
@@ -65,7 +65,7 @@ class RandomSplineUtils {
       std::vector<double> coordinates;
       coordinates.reserve(dimension);
       for (int j = 0; j < dimension; ++j) {
-        coordinates.emplace_back(util::Random::GetBinomialRandom<double>(-5, 5, 0.01));
+        coordinates.emplace_back(util::random::GetBinomialRandom<double>(-5, 5, 0.01));
       }
       control_points.emplace_back(coordinates);
     }
@@ -77,7 +77,7 @@ class RandomSplineUtils {
     std::vector<double> weights;
     weights.reserve(point_handler.GetNumberOfTotalMultiIndices());
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
-      weights.emplace_back(util::Random::GetBinomialRandom<double>(0.1, 2, 0.1));
+      weights.emplace_back(util::random::GetBinomialRandom<double>(0.1, 2, 0.1));
     }
     return weights;
   }
@@ -97,7 +97,7 @@ class RandomSplineUtils {
       const std::array<Degree, PARAMETRIC_DIMENSIONALITY> &degree) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_knots{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      number_of_knots[i] = util::Random::GetBinomialRandom<int>(2 * degree[i].Get() + 2, 4 * degree[i].Get(), 1);
+      number_of_knots[i] = util::random::GetBinomialRandom<int>(2 * degree[i].Get() + 2, 4 * degree[i].Get(), 1);
     }
     return number_of_knots;
   }
