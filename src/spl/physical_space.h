@@ -190,7 +190,7 @@ class PhysicalSpace {
       for (int j = 0; j < dimension_; ++j) {
         point[j] = control_points_[i * dimension_ + j];
       }
-      double distance = util::vector_utils::ComputeDistance<double>(origin, point);
+      double distance = util::vector_utils::ComputeDistance(origin, point);
       if (distance > maximum) maximum = distance;
     }
     return maximum;

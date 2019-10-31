@@ -94,7 +94,7 @@ std::vector<std::vector<int>> ConverterLog::GetScattering() {
   } else {
     indices = written_;
   }
-  return util::vector_utils::FilterVector<std::vector<int>>(scattering_, indices);
+  return util::vector_utils::FilterVector(scattering_, indices);
 }
 
 void ConverterLog::WriteLog() const {

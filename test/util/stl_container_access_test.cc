@@ -13,6 +13,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
+#include <array>
+#include <vector>
+
 #include "src/util/stl_container_access.h"
 
 using testing::Test;

@@ -110,8 +110,8 @@ void IOConverter::GetPositions(const std::vector<int> &positions,
 }
 
 std::vector<std::vector<int>> IOConverter::GetScattering(const std::vector<std::vector<int>> &scattering,
-                                                             const std::vector<int> &positions,
-                                                             const std::vector<int> &written) {
+                                                         const std::vector<int> &positions,
+                                                         const std::vector<int> &written) {
   std::vector<int> indices;
   if (!positions.empty()) {
     for (int i = 0; i < static_cast<int>(positions.size()); ++i) {
@@ -122,6 +122,6 @@ std::vector<std::vector<int>> IOConverter::GetScattering(const std::vector<std::
   } else {
     indices = written;
   }
-  return util::vector_utils::FilterVector<std::vector<int>>(scattering, indices);
+  return util::vector_utils::FilterVector(scattering, indices);
 }
 }  // namespace splinelib::src::io

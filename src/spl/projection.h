@@ -89,15 +89,15 @@ class Projection {
     std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> ParametricCoordinates = {ParametricCoordinate{0}};
     std::vector<double> splinePhysicalCoords = spline->Evaluate({ParametricCoordinate{(0.5 * (
         elements[0].GetUpperBound() - elements[0].GetLowerBound()).Get())}}, dimensions);
-    double distance = util::vector_utils::ComputeDistance<double>(point_phys_coords, splinePhysicalCoords);
+    double distance = util::vector_utils::ComputeDistance(point_phys_coords, splinePhysicalCoords);
     ParametricCoordinates[0] =
         ParametricCoordinate{{0.5 * (elements[0].GetUpperBound() - elements[0].GetLowerBound()).Get()}};
     for (auto i = 1u; i < elements.size(); ++i) {
       splinePhysicalCoords = spline->Evaluate({ParametricCoordinate{0.5 * (
           elements[i].GetUpperBound() - elements[i].GetLowerBound()).Get() + elements[i].GetLowerBound().Get()}},
               dimensions);
-      if (util::vector_utils::ComputeDistance<double>(point_phys_coords, splinePhysicalCoords) < distance) {
-        distance = util::vector_utils::ComputeDistance<double>(point_phys_coords, splinePhysicalCoords);
+      if (util::vector_utils::ComputeDistance(point_phys_coords, splinePhysicalCoords) < distance) {
+        distance = util::vector_utils::ComputeDistance(point_phys_coords, splinePhysicalCoords);
         ParametricCoordinates[0] = ParametricCoordinate{0.5 * (
                 elements[i].GetUpperBound() - elements[i].GetLowerBound()).Get() + elements[i].GetLowerBound().Get()};
       }
@@ -116,13 +116,13 @@ class Projection {
     std::array<ParametricCoordinate, 2> param_coords =
         {ParametricCoordinate(first_knot1), ParametricCoordinate(first_knot2)};
     std::vector<double> physical_coords = spline->Evaluate(param_coords, dimensions);
-    double distance = util::vector_utils::ComputeDistance<double>(point_phys_coords, physical_coords);
+    double distance = util::vector_utils::ComputeDistance(point_phys_coords, physical_coords);
     for (int i = 1; i <= scattering[0]; ++i) {
       for (int j = 1; j <= scattering[1]; ++j) {
         ParametricCoordinate coord1 = ParametricCoordinate(i * (last_knot1 - first_knot1) / scattering[0]);
         ParametricCoordinate coord2 = ParametricCoordinate(j * (last_knot2 - first_knot2) / scattering[1]);
         physical_coords = spline->Evaluate({coord1, coord2}, dimensions);
-        double current_dist = util::vector_utils::ComputeTwoNorm<double>(util::vector_utils::ComputeDifference<double>(
+        double current_dist = util::vector_utils::ComputeTwoNorm<double>(util::vector_utils::ComputeDifference(
             point_phys_coords,
             physical_coords));
         if (current_dist < distance) {
@@ -170,13 +170,13 @@ class Projection {
                                   const std::vector<double> &current_point,
                                   const std::vector<double> &derivative_dir1,
                                   const std::vector<double> &derivative_dir2) {
-    std::vector<double> normal_vector = util::vector_utils::CrossProduct<double>(derivative_dir1, derivative_dir2);
-    double length = util::vector_utils::ComputeTwoNorm<double>(normal_vector);
-    std::vector<double> normed_normal_vector = util::vector_utils::ScaleVector<double>(normal_vector, 1 / length);
-    double distance = util::vector_utils::ComputeScalarProduct<double>(current_point, normed_normal_vector)
-        - util::vector_utils::ComputeScalarProduct<double>(projection_point, normed_normal_vector);
-    std::vector<double> scaled_normal_vector = util::vector_utils::ScaleVector<double>(normed_normal_vector, -distance);
-    std::vector<double> q = util::vector_utils::ComputeDifference<double>(projection_point, scaled_normal_vector);
+    std::vector<double> normal_vector = util::vector_utils::CrossProduct(derivative_dir1, derivative_dir2);
+    double length = util::vector_utils::ComputeTwoNorm(normal_vector);
+    std::vector<double> normed_normal_vector = util::vector_utils::ScaleVector(normal_vector, 1 / length);
+    double distance = util::vector_utils::ComputeScalarProduct(current_point, normed_normal_vector)
+        - util::vector_utils::ComputeScalarProduct(projection_point, normed_normal_vector);
+    std::vector<double> scaled_normal_vector = util::vector_utils::ScaleVector(normed_normal_vector, -distance);
+    std::vector<double> q = util::vector_utils::ComputeDifference(projection_point, scaled_normal_vector);
     return q;
   }
 
@@ -184,11 +184,11 @@ class Projection {
                                           const std::vector<double> &derivative,
                                           const std::vector<double> &point_phys_coords) {
     std::vector<double> projectionVector =
-        util::vector_utils::ComputeDifference<double>(point_phys_coords, current_point);
+        util::vector_utils::ComputeDifference(point_phys_coords, current_point);
     // This is only the first order algorithm. An implemented but non-working version of the second order algorithm
     // can be found in commit 2ed993e6dcef3d184b70640f6b9498efae52747a.
-    return {util::vector_utils::ComputeScalarProduct<double>(derivative, projectionVector)
-                / util::vector_utils::ComputeScalarProduct<double>(derivative, derivative)};
+    return {util::vector_utils::ComputeScalarProduct(derivative, projectionVector)
+                / util::vector_utils::ComputeScalarProduct(derivative, derivative)};
   }
 
   static std::array<double, 2> GetDelta2D(const std::vector<double> &current_point,
@@ -197,11 +197,11 @@ class Projection {
                                           const std::vector<double> &point_phys_coords) {
     std::vector<double> q = GetQ(point_phys_coords, current_point, derivative_dir1, derivative_dir2);
     std::vector<double> diff = util::vector_utils::ComputeDifference(q, current_point);
-    double a = util::vector_utils::ComputeScalarProduct<double>(derivative_dir1, derivative_dir1);
-    double b = util::vector_utils::ComputeScalarProduct<double>(derivative_dir2, derivative_dir1);
-    double c = util::vector_utils::ComputeScalarProduct<double>(diff, derivative_dir1);
-    double d = util::vector_utils::ComputeScalarProduct<double>(derivative_dir2, derivative_dir2);
-    double e = util::vector_utils::ComputeScalarProduct<double>(diff, derivative_dir2);
+    double a = util::vector_utils::ComputeScalarProduct(derivative_dir1, derivative_dir1);
+    double b = util::vector_utils::ComputeScalarProduct(derivative_dir2, derivative_dir1);
+    double c = util::vector_utils::ComputeScalarProduct(diff, derivative_dir1);
+    double d = util::vector_utils::ComputeScalarProduct(derivative_dir2, derivative_dir2);
+    double e = util::vector_utils::ComputeScalarProduct(diff, derivative_dir2);
     double delta2 = (a * e - b * c) / (a * d - b * b);
     double delta1 = (c - b * delta2) / a;
     return std::array<double, 2>{delta1, delta2};

@@ -430,7 +430,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
         temp1[k] = temp[offset + (i - off - 1) * this->GetPointDim() + k] * temp_w[w_offset + i - off - 1];
         temp2[k] = temp[offset + (j - off + 1) * this->GetPointDim() + k] * temp_w[w_offset + j - off + 1];
       }
-      if (util::vector_utils::ComputeDistance<double>(temp1, temp2) > tolerance) {
+      if (util::vector_utils::ComputeDistance(temp1, temp2) > tolerance) {
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = i;
         for (int k = 0; k < this->GetPointDim(); ++k) {
@@ -441,7 +441,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
         temp1[this->GetPointDim()] = physical_space_->GetWeight(indices);
         temp2[this->GetPointDim()] =
             alfi * temp_w[w_offset + i - off + 1] + (1 - alfi) * temp_w[w_offset + i - off - 1];
-        if (util::vector_utils::ComputeDistance<double>(temp1, temp2) > tolerance) {
+        if (util::vector_utils::ComputeDistance(temp1, temp2) > tolerance) {
           return false;
         }
       }
