@@ -21,63 +21,68 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <numeric>
 #include <vector>
 
-namespace splinelib::src::util {
-template<typename T>
-class VectorUtils {
- public:
-  static double ComputeTwoNorm(std::vector<T> vectorA) {
-    std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(), vectorA.begin(), std::multiplies<T>());
-    double sum = 0;
-    for (T i : vectorA) {
-      sum += i;
+namespace splinelib::src::util::vector_utils {
+template<typename TYPE>
+double ComputeTwoNorm(std::vector<TYPE> vectorA) {
+  std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(), vectorA.begin(), std::multiplies<TYPE>());
+  double sum = 0;
+  for (TYPE i : vectorA) {
+    sum += i;
+  }
+  return sqrt(sum);
+}
+
+template<typename TYPE>
+std::vector<TYPE> ComputeDifference(std::vector<TYPE> vectorA, std::vector<TYPE> vectorB) {
+  std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::minus<TYPE>());
+  return vectorB;
+}
+
+template<typename TYPE>
+double ComputeDistance(std::vector<TYPE> vectorA, std::vector<TYPE> vectorB) {
+  return ComputeTwoNorm<TYPE>(ComputeDifference<TYPE>(vectorA, vectorB));
+}
+
+template<typename TYPE>
+TYPE ComputeScalarProduct(std::vector<TYPE> vectorA, std::vector<TYPE> vectorB) {
+  std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::multiplies<TYPE>());
+  TYPE sum = 0;
+  for (TYPE i : vectorB) {
+    sum += i;
+  }
+  return sum;
+}
+
+template<typename TYPE>
+std::vector<TYPE> ScaleVector(std::vector<TYPE> vectorA, TYPE factor) {
+  std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(),
+                 std::bind(std::multiplies<TYPE>(), factor, std::placeholders::_1));
+  return vectorA;
+}
+
+template<typename TYPE>
+std::vector<TYPE> CrossProduct(std::vector<TYPE> const &a, std::vector<TYPE> const &b) {
+  std::vector<TYPE> r(a.size());
+  r[0] = a[1] * b[2] - a[2] * b[1];
+  r[1] = a[2] * b[0] - a[0] * b[2];
+  r[2] = a[0] * b[1] - a[1] * b[0];
+  return r;
+}
+
+template<typename TYPE>
+std::vector<TYPE> FilterVector(const std::vector<TYPE> &input, const std::vector<int> &positions) {
+  std::vector<TYPE> output;
+  for (const auto &pos : positions) {
+    if (pos < static_cast<int>(input.size())) {
+      output.emplace_back(input[pos]);
+    } else {
+      throw std::runtime_error("The vector index is too high to be filtered from the input vector.");
     }
-    return sqrt(sum);
   }
+  return output;
+}
 
-  static std::vector<T> ComputeDifference(std::vector<T> vectorA, std::vector<T> vectorB) {
-    std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::minus<T>());
-    return vectorB;
-  }
-
-  static double ComputeDistance(std::vector<T> vectorA, std::vector<T> vectorB) {
-    return util::VectorUtils<T>::ComputeTwoNorm(util::VectorUtils<T>::ComputeDifference(vectorA, vectorB));
-  }
-
-  static T ComputeScalarProduct(std::vector<T> vectorA, std::vector<T> vectorB) {
-    std::transform(vectorA.begin(), vectorA.end(), vectorB.begin(), vectorB.begin(), std::multiplies<T>());
-    T sum = 0;
-    for (T i : vectorB) {
-      sum += i;
-    }
-    return sum;
-  }
-
-  static std::vector<T> ScaleVector(std::vector<T> vectorA, T factor) {
-    std::transform(vectorA.begin(), vectorA.end(), vectorA.begin(),
-                   std::bind(std::multiplies<T>(), factor, std::placeholders::_1));
-    return vectorA;
-  }
-
-  static std::vector<T> CrossProduct(std::vector<T> const &a, std::vector<T> const &b) {
-    std::vector<T> r(a.size());
-    r[0] = a[1] * b[2] - a[2] * b[1];
-    r[1] = a[2] * b[0] - a[0] * b[2];
-    r[2] = a[0] * b[1] - a[1] * b[0];
-    return r;
-  }
-
-  static std::vector<T> FilterVector(const std::vector<T> &input, const std::vector<int> &positions) {
-    std::vector<T> output;
-    for (const auto &pos : positions) {
-      if (pos < static_cast<int>(input.size())) {
-        output.emplace_back(input[pos]);
-      } else {
-        throw std::runtime_error("The vector index is too high to be filtered from the input vector.");
-      }
-    }
-    return output;
-  }
-};
-}  // namespace splinelib::src::util
+#include "src/util/vector_utils.inc"
+}  // namespace splinelib::src::util::vector_utils
 
 #endif  // SRC_UTIL_VECTOR_UTILS_H_

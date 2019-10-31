@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 
   io::IRITWriter irit_writer;
   std::vector<int> positions = log.GetPositions(io::IOConverter::GetSplinePositionsOfCorrectDimension(splines, 3));
-  std::vector<std::any> splines_with_max_dim = util::VectorUtils<std::any>::FilterVector(splines, positions);
+  std::vector<std::any> splines_with_max_dim = util::vector_utils::FilterVector<std::any>(splines, positions);
   irit_writer.WriteFile(splines_with_max_dim, log.GetOutput());
 
   log.WriteLog();

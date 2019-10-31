@@ -120,7 +120,7 @@ class Spline {
       }
       std::vector<double> evaluate_this = Evaluate(param_coord, dimensions);
       std::vector<double> evaluate_rhs = rhs.Evaluate(param_coord, dimensions);
-      if (util::VectorUtils<double>::ComputeDistance(evaluate_this, evaluate_rhs) > tolerance) {
+      if (util::vector_utils::ComputeDistance<double>(evaluate_this, evaluate_rhs) > tolerance) {
         return false;
       }
     }

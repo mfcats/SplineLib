@@ -235,7 +235,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
         temp1[k] = temp[l * temp_length + (i - off - 1) * this->GetPointDim() + k];
         temp2[k] = temp[l * temp_length + (j - off + 1) * this->GetPointDim() + k];
       }
-      if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
+      if (util::vector_utils::ComputeDistance<double>(temp1, temp2) > tolerance) {
         for (int k = 0; k < this->GetPointDim(); ++k) {
           auto indices = point_handler.GetCurrentIndex();
           indices[dimension] = i;
@@ -243,7 +243,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
           temp2[k] = alfi * temp[l * temp_length + (i - off + 1) * this->GetPointDim() + k]
               + (1 - alfi) * temp[l * temp_length + (i - off - 1) * this->GetPointDim() + k];
         }
-        if (util::VectorUtils<double>::ComputeDistance(temp1, temp2) > tolerance) {
+        if (util::vector_utils::ComputeDistance<double>(temp1, temp2) > tolerance) {
           return false;
         }
       }
