@@ -34,7 +34,7 @@ bool EndsWith(std::string const &string, std::string const &end_of_string) {
   return string.find(end_of_string) == string.length() - end_of_string.length();
 }
 
-std::vector<std::string> Split(const std::string &string, char delimiter) {
+std::vector<std::string> SplitStringAtDelimiter(const std::string &string, char delimiter) {
   std::stringstream stringstream_from_string(string);
   std::string current_line, current_string;
   std::vector<std::string> splitted_string;
@@ -47,30 +47,12 @@ std::vector<std::string> Split(const std::string &string, char delimiter) {
   return splitted_string;
 }
 
-std::string Trim(std::string string) {
+std::string TrimSpacesAndSquareBrackets(std::string string) {
   string.erase(string.begin(),
                std::find_if(string.begin(), string.end(), [](char ch) { return std::isspace(ch) == 0 && ch != '['; }));
   string.erase(std::find_if(string.rbegin(), string.rend(),
                             [](char ch) { return std::isspace(ch) == 0 && ch != ']'; }).base(),
                string.end());
   return string;
-}
-
-std::vector<double> DelimitedStringToVector(std::string string) {
-  std::vector<double> vector;
-  while (!string.empty()) {
-    int const found_comma = string.find_first_of(',');
-    int const found_semicolon = string.find_first_of(';');
-    if (((found_comma < found_semicolon) || (found_semicolon == -1)) && (found_comma > 0)) {
-      vector.push_back(StringToNumber<double>(Trim(string.substr(0, found_comma))));
-      string.erase(0, found_comma + 1);
-    } else if (((found_semicolon < found_comma) || (found_comma == -1)) && (found_semicolon > 0)) {
-      vector.push_back(StringToNumber<double>(Trim(string.substr(0, found_semicolon))));
-      string.erase(0, found_semicolon + 1);
-    } else {
-      string.erase(0, 1);
-    }
-  }
-  return vector;
 }
 }  // namespace splinelib::src::util::string_operations

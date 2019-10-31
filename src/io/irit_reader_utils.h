@@ -30,8 +30,10 @@ class IRITReaderUtils {
     std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       degrees[i] =
-          Degree(util::string_operations::StringVectorToNumberVector<int>({entries[start + PARAMETRIC_DIMENSIONALITY + 2
-              + i]})[0] - 1);
+          Degree(
+              util::string_operations::ConvertStringVectorToNumberVector<int>({entries[start + PARAMETRIC_DIMENSIONALITY
+                  + 2
+                  + i]})[0] - 1);
     }
     return degrees;
   }
@@ -45,7 +47,8 @@ class IRITReaderUtils {
       std::vector<ParametricCoordinate> knots;
       while (!util::string_operations::StartsWith(entries[start], "[")) {
         knots.emplace_back(
-            util::string_operations::StringToNumber<double>(util::string_operations::Trim(entries[start++])));
+            util::string_operations::ConvertStringToNumber<double>(util::string_operations::TrimSpacesAndSquareBrackets(
+                entries[start++])));
       }
       knot_vectors[i] = std::make_shared<baf::KnotVector>(knots);
     }

@@ -40,7 +40,8 @@ ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
       getline(log, output_);
     }
     if (util::string_operations::StartsWith(line, "options:")) {
-      while (getline(log, line) && !util::string_operations::EndsWith(util::string_operations::Trim(line), ":")) {
+      while (getline(log, line) &&
+             !util::string_operations::EndsWith(util::string_operations::TrimSpacesAndSquareBrackets(line), ":")) {
         if (line == "all") {
           positions_.clear();
           positions_.emplace_back(-1);
@@ -50,9 +51,10 @@ ConverterLog::ConverterLog(const char *log_file) : log_file_(log_file) {
       }
     }
     if (util::string_operations::StartsWith(line, "scattering:")) {
-      while (getline(log, line) && !util::string_operations::EndsWith(util::string_operations::Trim(line), ":")) {
-        std::vector<std::string> strings = util::string_operations::Split(line, ' ');
-        scattering_.emplace_back(util::string_operations::StringVectorToNumberVector<int>(strings));
+      while (getline(log, line) &&
+             !util::string_operations::EndsWith(util::string_operations::TrimSpacesAndSquareBrackets(line), ":")) {
+        std::vector<std::string> strings = util::string_operations::SplitStringAtDelimiter(line, ' ');
+        scattering_.emplace_back(util::string_operations::ConvertStringVectorToNumberVector<int>(strings));
       }
     }
   }

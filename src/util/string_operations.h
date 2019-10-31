@@ -22,14 +22,15 @@ namespace splinelib::src::util::string_operations {
 bool StartsWith(std::string const &string, std::string const &start_of_string);
 bool EndsWith(std::string const &string, std::string const &end_of_string);
 
-std::vector<std::string> Split(std::string const &string, char delimiter);
-std::string Trim(std::string string);
+std::vector<std::string> SplitStringAtDelimiter(std::string const &string, char delimiter);
+std::string TrimSpacesAndSquareBrackets(std::string string);
 
 template<typename TYPE>
-double StringToNumber(std::string string);
+TYPE ConvertStringToNumber(std::string string);
 template<typename TYPE>
-std::vector<TYPE> StringVectorToNumberVector(std::vector<std::string> const &string_vector);
-std::vector<double> DelimitedStringToVector(std::string string);
+std::vector<TYPE> ConvertStringVectorToNumberVector(std::vector<std::string> const &string_vector);
+template<typename TYPE>
+std::vector<TYPE> ConvertDelimitedStringToNumberVector(std::string string);
 
 #include "src/util/string_operations.inc"
 }  // namespace splinelib::src::util::string_operations

@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 template<typename TYPE>
-double StringToNumber(std::string string) {
+TYPE ConvertStringToNumber(std::string string) {
   int sign = 1;
   if (string[0] == '-') {
     sign = -1;
@@ -36,8 +36,10 @@ double StringToNumber(std::string string) {
   double result = 0, factor;
   if (found_dot != npos) {
     factor = pow(10, found_dot - 1);
-  } else {
+  } else if (exponent == npos) {
     factor = pow(10, string_length - 1);
+  } else {
+    factor = pow(10, exponent - 1);
   }
   for (int i = 0; i <= end_of_number; ++i) {
     if (i != found_dot) {
@@ -59,13 +61,33 @@ double StringToNumber(std::string string) {
       result /= pow(10, potency);
     }
   }
-  return (sign * result);
+  result *= sign;
+  return static_cast<TYPE>(result);
 }
 
 template<typename TYPE>
-std::vector<TYPE> StringVectorToNumberVector(std::vector<std::string> const &string_vector) {
+std::vector<TYPE> ConvertStringVectorToNumberVector(std::vector<std::string> const &string_vector) {
   std::vector<TYPE> converted;
   converted.reserve(string_vector.size());
-  for (std::string const &string : string_vector) converted.emplace_back(StringToNumber<double>(string));
+  for (std::string const &string : string_vector) converted.emplace_back(ConvertStringToNumber<double>(string));
   return converted;
+}
+
+template<typename TYPE>
+std::vector<TYPE> ConvertDelimitedStringToNumberVector(std::string string) {
+  std::vector<TYPE> vector;
+  while (!string.empty()) {
+    int const found_comma = string.find_first_of(',');
+    int const found_semicolon = string.find_first_of(';');
+    if (((found_comma < found_semicolon) || (found_semicolon == -1)) && (found_comma > 0)) {
+      vector.push_back(ConvertStringToNumber<TYPE>(TrimSpacesAndSquareBrackets(string.substr(0, found_comma))));
+      string.erase(0, found_comma + 1);
+    } else if (((found_semicolon < found_comma) || (found_comma == -1)) && (found_semicolon > 0)) {
+      vector.push_back(ConvertStringToNumber<TYPE>(TrimSpacesAndSquareBrackets(string.substr(0, found_semicolon))));
+      string.erase(0, found_semicolon + 1);
+    } else {
+      string.erase(0, 1);
+    }
+  }
+  return vector;
 }
