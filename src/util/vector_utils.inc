@@ -70,7 +70,8 @@ std::vector<TYPE> GetEntriesAtIndices(std::vector<TYPE> const &input, std::vecto
     if (index < static_cast<int>(input.size())) {
       output.emplace_back(input[index]);
     } else {
-      throw std::runtime_error("The vector index is too high to be filtered from the input vector.");
+      throw std::invalid_argument("splinelib::src::util::vector_utils::GetEntriesAtIndices: At least one vector index "
+                                  "is too high to be filtered from the input vector.");
     }
   }
   return output;
