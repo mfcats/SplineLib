@@ -34,13 +34,7 @@ inline std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> GetSpline(std::an
 
 template<int MAXIMUM_EXPECTED_PARAMETRIC_DIMENSIONALITY>
 inline int GetSplineDimension(const std::any &spline) {
-//  if (MAXIMUM_EXPECTED_PARAMETRIC_DIMENSIONALITY == 0) {
-//    throw std::logic_error("splinelib::src::util::any_casts::GetSplineDimension: Parametric dimensionality smaller "
-//                           "one or larger than the chosen maximum encountered or the input is no shared pointer to a "
-//                           "b-spline or nurbs.");
-//  }
   try {
-//    std::any_cast<std::shared_ptr<spl::Spline<MAXIMUM_EXPECTED_PARAMETRIC_DIMENSIONALITY>>>(spline);
     GetSpline<MAXIMUM_EXPECTED_PARAMETRIC_DIMENSIONALITY>(spline);
     return MAXIMUM_EXPECTED_PARAMETRIC_DIMENSIONALITY;
   } catch (std::runtime_error &message) {
