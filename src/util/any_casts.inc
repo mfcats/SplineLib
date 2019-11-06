@@ -16,6 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <any>
 #include <memory>
 #include <stdexcept>
+#include <string>
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
@@ -29,7 +30,7 @@ inline std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> GetSpline(std::an
       return std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
     } catch (std::bad_any_cast &message) {
       throw std::invalid_argument("splinelib::src::util::any_casts::GetSpline: Input has to be a shared pointer to a "
-                                  "B-spline or NURBS of dimension " + PARAMETRIC_DIMENSIONALITY);
+                                  "B-spline or NURBS of dimension " + std::to_string(PARAMETRIC_DIMENSIONALITY));
     }
   }
 }
@@ -61,7 +62,7 @@ inline bool IsRational(std::any const &spline) {
       return false;
     } catch (std::bad_any_cast &message) {
       throw std::invalid_argument("splinelib::src::util::any_casts::IsRational: Input has to be a shared pointer to a "
-                                  "B-spline or NURBS of dimension " + PARAMETRIC_DIMENSIONALITY);
+                                  "B-spline or NURBS of dimension " + std::to_string(PARAMETRIC_DIMENSIONALITY));
     }
   }
 }
