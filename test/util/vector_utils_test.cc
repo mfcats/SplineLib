@@ -91,5 +91,5 @@ TEST_F(Vectors, CanBeFiltered) {  // NOLINT
   ASSERT_THAT(filtered.size(), 2);
   ASSERT_THAT(filtered[0], 3);
   ASSERT_THAT(filtered[1], 4);
-  ASSERT_THROW(util::vector_utils::GetEntriesAtIndices(double_vectorA, {2, 3}), std::runtime_error);
+  ASSERT_THROW(util::vector_utils::GetEntriesAtIndices(double_vectorA, {2, 3}), std::invalid_argument);
 }
