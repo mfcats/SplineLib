@@ -15,8 +15,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_UTIL_ANY_CASTS_H_
 
 #include <any>
-#include <memory>
-#include <stdexcept>
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
