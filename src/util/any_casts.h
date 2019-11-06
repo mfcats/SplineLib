@@ -16,19 +16,20 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <any>
 #include <memory>
+#include <stdexcept>
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
 
 namespace splinelib::src::util::any_casts {
 template<int PARAMETRIC_DIMENSIONALITY>
-std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> GetSpline(std::any spline);
+std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> GetSpline(std::any const &spline);
 
 template<int MAXIMUM_EXPECTED_PARAMETRIC_DIMENSIONALITY>
-int GetSplineDimension(const std::any &spline);
+int GetSplineDimension(std::any const &spline);
 
 template<int PARAMETRIC_DIMENSIONALITY>
-bool IsRational(std::any spline);
+bool IsRational(std::any const &spline);
 
 #include "src/util/any_casts.inc"
 }  // namespace splinelib::src::util::any_casts

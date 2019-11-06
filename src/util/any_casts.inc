@@ -20,24 +20,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/spl/nurbs.h"
 
 template<int PARAMETRIC_DIMENSIONALITY>
-inline std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> GetSpline(std::any spline) {
+inline std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> GetSpline(std::any const &spline) {
   try {
     return std::any_cast<std::shared_ptr<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>>(spline);
-  } catch (std::bad_any_cast &msg) {
+  } catch (std::bad_any_cast &message) {
     try {
       return std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
-    } catch (std::bad_any_cast &msg) {
-      throw std::runtime_error("Input has to be a shared pointer to a b-spline or nurbs of declared dimension");
+    } catch (std::bad_any_cast &message) {
+      throw std::invalid_argument("splinelib::src::util::any_casts::GetSpline: Input has to be a shared pointer to a "
+                                  "B-spline or NURBS of dimension" + PARAMETRIC_DIMENSIONALITY);
     }
   }
 }
 
 template<int MAXIMUM_EXPECTED_PARAMETRIC_DIMENSIONALITY>
-inline int GetSplineDimension(const std::any &spline) {
+inline int GetSplineDimension(std::any const &spline) {
   try {
     GetSpline<MAXIMUM_EXPECTED_PARAMETRIC_DIMENSIONALITY>(spline);
     return MAXIMUM_EXPECTED_PARAMETRIC_DIMENSIONALITY;
-  } catch (std::runtime_error &message) {
+  } catch (std::invalid_argument &message) {
     return GetSplineDimension<MAXIMUM_EXPECTED_PARAMETRIC_DIMENSIONALITY - 1>(spline);
   }
 }
@@ -49,16 +50,17 @@ inline int GetSplineDimension<0>(std::any const &/*spline*/) {
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-inline bool IsRational(std::any spline) {
+inline bool IsRational(std::any const &spline) {
   try {
     std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);
     return true;
-  } catch (std::bad_any_cast &msg) {
+  } catch (std::bad_any_cast &message) {
     try {
       std::any_cast<std::shared_ptr<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>>(spline);
       return false;
-    } catch (std::bad_any_cast &msg) {
-      throw std::runtime_error("Input has to be a shared pointer to a b-spline or nurbs of declared dimension");
+    } catch (std::bad_any_cast &message) {
+      throw std::invalid_argument("splinelib::src::util::any_casts::IsRational: Input has to be a shared pointer to a "
+                                  "b-spline or nurbs of declared dimension");
     }
   }
 }
