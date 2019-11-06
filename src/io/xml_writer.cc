@@ -33,7 +33,7 @@ void XMLWriter::WriteFile(const std::vector<std::any> &splines, const char *file
 }
 
 void XMLWriter::AddSpline(pugi::xml_node *spline_list, const std::any &spline) const {
-  int spline_dimension = util::any_casts::GetSplineDimension(spline);
+  int spline_dimension = util::any_casts::GetSplineDimension<4>(spline);
   if (spline_dimension == 1) {
     Add1DSpline(spline_list, spline);
   } else if (spline_dimension == 2) {

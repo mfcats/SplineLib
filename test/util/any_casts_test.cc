@@ -49,9 +49,9 @@ class AnySplines : public Test {
 };
 
 TEST_F(AnySplines, CanBeCheckedForSplineDimension) {  // NOLINT
-  ASSERT_THAT(util::any_casts::GetSplineDimension(b_spline_1d_any_), 1);
-  ASSERT_THAT(util::any_casts::GetSplineDimension(nurbs_2d_any_), 2);
-  ASSERT_THROW(util::any_casts::GetSplineDimension(std::make_any<int>(8)), std::runtime_error);
+  ASSERT_THAT(util::any_casts::GetSplineDimension<1>(b_spline_1d_any_), 1);
+  ASSERT_THAT(util::any_casts::GetSplineDimension<2>(nurbs_2d_any_), 2);
+  ASSERT_THROW(util::any_casts::GetSplineDimension<4>(std::make_any<int>(8)), std::runtime_error);
 }
 
 TEST_F(AnySplines, CanBeCastedToSplines) {  // NOLINT

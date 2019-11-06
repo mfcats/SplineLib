@@ -40,7 +40,7 @@ void IRITWriter::WriteFile(const std::vector<std::any> &splines, const char *fil
 
 void IRITWriter::AddSpline(std::ofstream &file, const std::any &spline, int spline_number) const {
   file << "  [OBJECT SPLINE" + std::to_string(spline_number + 1) + "\n    ";
-  int spline_dimension = util::any_casts::GetSplineDimension(spline);
+  int spline_dimension = util::any_casts::GetSplineDimension<4>(spline);
   if (spline_dimension == 1) {
     Write1DSpline(file, spline);
   } else if (spline_dimension == 2) {

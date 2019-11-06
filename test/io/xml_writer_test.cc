@@ -398,5 +398,5 @@ TEST_F(AnXMLWriter, ReturnsSameValuesBeforeAndAfterWritingAndReadingXMLFile) {  
 TEST_F(AnXMLWriter, ThrowsForSplineOfDimensionFive) {  // NOLINT
   std::shared_ptr<spl::NURBS<5>> nurbs_5d_;
   std::any nurbs_5d_any = std::make_any<std::shared_ptr<spl::NURBS<5>>>(nurbs_5d_);
-  ASSERT_THROW(xml_writer_->WriteFile({nurbs_5d_any}, "5d_spline.xml"), std::runtime_error);
+  ASSERT_THROW(xml_writer_->WriteFile({nurbs_5d_any}, "5d_spline.xml"), std::logic_error);
 }

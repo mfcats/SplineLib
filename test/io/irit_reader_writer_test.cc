@@ -285,7 +285,7 @@ class AnIRITWriter : public Test, public A1DBSplineForIRIT, public A1DNURBSForIR
 };
 
 TEST_F(AnIRITWriter, ThrowsExceptionForWrongInputType) {  // NOLINT
-  ASSERT_THROW(io::IRITWriter().WriteFile({std::make_any<int>(8)}, "splines.itd"), std::runtime_error);
+  ASSERT_THROW(io::IRITWriter().WriteFile({std::make_any<int>(8)}, "splines.itd"), std::logic_error);
   remove("splines.itd");
 }
 

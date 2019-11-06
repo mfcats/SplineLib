@@ -14,7 +14,6 @@
 #
 
 set(SOURCES
-        any_casts.cc
         string_operations.cc
         system_operations.cc)
 

@@ -14,7 +14,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_UTIL_VECTOR_UTILS_H_
 #define SRC_UTIL_VECTOR_UTILS_H_
 
+#include <algorithm>
 #include <cmath>
+#include <functional>
 #include <numeric>
 #include <vector>
 

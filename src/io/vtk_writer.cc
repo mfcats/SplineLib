@@ -49,7 +49,7 @@ void VTKWriter::WriteFile(const std::vector<std::any> &splines,
 std::vector<int> VTKWriter::GetSplineDimensions(const std::vector<std::any> &splines) const {
   std::vector<int> dimensions(splines.size());
   for (size_t i = 0; i < splines.size(); ++i) {
-    dimensions[i] = util::any_casts::GetSplineDimension(splines[i]);
+    dimensions[i] = util::any_casts::GetSplineDimension<4>(splines[i]);
   }
   return dimensions;
 }

@@ -32,7 +32,7 @@ std::vector<int> IOConverter::GetSplinePositionsOfCorrectDimension(const std::ve
                                                                    int max_dim) {
   std::vector<int> spline_positions_with_max_dim;
   for (size_t i = 0; i < splines.size(); ++i) {
-    if (util::any_casts::GetSplineDimension(splines[i]) <= max_dim) {
+    if (util::any_casts::GetSplineDimension<4>(splines[i]) <= max_dim) {
       spline_positions_with_max_dim.emplace_back(i);
     }
   }

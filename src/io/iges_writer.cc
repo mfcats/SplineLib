@@ -234,13 +234,13 @@ std::vector<std::string> IGESWriter::GetTerminateSection(int linesS, int linesG,
 }
 
 int IGESWriter::GetDimension(const std::any &spline) const {
-  if (util::any_casts::GetSplineDimension(spline) == 1) {
-    return 126;
+  try {
+    int spline_dimension = util::any_casts::GetSplineDimension<2>(spline);
+    if (spline_dimension == 1) return 126;
+    if (spline_dimension == 2) return 128;
+  } catch (std::logic_error &message) {
+    throw std::runtime_error("Only splines of dimensions 1 or 2 can be written to an iges file.");
   }
-  if (util::any_casts::GetSplineDimension(spline) == 2) {
-    return 128;
-  }
-  throw std::runtime_error("Only splines of dimensions 1 or 2 can be written to an iges file.");
 }
 
 bool IGESWriter::IsRational(std::any spline) const {
