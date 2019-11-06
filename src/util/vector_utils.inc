@@ -13,6 +13,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 // NOLINT(build/header_guard)
 
+#include <algorithm>
+#include <functional>
+#include <vector>
+
 template<typename TYPE>
 std::vector<TYPE> ScaleVector(std::vector<TYPE> const &vectorA, TYPE factor) {
   std::vector<TYPE> result(vectorA);
