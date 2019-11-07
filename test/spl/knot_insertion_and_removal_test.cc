@@ -247,7 +247,7 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, HasOneLessControlPointPerDirec
 }
 
 TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
-  ASSERT_THAT(original_->AreEqual((*after_removal_.get()), 1e-10), true);
+  ASSERT_THAT(original_->AreEqual((*after_removal_.get()), 1e-8), true);
 }
 
 TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
