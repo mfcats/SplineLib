@@ -47,7 +47,7 @@ class IRITWriterUtils {
     for (int dimension = 0; dimension < PARAMETRIC_DIMENSIONALITY; dimension++) {
       string += "      [KV ";
       std::shared_ptr<baf::KnotVector> knot_vector = spline->GetKnotVector(dimension);
-      for (size_t knot = 0; knot < knot_vector->GetNumberOfKnots(); knot++) {
+      for (int knot = 0; knot < knot_vector->GetNumberOfKnots(); knot++) {
         string += std::to_string(knot_vector->GetKnot(knot).Get()) +
             (knot < knot_vector->GetNumberOfKnots() - 1 ? " " : "]\n");
       }

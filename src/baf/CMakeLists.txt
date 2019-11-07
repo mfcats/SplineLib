@@ -45,5 +45,6 @@ install(FILES
         basis_function_factory.h
         control_point.h
         knot_vector.h
+		knot_vector.inc
         zero_degree_b_spline_basis_function.h
         DESTINATION "${include_install_dir}/src/baf")

@@ -184,10 +184,10 @@ class Spline {
     Degree degree = GetDegree(dimension);
     for (size_t i = 1; i <= multiplicity; ++i) {
       if (GetKnotVector(dimension)->IsLastKnot(knot)) knot_span = knot_span + KnotSpan{1};
-      auto last = knot_span.Get() - GetKnotVector(dimension)->GetMultiplicity(knot);
+      auto last = knot_span.Get() - GetKnotVector(dimension)->GetMultiplicity(knot).Get();
       auto first = knot_span.Get() - degree.Get() + i;
       std::vector<double> scaling;
-      for (auto j = static_cast<size_t>(first); j <= last; ++j) {
+      for (int j = first; j <= last; ++j) {
         ParametricCoordinate low_knot = GetKnotVector(dimension)->GetKnot(j);
         ParametricCoordinate upper_knot = GetKnotVector(dimension)->GetKnot(j + degree.Get() - i + 1);
         scaling.emplace_back((knot.Get() - low_knot.Get()) / (upper_knot.Get() - low_knot.Get()));
@@ -210,10 +210,10 @@ class Spline {
     for (; count < multiplicity; ++count) {
       KnotSpan knot_span = GetKnotVector(dimension)->GetKnotSpan(knot);
       Degree degree = GetDegree(dimension);
-      auto last = knot_span.Get() - GetKnotVector(dimension)->GetMultiplicity(knot);
+      auto last = knot_span.Get() - GetKnotVector(dimension)->GetMultiplicity(knot).Get();
       auto first = knot_span.Get() - degree.Get();
       std::vector<double> scaling;
-      for (auto i = static_cast<size_t>(first); i <= last; ++i) {
+      for (int i = first; i <= last; ++i) {
         ParametricCoordinate low_knot = GetKnotVector(dimension)->GetKnot(i);
         ParametricCoordinate upper_knot = GetKnotVector(dimension)->GetKnot(i + degree.Get() + 1);
         scaling.emplace_back((knot.Get() - low_knot.Get()) / (upper_knot.Get() - low_knot.Get()));

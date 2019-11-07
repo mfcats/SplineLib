@@ -144,7 +144,7 @@ class ParameterSpace {
   virtual void ThrowIfParametricCoordinateOutsideKnotVectorRange(
       std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord) const {
     for (int dim = 0; dim < PARAMETRIC_DIMENSIONALITY; dim++) {
-      if (!this->GetKnotVector(dim)->IsInKnotVectorRange(param_coord[dim])) {
+      if (!this->GetKnotVector(dim)->IsInRange(param_coord[dim])) {
         std::stringstream message;
         message << "The parametric coordinate " << param_coord[dim].Get() << " is outside the knot vector range from "
                 << GetKnotVector(dim)->GetKnot(0).Get() << " to " << GetKnotVector(dim)->GetLastKnot().Get() << ".";

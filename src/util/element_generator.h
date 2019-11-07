@@ -26,7 +26,7 @@ class ElementGenerator {
  public:
   explicit ElementGenerator(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spl) : spl_(std::move(spl)) {
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-      for (uint64_t j = 0; j < spl_->GetKnotVector(i)->GetNumberOfKnots() - spl_->GetDegree(i).Get() - 1; ++j) {
+      for (int j = 0; j < spl_->GetKnotVector(i)->GetNumberOfKnots() - spl_->GetDegree(i).Get() - 1; ++j) {
         if ((spl_->GetKnotVector(i)->GetKnot(j).Get() - spl_->GetKnotVector(i)->GetKnot(j + 1).Get()) != 0) {
           elements_[i].emplace_back(Element({spl_->GetKnotVector(i)->GetKnot(j),
                                              spl_->GetKnotVector(i)->GetKnot(j + 1)}));

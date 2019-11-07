@@ -115,7 +115,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
       int dimension) {
     this->InsertKnot(param_coord, dimension,
                      this->GetDegree(dimension).Get() + 1
-                         - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
+                         - this->GetKnotVector(dimension)->GetMultiplicity(param_coord).Get());
     std::array<baf::KnotVectors<PARAMETRIC_DIMENSIONALITY>, 2>
         new_knot_vectors = this->parameter_space_->GetDividedKnotVectors(param_coord, dimension);
     std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees{};

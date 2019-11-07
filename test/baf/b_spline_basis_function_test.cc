@@ -19,7 +19,7 @@ using namespace splinelib::src;
 
 class MockKnotVector000111 : public baf::KnotVector {
  public:
-  ParametricCoordinate GetKnot(size_t knot_num) const override {
+  ParametricCoordinate GetKnot(int knot_num) const override {
     return knts[knot_num];
   }
 
@@ -245,7 +245,7 @@ TEST_F(BasisFunctionEx21N22, IsZeroAtMinus1_5) { // NOLINT
 
 class MockKnotVector00012344555 : public baf::KnotVector {
  public:
-  ParametricCoordinate GetKnot(size_t knot_num) const override {
+  ParametricCoordinate GetKnot(int knot_num) const override {
     return knts.at(knot_num);
   }
 

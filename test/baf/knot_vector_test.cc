@@ -79,10 +79,10 @@ TEST_F(AKnotVector, ReturnsCorrectKnot) { // NOLINT
   ASSERT_THAT(knot_vector_.GetKnot(5).Get(), DoubleEq(0.75));
 }
 
-TEST_F(AKnotVector, CanBeChangedWithAccessOperator) { // NOLINT
-  knot_vector_[0] = ParametricCoordinate{7.0};
-  ASSERT_THAT(knot_vector_[0].Get(), DoubleEq(7.0));
-}
+//TEST_F(AKnotVector, CanBeChangedWithAccessOperator) { // NOLINT
+//  knot_vector_[0] = ParametricCoordinate{7.0};
+//  ASSERT_THAT(knot_vector_[0].Get(), DoubleEq(7.0));
+//}
 
 TEST_F(AKnotVector, CanBeCreatedWithMoveConstructor) { // NOLINT
   baf::KnotVector knot_vector(std::move(knot_vector_));
@@ -90,23 +90,23 @@ TEST_F(AKnotVector, CanBeCreatedWithMoveConstructor) { // NOLINT
 }
 
 TEST_F(AKnotVector, FindsParametricCoordinateInKnotVectorRange) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsInKnotVectorRange(ParametricCoordinate{0.4}), Eq(true));
+  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{0.4}), Eq(true));
 }
 
 TEST_F(AKnotVector, FindsSmallestKnotInKnotVectorRange) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsInKnotVectorRange(ParametricCoordinate{0.0}), Eq(true));
+  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{0.0}), Eq(true));
 }
 
 TEST_F(AKnotVector, FindsLargestKnotInKnotVectorRange) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsInKnotVectorRange(ParametricCoordinate{1.0}), Eq(true));
+  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{1.0}), Eq(true));
 }
 
 TEST_F(AKnotVector, DoesNotFindSmallParametricCoordinateInKnotVectorRange) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsInKnotVectorRange(ParametricCoordinate{-0.4}), Eq(false));
+  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{-0.4}), Eq(false));
 }
 
 TEST_F(AKnotVector, DoesNotFindLargeParametricCoordinateInKnotVectorRange) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsInKnotVectorRange(ParametricCoordinate{1.5}), Eq(false));
+  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{1.5}), Eq(false));
 }
 
 TEST_F(AKnotVector, CanBeCopied) { // NOLINT

@@ -101,7 +101,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
   std::array<std::shared_ptr<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>, 2> SudivideSpline(
       ParametricCoordinate param_coord, int dimension) {
     this->InsertKnot(param_coord, dimension, this->GetDegree(dimension).Get() + 1
-                         - this->GetKnotVector(dimension)->GetMultiplicity(param_coord));
+                         - this->GetKnotVector(dimension)->GetMultiplicity(param_coord).Get());
     std::array<baf::KnotVectors<PARAMETRIC_DIMENSIONALITY>, 2> new_knots =
         this->parameter_space_->GetDividedKnotVectors(param_coord, dimension);
     std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees{};
