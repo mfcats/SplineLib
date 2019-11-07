@@ -47,8 +47,8 @@ class A1DAnyBSplineForAnyCasts : public Test {
     baf::KnotVectors<1> knot_vector_ptr = {std::make_shared<baf::KnotVector>(baf::KnotVector(
         {ParametricCoordinate(0), ParametricCoordinate(0), ParametricCoordinate(1), ParametricCoordinate(1)}))};
     std::vector<baf::ControlPoint> control_points = {baf::ControlPoint{0.0}, baf::ControlPoint{1.2}};
-    spl::BSpline<1> b_spline_1d(knot_vector_ptr, degree, control_points);
-    std::shared_ptr<spl::BSpline<1>> b_spline_1d_ptr = std::make_shared<spl::BSpline<1>>(b_spline_1d);
+    std::shared_ptr<spl::BSpline<1>> b_spline_1d_ptr = std::make_shared<spl::BSpline<1>>(knot_vector_ptr, degree,
+                                                                                         control_points);
     b_spline_1d_any_ = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_1d_ptr);
   }
 
@@ -72,16 +72,15 @@ class A2DAnyNURBSForAnyCasts : public Test {
  public:
   A2DAnyNURBSForAnyCasts() {
     std::array<Degree, 2> degree = {Degree(1), Degree(1)};
-    baf::KnotVectors<2> knot_vector_ptr = {
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParametricCoordinate(0), ParametricCoordinate(0),
-                                                           ParametricCoordinate(1), ParametricCoordinate(1)})),
-        std::make_shared<baf::KnotVector>(baf::KnotVector({ParametricCoordinate(0), ParametricCoordinate(0),
-                                                           ParametricCoordinate(1), ParametricCoordinate(1)}))};
+    baf::KnotVector knot_vector({ParametricCoordinate(0), ParametricCoordinate(0), ParametricCoordinate(1),
+                                 ParametricCoordinate(1)});
+    baf::KnotVectors<2> knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector),
+                                           std::make_shared<baf::KnotVector>(knot_vector)};
     std::vector<baf::ControlPoint> control_points = {baf::ControlPoint{0.0}, baf::ControlPoint{1.2},
                                                      baf::ControlPoint{-1.0}, baf::ControlPoint{-2.2}};
     std::vector<double> weights = {1.0, 2.0, 1.5, 0.7};
-    spl::NURBS<2> nurbs_2d(knot_vector_ptr, degree, control_points, weights);
-    std::shared_ptr<spl::NURBS<2>> nurbs_2d_ptr = std::make_shared<spl::NURBS<2>>(nurbs_2d);
+    std::shared_ptr<spl::NURBS<2>> nurbs_2d_ptr = std::make_shared<spl::NURBS<2>>(knot_vector_ptr, degree,
+                                                                                  control_points, weights);
     nurbs_2d_any_ = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_2d_ptr);
   }
 
@@ -99,4 +98,73 @@ TEST_F(A2DAnyNURBSForAnyCasts, ReturnsSplineDimension2) {  // NOLINT
 
 TEST_F(A2DAnyNURBSForAnyCasts, ReturnsThatTheSplineIsRational) {  // NOLINT
   ASSERT_THAT(util::any_casts::IsRational<2>(nurbs_2d_any_), true);
+}
+
+class A3DAnyBSplineForAnyCasts : public Test {
+ public:
+  A3DAnyBSplineForAnyCasts() {
+    std::array<Degree, 3> degree = {Degree(1), Degree(1), Degree(1)};
+    baf::KnotVector knot_vector({ParametricCoordinate(0), ParametricCoordinate(0), ParametricCoordinate(1),
+                                 ParametricCoordinate(1)});
+    baf::KnotVectors<3> knot_vector_ptr = {std::make_shared<baf::KnotVector>(knot_vector),
+                                           std::make_shared<baf::KnotVector>(knot_vector),
+                                           std::make_shared<baf::KnotVector>(knot_vector)};
+    std::vector<baf::ControlPoint> control_points =
+        {baf::ControlPoint{0.0}, baf::ControlPoint{1.2}, baf::ControlPoint{-1.0}, baf::ControlPoint{-2.2},
+         baf::ControlPoint{0.5}, baf::ControlPoint{-1.2}, baf::ControlPoint{1.5}, baf::ControlPoint{0.2}};
+    std::shared_ptr<spl::BSpline<3>> bspline_3d_ptr = std::make_shared<spl::BSpline<3>>(knot_vector_ptr, degree,
+                                                                                        control_points);
+    bspline_3d_any_ = std::make_any<std::shared_ptr<spl::BSpline<3>>>(bspline_3d_ptr);
+  }
+
+ protected:
+  std::any bspline_3d_any_;
+};
+
+TEST_F(A3DAnyBSplineForAnyCasts, Returns1_5AsSeventhControlPointAfterCastTo3DBSpline) {  // NOLINT
+  ASSERT_THAT(util::any_casts::GetSpline<3>(bspline_3d_any_)->GetControlPoint(6).GetValue(0), DoubleEq(1.5));
+}
+
+TEST_F(A3DAnyBSplineForAnyCasts, ReturnsSplineDimension3) {  // NOLINT
+  ASSERT_THAT(util::any_casts::GetSplineDimension<3>(bspline_3d_any_), 3);
+}
+
+TEST_F(A3DAnyBSplineForAnyCasts, ReturnsThatTheSplineIsNotRational) {  // NOLINT
+  ASSERT_THAT(util::any_casts::IsRational<3>(bspline_3d_any_), false);
+}
+
+class A4DAnyNURBSForAnyCasts : public Test {
+ public:
+  A4DAnyNURBSForAnyCasts() {
+    std::array<Degree, 4> degree = {Degree(1), Degree(1), Degree(1), Degree(1)};
+    baf::KnotVector knot_vector({ParametricCoordinate(0), ParametricCoordinate(0), ParametricCoordinate(1),
+                                 ParametricCoordinate(1)});
+    baf::KnotVectors<4> knot_vector_ptr =
+        {std::make_shared<baf::KnotVector>(knot_vector), std::make_shared<baf::KnotVector>(knot_vector),
+         std::make_shared<baf::KnotVector>(knot_vector), std::make_shared<baf::KnotVector>(knot_vector)};
+    std::vector<baf::ControlPoint> control_points =
+        {baf::ControlPoint{0.0}, baf::ControlPoint{1.2}, baf::ControlPoint{-1.0}, baf::ControlPoint{-2.2},
+         baf::ControlPoint{0.5}, baf::ControlPoint{-1.2}, baf::ControlPoint{1.5}, baf::ControlPoint{0.2},
+         baf::ControlPoint{1.0}, baf::ControlPoint{1.4}, baf::ControlPoint{-0.5}, baf::ControlPoint{-2.4},
+         baf::ControlPoint{2.5}, baf::ControlPoint{-1.4}, baf::ControlPoint{2.0}, baf::ControlPoint{0.4}};
+    std::vector<double> weights = {1.0, 2.0, 1.5, 0.7, 1.1, 1.2, 1.3, 1.4, 0.9, 0.8, 0.7, 0.6, 1.6, 1.7, 1.8, 1.9};
+    std::shared_ptr<spl::NURBS<4>> nurbs_4d_ptr = std::make_shared<spl::NURBS<4>>(knot_vector_ptr, degree,
+                                                                                  control_points, weights);
+    nurbs_4d_any_ = std::make_any<std::shared_ptr<spl::NURBS<4>>>(nurbs_4d_ptr);
+  }
+
+ protected:
+  std::any nurbs_4d_any_;
+};
+
+TEST_F(A4DAnyNURBSForAnyCasts, Returns0_4AsLastControlPointAfterCastTo4DNURBS) {  // NOLINT
+  ASSERT_THAT(util::any_casts::GetSpline<4>(nurbs_4d_any_)->GetControlPoint(15).GetValue(0), DoubleEq(0.4));
+}
+
+TEST_F(A4DAnyNURBSForAnyCasts, ReturnsSplineDimension4) {  // NOLINT
+  ASSERT_THAT(util::any_casts::GetSplineDimension<4>(nurbs_4d_any_), 4);
+}
+
+TEST_F(A4DAnyNURBSForAnyCasts, ReturnsThatTheSplineIsRational) {  // NOLINT
+  ASSERT_THAT(util::any_casts::IsRational<4>(nurbs_4d_any_), true);
 }
