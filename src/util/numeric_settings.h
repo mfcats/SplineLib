@@ -19,6 +19,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::util::numeric_settings {
 template<typename TYPE>
 constexpr TYPE GetEpsilon();
+// TODO(all): we are using parameter tolerance here but can't use NamedType Tolerance as named_type.h includes
+//  numeric_settings.h.
 template<typename TYPE>
 constexpr bool AreEqual(TYPE const &a, TYPE const &b, TYPE const &tolerance = GetEpsilon<TYPE>());
 
