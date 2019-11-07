@@ -22,7 +22,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/util/stl_container_access.h"
 
 namespace splinelib::src::baf {
-KnotVector::KnotVector(std::vector<ParametricCoordinate> const &knots) : knots_(std::move(knots)) {}
+KnotVector::KnotVector(std::vector<ParametricCoordinate> knots) : knots_(std::move(knots)) {}
 
 KnotVector::KnotVector(std::initializer_list<ParametricCoordinate> const &knots) noexcept : knots_(knots) {}
 

@@ -29,7 +29,7 @@ class KnotVector {
   using KnotIterator = std::vector<ParametricCoordinate>::iterator;
 
   KnotVector() = default;
-  explicit KnotVector(std::vector<ParametricCoordinate> const &knots);
+  explicit KnotVector(std::vector<ParametricCoordinate> knots);
   KnotVector(std::initializer_list<ParametricCoordinate> const &knots) noexcept;
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
   KnotVector(const KnotVector &other) = default;
