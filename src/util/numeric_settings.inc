@@ -21,6 +21,6 @@ constexpr TYPE GetEpsilon() {
 }
 
 template<typename TYPE>
-constexpr bool AreEqual(const TYPE &a, const TYPE &b, const TYPE &tolerance) {
+constexpr bool AreEqual(TYPE const &a, TYPE const &b, TYPE const &tolerance) {
   return (std::abs(a - b) <= tolerance);
 }

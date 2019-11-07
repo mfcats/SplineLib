@@ -15,14 +15,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_UTIL_NUMERIC_SETTINGS_H_
 
 #include <cmath>
-#include <cstdlib>
-#include <limits>
 
 namespace splinelib::src::util::numeric_settings {
 template<typename TYPE>
 constexpr TYPE GetEpsilon();
 template<typename TYPE>
-constexpr bool AreEqual(TYPE const &a, TYPE const &b, const TYPE &tolerance = GetEpsilon<TYPE>());
+constexpr bool AreEqual(TYPE const &a, TYPE const &b, TYPE const &tolerance = GetEpsilon<TYPE>());
 
 static constexpr double kEpsilonFactor_ = 1e1;
 
