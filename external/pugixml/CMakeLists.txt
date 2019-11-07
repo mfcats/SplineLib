@@ -25,7 +25,7 @@ install(
         LIBRARY DESTINATION "${library_install_dir}"
         ARCHIVE DESTINATION "${library_install_dir}"
         RUNTIME DESTINATION "${executable_install_dir}"
-        INCLUDES DESTINATION "${include_install_dir}/external/pugixml"
+        INCLUDES DESTINATION "${include_install_dir}"
 )
 
 install(FILES
