@@ -21,75 +21,117 @@ using testing::DoubleNear;
 
 using namespace splinelib::src;
 
-class Vectors : public Test {
+class TwoIntegerVectorsForVectorUtils : public Test {
  public:
-  Vectors() : int_vectorA({2, 3, 4, 5}),
-              int_vectorB({3, 2, 1, 0}),
-              double_vectorA({4.5, 6.7, 8.9}),
-              double_vectorB({3.2, 4.3, 5.4}) {}
+  TwoIntegerVectorsForVectorUtils() : int_vector_a_({2, 3, 4, 5}), int_vector_b_({3, 2, 1, 0}) {}
 
  protected:
-  std::vector<int> int_vectorA;
-  std::vector<int> int_vectorB;
-  std::vector<double> double_vectorA;
-  std::vector<double> double_vectorB;
+  std::vector<int> int_vector_a_;
+  std::vector<int> int_vector_b_;
 };
 
-TEST_F(Vectors, CanScaleVector) {  // NOLINT
-  ASSERT_THAT(util::vector_utils::ScaleVector(int_vectorA, 2)[0], 4);
-  ASSERT_THAT(util::vector_utils::ScaleVector(int_vectorA, 2)[1], 6);
-  ASSERT_THAT(util::vector_utils::ScaleVector(int_vectorA, 2)[2], 8);
-  ASSERT_THAT(util::vector_utils::ScaleVector(int_vectorA, 2)[3], 10);
-  ASSERT_THAT(util::vector_utils::ScaleVector(double_vectorA, 0.5)[0], DoubleEq(2.25));
-  ASSERT_THAT(util::vector_utils::ScaleVector(double_vectorA, 0.5)[1], DoubleEq(3.35));
-  ASSERT_THAT(util::vector_utils::ScaleVector(double_vectorA, 0.5)[2], DoubleEq(4.45));
+TEST_F(TwoIntegerVectorsForVectorUtils, CanBeScaledWithFactor2) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ScaleVector(int_vector_a_, 2), std::vector({4, 6, 8, 10}));
+  ASSERT_THAT(util::vector_utils::ScaleVector(int_vector_b_, 2), std::vector({6, 4, 2, 0}));
 }
 
-TEST_F(Vectors, CanComputeSum) {  // NOLINT
-  ASSERT_THAT(util::vector_utils::ComputeSum(int_vectorA, int_vectorB)[0], 5);
-  ASSERT_THAT(util::vector_utils::ComputeSum(int_vectorA, int_vectorB)[1], 5);
-  ASSERT_THAT(util::vector_utils::ComputeSum(int_vectorA, int_vectorB)[2], 5);
-  ASSERT_THAT(util::vector_utils::ComputeSum(int_vectorA, int_vectorB)[3], 5);
-  ASSERT_THAT(util::vector_utils::ComputeSum(double_vectorA, double_vectorB)[0], DoubleEq(7.7));
-  ASSERT_THAT(util::vector_utils::ComputeSum(double_vectorA, double_vectorB)[1], DoubleEq(11.0));
-  ASSERT_THAT(util::vector_utils::ComputeSum(double_vectorA, double_vectorB)[2], DoubleEq(14.3));
+TEST_F(TwoIntegerVectorsForVectorUtils, CanBeAdded) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ComputeSum(int_vector_a_, int_vector_b_), std::vector({5, 5, 5, 5}));
+  ASSERT_THAT(util::vector_utils::ComputeSum(int_vector_b_, int_vector_a_), std::vector({5, 5, 5, 5}));
 }
 
-TEST_F(Vectors, CanComputeDifference) {  // NOLINT
-  ASSERT_THAT(util::vector_utils::ComputeDifference(int_vectorA, int_vectorB)[0], -1);
-  ASSERT_THAT(util::vector_utils::ComputeDifference(int_vectorA, int_vectorB)[1], 1);
-  ASSERT_THAT(util::vector_utils::ComputeDifference(int_vectorA, int_vectorB)[2], 3);
-  ASSERT_THAT(util::vector_utils::ComputeDifference(int_vectorA, int_vectorB)[3], 5);
-  ASSERT_THAT(util::vector_utils::ComputeDifference(double_vectorA, double_vectorB)[0], DoubleEq(1.3));
-  ASSERT_THAT(util::vector_utils::ComputeDifference(double_vectorA, double_vectorB)[1], DoubleEq(2.4));
-  ASSERT_THAT(util::vector_utils::ComputeDifference(double_vectorA, double_vectorB)[2], DoubleEq(3.5));
+TEST_F(TwoIntegerVectorsForVectorUtils, CanBeSubtracted) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ComputeDifference(int_vector_a_, int_vector_b_), std::vector({-1, 1, 3, 5}));
+  ASSERT_THAT(util::vector_utils::ComputeDifference(int_vector_b_, int_vector_a_), std::vector({1, -1, -3, -5}));
 }
 
-TEST_F(Vectors, CanComputeScalarProduct) {  // NOLINT
-  ASSERT_THAT(util::vector_utils::ComputeScalarProduct(int_vectorA, int_vectorB), 16);
-  ASSERT_THAT(util::vector_utils::ComputeScalarProduct(double_vectorA, double_vectorB), DoubleEq(91.27));
+TEST_F(TwoIntegerVectorsForVectorUtils, CanComputeScalarProductOf16) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ComputeScalarProduct(int_vector_a_, int_vector_b_), 16);
+  ASSERT_THAT(util::vector_utils::ComputeScalarProduct(int_vector_b_, int_vector_a_), 16);
 }
 
-TEST_F(Vectors, CanComputeTwoNorm) {  // NOLINT
-  ASSERT_THAT(util::vector_utils::ComputeTwoNorm(int_vectorB), DoubleEq(sqrt(14)));
-  ASSERT_THAT(util::vector_utils::ComputeTwoNorm(double_vectorA), DoubleEq(sqrt(144.35)));
+TEST_F(TwoIntegerVectorsForVectorUtils, CanComputeTwoNormOfsqrt54Andsqrt14) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ComputeTwoNorm(int_vector_a_), DoubleEq(sqrt(54)));
+  ASSERT_THAT(util::vector_utils::ComputeTwoNorm(int_vector_b_), DoubleEq(sqrt(14)));
 }
 
-TEST_F(Vectors, CanComputeDistance) {  // NOLINT
-  ASSERT_THAT(util::vector_utils::ComputeDistance(int_vectorA, int_vectorB), DoubleEq(6));
-  ASSERT_THAT(util::vector_utils::ComputeDistance(double_vectorA, double_vectorB), DoubleEq(sqrt(19.7)));
+TEST_F(TwoIntegerVectorsForVectorUtils, CanComputeDistanceOf6) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ComputeDistance(int_vector_a_, int_vector_b_), DoubleEq(6));
+  ASSERT_THAT(util::vector_utils::ComputeDistance(int_vector_b_, int_vector_a_), DoubleEq(6));
 }
 
-TEST_F(Vectors, CanComputeCrossProduct) {  // NOLINT
-  ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vectorA, double_vectorB)[0], DoubleNear(-2.09, 1e-10));
-  ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vectorA, double_vectorB)[1], DoubleEq(4.18));
-  ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vectorA, double_vectorB)[2], DoubleNear(-2.09, 1e-10));
+TEST_F(TwoIntegerVectorsForVectorUtils, CanComputeCrossProduct) {  // NOLINT
+  std::vector<int> int_vector_a_with_first_three_components{int_vector_a_.begin(), int_vector_a_.begin() + 3};
+  std::vector<int> int_vector_b_with_first_three_components{int_vector_b_.begin(), int_vector_b_.begin() + 3};
+  ASSERT_THAT(util::vector_utils::ComputeCrossProduct(
+      int_vector_a_with_first_three_components, int_vector_b_with_first_three_components), std::vector({-5, 10, -5}));
+  ASSERT_THAT(util::vector_utils::ComputeCrossProduct(
+      int_vector_b_with_first_three_components, int_vector_a_with_first_three_components), std::vector({5, -10, 5}));
 }
 
-TEST_F(Vectors, CanBeFiltered) {  // NOLINT
-  std::vector<int> filtered = util::vector_utils::GetEntriesAtIndices(int_vectorA, {1, 2});
+TEST_F(TwoIntegerVectorsForVectorUtils, CanBeFiltered) {  // NOLINT
+  std::vector<int> filtered = util::vector_utils::GetEntriesAtIndices(int_vector_a_, {1, 2});
   ASSERT_THAT(filtered.size(), 2);
   ASSERT_THAT(filtered[0], 3);
   ASSERT_THAT(filtered[1], 4);
-  ASSERT_THROW(util::vector_utils::GetEntriesAtIndices(double_vectorA, {2, 3}), std::invalid_argument);
+  ASSERT_THROW(util::vector_utils::GetEntriesAtIndices(int_vector_b_, {2, 4}), std::invalid_argument);
+}
+
+class TwoDoubleVectorsForVectorUtils : public Test {
+ public:
+  TwoDoubleVectorsForVectorUtils() : double_vector_a_({4.5, 6.7, 8.9}), double_vector_b_({3.2, 4.3, 5.4}) {}
+
+ protected:
+  std::vector<double> double_vector_a_;
+  std::vector<double> double_vector_b_;
+};
+
+TEST_F(TwoDoubleVectorsForVectorUtils, CanBeScaledWithFactorMinus0_5) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ScaleVector(double_vector_a_, -0.5), std::vector({-2.25, -3.35, -4.45}));
+  ASSERT_THAT(util::vector_utils::ScaleVector(double_vector_b_, -0.5), std::vector({-1.6, -2.15, -2.7}));
+}
+
+TEST_F(TwoDoubleVectorsForVectorUtils, CanBeAdded) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ComputeSum(double_vector_a_, double_vector_b_), std::vector({7.7, 11.0, 14.3}));
+  ASSERT_THAT(util::vector_utils::ComputeSum(double_vector_b_, double_vector_a_), std::vector({7.7, 11.0, 14.3}));
+}
+
+TEST_F(TwoDoubleVectorsForVectorUtils, CanBeSubtracted) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ComputeDifference(double_vector_a_, double_vector_b_)[0], DoubleNear(1.3, 1e-10));
+  ASSERT_THAT(util::vector_utils::ComputeDifference(double_vector_a_, double_vector_b_)[1], DoubleNear(2.4, 1e-10));
+  ASSERT_THAT(util::vector_utils::ComputeDifference(double_vector_a_, double_vector_b_)[2], DoubleEq(3.5));
+  ASSERT_THAT(util::vector_utils::ComputeDifference(double_vector_b_, double_vector_a_)[0], DoubleNear(-1.3, 1e-10));
+  ASSERT_THAT(util::vector_utils::ComputeDifference(double_vector_b_, double_vector_a_)[1], DoubleNear(-2.4, 1e-10));
+  ASSERT_THAT(util::vector_utils::ComputeDifference(double_vector_b_, double_vector_a_)[2], DoubleEq(-3.5));
+}
+
+TEST_F(TwoDoubleVectorsForVectorUtils, CanComputeScalarProductOf91_27) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ComputeScalarProduct(double_vector_a_, double_vector_b_), DoubleEq(91.27));
+  ASSERT_THAT(util::vector_utils::ComputeScalarProduct(double_vector_b_, double_vector_a_), DoubleEq(91.27));
+}
+
+TEST_F(TwoDoubleVectorsForVectorUtils, CanComputeTwoNormOfsqrt144_35Andsqrt57_89) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ComputeTwoNorm(double_vector_a_), DoubleEq(sqrt(144.35)));
+  ASSERT_THAT(util::vector_utils::ComputeTwoNorm(double_vector_b_), DoubleEq(sqrt(57.89)));
+}
+
+TEST_F(TwoDoubleVectorsForVectorUtils, CanComputeDistanceOf19_7) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ComputeDistance(double_vector_a_, double_vector_b_), DoubleEq(sqrt(19.7)));
+  ASSERT_THAT(util::vector_utils::ComputeDistance(double_vector_b_, double_vector_a_), DoubleEq(sqrt(19.7)));
+}
+
+TEST_F(TwoDoubleVectorsForVectorUtils, CanComputeCrossProduct) {  // NOLINT
+  ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vector_a_, double_vector_b_)[0], DoubleNear(-2.09, 1e-10));
+  ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vector_a_, double_vector_b_)[1], DoubleEq(4.18));
+  ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vector_a_, double_vector_b_)[2], DoubleNear(-2.09, 1e-10));
+  ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vector_b_, double_vector_a_)[0], DoubleNear(2.09, 1e-10));
+  ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vector_b_, double_vector_a_)[1], DoubleEq(-4.18));
+  ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vector_b_, double_vector_a_)[2], DoubleNear(2.09, 1e-10));
+}
+
+TEST_F(TwoDoubleVectorsForVectorUtils, CanBeFiltered) {  // NOLINT
+  std::vector<double> filtered = util::vector_utils::GetEntriesAtIndices(double_vector_a_, {2});
+  ASSERT_THAT(filtered.size(), 1);
+  ASSERT_THAT(filtered[0], DoubleEq(8.9));
+  ASSERT_THROW(util::vector_utils::GetEntriesAtIndices(double_vector_b_, {2, 3}), std::invalid_argument);
 }
