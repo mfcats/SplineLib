@@ -17,6 +17,7 @@ set(TEST_SOURCES
         ${TEST_SOURCES}
         ${CMAKE_CURRENT_SOURCE_DIR}/any_casts_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/multi_index_handler_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/named_type_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/numeric_operations_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/stl_container_access_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/string_operations_test.cc

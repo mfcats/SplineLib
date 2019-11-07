@@ -18,8 +18,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/util/multi_index_handler.h"
 
-using testing::Test;
 using testing::Eq;
+using testing::Test;
 
 using namespace splinelib::src;
 

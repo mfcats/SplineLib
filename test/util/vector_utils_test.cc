@@ -15,9 +15,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/util/vector_utils.h"
 
-using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
+using testing::Test;
 
 using namespace splinelib::src;
 
