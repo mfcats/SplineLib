@@ -36,9 +36,9 @@ class A1DRandomNURBSGenerator : public Test {  // NOLINT
 
 TEST_F(A1DRandomNURBSGenerator, CreatesCorrectKnots) {  // NOLINT
   spl::ParameterSpace<1> parameter_space = *nurbs_generator_.GetParameterSpace();
-  size_t degree = static_cast<size_t>(parameter_space.GetDegree(0).Get());
+  int degree = parameter_space.GetDegree(0).Get();
   baf::KnotVector knot_vector = *parameter_space.GetKnotVector(0);
-  size_t i = 0;
+  int i = 0;
   for (; i < degree + 1; ++i) {
     ASSERT_THAT(knot_vector.GetKnot(i).Get(), DoubleEq(limits_[0].Get()));
   }

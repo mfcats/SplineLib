@@ -23,6 +23,7 @@ constexpr typename CONTAINER_TYPE::value_type &GetValue(CONTAINER_TYPE &containe
 template<typename CONTAINER_TYPE>
 constexpr typename CONTAINER_TYPE::value_type const & GetValue(CONTAINER_TYPE const &container,
                                                                typename CONTAINER_TYPE::size_type index);
+
 template<typename CONTAINER_TYPE, typename NAME>
 constexpr typename CONTAINER_TYPE::value_type &GetValue(CONTAINER_TYPE &container,  // NOLINT(runtime/references)
                                                         NamedType<int, NAME> index);
@@ -30,11 +31,22 @@ template<typename CONTAINER_TYPE, typename NAME>
 constexpr typename CONTAINER_TYPE::value_type const & GetValue(CONTAINER_TYPE const &container,
                                                                NamedType<int, NAME> index);
 
+template<typename CONTAINER_TYPE>
+constexpr typename CONTAINER_TYPE::value_type &GetFront(CONTAINER_TYPE &container);  // NOLINT(runtime/references)
+template<typename CONTAINER_TYPE>
+constexpr typename CONTAINER_TYPE::value_type const &GetFront(CONTAINER_TYPE const &container);
+template<typename CONTAINER_TYPE>
+constexpr typename CONTAINER_TYPE::value_type &GetBack(CONTAINER_TYPE &container);  // NOLINT(runtime/references)
+template<typename CONTAINER_TYPE>
+constexpr typename CONTAINER_TYPE::value_type const &GetBack(CONTAINER_TYPE const &container);
+
 #include "src/util/stl_container_access.inc"
 }  // namespace splinelib::src::util::stl_container_access
 
 namespace splinelib::src {
 using util::stl_container_access::GetValue;
+using util::stl_container_access::GetFront;
+using util::stl_container_access::GetBack;
 }  // namespace splinelib::src
 
 #endif  // SRC_UTIL_STL_CONTAINER_ACCESS_H_

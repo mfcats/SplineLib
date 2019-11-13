@@ -95,7 +95,7 @@ class ParameterSpace {
                       })
         && std::equal(knot_vector_.begin(), knot_vector_.end(), rhs.knot_vector_.begin(), rhs.knot_vector_.end(),
                       [&](std::shared_ptr<baf::KnotVector> kv_a, std::shared_ptr<baf::KnotVector> kv_b) {
-                        return kv_a->AreEqual(*kv_b.get(), tolerance);
+                        return kv_a->AreEqual(*kv_b.get(), Tolerance{tolerance});
                       });
   }
 

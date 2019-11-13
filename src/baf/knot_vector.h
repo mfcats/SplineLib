@@ -32,7 +32,7 @@ class KnotVector {
   explicit KnotVector(std::vector<ParametricCoordinate> knots);
   KnotVector(std::initializer_list<ParametricCoordinate> const &knots) noexcept;
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
-  KnotVector(const KnotVector &other) = default;
+  KnotVector(KnotVector const &other) = default;
   KnotVector(KnotVector &&other) noexcept;
   KnotVector & operator=(KnotVector const &other) = default;
   KnotVector & operator=(KnotVector &&other) noexcept;
@@ -40,7 +40,8 @@ class KnotVector {
   KnotVector(std::vector<ParametricCoordinate> coords, Degree degree, int nbControlPoints);
   virtual ~KnotVector() = default;
 
-  ParametricCoordinate const &operator[](int index) const;
+  ParametricCoordinate operator[](int index) const;
+  // Check if absolute distance between all knots is smaller than the epsilon defined in NumericSettings.
   friend bool operator==(KnotVector const &lhs, KnotVector const &rhs);
   friend KnotVector operator-(KnotVector const &lhs, KnotVector const &rhs);
 
@@ -54,6 +55,7 @@ class KnotVector {
 
   ParametricCoordinate GetFirstKnot() const;
   ParametricCoordinate GetLastKnot() const;
+  // TODO(all): should there be this method and operator [] with the exact same functionality?
   virtual ParametricCoordinate GetKnot(int index) const;
 
   virtual KnotSpan GetKnotSpan(ParametricCoordinate const &parametric_coordinate) const;
@@ -65,7 +67,7 @@ class KnotVector {
   void RemoveKnot(ParametricCoordinate const &parametric_coordinate);
 
   // Check if absolute distance between all knots is smaller than the given tolerance.
-  bool AreEqual(KnotVector const &rhs, double tolerance) const;
+  bool AreEqual(KnotVector const &rhs, Tolerance const &tolerance) const;
 
  private:
   std::vector<ParametricCoordinate> knots_;

@@ -58,6 +58,12 @@ else()
     message(ERROR "Unsupported compiler: ${CMAKE_CXX_COMPILER_ID}")
 endif()
 
+# TODO(all): Is this how it has to be as my tests showed that DEBUG is not set automatically with
+#  CMAKE_BUILD_TYPE=Debug?
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions(-DDEBUG)
+endif ()
+
 add_subdirectory(src)
 add_subdirectory(test)
 add_subdirectory(external)

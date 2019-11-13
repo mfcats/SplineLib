@@ -52,3 +52,39 @@ constexpr typename CONTAINER_TYPE::value_type const & GetValue(CONTAINER_TYPE co
   return container[index.Get()];
 #endif
 }
+
+template<typename CONTAINER_TYPE>
+constexpr typename CONTAINER_TYPE::value_type &GetFront(CONTAINER_TYPE &container) {  // NOLINT(runtime/references)
+#ifdef DEBUG
+  return container.at(0);
+#else
+  return container.front();
+#endif
+}
+
+template<typename CONTAINER_TYPE>
+constexpr typename CONTAINER_TYPE::value_type const &GetFront(CONTAINER_TYPE const &container) {
+#ifdef DEBUG
+  return container.at(0);
+#else
+  return container.front();
+#endif
+}
+
+template<typename CONTAINER_TYPE>
+constexpr typename CONTAINER_TYPE::value_type &GetBack(CONTAINER_TYPE &container) {  // NOLINT(runtime/references)
+#ifdef DEBUG
+  return container.at(container.size() - 1);
+#else
+  return container.back();
+#endif
+}
+
+template<typename CONTAINER_TYPE>
+constexpr typename CONTAINER_TYPE::value_type const &GetBack(CONTAINER_TYPE const &container) {
+#ifdef DEBUG
+  return container.at(container.size() - 1);
+#else
+  return container.back();
+#endif
+}

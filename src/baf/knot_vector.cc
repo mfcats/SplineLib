@@ -94,11 +94,11 @@ void KnotVector::RemoveKnot(ParametricCoordinate const &parametric_coordinate) {
   }
 }
 
-bool KnotVector::AreEqual(const KnotVector &rhs,
-                          double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
+bool KnotVector::AreEqual(KnotVector const &rhs,
+                          Tolerance const &tolerance = Tolerance{util::numeric_settings::GetEpsilon<double>()}) const {
   return std::equal(this->begin(), this->end(), rhs.begin(), rhs.end(),
                     [&](ParametricCoordinate knot_a, ParametricCoordinate knot_b) {
-                      return util::numeric_settings::AreEqual<double>(knot_a.Get(), knot_b.Get(), tolerance);
+                      return util::numeric_settings::AreEqual<double>(knot_a.Get(), knot_b.Get(), tolerance.Get());
                     });
 }
 

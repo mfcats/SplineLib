@@ -13,7 +13,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 // NOLINT(build/header_guard)
 
-inline const ParametricCoordinate &KnotVector::operator[](int index) const {
+inline ParametricCoordinate KnotVector::operator[](int index) const {
   return GetValue(knots_, index);
 }
 
@@ -38,11 +38,11 @@ inline int KnotVector::GetNumberOfKnots() const {
 }
 
 inline ParametricCoordinate KnotVector::GetFirstKnot() const {
-  return knots_.front();
+  return GetFront(knots_);
 }
 
 inline ParametricCoordinate KnotVector::GetLastKnot() const {
-  return knots_.back();
+  return GetBack(knots_);
 }
 
 inline ParametricCoordinate KnotVector::GetKnot(int index) const {
@@ -50,5 +50,5 @@ inline ParametricCoordinate KnotVector::GetKnot(int index) const {
 }
 
 inline bool KnotVector::IsInRange(ParametricCoordinate const &parametric_coordinate) const {
-  return ((parametric_coordinate >= knots_.front()) && (parametric_coordinate <= knots_.back()));
+  return ((parametric_coordinate >= GetFront(knots_)) && (parametric_coordinate <= GetBack(knots_)));
 }
