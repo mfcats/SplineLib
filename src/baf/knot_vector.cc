@@ -36,28 +36,10 @@ KnotVector &KnotVector::operator=(KnotVector &&other) noexcept {
   return (*this);
 }
 
-KnotVector::KnotVector(std::vector<ParametricCoordinate> coords, Degree degree, int nbControlPoints) {
-  for (int i = 0; i <= degree.Get(); ++i) {
-    knots_.emplace_back(ParametricCoordinate{0.0});
-  }
-  double curParametricCoordinate;
-  for (int i = 1; i <= nbControlPoints - 1 - degree.Get(); ++i) {
-    curParametricCoordinate = 0;
-    for (int j = i; j < i + degree.Get(); ++j) {
-      curParametricCoordinate += coords[j].Get();
-    }
-    curParametricCoordinate /= degree.Get();
-    knots_.emplace_back(ParametricCoordinate{curParametricCoordinate});
-  }
-  for (int i = 0; i <= degree.Get(); ++i) {
-    knots_.emplace_back(coords[coords.size() - 1]);
-  }
-}
-
 int KnotVector::GetNumberOfDifferentKnots() const {
   int number_of_knot_spans = 0;
-  for (int i = 1; i < static_cast<int>(knots_.size()); ++i) {
-    if (knots_[i] > knots_[i - 1]) ++number_of_knot_spans;
+  for (int knot_index = 1; knot_index < static_cast<int>(knots_.size()); ++knot_index) {
+    if (GetValue(knots_, knot_index) > GetValue(knots_, knot_index - 1)) ++number_of_knot_spans;
   }
   return (number_of_knot_spans + 1);
 }
@@ -77,7 +59,7 @@ Multiplicity KnotVector::GetMultiplicity(ParametricCoordinate const &parametric_
 }
 
 bool KnotVector::IsLastKnot(ParametricCoordinate const &parametric_coordinate) const {
-  return util::numeric_settings::AreEqual(parametric_coordinate.Get(), knots_.back().Get());
+  return util::numeric_settings::AreEqual(parametric_coordinate.Get(), GetBack(knots_).Get());
 }
 
 void KnotVector::InsertKnot(ParametricCoordinate const &parametric_coordinate) {
@@ -107,11 +89,5 @@ bool operator==(KnotVector const &lhs, KnotVector const &rhs) {
                     [&](ParametricCoordinate knot_lhs, ParametricCoordinate knot_rhs) {
                       return util::numeric_settings::AreEqual<double>(knot_lhs.Get(), knot_rhs.Get());
                     });
-}
-
-KnotVector operator-(KnotVector const &lhs, KnotVector const &rhs) {
-  std::vector<ParametricCoordinate> differences(lhs.GetNumberOfKnots(), ParametricCoordinate{0.0});
-  std::transform(lhs.begin(), rhs.end(), rhs.begin(), differences.begin(), std::minus<>());
-  return KnotVector(differences);
 }
 }  // namespace splinelib::src::baf

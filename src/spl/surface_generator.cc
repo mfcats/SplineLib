@@ -90,7 +90,28 @@ SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
       j_weights[indexControlPoint] = nurbs_C->GetWeight(std::array<int, 1>({j})) * weight_v;
     }
   }
-  baf::KnotVector knot_vector_t(v_i, nurbs_T->GetDegree(0), nbInter);
+// removed old constructor baf::KnotVector knot_vector_t(v_i, nurbs_T->GetDegree(0), nbInter);
+// and moved functionality below:
+  std::vector<ParametricCoordinate> knots;
+  auto degree = nurbs_T->GetDegree(0);
+  for (int i = 0; i <= degree.Get(); ++i) {
+    knots.emplace_back(ParametricCoordinate{0.0});
+  }
+  double curParametricCoordinate;
+  for (int i = 1; i <= nbInter - 1 - degree.Get(); ++i) {
+    curParametricCoordinate = 0;
+    for (int j = i; j < i + degree.Get(); ++j) {
+      curParametricCoordinate += v_i[j].Get();
+    }
+    curParametricCoordinate /= degree.Get();
+    knots.emplace_back(ParametricCoordinate{curParametricCoordinate});
+  }
+  for (int i = 0; i <= degree.Get(); ++i) {
+    knots.emplace_back(v_i[v_i.size() - 1]);
+  }
+  // so that normal constructor can be used.
+  baf::KnotVector knot_vector_t(knots);
+
   std::shared_ptr<baf::KnotVector> knot_vector_t_ptr = std::make_shared<baf::KnotVector>(knot_vector_t);
   std::array<std::shared_ptr<baf::KnotVector>, 2> joined_knot_vector =
       {knot_vector_t_ptr, nurbs_C->GetKnotVector(0)};

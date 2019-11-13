@@ -120,13 +120,6 @@ TEST_F(AKnotVector, CanBeAssigned) { // NOLINT
   ASSERT_THAT(knot_vector, Eq(knot_vector_));
 }
 
-TEST_F(AKnotVector, CanBeSubtracted) { // NOLINT
-  const ParametricCoordinate kZERO = ParametricCoordinate{0.0};
-  baf::KnotVector zeros = baf::KnotVector({kZERO, kZERO, kZERO, kZERO, kZERO, kZERO, kZERO, kZERO, kZERO});
-  knot_vector_ = knot_vector_ - knot_vector_;
-  ASSERT_THAT(knot_vector_, Eq(zeros));
-}
-
 TEST_F(AKnotVector, CanBeUsedWithConstRangeBasedForLoop) { // NOLINT
   double sum = 0;
   for (const auto &knot : knot_vector_) {
@@ -174,26 +167,28 @@ TEST_F(AKnotVector, CanRemoveKnot) {  // NOLINT
               knot_vector_.GetKnotSpan(ParametricCoordinate{0.5}).Get() - 1);
 }
 
-TEST_F(AKnotVector, CanBeAveraged) { // NOLINT
-  std::vector<ParametricCoordinate>
-      coords = {ParametricCoordinate(0.0), ParametricCoordinate(5.0 / 17.0), ParametricCoordinate(9.0 / 17.0),
-                ParametricCoordinate(14.0 / 17.0), ParametricCoordinate(1.0)};
-  Degree degreeTest(3);
-  int nbControlPoints = 5;
-  baf::KnotVector knot_vector = baf::KnotVector(coords, degreeTest, nbControlPoints);
-  ASSERT_THAT(knot_vector.GetKnot(4).Get(), DoubleEq(28.0 / 51.0));
-  ASSERT_THAT(knot_vector.GetKnot(5).Get(), DoubleEq(1.0));
-  ASSERT_THAT(knot_vector.GetKnot(1).Get(), DoubleEq(0.0));
-}
-
-TEST_F(AKnotVector, CanBeAveragedLen2) { // NOLINT
-  std::vector<ParametricCoordinate>
-      coords = {ParametricCoordinate(0.0), ParametricCoordinate(10.0 / 17.0), ParametricCoordinate(18.0 / 17.0),
-                ParametricCoordinate(28.0 / 17.0), ParametricCoordinate(2.0)};
-  Degree degreeTest(3);
-  int nbControlPoints = 5;
-  baf::KnotVector knot_vector = baf::KnotVector(coords, degreeTest, nbControlPoints);
-  ASSERT_THAT(knot_vector.GetKnot(4).Get(), DoubleEq(56.0 / 51.0));
-  ASSERT_THAT(knot_vector.GetKnot(5).Get(), DoubleEq(2.0));
-  ASSERT_THAT(knot_vector.GetKnot(1).Get(), DoubleEq(0.0));
-}
+// TODO(Corinna): commented out the two tests below as the functionality they test is no longer part of class KnotVector
+//  need to test this functionality elsewhere --> surface generator.
+//TEST_F(AKnotVector, CanBeAveraged) { // NOLINT
+//  std::vector<ParametricCoordinate>
+//      coords = {ParametricCoordinate(0.0), ParametricCoordinate(5.0 / 17.0), //ParametricCoordinate(9.0 / 17.0),
+//                ParametricCoordinate(14.0 / 17.0), ParametricCoordinate(1.0)};
+//  Degree degreeTest(3);
+//  int nbControlPoints = 5;
+//  baf::KnotVector knot_vector = baf::KnotVector(coords, degreeTest, nbControlPoints);
+//  ASSERT_THAT(knot_vector.GetKnot(4).Get(), DoubleEq(28.0 / 51.0));
+//  ASSERT_THAT(knot_vector.GetKnot(5).Get(), DoubleEq(1.0));
+//  ASSERT_THAT(knot_vector.GetKnot(1).Get(), DoubleEq(0.0));
+//}
+//
+//TEST_F(AKnotVector, CanBeAveragedLen2) { // NOLINT
+//  std::vector<ParametricCoordinate>
+//      coords = {ParametricCoordinate(0.0), ParametricCoordinate(10.0 / 17.0), ParametricCoordinate(18.0 / 17.0),
+//                ParametricCoordinate(28.0 / 17.0), ParametricCoordinate(2.0)};
+//  Degree degreeTest(3);
+//  int nbControlPoints = 5;
+//  baf::KnotVector knot_vector = baf::KnotVector(coords, degreeTest, nbControlPoints);
+//  ASSERT_THAT(knot_vector.GetKnot(4).Get(), DoubleEq(56.0 / 51.0));
+//  ASSERT_THAT(knot_vector.GetKnot(5).Get(), DoubleEq(2.0));
+//  ASSERT_THAT(knot_vector.GetKnot(1).Get(), DoubleEq(0.0));
+//}

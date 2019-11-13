@@ -37,13 +37,11 @@ class KnotVector {
   KnotVector & operator=(KnotVector const &other) = default;
   KnotVector & operator=(KnotVector &&other) noexcept;
   // TODO(Corinna, Christoph): this should not be a constructor but implemented where it is used?
-  KnotVector(std::vector<ParametricCoordinate> coords, Degree degree, int nbControlPoints);
   virtual ~KnotVector() = default;
 
   ParametricCoordinate operator[](int index) const;
   // Check if absolute distance between all knots is smaller than the epsilon defined in NumericSettings.
   friend bool operator==(KnotVector const &lhs, KnotVector const &rhs);
-  friend KnotVector operator-(KnotVector const &lhs, KnotVector const &rhs);
 
   ConstKnotIterator begin() const;
   ConstKnotIterator end() const;
@@ -75,7 +73,6 @@ class KnotVector {
 
 // Check if absolute distance between all knots is smaller than the epsilon defined in NumericSettings.
 bool operator==(KnotVector const &lhs, KnotVector const &rhs);
-KnotVector operator-(KnotVector const &lhs, KnotVector const &rhs);
 
 #include "src/baf/knot_vector.inc"
 
