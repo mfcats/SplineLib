@@ -36,7 +36,6 @@ class KnotVector {
   KnotVector(KnotVector &&other) noexcept;
   KnotVector & operator=(KnotVector const &other) = default;
   KnotVector & operator=(KnotVector &&other) noexcept;
-  // TODO(Corinna, Christoph): this should not be a constructor but implemented where it is used?
   virtual ~KnotVector() = default;
 
   ParametricCoordinate operator[](int index) const;

@@ -26,10 +26,8 @@ using namespace splinelib::src;
 class AKnotVector : public Test {
  public:
   AKnotVector() : knot_vector_({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}, ParametricCoordinate{0.0},
-                                ParametricCoordinate{0.5},
-                                ParametricCoordinate{0.5}, ParametricCoordinate{0.75}, ParametricCoordinate{1.0},
-                                ParametricCoordinate{1.0},
-                                ParametricCoordinate{1.0}}) {}
+                                ParametricCoordinate{0.5}, ParametricCoordinate{0.5}, ParametricCoordinate{0.75},
+                                ParametricCoordinate{1.0}, ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}) {}
 
  protected:
   baf::KnotVector knot_vector_;
