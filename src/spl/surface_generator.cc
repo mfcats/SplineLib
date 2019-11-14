@@ -1,5 +1,3 @@
-#include <utility>
-
 /* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
@@ -15,6 +13,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 */
 
 #include "src/spl/surface_generator.h"
+
+#include <utility>
 
 namespace splinelib::src::spl {
 SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
@@ -90,8 +90,8 @@ SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
       j_weights[indexControlPoint] = nurbs_C->GetWeight(std::array<int, 1>({j})) * weight_v;
     }
   }
-// removed old constructor baf::KnotVector knot_vector_t(v_i, nurbs_T->GetDegree(0), nbInter);
-// and moved functionality below:
+  // removed old constructor baf::KnotVector knot_vector_t(v_i, nurbs_T->GetDegree(0), nbInter);
+  // and moved functionality below:
   std::vector<ParametricCoordinate> knots;
   auto degree = nurbs_T->GetDegree(0);
   for (int i = 0; i <= degree.Get(); ++i) {

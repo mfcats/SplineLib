@@ -25,6 +25,8 @@ class NamedType;
 template<typename TYPE, typename NAME>
 constexpr bool operator==(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
 template<typename TYPE, typename NAME>
+constexpr bool operator!=(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
+template<typename TYPE, typename NAME>
 constexpr bool operator>(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
 template<typename TYPE, typename NAME>
 constexpr bool operator<(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
@@ -61,6 +63,7 @@ class NamedType {
   constexpr const NamedType operator--(int);
 
   friend constexpr bool operator== <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
+  friend constexpr bool operator!= <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
   friend constexpr bool operator> <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
   friend constexpr bool operator< <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
   friend constexpr bool operator>= <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);

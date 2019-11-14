@@ -71,6 +71,11 @@ constexpr bool operator==(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME
 }
 
 template<typename TYPE, typename NAME>
+constexpr bool operator!=(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs) {
+  return !numeric_settings::AreEqual<TYPE>(lhs.value_, rhs.value_);
+}
+
+template<typename TYPE, typename NAME>
 constexpr bool operator>(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs) {
   return (lhs.value_ > rhs.value_);
 }
