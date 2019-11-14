@@ -56,11 +56,6 @@ set(CMAKE_DEBUG_POSTFIX "d")
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/)
 
-# TODO(all): Is this how it should to be as DEBUG seems not to be set automatically with CMAKE_BUILD_TYPE=Debug?
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_definitions(-DDEBUG)
-endif ()
-
 add_subdirectory(external)
 add_subdirectory(src)
 add_subdirectory(test)

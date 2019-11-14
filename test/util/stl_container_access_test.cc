@@ -38,7 +38,7 @@ TEST_F(AVectorForSTLContainerAccess, Returns1_2ForConstSTLContainerAccessAtIndex
 }
 
 TEST_F(AVectorForSTLContainerAccess, ThrowsExceptionForConstSTLContainerAccessAtIndex5OnlyInDebugMode) {  // NOLINT
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetValue(a_vector_, 5), std::out_of_range);
 #else
   ASSERT_NO_THROW(GetValue(a_vector_, 5));
@@ -51,7 +51,7 @@ TEST_F(AVectorForSTLContainerAccess, CanBeWrittenMinus10_1ToIndex1ViaSTLContaine
 }
 
 TEST_F(AVectorForSTLContainerAccess, ThrowsExceptionForWritingToIndex5ViaSTLContainerAccessOnlyInDebugMode) {  // NOLINT
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetValue(a_vector_, 5) = 9.9, std::out_of_range);
 #endif
 }
@@ -62,7 +62,7 @@ TEST_F(AVectorForSTLContainerAccess, Returns1_2ForConstSTLContainerAccessWithNam
 
 TEST_F(AVectorForSTLContainerAccess,   // NOLINT
        ThrowsExceptionForConstSTLContainerAccessWithNamedTypeIndex5OnlyInDebugMode) {
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetValue(a_vector_, Dimension{5}), std::out_of_range);
 #else
   ASSERT_NO_THROW(GetValue(a_vector_, Dimension{5}));
@@ -76,7 +76,7 @@ TEST_F(AVectorForSTLContainerAccess, CanBeWritten10_1ToNamedTypeIndex1ViaSTLCont
 
 TEST_F(AVectorForSTLContainerAccess,  // NOLINT
        ThrowsExceptionForWritingToNamedTypeIndex5ViaSTLContainerAccessOnlyInDebugMode) {
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetValue(a_vector_, Dimension{5}) = 9.9, std::out_of_range);
 #endif
 }
@@ -87,7 +87,7 @@ TEST_F(AVectorForSTLContainerAccess, Returns0_5ForConstSTLContainerAccessAtFront
 
 TEST_F(AVectorForSTLContainerAccess, ThrowsExceptionForEmptyConstSTLContainerAccessAtFrontOnlyInDebugMode) {  // NOLINT
   a_vector_.clear();
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetFront(a_vector_), std::out_of_range);
 #else
   ASSERT_NO_THROW(GetFront(a_vector_));
@@ -102,7 +102,7 @@ TEST_F(AVectorForSTLContainerAccess, CanBeWritten10_1ToFrontViaSTLContainerAcces
 TEST_F(AVectorForSTLContainerAccess,  // NOLINT
        ThrowsExceptionForWritingToEmptyFrontViaSTLContainerAccessOnlyInDebugMode) {
   a_vector_.clear();
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetFront(a_vector_) = 9.9, std::out_of_range);
 #endif
 }
@@ -113,7 +113,7 @@ TEST_F(AVectorForSTLContainerAccess, ReturnsMinus5ForConstSTLContainerAccessAtBa
 
 TEST_F(AVectorForSTLContainerAccess, ThrowsExceptionForEmptyConstSTLContainerAccessAtBackOnlyInDebugMode) {  // NOLINT
   a_vector_.clear();
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetBack(a_vector_), std::out_of_range);
 #else
   ASSERT_NO_THROW(GetBack(a_vector_));
@@ -128,7 +128,7 @@ TEST_F(AVectorForSTLContainerAccess, CanBeWritten10_1ToBackViaSTLContainerAccess
 TEST_F(AVectorForSTLContainerAccess,  // NOLINT
        ThrowsExceptionForWritingToEmptyBackViaSTLContainerAccessOnlyInDebugMode) {
   a_vector_.clear();
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetBack(a_vector_) = 9.9, std::out_of_range);
 #endif
 }
@@ -146,7 +146,7 @@ TEST_F(AnArrayForSTLContainerAccess, Returns1_2ForConstSTLContainerAccessAtIndex
 }
 
 TEST_F(AnArrayForSTLContainerAccess, ThrowsExceptionForConstSTLContainerAccessAtIndex5OnlyInDebugMode) {  // NOLINT
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetValue(an_array_, 5), std::out_of_range);
 #else
   ASSERT_NO_THROW(GetValue(an_array_, 5));
@@ -159,7 +159,7 @@ TEST_F(AnArrayForSTLContainerAccess, CanBeWrittenMinus10_1ToIndex1ViaSTLContaine
 }
 
 TEST_F(AnArrayForSTLContainerAccess, ThrowsExceptionForWritingToIndex5ViaSTLContainerAccessOnlyInDebugMode) {  // NOLINT
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetValue(an_array_, 5) = 9.9, std::out_of_range);
 #endif
 }
@@ -170,7 +170,7 @@ TEST_F(AnArrayForSTLContainerAccess, Returns1_2ForConstSTLContainerAccessWithNam
 
 TEST_F(AnArrayForSTLContainerAccess,   // NOLINT
        ThrowsExceptionForConstSTLContainerAccessWithNamedTypeIndex5OnlyInDebugMode) {
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetValue(an_array_, Dimension{5}), std::out_of_range);
 #else
   ASSERT_NO_THROW(GetValue(an_array_, Dimension{5}));
@@ -184,7 +184,7 @@ TEST_F(AnArrayForSTLContainerAccess, CanBeWritten10_1ToNamedTypeIndex1ViaSTLCont
 
 TEST_F(AnArrayForSTLContainerAccess,  // NOLINT
        ThrowsExceptionForWritingToNamedTypeIndex5ViaSTLContainerAccessOnlyInDebugMode) {
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetValue(an_array_, Dimension{5}) = 9.9, std::out_of_range);
 #endif
 }
@@ -195,7 +195,7 @@ TEST_F(AnArrayForSTLContainerAccess, Returns0_5ForConstSTLContainerAccessAtFront
 
 TEST_F(AnArrayForSTLContainerAccess, ThrowsExceptionForEmptyConstSTLContainerAccessAtFrontOnlyInDebugMode) {  // NOLINT
   std::array<int, 0> an_empty_array{};
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetFront(an_empty_array), std::out_of_range);
 #else
   ASSERT_NO_THROW(GetFront(an_empty_array));
@@ -209,7 +209,7 @@ TEST_F(AnArrayForSTLContainerAccess, CanBeWritten10_1ToFrontViaSTLContainerAcces
 
 TEST_F(AnArrayForSTLContainerAccess,  // NOLINT
        ThrowsExceptionForWritingToEmptyFrontViaSTLContainerAccessOnlyInDebugMode) {
-#ifdef DEBUG
+#ifndef NDEBUG
   std::array<int, 0> an_empty_array{};
   ASSERT_THROW(GetFront(an_empty_array) = 9, std::out_of_range);
 #endif
@@ -221,7 +221,7 @@ TEST_F(AnArrayForSTLContainerAccess, ReturnsMinus5ForConstSTLContainerAccessAtBa
 
 TEST_F(AnArrayForSTLContainerAccess, ThrowsExceptionForEmptyConstSTLContainerAccessAtBackOnlyInDebugMode) {  // NOLINT
   std::array<int, 0> an_empty_array{};
-#ifdef DEBUG
+#ifndef NDEBUG
   ASSERT_THROW(GetBack(an_empty_array), std::out_of_range);
 #else
   ASSERT_NO_THROW(GetBack(an_empty_array));
@@ -235,7 +235,7 @@ TEST_F(AnArrayForSTLContainerAccess, CanBeWritten10_1ToBackViaSTLContainerAccess
 
 TEST_F(AnArrayForSTLContainerAccess,  // NOLINT
        ThrowsExceptionForWritingToEmptyBackViaSTLContainerAccessOnlyInDebugMode) {
-#ifdef DEBUG
+#ifndef NDEBUG
   std::array<int, 0> an_empty_array{};
   ASSERT_THROW(GetBack(an_empty_array) = 9, std::out_of_range);
 #endif

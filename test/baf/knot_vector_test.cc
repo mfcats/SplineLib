@@ -22,131 +22,132 @@ using testing::DoubleEq;
 
 using namespace splinelib::src;
 
-class AKnotVector : public Test {
+class AKnotVectorOfDegree2 : public Test {
  public:
-  AKnotVector() : knot_vector_({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}, ParametricCoordinate{0.0},
-                                ParametricCoordinate{0.5}, ParametricCoordinate{0.5}, ParametricCoordinate{0.75},
-                                ParametricCoordinate{1.0}, ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}) {}
+  AKnotVectorOfDegree2()
+      : knot_vector_({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}, ParametricCoordinate{0.0},
+                      ParametricCoordinate{0.5}, ParametricCoordinate{0.5}, ParametricCoordinate{0.75},
+                      ParametricCoordinate{1.0}, ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}) {}
 
  protected:
   baf::KnotVector knot_vector_;
 };
 
-// The parametric coordinate is equal to the smallest knot
-TEST_F(AKnotVector, FindsZeroInKnotSpanTwo) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{0.0}), Eq(KnotSpan{2})) << "test";
-}
-
-// The parametric coordinate is between two knots.
-TEST_F(AKnotVector, Finds0_3InKnotSpanTwo) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{0.3}), Eq(KnotSpan{2}));
-}
-
-// The parametric coordinate is last knots.
-TEST_F(AKnotVector, Finds1_0InKnotSpanFive) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{1.0}), Eq(KnotSpan{5}));
-}
-
-// The parametric coordinate is equal to an inner repeated knot.
-TEST_F(AKnotVector, Finds0_5InKnotSpanFour) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{0.5}), Eq(KnotSpan{4}));
-}
-
-// The parametric coordinate is equal to an inner not repeated knot.
-TEST_F(AKnotVector, Finds0_75InKnotSpanFive) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{0.75}), Eq(KnotSpan{5}));
-}
-
-// The last knot is defined to be in the last non-zero knot span.
-TEST_F(AKnotVector, FindsLastKnotInSpanFive) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(knot_vector_.GetLastKnot()), Eq(KnotSpan{5}));
-}
-
-TEST_F(AKnotVector, CanCheckIfParametricCoordinateIsEqualLastKnot) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsLastKnot(knot_vector_.GetLastKnot()), Eq(true));
-}
-
-TEST_F(AKnotVector, CanCheckIfCoordinateIsNotEqualLastKnot) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsLastKnot(ParametricCoordinate{0.9}), Eq(false));
-}
-
-TEST_F(AKnotVector, ReturnsCorrectKnot) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnot(5).Get(), DoubleEq(0.75));
-}
-
-//TEST_F(AKnotVector, CanBeChangedWithAccessOperator) { // NOLINT
-//  knot_vector_[0] = ParametricCoordinate{7.0};
-//  ASSERT_THAT(knot_vector_[0].Get(), DoubleEq(7.0));
-//}
-
-TEST_F(AKnotVector, CanBeCreatedWithMoveConstructor) { // NOLINT
-  baf::KnotVector knot_vector(std::move(knot_vector_));
-  ASSERT_THAT(knot_vector[0].Get(), DoubleEq(0.0));
-}
-
-TEST_F(AKnotVector, FindsParametricCoordinateInKnotVectorRange) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{0.4}), Eq(true));
-}
-
-TEST_F(AKnotVector, FindsSmallestKnotInKnotVectorRange) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{0.0}), Eq(true));
-}
-
-TEST_F(AKnotVector, FindsLargestKnotInKnotVectorRange) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{1.0}), Eq(true));
-}
-
-TEST_F(AKnotVector, DoesNotFindSmallParametricCoordinateInKnotVectorRange) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{-0.4}), Eq(false));
-}
-
-TEST_F(AKnotVector, DoesNotFindLargeParametricCoordinateInKnotVectorRange) { // NOLINT
-  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{1.5}), Eq(false));
-}
-
-TEST_F(AKnotVector, CanBeCopied) { // NOLINT
-  baf::KnotVector knot_vector = knot_vector_;
-  ASSERT_THAT(knot_vector, Eq(knot_vector_));
-}
-
-TEST_F(AKnotVector, CanBeAssigned) { // NOLINT
-  baf::KnotVector knot_vector;
-  knot_vector = knot_vector_;
-  ASSERT_THAT(knot_vector, Eq(knot_vector_));
-}
-
-TEST_F(AKnotVector, CanBeUsedWithConstRangeBasedForLoop) { // NOLINT
-  double sum = 0;
-  for (const auto &knot : knot_vector_) {
-    sum += knot.Get();
-  }
-  ASSERT_THAT(sum, DoubleEq(4.75));
-}
-
-TEST_F(AKnotVector, CanBeUsedWithNonConstRangeBasedForLoop) { // NOLINT
-  double sum = 0;
-  for (auto &knot : knot_vector_) {
-    knot = ParametricCoordinate{4.0};
-  }
-  for (const auto &knot : knot_vector_) {
-    sum += knot.Get();
-  }
-  ASSERT_THAT(sum, DoubleEq(36));
-}
-
-TEST_F(AKnotVector, CanBeMovedInAssignment) { // NOLINT
-  baf::KnotVector knot_vector;
-  knot_vector = baf::KnotVector({ParametricCoordinate{0.0}, ParametricCoordinate{0.25}, ParametricCoordinate{0.5}});
-  ASSERT_THAT(knot_vector,
-              Eq(baf::KnotVector({ParametricCoordinate{0.0}, ParametricCoordinate{0.25}, ParametricCoordinate{0.5}})));
-}
-
-TEST_F(AKnotVector, CanBeAssignedByIterators) { // NOLINT
+TEST_F(AKnotVectorOfDegree2, CanBeAssignedByIterators) { // NOLINT
   baf::KnotVector knot_vector = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
   ASSERT_THAT(knot_vector, Eq(knot_vector_));
 }
 
-TEST_F(AKnotVector, CanInsertKnot) {  // NOLINT
+TEST_F(AKnotVectorOfDegree2, CanBeCreatedWithMoveConstructor) { // NOLINT
+  baf::KnotVector moved_knot_vector(std::move(knot_vector_));
+  ASSERT_THAT(moved_knot_vector[5], Eq(ParametricCoordinate{0.75}));
+}
+
+TEST_F(AKnotVectorOfDegree2, CanBeCopied) { // NOLINT
+  baf::KnotVector copied_knot_vector = knot_vector_;
+  ASSERT_THAT(copied_knot_vector, Eq(knot_vector_));
+}
+
+TEST_F(AKnotVectorOfDegree2, CanBeAssigned) { // NOLINT
+  baf::KnotVector knot_vector_to_assign{};
+  knot_vector_to_assign = knot_vector_;
+  ASSERT_THAT(knot_vector_to_assign, Eq(knot_vector_));
+}
+
+TEST_F(AKnotVectorOfDegree2, CanBeMoveAssigned) { // NOLINT
+  baf::KnotVector knot_vector_to_assign{};
+  knot_vector_to_assign = std::move(knot_vector_);
+  ASSERT_THAT(knot_vector_to_assign[5], Eq(ParametricCoordinate{0.75}));
+}
+
+TEST_F(AKnotVectorOfDegree2, ReturnsKnot0_75AtIndex5WithMethodGetKnot) { // NOLINT
+  ASSERT_THAT(knot_vector_.GetKnot(5), Eq(ParametricCoordinate{0.75}));
+}
+
+TEST_F(AKnotVectorOfDegree2, ReturnsKnot0_75AtIndex5WithOperator) { // NOLINT
+  ASSERT_THAT(knot_vector_[5], Eq(ParametricCoordinate{0.75}));
+}
+
+TEST_F(AKnotVectorOfDegree2, CanBeUsedWithConstRangeBasedForLoop) { // NOLINT
+  double sum_of_all_knots = 0;
+  for (const auto &knot : knot_vector_) {
+    sum_of_all_knots += knot.Get();
+  }
+  ASSERT_THAT(sum_of_all_knots, DoubleEq(4.75));
+}
+
+TEST_F(AKnotVectorOfDegree2, CanBeUsedWithNonConstRangeBasedForLoop) { // NOLINT
+  for (auto &knot : knot_vector_) {
+    knot = ParametricCoordinate{4.0};
+  }
+  double sum_of_all_knots = 0;
+  for (const auto &knot : knot_vector_) {
+    sum_of_all_knots += knot.Get();
+  }
+  ASSERT_THAT(sum_of_all_knots, DoubleEq(36));
+}
+
+// Test GetKnotSpan if parametric coordinate is equal to the smallest knot.
+TEST_F(AKnotVectorOfDegree2, FindsZeroInKnotSpanTwo) { // NOLINT
+  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{0.0}), Eq(KnotSpan{2}))
+    << "The knot span of the smallest knot has to equal degree p = 2.";
+}
+
+// Test GetKnotSpan if parametric coordinate is between two knots.
+TEST_F(AKnotVectorOfDegree2, Finds0_3InKnotSpanTwo) { // NOLINT
+  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{0.3}), Eq(KnotSpan{2}));
+}
+
+// Test GetKnotSpan if parametric coordinate is last knot.
+// The last knot is defined to be in the last non-zero knot span.
+TEST_F(AKnotVectorOfDegree2, FindsLastKnot1_0InKnotSpanFive) { // NOLINT
+  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{1.0}), Eq(KnotSpan{5}));
+}
+
+// Test GetKnotSpan if parametric coordinate is equal to an inner repeated knot.
+TEST_F(AKnotVectorOfDegree2, Finds0_5InKnotSpanFour) { // NOLINT
+  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{0.5}), Eq(KnotSpan{4}));
+}
+
+// Test GetKnotSpan if parametric coordinate is equal to an inner not repeated knot.
+TEST_F(AKnotVectorOfDegree2, Finds0_75InKnotSpanFive) { // NOLINT
+  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{0.75}), Eq(KnotSpan{5}));
+}
+
+TEST_F(AKnotVectorOfDegree2, CanCheckIfParametricCoordinateIsEqualLastKnot) { // NOLINT
+  ASSERT_THAT(knot_vector_.IsLastKnot(knot_vector_.GetLastKnot()), Eq(true));
+}
+
+TEST_F(AKnotVectorOfDegree2, CanCheckIfCoordinateIsNotEqualLastKnot) { // NOLINT
+  ASSERT_THAT(knot_vector_.IsLastKnot(ParametricCoordinate{0.9}), Eq(false));
+}
+
+//TEST_F(AKnotVectorOfDegree2, CanBeChangedWithAccessOperator) { // NOLINT
+//  knot_vector_[0] = ParametricCoordinate{7.0};
+//  ASSERT_THAT(knot_vector_[0].Get(), DoubleEq(7.0));
+//}
+
+TEST_F(AKnotVectorOfDegree2, FindsParametricCoordinateInKnotVectorRange) { // NOLINT
+  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{0.4}), Eq(true));
+}
+
+TEST_F(AKnotVectorOfDegree2, FindsSmallestKnotInKnotVectorRange) { // NOLINT
+  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{0.0}), Eq(true));
+}
+
+TEST_F(AKnotVectorOfDegree2, FindsLargestKnotInKnotVectorRange) { // NOLINT
+  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{1.0}), Eq(true));
+}
+
+TEST_F(AKnotVectorOfDegree2, DoesNotFindSmallParametricCoordinateInKnotVectorRange) { // NOLINT
+  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{-0.4}), Eq(false));
+}
+
+TEST_F(AKnotVectorOfDegree2, DoesNotFindLargeParametricCoordinateInKnotVectorRange) { // NOLINT
+  ASSERT_THAT(knot_vector_.IsInRange(ParametricCoordinate{1.5}), Eq(false));
+}
+
+TEST_F(AKnotVectorOfDegree2, CanInsertKnot) {  // NOLINT
   baf::KnotVector knot_vector_copy = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
   knot_vector_copy.InsertKnot(ParametricCoordinate{0.5});
   ASSERT_THAT(knot_vector_copy.GetNumberOfKnots(), knot_vector_.GetNumberOfKnots() + 1);
@@ -154,7 +155,7 @@ TEST_F(AKnotVector, CanInsertKnot) {  // NOLINT
               knot_vector_.GetKnotSpan(ParametricCoordinate{0.5}).Get() + 1);
 }
 
-TEST_F(AKnotVector, CanRemoveKnot) {  // NOLINT
+TEST_F(AKnotVectorOfDegree2, CanRemoveKnot) {  // NOLINT
   baf::KnotVector knot_vector_copy = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
   knot_vector_copy.RemoveKnot(ParametricCoordinate{0.5});
   ASSERT_THAT(knot_vector_copy.GetNumberOfKnots(), knot_vector_.GetNumberOfKnots() - 1);
@@ -164,7 +165,7 @@ TEST_F(AKnotVector, CanRemoveKnot) {  // NOLINT
 
 // TODO(Corinna): commented out the two tests below as the functionality they test is no longer part of class KnotVector
 //  need to test this functionality elsewhere --> surface generator.
-//TEST_F(AKnotVector, CanBeAveraged) { // NOLINT
+//TEST_F(AKnotVectorOfDegree2, CanBeAveraged) { // NOLINT
 //  std::vector<ParametricCoordinate>
 //      coords = {ParametricCoordinate(0.0), ParametricCoordinate(5.0 / 17.0), //ParametricCoordinate(9.0 / 17.0),
 //                ParametricCoordinate(14.0 / 17.0), ParametricCoordinate(1.0)};
@@ -176,7 +177,7 @@ TEST_F(AKnotVector, CanRemoveKnot) {  // NOLINT
 //  ASSERT_THAT(knot_vector.GetKnot(1).Get(), DoubleEq(0.0));
 //}
 //
-//TEST_F(AKnotVector, CanBeAveragedLen2) { // NOLINT
+//TEST_F(AKnotVectorOfDegree2, CanBeAveragedLen2) { // NOLINT
 //  std::vector<ParametricCoordinate>
 //      coords = {ParametricCoordinate(0.0), ParametricCoordinate(10.0 / 17.0), ParametricCoordinate(18.0 / 17.0),
 //                ParametricCoordinate(28.0 / 17.0), ParametricCoordinate(2.0)};

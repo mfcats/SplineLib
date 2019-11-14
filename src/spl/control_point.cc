@@ -26,7 +26,7 @@ int ControlPoint::GetDimension() const {
 }
 
 double ControlPoint::GetValue(int dimension) const {
-#ifdef DEBUG
+#ifndef NDEBUG
   return coordinates_.at(dimension);
 #else
   return coordinates_[dimension];
