@@ -28,8 +28,8 @@ BasisFunction::BasisFunction(const KnotVector &knot_vector, const Degree &degree
     : degree_(degree) {
   auto start_index = static_cast<size_t>(start_of_support.Get());
   auto degree_index = static_cast<size_t>(degree.Get());
-  start_knot_ = knot_vector.GetKnot(start_index);
-  end_knot_ = knot_vector.GetKnot(start_index + degree_index + 1);
+  start_knot_ = knot_vector[start_index];
+  end_knot_ = knot_vector[start_index + degree_index + 1];
   end_knot_is_last_knot_ = knot_vector.IsLastKnot(end_knot_);
 }
 

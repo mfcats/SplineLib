@@ -23,8 +23,8 @@ using namespace splinelib::src;
 
 class KnotVectorMock000111 : public baf::KnotVector {
  public:
-  ParametricCoordinate GetKnot(int knot_num) const override {
-    return knts[knot_num];
+  ParametricCoordinate operator[](int knot_num) const override {
+    return GetValue(knts, knot_num);
   }
 
   bool IsLastKnot(const ParametricCoordinate &param_coord) const override {

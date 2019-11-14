@@ -11,6 +11,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "src/baf/b_spline_basis_function.h"
+#include "src/util/stl_container_access.h"
 
 using testing::DoubleEq;
 using testing::Test;
@@ -19,8 +20,8 @@ using namespace splinelib::src;
 
 class MockKnotVector000111 : public baf::KnotVector {
  public:
-  ParametricCoordinate GetKnot(int knot_num) const override {
-    return knts[knot_num];
+  ParametricCoordinate operator[](int knot_num) const override {
+    return GetValue(knts, knot_num);
   }
 
   bool IsLastKnot(const ParametricCoordinate &param_coord) const override {
@@ -245,8 +246,8 @@ TEST_F(BasisFunctionEx21N22, IsZeroAtMinus1_5) { // NOLINT
 
 class MockKnotVector00012344555 : public baf::KnotVector {
  public:
-  ParametricCoordinate GetKnot(int knot_num) const override {
-    return knts.at(knot_num);
+  ParametricCoordinate operator[](int knot_num) const override {
+    return GetValue(knts, knot_num);
   }
 
   bool IsLastKnot(const ParametricCoordinate &param_coord) const override {

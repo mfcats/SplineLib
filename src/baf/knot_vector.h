@@ -51,7 +51,7 @@ class KnotVector {
   KnotVector & operator=(KnotVector &&other) noexcept;
   virtual ~KnotVector() = default;
 
-  ParametricCoordinate operator[](int index) const;
+  virtual ParametricCoordinate operator[](int index) const;
   // Check if absolute distance between all knots is smaller than the epsilon defined in NumericSettings.
   friend bool operator==(KnotVector const &lhs, KnotVector const &rhs);
 

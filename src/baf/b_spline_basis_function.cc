@@ -24,9 +24,9 @@ BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
     : BasisFunction(knot_vector, degree, start_of_support) {
   auto start_index = static_cast<size_t>(start_of_support.Get());
   auto degree_index = static_cast<size_t>(degree.Get());
-  auto left_denom = (knot_vector.GetKnot(start_index + degree_index) - GetStartKnot()).Get();
+  auto left_denom = (knot_vector[start_index + degree_index] - GetStartKnot()).Get();
   left_denom_inv_ = InverseWithPossiblyZeroDenominator(left_denom);
-  auto right_denom = (GetEndKnot() - knot_vector.GetKnot(start_index + 1)).Get();
+  auto right_denom = (GetEndKnot() - knot_vector[start_index + 1]).Get();
   right_denom_inv_ = InverseWithPossiblyZeroDenominator(right_denom);
   SetLowerDegreeBasisFunctions(knot_vector, degree, start_of_support);
 }

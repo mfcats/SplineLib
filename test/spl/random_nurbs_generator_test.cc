@@ -40,15 +40,15 @@ TEST_F(A1DRandomNURBSGenerator, CreatesCorrectKnots) {  // NOLINT
   baf::KnotVector knot_vector = *parameter_space.GetKnotVector(0);
   int i = 0;
   for (; i < degree + 1; ++i) {
-    ASSERT_THAT(knot_vector.GetKnot(i).Get(), DoubleEq(limits_[0].Get()));
+    ASSERT_THAT(knot_vector[i].Get(), DoubleEq(limits_[0].Get()));
   }
   for (; i < knot_vector.GetNumberOfKnots() - degree - 1; ++i) {
-    ASSERT_THAT(knot_vector.GetKnot(i).Get() - knot_vector.GetKnot(i - 1).Get(),
+    ASSERT_THAT(knot_vector[i].Get() - knot_vector[i - 1].Get(),
                 DoubleNear((limits_[1].Get() - limits_[0].Get()) / (knot_vector.GetNumberOfKnots() - 2 * degree - 1),
                            0.00000001));
   }
   for (; i < knot_vector.GetNumberOfKnots(); ++i) {
-    ASSERT_THAT(knot_vector.GetKnot(i).Get(), DoubleEq(limits_[1].Get()));
+    ASSERT_THAT(knot_vector[i].Get(), DoubleEq(limits_[1].Get()));
   }
 }
 
