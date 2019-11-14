@@ -17,7 +17,6 @@ set(
         control_point.cc
         surface_generator.cc
         square_generator.cc
-
 )
 
 add_library(splinelibspl SHARED ${SOURCES})
@@ -43,6 +42,7 @@ install(
         FILES
         b_spline.h
         b_spline_generator.h
+        control_point.h
         nurbs.h
         nurbs_generator.h
         parameter_space.h
