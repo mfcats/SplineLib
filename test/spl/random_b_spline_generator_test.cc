@@ -41,14 +41,14 @@ TEST_F(A1DRandomBSplineGenerator, CreatesCorrectKnots) {  // NOLINT
   size_t number_of_knots = knot_vector.GetNumberOfKnots();
   size_t i = 0;
   for (; i < degree + 1; ++i) {
-    ASSERT_THAT(knot_vector.GetKnot(i).Get(), DoubleEq(limits_[0].Get()));
+    ASSERT_THAT(knot_vector[i].Get(), DoubleEq(limits_[0].Get()));
   }
   for (; i < number_of_knots - degree - 1; ++i) {
-    ASSERT_THAT(knot_vector.GetKnot(i).Get() - knot_vector.GetKnot(i - 1).Get(),
+    ASSERT_THAT(knot_vector[i].Get() - knot_vector[i - 1].Get(),
                 DoubleNear((limits_[1].Get() - limits_[0].Get()) / (number_of_knots - 2 * degree - 1), 0.00000001));
   }
   for (; i < number_of_knots; ++i) {
-    ASSERT_THAT(knot_vector.GetKnot(i).Get(), DoubleEq(limits_[1].Get()));
+    ASSERT_THAT(knot_vector[i].Get(), DoubleEq(limits_[1].Get()));
   }
 }
 

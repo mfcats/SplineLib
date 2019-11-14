@@ -61,7 +61,7 @@ TEST_F(AKnotVectorOfDegree2, CanBeMoveAssigned) { // NOLINT
 }
 
 TEST_F(AKnotVectorOfDegree2, ReturnsKnot0_75AtIndex5WithMethodGetKnot) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnot(5), Eq(ParametricCoordinate{0.75}));
+  ASSERT_THAT(knot_vector_[5], Eq(ParametricCoordinate{0.75}));
 }
 
 TEST_F(AKnotVectorOfDegree2, ReturnsKnot0_75AtIndex5WithOperator) { // NOLINT
@@ -172,9 +172,9 @@ TEST_F(AKnotVectorOfDegree2, CanRemoveKnot) {  // NOLINT
 //  Degree degreeTest(3);
 //  int nbControlPoints = 5;
 //  baf::KnotVector knot_vector = baf::KnotVector(coords, degreeTest, nbControlPoints);
-//  ASSERT_THAT(knot_vector.GetKnot(4).Get(), DoubleEq(28.0 / 51.0));
-//  ASSERT_THAT(knot_vector.GetKnot(5).Get(), DoubleEq(1.0));
-//  ASSERT_THAT(knot_vector.GetKnot(1).Get(), DoubleEq(0.0));
+//  ASSERT_THAT(knot_vector[4].Get(), DoubleEq(28.0 / 51.0));
+//  ASSERT_THAT(knot_vector[5].Get(), DoubleEq(1.0));
+//  ASSERT_THAT(knot_vector[1].Get(), DoubleEq(0.0));
 //}
 //
 //TEST_F(AKnotVectorOfDegree2, CanBeAveragedLen2) { // NOLINT
@@ -184,7 +184,7 @@ TEST_F(AKnotVectorOfDegree2, CanRemoveKnot) {  // NOLINT
 //  Degree degreeTest(3);
 //  int nbControlPoints = 5;
 //  baf::KnotVector knot_vector = baf::KnotVector(coords, degreeTest, nbControlPoints);
-//  ASSERT_THAT(knot_vector.GetKnot(4).Get(), DoubleEq(56.0 / 51.0));
-//  ASSERT_THAT(knot_vector.GetKnot(5).Get(), DoubleEq(2.0));
-//  ASSERT_THAT(knot_vector.GetKnot(1).Get(), DoubleEq(0.0));
+//  ASSERT_THAT(knot_vector[4].Get(), DoubleEq(56.0 / 51.0));
+//  ASSERT_THAT(knot_vector[5].Get(), DoubleEq(2.0));
+//  ASSERT_THAT(knot_vector[1].Get(), DoubleEq(0.0));
 //}
