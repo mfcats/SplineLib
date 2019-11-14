@@ -1,4 +1,4 @@
-# Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+# Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 #
 # This file is part of SplineLib.
 #
@@ -11,11 +11,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
-#
 
 add_subdirectory(executables)
 
-set(SOURCES
+set(
+        SOURCES
         iges_reader.cc
         iges_writer.cc
         io_converter.cc
@@ -23,12 +23,18 @@ set(SOURCES
         irit_writer.cc
         vtk_writer.cc
         xml_reader.cc
-        xml_writer.cc)
+        xml_writer.cc
+)
 
 add_library(splinelibio SHARED ${SOURCES})
-
 target_include_directories(splinelibio PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
-target_link_libraries(splinelibio splinelibspl pugixmllib)
+target_link_libraries(splinelibio PUBLIC pugixmllib splinelibbaf splinelibspl splinelibutil)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(splinelibio PUBLIC ${RUNTIME_CHECKS_DEBUG} ${WARNING_FLAGS})
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(splinelibio PUBLIC ${OPTIMIZATION_FLAGS} ${WARNING_FLAGS} ${PARALLELIZATION_FLAGS})
+endif()
 
 install(
         TARGETS splinelibio
@@ -39,7 +45,8 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-install(FILES
+install(
+        FILES
         iges_reader.h
         iges_writer.h
         io_converter.h
@@ -56,4 +63,5 @@ install(FILES
         xml_writer.h
         xml_writer_utils.h
         writer.h
-        DESTINATION "${include_install_dir}/src/io")
+        DESTINATION "${include_install_dir}/src/io"
+)

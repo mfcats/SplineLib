@@ -1,4 +1,4 @@
-# Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+# Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 #
 # This file is part of SplineLib.
 #
@@ -11,14 +11,21 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
-#
 
-set(SOURCES
+set(
+        SOURCES
         string_operations.cc
-        system_operations.cc)
+        system_operations.cc
+)
 
 add_library(splinelibutil SHARED ${SOURCES})
 target_include_directories(splinelibutil PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(splinelibutil PUBLIC ${RUNTIME_CHECKS_DEBUG} ${WARNING_FLAGS})
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(splinelibutil PUBLIC ${OPTIMIZATION_FLAGS} ${WARNING_FLAGS} ${PARALLELIZATION_FLAGS})
+endif()
 
 install(
         TARGETS splinelibutil
@@ -29,7 +36,8 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-install(FILES
+install(
+        FILES
         any_casts.h
         any_casts.inc
         element.h
@@ -51,4 +59,5 @@ install(FILES
         system_operations.h
         vector_utils.h
         vector_utils.inc
-        DESTINATION "${include_install_dir}/src/util")
+        DESTINATION "${include_install_dir}/src/util"
+)

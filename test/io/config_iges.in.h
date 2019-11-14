@@ -1,4 +1,4 @@
-/* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+/* Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
 
@@ -9,15 +9,14 @@ SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
-<http://www.gnu.org/licenses/>.
-*/
+<http://www.gnu.org/licenses/>.*/
 
 #ifndef TEST_IO_CONFIG_IGES_IN_H_  // NOLINT
 #define TEST_IO_CONFIG_IGES_IN_H_
 
 #include <string>
 
-static const char *iges_read = "@IGES_READ@";
-static const char *iges_read_2 = "@IGES_READ_2@";
+static const char *iges_read = "@PATH_TO_IGES_FILE@";
+static const char *iges_read_2 = "@PATH_TO_IGES_FILE2@";
 
 #endif  // TEST_IO_CONFIG_IGES_IN_H_

@@ -1,4 +1,4 @@
-# Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+# Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 #
 # This file is part of SplineLib.
 #
@@ -11,9 +11,9 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
-#
 
-set(TEST_SOURCES
+set(
+        TEST_SOURCES
         ${TEST_SOURCES}
         ${CMAKE_CURRENT_SOURCE_DIR}/any_casts_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/multi_index_handler_test.cc
@@ -24,4 +24,5 @@ set(TEST_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/string_operations_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/system_operations_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/vector_utils_test.cc
-        PARENT_SCOPE)
+        PARENT_SCOPE
+)

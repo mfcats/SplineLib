@@ -1,4 +1,4 @@
-# Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+# Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 #
 # This file is part of SplineLib.
 #
@@ -11,24 +11,26 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
-#
 
-set(SOURCES
+set(
+		SOURCES
         b_spline_basis_function.cc
 		basis_function.cc
         basis_function_factory.cc
         control_point.cc
         knot_vector.cc
-		zero_degree_b_spline_basis_function.cc)
+		zero_degree_b_spline_basis_function.cc
+)
 
 add_library(splinelibbaf SHARED ${SOURCES})
 target_include_directories(splinelibbaf PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
-target_link_libraries(splinelibbaf splinelibutil)
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+target_link_libraries(splinelibbaf PUBLIC splinelibutil)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_options(splinelibbaf PUBLIC ${RUNTIME_CHECKS_DEBUG} ${WARNING_FLAGS})
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
 	target_compile_options(splinelibbaf PUBLIC ${OPTIMIZATION_FLAGS} ${WARNING_FLAGS} ${PARALLELIZATION_FLAGS})
-endif ()
+endif()
 
 install(
         TARGETS splinelibbaf
@@ -39,7 +41,8 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-install(FILES
+install(
+		FILES
         b_spline_basis_function.h
         basis_function.h
         basis_function_factory.h
@@ -47,4 +50,5 @@ install(FILES
         knot_vector.h
 		knot_vector.inc
         zero_degree_b_spline_basis_function.h
-        DESTINATION "${include_install_dir}/src/baf")
+        DESTINATION "${include_install_dir}/src/baf"
+)

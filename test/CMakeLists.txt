@@ -1,4 +1,4 @@
-# Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+# Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 #
 # This file is part of SplineLib.
 #
@@ -11,12 +11,16 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
-#
 
 add_subdirectory(baf)
 add_subdirectory(io)
 add_subdirectory(spl)
 add_subdirectory(util)
+
+set(
+        ACCEPTANCE_TEST_SOURCES
+        acceptance_tests.cc
+)
 
 find_package(GMock REQUIRED)
 #include_directories(${GTEST_INCLUDE_DIRS})
@@ -27,8 +31,6 @@ target_link_libraries(SplineLibTests splinelibbaf splinelibspl splinelibutil spl
 add_executable(MaxTest ${MAX_SOURCES})
 target_link_libraries(MaxTest splinelibbaf splinelibspl splinelibutil splinelibio GMock::Main)
 
-set(ACCEPTANCE_TEST_SOURCES
-        acceptance_tests.cc)
 add_executable(AcceptanceTests ${ACCEPTANCE_TEST_SOURCES})
 target_link_libraries(AcceptanceTests splinelibbaf splinelibspl splinelibutil)
 

@@ -1,4 +1,4 @@
-# Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+# Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 #
 # This file is part of SplineLib.
 #
@@ -11,9 +11,9 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
-#
 
-set(TEST_SOURCES
+set(
+        TEST_SOURCES
         ${TEST_SOURCES}
         ${CMAKE_CURRENT_SOURCE_DIR}/iges_reader_writer_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/io_converter_executables_test.cc
@@ -22,9 +22,10 @@ set(TEST_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vtk_writer_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/xml_reader_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/xml_writer_test.cc
-        PARENT_SCOPE)
+        PARENT_SCOPE
+)
 
-set(IGES_READ ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read.iges PARENT_SCOPE)
-set(IGES_READ_2 ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read2.iges PARENT_SCOPE)
+set(PATH_TO_IGES_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read.iges PARENT_SCOPE)
+set(PATH_TO_IGES_FILE2 ${CMAKE_CURRENT_SOURCE_DIR}/test_files/read2.iges PARENT_SCOPE)
 set(PATH_TO_IRIT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test_files/test.itd PARENT_SCOPE)
 set(PATH_TO_XML_FILE ${CMAKE_CURRENT_SOURCE_DIR}/test_files/spline_tank.xml PARENT_SCOPE)

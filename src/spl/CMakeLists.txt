@@ -1,4 +1,4 @@
-# Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+# Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 #
 # This file is part of SplineLib.
 #
@@ -11,15 +11,22 @@
 #
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
-#
 
-set(SOURCES
+set(
+        SOURCES
         square_generator.cc
-        surface_generator.cc)
+        surface_generator.cc
+)
 
 add_library(splinelibspl SHARED ${SOURCES})
 target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>)
-target_link_libraries(splinelibspl splinelibbaf)
+target_link_libraries(splinelibspl PUBLIC splinelibbaf splinelibutil)
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(splinelibspl PUBLIC ${RUNTIME_CHECKS_DEBUG} ${WARNING_FLAGS})
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(splinelibspl PUBLIC ${OPTIMIZATION_FLAGS} ${WARNING_FLAGS} ${PARALLELIZATION_FLAGS})
+endif()
 
 install(
         TARGETS splinelibspl
@@ -30,7 +37,8 @@ install(
         INCLUDES DESTINATION "${include_install_dir}"
 )
 
-install(FILES
+install(
+        FILES
         b_spline.h
         b_spline_generator.h
         nurbs.h
@@ -46,4 +54,5 @@ install(FILES
         square_generator.h
         surface_generator.h
         weighted_physical_space.h
-        DESTINATION "${include_install_dir}/src/spl")
+        DESTINATION "${include_install_dir}/src/spl"
+)
