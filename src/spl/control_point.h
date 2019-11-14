@@ -12,8 +12,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_BAF_CONTROL_POINT_H_
-#define SRC_BAF_CONTROL_POINT_H_
+#ifndef SRC_SPL_CONTROL_POINT_H_
+#define SRC_SPL_CONTROL_POINT_H_
 
 #include <algorithm>
 #include <array>
@@ -47,4 +47,4 @@ class ControlPoint {
 };
 }  // namespace splinelib::src::baf
 
-#endif  // SRC_BAF_CONTROL_POINT_H_
+#endif  // SRC_SPL_CONTROL_POINT_H_
