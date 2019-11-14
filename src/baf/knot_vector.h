@@ -22,6 +22,17 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/util/named_type.h"
 #include "src/util/stl_container_access.h"
 
+// KnotVectors represent a sequence U = {u_0, u_1, ..., u_m} of m+1 non-decreasing real numbers, called knots or
+// parametric coordinates, on which basis functions can be defined. For a knot vector of degree p there is the
+// additional condition that the first p+1 knots and the last p+1 knots are respectively equal a = u_0 = ... = u_p and
+// b = u_{m-p} = ... = u_m.
+// Example (knot vector of degree 2 with repeated knot 0.5 and m+1 = i knots):
+//   KnotVector knot_vector({0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 1.0, 1.0, 1.0});
+//   sixth_knot = knot_vector[5];  // Returns sixth knot 0.75.
+//   number_of_knots = knot_vector.GetNumberOfKnots();  // Returns m+1 = 9.
+//   multiplicity_of_0_5 = knot_vector.GetMultiplicity(ParametricCoordinate{0.5});  // Returns multiplicity of u = 0.5
+//   Multiplicity{2}.
+//   is_1_0_last_knot = knot_vector.IsLastKnot(ParametricCoordinate{1.0});  // Returns true.
 namespace splinelib::src::baf {
 class KnotVector {
  public:
@@ -55,6 +66,10 @@ class KnotVector {
   // TODO(all): should there be this method and operator [] with the exact same functionality?
   virtual ParametricCoordinate GetKnot(int index) const;
 
+  // The i-th knot span is defined as the half-open interval (u_i, u_{i+1}]. The last knot is defined to be in the last
+  // non-zero knot span. For U = {0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 1.0, 1.0, 1.0} u = 0.0 is in knot span 2, u = 0.5 in
+  // knot span 4 and u = 0.75 and u = 1.0 are in knot span 5.
+  // vector U = {0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 1.0, 1.0, 1.0};
   virtual KnotSpan GetKnotSpan(ParametricCoordinate const &parametric_coordinate) const;
   virtual Multiplicity GetMultiplicity(ParametricCoordinate const &parametric_coordinate) const;
   virtual bool IsInRange(ParametricCoordinate const &parametric_coordinate) const;

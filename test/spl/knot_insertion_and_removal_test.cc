@@ -347,6 +347,7 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
   }
 }
 
+// TODO(Corinna, Christoph): remove random test and use deterministic for dimension 2 and 3
 class Random3DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
   Random3DBSplineForKnotInsertionAndRemoval() : removed_({0}), param_coord_{
@@ -367,7 +368,7 @@ class Random3DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
     spl::BSpline<3> removal_spline(insertion_spline);
     removed_[0] = removal_spline.RemoveKnot(param_coord_[0], 0, 1e-10);
     removed_[1] = removal_spline.RemoveKnot(param_coord_[1], 1, 1e-10);
-    removed_[2] = removal_spline.RemoveKnot(param_coord_[2], 2, 1e-10);
+    removed_[2] = removal_spline.RemoveKnot(param_coord_[2], 2, 1e-8);
     after_removal_ = std::make_shared<spl::BSpline<3>>(removal_spline);
   }
 

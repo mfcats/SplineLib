@@ -22,7 +22,6 @@ using testing::DoubleEq;
 
 using namespace splinelib::src;
 
-// A knot vector is defined as a sequence of non-decreasing real numbers (knots).
 class AKnotVector : public Test {
  public:
   AKnotVector() : knot_vector_({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}, ParametricCoordinate{0.0},
@@ -33,11 +32,9 @@ class AKnotVector : public Test {
   baf::KnotVector knot_vector_;
 };
 
-// The i-th knot span is defined as the half-open interval (u_i, u_{i+1}]. For
-// U = {0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 1.0, 1.0, 1.0} u = 0.0 is in knot span 2.
 // The parametric coordinate is equal to the smallest knot
 TEST_F(AKnotVector, FindsZeroInKnotSpanTwo) { // NOLINT
-  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{0.0}), Eq(KnotSpan{2}));
+  ASSERT_THAT(knot_vector_.GetKnotSpan(ParametricCoordinate{0.0}), Eq(KnotSpan{2})) << "test";
 }
 
 // The parametric coordinate is between two knots.
