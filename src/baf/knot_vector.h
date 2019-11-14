@@ -65,8 +65,6 @@ class KnotVector {
 
   ParametricCoordinate GetFirstKnot() const;
   ParametricCoordinate GetLastKnot() const;
-  // TODO(all): should there be this method (92 usages, 70 of them in tests) and operator [] (27 usages, and only in
-  //  tests) with the exact same functionality?
   virtual ParametricCoordinate GetKnot(int index) const;
 
   // The i-th knot span is defined as the half-open interval (u_i, u_{i+1}]. The last knot is defined to be in the last
@@ -87,6 +85,7 @@ class KnotVector {
   bool AreEqual(KnotVector const &rhs, Tolerance const &tolerance) const;
 
  private:
+  void ThrowIfKnotVectorIsNotNonDecreasing() const;
   std::vector<ParametricCoordinate> knots_;
 };
 
