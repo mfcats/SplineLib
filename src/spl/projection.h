@@ -18,7 +18,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "src/spl/b_spline.h"
-#include "src/util/element_generator.h"
 #include "src/baf/knot_vector.h"
 #include "src/util/vector_utils.h"
 
@@ -84,22 +83,27 @@ class Projection {
   static std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> FindInitialValue1D(
       const std::vector<double> &point_phys_coords,
       const std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> &spline, const std::vector<int> &dimensions) {
-    util::ElementGenerator<1> element_generator(spline);
-    std::vector<util::Element> elements = element_generator.GetElementList(0);
+    std::vector<std::array<ParametricCoordinate, 2>> elements;
+    for (int j = 0; j < spline->GetKnotVector(0)->GetNumberOfKnots() - spline->GetDegree(0).Get() - 1; ++j) {
+      if ((spline->GetKnotVector(0)->GetKnot(j).Get() - spline->GetKnotVector(0)->GetKnot(j + 1).Get()) != 0) {
+        elements.emplace_back(std::array<ParametricCoordinate, 2>({spline->GetKnotVector(0)->GetKnot(j),
+                                                                      spline->GetKnotVector(0)->GetKnot(j + 1)}));
+      }
+    }
     std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> ParametricCoordinates = {ParametricCoordinate{0}};
     std::vector<double> splinePhysicalCoords = spline->Evaluate({ParametricCoordinate{(0.5 * (
-        elements[0].GetUpperBound() - elements[0].GetLowerBound()).Get())}}, dimensions);
+        elements[0][1] - elements[0][0]).Get())}}, dimensions);
     double distance = util::vector_utils::ComputeDistance(point_phys_coords, splinePhysicalCoords);
     ParametricCoordinates[0] =
-        ParametricCoordinate{{0.5 * (elements[0].GetUpperBound() - elements[0].GetLowerBound()).Get()}};
+        ParametricCoordinate{{0.5 * (elements[0][1] - elements[0][0]).Get()}};
     for (auto i = 1u; i < elements.size(); ++i) {
       splinePhysicalCoords = spline->Evaluate({ParametricCoordinate{0.5 * (
-          elements[i].GetUpperBound() - elements[i].GetLowerBound()).Get() + elements[i].GetLowerBound().Get()}},
+          elements[i][1] - elements[i][0]).Get() + elements[i][0].Get()}},
               dimensions);
       if (util::vector_utils::ComputeDistance(point_phys_coords, splinePhysicalCoords) < distance) {
         distance = util::vector_utils::ComputeDistance(point_phys_coords, splinePhysicalCoords);
         ParametricCoordinates[0] = ParametricCoordinate{0.5 * (
-                elements[i].GetUpperBound() - elements[i].GetLowerBound()).Get() + elements[i].GetLowerBound().Get()};
+                elements[i][1] - elements[i][0]).Get() + elements[i][0].Get()};
       }
     }
     return ParametricCoordinates;

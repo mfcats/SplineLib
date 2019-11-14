@@ -40,8 +40,6 @@ install(
         FILES
         any_casts.h
         any_casts.inc
-        element.h
-        element_generator.h
         multi_index_handler.h
         multi_index_handler.inc
         named_type.h
