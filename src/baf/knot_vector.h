@@ -30,9 +30,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 //   KnotVector knot_vector({0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 1.0, 1.0, 1.0});
 //   sixth_knot = knot_vector[5];  // Returns sixth knot 0.75.
 //   number_of_knots = knot_vector.GetNumberOfKnots();  // Returns m+1 = 9.
+//   number_of_different_knots = knot_vector.GetNumberOfDifferentKnots();  // Returns 4 = |U|.
 //   multiplicity_of_0_5 = knot_vector.GetMultiplicity(ParametricCoordinate{0.5});  // Returns multiplicity of u = 0.5
 //   Multiplicity{2}.
-//   is_1_0_last_knot = knot_vector.IsLastKnot(ParametricCoordinate{1.0});  // Returns true.
+//   is_1_2_in_range = knot_vector.IsInRange(ParametricCoordinate{1.2});  // Returns false as 1.2 is greater u_m = 1.0.
+//   is_1_0_last_knot = knot_vector.IsLastKnot(ParametricCoordinate{1.0});  // Returns true as u_m = 1.0.
 namespace splinelib::src::baf {
 class KnotVector {
  public:
@@ -63,7 +65,8 @@ class KnotVector {
 
   ParametricCoordinate GetFirstKnot() const;
   ParametricCoordinate GetLastKnot() const;
-  // TODO(all): should there be this method and operator [] with the exact same functionality?
+  // TODO(all): should there be this method (92 usages, 70 of them in tests) and operator [] (27 usages, and only in
+  //  tests) with the exact same functionality?
   virtual ParametricCoordinate GetKnot(int index) const;
 
   // The i-th knot span is defined as the half-open interval (u_i, u_{i+1}]. The last knot is defined to be in the last
@@ -72,6 +75,8 @@ class KnotVector {
   // vector U = {0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 1.0, 1.0, 1.0};
   virtual KnotSpan GetKnotSpan(ParametricCoordinate const &parametric_coordinate) const;
   virtual Multiplicity GetMultiplicity(ParametricCoordinate const &parametric_coordinate) const;
+
+  // Checks if given parametric coordinate is greater equal than first knot and less equal than last knot.
   virtual bool IsInRange(ParametricCoordinate const &parametric_coordinate) const;
   virtual bool IsLastKnot(ParametricCoordinate const &parametric_coordinate) const;
 
