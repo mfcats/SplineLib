@@ -17,7 +17,6 @@ set(
         b_spline_basis_function.cc
 		basis_function.cc
         basis_function_factory.cc
-        control_point.cc
         knot_vector.cc
 		zero_degree_b_spline_basis_function.cc
 )
@@ -46,7 +45,7 @@ install(
         b_spline_basis_function.h
         basis_function.h
         basis_function_factory.h
-        control_point.h
+		../spl/control_point.h
         knot_vector.h
 		knot_vector.inc
         zero_degree_b_spline_basis_function.h

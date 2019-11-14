@@ -16,7 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "src/baf/control_point.h"
+#include "src/spl/control_point.h"
 
 using testing::Test;
 using testing::DoubleEq;

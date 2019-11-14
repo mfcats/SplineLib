@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <stdexcept>
 #include <vector>
 
-#include "src/baf/control_point.h"
+#include "control_point.h"
 #include "src/util/multi_index_handler.h"
 #include "src/util/numeric_settings.h"
 #include "src/util/vector_utils.h"

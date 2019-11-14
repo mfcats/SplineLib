@@ -14,8 +14,10 @@
 
 set(
         SOURCES
-        square_generator.cc
+        control_point.cc
         surface_generator.cc
+        square_generator.cc
+
 )
 
 add_library(splinelibspl SHARED ${SOURCES})

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 
-#include "src/baf/control_point.h"
+#include "src/spl/control_point.h"
 #include "src/baf/knot_vector.h"
 
 namespace splinelib::src::util {
