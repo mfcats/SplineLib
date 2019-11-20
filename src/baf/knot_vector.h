@@ -41,7 +41,8 @@ class KnotVector {
   using ConstKnotIterator = std::vector<ParametricCoordinate>::const_iterator;
   using KnotIterator = std::vector<ParametricCoordinate>::iterator;
 
-  // TODO(Corinna, Christoph): remove default constructor?
+  // TODO(Corinna, Christoph): remove default constructor? not possible yet because needed for mocking in zero-degree-
+  //  and b-spline-basis-function-test.
   KnotVector() = default;
   explicit KnotVector(std::vector<ParametricCoordinate> knots);
   KnotVector(std::initializer_list<ParametricCoordinate> const &knots) noexcept;
