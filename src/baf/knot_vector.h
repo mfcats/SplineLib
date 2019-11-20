@@ -78,6 +78,7 @@ class KnotVector {
   virtual bool IsInRange(ParametricCoordinate const &parametric_coordinate) const;
   virtual bool IsLastKnot(ParametricCoordinate const &parametric_coordinate) const;
 
+  // TODO(Corinna, Christoph): should there be tests if knot vector definition is still fulfilled?
   void InsertKnot(ParametricCoordinate const &parametric_coordinate);
   void RemoveKnot(ParametricCoordinate const &parametric_coordinate);
 
@@ -85,6 +86,7 @@ class KnotVector {
   bool AreEqual(KnotVector const &rhs, Tolerance const &tolerance) const;
 
  private:
+  // TODO(Corinna, Christoph): should there be another test for non empty knot vector?
   void ThrowIfKnotVectorIsNotNonDecreasing() const;
   std::vector<ParametricCoordinate> knots_;
 };

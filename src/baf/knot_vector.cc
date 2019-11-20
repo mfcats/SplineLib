@@ -41,6 +41,7 @@ KnotVector &KnotVector::operator=(KnotVector &&other) noexcept {
 }
 
 int KnotVector::GetNumberOfDifferentKnots() const {
+  if (knots_.empty()) return 0;
   int number_of_knot_spans = 0;
   for (int knot_index = 1; knot_index < static_cast<int>(knots_.size()); ++knot_index) {
     if (GetValue(knots_, knot_index) > GetValue(knots_, knot_index - 1)) ++number_of_knot_spans;
