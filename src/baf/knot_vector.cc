@@ -23,11 +23,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace splinelib::src::baf {
 KnotVector::KnotVector(std::vector<ParametricCoordinate> knots) : knots_(std::move(knots)) {
-  ThrowIfKnotVectorIsNotNonDecreasing();
+  ThrowIfKnotVectorIsEmptyOrNotNonDecreasing();
 }
 
 KnotVector::KnotVector(std::initializer_list<ParametricCoordinate> const &knots) noexcept : knots_(knots) {
-  ThrowIfKnotVectorIsNotNonDecreasing();
+  ThrowIfKnotVectorIsEmptyOrNotNonDecreasing();
 }
 
 KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end)
@@ -72,21 +72,26 @@ void KnotVector::InsertKnot(ParametricCoordinate const &parametric_coordinate) {
   knots_.insert(knots_.begin() + knot_span + 1, parametric_coordinate);
 }
 
-void KnotVector::RemoveKnot(ParametricCoordinate const &parametric_coordinate) {
+bool KnotVector::RemoveKnot(ParametricCoordinate const &parametric_coordinate) {
   auto const knot_span = GetKnotSpan(parametric_coordinate).Get();
+  if (knots_.size() <= 1) return false;
   if (!IsLastKnot(parametric_coordinate)) {
+    if (parametric_coordinate != knots_[knot_span]) return false;
     knots_.erase(knots_.begin() + knot_span);
   } else {
     knots_.erase(knots_.end() - 1);
   }
+  return true;
 }
 
-void KnotVector::ThrowIfKnotVectorIsNotNonDecreasing() const {
+void KnotVector::ThrowIfKnotVectorIsEmptyOrNotNonDecreasing() const {
   for (uint64_t knot_index = 1; knot_index < knots_.size(); ++knot_index) {
     if (knots_[knot_index] < knots_[knot_index - 1])
       throw std::invalid_argument("splinelib::src::baf::KnotVector::ThrowIfInvalidKnotVector: Knot vector has to be "
-                                  "a sequence of non-decreasing parametric coordinates!");
+                                  "a sequence of non-decreasing parametric coordinates.");
   }
+  if (knots_.empty()) throw std::invalid_argument("splinelib::src::baf::KnotVector::ThrowIfInvalidKnotVector: Knot "
+                                                  "vector has to contain at least one knot.");
 }
 
 bool KnotVector::AreEqual(KnotVector const &rhs,

@@ -41,6 +41,7 @@ class KnotVector {
   using ConstKnotIterator = std::vector<ParametricCoordinate>::const_iterator;
   using KnotIterator = std::vector<ParametricCoordinate>::iterator;
 
+  // TODO(Corinna, Christoph): remove default constructor?
   KnotVector() = default;
   explicit KnotVector(std::vector<ParametricCoordinate> knots);
   KnotVector(std::initializer_list<ParametricCoordinate> const &knots) noexcept;
@@ -78,16 +79,14 @@ class KnotVector {
   virtual bool IsInRange(ParametricCoordinate const &parametric_coordinate) const;
   virtual bool IsLastKnot(ParametricCoordinate const &parametric_coordinate) const;
 
-  // TODO(Corinna, Christoph): should there be tests if knot vector definition is still fulfilled?
   void InsertKnot(ParametricCoordinate const &parametric_coordinate);
-  void RemoveKnot(ParametricCoordinate const &parametric_coordinate);
+  bool RemoveKnot(ParametricCoordinate const &parametric_coordinate);
 
   // Check if absolute distance between all knots is smaller than the given tolerance.
   bool AreEqual(KnotVector const &rhs, Tolerance const &tolerance) const;
 
  private:
-  // TODO(Corinna, Christoph): should there be another test for non empty knot vector?
-  void ThrowIfKnotVectorIsNotNonDecreasing() const;
+  void ThrowIfKnotVectorIsEmptyOrNotNonDecreasing() const;
   std::vector<ParametricCoordinate> knots_;
 };
 

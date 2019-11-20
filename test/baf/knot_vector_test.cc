@@ -11,6 +11,7 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
+#include <algorithm>
 #include <vector>
 
 #include "gmock/gmock.h"
@@ -41,6 +42,14 @@ TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithDecreasingSequenceInInitia
 TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithDecreasingSequenceInParametricCoordinateVector) {  // NOLINT
   ASSERT_THROW(baf::KnotVector invalid_knot_vector(std::vector({ParametricCoordinate{1.0}, ParametricCoordinate{0.0}})),
                std::invalid_argument);
+}
+
+TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithEmptyInitializerList) {  // NOLINT
+  ASSERT_DEATH(baf::KnotVector invalid_knot_vector(std::initializer_list<ParametricCoordinate>{}), ".*");
+}
+
+TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithEmptyParametricCoordinateVector) {  // NOLINT
+  ASSERT_THROW(baf::KnotVector invalid_knot_vector(std::vector<ParametricCoordinate>({})), std::invalid_argument);
 }
 
 TEST_F(AKnotVectorOfDegree2, CanBeAssignedByIterators) {  // NOLINT
@@ -188,12 +197,48 @@ TEST_F(AKnotVectorOfDegree2, InsertionOfKnot0_5IncreasesNumberOfKnotsAndKnotSpan
               Eq(knot_vector_.GetKnotSpan(ParametricCoordinate{0.5}) + KnotSpan{1}));
 }
 
+TEST_F(AKnotVectorOfDegree2, InsertionOfFirstKnot0_0IncreasesNumberOfKnotsAndAdds0_0AtTheFront) {  // NOLINT
+  baf::KnotVector knot_vector_copy = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
+  knot_vector_copy.InsertKnot(ParametricCoordinate{0.0});
+  ASSERT_THAT(knot_vector_copy.GetNumberOfKnots(), knot_vector_.GetNumberOfKnots() + 1);
+  ASSERT_THAT(std::equal(knot_vector_copy.begin() + 1, knot_vector_copy.end(), knot_vector_.begin()), Eq(true));
+  ASSERT_THAT(knot_vector_copy.GetFirstKnot(), Eq(ParametricCoordinate{0.0}));
+}
+
+TEST_F(AKnotVectorOfDegree2, InsertionOfLastKnot1_0IncreasesNumberOfKnotsAndAdds1_0AtTheBack) {  // NOLINT
+  baf::KnotVector knot_vector_copy = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
+  knot_vector_copy.InsertKnot(ParametricCoordinate{1.0});
+  ASSERT_THAT(knot_vector_copy.GetNumberOfKnots(), knot_vector_.GetNumberOfKnots() + 1);
+  ASSERT_THAT(std::equal(knot_vector_copy.begin(), knot_vector_copy.end() - 1, knot_vector_.begin()), Eq(true));
+  ASSERT_THAT(knot_vector_copy.GetLastKnot(), Eq(ParametricCoordinate{1.0}));
+}
+
 TEST_F(AKnotVectorOfDegree2, RemovalOfKnot0_5DecreasesNumberOfKnotsAndKnotSpanOf0_5ByOne) {  // NOLINT
   baf::KnotVector knot_vector_copy = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
-  knot_vector_copy.RemoveKnot(ParametricCoordinate{0.5});
+  ASSERT_THAT(knot_vector_copy.RemoveKnot(ParametricCoordinate{0.5}), Eq(true));
   ASSERT_THAT(knot_vector_copy.GetNumberOfKnots(), knot_vector_.GetNumberOfKnots() - 1);
   ASSERT_THAT(knot_vector_copy.GetKnotSpan(ParametricCoordinate{0.5}).Get(),
               knot_vector_.GetKnotSpan(ParametricCoordinate{0.5}).Get() - 1);
+}
+
+TEST_F(AKnotVectorOfDegree2, ReturnsFalseForRemovalOfNonExistingKnot0_3) {  // NOLINT
+  baf::KnotVector knot_vector_copy = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
+  ASSERT_THAT(knot_vector_copy.RemoveKnot(ParametricCoordinate{0.3}), Eq(false));
+  ASSERT_THAT(knot_vector_copy, Eq(knot_vector_));
+}
+
+TEST_F(AKnotVectorOfDegree2, RemovalOfFirstKnot0_0) {  // NOLINT
+  baf::KnotVector knot_vector_copy = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
+  ASSERT_THAT(knot_vector_copy.RemoveKnot(ParametricCoordinate{0.0}), Eq(true));
+  ASSERT_THAT(knot_vector_copy.GetNumberOfKnots(), knot_vector_.GetNumberOfKnots() - 1);
+  ASSERT_THAT(std::equal(knot_vector_copy.begin(), knot_vector_copy.end(), knot_vector_.begin() + 1), Eq(true));
+}
+
+TEST_F(AKnotVectorOfDegree2, RemovalOfLastKnot1_0) {  // NOLINT
+  baf::KnotVector knot_vector_copy = baf::KnotVector(knot_vector_.begin(), knot_vector_.end());
+  ASSERT_THAT(knot_vector_copy.RemoveKnot(ParametricCoordinate{1.0}), Eq(true));
+  ASSERT_THAT(knot_vector_copy.GetNumberOfKnots(), knot_vector_.GetNumberOfKnots() - 1);
+  ASSERT_THAT(std::equal(knot_vector_copy.begin(), knot_vector_copy.end(), knot_vector_.begin()), Eq(true));
 }
 
 TEST_F(AKnotVectorOfDegree2, IsEqualWithTolerance0_1ToAKnotVectorDifferingByMaximal0_1) {  // NOLINT
