@@ -15,15 +15,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/baf/zero_degree_b_spline_basis_function.h"
 
 namespace splinelib::src::baf {
-ZeroDegBSplBasFnc::ZeroDegBSplBasFnc(const KnotVector &knot_vector, const KnotSpan &start_of_support) :
+ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
+                                                               const KnotSpan &start_of_support) :
     BasisFunction(knot_vector, Degree{0}, start_of_support) {}
 
-double ZeroDegBSplBasFnc::EvaluateOnSupport(const ParametricCoordinate /*param_coord*/&) const {
+double ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(const ParametricCoordinate /*param_coord*/&) const {
   return 1.0;
 }
 
-double ZeroDegBSplBasFnc::EvaluateDerivativeOnSupport(const ParametricCoordinate /*param_coord*/&,
-                                                           const Derivative /*degree*/&) const {
+double ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(const ParametricCoordinate /*param_coord*/&,
+                                                                   const Derivative /*degree*/&) const {
   return 0.0;
 }
 }  // namespace splinelib::src::baf

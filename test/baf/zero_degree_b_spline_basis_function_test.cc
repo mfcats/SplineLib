@@ -49,7 +49,7 @@ class ZeroDegreeBasisFunctionEx21N00 : public Test {
 
  protected:
   const KnotVectorMock000111 knot_vector_000111;
-  baf::ZeroDegBSplBasFnc basis_function_;
+  baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAt0_0) { // NOLINT
@@ -79,7 +79,7 @@ class ZeroDegreeBasisFunctionEx21N20 : public Test {
 
  protected:
   const KnotVectorMock000111 knot_vector_000111;
-  baf::ZeroDegBSplBasFnc basis_function_;
+  baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx21N20, IsOneAt0_0) { // NOLINT
@@ -109,7 +109,7 @@ class ZeroDegreeBasisFunctionEx21N40 : public Test {
 
  protected:
   const KnotVectorMock000111 knot_vector_000111;
-  baf::ZeroDegBSplBasFnc basis_function_;
+  baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAt0_0) { // NOLINT
@@ -139,7 +139,7 @@ class ZeroDegreeBasisFunctionEx22N00 : public Test {
 
  protected:
   const KnotVectorMock000111 knot_vector_000111;
-  baf::ZeroDegBSplBasFnc basis_function_;
+  baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt0_0) { // NOLINT
@@ -212,7 +212,7 @@ class ZeroDegreeBasisFunctionEx22N40 : public Test {
 
  protected:
   const KnotVectorMock000111 knot_vector_000111;
-  baf::ZeroDegBSplBasFnc basis_function_;
+  baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt0_0) { // NOLINT

@@ -29,7 +29,7 @@ BasisFunction *BasisFunctionFactory::CreateDynamic(const KnotVector &knot_vector
     throw std::runtime_error(msg);
   }
   if (degree == Degree{0}) {
-    return new ZeroDegBSplBasFnc(knot_vector, start_of_support);
+    return new ZeroDegreeBSplineBasisFunction(knot_vector, start_of_support);
   }
   return new BSplineBasisFunction(knot_vector, degree, start_of_support);
 }
