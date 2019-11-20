@@ -19,9 +19,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/baf/knot_vector.h"
 
 namespace splinelib::src::baf {
-class ZeroDegreeBSplineBasisFunction : public baf::BasisFunction {
+class ZeroDegreeBSplineBasisFunction : public BasisFunction {
  public:
-  ZeroDegreeBSplineBasisFunction(const baf::KnotVector &knot_vector, const KnotSpan &start_of_support);
+  ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, const KnotSpan &start_of_support);
 
  protected:
   double EvaluateOnSupport(const ParametricCoordinate &param_coord) const override;

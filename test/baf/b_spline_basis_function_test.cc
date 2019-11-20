@@ -10,7 +10,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "gmock/gmock.h"
 
-#include "src/baf/b_spline_basis_function.h"
+#include "src/baf/non_zero_degree_b_spline_basis_function.h"
 #include "src/util/stl_container_access.h"
 
 using testing::DoubleEq;
@@ -41,7 +41,7 @@ class BasisFunctionEx21N01 : public Test {
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
-  baf::BSplineBasisFunction basis_function_;
+  baf::NonZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N01, IsZeroAt0_0) { // NOLINT
@@ -71,7 +71,7 @@ class BasisFunctionEx21N11 : public Test {
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
-  baf::BSplineBasisFunction basis_function_;
+  baf::NonZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N11, IsOneAt0_0) { // NOLINT
@@ -101,7 +101,7 @@ class BasisFunctionEx21N21 : public Test {
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
-  baf::BSplineBasisFunction basis_function_;
+  baf::NonZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N21, IsZeroAt0_0) { // NOLINT
@@ -131,7 +131,7 @@ class BasisFunctionEx21N31 : public Test {
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
-  baf::BSplineBasisFunction basis_function_;
+  baf::NonZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N31, IsZeroAt0_0) { // NOLINT
@@ -161,7 +161,7 @@ class BasisFunctionEx21N02 : public Test {
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
-  baf::BSplineBasisFunction basis_function_;
+  baf::NonZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N02, IsZeroAt0_0) { // NOLINT
@@ -191,7 +191,7 @@ class BasisFunctionEx21N12 : public Test {
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
-  baf::BSplineBasisFunction basis_function_;
+  baf::NonZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N12, IsZeroAt0_0) { // NOLINT
@@ -221,7 +221,7 @@ class BasisFunctionEx21N22 : public Test {
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
-  baf::BSplineBasisFunction basis_function_;
+  baf::NonZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx21N22, IsZeroAt0_0) { // NOLINT
@@ -275,7 +275,7 @@ class BasisFunctionEx22N01 : public Test {
 
  protected:
   const MockKnotVector00012344555 knot_vector_00012344555;
-  baf::BSplineBasisFunction basis_function_;
+  baf::NonZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N01, ZerothDerevitveIsEqualValueAt0_0) { // NOLINT
@@ -348,7 +348,7 @@ class BasisFunctionEx22N13 : public Test {
 
  protected:
   const MockKnotVector00012344555 knot_vector_00012344555;
-  baf::BSplineBasisFunction basis_function_;
+  baf::NonZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N13, FirstDerevitveIsEqualZeroAt0_0) { // NOLINT
@@ -390,7 +390,7 @@ class BasisFunctionEx22N61 : public Test {
 
  protected:
   const MockKnotVector00012344555 knot_vector_00012344555;
-  baf::BSplineBasisFunction basis_function_;
+  baf::NonZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N61, FirstDerevitveIsEqualMinus1At4_0) { // NOLINT
@@ -408,7 +408,7 @@ class BasisFunctionEx22N72 : public Test {
 
  protected:
   const MockKnotVector00012344555 knot_vector_00012344555;
-  baf::BSplineBasisFunction basis_function_;
+  baf::NonZeroDegreeBSplineBasisFunction basis_function_;
 };
 
 TEST_F(BasisFunctionEx22N72, FirstDerevitveIsEqual0At4_0) { // NOLINT

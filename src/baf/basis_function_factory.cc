@@ -16,7 +16,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <string>
 
-#include "src/baf/b_spline_basis_function.h"
+#include "src/baf/non_zero_degree_b_spline_basis_function.h"
 #include "src/baf/zero_degree_b_spline_basis_function.h"
 
 namespace splinelib::src::baf {
@@ -31,6 +31,6 @@ BasisFunction *BasisFunctionFactory::CreateDynamic(const KnotVector &knot_vector
   if (degree == Degree{0}) {
     return new ZeroDegreeBSplineBasisFunction(knot_vector, start_of_support);
   }
-  return new BSplineBasisFunction(knot_vector, degree, start_of_support);
+  return new NonZeroDegreeBSplineBasisFunction(knot_vector, degree, start_of_support);
 }
 }  // namespace splinelib::src::baf

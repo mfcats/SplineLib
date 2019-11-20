@@ -20,9 +20,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/baf/basis_function.h"
 
 namespace splinelib::src::baf {
-class BSplineBasisFunction : public BasisFunction {
+class NonZeroDegreeBSplineBasisFunction : public BasisFunction {
  public:
-  BSplineBasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support);
+  NonZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, const Degree &degree,
+                                    const KnotSpan &start_of_support);
 
  protected:
   double EvaluateOnSupport(const ParametricCoordinate &param_coord) const override;

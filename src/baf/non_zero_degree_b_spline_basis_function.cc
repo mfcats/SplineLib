@@ -12,15 +12,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "src/baf/b_spline_basis_function.h"
+#include "src/baf/non_zero_degree_b_spline_basis_function.h"
 
 #include "src/baf/basis_function_factory.h"
 #include "src/util/numeric_settings.h"
 
 namespace splinelib::src::baf {
-BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
-                                                const Degree &degree,
-                                                const KnotSpan &start_of_support)
+NonZeroDegreeBSplineBasisFunction::NonZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
+                                                                     const Degree &degree,
+                                                                     const KnotSpan &start_of_support)
     : BasisFunction(knot_vector, degree, start_of_support) {
   auto start_index = static_cast<size_t>(start_of_support.Get());
   auto degree_index = static_cast<size_t>(degree.Get());
@@ -31,36 +31,36 @@ BSplineBasisFunction::BSplineBasisFunction(const KnotVector &knot_vector,
   SetLowerDegreeBasisFunctions(knot_vector, degree, start_of_support);
 }
 
-double BSplineBasisFunction::EvaluateOnSupport(const ParametricCoordinate &param_coord) const {
+double NonZeroDegreeBSplineBasisFunction::EvaluateOnSupport(const ParametricCoordinate &param_coord) const {
   return ComputeLeftQuotient(param_coord) * left_lower_degree_->Evaluate(param_coord)
       + ComputeRightQuotient(param_coord) * right_lower_degree_->Evaluate(param_coord);
 }
 
-double BSplineBasisFunction::EvaluateDerivativeOnSupport(const ParametricCoordinate &param_coord,
-                                                              const Derivative &derivative) const {
+double NonZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(const ParametricCoordinate &param_coord,
+                                                                      const Derivative &derivative) const {
   return GetDegree().Get()
       * (left_denom_inv_ * left_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1})
           - right_denom_inv_ * right_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1}));
 }
 
-void BSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
-                                                             const Degree &degree,
-                                                             const KnotSpan &start_of_support) {
+void NonZeroDegreeBSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
+                                                                     const Degree &degree,
+                                                                     const KnotSpan &start_of_support) {
   left_lower_degree_.reset(BasisFunctionFactory::CreateDynamic(knot_vector, start_of_support, degree - Degree{1}));
   right_lower_degree_.reset(BasisFunctionFactory::CreateDynamic(knot_vector,
                                                                 start_of_support + KnotSpan{1},
                                                                 degree - Degree{1}));
 }
 
-double BSplineBasisFunction::ComputeLeftQuotient(const ParametricCoordinate &param_coord) const {
+double NonZeroDegreeBSplineBasisFunction::ComputeLeftQuotient(const ParametricCoordinate &param_coord) const {
   return (param_coord - GetStartKnot()).Get() * left_denom_inv_;
 }
 
-double BSplineBasisFunction::ComputeRightQuotient(const ParametricCoordinate &param_coord) const {
+double NonZeroDegreeBSplineBasisFunction::ComputeRightQuotient(const ParametricCoordinate &param_coord) const {
   return (GetEndKnot() - param_coord).Get() * right_denom_inv_;
 }
 
-double BSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {
+double NonZeroDegreeBSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {
   return std::abs(denominator) < util::numeric_settings::GetEpsilon<double>() ? 0.0 : 1.0 / denominator;
 }
 }  // namespace splinelib::src::baf
