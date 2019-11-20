@@ -12,20 +12,20 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_BAF_BASIS_FUNCTION_H_
-#define SRC_BAF_BASIS_FUNCTION_H_
+#ifndef SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_
+#define SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_
 
 #include "src/baf/knot_vector.h"
 #include "src/util/named_type.h"
 
 namespace splinelib::src::baf {
-class BasisFunction {
+class BSplineBasisBasisFunction {
  public:
-  BasisFunction(BasisFunction const &other) = delete;
-  BasisFunction(BasisFunction &&other) = delete;
-  virtual BasisFunction & operator=(BasisFunction const &rhs) = delete;
-  virtual BasisFunction & operator=(BasisFunction &&rhs) = delete;
-  virtual ~BasisFunction() = default;
+  BSplineBasisBasisFunction(BSplineBasisBasisFunction const &other) = delete;
+  BSplineBasisBasisFunction(BSplineBasisBasisFunction &&other) = delete;
+  virtual BSplineBasisBasisFunction & operator=(BSplineBasisBasisFunction const &rhs) = delete;
+  virtual BSplineBasisBasisFunction & operator=(BSplineBasisBasisFunction &&rhs) = delete;
+  virtual ~BSplineBasisBasisFunction() = default;
 
   // The evaluation of the i-th basis function of degree p > 0 N_{i,p} is a linear combination of the basis functions
   // N_{i,p-1} and N_{i+1,p-1} (see NURBS book equation 2.5). Therefore, for each basis function of degree > 0 a pointer
@@ -35,7 +35,7 @@ class BasisFunction {
   double EvaluateDerivative(const ParametricCoordinate &param_coord, const Derivative &derivative) const;
 
  protected:
-  BasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support);
+  BSplineBasisBasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support);
 
   virtual double EvaluateOnSupport(const ParametricCoordinate &param_coord) const = 0;
   virtual double EvaluateDerivativeOnSupport(const ParametricCoordinate &param_coord,
@@ -55,4 +55,4 @@ class BasisFunction {
 };
 }  // namespace splinelib::src::baf
 
-#endif  // SRC_BAF_BASIS_FUNCTION_H_
+#endif  // SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_

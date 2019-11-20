@@ -12,20 +12,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#include "src/baf/basis_function.h"
+#include "src/baf/b_spline_basis_function.h"
 
 namespace splinelib::src::baf {
-double BasisFunction::Evaluate(const ParametricCoordinate &ParametricCoordinate) const {
+double BSplineBasisBasisFunction::Evaluate(const ParametricCoordinate &ParametricCoordinate) const {
   return IsCoordinateInSupport(ParametricCoordinate) ? this->EvaluateOnSupport(ParametricCoordinate) : 0.0;
 }
 
-double BasisFunction::EvaluateDerivative(const ParametricCoordinate &param_coord, const Derivative &derivative) const {
+double BSplineBasisBasisFunction::EvaluateDerivative(const ParametricCoordinate &param_coord,
+                                                     const Derivative &derivative) const {
   return derivative.Get() == 0 ? Evaluate(param_coord) :
          (IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0);
 }
 
-BasisFunction::BasisFunction(const KnotVector &knot_vector, const Degree &degree, const KnotSpan &start_of_support)
-    : degree_(degree) {
+BSplineBasisBasisFunction::BSplineBasisBasisFunction(const KnotVector &knot_vector, const Degree &degree,
+                                                     const KnotSpan &start_of_support) : degree_(degree) {
   auto start_index = static_cast<size_t>(start_of_support.Get());
   auto degree_index = static_cast<size_t>(degree.Get());
   start_knot_ = knot_vector[start_index];
@@ -33,19 +34,19 @@ BasisFunction::BasisFunction(const KnotVector &knot_vector, const Degree &degree
   end_knot_is_last_knot_ = knot_vector.IsLastKnot(end_knot_);
 }
 
-Degree BasisFunction::GetDegree() const {
+Degree BSplineBasisBasisFunction::GetDegree() const {
   return degree_;
 }
 
-ParametricCoordinate BasisFunction::GetStartKnot() const {
+ParametricCoordinate BSplineBasisBasisFunction::GetStartKnot() const {
   return start_knot_;
 }
 
-ParametricCoordinate BasisFunction::GetEndKnot() const {
+ParametricCoordinate BSplineBasisBasisFunction::GetEndKnot() const {
   return end_knot_;
 }
 
-bool BasisFunction::IsCoordinateInSupport(const ParametricCoordinate &param_coord) const {
+bool BSplineBasisBasisFunction::IsCoordinateInSupport(const ParametricCoordinate &param_coord) const {
   return (start_knot_ <= param_coord && param_coord < end_knot_)
       || (end_knot_is_last_knot_ && param_coord == end_knot_);
 }

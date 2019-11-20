@@ -21,7 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <sstream>
 #include <vector>
 
-#include "src/baf/basis_function.h"
+#include "src/baf/b_spline_basis_function.h"
 #include "src/baf/basis_function_factory.h"
 #include "src/baf/knot_vector.h"
 #include "src/util/numeric_settings.h"
@@ -99,7 +99,7 @@ class ParameterSpace {
                       });
   }
 
-  std::vector<std::shared_ptr<baf::BasisFunction>>::const_iterator
+  std::vector<std::shared_ptr<baf::BSplineBasisBasisFunction>>::const_iterator
   GetFirstNonZeroKnot(int direction, ParametricCoordinate param_coord) const {
     return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord).Get()
         - degree_[direction].Get();
@@ -253,7 +253,7 @@ class ParameterSpace {
 
   baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector_;
   std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree_{};
-  std::array<std::vector<std::shared_ptr<baf::BasisFunction>>, PARAMETRIC_DIMENSIONALITY> basis_functions_;
+  std::array<std::vector<std::shared_ptr<baf::BSplineBasisBasisFunction>>, PARAMETRIC_DIMENSIONALITY> basis_functions_;
 };
 }  // namespace splinelib::src::spl
 

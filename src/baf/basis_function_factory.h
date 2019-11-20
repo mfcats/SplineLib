@@ -15,14 +15,14 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_BAF_BASIS_FUNCTION_FACTORY_H_
 #define SRC_BAF_BASIS_FUNCTION_FACTORY_H_
 
-#include "src/baf/basis_function.h"
+#include "src/baf/b_spline_basis_function.h"
 
 namespace splinelib::src::baf {
 class BasisFunctionFactory {
  public:
-  static BasisFunction *CreateDynamic(const KnotVector &knot_vector,
-                                      const KnotSpan &start_of_support,
-                                      const Degree &degree);
+  static BSplineBasisBasisFunction *CreateDynamic(const KnotVector &knot_vector,
+                                                  const KnotSpan &start_of_support,
+                                                  const Degree &degree);
 };
 }  // namespace splinelib::src::baf
 

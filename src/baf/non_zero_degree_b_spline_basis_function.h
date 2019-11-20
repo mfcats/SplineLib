@@ -12,15 +12,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_
-#define SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_
+#ifndef SRC_BAF_NON_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
+#define SRC_BAF_NON_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
 
 #include <memory>
 
-#include "src/baf/basis_function.h"
+#include "src/baf/b_spline_basis_function.h"
 
 namespace splinelib::src::baf {
-class NonZeroDegreeBSplineBasisFunction : public BasisFunction {
+class NonZeroDegreeBSplineBasisFunction : public BSplineBasisBasisFunction {
  public:
   NonZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, const Degree &degree,
                                     const KnotSpan &start_of_support);
@@ -42,9 +42,9 @@ class NonZeroDegreeBSplineBasisFunction : public BasisFunction {
 
   double left_denom_inv_;
   double right_denom_inv_;
-  std::unique_ptr<BasisFunction> left_lower_degree_;
-  std::unique_ptr<BasisFunction> right_lower_degree_;
+  std::unique_ptr<BSplineBasisBasisFunction> left_lower_degree_;
+  std::unique_ptr<BSplineBasisBasisFunction> right_lower_degree_;
 };
 }  // namespace splinelib::src::baf
 
-#endif  // SRC_BAF_B_SPLINE_BASIS_FUNCTION_H_
+#endif  // SRC_BAF_NON_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
