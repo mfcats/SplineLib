@@ -89,7 +89,8 @@ class A2DAnyNURBSForAnyCasts : public Test {
 };
 
 TEST_F(A2DAnyNURBSForAnyCasts, ReturnsMinus1AsThirdControlPointAfterCastTo2DNURBS) {  // NOLINT
-  ASSERT_THAT(util::any_casts::GetSpline<2>(nurbs_2d_any_)->GetControlPoint(2).GetValueForDimension(Dimension{0}), DoubleEq(-1.0));
+  ASSERT_THAT(util::any_casts::GetSpline<2>(nurbs_2d_any_)->GetControlPoint(2).GetValueForDimension(Dimension{0}),
+      DoubleEq(-1.0));
 }
 
 TEST_F(A2DAnyNURBSForAnyCasts, ReturnsSplineDimension2) {  // NOLINT
