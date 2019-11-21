@@ -45,7 +45,7 @@ class KnotVector {
   //  and b-spline-basis-function-test.
   KnotVector() = default;
   explicit KnotVector(std::vector<ParametricCoordinate> knots);
-  KnotVector(std::initializer_list<ParametricCoordinate> const &knots) noexcept;
+  KnotVector(std::initializer_list<ParametricCoordinate> const & knots);
   KnotVector(ConstKnotIterator begin, ConstKnotIterator end);
   KnotVector(KnotVector const &other) = default;
   KnotVector(KnotVector &&other) noexcept;
@@ -87,6 +87,7 @@ class KnotVector {
   bool AreEqual(KnotVector const &rhs, Tolerance const &tolerance) const;
 
  private:
+  // TODO(Corinna, Christoph): think of it is the best way to handle empty knot vectors here or in single methods?
   void ThrowIfKnotVectorIsEmptyOrNotNonDecreasing() const;
   std::vector<ParametricCoordinate> knots_;
 };

@@ -35,7 +35,8 @@ class AKnotVectorOfDegree2 : public Test {
 };
 
 TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithDecreasingSequenceInInitializerList) {  // NOLINT
-  ASSERT_DEATH(baf::KnotVector invalid_knot_vector({ParametricCoordinate{1.0}, ParametricCoordinate{0.0}}), ".*");
+  ASSERT_THROW(baf::KnotVector invalid_knot_vector({ParametricCoordinate{1.0}, ParametricCoordinate{0.0}}),
+               std::invalid_argument);
 }
 
 TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithDecreasingSequenceInParametricCoordinateVector) {  // NOLINT
@@ -44,7 +45,8 @@ TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithDecreasingSequenceInParame
 }
 
 TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithEmptyInitializerList) {  // NOLINT
-  ASSERT_DEATH(baf::KnotVector invalid_knot_vector(std::initializer_list<ParametricCoordinate>{}), ".*");
+  ASSERT_THROW(baf::KnotVector invalid_knot_vector(std::initializer_list<ParametricCoordinate>{}),
+               std::invalid_argument);
 }
 
 TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithEmptyParametricCoordinateVector) {  // NOLINT

@@ -26,7 +26,7 @@ KnotVector::KnotVector(std::vector<ParametricCoordinate> knots) : knots_(std::mo
   ThrowIfKnotVectorIsEmptyOrNotNonDecreasing();
 }
 
-KnotVector::KnotVector(std::initializer_list<ParametricCoordinate> const &knots) noexcept : knots_(knots) {
+KnotVector::KnotVector(std::initializer_list<ParametricCoordinate> const &knots) : knots_(knots) {
   ThrowIfKnotVectorIsEmptyOrNotNonDecreasing();
 }
 
