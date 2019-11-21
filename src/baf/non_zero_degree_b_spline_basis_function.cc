@@ -21,7 +21,7 @@ namespace splinelib::src::baf {
 NonZeroDegreeBSplineBasisFunction::NonZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
                                                                      const Degree &degree,
                                                                      const KnotSpan &start_of_support)
-    : BSplineBasisBasisFunction(knot_vector, degree, start_of_support) {
+    : BSplineBasisFunction(knot_vector, degree, start_of_support) {
   auto start_index = static_cast<size_t>(start_of_support.Get());
   auto degree_index = static_cast<size_t>(degree.Get());
   auto left_denom = (knot_vector[start_index + degree_index] - GetStartKnot()).Get();

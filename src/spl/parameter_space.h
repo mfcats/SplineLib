@@ -99,7 +99,7 @@ class ParameterSpace {
                       });
   }
 
-  std::vector<std::shared_ptr<baf::BSplineBasisBasisFunction>>::const_iterator
+  std::vector<std::shared_ptr<baf::BSplineBasisFunction>>::const_iterator
   GetFirstNonZeroKnot(int direction, ParametricCoordinate param_coord) const {
     return basis_functions_[direction].begin() + knot_vector_[direction]->GetKnotSpan(param_coord).Get()
         - degree_[direction].Get();
@@ -253,7 +253,7 @@ class ParameterSpace {
 
   baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector_;
   std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree_{};
-  std::array<std::vector<std::shared_ptr<baf::BSplineBasisBasisFunction>>, PARAMETRIC_DIMENSIONALITY> basis_functions_;
+  std::array<std::vector<std::shared_ptr<baf::BSplineBasisFunction>>, PARAMETRIC_DIMENSIONALITY> basis_functions_;
 };
 }  // namespace splinelib::src::spl
 

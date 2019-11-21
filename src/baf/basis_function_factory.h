@@ -20,9 +20,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::baf {
 class BasisFunctionFactory {
  public:
-  static BSplineBasisBasisFunction *CreateDynamic(const KnotVector &knot_vector,
-                                                  const KnotSpan &start_of_support,
-                                                  const Degree &degree);
+  static BSplineBasisFunction *CreateDynamic(const KnotVector &knot_vector,
+                                             const KnotSpan &start_of_support,
+                                             const Degree &degree);
 };
 }  // namespace splinelib::src::baf
 

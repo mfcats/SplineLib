@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/baf/b_spline_basis_function.h"
 
 namespace splinelib::src::baf {
-class NonZeroDegreeBSplineBasisFunction : public BSplineBasisBasisFunction {
+class NonZeroDegreeBSplineBasisFunction : public BSplineBasisFunction {
  public:
   NonZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, const Degree &degree,
                                     const KnotSpan &start_of_support);
@@ -42,8 +42,8 @@ class NonZeroDegreeBSplineBasisFunction : public BSplineBasisBasisFunction {
 
   double left_denom_inv_;
   double right_denom_inv_;
-  std::unique_ptr<BSplineBasisBasisFunction> left_lower_degree_;
-  std::unique_ptr<BSplineBasisBasisFunction> right_lower_degree_;
+  std::unique_ptr<BSplineBasisFunction> left_lower_degree_;
+  std::unique_ptr<BSplineBasisFunction> right_lower_degree_;
 };
 }  // namespace splinelib::src::baf
 

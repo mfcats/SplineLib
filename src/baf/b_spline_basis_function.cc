@@ -14,40 +14,55 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/baf/b_spline_basis_function.h"
 
+#include <string>
+#include <utility>
+
+#include "src/baf/non_zero_degree_b_spline_basis_function.h"
+#include "src/baf/zero_degree_b_spline_basis_function.h"
+
 namespace splinelib::src::baf {
-double BSplineBasisBasisFunction::Evaluate(const ParametricCoordinate &ParametricCoordinate) const {
-  return IsCoordinateInSupport(ParametricCoordinate) ? this->EvaluateOnSupport(ParametricCoordinate) : 0.0;
+BSplineBasisFunction * BSplineBasisFunction::CreateDynamic(KnotVector const &knot_vector,
+                                                           KnotSpan const &start_of_support, Degree const &degree) {
+  if (degree < Degree{0}) {
+    throw std::runtime_error("splinelib::src::baf::BSplineBasisFunction::CreateDynamic: Basis function degree must be "
+                             "positive. Given degree is " + std::to_string(degree.Get()));
+  }
+  if (degree == Degree{0}) {
+    return new ZeroDegreeBSplineBasisFunction(knot_vector, start_of_support);
+  }
+  return new NonZeroDegreeBSplineBasisFunction(knot_vector, degree, start_of_support);
 }
 
-double BSplineBasisBasisFunction::EvaluateDerivative(const ParametricCoordinate &param_coord,
-                                                     const Derivative &derivative) const {
-  return derivative.Get() == 0 ? Evaluate(param_coord) :
-         (IsCoordinateInSupport(param_coord) ? this->EvaluateDerivativeOnSupport(param_coord, derivative) : 0.0);
+BSplineBasisFunction::BSplineBasisFunction(BSplineBasisFunction &&other) noexcept
+    : degree_(std::move(other.degree_)), start_knot_(std::move(other.start_knot_)),
+      end_knot_(std::move(other.end_knot_)), end_knot_is_last_knot_(other.end_knot_is_last_knot_) {}
+
+BSplineBasisFunction & BSplineBasisFunction::operator=(BSplineBasisFunction &&rhs) noexcept {
+  degree_ = std::move(rhs.degree_);
+  start_knot_ = std::move(rhs.start_knot_);
+  end_knot_ = std::move(rhs.end_knot_);
+  end_knot_is_last_knot_ = rhs.end_knot_is_last_knot_;
+  return (*this);
 }
 
-BSplineBasisBasisFunction::BSplineBasisBasisFunction(const KnotVector &knot_vector, const Degree &degree,
-                                                     const KnotSpan &start_of_support) : degree_(degree) {
-  auto start_index = static_cast<size_t>(start_of_support.Get());
-  auto degree_index = static_cast<size_t>(degree.Get());
+double BSplineBasisFunction::Evaluate(ParametricCoordinate const &ParametricCoordinate) const {
+  if (IsCoordinateInSupport(ParametricCoordinate)) return this->EvaluateOnSupport(ParametricCoordinate);
+  return 0.0;
+}
+
+double BSplineBasisFunction::EvaluateDerivative(ParametricCoordinate const &param_coord,
+                                                Derivative const &derivative) const {
+  if (derivative.Get() == 0) return Evaluate(param_coord);
+  if (IsCoordinateInSupport(param_coord)) return this->EvaluateDerivativeOnSupport(param_coord, derivative);
+  return 0.0;
+}
+
+BSplineBasisFunction::BSplineBasisFunction(KnotVector const &knot_vector, Degree const &degree,
+                                           KnotSpan const &start_of_support) : degree_(degree) {
+  int const start_index = start_of_support.Get();
+  int const degree_index = degree.Get();
   start_knot_ = knot_vector[start_index];
   end_knot_ = knot_vector[start_index + degree_index + 1];
   end_knot_is_last_knot_ = knot_vector.IsLastKnot(end_knot_);
-}
-
-Degree BSplineBasisBasisFunction::GetDegree() const {
-  return degree_;
-}
-
-ParametricCoordinate BSplineBasisBasisFunction::GetStartKnot() const {
-  return start_knot_;
-}
-
-ParametricCoordinate BSplineBasisBasisFunction::GetEndKnot() const {
-  return end_knot_;
-}
-
-bool BSplineBasisBasisFunction::IsCoordinateInSupport(const ParametricCoordinate &param_coord) const {
-  return (start_knot_ <= param_coord && param_coord < end_knot_)
-      || (end_knot_is_last_knot_ && param_coord == end_knot_);
 }
 }  // namespace splinelib::src::baf
