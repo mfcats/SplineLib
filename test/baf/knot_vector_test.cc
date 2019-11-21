@@ -77,13 +77,13 @@ TEST_F(AKnotVectorOfDegree2, CanBeCopied) {  // NOLINT
 }
 
 TEST_F(AKnotVectorOfDegree2, CanBeAssigned) {  // NOLINT
-  baf::KnotVector knot_vector_to_assign({ParametricCoordinate{0.0}});
+  baf::KnotVector knot_vector_to_assign({ParametricCoordinate{0.0}, ParametricCoordinate{1.0}});
   knot_vector_to_assign = knot_vector_;
   ASSERT_THAT(knot_vector_to_assign, Eq(knot_vector_));
 }
 
 TEST_F(AKnotVectorOfDegree2, CanBeMoveAssigned) {  // NOLINT
-  baf::KnotVector knot_vector_to_assign({ParametricCoordinate{0.0}});
+  baf::KnotVector knot_vector_to_assign({ParametricCoordinate{0.0}, ParametricCoordinate{1.0}});
   knot_vector_to_assign = std::move(knot_vector_);
   ASSERT_THAT(knot_vector_to_assign[5], Eq(ParametricCoordinate{0.75}));
 }
@@ -211,8 +211,8 @@ TEST_F(AKnotVectorOfDegree2, ReturnsFalseForRemovalOfNonExistingKnot0_3) {  // N
   ASSERT_THAT(knot_vector_copy, Eq(knot_vector_));
 }
 
-TEST_F(AKnotVectorOfDegree2, ReturnsFalseForRemovalOfKnotInKnotVectorWithOnlyOneKnot) {  // NOLINT
-  baf::KnotVector knot_vector_with_one_knot({ParametricCoordinate{0.0}});
+TEST_F(AKnotVectorOfDegree2, ReturnsFalseForRemovalOfKnotInKnotVectorWithOnlyTwoKnots) {  // NOLINT
+  baf::KnotVector knot_vector_with_one_knot({ParametricCoordinate{0.0}, ParametricCoordinate{1.0}});
   baf::KnotVector knot_vector_with_one_knot_copy(knot_vector_with_one_knot);
   ASSERT_THAT(knot_vector_with_one_knot_copy.RemoveKnot(ParametricCoordinate{0.0}), Eq(false));
   ASSERT_THAT(knot_vector_with_one_knot_copy, Eq(knot_vector_with_one_knot));

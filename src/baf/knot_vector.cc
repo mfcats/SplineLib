@@ -74,7 +74,7 @@ void KnotVector::InsertKnot(ParametricCoordinate const &parametric_coordinate) {
 
 bool KnotVector::RemoveKnot(ParametricCoordinate const &parametric_coordinate) {
   auto const knot_span = GetKnotSpan(parametric_coordinate).Get();
-  if (knots_.size() <= 1) return false;
+  if (knots_.size() <= 2) return false;
   if (!IsLastKnot(parametric_coordinate)) {
     if (parametric_coordinate != knots_[knot_span]) return false;
     knots_.erase(knots_.begin() + knot_span);

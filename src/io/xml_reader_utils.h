@@ -36,9 +36,6 @@ class XMLReaderUtils {
   static baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> GetKnotVectors(pugi::xml_node *spline) {
     baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
-      knot_vector[i] = std::make_shared<baf::KnotVector>(baf::KnotVector({ParametricCoordinate(0.5)}));
-    }
-    for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; i++) {
       pugi::xml_node child = spline->child("kntVecs").first_child();
       for (int j = 0; j < i; j++) {
         child = child.next_sibling();
