@@ -42,8 +42,7 @@ class ControlPoint {
   friend ControlPoint operator-(ControlPoint const &lhs, ControlPoint const &rhs);
   friend ControlPoint operator*(ControlPoint const &control_point, double scalar);
   friend ControlPoint operator*(double scalar, ControlPoint const &control_point);
-
-
+  
   ControlPoint Transform(std::array<std::array<double, 4>, 4> const &TransformationMatrix,
                          std::array<double, 3> const &scaling) const;
 
