@@ -16,47 +16,48 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/util/numeric_settings.h"
 
 namespace splinelib::src::baf {
-NonZeroDegreeBSplineBasisFunction::NonZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
-                                                                     const Degree &degree,
-                                                                     const KnotSpan &start_of_support)
+NonZeroDegreeBSplineBasisFunction::NonZeroDegreeBSplineBasisFunction(KnotVector const &knot_vector,
+                                                                     KnotSpan const &start_of_support,
+                                                                     Degree const &degree)
     : BSplineBasisFunction(knot_vector, start_of_support, degree) {
-  auto start_index = static_cast<size_t>(start_of_support.Get());
-  auto degree_index = static_cast<size_t>(degree.Get());
-  auto left_denom = (knot_vector[start_index + degree_index] - GetStartKnot()).Get();
-  left_denom_inv_ = InverseWithPossiblyZeroDenominator(left_denom);
-  auto right_denom = (GetEndKnot() - knot_vector[start_index + 1]).Get();
-  right_denom_inv_ = InverseWithPossiblyZeroDenominator(right_denom);
-  SetLowerDegreeBasisFunctions(knot_vector, degree, start_of_support);
+  auto const start_index = start_of_support.Get();
+  auto const degree_index = degree.Get();
+  auto const left_denominator = (knot_vector[start_index + degree_index] - GetStartKnot()).Get();
+  left_denominator_inverse_ = InverseWithPossiblyZeroDenominator(left_denominator);
+  auto const right_denominator = (BSplineBasisFunction::GetEndKnot() - knot_vector[start_index + 1]).Get();
+  right_denominator_inverse_ = InverseWithPossiblyZeroDenominator(right_denominator);
+  SetLowerDegreeBasisFunctions(knot_vector, start_of_support, degree);
 }
 
-double NonZeroDegreeBSplineBasisFunction::EvaluateOnSupport(const ParametricCoordinate &param_coord) const {
-  return ComputeLeftQuotient(param_coord) * left_lower_degree_->Evaluate(param_coord)
-      + ComputeRightQuotient(param_coord) * right_lower_degree_->Evaluate(param_coord);
+double NonZeroDegreeBSplineBasisFunction::EvaluateOnSupport(ParametricCoordinate const &parametric_coordinate) const {
+  return (ComputeLeftQuotient(parametric_coordinate) *
+          left_lower_degree_basis_function_->Evaluate(parametric_coordinate) +
+          ComputeRightQuotient(parametric_coordinate) *
+          right_lower_degree_basis_function_->Evaluate(parametric_coordinate));
 }
 
-double NonZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(const ParametricCoordinate &param_coord,
-                                                                      const Derivative &derivative) const {
-  return GetDegree().Get()
-      * (left_denom_inv_ * left_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1})
-          - right_denom_inv_ * right_lower_degree_->EvaluateDerivative(param_coord, derivative - Derivative{1}));
+double NonZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(ParametricCoordinate const &parametric_coordinate,
+                                                                      Derivative const &derivative) const {
+  Derivative const derivative_reduced_by_one = derivative - Derivative{1};
+  return (BSplineBasisFunction::GetDegree().Get() *
+          (left_denominator_inverse_ *
+           left_lower_degree_basis_function_->EvaluateDerivative(parametric_coordinate, derivative_reduced_by_one) -
+           right_denominator_inverse_ *
+           right_lower_degree_basis_function_->EvaluateDerivative(parametric_coordinate, derivative_reduced_by_one)));
 }
 
-void NonZeroDegreeBSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
-                                                                     const Degree &degree,
-                                                                     const KnotSpan &start_of_support) {
-  left_lower_degree_.reset(CreateDynamic(knot_vector, start_of_support, degree - Degree{1}));
-  right_lower_degree_.reset(CreateDynamic(knot_vector, start_of_support + KnotSpan{1}, degree - Degree{1}));
-}
-
-double NonZeroDegreeBSplineBasisFunction::ComputeLeftQuotient(const ParametricCoordinate &param_coord) const {
-  return (param_coord - GetStartKnot()).Get() * left_denom_inv_;
-}
-
-double NonZeroDegreeBSplineBasisFunction::ComputeRightQuotient(const ParametricCoordinate &param_coord) const {
-  return (GetEndKnot() - param_coord).Get() * right_denom_inv_;
+void NonZeroDegreeBSplineBasisFunction::SetLowerDegreeBasisFunctions(KnotVector const &knot_vector,
+                                                                     KnotSpan const &start_of_support,
+                                                                     Degree const &degree) {
+  Degree const degree_reduced_by_one = degree - Degree{1};
+  left_lower_degree_basis_function_.reset(
+      BSplineBasisFunction::CreateDynamic(knot_vector, start_of_support, degree_reduced_by_one));
+  right_lower_degree_basis_function_.reset(
+      BSplineBasisFunction::CreateDynamic(knot_vector, start_of_support + KnotSpan{1}, degree_reduced_by_one));
 }
 
 double NonZeroDegreeBSplineBasisFunction::InverseWithPossiblyZeroDenominator(double denominator) const {
-  return std::abs(denominator) < util::numeric_settings::GetEpsilon<double>() ? 0.0 : 1.0 / denominator;
+  if (std::abs(denominator) < util::numeric_settings::GetEpsilon<double>()) return 0.0;
+  return (1.0 / denominator);
 }
 }  // namespace splinelib::src::baf

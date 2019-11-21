@@ -14,7 +14,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/baf/b_spline_basis_function.h"
 
 #include <string>
-#include <utility>
 
 #include "src/baf/non_zero_degree_b_spline_basis_function.h"
 #include "src/baf/zero_degree_b_spline_basis_function.h"
@@ -29,19 +28,7 @@ BSplineBasisFunction * BSplineBasisFunction::CreateDynamic(KnotVector const &kno
   if (degree == Degree{0}) {
     return new ZeroDegreeBSplineBasisFunction(knot_vector, start_of_support);
   }
-  return new NonZeroDegreeBSplineBasisFunction(knot_vector, degree, start_of_support);
-}
-
-BSplineBasisFunction::BSplineBasisFunction(BSplineBasisFunction &&other) noexcept
-    : degree_(std::move(other.degree_)), start_knot_(std::move(other.start_knot_)),
-      end_knot_(std::move(other.end_knot_)), end_knot_is_last_knot_(other.end_knot_is_last_knot_) {}
-
-BSplineBasisFunction & BSplineBasisFunction::operator=(BSplineBasisFunction &&rhs) noexcept {
-  degree_ = std::move(rhs.degree_);
-  start_knot_ = std::move(rhs.start_knot_);
-  end_knot_ = std::move(rhs.end_knot_);
-  end_knot_is_last_knot_ = rhs.end_knot_is_last_knot_;
-  return (*this);
+  return new NonZeroDegreeBSplineBasisFunction(knot_vector, start_of_support, degree);
 }
 
 double BSplineBasisFunction::Evaluate(ParametricCoordinate const &parametric_coordinate) const {

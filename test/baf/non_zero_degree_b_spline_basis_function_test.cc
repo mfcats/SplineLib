@@ -40,7 +40,7 @@ class MockKnotVector000111 : public baf::KnotVector {
 // Test basis function N_{0,1} from NURBS book example 2.1
 class BasisFunctionEx21N01 : public Test {
  public:
-  BasisFunctionEx21N01() : basis_function_(knot_vector_000111, Degree{1}, KnotSpan{0}) {}
+  BasisFunctionEx21N01() : basis_function_(knot_vector_000111, KnotSpan{0}, Degree{1}) {}
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
@@ -70,7 +70,7 @@ TEST_F(BasisFunctionEx21N01, IsZeroAtMinus1_5) { // NOLINT
 // Test basis function N_{1,1} from NURBS book example 2.1
 class BasisFunctionEx21N11 : public Test {
  public:
-  BasisFunctionEx21N11() : basis_function_(knot_vector_000111, Degree{1}, KnotSpan{1}) {}
+  BasisFunctionEx21N11() : basis_function_(knot_vector_000111, KnotSpan{1}, Degree{1}) {}
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
@@ -100,7 +100,7 @@ TEST_F(BasisFunctionEx21N11, IsZeroAtMinus1_5) { // NOLINT
 // Test basis function N_{2,1} from NURBS book example 2.1
 class BasisFunctionEx21N21 : public Test {
  public:
-  BasisFunctionEx21N21() : basis_function_(knot_vector_000111, Degree{1}, KnotSpan{2}) {}
+  BasisFunctionEx21N21() : basis_function_(knot_vector_000111, KnotSpan{2}, Degree{1}) {}
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
@@ -130,7 +130,7 @@ TEST_F(BasisFunctionEx21N21, IsZeroAtMinus1_5) { // NOLINT
 // Test basis function N_{3,1} from NURBS book example 2.1
 class BasisFunctionEx21N31 : public Test {
  public:
-  BasisFunctionEx21N31() : basis_function_(knot_vector_000111, Degree{1}, KnotSpan{3}) {}
+  BasisFunctionEx21N31() : basis_function_(knot_vector_000111, KnotSpan{3}, Degree{1}) {}
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
@@ -160,7 +160,7 @@ TEST_F(BasisFunctionEx21N31, IsZeroAtMinus1_5) { // NOLINT
 // Test basis function N_{0,2} from NURBS book example 2.1
 class BasisFunctionEx21N02 : public Test {
  public:
-  BasisFunctionEx21N02() : basis_function_(knot_vector_000111, Degree{2}, KnotSpan{0}) {}
+  BasisFunctionEx21N02() : basis_function_(knot_vector_000111, KnotSpan{0}, Degree{2}) {}
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
@@ -190,7 +190,7 @@ TEST_F(BasisFunctionEx21N02, IsZeroAtMinus1_5) { // NOLINT
 // Test basis function N_{1,2} from NURBS book example 2.1
 class BasisFunctionEx21N12 : public Test {
  public:
-  BasisFunctionEx21N12() : basis_function_(knot_vector_000111, Degree{2}, KnotSpan{1}) {}
+  BasisFunctionEx21N12() : basis_function_(knot_vector_000111, KnotSpan{1}, Degree{2}) {}
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
@@ -220,7 +220,7 @@ TEST_F(BasisFunctionEx21N12, IsZeroAtMinus1_5) { // NOLINT
 // Test basis function N_{2,2} from NURBS book example 2.1
 class BasisFunctionEx21N22 : public Test {
  public:
-  BasisFunctionEx21N22() : basis_function_(knot_vector_000111, Degree{2}, KnotSpan{2}) {}
+  BasisFunctionEx21N22() : basis_function_(knot_vector_000111, KnotSpan{2}, Degree{2}) {}
 
  protected:
   const MockKnotVector000111 knot_vector_000111;
@@ -267,7 +267,7 @@ class MockKnotVector00012344555 : public baf::KnotVector {
 // Test basis function N_{0,1} from NURBS book example 2.2
 class BasisFunctionEx22N01 : public Test {
  public:
-  BasisFunctionEx22N01() : basis_function_(knot_vector_00012344555, Degree{1}, KnotSpan{0}) {}
+  BasisFunctionEx22N01() : basis_function_(knot_vector_00012344555, KnotSpan{0}, Degree{1}) {}
 
  protected:
   const MockKnotVector00012344555 knot_vector_00012344555;
@@ -340,7 +340,7 @@ TEST_F(BasisFunctionEx22N01, FirstDerevitveIsEqualZeroAtMinus0_5) { // NOLINT
 // Test basis function derivative N_{3,1} from NURBS book example 2.2
 class BasisFunctionEx22N13 : public Test {
  public:
-  BasisFunctionEx22N13() : basis_function_(knot_vector_00012344555, Degree{1}, KnotSpan{3}) {}
+  BasisFunctionEx22N13() : basis_function_(knot_vector_00012344555, KnotSpan{3}, Degree{1}) {}
 
  protected:
   const MockKnotVector00012344555 knot_vector_00012344555;
@@ -382,7 +382,7 @@ TEST_F(BasisFunctionEx22N13, FourthDerevitveIsEqual0At1_5) { // NOLINT
 // Test basis function derivative N_{6,1} from NURBS book example 2.2
 class BasisFunctionEx22N61 : public Test {
  public:
-  BasisFunctionEx22N61() : basis_function_(knot_vector_00012344555, Degree{1}, KnotSpan{6}) {}
+  BasisFunctionEx22N61() : basis_function_(knot_vector_00012344555, KnotSpan{6}, Degree{1}) {}
 
  protected:
   const MockKnotVector00012344555 knot_vector_00012344555;
@@ -400,7 +400,7 @@ TEST_F(BasisFunctionEx22N61, SecondDerevitveIsEqual0At4_5) { // NOLINT
 // Test basis function derivative N_{7,2} from NURBS book example 2.2
 class BasisFunctionEx22N72 : public Test {
  public:
-  BasisFunctionEx22N72() : basis_function_(knot_vector_00012344555, Degree{2}, KnotSpan{7}) {}
+  BasisFunctionEx22N72() : basis_function_(knot_vector_00012344555, KnotSpan{7}, Degree{2}) {}
 
  protected:
   const MockKnotVector00012344555 knot_vector_00012344555;

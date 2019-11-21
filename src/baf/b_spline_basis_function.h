@@ -29,9 +29,9 @@ class BSplineBasisFunction {
 
   BSplineBasisFunction() = default;
   BSplineBasisFunction(BSplineBasisFunction const &other) = delete;
-  BSplineBasisFunction(BSplineBasisFunction &&other) noexcept;
+  BSplineBasisFunction(BSplineBasisFunction &&other) = delete;
   virtual BSplineBasisFunction & operator=(BSplineBasisFunction const &rhs) = delete;
-  BSplineBasisFunction & operator=(BSplineBasisFunction &&rhs) noexcept;
+  BSplineBasisFunction & operator=(BSplineBasisFunction &&rhs) = delete;
   virtual ~BSplineBasisFunction() = default;
 
   // The evaluation of the i-th basis function of degree p > 0 N_{i,p} is a linear combination of the basis functions

@@ -18,32 +18,41 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/baf/b_spline_basis_function.h"
 
+#include "src/baf/knot_vector.h"
+#include "src/util/named_type.h"
+
 namespace splinelib::src::baf {
 class NonZeroDegreeBSplineBasisFunction : public BSplineBasisFunction {
  public:
-  NonZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, const Degree &degree,
-                                    const KnotSpan &start_of_support);
+  NonZeroDegreeBSplineBasisFunction(KnotVector const &knot_vector, KnotSpan const &start_of_support,
+                                    Degree const &degree);
+  NonZeroDegreeBSplineBasisFunction(NonZeroDegreeBSplineBasisFunction const &other) = delete;
+  NonZeroDegreeBSplineBasisFunction(NonZeroDegreeBSplineBasisFunction &&other) = delete;
+  NonZeroDegreeBSplineBasisFunction & operator=(NonZeroDegreeBSplineBasisFunction const &other) = delete;
+  NonZeroDegreeBSplineBasisFunction & operator=(NonZeroDegreeBSplineBasisFunction &&other) = delete;
 
  protected:
-  double EvaluateOnSupport(const ParametricCoordinate &param_coord) const override;
-  double EvaluateDerivativeOnSupport(const ParametricCoordinate &param_coord,
-                                     const Derivative &derivative) const override;
+  double EvaluateOnSupport(ParametricCoordinate const &parametric_coordinate) const final;
+  double EvaluateDerivativeOnSupport(ParametricCoordinate const &parametric_coordinate,
+                                     Derivative const &derivative) const final;
 
  private:
-  void SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
-                                    const Degree &degree,
-                                    const KnotSpan &start_of_support);
+  void SetLowerDegreeBasisFunctions(KnotVector const &knot_vector, KnotSpan const &start_of_support,
+                                    Degree const &degree);
+  double ComputeLeftQuotient(ParametricCoordinate const &parametric_coordinate) const;
+  double ComputeRightQuotient(ParametricCoordinate const &parametric_coordinate) const;
 
-  double ComputeLeftQuotient(const ParametricCoordinate &param_coord) const;
-  double ComputeRightQuotient(const ParametricCoordinate &param_coord) const;
-
+  // Within the context of the Cox-de Boor recursion formula, the inverse of 0 is defined to be 0 (see NURBS book
+  // equation 2.5).
   double InverseWithPossiblyZeroDenominator(double denominator) const;
 
-  double left_denom_inv_;
-  double right_denom_inv_;
-  std::unique_ptr<BSplineBasisFunction> left_lower_degree_;
-  std::unique_ptr<BSplineBasisFunction> right_lower_degree_;
+  double left_denominator_inverse_;
+  double right_denominator_inverse_;
+  std::unique_ptr<BSplineBasisFunction> left_lower_degree_basis_function_;
+  std::unique_ptr<BSplineBasisFunction> right_lower_degree_basis_function_;
 };
+
+#include "src/baf/non_zero_degree_b_spline_basis_function.inc"
 }  // namespace splinelib::src::baf
 
 #endif  // SRC_BAF_NON_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_

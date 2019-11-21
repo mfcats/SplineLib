@@ -11,10 +11,14 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#include "src/baf/zero_degree_b_spline_basis_function.h"
+// NOLINT(build/header_guard)
 
-namespace splinelib::src::baf {
-ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(KnotVector const &knot_vector,
-                                                               KnotSpan const &start_of_support)
-    : BSplineBasisFunction(knot_vector, start_of_support, Degree{0}) {}
-}  // namespace splinelib::src::baf
+inline double NonZeroDegreeBSplineBasisFunction::ComputeLeftQuotient(ParametricCoordinate const &parametric_coordinate)
+const {
+  return ((parametric_coordinate - BSplineBasisFunction::GetStartKnot()).Get() * left_denominator_inverse_);
+}
+
+inline double NonZeroDegreeBSplineBasisFunction::ComputeRightQuotient(ParametricCoordinate const &parametric_coordinate)
+const {
+  return ((BSplineBasisFunction::GetEndKnot() - parametric_coordinate).Get() * right_denominator_inverse_);
+}

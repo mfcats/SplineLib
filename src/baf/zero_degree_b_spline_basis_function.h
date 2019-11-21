@@ -24,9 +24,9 @@ class ZeroDegreeBSplineBasisFunction : public BSplineBasisFunction {
   ZeroDegreeBSplineBasisFunction() = default;
   ZeroDegreeBSplineBasisFunction(KnotVector const &knot_vector, KnotSpan const &start_of_support);
   ZeroDegreeBSplineBasisFunction(ZeroDegreeBSplineBasisFunction const &other) = delete;
-  ZeroDegreeBSplineBasisFunction(ZeroDegreeBSplineBasisFunction &&other) noexcept;
+  ZeroDegreeBSplineBasisFunction(ZeroDegreeBSplineBasisFunction &&other) = delete;
   ZeroDegreeBSplineBasisFunction & operator=(ZeroDegreeBSplineBasisFunction const &rhs) = delete;
-  ZeroDegreeBSplineBasisFunction & operator=(ZeroDegreeBSplineBasisFunction &&rhs) noexcept;
+  ZeroDegreeBSplineBasisFunction & operator=(ZeroDegreeBSplineBasisFunction &&rhs) = delete;
   ~ZeroDegreeBSplineBasisFunction() final = default;
 
  protected:
