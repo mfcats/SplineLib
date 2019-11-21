@@ -1,4 +1,4 @@
-/* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+/* Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
 
@@ -9,25 +9,33 @@ SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
-<http://www.gnu.org/licenses/>.
-*/
+<http://www.gnu.org/licenses/>.*/
 
 #ifndef SRC_BAF_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
 #define SRC_BAF_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_
 
 #include "src/baf/b_spline_basis_function.h"
 #include "src/baf/knot_vector.h"
+#include "src/util/named_type.h"
 
 namespace splinelib::src::baf {
 class ZeroDegreeBSplineBasisFunction : public BSplineBasisFunction {
  public:
-  ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector, const KnotSpan &start_of_support);
+  ZeroDegreeBSplineBasisFunction() = default;
+  ZeroDegreeBSplineBasisFunction(KnotVector const &knot_vector, KnotSpan const &start_of_support);
+  ZeroDegreeBSplineBasisFunction(ZeroDegreeBSplineBasisFunction const &other) = delete;
+  ZeroDegreeBSplineBasisFunction(ZeroDegreeBSplineBasisFunction &&other) noexcept;
+  ZeroDegreeBSplineBasisFunction & operator=(ZeroDegreeBSplineBasisFunction const &rhs) = delete;
+  ZeroDegreeBSplineBasisFunction & operator=(ZeroDegreeBSplineBasisFunction &&rhs) noexcept;
+  ~ZeroDegreeBSplineBasisFunction() final = default;
 
  protected:
-  double EvaluateOnSupport(const ParametricCoordinate &param_coord) const override;
-  double EvaluateDerivativeOnSupport(const ParametricCoordinate &param_coord,
-                                     const Derivative &derivative) const override;
+  double EvaluateOnSupport(ParametricCoordinate const &/*parametric_coordinate*/) const final;
+  double EvaluateDerivativeOnSupport(ParametricCoordinate const &/*parametric_coordinate*/,
+                                     Derivative const &/*derivative*/) const final;
 };
+
+#include "src/baf/zero_degree_b_spline_basis_function.inc"
 }  // namespace splinelib::src::baf
 
 #endif  // SRC_BAF_ZERO_DEGREE_B_SPLINE_BASIS_FUNCTION_H_

@@ -1,4 +1,4 @@
-/* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+/* Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
 
@@ -9,22 +9,23 @@ SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
-<http://www.gnu.org/licenses/>.
-*/
+<http://www.gnu.org/licenses/>.*/
 
 #include "src/baf/zero_degree_b_spline_basis_function.h"
 
+#include <utility>
+
 namespace splinelib::src::baf {
-ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
-                                                               const KnotSpan &start_of_support) :
-    BSplineBasisFunction(knot_vector, start_of_support, Degree{0}) {}
+ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(KnotVector const &knot_vector,
+                                                               KnotSpan const &start_of_support)
+    : BSplineBasisFunction(knot_vector, start_of_support, Degree{0}) {}
 
-double ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(const ParametricCoordinate /*param_coord*/&) const {
-  return 1.0;
-}
+ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(ZeroDegreeBSplineBasisFunction &&rhs) noexcept
+    : BSplineBasisFunction(std::move(rhs)) {}
 
-double ZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(const ParametricCoordinate /*param_coord*/&,
-                                                                   const Derivative /*degree*/&) const {
-  return 0.0;
+ZeroDegreeBSplineBasisFunction & ZeroDegreeBSplineBasisFunction::operator=(
+    ZeroDegreeBSplineBasisFunction &&rhs) noexcept {
+  BSplineBasisFunction::operator=(std::move(rhs));
+  return (*this);
 }
 }  // namespace splinelib::src::baf

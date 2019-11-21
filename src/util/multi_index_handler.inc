@@ -15,15 +15,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 template<int PARAMETRIC_DIMENSIONALITY>
 MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::MultiIndexHandler(
-    std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index_length) :
-    overflowed_{false}, multi_index_length_(multi_index_length) {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index_length)
+    : overflowed_{false}, multi_index_length_(multi_index_length) {
   for (auto &integer : current_multi_index_value_) integer = 0;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::MultiIndexHandler(MultiIndexHandler &&other) noexcept :
-    overflowed_{false}, multi_index_length_(std::move(other.multi_index_length_)),
-    current_multi_index_value_(std::move(other.current_multi_index_value_)) {}
+MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::MultiIndexHandler(MultiIndexHandler &&other) noexcept
+    : overflowed_{false}, multi_index_length_(std::move(other.multi_index_length_)),
+      current_multi_index_value_(std::move(other.current_multi_index_value_)) {}
 
 template<int PARAMETRIC_DIMENSIONALITY>
 MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator=(
