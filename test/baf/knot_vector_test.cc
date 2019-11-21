@@ -44,13 +44,13 @@ TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithDecreasingSequenceInParame
                std::invalid_argument);
 }
 
-TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithEmptyInitializerList) {  // NOLINT
-  ASSERT_THROW(baf::KnotVector invalid_knot_vector(std::initializer_list<ParametricCoordinate>{}),
-               std::invalid_argument);
+TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithInitializerListWithOnlyOneKnot) {  // NOLINT
+  ASSERT_THROW(baf::KnotVector invalid_knot_vector({ParametricCoordinate{1.0}}), std::invalid_argument);
 }
 
-TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithEmptyParametricCoordinateVector) {  // NOLINT
-  ASSERT_THROW(baf::KnotVector invalid_knot_vector(std::vector<ParametricCoordinate>({})), std::invalid_argument);
+TEST_F(AKnotVectorOfDegree2, ThrowsForConstructionWithParametricCoordinateVectorWithOnlyOneKnot) {  // NOLINT
+  ASSERT_THROW(baf::KnotVector invalid_knot_vector(std::vector<ParametricCoordinate>({ParametricCoordinate{1.0}})),
+               std::invalid_argument);
 }
 
 TEST_F(AKnotVectorOfDegree2, CanBeAssignedByIterators) {  // NOLINT

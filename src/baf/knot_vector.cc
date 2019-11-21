@@ -23,11 +23,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace splinelib::src::baf {
 KnotVector::KnotVector(std::vector<ParametricCoordinate> knots) : knots_(std::move(knots)) {
-  ThrowIfKnotVectorIsEmptyOrNotNonDecreasing();
+  ThrowIfKnotVectorContainsLessThanTwoKnotsOrIsNotNonDecreasing();
 }
 
 KnotVector::KnotVector(std::initializer_list<ParametricCoordinate> const &knots) : knots_(knots) {
-  ThrowIfKnotVectorIsEmptyOrNotNonDecreasing();
+  ThrowIfKnotVectorContainsLessThanTwoKnotsOrIsNotNonDecreasing();
 }
 
 KnotVector::KnotVector(ConstKnotIterator begin, ConstKnotIterator end)
@@ -84,14 +84,14 @@ bool KnotVector::RemoveKnot(ParametricCoordinate const &parametric_coordinate) {
   return true;
 }
 
-void KnotVector::ThrowIfKnotVectorIsEmptyOrNotNonDecreasing() const {
+void KnotVector::ThrowIfKnotVectorContainsLessThanTwoKnotsOrIsNotNonDecreasing() const {
   for (uint64_t knot_index = 1; knot_index < knots_.size(); ++knot_index) {
     if (knots_[knot_index] < knots_[knot_index - 1])
       throw std::invalid_argument("splinelib::src::baf::KnotVector::ThrowIfInvalidKnotVector: Knot vector has to be "
                                   "a sequence of non-decreasing parametric coordinates.");
   }
-  if (knots_.empty()) throw std::invalid_argument("splinelib::src::baf::KnotVector::ThrowIfInvalidKnotVector: Knot "
-                                                  "vector has to contain at least one knot.");
+  if (knots_.size() < 2) throw std::invalid_argument("splinelib::src::baf::KnotVector::ThrowIfInvalidKnotVector: Knot "
+                                                     "vector has to contain at least two knots.");
 }
 
 bool KnotVector::AreEqual(KnotVector const &rhs,
