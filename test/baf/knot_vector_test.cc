@@ -104,18 +104,6 @@ TEST_F(AKnotVectorOfDegree2, SumOfAllKnotsOf4_75CanBeComputedUsingConstRangeBase
   ASSERT_THAT(sum_of_all_knots, DoubleEq(4.75));
 }
 
-TEST_F(AKnotVectorOfDegree2,  // NOLINT
-       AllKnotValuesCanBeDoubledAndTheSumOfAllKnotsOf9_5CanBeComputedUsingNonConstRangeBasedForLoop) {
-  for (auto &knot : knot_vector_) {
-    knot = ParametricCoordinate{knot.Get() * 2.0};
-  }
-  double sum_of_all_knots = 0;
-  for (const auto &knot : knot_vector_) {
-    sum_of_all_knots += knot.Get();
-  }
-  ASSERT_THAT(sum_of_all_knots, DoubleEq(9.5));
-}
-
 TEST_F(AKnotVectorOfDegree2, ReturnsNumberOfKnots9) {  // NOLINT
   ASSERT_THAT(knot_vector_.GetNumberOfKnots(), Eq(9));
 }

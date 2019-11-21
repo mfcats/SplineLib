@@ -59,8 +59,6 @@ class KnotVector {
 
   ConstKnotIterator begin() const;
   ConstKnotIterator end() const;
-  KnotIterator begin();
-  KnotIterator end();
 
   virtual int GetNumberOfKnots() const;
   int GetNumberOfDifferentKnots() const;

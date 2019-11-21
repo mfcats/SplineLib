@@ -25,14 +25,6 @@ inline KnotVector::ConstKnotIterator KnotVector::end() const {
   return knots_.cend();
 }
 
-inline KnotVector::KnotIterator KnotVector::begin() {
-  return knots_.begin();
-}
-
-inline KnotVector::KnotIterator KnotVector::end() {
-  return knots_.end();
-}
-
 inline int KnotVector::GetNumberOfKnots() const {
   return knots_.size();
 }
