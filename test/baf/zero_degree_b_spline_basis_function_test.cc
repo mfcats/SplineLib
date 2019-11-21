@@ -1,4 +1,4 @@
-/* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+/* Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
 
@@ -9,8 +9,7 @@ SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
-<http://www.gnu.org/licenses/>.
-*/
+<http://www.gnu.org/licenses/>.*/
 
 #include "gmock/gmock.h"
 
@@ -24,7 +23,7 @@ using namespace splinelib::src;
 class KnotVectorMock000111 : public baf::KnotVector {
  public:
   ParametricCoordinate operator[](int knot_num) const override {
-    return GetValue(knts, knot_num);
+    return GetValue(knots_, knot_num);
   }
 
   bool IsLastKnot(const ParametricCoordinate &param_coord) const override {
@@ -32,14 +31,8 @@ class KnotVectorMock000111 : public baf::KnotVector {
   }
 
  private:
-  std::vector<ParametricCoordinate> knts = {
-      ParametricCoordinate{0},
-      ParametricCoordinate{0},
-      ParametricCoordinate{0},
-      ParametricCoordinate{1},
-      ParametricCoordinate{1},
-      ParametricCoordinate{1}
-  };
+std::vector<ParametricCoordinate> knots_ = {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0},
+                                            ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}};
 };
 
 // Test basis function N_{0,0} from NURBS book example 2.1

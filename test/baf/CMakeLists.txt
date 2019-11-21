@@ -15,8 +15,8 @@
 set(
         TEST_SOURCES
         ${TEST_SOURCES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/b_spline_basis_function_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/knot_vector_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/non_zero_degree_b_spline_basis_function_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/zero_degree_b_spline_basis_function_test.cc
         PARENT_SCOPE
 )

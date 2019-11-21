@@ -1,12 +1,15 @@
-/* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+/* Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+
 This file is part of SplineLib.
+
 SplineLib is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation version 3 of the License.
+
 SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
-<http://www.gnu.org/licenses/>.
-*/
+<http://www.gnu.org/licenses/>.*/
 
 #include "gmock/gmock.h"
 
@@ -21,7 +24,7 @@ using namespace splinelib::src;
 class MockKnotVector000111 : public baf::KnotVector {
  public:
   ParametricCoordinate operator[](int knot_num) const override {
-    return GetValue(knts, knot_num);
+    return GetValue(knots_, knot_num);
   }
 
   bool IsLastKnot(const ParametricCoordinate &param_coord) const override {
@@ -29,9 +32,9 @@ class MockKnotVector000111 : public baf::KnotVector {
   }
 
  private:
-  const std::vector<ParametricCoordinate>
-      knts = {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0},
-              ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}};
+  const std::vector<ParametricCoordinate> knots_ = {ParametricCoordinate{0}, ParametricCoordinate{0},
+                                                    ParametricCoordinate{0}, ParametricCoordinate{1},
+                                                    ParametricCoordinate{1}, ParametricCoordinate{1}};
 };
 
 // Test basis function N_{0,1} from NURBS book example 2.1
@@ -247,7 +250,7 @@ TEST_F(BasisFunctionEx21N22, IsZeroAtMinus1_5) { // NOLINT
 class MockKnotVector00012344555 : public baf::KnotVector {
  public:
   ParametricCoordinate operator[](int knot_num) const override {
-    return GetValue(knts, knot_num);
+    return GetValue(knots_, knot_num);
   }
 
   bool IsLastKnot(const ParametricCoordinate &param_coord) const override {
@@ -255,17 +258,10 @@ class MockKnotVector00012344555 : public baf::KnotVector {
   }
 
  private:
-  const std::vector<ParametricCoordinate> knts = {ParametricCoordinate{0},
-                                        ParametricCoordinate{0},
-                                        ParametricCoordinate{0},
-                                        ParametricCoordinate{1},
-                                        ParametricCoordinate{2},
-                                        ParametricCoordinate{3},
-                                        ParametricCoordinate{4},
-                                        ParametricCoordinate{4},
-                                        ParametricCoordinate{5},
-                                        ParametricCoordinate{5},
-                                        ParametricCoordinate{5}};
+  const std::vector<ParametricCoordinate> knots_ =
+      {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1},
+       ParametricCoordinate{2}, ParametricCoordinate{3}, ParametricCoordinate{4}, ParametricCoordinate{4},
+       ParametricCoordinate{5}, ParametricCoordinate{5}, ParametricCoordinate{5}};
 };
 
 // Test basis function N_{0,1} from NURBS book example 2.2
