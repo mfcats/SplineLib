@@ -22,7 +22,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 #include "src/baf/b_spline_basis_function.h"
-#include "src/baf/basis_function_factory.h"
 #include "src/baf/knot_vector.h"
 #include "src/util/numeric_settings.h"
 
@@ -40,7 +39,7 @@ class ParameterSpace {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].Get() - 1);
       for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].Get() - 1); ++j) {
         basis_functions_[i].emplace_back(
-            baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
+            baf::BSplineBasisFunction::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
       }
     }
   }
@@ -55,7 +54,7 @@ class ParameterSpace {
       basis_functions_[i].reserve(knot_vector_[i]->GetNumberOfKnots() - degree_[i].Get() - 1);
       for (int j = 0; j < (static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].Get() - 1); ++j) {
         basis_functions_[i].emplace_back(
-            baf::BasisFunctionFactory::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
+            baf::BSplineBasisFunction::CreateDynamic(*(knot_vector_[i]), KnotSpan{j}, degree_[i]));
       }
     }
   }
@@ -245,7 +244,7 @@ class ParameterSpace {
            current_basis_function <
                (static_cast<int>(knot_vector_current_dim->GetNumberOfKnots()) - degree_current_dim.Get() - 1);
            ++current_basis_function) {
-        basis_functions_current_dim.emplace_back(baf::BasisFunctionFactory::CreateDynamic(
+        basis_functions_current_dim.emplace_back(baf::BSplineBasisFunction::CreateDynamic(
             *knot_vector_current_dim, KnotSpan{current_basis_function}, degree_current_dim));
       }
     }

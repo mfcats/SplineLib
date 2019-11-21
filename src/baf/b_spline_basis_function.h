@@ -37,25 +37,24 @@ class BSplineBasisFunction {
   // The evaluation of the i-th basis function of degree p > 0 N_{i,p} is a linear combination of the basis functions
   // N_{i,p-1} and N_{i+1,p-1} (see NURBS book equation 2.5). Therefore, for each basis function of degree > 0 a pointer
   // to these two basis functions is set in constructor, so that a basis function can be evaluated recursively.
-  double Evaluate(ParametricCoordinate const &ParametricCoordinate) const;
-
-  double EvaluateDerivative(ParametricCoordinate const&param_coord, Derivative const &derivative) const;
+  double Evaluate(ParametricCoordinate const &parametric_coordinate) const;
+  double EvaluateDerivative(ParametricCoordinate const &parametric_coordinate, Derivative const &derivative) const;
 
  protected:
-  BSplineBasisFunction(KnotVector const &knot_vector, Degree const &degree, KnotSpan const &start_of_support);
+  BSplineBasisFunction(KnotVector const &knot_vector, KnotSpan const &start_of_support, Degree const &degree);
 
   Degree GetDegree() const;
   ParametricCoordinate GetStartKnot() const;
   ParametricCoordinate GetEndKnot() const;
 
-  virtual double EvaluateOnSupport(ParametricCoordinate const &param_coord) const = 0;
-  virtual double EvaluateDerivativeOnSupport(ParametricCoordinate const &param_coord,
+  virtual double EvaluateOnSupport(ParametricCoordinate const &parametric_coordinate) const = 0;
+  virtual double EvaluateDerivativeOnSupport(ParametricCoordinate const &parametric_coordinate,
                                              Derivative const &derivative) const = 0;
 
  private:
-  bool IsCoordinateInSupport(ParametricCoordinate const &param_coord) const;
+  bool IsCoordinateInSupport(ParametricCoordinate const &parametric_coordinate) const;
 
-  Degree degree_;
+  Degree degree_{};
   ParametricCoordinate start_knot_{0};
   ParametricCoordinate end_knot_{1};
   bool end_knot_is_last_knot_{false};

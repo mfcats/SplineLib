@@ -25,7 +25,7 @@ inline ParametricCoordinate BSplineBasisFunction::GetEndKnot() const {
   return end_knot_;
 }
 
-inline bool BSplineBasisFunction::IsCoordinateInSupport(ParametricCoordinate const &param_coord) const {
-  return (start_knot_ <= param_coord && param_coord < end_knot_)
-      || (end_knot_is_last_knot_ && param_coord == end_knot_);
+inline bool BSplineBasisFunction::IsCoordinateInSupport(ParametricCoordinate const &parametric_coordinate) const {
+  return (((start_knot_ <= parametric_coordinate) && (parametric_coordinate < end_knot_))
+      || (end_knot_is_last_knot_ && (parametric_coordinate == end_knot_)));
 }

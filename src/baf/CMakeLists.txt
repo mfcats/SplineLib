@@ -15,7 +15,6 @@
 set(
 		SOURCES
 		b_spline_basis_function.cc
-        basis_function_factory.cc
         knot_vector.cc
         non_zero_degree_b_spline_basis_function.cc
 		zero_degree_b_spline_basis_function.cc
@@ -44,7 +43,6 @@ install(
 		FILES
 		b_spline_basis_function.h
 		b_spline_basis_funtion.inc
-        basis_function_factory.h
         knot_vector.h
 		knot_vector.inc
         non_zero_degree_b_spline_basis_function.h

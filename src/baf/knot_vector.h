@@ -85,7 +85,6 @@ class KnotVector {
   bool AreEqual(KnotVector const &rhs, Tolerance const &tolerance) const;
 
  private:
-  // TODO(Corinna, Christoph): think of it is the best way to handle empty knot vectors here or in single methods?
   void ThrowIfKnotVectorContainsLessThanTwoKnotsOrIsNotNonDecreasing() const;
   std::vector<ParametricCoordinate> knots_;
 };

@@ -14,14 +14,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/baf/non_zero_degree_b_spline_basis_function.h"
 
-#include "src/baf/basis_function_factory.h"
 #include "src/util/numeric_settings.h"
 
 namespace splinelib::src::baf {
 NonZeroDegreeBSplineBasisFunction::NonZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
                                                                      const Degree &degree,
                                                                      const KnotSpan &start_of_support)
-    : BSplineBasisFunction(knot_vector, degree, start_of_support) {
+    : BSplineBasisFunction(knot_vector, start_of_support, degree) {
   auto start_index = static_cast<size_t>(start_of_support.Get());
   auto degree_index = static_cast<size_t>(degree.Get());
   auto left_denom = (knot_vector[start_index + degree_index] - GetStartKnot()).Get();
@@ -46,10 +45,8 @@ double NonZeroDegreeBSplineBasisFunction::EvaluateDerivativeOnSupport(const Para
 void NonZeroDegreeBSplineBasisFunction::SetLowerDegreeBasisFunctions(const KnotVector &knot_vector,
                                                                      const Degree &degree,
                                                                      const KnotSpan &start_of_support) {
-  left_lower_degree_.reset(BasisFunctionFactory::CreateDynamic(knot_vector, start_of_support, degree - Degree{1}));
-  right_lower_degree_.reset(BasisFunctionFactory::CreateDynamic(knot_vector,
-                                                                start_of_support + KnotSpan{1},
-                                                                degree - Degree{1}));
+  left_lower_degree_.reset(CreateDynamic(knot_vector, start_of_support, degree - Degree{1}));
+  right_lower_degree_.reset(CreateDynamic(knot_vector, start_of_support + KnotSpan{1}, degree - Degree{1}));
 }
 
 double NonZeroDegreeBSplineBasisFunction::ComputeLeftQuotient(const ParametricCoordinate &param_coord) const {

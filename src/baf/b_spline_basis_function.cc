@@ -1,4 +1,4 @@
-/* Copyright 2018 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
+/* Copyright 2019 Chair for Computational Analysis of Technical Systems, RWTH Aachen University
 
 This file is part of SplineLib.
 
@@ -9,8 +9,7 @@ SplineLib is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
-<http://www.gnu.org/licenses/>.
-*/
+<http://www.gnu.org/licenses/>.*/
 
 #include "src/baf/b_spline_basis_function.h"
 
@@ -45,22 +44,23 @@ BSplineBasisFunction & BSplineBasisFunction::operator=(BSplineBasisFunction &&rh
   return (*this);
 }
 
-double BSplineBasisFunction::Evaluate(ParametricCoordinate const &ParametricCoordinate) const {
-  if (IsCoordinateInSupport(ParametricCoordinate)) return this->EvaluateOnSupport(ParametricCoordinate);
+double BSplineBasisFunction::Evaluate(ParametricCoordinate const &parametric_coordinate) const {
+  if (IsCoordinateInSupport(parametric_coordinate)) return this->EvaluateOnSupport(parametric_coordinate);
   return 0.0;
 }
 
-double BSplineBasisFunction::EvaluateDerivative(ParametricCoordinate const &param_coord,
+double BSplineBasisFunction::EvaluateDerivative(ParametricCoordinate const &parametric_coordinate,
                                                 Derivative const &derivative) const {
-  if (derivative.Get() == 0) return Evaluate(param_coord);
-  if (IsCoordinateInSupport(param_coord)) return this->EvaluateDerivativeOnSupport(param_coord, derivative);
+  if (derivative.Get() == 0) return Evaluate(parametric_coordinate);
+  if (IsCoordinateInSupport(parametric_coordinate))
+    return EvaluateDerivativeOnSupport(parametric_coordinate, derivative);
   return 0.0;
 }
 
-BSplineBasisFunction::BSplineBasisFunction(KnotVector const &knot_vector, Degree const &degree,
-                                           KnotSpan const &start_of_support) : degree_(degree) {
-  int const start_index = start_of_support.Get();
-  int const degree_index = degree.Get();
+BSplineBasisFunction::BSplineBasisFunction(KnotVector const &knot_vector, KnotSpan const &start_of_support,
+                                           Degree const &degree) : degree_(degree) {
+  auto const start_index = start_of_support.Get();
+  auto const degree_index = degree.Get();
   start_knot_ = knot_vector[start_index];
   end_knot_ = knot_vector[start_index + degree_index + 1];
   end_knot_is_last_knot_ = knot_vector.IsLastKnot(end_knot_);

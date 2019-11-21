@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::baf {
 ZeroDegreeBSplineBasisFunction::ZeroDegreeBSplineBasisFunction(const KnotVector &knot_vector,
                                                                const KnotSpan &start_of_support) :
-    BSplineBasisFunction(knot_vector, Degree{0}, start_of_support) {}
+    BSplineBasisFunction(knot_vector, start_of_support, Degree{0}) {}
 
 double ZeroDegreeBSplineBasisFunction::EvaluateOnSupport(const ParametricCoordinate /*param_coord*/&) const {
   return 1.0;
