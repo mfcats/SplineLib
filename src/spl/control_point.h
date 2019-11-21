@@ -14,36 +14,51 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_CONTROL_POINT_H_
 #define SRC_SPL_CONTROL_POINT_H_
 
-#include <algorithm>
 #include <array>
-#include <cmath>
-#include <functional>
 #include <initializer_list>
 #include <vector>
+
+#include "src/util/named_type.h"
 
 namespace splinelib::src::baf {
 class ControlPoint {
  public:
-  ControlPoint(std::initializer_list<double> coordinates);
   explicit ControlPoint(std::vector<double> coordinates);
+  ControlPoint(std::initializer_list<double> const &coordinates);
   explicit ControlPoint(uint64_t dimension);
 
-  int GetDimension() const;
-  double GetValue(int dimension) const;
+  ControlPoint(ControlPoint const &other) = default;
+  ControlPoint(ControlPoint &&other) noexcept;
+  ControlPoint & operator=(ControlPoint const &rhs) = default;
+  ControlPoint & operator=(ControlPoint &&rhs) noexcept;
+
+  int GetDimensionality() const;
+  double GetValueForDimension(Dimension const &dimension) const;
+  double operator[](Dimension const &dimension) const;
 
   void SetValue(int dimension, double value);
 
-  ControlPoint operator+(const ControlPoint &control_point) const;
-  ControlPoint operator-(const ControlPoint &control_point) const;
-  ControlPoint operator*(const double &scalar) const;
+  friend ControlPoint operator+(ControlPoint const &lhs, ControlPoint const &rhs);
+  friend ControlPoint operator-(ControlPoint const &lhs, ControlPoint const &rhs);
+  friend ControlPoint operator*(ControlPoint const &control_point, double scalar);
+  friend ControlPoint operator*(double scalar, ControlPoint const &control_point);
 
-  ControlPoint Transform(std::array<std::array<double, 4>, 4> TransMatrix,
-                                       std::array<double, 3> scaling) const;
+
+  ControlPoint Transform(std::array<std::array<double, 4>, 4> const &TransformationMatrix,
+                         std::array<double, 3> const &scaling) const;
+
   double GetEuclideanNorm() const;
 
  protected:
   std::vector<double> coordinates_;
 };
+
+ControlPoint operator+(ControlPoint const &lhs, ControlPoint const &rhs);
+ControlPoint operator-(ControlPoint const &lhs, ControlPoint const &rhs);
+ControlPoint operator*(ControlPoint const &control_point, double scalar);
+ControlPoint operator*(double scalar, ControlPoint const &control_point);
+
+#include "src/spl/control_point.inc"
 }  // namespace splinelib::src::baf
 
 #endif  // SRC_SPL_CONTROL_POINT_H_

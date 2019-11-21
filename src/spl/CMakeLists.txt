@@ -43,6 +43,7 @@ install(
         b_spline.h
         b_spline_generator.h
         control_point.h
+        control_point.inc
         nurbs.h
         nurbs_generator.h
         parameter_space.h

@@ -29,7 +29,7 @@ class PhysicalSpace {
   PhysicalSpace() = default;
   virtual ~PhysicalSpace() = default;
   PhysicalSpace(const std::vector<baf::ControlPoint> &control_points,
-      std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points) : dimension_(control_points[0].GetDimension()),
+      std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points) : dimension_(control_points[0].GetDimensionality()),
       number_of_points_(number_of_points) {
     uint64_t total_number_of_points = 1;
     for (int dim = 0; dim < PARAMETRIC_DIMENSIONALITY; dim++) {
@@ -40,11 +40,11 @@ class PhysicalSpace {
           "The given number of control points in each dimension doesn't fit the length of the control point vector.");
     }
     for (auto &&cp : control_points) {
-      if (cp.GetDimension() != dimension_) {
+      if (cp.GetDimensionality() != dimension_) {
         throw std::runtime_error("The dimension has to be the same for all control points.");
       }
       for (int i = 0; i < dimension_; ++i) {
-        control_points_.emplace_back(cp.GetValue(i));
+        control_points_.emplace_back(cp.GetValueForDimension(Dimension{i}));
       }
     }
   }
@@ -103,7 +103,7 @@ class PhysicalSpace {
     point_handler.SetCurrentIndex(indices);
     int first = dimension_ * point_handler.GetCurrent1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      control_points_[first + coordinate] = control_point.GetValue(coordinate);
+      control_points_[first + coordinate] = control_point.GetValueForDimension(Dimension{coordinate});
     }
     number_of_points_ = number_of_points_before;
   }
@@ -116,7 +116,7 @@ class PhysicalSpace {
     point_handler.SetCurrentIndex(index_1d);
     int first = dimension_ * point_handler.GetCurrent1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      control_points_[first + coordinate] = control_point.GetValue(coordinate);
+      control_points_[first + coordinate] = control_point.GetValueForDimension(Dimension{coordinate});
     }
     number_of_points_ = number_of_points_before;
   }

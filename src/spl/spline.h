@@ -151,11 +151,11 @@ class Spline {
   }
 
   double GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, int dimension) const {
-    return GetPhysicalSpace()->GetControlPoint(indices).GetValue(dimension);
+    return GetPhysicalSpace()->GetControlPoint(indices).GetValueForDimension(Dimension{dimension});
   }
 
   double GetControlPoint(int index_1d, int dimension) const {
-    return GetPhysicalSpace()->GetControlPoint(index_1d).GetValue(dimension);
+    return GetPhysicalSpace()->GetControlPoint(index_1d).GetValueForDimension(Dimension{dimension});
   }
 
   baf::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
@@ -352,7 +352,8 @@ class Spline {
         auto index = ((index_in_dir + segment) % width + point_handler.CollapseDimension(Dimension{dimension}) * width);
         double weight = GetWeight(point_handler.GetCurrentIndex());
         for (int j = 0; j < GetPointDim(); ++j) {
-          bezier_cps[index].SetValue(j, GetControlPoint(point_handler.GetCurrentIndex()).GetValue(j) * weight);
+          bezier_cps[index].SetValue(j, GetControlPoint(
+              point_handler.GetCurrentIndex()).GetValueForDimension(Dimension{j}) * weight);
         }
         bezier_cps[index].SetValue(GetPointDim(), weight);
       }
@@ -373,7 +374,7 @@ class Spline {
       new_cps[cp_handler_new.Get1DIndex({width - 1, i})] = bezier_cps[cp_handler_old.Get1DIndex({width - 2, i})];
       for (int j = 1; j < GetDegree(dimension).Get(); ++j) {
         new_cps[cp_handler_new.Get1DIndex({j, i})] = bezier_cps[cp_handler_old.Get1DIndex({j, i})] * (1 - alpha[j]) +
-            bezier_cps[cp_handler_old.Get1DIndex({j - 1, i})] * alpha[j];
+            alpha[j] * bezier_cps[cp_handler_old.Get1DIndex({j - 1, i})] /*  * alpha[j]*/;
       }
     }
     return new_cps;
@@ -440,9 +441,9 @@ class Spline {
         index = (width - 1) + point_handler.CollapseDimension(Dimension{dimension}) * width;
       }
       baf::ControlPoint cp(GetPointDim());
-      double weight = bezier_segments[segment][index].GetValue(GetPointDim());
+      double weight = bezier_segments[segment][index].GetValueForDimension(Dimension{GetPointDim()});
       for (int j = 0; j < GetPointDim(); ++j) {
-        cp.SetValue(j, bezier_segments[segment][index].GetValue(j) / weight);
+        cp.SetValue(j, bezier_segments[segment][index].GetValueForDimension(Dimension{j}) / weight);
       }
       this->SetNewControlPoint(cp, weight, point_handler.GetCurrentIndex());
     }

@@ -41,28 +41,28 @@ class AControlPoint : public Test {
 };
 
 TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
-  ASSERT_THAT(control_point.GetDimension(), 2);
+  ASSERT_THAT(control_point.GetDimensionality(), 2);
 }
 
 TEST_F(AControlPoint, Returns1For0Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(0), DoubleEq(1.0));
+  ASSERT_THAT(control_point.GetValueForDimension(Dimension{0}), DoubleEq(1.0));
 }
 
 TEST_F(AControlPoint, Returns2For1Dimension) { // NOLINT
-  ASSERT_THAT(control_point.GetValue(1), DoubleEq(2.0));
+  ASSERT_THAT(control_point.GetValueForDimension(Dimension{1}), DoubleEq(2.0));
 }
 
 TEST_F(AControlPoint, Returns3ForSum0Dimension) { // NOLINT
-  ASSERT_THAT((control_point + control_point_b).GetValue(0), DoubleEq(3.0));
+  ASSERT_THAT((control_point + control_point_b).GetValueForDimension(Dimension{0}), DoubleEq(3.0));
 }
 
 TEST_F(AControlPoint, PerformsTransformationCorrectly) { // NOLINT
   baf::ControlPoint control_point_t = control_point_c.Transform(transMatrix, scaling);
-  ASSERT_THAT(control_point_t.GetValue(0), DoubleEq(2.1454));
+  ASSERT_THAT(control_point_t.GetValueForDimension(Dimension{0}), DoubleEq(2.1454));
 }
 
 TEST_F(AControlPoint, PerformsScalingTransformation) { // NOLINT
   std::array<double, 3> customScaling = {0.5, 1, 0.7};
   baf::ControlPoint control_point_t = control_point_c.Transform(transMatrix, customScaling);
-  ASSERT_THAT(control_point_t.GetValue(0), DoubleNear(1.40178, 0.00001));
+  ASSERT_THAT(control_point_t.GetValueForDimension(Dimension{0}), DoubleNear(1.40178, 0.00001));
 }

@@ -150,10 +150,11 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
       baf::ControlPoint upper_control_point = this->GetControlPoint(indices);
       baf::ControlPoint lower_control_point = this->GetControlPoint(lower_indices);
       std::vector<double> coordinates;
-      coordinates.reserve(upper_control_point.GetDimension());
-      for (int j = 0; j < upper_control_point.GetDimension(); ++j) {
-        coordinates.emplace_back(scaling[current_point_index - first] * upper_control_point.GetValue(j)
-            + (1 - scaling[current_point_index - first]) * lower_control_point.GetValue(j));
+      coordinates.reserve(upper_control_point.GetDimensionality());
+      for (int j = 0; j < upper_control_point.GetDimensionality(); ++j) {
+        coordinates.emplace_back(
+            scaling[current_point_index - first] * upper_control_point.GetValueForDimension(Dimension{j})
+            + (1 - scaling[current_point_index - first]) * lower_control_point.GetValueForDimension(Dimension{j}));
       }
       return baf::ControlPoint(coordinates);
     }

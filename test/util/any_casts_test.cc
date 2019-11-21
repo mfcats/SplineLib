@@ -56,7 +56,8 @@ class A1DAnyBSplineForAnyCasts : public Test {
 };
 
 TEST_F(A1DAnyBSplineForAnyCasts, Returns1_2AsSecondControlPointAfterCastTo1DBSpline) {  // NOLINT
-  ASSERT_THAT(util::any_casts::GetSpline<1>(b_spline_1d_any_)->GetControlPoint(1).GetValue(0), DoubleEq(1.2));
+  ASSERT_THAT(util::any_casts::GetSpline<1>(b_spline_1d_any_)->GetControlPoint(1).GetValueForDimension(Dimension{0}),
+      DoubleEq(1.2));
 }
 
 TEST_F(A1DAnyBSplineForAnyCasts, ReturnsSplineDimension1) {  // NOLINT
@@ -88,7 +89,7 @@ class A2DAnyNURBSForAnyCasts : public Test {
 };
 
 TEST_F(A2DAnyNURBSForAnyCasts, ReturnsMinus1AsThirdControlPointAfterCastTo2DNURBS) {  // NOLINT
-  ASSERT_THAT(util::any_casts::GetSpline<2>(nurbs_2d_any_)->GetControlPoint(2).GetValue(0), DoubleEq(-1.0));
+  ASSERT_THAT(util::any_casts::GetSpline<2>(nurbs_2d_any_)->GetControlPoint(2).GetValueForDimension(Dimension{0}), DoubleEq(-1.0));
 }
 
 TEST_F(A2DAnyNURBSForAnyCasts, ReturnsSplineDimension2) {  // NOLINT
@@ -120,7 +121,8 @@ class A3DAnyBSplineForAnyCasts : public Test {
 };
 
 TEST_F(A3DAnyBSplineForAnyCasts, Returns1_5AsSeventhControlPointAfterCastTo3DBSpline) {  // NOLINT
-  ASSERT_THAT(util::any_casts::GetSpline<3>(bspline_3d_any_)->GetControlPoint(6).GetValue(0), DoubleEq(1.5));
+  ASSERT_THAT(util::any_casts::GetSpline<3>(bspline_3d_any_)->GetControlPoint(6).GetValueForDimension(Dimension{0}),
+      DoubleEq(1.5));
 }
 
 TEST_F(A3DAnyBSplineForAnyCasts, ReturnsSplineDimension3) {  // NOLINT
@@ -153,7 +155,8 @@ class A4DAnyNURBSForAnyCasts : public Test {
 };
 
 TEST_F(A4DAnyNURBSForAnyCasts, Returns0_4AsLastControlPointAfterCastTo4DNURBS) {  // NOLINT
-  ASSERT_THAT(util::any_casts::GetSpline<4>(nurbs_4d_any_)->GetControlPoint(15).GetValue(0), DoubleEq(0.4));
+  ASSERT_THAT(util::any_casts::GetSpline<4>(nurbs_4d_any_)->GetControlPoint(15).GetValueForDimension(Dimension{0}),
+      DoubleEq(0.4));
 }
 
 TEST_F(A4DAnyNURBSForAnyCasts, ReturnsSplineDimension4) {  // NOLINT

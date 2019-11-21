@@ -13,60 +13,66 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/control_point.h"
 
-namespace splinelib::src::baf {
-ControlPoint::ControlPoint(std::initializer_list<double> coordinates) : coordinates_(coordinates) {}
+#include <utility>
 
+#include "src/util/vector_utils.h"
+#include "src/util/stl_container_access.h"
+
+namespace splinelib::src::baf {
 ControlPoint::ControlPoint(std::vector<double> coordinates) : coordinates_(std::move(coordinates)) {}
+
+ControlPoint::ControlPoint(std::initializer_list<double> const &coordinates) : coordinates_(coordinates) {}
 
 ControlPoint::ControlPoint(uint64_t dimension) : coordinates_(std::vector(dimension, 0.0)) {}
 
-int ControlPoint::GetDimension() const {
-  return static_cast<int>(coordinates_.size());
+ControlPoint::ControlPoint(ControlPoint &&other) noexcept : coordinates_(std::move(other.coordinates_)) {}
+
+ControlPoint & ControlPoint::operator=(ControlPoint &&rhs) noexcept {
+  coordinates_ = std::move(rhs.coordinates_);
+  return (*this);
 }
 
-double ControlPoint::GetValue(int dimension) const {
-#ifndef NDEBUG
-  return coordinates_.at(dimension);
-#else
-  return coordinates_[dimension];
-#endif
+double ControlPoint::GetValueForDimension(Dimension const &dimension) const {
+  return GetValue(coordinates_, dimension);
 }
 
 void ControlPoint::SetValue(int dimension, double value) {
   coordinates_[dimension] = value;
 }
 
-ControlPoint ControlPoint::operator+(const ControlPoint &control_point) const {
-  std::vector<double> coordinates_new;
-  coordinates_new.reserve(this->GetDimension());
-  for (int i = 0; i < this->GetDimension(); ++i) {
-    coordinates_new.push_back(this->GetValue(i) + control_point.GetValue(i));
-  }
+ControlPoint operator+(ControlPoint const &lhs, ControlPoint const &rhs) {
+  std::vector<double> const coordinates_new = util::vector_utils::ComputeSum(lhs.coordinates_, rhs.coordinates_);
   return ControlPoint(coordinates_new);
 }
 
-ControlPoint ControlPoint::operator-(const ControlPoint &control_point) const {
-  std::vector<double> coordinates_new;
-  coordinates_new.reserve(this->GetDimension());
-  for (int i = 0; i < this->GetDimension(); ++i) {
-    coordinates_new.push_back(this->GetValue(i) - control_point.GetValue(i));
-  }
+ControlPoint operator-(ControlPoint const &lhs, ControlPoint const &rhs) {
+  std::vector<double> const coordinates_new = util::vector_utils::ComputeDifference(lhs.coordinates_, rhs.coordinates_);
   return ControlPoint(coordinates_new);
 }
 
-ControlPoint ControlPoint::operator*(const double &scalar) const {
-  std::vector<double> coordinates_new(this->GetDimension());
-  std::transform(coordinates_.begin(), coordinates_.end(), coordinates_new.begin(),
+ControlPoint operator*(ControlPoint const &control_point, double scalar) {
+  std::vector<double> coordinates_new(control_point.GetDimensionality());
+  std::transform(control_point.coordinates_.begin(), control_point.coordinates_.end(), coordinates_new.begin(),
                  std::bind(std::multiplies<>(), std::placeholders::_1, scalar));
   return ControlPoint(coordinates_new);
 }
 
-ControlPoint ControlPoint::Transform(std::array<std::array<double, 4>, 4> TransMatrix,
-                                     std::array<double, 3> scaling) const {
-  std::vector<double> coordinates_new = {TransMatrix[0][3], TransMatrix[1][3], TransMatrix[2][3]};
-  for (int i = 0; i < 3; ++i) {
-    for (int j = 0; j < 3; ++j) {
-      coordinates_new[j] += TransMatrix[j][i] * scaling[i] * GetValue(i);
+ControlPoint operator*(double scalar, ControlPoint const &control_point) {
+  std::vector<double> coordinates_new(control_point.GetDimensionality());
+  std::transform(control_point.coordinates_.begin(), control_point.coordinates_.end(), coordinates_new.begin(),
+                 std::bind(std::multiplies<>(), std::placeholders::_1, scalar));
+  return ControlPoint(coordinates_new);
+}
+
+ControlPoint ControlPoint::Transform(std::array<std::array<double, 4>, 4> const &transformation_matrix,
+                                     std::array<double, 3> const &scaling) const {
+  std::vector<double> coordinates_new = {GetValue(GetValue(transformation_matrix, 0), 3),
+                                         GetValue(GetValue(transformation_matrix, 1), 3),
+                                         GetValue(GetValue(transformation_matrix, 2), 3)};
+  for (Dimension i{0}; i < Dimension(3); ++i) {
+    for (Dimension j{0}; j < Dimension{3}; ++j) {
+      GetValue(coordinates_new, j) += GetValue(GetValue(transformation_matrix, j), i) * GetValue(scaling, i) *
+          GetValue(coordinates_, i);
     }
   }
   return ControlPoint(coordinates_new);

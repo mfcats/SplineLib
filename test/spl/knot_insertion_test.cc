@@ -71,7 +71,8 @@ TEST_F(BSpline1DEx5_1, InsertsKnot2_5Correctly) {  // NOLINT
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
-      ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, j), DoubleEq(new_control_points[i].GetValue(j)));
+      ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, j),
+          DoubleEq(new_control_points[i].GetValueForDimension(Dimension{j})));
     }
   }
   for (int i = 0; i <= 50; ++i) {
@@ -137,7 +138,8 @@ TEST_F(NURBS1DEx5_2, InsertsKnot2_0Correctly) {  // NOLINT
   };
   for (int i = 3; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
-      ASSERT_THAT(nurbs_1d_after_->GetControlPoint(i, j), DoubleEq(new_control_points[i].GetValue(j)));
+      ASSERT_THAT(nurbs_1d_after_->GetControlPoint(i, j),
+          DoubleEq(new_control_points[i].GetValueForDimension(Dimension{j})));
     }
   }
   std::vector<double> new_weights = {1.0, 1.0, 2.0, 10.0 / 3.0, 3.0, 1.0, 4.0, 2.0, 1.0};
@@ -207,7 +209,8 @@ TEST_F(BSpline1DFig5_16, InsertsMidpoints) {  // NOLINT
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
-      ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, j), DoubleNear(new_control_points[i].GetValue(j), 0.00001));
+      ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, j),
+          DoubleNear(new_control_points[i].GetValueForDimension(Dimension{j}), 0.00001));
     }
   }
   for (int i = 0; i <= 100; ++i) {
