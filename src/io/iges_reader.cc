@@ -84,9 +84,9 @@ std::any IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
     controlPointCoordinates.push_back(parameterData[i]);
   }
   for (auto i = 0u; i < controlPointCoordinates.size(); i += 3) {
-    control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
-                                                controlPointCoordinates[i + 1],
-                                                controlPointCoordinates[i + 2]}));
+    control_points.emplace_back(baf::ControlPoint({controlPointCoordinates[i],
+                                                   controlPointCoordinates[i + 1],
+                                                   controlPointCoordinates[i + 2]}));
   }
   std::array<int, 1> number_of_points{};
   for (int i = 0; i < 1; ++i) {
@@ -138,9 +138,9 @@ std::any IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
     controlPointCoordinates.push_back(parameterData[i]);
   }
   for (auto i = 0u; i < controlPointCoordinates.size() - 2; i += 3) {
-    control_points.push_back(baf::ControlPoint({controlPointCoordinates[i],
-                                                controlPointCoordinates[i + 1],
-                                                controlPointCoordinates[i + 2]}));
+    control_points.emplace_back(baf::ControlPoint({controlPointCoordinates[i],
+                                                   controlPointCoordinates[i + 1],
+                                                   controlPointCoordinates[i + 2]}));
   }
   std::array<int, 2> number_of_points{};
   for (int i = 0; i < 2; ++i) {

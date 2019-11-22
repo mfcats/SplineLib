@@ -30,6 +30,7 @@ class NonZeroDegreeBSplineBasisFunction : public BSplineBasisFunction {
   NonZeroDegreeBSplineBasisFunction(NonZeroDegreeBSplineBasisFunction &&other) = delete;
   NonZeroDegreeBSplineBasisFunction & operator=(NonZeroDegreeBSplineBasisFunction const &other) = delete;
   NonZeroDegreeBSplineBasisFunction & operator=(NonZeroDegreeBSplineBasisFunction &&other) = delete;
+  ~NonZeroDegreeBSplineBasisFunction() = default;
 
  protected:
   double EvaluateOnSupport(ParametricCoordinate const &parametric_coordinate) const final;

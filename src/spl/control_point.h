@@ -28,11 +28,11 @@ class ControlPoint {
   explicit ControlPoint(std::vector<double> coordinates);
   ControlPoint(std::initializer_list<double> const &coordinates);
   explicit ControlPoint(uint64_t dimension);
-
   ControlPoint(ControlPoint const &other) = default;
   ControlPoint(ControlPoint &&other) noexcept;
   ControlPoint & operator=(ControlPoint const &rhs) = default;
   ControlPoint & operator=(ControlPoint &&rhs) noexcept;
+  ~ControlPoint() = default;
 
   int GetDimensionality() const;
   double GetValueForDimension(Dimension const &dimension) const;
@@ -45,7 +45,7 @@ class ControlPoint {
   friend ControlPoint operator*(ControlPoint const &control_point, double scalar);
   friend ControlPoint operator*(double scalar, ControlPoint const &control_point);
 
-  ControlPoint Transform(std::array<std::array<double, 4>, 4> const &TransformationMatrix,
+  ControlPoint Transform(std::array<std::array<double, 4>, 4> const &transformation_matrix,
                          std::array<double, 3> const &scaling) const;
 
   double GetEuclideanNorm() const;
