@@ -111,7 +111,7 @@ class A3DAnyBSplineForAnyCasts : public Test {
                                            std::make_shared<baf::KnotVector>(knot_vector),
                                            std::make_shared<baf::KnotVector>(knot_vector)};
     std::vector<baf::ControlPoint> control_points(8, baf::ControlPoint{2.0});
-    control_points[6].SetValue(0, 1.5);
+    control_points[6].SetValue(Dimension{0}, 1.5);
     std::shared_ptr<spl::BSpline<3>> bspline_3d_ptr = std::make_shared<spl::BSpline<3>>(knot_vector_ptr, degree,
                                                                                         control_points);
     bspline_3d_any_ = std::make_any<std::shared_ptr<spl::BSpline<3>>>(bspline_3d_ptr);
@@ -144,7 +144,7 @@ class A4DAnyNURBSForAnyCasts : public Test {
         {std::make_shared<baf::KnotVector>(knot_vector), std::make_shared<baf::KnotVector>(knot_vector),
          std::make_shared<baf::KnotVector>(knot_vector), std::make_shared<baf::KnotVector>(knot_vector)};
     std::vector<baf::ControlPoint> control_points(16, baf::ControlPoint{2.0});
-    control_points[15].SetValue(0, 0.4);
+    control_points[15].SetValue(Dimension{0}, 0.4);
     std::vector<double> weights(16, 1.2);
     std::shared_ptr<spl::NURBS<4>> nurbs_4d_ptr = std::make_shared<spl::NURBS<4>>(knot_vector_ptr, degree,
                                                                                   control_points, weights);

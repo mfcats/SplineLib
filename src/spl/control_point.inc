@@ -14,9 +14,17 @@ You should have received a copy of the GNU Lesser General Public License along w
 // NOLINT(build/header_guard)
 
 inline double ControlPoint::operator[](Dimension const &dimension) const {
-  return GetValueForDimension(dimension);
+  return GetValue(coordinates_, dimension);
+}
+
+inline double ControlPoint::GetValueForDimension(Dimension const &dimension) const {
+  return GetValue(coordinates_, dimension);
 }
 
 inline int ControlPoint::GetDimensionality() const {
   return coordinates_.size();
+}
+
+inline void ControlPoint::SetValue(Dimension dimension, double value) {
+  GetValue(coordinates_, dimension) = value;
 }

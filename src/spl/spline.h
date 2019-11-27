@@ -352,10 +352,10 @@ class Spline {
         auto index = ((index_in_dir + segment) % width + point_handler.CollapseDimension(Dimension{dimension}) * width);
         double weight = GetWeight(point_handler.GetCurrentIndex());
         for (int j = 0; j < GetPointDim(); ++j) {
-          bezier_cps[index].SetValue(j, GetControlPoint(
+          bezier_cps[index].SetValue(Dimension{j}, GetControlPoint(
               point_handler.GetCurrentIndex()).GetValueForDimension(Dimension{j}) * weight);
         }
-        bezier_cps[index].SetValue(GetPointDim(), weight);
+        bezier_cps[index].SetValue(Dimension{GetPointDim()}, weight);
       }
     }
     return bezier_cps;
@@ -443,7 +443,7 @@ class Spline {
       baf::ControlPoint cp(GetPointDim());
       double weight = bezier_segments[segment][index].GetValueForDimension(Dimension{GetPointDim()});
       for (int j = 0; j < GetPointDim(); ++j) {
-        cp.SetValue(j, bezier_segments[segment][index].GetValueForDimension(Dimension{j}) / weight);
+        cp.SetValue(Dimension{j}, bezier_segments[segment][index].GetValueForDimension(Dimension{j}) / weight);
       }
       this->SetNewControlPoint(cp, weight, point_handler.GetCurrentIndex());
     }

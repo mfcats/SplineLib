@@ -67,54 +67,54 @@ TEST_F(AControlPoint, MoveAssignmentOperatorWorks) {  // NOLINT
   ASSERT_TRUE(operator==(copy_of_a, control_point_a_));
 }
 
-TEST_F(AControlPoint, ReturnsCorrectDimension) { // NOLINT
+TEST_F(AControlPoint, ReturnsCorrectDimension) {  // NOLINT
   ASSERT_THAT(control_point_a_.GetDimensionality(), 2);
 }
 
-TEST_F(AControlPoint, Returns1ForDimension0) { // NOLINT
+TEST_F(AControlPoint, Returns1ForDimension0) {  // NOLINT
   ASSERT_THAT(control_point_a_.GetValueForDimension(Dimension{0}), DoubleEq(1.0));
   ASSERT_THAT(control_point_a_[Dimension{0}], DoubleEq(1.0));
 }
 
-TEST_F(AControlPoint, Returns2ForDimension1) { // NOLINT
+TEST_F(AControlPoint, Returns2ForDimension1) {  // NOLINT
   ASSERT_THAT(control_point_a_.GetValueForDimension(Dimension{1}), DoubleEq(2.0));
   ASSERT_THAT(control_point_a_[Dimension{1}], DoubleEq(2.0));
 }
 
-TEST_F(AControlPoint, Returns2_5ForDimension1AfterSetValue) { // NOLINT
+TEST_F(AControlPoint, Returns2_5ForDimension1AfterSetValue) {  // NOLINT
   baf::ControlPoint control_point(control_point_a_);
-  control_point_a_.SetValue(1, 2.5);
+  control_point_a_.SetValue(Dimension{1}, 2.5);
   ASSERT_THAT(control_point_a_[Dimension{1}], DoubleEq(2.5));
 }
 
-TEST_F(AControlPoint, ReturnsCorrectResultAfterAdditionOfControlPoints) { // NOLINT
+TEST_F(AControlPoint, ReturnsCorrectResultAfterAdditionOfControlPoints) {  // NOLINT
   ASSERT_THAT((control_point_a_ + control_point_b_)[Dimension{0}], DoubleEq(3.0));
   ASSERT_THAT((control_point_a_ + control_point_b_)[Dimension{1}], DoubleEq(1.0));
 }
 
-TEST_F(AControlPoint, ReturnsCorrectResultAfterSubtractionOfControlPoints) { // NOLINT
+TEST_F(AControlPoint, ReturnsCorrectResultAfterSubtractionOfControlPoints) {  // NOLINT
   ASSERT_THAT((control_point_a_ - control_point_b_)[Dimension{0}], DoubleEq(-1.0));
   ASSERT_THAT((control_point_a_ - control_point_b_)[Dimension{1}], DoubleEq(3.0));
 }
 
-TEST_F(AControlPoint, ReturnsCorrectResultAfterMultiplicationWithScalar) { // NOLINT
+TEST_F(AControlPoint, ReturnsCorrectResultAfterMultiplicationWithScalar) {  // NOLINT
   ASSERT_THAT((control_point_a_ * 0.5)[Dimension{0}], DoubleEq(0.5));
   ASSERT_THAT((control_point_a_ * 0.5)[Dimension{1}], DoubleEq(1.0));
   ASSERT_THAT((0.5 * control_point_a_)[Dimension{0}], DoubleEq(0.5));
   ASSERT_THAT((0.5 * control_point_a_)[Dimension{1}], DoubleEq(1.0));
 }
 
-TEST_F(AControlPoint, PerformsTransformationCorrectly) { // NOLINT
+TEST_F(AControlPoint, PerformsTransformationCorrectly) {  // NOLINT
   baf::ControlPoint control_point_t = control_point_c_.Transform(transformation_matrix_, scaling_);
   ASSERT_THAT(control_point_t[Dimension{0}], DoubleEq(2.1454));
 }
 
-TEST_F(AControlPoint, PerformsScalingTransformation) { // NOLINT
+TEST_F(AControlPoint, PerformsScalingTransformation) {  // NOLINT
   std::array<double, 3> customScaling = {0.5, 1, 0.7};
   baf::ControlPoint control_point_t = control_point_c_.Transform(transformation_matrix_, customScaling);
   ASSERT_THAT(control_point_t[Dimension{0}], DoubleNear(1.40178, 0.00001));
 }
 
-TEST_F(AControlPoint, ReturnsEuclideanNormOf) { // NOLINT
+TEST_F(AControlPoint, ReturnsEuclideanNormOf) {  // NOLINT
   ASSERT_THAT(control_point_a_.GetEuclideanNorm(), DoubleEq(sqrt(5.0)));
 }
