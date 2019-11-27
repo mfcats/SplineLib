@@ -13,6 +13,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/control_point.h"
 
+#include <algorithm>
 #include <cmath>
 #include <functional>
 #include <utility>

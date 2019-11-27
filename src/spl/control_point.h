@@ -24,7 +24,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::baf {
 class ControlPoint {
  public:
-  // TODO(): would it be appropriate to use NamedType Dimension here?
+  // TODO(all): would it be appropriate to use NamedType Dimension here?
   explicit ControlPoint(int number_of_dimensions);
   explicit ControlPoint(std::vector<double> coordinates);
   ControlPoint(std::initializer_list<double> const &coordinates);
@@ -47,7 +47,8 @@ class ControlPoint {
 
   // This method transforms the ControlPoint by first scaling it with the given scaling vector and then applying the
   // rotational transformation (orthogonal) matrix.
-  // TODO(): why 4x4 transformation matrix and not 3x3?
+  // TODO(all): why 4x4 transformation matrix and not 3x3? save homogeneous and not heterogeneous control point
+  //  coordinates?
   ControlPoint Transform(std::array<std::array<double, 4>, 4> const &transformation_matrix,
                          std::array<double, 3> const &scaling) const;
 
