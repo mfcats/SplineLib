@@ -43,11 +43,11 @@ class A1DElementGenerator : public Test {
   iga::elm::ElementGenerator<1> element_generator;
 };
 
-TEST_F(A1DElementGenerator, ReturnsCorrectNumberOfElements) { // NOLINT
+TEST_F(A1DElementGenerator, ReturnsCorrectNumberOfElements) {  // NOLINT
   ASSERT_THAT(element_generator.GetElementList(0).size(), 5);
 }
 
-TEST_F(A1DElementGenerator, ReturnsElementsWithCorrectNodes) { // NOLINT
+TEST_F(A1DElementGenerator, ReturnsElementsWithCorrectNodes) {  // NOLINT
   auto element_list = element_generator.GetElementList(0);
   for (auto element = 0u; element < element_list.size(); element++) {
     ASSERT_THAT(element_list[element].GetLowerBound().Get(), element);

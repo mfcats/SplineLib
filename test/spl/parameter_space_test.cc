@@ -88,15 +88,15 @@ TEST_F(A1DParameterSpace,  // NOLINT
   }
 }
 
-TEST_F(A1DParameterSpace, Returns1AsFirstNonZeroBasisFunctionsForParametricCoordinate1_5) { // NOLINT
+TEST_F(A1DParameterSpace, Returns1AsFirstNonZeroBasisFunctionsForParametricCoordinate1_5) {  // NOLINT
   ASSERT_THAT(parameter_space.GetArrayOfFirstNonZeroBasisFunctions({ParametricCoordinate(1.5)})[0], 1);
 }
 
-TEST_F(A1DParameterSpace, Returns5AsFirstNonZeroBasisFunctionsForParametricCoordinate4) { // NOLINT
+TEST_F(A1DParameterSpace, Returns5AsFirstNonZeroBasisFunctionsForParametricCoordinate4) {  // NOLINT
   ASSERT_THAT(parameter_space.GetArrayOfFirstNonZeroBasisFunctions({ParametricCoordinate(4.0)})[0], 5);
 }
 
-TEST_F(A1DParameterSpace, ThrowsIfParametricCoordinateOutsideKnotVectorRange) { // NOLINT
+TEST_F(A1DParameterSpace, ThrowsIfParametricCoordinateOutsideKnotVectorRange) {  // NOLINT
   ASSERT_THROW(parameter_space.ThrowIfParametricCoordinateOutsideKnotVectorRange({ParametricCoordinate(5.1)}),
                std::range_error);
 }
@@ -226,7 +226,7 @@ TEST_F(A3DParameterSpace, Returns2_0ForFourthKnotOfThirdKnotVector) {  // NOLINT
   ASSERT_THAT((*parameter_space.GetKnotVector(2))[3].Get(), DoubleEq(2.0));
 }
 
-TEST_F(A3DParameterSpace, Returns3_0ForKnotVectorRangeThirdDimension) { // NOLINT
+TEST_F(A3DParameterSpace, Returns3_0ForKnotVectorRangeThirdDimension) {  // NOLINT
   ASSERT_THAT(parameter_space.GetKnotVectorRange(2), DoubleEq(3.0));
 }
 

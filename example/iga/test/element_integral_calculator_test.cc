@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::DoubleNear;
 
-TEST_F(AnIGATestSpline, TestElementIntegralCalculator) { // NOLINT
+TEST_F(AnIGATestSpline, TestElementIntegralCalculator) {  // NOLINT
   elm_itg_calc.GetLaplaceElementIntegral(0, rule, matA);
   for (uint64_t i = 0; i < matlab_element_one_integral.size(); ++i) {
     for (uint64_t j = 0; j < matlab_element_one_integral[0].size(); ++j) {

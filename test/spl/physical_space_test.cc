@@ -144,7 +144,7 @@ TEST_F(A2DPhysicalSpace, ReturnsCorrectInnerControlPointFor1DIndex) {  // NOLINT
   ASSERT_THAT(physical_space.GetControlPoint(4).GetValueForDimension(Dimension{1}), DoubleEq(2.5));
 }
 
-TEST_F(A2DPhysicalSpace, ReturnsDefaultWeight) { // NOLINT
+TEST_F(A2DPhysicalSpace, ReturnsDefaultWeight) {  // NOLINT
   ASSERT_THAT(physical_space.GetWeight(std::array<int, 2>{1, 2}), DoubleEq(1.0));
 }
 

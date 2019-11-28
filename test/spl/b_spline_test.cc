@@ -169,85 +169,85 @@ class ABSpline : public Test {
   std::shared_ptr<NiceMock<MockPhysicalSpace>> physical_space;
 };
 
-TEST_F(ABSpline, Returns0_0For0AndDim0) { // NOLINT
+TEST_F(ABSpline, Returns0_0For0AndDim0) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THAT(b_spline->Evaluate({ParametricCoordinate{0.0}}, {0})[0], DoubleEq(0.0));
 }
 
-TEST_F(ABSpline, Returns0_0For0AndDim1) { // NOLINT
+TEST_F(ABSpline, Returns0_0For0AndDim1) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THAT(b_spline->Evaluate({ParametricCoordinate{0.0}}, {1})[0], DoubleEq(0.0));
 }
 
-TEST_F(ABSpline, Returns4_0For5AndDim0) { // NOLINT
+TEST_F(ABSpline, Returns4_0For5AndDim0) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THAT(b_spline->Evaluate({ParametricCoordinate{5.0}}, {0})[0], DoubleEq(4.0));
 }
 
-TEST_F(ABSpline, Returns0_0For5AndDim1) { // NOLINT
+TEST_F(ABSpline, Returns0_0For5AndDim1) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THAT(b_spline->Evaluate({ParametricCoordinate{5.0}}, {1})[0], DoubleEq(0.0));
 }
 
-TEST_F(ABSpline, Returns1_5For2_5AndDim0) { // NOLINT
+TEST_F(ABSpline, Returns1_5For2_5AndDim0) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THAT(b_spline->Evaluate({ParametricCoordinate{2.5}}, {0})[0], DoubleEq(1.5));
 }
 
-TEST_F(ABSpline, Returns0_0For0_0Dim0AndDer1) { // NOLINT
+TEST_F(ABSpline, Returns0_0For0_0Dim0AndDer1) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THAT(b_spline->EvaluateDerivative({ParametricCoordinate{0.0}}, {0}, {1})[0], DoubleEq(0.0));
 }
 
-TEST_F(ABSpline, Returns1_0For0_0Dim1AndDer1) { // NOLINT
+TEST_F(ABSpline, Returns1_0For0_0Dim1AndDer1) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THAT(b_spline->EvaluateDerivative({ParametricCoordinate{0.0}}, {1}, {1})[0], DoubleEq(2.0));
 }
 
-TEST_F(ABSpline, Returns12_0For5_0Dim0AndDer1) { // NOLINT
+TEST_F(ABSpline, Returns12_0For5_0Dim0AndDer1) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THAT(b_spline->EvaluateDerivative({ParametricCoordinate{5.0}}, {0}, {1})[0], DoubleEq(0.0));
 }
 
-TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) { // NOLINT
+TEST_F(ABSpline, Returns0_325For2_25Dim1AndDer1) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THAT(b_spline->EvaluateDerivative({ParametricCoordinate{2.25}}, {1}, {1})[0], DoubleEq(0.325));
 }
 
-TEST_F(ABSpline, CanBeConstructedWithAPhysicalAndAParameterSpace) { // NOLINT
+TEST_F(ABSpline, CanBeConstructedWithAPhysicalAndAParameterSpace) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THAT(b_spline->Evaluate({ParametricCoordinate{5.0}}, {0})[0], DoubleEq(4.0));
 }
 
-TEST_F(ABSpline, ThrowsExceptionForEvaluationAt6_0) { // NOLINT
+TEST_F(ABSpline, ThrowsExceptionForEvaluationAt6_0) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THROW(b_spline->Evaluate({ParametricCoordinate{6.0}}, {0}), std::runtime_error);
 }
 
-TEST_F(ABSpline, ThrowsExceptionForEvaluationAtMinus1_0) { // NOLINT
+TEST_F(ABSpline, ThrowsExceptionForEvaluationAtMinus1_0) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THROW(b_spline->Evaluate({ParametricCoordinate{-1.0}}, {0}), std::runtime_error);
 }
 
-TEST_F(ABSpline, ThrowsExceptionForDerivativeEvaluationAt6_0) { // NOLINT
+TEST_F(ABSpline, ThrowsExceptionForDerivativeEvaluationAt6_0) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THROW(b_spline->EvaluateDerivative({ParametricCoordinate{6.0}}, {0}, {1}), std::runtime_error);
 }
 
-TEST_F(ABSpline, ThrowsExceptionForDerivativeEvaluationAtMinus1_0) { // NOLINT
+TEST_F(ABSpline, ThrowsExceptionForDerivativeEvaluationAtMinus1_0) {  // NOLINT
   mock_parameterSpace(parameter_space);
   mock_physicalSpace(physical_space);
   ASSERT_THROW(b_spline->EvaluateDerivative({ParametricCoordinate{-1.0}}, {0}, {1}), std::runtime_error);
@@ -284,6 +284,6 @@ class ABSplineWithSplineGenerator : public Test {
   std::vector<baf::ControlPoint> control_points_;
 };
 
-TEST_F(ABSplineWithSplineGenerator, Returns0_0For0AndDim0) { // NOLINT
+TEST_F(ABSplineWithSplineGenerator, Returns0_0For0AndDim0) {  // NOLINT
   ASSERT_THAT(b_spline->Evaluate({ParametricCoordinate{0.0}}, {0})[0], DoubleEq(0.0));
 }

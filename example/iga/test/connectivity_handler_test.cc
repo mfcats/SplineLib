@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::Eq;
 
-TEST_F(AnIGATestSpline, TestConnectivityHandler) { // NOLINT
+TEST_F(AnIGATestSpline, TestConnectivityHandler) {  // NOLINT
   iga::ConnectivityHandler<2> connectivity_handler = iga::ConnectivityHandler<2>(nurbs_);
   std::vector<int> e1 = {1, 2, 3, 4, 8, 9, 10, 11, 15, 16, 17, 18, 22, 23, 24, 25};
   std::vector<int> e2 = {2, 3, 4, 5, 9, 10, 11, 12, 16, 17, 18, 19, 23, 24, 25, 26};
@@ -35,7 +35,7 @@ TEST_F(AnIGATestSpline, TestConnectivityHandler) { // NOLINT
   }
 }
 
-TEST_F(AnIGATestSpline3, TestConnectivityHandler) { // NOLINT
+TEST_F(AnIGATestSpline3, TestConnectivityHandler) {  // NOLINT
   iga::ConnectivityHandler<3> connectivity_handler = iga::ConnectivityHandler<3>(nurbs_);
      ASSERT_THAT(connectivity_handler.GetGlobalIndex(15, 10), Eq(188));
 }

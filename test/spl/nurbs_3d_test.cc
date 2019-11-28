@@ -52,7 +52,7 @@ class A3DNurbsWithAllWeights1 : public Test {
   std::shared_ptr<NiceMock<MockPhysicalSpace3d>> physical_space;
 };
 
-TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_5And0_5AndDerivatives1And1And0) { // NOLINT
+TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_5And0_5AndDerivatives1And1And0) {  // NOLINT
   mock_parameterSpace_nurbs3d(parameter_space);
   mock_physicalSpace3d(physical_space);
   mock_weightedPhysicalSpace3d(w_physical_space);
@@ -63,7 +63,7 @@ TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_5And0
                                                      ParametricCoordinate{0.5}}, {0}, {1, 1, 0})[0]));
 }
 
-TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And1And1) { // NOLINT
+TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And1And1) {  // NOLINT
   mock_parameterSpace_nurbs3d(parameter_space);
   mock_physicalSpace3d(physical_space);
   mock_weightedPhysicalSpace3d(w_physical_space);
@@ -74,7 +74,7 @@ TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0
                                                      ParametricCoordinate{0.1}}, {0}, {1, 1, 1})[0]));
 }
 
-TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And2And1) { // NOLINT
+TEST_F(A3DNurbsWithAllWeights1, ReturnsSameDerivativeAs3DBSplineFor0_5And0_8And0_1AndDerivatives1And2And1) {  // NOLINT
   mock_parameterSpace_nurbs3d(parameter_space);
   mock_physicalSpace3d(physical_space);
   mock_weightedPhysicalSpace3d(w_physical_space);

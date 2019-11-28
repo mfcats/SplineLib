@@ -27,7 +27,7 @@ class A1DElement : public Test {
   iga::elm::Element element;
 };
 
-TEST_F(A1DElement, ReturnsCorrectNode) { // NOLINT
+TEST_F(A1DElement, ReturnsCorrectNode) {  // NOLINT
   ASSERT_THAT(element.GetLowerBound().Get(), DoubleEq(0.5));
   ASSERT_THAT(element.GetUpperBound().Get(), DoubleEq(1.0));
 }

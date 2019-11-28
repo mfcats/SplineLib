@@ -22,7 +22,7 @@ namespace splinelib::src::baf {
 BSplineBasisFunction * BSplineBasisFunction::CreateDynamic(KnotVector const &knot_vector,
                                                            KnotSpan const &start_of_support, Degree const &degree) {
   if (degree < Degree{0}) {
-    throw std::runtime_error("splinelib::src::baf::BSplineBasisFunction::CreateDynamic: Basis function degree must be "
+    throw std::logic_error("splinelib::src::baf::BSplineBasisFunction::CreateDynamic: Basis function degree must be "
                              "positive. Given degree is " + std::to_string(degree.Get()));
   }
   if (degree == Degree{0}) {

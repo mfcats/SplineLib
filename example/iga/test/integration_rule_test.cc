@@ -39,13 +39,13 @@ class AnIntegrationRule : public Test {
   std::vector<iga::itg::IntegrationRule> rules_;
 };
 
-TEST_F(AnIntegrationRule, ReturnsCorrectNumberOfPoints) { // NOLINT
+TEST_F(AnIntegrationRule, ReturnsCorrectNumberOfPoints) {  // NOLINT
   for (int points = 1; points <= 5; points++) {
     ASSERT_THAT(rules_[points - 1].GetNumberOfIntegrationPoints(), points);
   }
 }
 
-TEST_F(AnIntegrationRule, ReturnsCorrectWeightSum) { // NOLINT
+TEST_F(AnIntegrationRule, ReturnsCorrectWeightSum) {  // NOLINT
   for (int points = 1; points <= 5; points++) {
     double weight_sum = 0;
     for (int weight = 0; weight < points; weight++) {
@@ -55,7 +55,7 @@ TEST_F(AnIntegrationRule, ReturnsCorrectWeightSum) { // NOLINT
   }
 }
 
-TEST_F(AnIntegrationRule, ReturnsCorrectPointSum) { // NOLINT
+TEST_F(AnIntegrationRule, ReturnsCorrectPointSum) {  // NOLINT
   for (int points = 1; points <= 5; points++) {
     double point_sum = 0;
     for (int point = 0; point < points; point++) {

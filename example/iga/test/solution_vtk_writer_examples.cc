@@ -28,7 +28,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "test_spline.h"
 #include "four_point_gauss_legendre.h"
 
-TEST_F(AnIGATestSpline, TestSolutionVTKWriterRefined) { // NOLINT
+TEST_F(AnIGATestSpline, TestSolutionVTKWriterRefined) {  // NOLINT
   std::shared_ptr<spl::NURBS<2>> nurbs_refined = nurbs_;
   std::vector<double> knots_to_add = {0.48, 0.49, 0.51, 0.52};
   for (auto &knot : knots_to_add) {
@@ -50,7 +50,7 @@ TEST_F(AnIGATestSpline, TestSolutionVTKWriterRefined) { // NOLINT
   solution_vtk_writer.WriteSolutionToVTK(nurbs_refined, solution_ref, {{30, 30}}, "solution_refined.vtk");
 }
 
-TEST_F(AnIGATestSpline2, TestSolutionVTKWriter) { // NOLINT
+TEST_F(AnIGATestSpline2, TestSolutionVTKWriter) {  // NOLINT
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
   linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
   linear_equation_assembler.SetLinearBC(matA, vecB);

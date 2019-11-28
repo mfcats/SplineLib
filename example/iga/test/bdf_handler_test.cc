@@ -52,7 +52,7 @@ class ALine : public Test {
   std::shared_ptr<spl::NURBS<1>> nurbs_ = std::make_shared<spl::NURBS<1>>(kv_ptr, degree, control_points, weights);
 };
 
-TEST_F(ALine, Test) { // NOLINT
+TEST_F(ALine, Test) {  // NOLINT
   iga::itg::IntegrationRule rule = iga::itg::FourPointGaussLegendre();
   iga::PoissonProblem<1> poisson_problem(nurbs_, rule);
   auto solutions = poisson_problem.GetUnsteadyStateSolution(0.5, 100);
@@ -145,7 +145,7 @@ TEST_F(ALine, Test) { // NOLINT
   std::shared_ptr<spl::NURBS<2>> nurbs_ = std::make_shared<spl::NURBS<2>>(kv_ptr, degree, control_points, weights);
 };*/
 
-/*TEST_F(ASquarePlate, Test2) { // NOLINT
+/*TEST_F(ASquarePlate, Test2) {  // NOLINT
   iga::itg::IntegrationRule rule = iga::itg::FourPointGaussLegendre();
   iga::SolutionVTKWriter<2> solution_vtk_writer;
   iga::PoissonProblem<2> poisson_problem(nurbs_, rule);
@@ -156,7 +156,7 @@ TEST_F(ALine, Test) { // NOLINT
   }
 }*/
 
-/*TEST_F(ASquarePlate, Test3) { // NOLINT
+/*TEST_F(ASquarePlate, Test3) {  // NOLINT
   io::VTKWriter vtk_writer;
   iga::LinearEquationAssembler<2> lin_eq_assem(nurbs_);
   std::array<std::array<std::shared_ptr<spl::NURBS<1>>, 2>, 2> boundary_splines = lin_eq_assem.GetBoundarySplines();
@@ -171,7 +171,7 @@ TEST_F(ALine, Test) { // NOLINT
   }
 }*/
 
-/*TEST_F(ASquarePlate, Test4) { // NOLINT
+/*TEST_F(ASquarePlate, Test4) {  // NOLINT
   iga::LinearEquationAssembler<2> linear_equation_assembler(nurbs_);
   iga::ElementIntegralCalculator<2> elm_itg_calc = iga::ElementIntegralCalculator<2>(nurbs_);
   iga::itg::IntegrationRule rule = iga::itg::FivePointGaussLegendre();
@@ -210,7 +210,7 @@ TEST_F(ALine, Test) { // NOLINT
   }
 }*/
 
-/*TEST_F(ASquarePlate, Test5) { // NOLINT
+/*TEST_F(ASquarePlate, Test5) {  // NOLINT
   iga::itg::IntegrationRule rule = iga::itg::FourPointGaussLegendre();
   iga::SolutionVTKWriter<2> solution_vtk_writer;
   iga::PoissonProblem<2> poisson_problem(nurbs_, rule);

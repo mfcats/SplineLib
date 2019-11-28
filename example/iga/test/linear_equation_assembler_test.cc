@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::DoubleNear;
 
-TEST_F(AnIGATestSpline, TestLeftSide) { // NOLINT
+TEST_F(AnIGATestSpline, TestLeftSide) {  // NOLINT
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
   for (uint64_t i = 0; i < matlab_matrix_a.size(); ++i) {
     for (uint64_t j = 0; j < matlab_matrix_a[0].size(); ++j) {
@@ -28,14 +28,14 @@ TEST_F(AnIGATestSpline, TestLeftSide) { // NOLINT
   }
 }
 
-TEST_F(AnIGATestSpline, TestRightSide) { // NOLINT
+TEST_F(AnIGATestSpline, TestRightSide) {  // NOLINT
   linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
   for (uint64_t i = 0; i < matlab_vector_b.size(); ++i) {
       ASSERT_THAT((*vecB)(i), DoubleNear(matlab_vector_b[i], 0.00005));
   }
 }
 
-TEST_F(AnIGATestSpline, TestEquationSystemWithBC) { // NOLINT
+TEST_F(AnIGATestSpline, TestEquationSystemWithBC) {  // NOLINT
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
   linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
   linear_equation_assembler.SetZeroBC(matA, vecB);
@@ -49,7 +49,7 @@ TEST_F(AnIGATestSpline, TestEquationSystemWithBC) { // NOLINT
   }
 }
 
-TEST_F(AnIGATestSpline, TestSolution) { // NOLINT
+TEST_F(AnIGATestSpline, TestSolution) {  // NOLINT
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
   linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);

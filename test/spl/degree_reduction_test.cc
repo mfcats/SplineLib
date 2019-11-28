@@ -54,7 +54,7 @@ class BSplineFig5_35ForDegreeElevationAndReductionForDimension0 : public Test { 
 };
 
 TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, // NOLINT
-       DegreeReductionWithoutPreviousDegreeElevationFails) { // NOLINT
+       DegreeReductionWithoutPreviousDegreeElevationFails) {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> test_spline = std::make_shared<spl::BSpline<1>>(*original_);
   bool successful = test_spline->ReduceDegreeForDimension(0);
   ASSERT_THAT(successful, false);

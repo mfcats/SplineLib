@@ -111,7 +111,7 @@ class AnIGESReaderAndWriter : public Test {
   std::unique_ptr<io::IGESWriter> iges_writer_;
 };
 
-TEST_F(AnIGESReaderAndWriter, Read1DBSplineFromIGESFile) { // NOLINT
+TEST_F(AnIGESReaderAndWriter, Read1DBSplineFromIGESFile) {  // NOLINT
   auto b_spline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_reader_->ReadFile(iges_read)[1]);
   ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
   ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
@@ -121,7 +121,7 @@ TEST_F(AnIGESReaderAndWriter, Read1DBSplineFromIGESFile) { // NOLINT
   ASSERT_THAT(b_spline_1d->Evaluate({ParametricCoordinate{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
 }
 
-TEST_F(AnIGESReaderAndWriter, Read1DNURBSWithWeigthsOneFromIGESFile) { // NOLINT
+TEST_F(AnIGESReaderAndWriter, Read1DNURBSWithWeigthsOneFromIGESFile) {  // NOLINT
   auto nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(iges_reader_->ReadFile(iges_read_2)[1]);
   ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{0.0}}, {0})[0], DoubleNear(-2.23308, 0.0005));
   ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{0.0}}, {1})[0], DoubleNear(-0.01433, 0.0005));
@@ -131,7 +131,7 @@ TEST_F(AnIGESReaderAndWriter, Read1DNURBSWithWeigthsOneFromIGESFile) { // NOLINT
   ASSERT_THAT(nurbs_1d->Evaluate({ParametricCoordinate{1.0}}, {2})[0], DoubleNear(-0.023586, 0.0005));
 }
 
-TEST_F(AnIGESReaderAndWriter, Read2DNURBSFromIGESFile) { // NOLINT
+TEST_F(AnIGESReaderAndWriter, Read2DNURBSFromIGESFile) {  // NOLINT
   auto nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_reader_->ReadFile(iges_read)[0]);
   ASSERT_THAT(nurbs_2d->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {0})[0],
               DoubleEq(nurbs_->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {0})[0]));
@@ -147,7 +147,7 @@ TEST_F(AnIGESReaderAndWriter, Read2DNURBSFromIGESFile) { // NOLINT
               DoubleEq(nurbs_->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {2})[0]));
 }
 
-TEST_F(AnIGESReaderAndWriter, Read2DBSplineFromIGESFile) { // NOLINT
+TEST_F(AnIGESReaderAndWriter, Read2DBSplineFromIGESFile) {  // NOLINT
   auto b_spline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(iges_reader_->ReadFile(iges_read_2)[0]);
   ASSERT_THAT(b_spline_2d->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {0})[0],
               DoubleEq(b_spline_->Evaluate({ParametricCoordinate{0.0}, ParametricCoordinate{0.0}}, {0})[0]));
@@ -163,7 +163,7 @@ TEST_F(AnIGESReaderAndWriter, Read2DBSplineFromIGESFile) { // NOLINT
               DoubleEq(b_spline_->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{1.0}}, {2})[0]));
 }
 
-TEST_F(AnIGESReaderAndWriter, Write1DBSplineToIGESFile) { // NOLINT
+TEST_F(AnIGESReaderAndWriter, Write1DBSplineToIGESFile) {  // NOLINT
   auto splines = iges_reader_->ReadFile(iges_read);
   iges_writer_->WriteFile(splines, "write.iges");
   auto b_spline_1d = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(iges_reader_->ReadFile("write.iges")[1]);
@@ -176,7 +176,7 @@ TEST_F(AnIGESReaderAndWriter, Write1DBSplineToIGESFile) { // NOLINT
   remove("write.iges");
 }
 
-TEST_F(AnIGESReaderAndWriter, Write1DNURBSToIGESFile) { // NOLINT
+TEST_F(AnIGESReaderAndWriter, Write1DNURBSToIGESFile) {  // NOLINT
   auto splines = iges_reader_->ReadFile(iges_read_2);
   iges_writer_->WriteFile(splines, "write.iges");
   auto nurbs_1d = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(iges_reader_->ReadFile("write.iges")[1]);
@@ -189,7 +189,7 @@ TEST_F(AnIGESReaderAndWriter, Write1DNURBSToIGESFile) { // NOLINT
   remove("write.iges");
 }
 
-TEST_F(AnIGESReaderAndWriter, Write2DNURBSToIGESFile) { // NOLINT
+TEST_F(AnIGESReaderAndWriter, Write2DNURBSToIGESFile) {  // NOLINT
   auto splines = iges_reader_->ReadFile(iges_read);
   iges_writer_->WriteFile(splines, "write.iges");
   auto nurbs_2d = std::any_cast<std::shared_ptr<spl::NURBS<2>>>(iges_reader_->ReadFile("write.iges")[0]);
@@ -208,7 +208,7 @@ TEST_F(AnIGESReaderAndWriter, Write2DNURBSToIGESFile) { // NOLINT
   remove("write.iges");
 }
 
-TEST_F(AnIGESReaderAndWriter, Write2DBSplineToIGESFile) { // NOLINT
+TEST_F(AnIGESReaderAndWriter, Write2DBSplineToIGESFile) {  // NOLINT
   auto splines = iges_reader_->ReadFile(iges_read_2);
   iges_writer_->WriteFile(splines, "write.iges");
   auto b_spline_2d = std::any_cast<std::shared_ptr<spl::BSpline<2>>>(iges_reader_->ReadFile("write.iges")[0]);
@@ -227,7 +227,7 @@ TEST_F(AnIGESReaderAndWriter, Write2DBSplineToIGESFile) { // NOLINT
   remove("write.iges");
 }
 
-TEST_F(AnIGESReaderAndWriter, ThrowIfFileCantBeOpened) { // NOLINT
+TEST_F(AnIGESReaderAndWriter, ThrowIfFileCantBeOpened) {  // NOLINT
   ASSERT_THROW(std::vector<std::any> splines = iges_reader_->ReadFile("a"), std::runtime_error);
 }
 

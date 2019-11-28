@@ -20,7 +20,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 // only needed for tests that are currently commented out
 // #include "four_point_gauss_legendre.h"
 
-TEST_F(AnIGATestSpline, TestSolutionVTKWriter) { // NOLINT
+TEST_F(AnIGATestSpline, TestSolutionVTKWriter) {  // NOLINT
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
   linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
   linear_equation_assembler.SetZeroBC(matA, vecB);
@@ -59,7 +59,7 @@ TEST_F(AnIGATestSpline, TestSolutionVTKWriter) { // NOLINT
   iga::itg::IntegrationRule rule = iga::itg::FourPointGaussLegendre();
 };
 
-TEST_F(ALine, Test) { // NOLINT
+TEST_F(ALine, Test) {  // NOLINT
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
   linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
   linear_equation_assembler.SetZeroBC(matA, vecB);
@@ -170,7 +170,7 @@ class ACube : public Test {
   iga::itg::IntegrationRule rule = iga::itg::TwoPointGaussLegendre();
 };
 
-TEST_F(ACube, Test) { // NOLINT
+TEST_F(ACube, Test) {  // NOLINT
   linear_equation_assembler.GetLeftSide(rule, matA, elm_itg_calc);
   linear_equation_assembler.GetRightSide(rule, vecB, elm_itg_calc, srcCp);
   linear_equation_assembler.SetZeroBC(matA, vecB);

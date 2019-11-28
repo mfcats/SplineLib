@@ -26,10 +26,10 @@ class AnIntegrationPoint : public Test {
   iga::itg::IntegrationPoint integration_point_;
 };
 
-TEST_F(AnIntegrationPoint, ReturnsCorrectCoordinate) { // NOLINT
+TEST_F(AnIntegrationPoint, ReturnsCorrectCoordinate) {  // NOLINT
   ASSERT_THAT(integration_point_.GetCoordinate(), DoubleEq(1.5));
 }
 
-TEST_F(AnIntegrationPoint, ReturnsCorrectWeight) { // NOLINT
+TEST_F(AnIntegrationPoint, ReturnsCorrectWeight) {  // NOLINT
   ASSERT_THAT(integration_point_.GetWeight(), DoubleEq(0.5));
 }

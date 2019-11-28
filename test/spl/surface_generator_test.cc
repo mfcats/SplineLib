@@ -199,13 +199,13 @@ class ASurface : public Test {
   std::shared_ptr<NiceMock<MockParameterSpaceSection>> parameter_section;
 };
 
-TEST_F(ASurface, ReturnsCorrectDimension) { // NOLINT
+TEST_F(ASurface, ReturnsCorrectDimension) {  // NOLINT
   ASSERT_THAT(nurbs1->GetPointDim(), 3);
   ASSERT_THAT(nurbs2->GetPointDim(), 3);
   ASSERT_THAT(nurbsJoined->GetPointDim(), 3);
 }
 
-TEST_F(ASurface, ReturnsCorrectNumberOfKnots) { // NOLINT
+TEST_F(ASurface, ReturnsCorrectNumberOfKnots) {  // NOLINT
   ASSERT_THAT(nurbsJoined->GetKnotVector(1)->GetNumberOfKnots(), 12);
   ASSERT_THAT(nurbsJoined->GetKnotVector(0)->GetNumberOfKnots(), 4);
 }
@@ -214,54 +214,54 @@ TEST_F(ASurface, ReturnsCorrectNumberOfControlPoints) { //NOLINT
   ASSERT_THAT(nurbsJoined->GetNumberOfControlPoints(), 18);
 }
 
-TEST_F(ASurface, ReturnsCorrectWeights) { // NOLINT
+TEST_F(ASurface, ReturnsCorrectWeights) {  // NOLINT
   ASSERT_THAT(nurbsJoined->GetWeight(std::array<int, 2>({1, 4})), DoubleEq(1.0));
   ASSERT_THAT(nurbsJoined->GetWeight(std::array<int, 2>({0, 3})), DoubleNear(0.70710, 0.0000001));
 }
 
-TEST_F(ASurface, ReturnsCorrectControlPoints) { // NOLINT
+TEST_F(ASurface, ReturnsCorrectControlPoints) {  // NOLINT
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({1, 4}), 1), DoubleEq(-1));
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({0, 3}), 2), DoubleEq(1));
 }
 
-TEST_F(ASurface, ReturnsCorrectDimensionAfterScaling) { // NOLINT
+TEST_F(ASurface, ReturnsCorrectDimensionAfterScaling) {  // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetPointDim(), 3);
 }
 
-TEST_F(ASurface, ReturnsCorrectNumberOfKnotsAfterScaling) { // NOLINT
+TEST_F(ASurface, ReturnsCorrectNumberOfKnotsAfterScaling) {  // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(0)->GetNumberOfKnots(), 13);
   ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(1)->GetNumberOfKnots(), 12);
 }
 
-TEST_F(ASurface, ReturnsCorrectNumberOfControlPointsAfterScaling) { // NOLINT
+TEST_F(ASurface, ReturnsCorrectNumberOfControlPointsAfterScaling) {  // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetNumberOfControlPoints(), 99);
 }
 
-TEST_F(ASurface, RetursCorrectControlPointsAfterScaling) { // NOLINT
+TEST_F(ASurface, RetursCorrectControlPointsAfterScaling) {  // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({1, 4}), 1), DoubleEq(-1));
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({5, 4}), 1), DoubleEq(-0.5));
 }
 
-TEST_F(ASurface, ReturnCorrectControlPoint_0DimAfterScaling) { // NOLINT
+TEST_F(ASurface, ReturnCorrectControlPoint_0DimAfterScaling) {  // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({1, 4}), 0), DoubleEq(1));
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({5, 4}), 0), DoubleEq(5));
 }
 
-TEST_F(ASurface, CompareBothMethods_nbControlPoints) { // NOLINT
+TEST_F(ASurface, CompareBothMethods_nbControlPoints) {  // NOLINT
   ASSERT_THAT(nurbsJoined->GetNumberOfControlPoints(), nurbsJoinedScaledCmp->GetNumberOfControlPoints());
 }
 
-TEST_F(ASurface, CompareBothMethods_nbKnots) { // NOLINT
+TEST_F(ASurface, CompareBothMethods_nbKnots) {  // NOLINT
   ASSERT_THAT(nurbsJoined->GetKnotVector(0)->GetNumberOfKnots(),
               nurbsJoinedScaledCmp->GetKnotVector(0)->GetNumberOfKnots());
 }
 
-TEST_F(ASurface, CompareBothMethods_ControlPoint) { // NOLINT
+TEST_F(ASurface, CompareBothMethods_ControlPoint) {  // NOLINT
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({1, 6}), 0), DoubleEq(
       nurbsJoinedScaledCmp->GetControlPoint(std::array<int, 2>({1, 6}), 0)));
 }
 
-TEST_F(ASurface, ReturnsCorrectVTK) { // NOLINT
+TEST_F(ASurface, ReturnsCorrectVTK) {  // NOLINT
   std::vector<std::vector<int>> scattering_({{30, 30}});
   std::unique_ptr<io::VTKWriter> vtk_writer_(std::make_unique<io::VTKWriter>());
   std::vector<std::any> splines;
@@ -454,12 +454,12 @@ class AComplexSurface : public Test {
   std::shared_ptr<NiceMock<MockParameterSpaceSection>> parameter_section;
 };
 
-TEST_F(AComplexSurface, ReturnsCorrectKnotVectorSize) { // NOLINT
+TEST_F(AComplexSurface, ReturnsCorrectKnotVectorSize) {  // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(1)->GetNumberOfKnots(), 12);
   ASSERT_THAT(nurbsJoinedScaled->GetKnotVector(0)->GetNumberOfKnots(), nbInter + degree1_[0].Get() + 1);
 }
 
-TEST_F(AComplexSurface, ReturnsCorrectVTK) { // NOLINT
+TEST_F(AComplexSurface, ReturnsCorrectVTK) {  // NOLINT
   std::vector<std::vector<int>> scattering_({{100, 100}});
   std::unique_ptr<io::VTKWriter> vtk_writer_(std::make_unique<io::VTKWriter>());
   std::vector<std::any> splines;
@@ -469,37 +469,37 @@ TEST_F(AComplexSurface, ReturnsCorrectVTK) { // NOLINT
   remove("splines.vtk");
 }
 
-TEST_F(AComplexSurface, ReturnsCorrectControlPointAtIndices_0_0) { // NOLINT
+TEST_F(AComplexSurface, ReturnsCorrectControlPointAtIndices_0_0) {  // NOLINT
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({0, 0}), 0), DoubleEq(2.0));
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({0, 0}), 1), DoubleEq(0.0));
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({0, 0}), 2), DoubleEq(0.85));
 }
 
-TEST_F(AComplexSurface, ReturnsCorrectControlPointAtIndices_4_5) { // NOLINT
+TEST_F(AComplexSurface, ReturnsCorrectControlPointAtIndices_4_5) {  // NOLINT
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({4, 5}), 0), DoubleNear(1.71768, 0.00001));
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({4, 5}), 1), DoubleNear(0.0915789, 0.00001));
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({4, 5}), 2), DoubleNear(1.13107, 0.00001));
 }
 
-TEST_F(AComplexSurface, ReturnsCorrectControlPointAtIndices_19_1) { // NOLINT
+TEST_F(AComplexSurface, ReturnsCorrectControlPointAtIndices_19_1) {  // NOLINT
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({19, 1}), 0), DoubleNear(1.19567, 0.00001));
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({19, 1}), 1), DoubleNear(0.0490178, 0.00001));
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({19, 1}), 2), DoubleNear(0.4101, 0.00001));
 }
 
-TEST_F(AComplexSurface, ReturnsCorrectControlPointAtIndices_77_1) { // NOLINT
+TEST_F(AComplexSurface, ReturnsCorrectControlPointAtIndices_77_1) {  // NOLINT
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({77, 1}), 0), DoubleNear(0.277145, 0.00001));
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({77, 1}), 1), DoubleNear(1.1, 0.00001));
   ASSERT_THAT(nurbsJoined->GetControlPoint(std::array<int, 2>({77, 1}), 2), DoubleNear(0.662169, 0.00001));
 }
 
-TEST_F(AComplexSurface, ReturnsCorrectControlPointAfterScalingAtIndices_19_1) { // NOLINT
+TEST_F(AComplexSurface, ReturnsCorrectControlPointAfterScalingAtIndices_19_1) {  // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({19, 1}), 0), DoubleNear(1.19567, 0.00001));
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({19, 1}), 1), DoubleNear(0.0490178, 0.00001));
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({19, 1}), 2), DoubleNear(0.4101, 0.00001));
 }
 
-TEST_F(AComplexSurface, ReturnsCorrectControlPointAfterScalingAtIndices_77_1) { // NOLINT
+TEST_F(AComplexSurface, ReturnsCorrectControlPointAfterScalingAtIndices_77_1) {  // NOLINT
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({77, 1}), 0), DoubleNear(0.201014, 0.00001));
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({77, 1}), 1), DoubleNear(1.048, 0.00001));
   ASSERT_THAT(nurbsJoinedScaled->GetControlPoint(std::array<int, 2>({77, 1}), 2), DoubleNear(0.645199, 0.00001));
@@ -541,7 +541,7 @@ class AComplexSurface2 : public Test {
   std::shared_ptr<spl::NURBS<1>> nurbs2;
 };
 
-TEST_F(AComplexSurface2, ThrowsExceptionIfDegreeTooLow) { // NOLINT
+TEST_F(AComplexSurface2, ThrowsExceptionIfDegreeTooLow) {  // NOLINT
   std::vector<std::array<double, 3>> scaling(nbInter, {1.0, 1.0, 1.0});
   ASSERT_THROW(spl::SurfaceGenerator surfaceGenerator =
                    spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling), std::runtime_error);

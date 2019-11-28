@@ -76,35 +76,35 @@ class ABSplineSurface : public Test {
   std::shared_ptr<spl::Spline<2>> b_spline_;
 };
 
-TEST_F(ABSplineSurface, ComputesCorrectProjectionCloseToCenter) { // NOLINT
+TEST_F(ABSplineSurface, ComputesCorrectProjectionCloseToCenter) {  // NOLINT
   std::array<ParametricCoordinate, 2>
       param_coords = spl::Projection<2>::ProjectionOnSurface({120, 10, 100}, b_spline_, {100, 100});
   ASSERT_THAT(param_coords[0].Get(), DoubleNear(0.55852, 0.00001));
   ASSERT_THAT(param_coords[1].Get(), DoubleNear(0.8614466, 0.00001));
 }
 
-TEST_F(ABSplineSurface, ComputesCorrectProjectionBelowBothFirstKnots) { // NOLINT
+TEST_F(ABSplineSurface, ComputesCorrectProjectionBelowBothFirstKnots) {  // NOLINT
   std::array<ParametricCoordinate, 2>
       param_coords = spl::Projection<2>::ProjectionOnSurface({-250, -200, -20}, b_spline_);
   ASSERT_THAT(param_coords[0].Get(), DoubleEq(0));
   ASSERT_THAT(param_coords[1].Get(), DoubleEq(0));
 }
 
-TEST_F(ABSplineSurface, ComputesCorrectProjectionAboveBothLastKnots) { // NOLINT
+TEST_F(ABSplineSurface, ComputesCorrectProjectionAboveBothLastKnots) {  // NOLINT
   std::array<ParametricCoordinate, 2>
       param_coords = spl::Projection<2>::ProjectionOnSurface({250, 110, -20}, b_spline_);
   ASSERT_THAT(param_coords[0].Get(), DoubleEq(1));
   ASSERT_THAT(param_coords[1].Get(), DoubleEq(1));
 }
 
-TEST_F(ABSplineSurface, ComputesCorrectProjectionBelowFirstKnotOfFirstVectorAndAboveLastKnotOfSecondVector) { // NOLINT
+TEST_F(ABSplineSurface, ComputesCorrectProjectionBelowFirstKnotOfFirstVectorAndAboveLastKnotOfSecondVector) {  // NOLINT
   std::array<ParametricCoordinate, 2>
       param_coords = spl::Projection<2>::ProjectionOnSurface({220, -220, -40}, b_spline_);
   ASSERT_THAT(param_coords[0].Get(), DoubleEq(0));
   ASSERT_THAT(param_coords[1].Get(), DoubleEq(1));
 }
 
-TEST_F(ABSplineSurface, ComputesCorrectProjectionAboveLastKnotOfFirstVectorAndBelowFirstKnotOfSecondVector) { // NOLINT
+TEST_F(ABSplineSurface, ComputesCorrectProjectionAboveLastKnotOfFirstVectorAndBelowFirstKnotOfSecondVector) {  // NOLINT
   std::array<ParametricCoordinate, 2>
       param_coords = spl::Projection<2>::ProjectionOnSurface({-260, 80, -30}, b_spline_);
   ASSERT_THAT(param_coords[0].Get(), DoubleEq(1));

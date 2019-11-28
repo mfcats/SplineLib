@@ -48,105 +48,105 @@ class A2DNurbs : public Test {
   std::shared_ptr<NiceMock<MockWeightedPhysicalSpace1>> w_physical_space;
 };
 
-TEST_F(A2DNurbs, Returns1_6For0_4And0_6AndDim0) { // NOLINT
+TEST_F(A2DNurbs, Returns1_6For0_4And0_6AndDim0) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->Evaluate({ParametricCoordinate{0.4}, ParametricCoordinate{0.6}}, {0})[0],
               DoubleNear(1.62074, 0.00001));
 }
 
-TEST_F(A2DNurbs, Returns1_9For0_4And0_6AndDim1) { // NOLINT
+TEST_F(A2DNurbs, Returns1_9For0_4And0_6AndDim1) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->Evaluate({ParametricCoordinate{0.4}, ParametricCoordinate{0.6}}, {1})[0],
               DoubleNear(1.88267, 0.00001));
 }
 
-TEST_F(A2DNurbs, Returns2_5For0_5And1_0AndDim0) { // NOLINT
+TEST_F(A2DNurbs, Returns2_5For0_5And1_0AndDim0) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->Evaluate({ParametricCoordinate{0.5}, ParametricCoordinate{1.0}}, {0})[0],
               DoubleNear(2.5, util::numeric_settings::GetEpsilon<double>()));
 }
 
-TEST_F(A2DNurbs, Returns3_0For0_5And1_0AndDim1) { // NOLINT
+TEST_F(A2DNurbs, Returns3_0For0_5And1_0AndDim1) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->Evaluate({ParametricCoordinate{0.5}, ParametricCoordinate{1.0}}, {1})[0],
               DoubleNear(3.0, util::numeric_settings::GetEpsilon<double>()));
 }
 
-TEST_F(A2DNurbs, Returns4_2For0_9And1_0AndDim0) { // NOLINT
+TEST_F(A2DNurbs, Returns4_2For0_9And1_0AndDim0) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{1.0}}, {0})[0],
               DoubleNear(4.19492, 0.00001));
 }
 
-TEST_F(A2DNurbs, Returns2_5For0_9And1_0AndDim1) { // NOLINT
+TEST_F(A2DNurbs, Returns2_5For0_9And1_0AndDim1) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->Evaluate({ParametricCoordinate{0.9}, ParametricCoordinate{1.0}}, {1})[0],
               DoubleNear(2.45763, 0.00001));
 }
 
-TEST_F(A2DNurbs, EvaluatesMultipleValues) { // NOLINT
+TEST_F(A2DNurbs, EvaluatesMultipleValues) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{0.0}}, {0, 1})[0], DoubleEq(3.0));
   ASSERT_THAT(nurbs_->Evaluate({ParametricCoordinate{1.0}, ParametricCoordinate{0.0}}, {0, 1})[1], DoubleEq(0.0));
 }
 
-TEST_F(A2DNurbs, Returns10_0For0_0And1_0ForDerivative1And0AndDim0) { // NOLINT
+TEST_F(A2DNurbs, Returns10_0For0_0And1_0ForDerivative1And0AndDim0) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParametricCoordinate{0.0}, ParametricCoordinate{1.0}}, {0}, {1, 0})[0],
               DoubleEq(10.0));
 }
 
-TEST_F(A2DNurbs, Returns6_0For0_0And1_0ForDerivative1And0AndDim1) { // NOLINT
+TEST_F(A2DNurbs, Returns6_0For0_0And1_0ForDerivative1And0AndDim1) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParametricCoordinate{0.0}, ParametricCoordinate{1.0}}, {1}, {1, 0})[0],
               DoubleEq(6.0));
 }
 
-TEST_F(A2DNurbs, Returns2_0For0_0And1_0ForDerivative0And1AndDim0) { // NOLINT
+TEST_F(A2DNurbs, Returns2_0For0_0And1_0ForDerivative0And1AndDim0) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParametricCoordinate{0.0}, ParametricCoordinate{1.0}}, {0}, {0, 1})[0],
               DoubleEq(2.0));
 }
 
-TEST_F(A2DNurbs, Returns3_0For0_0And1_0ForDerivative0And1AndDim1) { // NOLINT
+TEST_F(A2DNurbs, Returns3_0For0_0And1_0ForDerivative0And1AndDim1) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParametricCoordinate{0.0}, ParametricCoordinate{1.0}}, {1}, {0, 1})[0],
               DoubleEq(3.0));
 }
 
-TEST_F(A2DNurbs, Returns4_2For0_4And0_6ForDerivative1And0AndDim0) { // NOLINT
+TEST_F(A2DNurbs, Returns4_2For0_4And0_6ForDerivative1And0AndDim0) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParametricCoordinate{0.4}, ParametricCoordinate{0.6}}, {0}, {1, 0})[0],
               DoubleNear(4.15298, 0.000001));
 }
 
-TEST_F(A2DNurbs, Returns0_8For0_4And0_6ForDerivative1And0AndDim1) { // NOLINT
+TEST_F(A2DNurbs, Returns0_8For0_4And0_6ForDerivative1And0AndDim1) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParametricCoordinate{0.4}, ParametricCoordinate{0.6}}, {1}, {1, 0})[0],
               DoubleNear(0.792032, 0.000001));
 }
 
-TEST_F(A2DNurbs, Returns1_4For0_4And0_6ForDerivative0And1AndDim0) { // NOLINT
+TEST_F(A2DNurbs, Returns1_4For0_4And0_6ForDerivative0And1AndDim0) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParametricCoordinate{0.4}, ParametricCoordinate{0.6}}, {0}, {0, 1})[0],
               DoubleNear(1.40046, 0.00001));
 }
 
-TEST_F(A2DNurbs, Returns3_1For0_4And0_6ForDerivative0And1AndDim1) { // NOLINT
+TEST_F(A2DNurbs, Returns3_1For0_4And0_6ForDerivative0And1AndDim1) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs_->EvaluateDerivative({ParametricCoordinate{0.4}, ParametricCoordinate{0.6}}, {1}, {0, 1})[0],
@@ -179,7 +179,7 @@ class A2DNurbsWithAllWeights1 : public Test {
   std::shared_ptr<NiceMock<MockPhysicalSpace2>> physical_space_m;
 };
 
-TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_5And0_5AndDerivatives1And1) { // NOLINT
+TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_5And0_5AndDerivatives1And1) {  // NOLINT
   mock_weightedPhysicalSpace(w_physical_space_m);
   mock_parameterSpace_nurbs(parameter_space_m);
   mock_physicalSpace(physical_space_m);
@@ -189,7 +189,7 @@ TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_5And0_5AndD
                                                       {1, 1})[0], 0.000001));
 }
 
-TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_0And0_7AndDerivatives1And1) { // NOLINT
+TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_0And0_7AndDerivatives1And1) {  // NOLINT
   mock_weightedPhysicalSpace(w_physical_space_m);
   mock_parameterSpace_nurbs(parameter_space_m);
   mock_physicalSpace(physical_space_m);
@@ -199,7 +199,7 @@ TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_0And0_7AndD
                                                       {1, 1})[0], 0.000001));
 }
 
-TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_0And0_7AndDerivatives2And1) { // NOLINT
+TEST_F(A2DNurbsWithAllWeights1, ReturnsSameDerivativeAs2DBSplineFor0_0And0_7AndDerivatives2And1) {  // NOLINT
   mock_weightedPhysicalSpace(w_physical_space_m);
   mock_parameterSpace_nurbs(parameter_space_m);
   mock_physicalSpace(physical_space_m);

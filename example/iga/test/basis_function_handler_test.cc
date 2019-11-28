@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 using testing::DoubleNear;
 
-TEST_F(AnIGATestSpline, ElementNURBSBasisFunctions) { // NOLINT
+TEST_F(AnIGATestSpline, ElementNURBSBasisFunctions) {  // NOLINT
   std::vector<iga::elm::ElementIntegrationPoint<2>> splinelib_element_intg_pnts =
       basis_function_handler.EvaluateAllElementNonZeroNURBSBasisFunctions(0, rule);
   std::vector<double> i1 = {0.240652, 0.203999, 0.0434425, 0.00246914, 0.193447, 0.163984, 0.0349212, 0.00198481,
@@ -39,7 +39,7 @@ TEST_F(AnIGATestSpline, ElementNURBSBasisFunctions) { // NOLINT
   }
 }
 
-TEST_F(AnIGATestSpline, ElementNURBSBasisFunctionDerivatives) { // NOLINT
+TEST_F(AnIGATestSpline, ElementNURBSBasisFunctionDerivatives) {  // NOLINT
   std::vector<iga::elm::ElementIntegrationPoint<2>> splinelib_element_intg_pnts =
       basis_function_handler.EvaluateAllElementNonZeroNURBSBasisFunctionDerivatives(6, rule);
   std::vector<double> i1_1 = {-0.762835, -0.905235, 1.64178, 0.0262892, -0.613203, -0.727671, 1.31974, 0.0211325,
@@ -70,7 +70,7 @@ TEST_F(AnIGATestSpline, ElementNURBSBasisFunctionDerivatives) { // NOLINT
   }
 }
 
-TEST_F(AnIGATestSpline, ElementNURBSBafDersPhysical) { // NOLINT
+TEST_F(AnIGATestSpline, ElementNURBSBafDersPhysical) {  // NOLINT
   std::vector<iga::elm::ElementIntegrationPoint<2>> splinelib_element_intg_pnts =
       basis_function_handler.EvaluateAllElementNonZeroNURBSBafDerivativesPhysical(3, rule);
   std::vector<double> i1_1 = {-1.34519, -0.131682, 1.31117, 0.181808, -1.08667, -0.116567, 1.04981, 0.145953, -0.292604,

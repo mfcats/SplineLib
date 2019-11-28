@@ -104,21 +104,21 @@ class NurbsEx4_1 : public Test {
   std::shared_ptr<NiceMock<MockWeightedPhysicalSpace14111>> w_physical_space;
 };
 
-TEST_F(NurbsEx4_1, Returns1_4For1AndDim0) { // NOLINT
+TEST_F(NurbsEx4_1, Returns1_4For1AndDim0) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {0})[0],
               DoubleNear(1.4, util::numeric_settings::GetEpsilon<double>()));
 }
 
-TEST_F(NurbsEx4_1, Returns1_2For1AndDim1) { // NOLINT
+TEST_F(NurbsEx4_1, Returns1_2For1AndDim1) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {1})[0],
               DoubleNear(1.2, util::numeric_settings::GetEpsilon<double>()));
 }
 
-TEST_F(NurbsEx4_1, Returns1For1AndWeight) { // NOLINT
+TEST_F(NurbsEx4_1, Returns1For1AndWeight) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {2})[0],
@@ -273,7 +273,7 @@ class ANurbs : public Test {
   std::shared_ptr<NiceMock<MockWeightedPhysicalSpace1009>> w_physical_space;
 };
 
-TEST_F(ANurbs, ReturnsCorrectCurvePointForFirstKnot) { // NOLINT
+TEST_F(ANurbs, ReturnsCorrectCurvePointForFirstKnot) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.0}}, {0})[0],
@@ -286,7 +286,7 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForFirstKnot) { // NOLINT
               DoubleNear(1.0, util::numeric_settings::GetEpsilon<double>()));
 }
 
-TEST_F(ANurbs, ReturnsCorrectCurvePointForInnerKnot) { // NOLINT
+TEST_F(ANurbs, ReturnsCorrectCurvePointForInnerKnot) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{0.25}}, {0})[0],
@@ -299,7 +299,7 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForInnerKnot) { // NOLINT
               DoubleNear(0.8, util::numeric_settings::GetEpsilon<double>()));
 }
 
-TEST_F(ANurbs, ReturnsCorrectCurvePointForValueBetweenTwoKnots) { // NOLINT
+TEST_F(ANurbs, ReturnsCorrectCurvePointForValueBetweenTwoKnots) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0 / 3.0}}, {0})[0],
@@ -309,7 +309,7 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForValueBetweenTwoKnots) { // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0 / 3.0}}, {3})[0], DoubleNear(0.73333, 0.000005));
 }
 
-TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) { // NOLINT
+TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {0})[0],
@@ -322,12 +322,12 @@ TEST_F(ANurbs, ReturnsCorrectCurvePointForLastKnot) { // NOLINT
               DoubleNear(2.0, util::numeric_settings::GetEpsilon<double>()));
 }
 
-TEST_F(ANurbs, ThrowsExceptionForEvaluationAt1_2) { // NOLINT
+TEST_F(ANurbs, ThrowsExceptionForEvaluationAt1_2) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   ASSERT_THROW(nurbs->Evaluate({ParametricCoordinate{1.2}}, {0}), std::runtime_error);
 }
 
-TEST_F(ANurbs, ThrowsExceptionForEvaluationAtMinus0_1) { // NOLINT
+TEST_F(ANurbs, ThrowsExceptionForEvaluationAtMinus0_1) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   ASSERT_THROW(nurbs->Evaluate({ParametricCoordinate{-0.1}}, {0}), std::runtime_error);
 }
@@ -461,35 +461,35 @@ class NurbsDerivativeEx4_2 : public Test {
   std::shared_ptr<NiceMock<MockWeightedPhysicalSpace112>> w_physical_space;
 };
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtFirstKnot) { // NOLINT
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtFirstKnot) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {0}, {1})[0], 0.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {1}, {1})[0], 2.0);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtValueBetweenKnots) { // NOLINT
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtValueBetweenKnots) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {0}, {1})[0], -1.28);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {1}, {1})[0], 0.96);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtLastKnot) { // NOLINT
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForFirstDerivativeAtLastKnot) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{1.0}}, {0}, {1})[0], -1.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{1.0}}, {1}, {1})[0], 0.0);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtFirstKnot) { // NOLINT
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtFirstKnot) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {0}, {2})[0], -4.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {1}, {2})[0], 0.0);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtValueBetweenKnots) { // NOLINT
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtValueBetweenKnots) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {0}, {2})[0],
@@ -498,21 +498,21 @@ TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtValueBetwe
               DoubleNear(-2.816, util::numeric_settings::GetEpsilon<double>()));
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtLastKnot) { // NOLINT
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForSecondDerivativeAtLastKnot) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{1.0}}, {0}, {2})[0], 1.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{1.0}}, {1}, {2})[0], -1.0);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtFirstKnot) { // NOLINT
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtFirstKnot) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {0}, {3})[0], 0.0);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.0}}, {1}, {3})[0], -12.0);
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtValueBetweenKnots) { // NOLINT
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtValueBetweenKnots) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{0.5}}, {0}, {3})[0],
@@ -521,7 +521,7 @@ TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtValueBetwee
               DoubleNear(2.1504, util::numeric_settings::GetEpsilon<double>()));
 }
 
-TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtLastKnot) { // NOLINT
+TEST_F(NurbsDerivativeEx4_2, ReturnsCorrectValuesForThirdDerivativeAtLastKnot) {  // NOLINT
   mock_parameterSpace_nurbs(parameter_space);
   mock_weightedPhysicalSpace(w_physical_space);
   ASSERT_THAT(nurbs->EvaluateDerivative({ParametricCoordinate{1.0}}, {0}, {3})[0], 0.0);
@@ -553,7 +553,7 @@ class ANURBSWithSplineGenerator : public Test {
   std::unique_ptr<spl::NURBS<1>> nurbs;
 };
 
-TEST_F(ANURBSWithSplineGenerator, Returns1_4For1AndDim0) { // NOLINT
+TEST_F(ANURBSWithSplineGenerator, Returns1_4For1AndDim0) {  // NOLINT
   ASSERT_THAT(nurbs->Evaluate({ParametricCoordinate{1.0}}, {0})[0],
               DoubleNear(1.4, util::numeric_settings::GetEpsilon<double>()));
 }

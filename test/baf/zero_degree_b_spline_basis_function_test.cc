@@ -45,23 +45,23 @@ class ZeroDegreeBasisFunctionEx21N00 : public Test {
   baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
-TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAt0_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAt0_0) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{0.0}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAt0_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAt0_5) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{0.5}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAt1_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAt1_0) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{1.0}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAt1_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAt1_5) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{1.5}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAMinust1_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N00, IsZeroAMinust1_5) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{-1.5}), DoubleEq(0.0));
 }
 
@@ -75,23 +75,23 @@ class ZeroDegreeBasisFunctionEx21N20 : public Test {
   baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
-TEST_F(ZeroDegreeBasisFunctionEx21N20, IsOneAt0_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N20, IsOneAt0_0) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{0.0}), DoubleEq(1.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N20, IsOneAt0_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N20, IsOneAt0_5) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{0.5}), DoubleEq(1.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N20, IsOneAt1_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N20, IsOneAt1_0) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{1.0}), DoubleEq(1.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N20, IsZeroAt1_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N20, IsZeroAt1_5) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{1.5}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N20, IsZeroAMinust1_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N20, IsZeroAMinust1_5) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{-1.5}), DoubleEq(0.0));
 }
 
@@ -105,23 +105,23 @@ class ZeroDegreeBasisFunctionEx21N40 : public Test {
   baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
-TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAt0_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAt0_0) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{0.0}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAt0_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAt0_5) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{0.5}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAt1_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAt1_0) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{1.0}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAt1_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAt1_5) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{1.5}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAMinust1_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx21N40, IsZeroAMinust1_5) {  // NOLINT
   ASSERT_THAT(basis_function_.Evaluate(ParametricCoordinate{-1.5}), DoubleEq(0.0));
 }
 
@@ -135,66 +135,66 @@ class ZeroDegreeBasisFunctionEx22N00 : public Test {
   baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt0_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt0_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{0}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{0.0})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt1_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt1_5) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{1}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{1.5})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt2_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt2_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{2}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{2.0})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt4_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt4_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{4}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{4.0})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt5_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt5_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{5}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{5.0})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt6_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAt6_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{6}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{6.0})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAtMinus0_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, ZerothDerevitveIsEqualValueAtMinus0_5) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{0}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{-0.5})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt0_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt0_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{0}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt1_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt1_5) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{1}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt2_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt2_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{2}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt4_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt4_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{4}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt5_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt5_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{5}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt6_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAt6_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{6}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAtMinus0_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N00, FirstDerevitveIsEqualZeroAtMinus0_5) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{0}), DoubleEq(0.0));
 }
 
@@ -208,65 +208,65 @@ class ZeroDegreeBasisFunctionEx22N40 : public Test {
   baf::ZeroDegreeBSplineBasisFunction basis_function_;
 };
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt0_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt0_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{0}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{0.0})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt1_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt1_5) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{1}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{1.5})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt2_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt2_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{2}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{2.0})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt4_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt4_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{4}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{4.0})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt5_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt5_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{5}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{5.0})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt6_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAt6_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{6}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{6.0})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAtMinus0_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, ZerothDerevitveIsEqualValueAtMinus0_5) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{0}, Derivative{0}),
               DoubleEq(basis_function_.Evaluate(ParametricCoordinate{-0.5})));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt0_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt0_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{0}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt1_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt1_5) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{1}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt2_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt2_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{2}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt4_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt4_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{4}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt5_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt5_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{5}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt6_0) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAt6_0) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{6}), DoubleEq(0.0));
 }
 
-TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAtMinus0_5) { // NOLINT
+TEST_F(ZeroDegreeBasisFunctionEx22N40, FirstDerevitveIsEqualZeroAtMinus0_5) {  // NOLINT
   ASSERT_THAT(basis_function_.EvaluateDerivative(ParametricCoordinate{1}, Derivative{0}), DoubleEq(0.0));
 }

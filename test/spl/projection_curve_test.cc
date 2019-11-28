@@ -51,14 +51,14 @@ class ABSpline2 : public Test {
   baf::KnotVectors<1> knot_vector_ptr;
 };
 
-TEST_F(ABSpline2, ComputesCorrectProjectionCloseToCenter) { // NOLINT
+TEST_F(ABSpline2, ComputesCorrectProjectionCloseToCenter) {  // NOLINT
   ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({332, 200}, b_spline)[0].Get(), DoubleNear(0.6223419238, 0.0001));
 }
 
-TEST_F(ABSpline2, ComputesCorrectProjectionRightOfLastKnot) { // NOLINT
+TEST_F(ABSpline2, ComputesCorrectProjectionRightOfLastKnot) {  // NOLINT
   ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({800, 200}, b_spline)[0].Get(), DoubleEq(1));
 }
 
-TEST_F(ABSpline2, ComputesCorrectProjectionLeftOfFirstKnot) { // NOLINT
+TEST_F(ABSpline2, ComputesCorrectProjectionLeftOfFirstKnot) {  // NOLINT
   ASSERT_THAT(spl::Projection<1>::ProjectionOnCurve({0, 0}, b_spline)[0].Get(), DoubleEq(0));
 }
