@@ -32,15 +32,15 @@ class ABSpline2 : public Test {
          ParametricCoordinate{1},
          ParametricCoordinate{1}, ParametricCoordinate{1}})};
     std::array<Degree, 1> degree = {Degree{3}};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({100, 100})),
-        baf::ControlPoint(std::vector<double>({140, 196})),
-        baf::ControlPoint(std::vector<double>({200, 240})),
-        baf::ControlPoint(std::vector<double>({260, 164})),
-        baf::ControlPoint(std::vector<double>({340, 164})),
-        baf::ControlPoint(std::vector<double>({400, 240})),
-        baf::ControlPoint(std::vector<double>({460, 196})),
-        baf::ControlPoint(std::vector<double>({500, 100}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({100, 100})),
+        spl::ControlPoint(std::vector<double>({140, 196})),
+        spl::ControlPoint(std::vector<double>({200, 240})),
+        spl::ControlPoint(std::vector<double>({260, 164})),
+        spl::ControlPoint(std::vector<double>({340, 164})),
+        spl::ControlPoint(std::vector<double>({400, 240})),
+        spl::ControlPoint(std::vector<double>({460, 196})),
+        spl::ControlPoint(std::vector<double>({500, 100}))
     };
     knot_vector_ptr[0] = std::make_shared<baf::KnotVector>(knot_vector[0]);
     b_spline = std::make_shared<spl::BSpline<1>>(knot_vector_ptr, degree, control_points);

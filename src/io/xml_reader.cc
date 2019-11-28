@@ -35,7 +35,7 @@ std::vector<std::any> XMLReader::ReadFile(const char *filename) {
 }
 
 void XMLReader::AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines) {
-  std::vector<baf::ControlPoint> control_points = GetControlPoints(spline);
+  std::vector<spl::ControlPoint> control_points = GetControlPoints(spline);
   int dimension = std::stoi(spline->attribute("splDim").value());
   if (dimension == 1) {
     splines->push_back(Get1DSpline(spline, control_points));
@@ -48,7 +48,7 @@ void XMLReader::AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines
   }
 }
 
-std::any XMLReader::Get1DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+std::any XMLReader::Get1DSpline(pugi::xml_node *spline, const std::vector<spl::ControlPoint> &control_points) {
   baf::KnotVectors<1> knot_vectors = XMLReaderUtils<1>::GetKnotVectors(spline);
   std::array<Degree, 1> degrees = XMLReaderUtils<1>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
@@ -59,7 +59,7 @@ std::any XMLReader::Get1DSpline(pugi::xml_node *spline, const std::vector<baf::C
       std::make_shared<spl::NURBS<1>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
-std::any XMLReader::Get2DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+std::any XMLReader::Get2DSpline(pugi::xml_node *spline, const std::vector<spl::ControlPoint> &control_points) {
   baf::KnotVectors<2> knot_vectors = XMLReaderUtils<2>::GetKnotVectors(spline);
   std::array<Degree, 2> degrees = XMLReaderUtils<2>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
@@ -70,7 +70,7 @@ std::any XMLReader::Get2DSpline(pugi::xml_node *spline, const std::vector<baf::C
       std::make_shared<spl::NURBS<2>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
-std::any XMLReader::Get3DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+std::any XMLReader::Get3DSpline(pugi::xml_node *spline, const std::vector<spl::ControlPoint> &control_points) {
   baf::KnotVectors<3> knot_vectors = XMLReaderUtils<3>::GetKnotVectors(spline);
   std::array<Degree, 3> degrees = XMLReaderUtils<3>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
@@ -81,7 +81,7 @@ std::any XMLReader::Get3DSpline(pugi::xml_node *spline, const std::vector<baf::C
       std::make_shared<spl::NURBS<3>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
-std::any XMLReader::Get4DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points) {
+std::any XMLReader::Get4DSpline(pugi::xml_node *spline, const std::vector<spl::ControlPoint> &control_points) {
   baf::KnotVectors<4> knot_vectors = XMLReaderUtils<4>::GetKnotVectors(spline);
   std::array<Degree, 4> degrees = XMLReaderUtils<4>::GetDegrees(spline);
   if (spline->child("wght").empty()) {
@@ -92,14 +92,14 @@ std::any XMLReader::Get4DSpline(pugi::xml_node *spline, const std::vector<baf::C
       std::make_shared<spl::NURBS<4>>(knot_vectors, degrees, control_points, GetWeights(spline)));
 }
 
-std::vector<baf::ControlPoint> XMLReader::GetControlPoints(pugi::xml_node *spline) {
+std::vector<spl::ControlPoint> XMLReader::GetControlPoints(pugi::xml_node *spline) {
   std::vector<double> vars = util::string_operations::ConvertStringVectorToNumberVector<double>(
       util::string_operations::SplitStringAtDelimiter(spline->child("cntrlPntVars").first_child().value(), ' '));
   int start = FindCoordinatePosition(spline->child("cntrlPntVarNames").first_child().value());
   int dimension = std::stoi(spline->attribute("spaceDim").value());
   int number_of_vars = std::stoi(spline->attribute("numOfCntrlPntVars").value());
   int number_of_points = std::stoi(spline->attribute("numCntrlPnts").value());
-  std::vector<baf::ControlPoint> points;
+  std::vector<spl::ControlPoint> points;
   for (int i = 0; i < number_of_points; i++) {
     std::vector<double> coordinates;
     for (int j = start; j < start + dimension; j++) {

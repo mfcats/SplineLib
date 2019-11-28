@@ -18,10 +18,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <functional>
 #include <utility>
 
-#include "src/util/stl_container_access.h"
 #include "src/util/vector_utils.h"
 
-namespace splinelib::src::baf {
+namespace splinelib::src::spl {
 ControlPoint::ControlPoint(std::vector<double> coordinates) : coordinates_(std::move(coordinates)) {}
 
 ControlPoint::ControlPoint(std::initializer_list<double> const &coordinates) : coordinates_(coordinates) {}
@@ -35,29 +34,8 @@ ControlPoint & ControlPoint::operator=(ControlPoint &&rhs) noexcept {
   return (*this);
 }
 
-ControlPoint ControlPoint::Transform(std::array<std::array<double, 4>, 4> const &transformation_matrix,
-                                     std::array<double, 3> const &scaling) const {
-  if (coordinates_.size() < 3) throw std::logic_error("splinelib::src::spl::ControlPoint::Transform: only vectors with"
-                                                       "dimension of at least three can be transformed.");
-  std::vector<double> coordinates_new = {GetValue(GetValue(transformation_matrix, 0), 3),
-                                         GetValue(GetValue(transformation_matrix, 1), 3),
-                                         GetValue(GetValue(transformation_matrix, 2), 3)};
-  for (Dimension i{0}; i < Dimension(3); ++i) {
-    for (Dimension j{0}; j < Dimension{3}; ++j) {
-      GetValue(coordinates_new, j) += GetValue(GetValue(transformation_matrix, j), i) * GetValue(scaling, i) *
-                                      GetValue(coordinates_, i);
-    }
-  }
-  return ControlPoint(coordinates_new);
-}
-
-double ControlPoint::GetEuclideanNorm() const {
-  double euclidean_norm = 0.0;
-  for (auto &coordinate : coordinates_) {
-    euclidean_norm += pow(coordinate, 2);
-  }
-  euclidean_norm = sqrt(euclidean_norm);
-  return euclidean_norm;
+double ControlPoint::ComputeTwoNorm() const {
+  return util::vector_utils::ComputeTwoNorm(coordinates_);
 }
 
 ControlPoint operator+(ControlPoint const &lhs, ControlPoint const &rhs) {
@@ -83,4 +61,4 @@ ControlPoint operator*(double scalar, ControlPoint const &control_point) {
                  std::bind(std::multiplies<>(), std::placeholders::_1, scalar));
   return ControlPoint(coordinates_new);
 }
-}  // namespace splinelib::src::baf
+}  // namespace splinelib::src::spl

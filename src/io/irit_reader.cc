@@ -65,7 +65,7 @@ std::any IRITReader::Get1DSpline(int start, const std::vector<std::string> &entr
   std::array<Degree, 1> degree = IRITReaderUtils::GetDegrees<1>(start, entries);
   bool rational = IRITReaderUtils::IsRational<1>(start, entries);
   auto weights = GetWeights(start, entries, rational);
-  std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
+  std::vector<spl::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
   if (!rational) {
     return std::make_any<std::shared_ptr<spl::BSpline<1>>>(
         std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points));
@@ -79,7 +79,7 @@ std::any IRITReader::Get2DSpline(int start, const std::vector<std::string> &entr
   std::array<Degree, 2> degree = IRITReaderUtils::GetDegrees<2>(start, entries);
   bool rational = IRITReaderUtils::IsRational<2>(start, entries);
   auto weights = GetWeights(start, entries, rational);
-  std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
+  std::vector<spl::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
   if (!rational) {
     return std::make_any<std::shared_ptr<spl::BSpline<2>>>(
         std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points));
@@ -93,7 +93,7 @@ std::any IRITReader::Get3DSpline(int start, const std::vector<std::string> &entr
   std::array<Degree, 3> degree = IRITReaderUtils::GetDegrees<3>(start, entries);
   bool rational = IRITReaderUtils::IsRational<3>(start, entries);
   auto weights = GetWeights(start, entries, rational);
-  std::vector<baf::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
+  std::vector<spl::ControlPoint> control_points = GetControlPoints(start, entries, rational, weights);
   if (!rational) {
     return std::make_any<std::shared_ptr<spl::BSpline<3>>>(
         std::make_shared<spl::BSpline<3>>(knot_vector, degree, control_points));
@@ -111,11 +111,11 @@ int IRITReader::GetNumberOfControlPoints(int start, const std::vector<std::strin
   return total_number_of_points;
 }
 
-std::vector<baf::ControlPoint> IRITReader::GetControlPoints(int start,
+std::vector<spl::ControlPoint> IRITReader::GetControlPoints(int start,
                                                                 const std::vector<std::string> &entries,
                                                                 bool rational,
                                                                 std::vector<double> weights) const {
-  std::vector<baf::ControlPoint> control_points;
+  std::vector<spl::ControlPoint> control_points;
   int number_of_control_points = GetNumberOfControlPoints(start, entries);
   start = GetPositionOfFirstControlPoint(start, entries);
   for (int i = 0; i < number_of_control_points; i++) {

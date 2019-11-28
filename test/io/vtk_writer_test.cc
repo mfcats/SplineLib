@@ -28,10 +28,10 @@ class A1DNURBSForVTKWriter {  // NOLINT
     baf::KnotVectors<1> knot_vector = {std::make_shared<baf::KnotVector>(baf::KnotVector(
         {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5}, ParametricCoordinate{1},
          ParametricCoordinate{1}}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({4.0, -1.0})),
-        baf::ControlPoint(std::vector<double>({5.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({5.2, 2.0}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({4.0, -1.0})),
+        spl::ControlPoint(std::vector<double>({5.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({5.2, 2.0}))
     };
     std::vector<double> weights = {3.0, 0.5, 1.8};
     nurbs_1d_ = std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
@@ -52,16 +52,16 @@ class A2DNURBSForVTKWriter {  // NOLINT
         std::make_shared<baf::KnotVector>(baf::KnotVector(
             {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5}, ParametricCoordinate{1},
              ParametricCoordinate{1}}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({-5.0, 0.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({-4.0, 0.3, 2.0})),
-        baf::ControlPoint(std::vector<double>({-3.8, 0.2, 1.5})),
-        baf::ControlPoint(std::vector<double>({-5.5, 1.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({-3.7, 0.8, -0.5})),
-        baf::ControlPoint(std::vector<double>({-3.5, 0.9, 0.5})),
-        baf::ControlPoint(std::vector<double>({-4.9, 1.2, -1.0})),
-        baf::ControlPoint(std::vector<double>({-4.2, 1.5, -0.5})),
-        baf::ControlPoint(std::vector<double>({-3.5, 2.0, -1.5}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({-5.0, 0.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({-4.0, 0.3, 2.0})),
+        spl::ControlPoint(std::vector<double>({-3.8, 0.2, 1.5})),
+        spl::ControlPoint(std::vector<double>({-5.5, 1.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({-3.7, 0.8, -0.5})),
+        spl::ControlPoint(std::vector<double>({-3.5, 0.9, 0.5})),
+        spl::ControlPoint(std::vector<double>({-4.9, 1.2, -1.0})),
+        spl::ControlPoint(std::vector<double>({-4.2, 1.5, -0.5})),
+        spl::ControlPoint(std::vector<double>({-3.5, 2.0, -1.5}))
     };
     std::vector<double> weights = {3.0, 0.5, 1.8, 2.0, 2.5, 1.8, 1.0, 0.8, 0.2};
     nurbs_2d_ = std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
@@ -82,15 +82,15 @@ class A3DNURBSForVTKWriter {  // NOLINT
             {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
             {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 0.3, -0.1})),
-        baf::ControlPoint(std::vector<double>({0.2, 2.2, 0.2})),
-        baf::ControlPoint(std::vector<double>({1.5, 2.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({0.3, -0.1, 1.2})),
-        baf::ControlPoint(std::vector<double>({1.5, 0.1, 1.8})),
-        baf::ControlPoint(std::vector<double>({0.1, 2.2, 1.6})),
-        baf::ControlPoint(std::vector<double>({1.7, 2.0, 2.2}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({0.0, 0.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({2.0, 0.3, -0.1})),
+        spl::ControlPoint(std::vector<double>({0.2, 2.2, 0.2})),
+        spl::ControlPoint(std::vector<double>({1.5, 2.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({0.3, -0.1, 1.2})),
+        spl::ControlPoint(std::vector<double>({1.5, 0.1, 1.8})),
+        spl::ControlPoint(std::vector<double>({0.1, 2.2, 1.6})),
+        spl::ControlPoint(std::vector<double>({1.7, 2.0, 2.2}))
     };
     std::vector<double> weights = {3.0, 0.5, 1.8, 2.0, 1.8, 1.0, 0.8, 0.2};
     nurbs_3d_ = std::make_shared<spl::NURBS<3>>(knot_vector, degree, control_points, weights);

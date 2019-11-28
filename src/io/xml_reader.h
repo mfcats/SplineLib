@@ -34,12 +34,12 @@ class XMLReader : public Reader {
  private:
   void AddSpline(pugi::xml_node *spline, std::vector<std::any> *splines);
 
-  std::any Get1DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points);
-  std::any Get2DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points);
-  std::any Get3DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points);
-  std::any Get4DSpline(pugi::xml_node *spline, const std::vector<baf::ControlPoint> &control_points);
+  std::any Get1DSpline(pugi::xml_node *spline, const std::vector<spl::ControlPoint> &control_points);
+  std::any Get2DSpline(pugi::xml_node *spline, const std::vector<spl::ControlPoint> &control_points);
+  std::any Get3DSpline(pugi::xml_node *spline, const std::vector<spl::ControlPoint> &control_points);
+  std::any Get4DSpline(pugi::xml_node *spline, const std::vector<spl::ControlPoint> &control_points);
 
-  std::vector<baf::ControlPoint> GetControlPoints(pugi::xml_node *spline);
+  std::vector<spl::ControlPoint> GetControlPoints(pugi::xml_node *spline);
 
   std::vector<double> GetWeights(pugi::xml_node *spline);
 

@@ -31,7 +31,7 @@ class NURBSGenerator : public SplineGenerator<PARAMETRIC_DIMENSIONALITY> {
   ~NURBSGenerator() override = default;
 
   NURBSGenerator(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector,
-      std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree, const std::vector<baf::ControlPoint> &control_points,
+      std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree, const std::vector<spl::ControlPoint> &control_points,
       std::vector<double> weights) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {

@@ -24,11 +24,11 @@ class A1DWeightedPhysicalSpace : public Test {
  public:
   A1DWeightedPhysicalSpace() {
     control_points = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({4.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({5.0, -1.0}))
+        spl::ControlPoint(std::vector<double>({0.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({3.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({4.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
     weights_ = {0.5, 0.75, 0.8, 1.0, 1.2};
     weighted_physical_space = spl::WeightedPhysicalSpace<1>(control_points, weights_, {5});
@@ -36,7 +36,7 @@ class A1DWeightedPhysicalSpace : public Test {
 
  protected:
   spl::WeightedPhysicalSpace<1> weighted_physical_space;
-  std::vector<baf::ControlPoint> control_points;
+  std::vector<spl::ControlPoint> control_points;
   std::vector<double> weights_;
 };
 
@@ -84,12 +84,12 @@ TEST_F(A1DWeightedPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
   ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 5);
   // TODO(Corinna, Christoph): It should not be possible to add a control point without specifying a dimension.
   // weighted_physical_space.AddControlPoints(1);
-  // weighted_physical_space.SetControlPoint(5, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  // weighted_physical_space.SetControlPoint(5, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   // weighted_physical_space.SetWeight(5, 4.3);
   // ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 6);
   // ASSERT_THAT(weighted_physical_space.GetControlPoint(5).GetValueForDimension(Dimension{0}), DoubleEq(6.0));
   // ASSERT_THAT(weighted_physical_space.GetWeight(5), DoubleEq(4.3));
-  weighted_physical_space.SetControlPoint(4, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  weighted_physical_space.SetControlPoint(4, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   weighted_physical_space.SetWeight(4, 4.3);
   ASSERT_THAT(weighted_physical_space.GetControlPoint(4).GetValueForDimension(Dimension{0}), DoubleEq(6.0));
   ASSERT_THAT(weighted_physical_space.GetWeight(4), DoubleEq(4.3));
@@ -116,12 +116,12 @@ class A2DWeightedPhysicalSpace : public Test {
  public:
   A2DWeightedPhysicalSpace() {
     control_points = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({0.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({1.5, 2.5})),
-        baf::ControlPoint(std::vector<double>({5.0, 1.0}))
+        spl::ControlPoint(std::vector<double>({0.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({3.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({0.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({1.5, 2.5})),
+        spl::ControlPoint(std::vector<double>({5.0, 1.0}))
     };
     weights_ = {0.5, 0.75, 0.8, 1.0, 1.2, 3.8};
     weighted_physical_space = spl::WeightedPhysicalSpace<2>(control_points, weights_, {3, 2});
@@ -129,7 +129,7 @@ class A2DWeightedPhysicalSpace : public Test {
 
  protected:
   spl::WeightedPhysicalSpace<2> weighted_physical_space;
-  std::vector<baf::ControlPoint> control_points;
+  std::vector<spl::ControlPoint> control_points;
   std::vector<double> weights_;
 };
 
@@ -215,12 +215,12 @@ TEST_F(A2DWeightedPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
   ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 6);
   // TODO(Corinna, Christoph): It should not be possible to add a control point without specifying a dimension.
   // weighted_physical_space.AddControlPoints(1);
-  // weighted_physical_space.SetControlPoint(6, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  // weighted_physical_space.SetControlPoint(6, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   // weighted_physical_space.SetWeight(6, 4.3);
   // ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 7);
   // ASSERT_THAT(weighted_physical_space.GetControlPoint(6).GetValueForDimension(Dimension{0}), DoubleEq(6.0));
   // ASSERT_THAT(weighted_physical_space.GetWeight(6), DoubleEq(4.3));
-  weighted_physical_space.SetControlPoint(5, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  weighted_physical_space.SetControlPoint(5, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   weighted_physical_space.SetWeight(5, 4.3);
   ASSERT_THAT(weighted_physical_space.GetControlPoint(5).GetValueForDimension(Dimension{0}), DoubleEq(6.0));
   ASSERT_THAT(weighted_physical_space.GetWeight(5), DoubleEq(4.3));
@@ -253,11 +253,11 @@ class A1DWeightedPhysicalSpace_a : public Test {
  public:
   A1DWeightedPhysicalSpace_a() {
     control_points = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({4.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({5.0, -1.0}))
+        spl::ControlPoint(std::vector<double>({0.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({3.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({4.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
     weights_ = {1, 4, 1, 1, 1};
     weighted_physical_space = spl::WeightedPhysicalSpace<1>(control_points, weights_, {5});
@@ -265,7 +265,7 @@ class A1DWeightedPhysicalSpace_a : public Test {
 
  protected:
   spl::WeightedPhysicalSpace<1> weighted_physical_space;
-  std::vector<baf::ControlPoint> control_points;
+  std::vector<spl::ControlPoint> control_points;
   std::vector<double> weights_;
 };
 

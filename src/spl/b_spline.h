@@ -32,7 +32,7 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
  public:
   BSpline(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector, std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree,
-          const std::vector<baf::ControlPoint> &control_points)
+          const std::vector<spl::ControlPoint> &control_points)
           : Spline<PARAMETRIC_DIMENSIONALITY>(knot_vector, degree) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
@@ -75,7 +75,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     for (int i = point_handler.GetNumberOfTotalMultiIndices() - 1; i >= 0; --i, --point_handler) {
       auto current_point_index = point_handler[Dimension{dimension}];
       std::array<int, PARAMETRIC_DIMENSIONALITY> indices = point_handler.GetCurrentIndex();
-      baf::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling,
+      spl::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling,
                                                                current_point_index, first, last);
       physical_space_->SetControlPoint(indices, new_control_point, dimension,
                                        util::numeric_operations::increment<int>);
@@ -111,7 +111,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     int first = 0;
     for (int i = 0; i < 2; ++i) {
       int length = new_knots[i][dimension]->GetNumberOfKnots() - this->GetDegree(dimension).Get() - 1;
-      std::vector<baf::ControlPoint> points = physical_space_->GetDividedControlPoints(first, length, dimension);
+      std::vector<spl::ControlPoint> points = physical_space_->GetDividedControlPoints(first, length, dimension);
       spl::BSpline<PARAMETRIC_DIMENSIONALITY> spline(new_knots[i], degrees, points);
       subdivided_splines[i] = std::make_shared<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>(spline);
       first = length;
@@ -138,7 +138,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
         * this->GetControlPoint(indices, dimension);
   }
 
-  baf::ControlPoint GetNewControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, int dimension,
+  spl::ControlPoint GetNewControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, int dimension,
       std::vector<double> scaling, int current_point_index, int first, int last) {
     if (current_point_index > last) {
       --indices[dimension];
@@ -147,8 +147,8 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     if (current_point_index >= first) {
       std::array<int, PARAMETRIC_DIMENSIONALITY> lower_indices = indices;
       --lower_indices[dimension];
-      baf::ControlPoint upper_control_point = this->GetControlPoint(indices);
-      baf::ControlPoint lower_control_point = this->GetControlPoint(lower_indices);
+      spl::ControlPoint upper_control_point = this->GetControlPoint(indices);
+      spl::ControlPoint lower_control_point = this->GetControlPoint(lower_indices);
       std::vector<double> coordinates;
       coordinates.reserve(upper_control_point.GetDimensionality());
       for (int j = 0; j < upper_control_point.GetDimensionality(); ++j) {
@@ -156,7 +156,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
             scaling[current_point_index - first] * upper_control_point.GetValueForDimension(Dimension{j})
             + (1 - scaling[current_point_index - first]) * lower_control_point.GetValueForDimension(Dimension{j}));
       }
-      return baf::ControlPoint(coordinates);
+      return spl::ControlPoint(coordinates);
     }
     return this->GetControlPoint(indices);
   }
@@ -172,7 +172,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
         std::vector<double> coordinates(temp.begin() + index, temp.begin() + index + this->GetPointDim());
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k - off < ii ? k : k - 1;
-        physical_space_->SetControlPoint(indices, baf::ControlPoint(coordinates), dimension,
+        physical_space_->SetControlPoint(indices, spl::ControlPoint(coordinates), dimension,
                                          util::numeric_operations::decrement<int>);
       }
       if ((k <= off && k - off < 1) || (k >= last + 1 && k < this->GetPointsPerDirection()[dimension])) {
@@ -251,7 +251,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     return true;
   }
 
-  void SetNewControlPoint(baf::ControlPoint control_point, double /*weight*/,
+  void SetNewControlPoint(spl::ControlPoint control_point, double /*weight*/,
       std::array<int, PARAMETRIC_DIMENSIONALITY> indices) override {
     physical_space_->SetControlPoint(indices, control_point);
   }

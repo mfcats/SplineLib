@@ -39,7 +39,7 @@ class IRITReader : public Reader {
 
   static int GetNumberOfControlPoints(int start, const std::vector<std::string> &entries);
 
-  std::vector<baf::ControlPoint> GetControlPoints(int start, const std::vector<std::string> &entries,
+  std::vector<spl::ControlPoint> GetControlPoints(int start, const std::vector<std::string> &entries,
                                                   bool rational, std::vector<double> weights) const;
 
   std::vector<double> GetWeights(int start, const std::vector<std::string> &entries, bool rational) const;

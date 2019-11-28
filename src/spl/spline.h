@@ -158,11 +158,11 @@ class Spline {
     return GetPhysicalSpace()->GetControlPoint(index_1d).GetValueForDimension(Dimension{dimension});
   }
 
-  baf::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
+  spl::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
     return GetPhysicalSpace()->GetControlPoint(indices);
   }
 
-  baf::ControlPoint GetControlPoint(int index_1d) const {
+  spl::ControlPoint GetControlPoint(int index_1d) const {
     return GetPhysicalSpace()->GetControlPoint(index_1d);
   }
 
@@ -228,7 +228,7 @@ class Spline {
     uint64_t num_bezier_segments = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1;
     std::vector<double> alpha = ComputeBezierDegreeElevationCoefficients(dimension);
     auto diff = ProduceBezierSegments(dimension);
-    std::vector<std::vector<baf::ControlPoint>> bezier_segments(num_bezier_segments);
+    std::vector<std::vector<spl::ControlPoint>> bezier_segments(num_bezier_segments);
     for (uint64_t i = 0; i < num_bezier_segments; ++i) {
       bezier_segments[i] = DegreeElevateBezierSegment(GetBezierSegment(dimension, i), alpha, dimension);
     }
@@ -247,7 +247,7 @@ class Spline {
   bool ReduceDegreeForDimension(int dimension, double tolerance = util::numeric_settings::GetEpsilon<double>()) {
     std::vector<int> diff = ProduceBezierSegments(dimension);
     uint64_t num_bezier_segments = GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1;
-    std::vector<std::vector<baf::ControlPoint>> bezier_segments;
+    std::vector<std::vector<spl::ControlPoint>> bezier_segments;
     for (uint64_t i = 0; i < num_bezier_segments; ++i) {
       bool successful;
       bezier_segments.emplace_back(
@@ -340,12 +340,12 @@ class Spline {
     }
   }
 
-  std::vector<baf::ControlPoint> GetBezierSegment(int dimension, int segment) const {
+  std::vector<spl::ControlPoint> GetBezierSegment(int dimension, int segment) const {
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointsPerDirection());
     int width = GetDegree(dimension).Get() + 1;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
-    std::vector<baf::ControlPoint> bezier_cps(static_cast<size_t>(width * segment_length),
-                                              baf::ControlPoint(GetPointDim() + 1));
+    std::vector<spl::ControlPoint> bezier_cps(static_cast<size_t>(width * segment_length),
+                                              spl::ControlPoint(GetPointDim() + 1));
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       auto index_in_dir = point_handler[Dimension{dimension}];
       if (index_in_dir >= segment * width - segment && index_in_dir < (segment + 1) * width - segment) {
@@ -361,14 +361,14 @@ class Spline {
     return bezier_cps;
   }
 
-  std::vector<baf::ControlPoint> DegreeElevateBezierSegment(const std::vector<baf::ControlPoint> &bezier_cps,
+  std::vector<spl::ControlPoint> DegreeElevateBezierSegment(const std::vector<spl::ControlPoint> &bezier_cps,
                                                             std::vector<double> alpha, int dimension) const {
     int width = GetDegree(dimension).Get() + 2;
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     util::MultiIndexHandler<2> cp_handler_new({width, segment_length});
     util::MultiIndexHandler<2> cp_handler_old({width - 1, segment_length});
-    std::vector<baf::ControlPoint> new_cps(cp_handler_new.GetNumberOfTotalMultiIndices(),
-                                           baf::ControlPoint(GetPointDim() + 1));
+    std::vector<spl::ControlPoint> new_cps(cp_handler_new.GetNumberOfTotalMultiIndices(),
+                                           spl::ControlPoint(GetPointDim() + 1));
     for (int i = 0; i < segment_length; ++i) {
       new_cps[cp_handler_new.Get1DIndex({0, i})] = bezier_cps[cp_handler_old.Get1DIndex({0, i})];
       new_cps[cp_handler_new.Get1DIndex({width - 1, i})] = bezier_cps[cp_handler_old.Get1DIndex({width - 2, i})];
@@ -380,15 +380,15 @@ class Spline {
     return new_cps;
   }
 
-  std::vector<baf::ControlPoint> DegreeReduceBezierSegment(const std::vector<baf::ControlPoint> &bezier_cps,
+  std::vector<spl::ControlPoint> DegreeReduceBezierSegment(const std::vector<spl::ControlPoint> &bezier_cps,
                                                            double tolerance, int dimension, bool* successful) {
     int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
     util::MultiIndexHandler<2> cp_handler_old({GetDegree(dimension).Get() + 1, segment_length});
     util::MultiIndexHandler<2> cp_handler_new({GetDegree(dimension).Get(), segment_length});
     double max_error_bound = 0.0;
     int new_degree = GetDegree(dimension).Get() - 1;
-    std::vector<baf::ControlPoint> new_cps(cp_handler_new.GetNumberOfTotalMultiIndices(),
-                                           baf::ControlPoint(GetPointDim() + 1));
+    std::vector<spl::ControlPoint> new_cps(cp_handler_new.GetNumberOfTotalMultiIndices(),
+                                           spl::ControlPoint(GetPointDim() + 1));
     int r = new_degree / 2;
     double alpha_r = static_cast<double>(r) / static_cast<double>((new_degree + 1));
     double alpha_r_plus = static_cast<double>(r + 1) / static_cast<double>((new_degree + 1));
@@ -408,16 +408,16 @@ class Spline {
             new_cps[cp_handler_new.Get1DIndex({j + 1, i})] * (1 - alpha)) * (1 / alpha);
       }
       if ((new_degree + 1) % 2 != 0) {
-        baf::ControlPoint P_r_L = (bezier_cps[cp_handler_old.Get1DIndex({r, i})] -
+        spl::ControlPoint P_r_L = (bezier_cps[cp_handler_old.Get1DIndex({r, i})] -
             new_cps[cp_handler_new.Get1DIndex({r - 1, i})] * alpha_r) * (1 / (1 - alpha_r));
-        baf::ControlPoint P_r_R = (bezier_cps[cp_handler_old.Get1DIndex({r + 1, i})] -
+        spl::ControlPoint P_r_R = (bezier_cps[cp_handler_old.Get1DIndex({r + 1, i})] -
             new_cps[cp_handler_new.Get1DIndex({r + 1, i})] * (1 - alpha_r_plus)) * (1 / alpha_r_plus);
         new_cps[cp_handler_new.Get1DIndex({r, i})] = (P_r_L + P_r_R) * 0.5;
-        if ((P_r_L - P_r_R).GetEuclideanNorm() > max_error_bound) max_error_bound = (P_r_L - P_r_R).GetEuclideanNorm();
+        if ((P_r_L - P_r_R).ComputeTwoNorm() > max_error_bound) max_error_bound = (P_r_L - P_r_R).ComputeTwoNorm();
       } else {
         double current_max_error_bound =
             (bezier_cps[cp_handler_old.Get1DIndex({r + 1, i})] - ((new_cps[cp_handler_new.Get1DIndex({r, i})] +
-                new_cps[cp_handler_new.Get1DIndex({r + 1, i})]) * 0.5)).GetEuclideanNorm();
+                new_cps[cp_handler_new.Get1DIndex({r + 1, i})]) * 0.5)).ComputeTwoNorm();
         if (current_max_error_bound > max_error_bound) max_error_bound = current_max_error_bound;
       }
     }
@@ -425,10 +425,10 @@ class Spline {
     return new_cps;
   }
 
-  virtual void SetNewControlPoint(baf::ControlPoint control_point, double weight,
+  virtual void SetNewControlPoint(spl::ControlPoint control_point, double weight,
       std::array<int, PARAMETRIC_DIMENSIONALITY> indices) = 0;
 
-  void SetNewBezierSegmentControlPoints(const std::vector<std::vector<baf::ControlPoint>> &bezier_segments,
+  void SetNewBezierSegmentControlPoints(const std::vector<std::vector<spl::ControlPoint>> &bezier_segments,
                                         int dimension) {
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointsPerDirection());
     int width = GetDegree(dimension).Get() + 1;
@@ -440,7 +440,7 @@ class Spline {
         --segment;
         index = (width - 1) + point_handler.CollapseDimension(Dimension{dimension}) * width;
       }
-      baf::ControlPoint cp(GetPointDim());
+      spl::ControlPoint cp(GetPointDim());
       double weight = bezier_segments[segment][index].GetValueForDimension(Dimension{GetPointDim()});
       for (int j = 0; j < GetPointDim(); ++j) {
         cp.SetValue(Dimension{j}, bezier_segments[segment][index].GetValueForDimension(Dimension{j}) / weight);

@@ -45,11 +45,11 @@ PhysicalSpace<2> SquareGenerator::GeneratePhysicalSpace() const {
     coordinate = val;
     val += delta;
   }
-  std::vector<baf::ControlPoint> cps(num_cps * num_cps, baf::ControlPoint({0.0, 0.0}));
+  std::vector<spl::ControlPoint> cps(num_cps * num_cps, spl::ControlPoint({0.0, 0.0}));
   size_t cp_it = 0;
   for (u_int64_t y_it = 0; y_it < num_cps; ++y_it) {
     for (u_int64_t x_it = 0; x_it < num_cps; ++x_it) {
-      cps[cp_it++] = baf::ControlPoint(std::vector({coordinates[x_it], coordinates[y_it]}));
+      cps[cp_it++] = spl::ControlPoint(std::vector({coordinates[x_it], coordinates[y_it]}));
     }
   }
   return PhysicalSpace<2>(cps, {static_cast<int>(num_cps), static_cast<int>(num_cps)});

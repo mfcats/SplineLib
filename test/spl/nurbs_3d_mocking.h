@@ -43,14 +43,14 @@ class MockParameterSpace3d : public spl::ParameterSpace<3> {
 class MockWeightedPhysicalSpace3d : public spl::WeightedPhysicalSpace<3> {
  public:
   MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 3>));
-  MOCK_CONST_METHOD1(GetHomogenousControlPoint, baf::ControlPoint(std::array<int, 3>));
-  MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 3>));
+  MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 3>));
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 3>));
   MOCK_CONST_METHOD0(GetDimension, int());
 };
 
 class MockPhysicalSpace3d : public spl::PhysicalSpace<3> {
  public:
-  MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 3>));
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 3>));
 };
 
 void mock_weights3d(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace3d>> &w_physical_space) {
@@ -60,53 +60,53 @@ void mock_weights3d(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace3d>>
 
 void mock_homogenous3d(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace3d>> &w_physical_space) {
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{0, 0, 0}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 0.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{1, 0, 0}))
-      .WillByDefault(Return(baf::ControlPoint({1.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({1.0, 0.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{2, 0, 0}))
-      .WillByDefault(Return(baf::ControlPoint({3.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({3.0, 0.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{0, 1, 0}))
-      .WillByDefault(Return(baf::ControlPoint({-1.0, 0.5})));
+      .WillByDefault(Return(spl::ControlPoint({-1.0, 0.5})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{1, 1, 0}))
-      .WillByDefault(Return(baf::ControlPoint({2.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({2.0, 2.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{2, 1, 0}))
-      .WillByDefault(Return(baf::ControlPoint({4.0, 1.0})));
+      .WillByDefault(Return(spl::ControlPoint({4.0, 1.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{0, 0, 1}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 2.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{1, 0, 1}))
-      .WillByDefault(Return(baf::ControlPoint({-1.0, 0.5})));
+      .WillByDefault(Return(spl::ControlPoint({-1.0, 0.5})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{2, 0, 1}))
-      .WillByDefault(Return(baf::ControlPoint({2.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({2.0, 2.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{0, 1, 1}))
-      .WillByDefault(Return(baf::ControlPoint({4.0, 1.0})));
+      .WillByDefault(Return(spl::ControlPoint({4.0, 1.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{1, 1, 1}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 2.0})));
   ON_CALL(*w_physical_space, GetHomogenousControlPoint(std::array<int, 3>{2, 1, 1}))
-      .WillByDefault(Return(baf::ControlPoint({5.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({5.0, 2.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{0, 0, 0}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 0.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{1, 0, 0}))
-      .WillByDefault(Return(baf::ControlPoint({1.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({1.0, 0.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{2, 0, 0}))
-      .WillByDefault(Return(baf::ControlPoint({3.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({3.0, 0.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{0, 1, 0}))
-      .WillByDefault(Return(baf::ControlPoint({-1.0, 0.5})));
+      .WillByDefault(Return(spl::ControlPoint({-1.0, 0.5})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{1, 1, 0}))
-      .WillByDefault(Return(baf::ControlPoint({2.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({2.0, 2.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{2, 1, 0}))
-      .WillByDefault(Return(baf::ControlPoint({4.0, 1.0})));
+      .WillByDefault(Return(spl::ControlPoint({4.0, 1.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{0, 0, 1}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 2.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{1, 0, 1}))
-      .WillByDefault(Return(baf::ControlPoint({-1.0, 0.5})));
+      .WillByDefault(Return(spl::ControlPoint({-1.0, 0.5})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{2, 0, 1}))
-      .WillByDefault(Return(baf::ControlPoint({2.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({2.0, 2.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{0, 1, 1}))
-      .WillByDefault(Return(baf::ControlPoint({4.0, 1.0})));
+      .WillByDefault(Return(spl::ControlPoint({4.0, 1.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{1, 1, 1}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 2.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 3>{2, 1, 1}))
-      .WillByDefault(Return(baf::ControlPoint({5.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({5.0, 2.0})));
 }
 
 void mock_weightedPhysicalSpace3d(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace3d>> &w_physical_space) {
@@ -117,29 +117,29 @@ void mock_weightedPhysicalSpace3d(const std::shared_ptr<NiceMock<MockWeightedPhy
 
 void mock_physicalSpace3d(const std::shared_ptr<NiceMock<MockPhysicalSpace3d>> &physical_space) {
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{0, 0, 0}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 0.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{1, 0, 0}))
-      .WillByDefault(Return(baf::ControlPoint({1.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({1.0, 0.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{2, 0, 0}))
-      .WillByDefault(Return(baf::ControlPoint({3.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({3.0, 0.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{0, 1, 0}))
-      .WillByDefault(Return(baf::ControlPoint({-1.0, 0.5})));
+      .WillByDefault(Return(spl::ControlPoint({-1.0, 0.5})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{1, 1, 0}))
-      .WillByDefault(Return(baf::ControlPoint({2.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({2.0, 2.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{2, 1, 0}))
-      .WillByDefault(Return(baf::ControlPoint({4.0, 1.0})));
+      .WillByDefault(Return(spl::ControlPoint({4.0, 1.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{0, 0, 1}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 2.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{1, 0, 1}))
-      .WillByDefault(Return(baf::ControlPoint({-1.0, 0.5})));
+      .WillByDefault(Return(spl::ControlPoint({-1.0, 0.5})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{2, 0, 1}))
-      .WillByDefault(Return(baf::ControlPoint({2.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({2.0, 2.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{0, 1, 1}))
-      .WillByDefault(Return(baf::ControlPoint({4.0, 1.0})));
+      .WillByDefault(Return(spl::ControlPoint({4.0, 1.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{1, 1, 1}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 2.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 3>{2, 1, 1}))
-      .WillByDefault(Return(baf::ControlPoint({5.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({5.0, 2.0})));
 }
 
 void set_get_basis_function_nurbs3d(const std::shared_ptr<NiceMock<MockParameterSpace3d>> &parameter_space) {

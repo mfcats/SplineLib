@@ -36,7 +36,7 @@ std::shared_ptr<WeightedPhysicalSpace<2>> SurfaceGenerator::JoinPhysicalSpaces(
     std::shared_ptr<NURBS<1>> const &nurbs_C) const {
   std::array<int, 2> j_number_of_points =
       {nurbs_T->GetNumberOfControlPoints(), nurbs_C->GetNumberOfControlPoints()};
-  std::vector<baf::ControlPoint> j_control_points;
+  std::vector<spl::ControlPoint> j_control_points;
   std::vector<double> joined_weights;
   for (int i = 0; i < nurbs_C->GetNumberOfControlPoints(); ++i) {
     std::array<int, 1> index_space_2 = {i};
@@ -68,7 +68,7 @@ SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
                                                     std::array<double, 4>({0.0, 0.0, 0.0, 1.0})});
   double weight_v;
   int m = nurbs_C->GetNumberOfControlPoints();
-  std::vector<baf::ControlPoint> j_control_points(nbInter * m, baf::ControlPoint({0.0, 0.0, 0.0}));
+  std::vector<spl::ControlPoint> j_control_points(nbInter * m, spl::ControlPoint({0.0, 0.0, 0.0}));
   std::vector<double> j_weights(nbInter * m, 0.0);
   v_i.reserve(nbInter);
   for (int i = 0; i < nbInter; ++i) {
@@ -84,8 +84,8 @@ SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
                                     i);
     for (int j = 0; j < m; ++j) {
       int indexControlPoint = j * nbInter + i;
-      baf::ControlPoint control_point_j = nurbs_C->GetControlPoint(std::array<int, 1>({j}));
-      j_control_points[indexControlPoint] = control_point_j.Transform(transMatrix, scaling[i]);
+      spl::ControlPoint control_point_j = nurbs_C->GetControlPoint(std::array<int, 1>({j}));
+      j_control_points[indexControlPoint] = Transform(control_point_j, transMatrix, scaling[i]);
       j_weights[indexControlPoint] = nurbs_C->GetWeight(std::array<int, 1>({j})) * weight_v;
     }
   }
@@ -227,5 +227,20 @@ std::array<std::array<double, 4>, 4> SurfaceGenerator::GetTransformation(std::ve
     transformation[i][1] = y[i];
   }
   return transformation;
+}
+
+ControlPoint SurfaceGenerator::Transform(spl::ControlPoint const &control_point,
+                                         std::array<std::array<double, 4>, 4> const &transformation_matrix,
+                                         std::array<double, 3> const &scaling) const {
+  std::vector<double> coordinates_new = {GetValue(GetValue(transformation_matrix, 0), 3),
+                                         GetValue(GetValue(transformation_matrix, 1), 3),
+                                         GetValue(GetValue(transformation_matrix, 2), 3)};
+  for (Dimension i{0}; i < Dimension(3); ++i) {
+    for (Dimension j{0}; j < Dimension{3}; ++j) {
+      GetValue(coordinates_new, j) += GetValue(GetValue(transformation_matrix, j), i) * GetValue(scaling, i) *
+          control_point[i];
+    }
+  }
+  return ControlPoint(coordinates_new);
 }
 }  // namespace splinelib::src::spl

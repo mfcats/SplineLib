@@ -61,7 +61,7 @@ std::any IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
   degree[0] = Degree{static_cast<int>(parameterData[2])};
   baf::KnotVectors<1> knot_vector;
   std::vector<double> weights;
-  std::vector<baf::ControlPoint> control_points;
+  std::vector<spl::ControlPoint> control_points;
   std::array<int, 2> knotsStartEnd{};
   std::array<int, 2> weightsStartEnd{};
   std::array<int, 2> controlPointsStartEnd{};
@@ -84,7 +84,7 @@ std::any IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
     controlPointCoordinates.push_back(parameterData[i]);
   }
   for (auto i = 0u; i < controlPointCoordinates.size(); i += 3) {
-    control_points.emplace_back(baf::ControlPoint({controlPointCoordinates[i],
+    control_points.emplace_back(spl::ControlPoint({controlPointCoordinates[i],
                                                    controlPointCoordinates[i + 1],
                                                    controlPointCoordinates[i + 2]}));
   }
@@ -109,7 +109,7 @@ std::any IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
   degree[1] = Degree{static_cast<int>(parameterData[4])};
   baf::KnotVectors<2> knot_vector;
   std::vector<double> weights;
-  std::vector<baf::ControlPoint> control_points;
+  std::vector<spl::ControlPoint> control_points;
   std::array<std::array<int, 2>, 2> knotsStartEnd{};
   std::array<int, 2> weightsStartEnd{};
   std::array<int, 2> controlPointsStartEnd{};
@@ -138,7 +138,7 @@ std::any IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
     controlPointCoordinates.push_back(parameterData[i]);
   }
   for (auto i = 0u; i < controlPointCoordinates.size() - 2; i += 3) {
-    control_points.emplace_back(baf::ControlPoint({controlPointCoordinates[i],
+    control_points.emplace_back(spl::ControlPoint({controlPointCoordinates[i],
                                                    controlPointCoordinates[i + 1],
                                                    controlPointCoordinates[i + 2]}));
   }

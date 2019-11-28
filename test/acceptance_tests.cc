@@ -22,15 +22,15 @@ using namespace splinelib::src;
 
 std::unique_ptr<spl::BSpline<1>> GenerateSpline() {
   std::array<Degree, 1> degree = {Degree{2}};
-  std::vector<baf::ControlPoint> control_points = {
-      baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.0, 1.0})),
-      baf::ControlPoint(std::vector<double>({1.0, 1.0})),
-      baf::ControlPoint(std::vector<double>({1.5, 1.5})),
-      baf::ControlPoint(std::vector<double>({2.0, 1.3})),
-      baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-      baf::ControlPoint(std::vector<double>({4.0, 1.5})),
-      baf::ControlPoint(std::vector<double>({4.0, 0.0}))
+  std::vector<spl::ControlPoint> control_points = {
+      spl::ControlPoint(std::vector<double>({0.0, 0.0})),
+      spl::ControlPoint(std::vector<double>({0.0, 1.0})),
+      spl::ControlPoint(std::vector<double>({1.0, 1.0})),
+      spl::ControlPoint(std::vector<double>({1.5, 1.5})),
+      spl::ControlPoint(std::vector<double>({2.0, 1.3})),
+      spl::ControlPoint(std::vector<double>({3.0, 2.0})),
+      spl::ControlPoint(std::vector<double>({4.0, 1.5})),
+      spl::ControlPoint(std::vector<double>({4.0, 0.0}))
   };
   baf::KnotVectors<1> knot_vector_ptr = {
       std::make_shared<baf::KnotVector>(baf::KnotVector(

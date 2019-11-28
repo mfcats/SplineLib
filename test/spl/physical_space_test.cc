@@ -24,18 +24,18 @@ class A1DPhysicalSpace : public Test {
  public:
   A1DPhysicalSpace() {
     control_points = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({4.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({5.0, -1.0}))
+        spl::ControlPoint(std::vector<double>({0.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({3.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({4.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
     physical_space = spl::PhysicalSpace<1>(control_points, {5});
   }
 
  protected:
   spl::PhysicalSpace<1> physical_space;
-  std::vector<baf::ControlPoint> control_points;
+  std::vector<spl::ControlPoint> control_points;
 };
 
 TEST_F(A1DPhysicalSpace, ThrowsForDifferingGivenNumberOfControlPointsAndLengthOfControlPointVector) {  // NOLINT
@@ -68,11 +68,11 @@ TEST_F(A1DPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
   ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 5);
   // TODO(Corinna, Christoph): It should not be possible to add a control point without specifying a dimension.
   // physical_space.AddControlPoints(1);
-  // physical_space.SetControlPoint(5, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  // physical_space.SetControlPoint(5, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   // ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 6);
   // ASSERT_THAT(physical_space.GetControlPoint(5).GetValueForDimension(0), DoubleEq(6.0));
   // ASSERT_THAT(physical_space.GetControlPoint(5).GetValueForDimension(1), DoubleEq(0.0));
-  physical_space.SetControlPoint(4, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  physical_space.SetControlPoint(4, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   ASSERT_THAT(physical_space.GetControlPoint(4).GetValueForDimension(Dimension{0}), DoubleEq(6.0));
   ASSERT_THAT(physical_space.GetControlPoint(4).GetValueForDimension(Dimension{1}), DoubleEq(0.0));
 }
@@ -108,19 +108,19 @@ class A2DPhysicalSpace : public Test {
  public:
   A2DPhysicalSpace() {
     control_points = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({0.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({1.5, 2.5})),
-        baf::ControlPoint(std::vector<double>({5.0, 1.0}))
+        spl::ControlPoint(std::vector<double>({0.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({3.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({0.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({1.5, 2.5})),
+        spl::ControlPoint(std::vector<double>({5.0, 1.0}))
     };
     physical_space = spl::PhysicalSpace<2>(control_points, {3, 2});
   }
 
  protected:
   spl::PhysicalSpace<2> physical_space;
-  std::vector<baf::ControlPoint> control_points;
+  std::vector<spl::ControlPoint> control_points;
 };
 
 TEST_F(A2DPhysicalSpace, ThrowsForDifferingGivenNumberOfControlPointsAndLengthOfControlPointVector) {  // NOLINT
@@ -166,11 +166,11 @@ TEST_F(A2DPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
   ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 6);
   // TODO(Corinna, Christoph): It should not be possible to add a control point without specifying a dimension.
   // physical_space.AddControlPoints(1);
-  // physical_space.SetControlPoint(6, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  // physical_space.SetControlPoint(6, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   // ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 7);
   // ASSERT_THAT(physical_space.GetControlPoint(6).GetValueForDimension(0), DoubleEq(6.0));
   // ASSERT_THAT(physical_space.GetControlPoint(6).GetValueForDimension(1), DoubleEq(0.0));
-  physical_space.SetControlPoint(5, baf::ControlPoint(std::vector<double>({6.0, 0.0})));
+  physical_space.SetControlPoint(5, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   ASSERT_THAT(physical_space.GetControlPoint(5).GetValueForDimension(Dimension{0}), DoubleEq(6.0));
   ASSERT_THAT(physical_space.GetControlPoint(5).GetValueForDimension(Dimension{1}), DoubleEq(0.0));
 }

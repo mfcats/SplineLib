@@ -33,13 +33,13 @@ class BSplineFig5_35ForDegreeElevationForDimension0 : public Test {  // NOLINT
          ParametricCoordinate{0.3},
          ParametricCoordinate{0.6}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1},
          ParametricCoordinate{1}}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({1.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({0.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({4.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({3.0, 0.0}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({1.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({0.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({3.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({4.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({3.0, 0.0}))
     };
     original_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
     elevated_ = std::make_shared<spl::BSpline<1>>(*original_);
@@ -80,11 +80,11 @@ class ALinearNURBSForDegreeElevationForDimension0 : public Test {  // NOLINT
         {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.3}, ParametricCoordinate{0.6},
          ParametricCoordinate{1},
          ParametricCoordinate{1}}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 3.0}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({1.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({2.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({2.0, 3.0}))
     };
     std::vector<double> weights = {1.0, 1.5, 0.5, 1.0};
     original_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
@@ -129,14 +129,14 @@ class A2DBSplineForDegreeElevationForDimension0 : public Test {  // NOLINT
              ParametricCoordinate{0.6}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}})),
         std::make_shared<baf::KnotVector>(baf::KnotVector(
             {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({1.0, 1.0})), baf::ControlPoint(std::vector<double>({1.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 2.0})), baf::ControlPoint(std::vector<double>({2.0, 3.0})),
-        baf::ControlPoint(std::vector<double>({3.0, 3.0})), baf::ControlPoint(std::vector<double>({3.0, 4.0})),
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({1.0, 1.0})), spl::ControlPoint(std::vector<double>({1.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({2.0, 2.0})), spl::ControlPoint(std::vector<double>({2.0, 3.0})),
+        spl::ControlPoint(std::vector<double>({3.0, 3.0})), spl::ControlPoint(std::vector<double>({3.0, 4.0})),
 
-        baf::ControlPoint(std::vector<double>({2.0, 1.0})), baf::ControlPoint(std::vector<double>({1.5, 2.5})),
-        baf::ControlPoint(std::vector<double>({2.0, 3.0})), baf::ControlPoint(std::vector<double>({2.5, 3.5})),
-        baf::ControlPoint(std::vector<double>({3.5, 4.0})), baf::ControlPoint(std::vector<double>({5.0, 5.0}))
+        spl::ControlPoint(std::vector<double>({2.0, 1.0})), spl::ControlPoint(std::vector<double>({1.5, 2.5})),
+        spl::ControlPoint(std::vector<double>({2.0, 3.0})), spl::ControlPoint(std::vector<double>({2.5, 3.5})),
+        spl::ControlPoint(std::vector<double>({3.5, 4.0})), spl::ControlPoint(std::vector<double>({5.0, 5.0}))
     };
     original_ = std::make_shared<spl::BSpline<2>>(knot_vector_before, degree, control_points);
     elevated_ = std::make_shared<spl::BSpline<2>>(*original_);

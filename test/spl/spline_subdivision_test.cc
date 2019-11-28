@@ -37,26 +37,26 @@ class BSplineFig5_9 : public Test {  // NOLINT
             {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.5},
              ParametricCoordinate{1},
              ParametricCoordinate{1}, ParametricCoordinate{1}}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({5.0, 0.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 0.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 0.0, 3.0})),
-        baf::ControlPoint(std::vector<double>({-1.0, 0.0, 3.0})),
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({5.0, 0.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({2.0, 0.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 0.0, 3.0})),
+        spl::ControlPoint(std::vector<double>({-1.0, 0.0, 3.0})),
 
-        baf::ControlPoint(std::vector<double>({5.0, 2.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 1.5, 2.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 1.0, 3.0})),
-        baf::ControlPoint(std::vector<double>({-1.0, 1.0, 3.0})),
+        spl::ControlPoint(std::vector<double>({5.0, 2.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({2.0, 1.5, 2.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 1.0, 3.0})),
+        spl::ControlPoint(std::vector<double>({-1.0, 1.0, 3.0})),
 
-        baf::ControlPoint(std::vector<double>({5.0, 2.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 2.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 2.5, 2.0})),
-        baf::ControlPoint(std::vector<double>({-1.0, 2.5, 2.0})),
+        spl::ControlPoint(std::vector<double>({5.0, 2.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({2.0, 2.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 2.5, 2.0})),
+        spl::ControlPoint(std::vector<double>({-1.0, 2.5, 2.0})),
 
-        baf::ControlPoint(std::vector<double>({5.0, 5.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 4.5, 0.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 4.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({-1.0, 4.0, 2.0}))
+        spl::ControlPoint(std::vector<double>({5.0, 5.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({2.0, 4.5, 0.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 4.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({-1.0, 4.0, 2.0}))
     };
     bspline_2d_ = std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points);
   }

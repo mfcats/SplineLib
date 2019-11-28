@@ -56,9 +56,9 @@ class RandomSplineUtils {
     return knot_vectors;
   }
 
-  static std::vector<baf::ControlPoint> GetRandomControlPoints(int dimension, const std::array<int,
+  static std::vector<spl::ControlPoint> GetRandomControlPoints(int dimension, const std::array<int,
       PARAMETRIC_DIMENSIONALITY> &number_of_points) {
-    std::vector<baf::ControlPoint> control_points;
+    std::vector<spl::ControlPoint> control_points;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(number_of_points);
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       std::vector<double> coordinates;

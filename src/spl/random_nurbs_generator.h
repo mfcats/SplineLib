@@ -38,7 +38,7 @@ class RandomNURBSGenerator : public NURBSGenerator<PARAMETRIC_DIMENSIONALITY> {
         RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetRandomKnotVectors(coord_limits, degrees);
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points =
         RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetNumberOfPoints(degrees, knot_vectors);
-    std::vector<baf::ControlPoint> control_points =
+    std::vector<spl::ControlPoint> control_points =
         RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetRandomControlPoints(dimension, number_of_points);
     std::vector<double> weights = RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetRandomWeights(number_of_points);
     this->physical_space_ =

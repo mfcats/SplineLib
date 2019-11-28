@@ -90,7 +90,7 @@ class LinearEquationAssembler {
           ++m;
         }
       }
-      std::array<std::vector<baf::ControlPoint>, 2> control_points;
+      std::array<std::vector<spl::ControlPoint>, 2> control_points;
       std::array<std::vector<double>, 2> weights;
       util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mih(points_per_dir);
       for (int k = 0; k < boundary_spline_connectivity[i].size(); ++k) {

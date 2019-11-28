@@ -42,28 +42,28 @@ class Mock2dParameterSpace : public spl::ParameterSpace<2> {
 
 class Mock2dPhysicalSpace : public spl::PhysicalSpace<2> {
  public:
-  MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 2>));
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 2>));
 };
 
 void mock_2dphysicalSpace(const std::shared_ptr<NiceMock<Mock2dPhysicalSpace>> &physical_space) {
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{0, 0}))
-      .WillByDefault(Return(baf::ControlPoint({-1.0, -1.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({-1.0, -1.0, 0.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{1, 0}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, -1.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, -1.0, 0.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{2, 0}))
-      .WillByDefault(Return(baf::ControlPoint({1.0, -1.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({1.0, -1.0, 0.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{0, 1}))
-      .WillByDefault(Return(baf::ControlPoint({-1.0, 0.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({-1.0, 0.0, 0.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{1, 1}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 0.0, 1.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 0.0, 1.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{2, 1}))
-      .WillByDefault(Return(baf::ControlPoint({1.0, 0.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({1.0, 0.0, 0.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{0, 2}))
-      .WillByDefault(Return(baf::ControlPoint({-1.0, 1.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({-1.0, 1.0, 0.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{1, 2}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 1.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 1.0, 0.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 2>{2, 2}))
-      .WillByDefault(Return(baf::ControlPoint({1.0, 1.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({1.0, 1.0, 0.0})));
 }
 
 void set_get_basis_function(const std::shared_ptr<NiceMock<Mock2dParameterSpace>> &parameter_space) {

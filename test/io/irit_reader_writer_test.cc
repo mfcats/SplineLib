@@ -37,15 +37,15 @@ class A1DBSplineForIRIT {  // NOLINT
          ParametricCoordinate{0.83333333333333}, ParametricCoordinate{1}, ParametricCoordinate{1},
          ParametricCoordinate{1}}))};
     std::array<Degree, 1> degree = {Degree{2}};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0, 0, 0})),
-        baf::ControlPoint(std::vector<double>({0.5, 0.5, 0})),
-        baf::ControlPoint(std::vector<double>({0.5, 0.5, 1})),
-        baf::ControlPoint(std::vector<double>({1, 1, 1})),
-        baf::ControlPoint(std::vector<double>({2, 1, 0})),
-        baf::ControlPoint(std::vector<double>({1.5, 0.5, -0.5})),
-        baf::ControlPoint(std::vector<double>({0.8, 0.3, -0.4})),
-        baf::ControlPoint(std::vector<double>({0.5, 0, 0}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({0, 0, 0})),
+        spl::ControlPoint(std::vector<double>({0.5, 0.5, 0})),
+        spl::ControlPoint(std::vector<double>({0.5, 0.5, 1})),
+        spl::ControlPoint(std::vector<double>({1, 1, 1})),
+        spl::ControlPoint(std::vector<double>({2, 1, 0})),
+        spl::ControlPoint(std::vector<double>({1.5, 0.5, -0.5})),
+        spl::ControlPoint(std::vector<double>({0.8, 0.3, -0.4})),
+        spl::ControlPoint(std::vector<double>({0.5, 0, 0}))
     };
     b_spline_1d_ = std::make_shared<spl::BSpline<1>>(knot_vector, degree, control_points);
   }
@@ -64,13 +64,13 @@ class A1DNURBSForIRIT {  // NOLINT
          ParametricCoordinate{0.75}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}))};
     std::array<Degree, 1> degree = {Degree{2}};
     std::vector<double> weights = {0.5, 0.5, 0.5, 1, 1, 1};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0, 0})),
-        baf::ControlPoint(std::vector<double>({1, 0.3})),
-        baf::ControlPoint(std::vector<double>({2, 0.5})),
-        baf::ControlPoint(std::vector<double>({0, 0.6})),
-        baf::ControlPoint(std::vector<double>({1, 0.8})),
-        baf::ControlPoint(std::vector<double>({2, 1}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({0, 0})),
+        spl::ControlPoint(std::vector<double>({1, 0.3})),
+        spl::ControlPoint(std::vector<double>({2, 0.5})),
+        spl::ControlPoint(std::vector<double>({0, 0.6})),
+        spl::ControlPoint(std::vector<double>({1, 0.8})),
+        spl::ControlPoint(std::vector<double>({2, 1}))
     };
     nurbs_1d_ = std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
   }
@@ -93,16 +93,16 @@ class A2DBSplineForIRIT {  // NOLINT
              ParametricCoordinate{1},
              ParametricCoordinate{1}}))};
     std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0, 0, 0})),
-        baf::ControlPoint(std::vector<double>({0, 1, 0.3})),
-        baf::ControlPoint(std::vector<double>({0, 2, 0.5})),
-        baf::ControlPoint(std::vector<double>({1, 0, 0.6})),
-        baf::ControlPoint(std::vector<double>({1, 1, 0.8})),
-        baf::ControlPoint(std::vector<double>({1, 2, 1})),
-        baf::ControlPoint(std::vector<double>({2, 0, 0.5})),
-        baf::ControlPoint(std::vector<double>({2, 1, 0.9})),
-        baf::ControlPoint(std::vector<double>({2, 2, 0.5}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({0, 0, 0})),
+        spl::ControlPoint(std::vector<double>({0, 1, 0.3})),
+        spl::ControlPoint(std::vector<double>({0, 2, 0.5})),
+        spl::ControlPoint(std::vector<double>({1, 0, 0.6})),
+        spl::ControlPoint(std::vector<double>({1, 1, 0.8})),
+        spl::ControlPoint(std::vector<double>({1, 2, 1})),
+        spl::ControlPoint(std::vector<double>({2, 0, 0.5})),
+        spl::ControlPoint(std::vector<double>({2, 1, 0.9})),
+        spl::ControlPoint(std::vector<double>({2, 2, 0.5}))
     };
     b_spline_2d_ = std::make_shared<spl::BSpline<2>>(knot_vector, degree, control_points);
   }
@@ -126,16 +126,16 @@ class A2DNURBSForIRIT {  // NOLINT
              ParametricCoordinate{1}}))};
     std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
     std::vector<double> weights = {0.5, 0.5, 0.5, 1, 1, 1, 2, 2, 2};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0, 0})),
-        baf::ControlPoint(std::vector<double>({1, 0.3})),
-        baf::ControlPoint(std::vector<double>({2, 0.5})),
-        baf::ControlPoint(std::vector<double>({0, 0.6})),
-        baf::ControlPoint(std::vector<double>({1, 0.8})),
-        baf::ControlPoint(std::vector<double>({2, 1})),
-        baf::ControlPoint(std::vector<double>({0, 0.5})),
-        baf::ControlPoint(std::vector<double>({1, 0.9})),
-        baf::ControlPoint(std::vector<double>({2, 0.5}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({0, 0})),
+        spl::ControlPoint(std::vector<double>({1, 0.3})),
+        spl::ControlPoint(std::vector<double>({2, 0.5})),
+        spl::ControlPoint(std::vector<double>({0, 0.6})),
+        spl::ControlPoint(std::vector<double>({1, 0.8})),
+        spl::ControlPoint(std::vector<double>({2, 1})),
+        spl::ControlPoint(std::vector<double>({0, 0.5})),
+        spl::ControlPoint(std::vector<double>({1, 0.9})),
+        spl::ControlPoint(std::vector<double>({2, 0.5}))
     };
     nurbs_2d_ = std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
   }
@@ -159,15 +159,15 @@ class A3DBSplineForIRIT {  // NOLINT
             baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1},
                              ParametricCoordinate{1}}))};
     std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{1}};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0, 0, 0})),
-        baf::ControlPoint(std::vector<double>({1, 0, 0})),
-        baf::ControlPoint(std::vector<double>({0, 1, 0})),
-        baf::ControlPoint(std::vector<double>({1, 1, 0})),
-        baf::ControlPoint(std::vector<double>({0, 0, 1})),
-        baf::ControlPoint(std::vector<double>({1, 0, 1})),
-        baf::ControlPoint(std::vector<double>({0, 1, 1})),
-        baf::ControlPoint(std::vector<double>({1, 1, 1}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({0, 0, 0})),
+        spl::ControlPoint(std::vector<double>({1, 0, 0})),
+        spl::ControlPoint(std::vector<double>({0, 1, 0})),
+        spl::ControlPoint(std::vector<double>({1, 1, 0})),
+        spl::ControlPoint(std::vector<double>({0, 0, 1})),
+        spl::ControlPoint(std::vector<double>({1, 0, 1})),
+        spl::ControlPoint(std::vector<double>({0, 1, 1})),
+        spl::ControlPoint(std::vector<double>({1, 1, 1}))
     };
     b_spline_3d_ = std::make_shared<spl::BSpline<3>>(knot_vector, degree, control_points);
   }
@@ -192,15 +192,15 @@ class A3DNURBSForIRIT {  // NOLINT
                              ParametricCoordinate{1}}))};
     std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{1}};
     std::vector<double> weights = {0.2, 0.3, 0.5, 0.75, 1, 1.3, 1.5, 2};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0, 0, 0})),
-        baf::ControlPoint(std::vector<double>({1, 0, 0})),
-        baf::ControlPoint(std::vector<double>({0, 1, 0})),
-        baf::ControlPoint(std::vector<double>({1, 1, 0})),
-        baf::ControlPoint(std::vector<double>({0, 0, 1})),
-        baf::ControlPoint(std::vector<double>({1, 0, 1})),
-        baf::ControlPoint(std::vector<double>({0, 1, 1})),
-        baf::ControlPoint(std::vector<double>({1, 1, 1}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({0, 0, 0})),
+        spl::ControlPoint(std::vector<double>({1, 0, 0})),
+        spl::ControlPoint(std::vector<double>({0, 1, 0})),
+        spl::ControlPoint(std::vector<double>({1, 1, 0})),
+        spl::ControlPoint(std::vector<double>({0, 0, 1})),
+        spl::ControlPoint(std::vector<double>({1, 0, 1})),
+        spl::ControlPoint(std::vector<double>({0, 1, 1})),
+        spl::ControlPoint(std::vector<double>({1, 1, 1}))
     };
     nurbs_3d_ = std::make_shared<spl::NURBS<3>>(knot_vector, degree, control_points, weights);
   }

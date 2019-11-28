@@ -23,15 +23,15 @@ using ParametricCoordinate = splinelib::src::ParametricCoordinate;
 
 int main() {
   std::array<splinelib::src::Degree, 1> degree = {splinelib::src::Degree{2}};
-  std::vector<splinelib::src::baf::ControlPoint> control_points = {
-      splinelib::src::baf::ControlPoint(std::vector<double>({4.0, 2.0})),
-      splinelib::src::baf::ControlPoint(std::vector<double>({7.0, 1.5})),
-      splinelib::src::baf::ControlPoint(std::vector<double>({11.0, 2.0})),
-      splinelib::src::baf::ControlPoint(std::vector<double>({2.5, 4.5})),
-      splinelib::src::baf::ControlPoint(std::vector<double>({3.0, 4.3})),
-      splinelib::src::baf::ControlPoint(std::vector<double>({7.0, 3.0})),
-      splinelib::src::baf::ControlPoint(std::vector<double>({8.0, 2.5})),
-      splinelib::src::baf::ControlPoint(std::vector<double>({8.0, 1.0}))
+  std::vector<splinelib::src::spl::ControlPoint> control_points = {
+      splinelib::src::spl::ControlPoint(std::vector<double>({4.0, 2.0})),
+      splinelib::src::spl::ControlPoint(std::vector<double>({7.0, 1.5})),
+      splinelib::src::spl::ControlPoint(std::vector<double>({11.0, 2.0})),
+      splinelib::src::spl::ControlPoint(std::vector<double>({2.5, 4.5})),
+      splinelib::src::spl::ControlPoint(std::vector<double>({3.0, 4.3})),
+      splinelib::src::spl::ControlPoint(std::vector<double>({7.0, 3.0})),
+      splinelib::src::spl::ControlPoint(std::vector<double>({8.0, 2.5})),
+      splinelib::src::spl::ControlPoint(std::vector<double>({8.0, 1.0}))
   };
   splinelib::src::baf::KnotVectors<1> knot_vector_ptr = {std::make_shared<splinelib::src::baf::KnotVector>(
       splinelib::src::baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0},

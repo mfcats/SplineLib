@@ -24,7 +24,7 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class SolutionSpline {
  public:
   SolutionSpline(const std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> &spl, const arma::dvec &solution) {
-    std::vector<baf::ControlPoint> control_points;
+    std::vector<spl::ControlPoint> control_points;
     std::array<int, PARAMETRIC_DIMENSIONALITY> points_per_direction = spl->GetPointsPerDirection();
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(points_per_direction);
     for (uint64_t i = 0, l = 0; i < static_cast<uint64_t>(spl->GetNumberOfControlPoints()); ++i, ++point_handler, ++l) {
@@ -33,7 +33,7 @@ class SolutionSpline {
         temp.emplace_back(spl->GetControlPoint(point_handler.GetCurrentIndex(), j));
       }
       temp.emplace_back(solution(l));
-      control_points.emplace_back(baf::ControlPoint(temp));
+      control_points.emplace_back(spl::ControlPoint(temp));
     }
     solution_spl_ = std::make_shared<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>(*spl.Get(), control_points);
   }

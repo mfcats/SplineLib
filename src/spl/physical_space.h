@@ -28,7 +28,7 @@ class PhysicalSpace {
  public:
   PhysicalSpace() = default;
   virtual ~PhysicalSpace() = default;
-  PhysicalSpace(const std::vector<baf::ControlPoint> &control_points,
+  PhysicalSpace(const std::vector<spl::ControlPoint> &control_points,
       std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points) : dimension_(control_points[0].GetDimensionality()),
       number_of_points_(number_of_points) {
     uint64_t total_number_of_points = 1;
@@ -71,7 +71,7 @@ class PhysicalSpace {
                       });
   }
 
-  virtual baf::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
+  virtual spl::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
     auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
     point_handler.SetCurrentIndex(indices);
     int first = dimension_ * point_handler.GetCurrent1DIndex();
@@ -80,10 +80,10 @@ class PhysicalSpace {
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
       coordinates.emplace_back(control_points_[first + coordinate]);
     }
-    return baf::ControlPoint(coordinates);
+    return spl::ControlPoint(coordinates);
   }
 
-  virtual baf::ControlPoint GetControlPoint(int index_1d) const {
+  virtual spl::ControlPoint GetControlPoint(int index_1d) const {
     auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
     point_handler.SetCurrentIndex(index_1d);
     int first = dimension_ * point_handler.GetCurrent1DIndex();
@@ -92,10 +92,10 @@ class PhysicalSpace {
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
       coordinates.emplace_back(control_points_[first + coordinate]);
     }
-    return baf::ControlPoint(coordinates);
+    return spl::ControlPoint(coordinates);
   }
 
-  void SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, const baf::ControlPoint &control_point,
+  void SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, const spl::ControlPoint &control_point,
       int dimension = 0, int (*before)(int) = nullptr) {
     const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_);
     if (before != nullptr) number_of_points_[dimension] = before(number_of_points_[dimension]);
@@ -108,7 +108,7 @@ class PhysicalSpace {
     number_of_points_ = number_of_points_before;
   }
 
-  void SetControlPoint(int index_1d, const baf::ControlPoint &control_point, int dimension = 0,
+  void SetControlPoint(int index_1d, const spl::ControlPoint &control_point, int dimension = 0,
       int (*before)(int) = nullptr) {
     const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_);
     if (before != nullptr) number_of_points_[dimension] = before(number_of_points_[dimension]);
@@ -195,8 +195,8 @@ class PhysicalSpace {
     return maximum;
   }
 
-  std::vector<baf::ControlPoint> GetDividedControlPoints(int first, int length, int dimension) {
-    std::vector<baf::ControlPoint> points;
+  std::vector<spl::ControlPoint> GetDividedControlPoints(int first, int length, int dimension) {
+    std::vector<spl::ControlPoint> points;
     std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = GetPointsPerDirection();
     point_handler_length[dimension] = length;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);

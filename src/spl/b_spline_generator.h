@@ -32,7 +32,7 @@ class BSplineGenerator : public SplineGenerator<PARAMETRIC_DIMENSIONALITY> {
   ~BSplineGenerator() override = default;
 
   BSplineGenerator(baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vector,
-      std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree, const std::vector<baf::ControlPoint> &control_points)
+      std::array<Degree, PARAMETRIC_DIMENSIONALITY> degree, const std::vector<spl::ControlPoint> &control_points)
       : SplineGenerator<PARAMETRIC_DIMENSIONALITY>(knot_vector, degree) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {

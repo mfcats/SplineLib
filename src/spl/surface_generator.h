@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 #include <cmath>
 
+#include "src/spl/control_point.h"
 #include "src/spl/nurbs_generator.h"
 #include "src/spl/nurbs.h"
 
@@ -55,6 +56,12 @@ class SurfaceGenerator : public NURBSGenerator<2> {
                                                          std::vector<double> ddT,
                                                          std::array<double, 3> prev_z,
                                                          int index);
+
+  // This method transforms the ControlPoint by first scaling it with the given scaling vector and then applying the
+  // rotational transformation (orthogonal) matrix.
+  spl::ControlPoint Transform(spl::ControlPoint const &control_point,
+                              std::array<std::array<double, 4>, 4> const &transformation_matrix,
+                              std::array<double, 3> const &scaling) const;
 };
 }  // namespace splinelib::src::spl
 

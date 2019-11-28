@@ -28,10 +28,10 @@ class BSpline1DFig5_26 : public Test {  // NOLINT
     ParametricCoordinate zero(0), one(1), two(2);
     baf::KnotVectors<1> knot_vector_before = {std::make_shared<baf::KnotVector>(
         baf::KnotVector({zero, zero, zero, zero, one, one, one, two, two, two, two}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint({0.0, 0.0}), baf::ControlPoint({0.0, 1.5}), baf::ControlPoint({1.0, 2.0}),
-        baf::ControlPoint({2.0, 2.0}), baf::ControlPoint({3.0, 2.0}), baf::ControlPoint({4.0, 1.5}),
-        baf::ControlPoint({4.0, 0.0})
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint({0.0, 0.0}), spl::ControlPoint({0.0, 1.5}), spl::ControlPoint({1.0, 2.0}),
+        spl::ControlPoint({2.0, 2.0}), spl::ControlPoint({3.0, 2.0}), spl::ControlPoint({4.0, 1.5}),
+        spl::ControlPoint({4.0, 0.0})
     };
     bspline_1d_before_ = std::make_shared<spl::BSpline<1>>(knot_vector_before, degree, control_points);
     spl::BSpline<1> b_spline_after(*bspline_1d_before_);
@@ -49,9 +49,9 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(6).Get(), DoubleEq(2));
   ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() - 1);
-  std::vector<baf::ControlPoint> new_control_points = {
-      baf::ControlPoint({0.0, 0.0}), baf::ControlPoint({0.0, 1.5}), baf::ControlPoint({1.0, 2.0}),
-      baf::ControlPoint({3.0, 2.0}), baf::ControlPoint({4.0, 1.5}), baf::ControlPoint({4.0, 0.0})
+  std::vector<spl::ControlPoint> new_control_points = {
+      spl::ControlPoint({0.0, 0.0}), spl::ControlPoint({0.0, 1.5}), spl::ControlPoint({1.0, 2.0}),
+      spl::ControlPoint({3.0, 2.0}), spl::ControlPoint({4.0, 1.5}), spl::ControlPoint({4.0, 0.0})
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 0),
@@ -68,9 +68,9 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyTwoTimes) {  // NOLINT
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 2);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(5).Get(), DoubleEq(2));
   ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() - 2);
-  std::vector<baf::ControlPoint> new_control_points = {
-      baf::ControlPoint({0.0, 0.0}), baf::ControlPoint({0.0, 1.5}), baf::ControlPoint({2.0, 2.5}),
-      baf::ControlPoint({4.0, 1.5}), baf::ControlPoint({4.0, 0.0})
+  std::vector<spl::ControlPoint> new_control_points = {
+      spl::ControlPoint({0.0, 0.0}), spl::ControlPoint({0.0, 1.5}), spl::ControlPoint({2.0, 2.5}),
+      spl::ControlPoint({4.0, 1.5}), spl::ControlPoint({4.0, 0.0})
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 0),
@@ -87,9 +87,9 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyThreeTimesAtOnce) {  // NOLINT
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 3);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(4).Get(), DoubleEq(2));
   ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() - 3);
-  std::vector<baf::ControlPoint> new_control_points = {
-      baf::ControlPoint({0.0, 0.0}), baf::ControlPoint({0.0, 3.0}), baf::ControlPoint({4.0, 3.0}),
-      baf::ControlPoint({4.0, 0.0})
+  std::vector<spl::ControlPoint> new_control_points = {
+      spl::ControlPoint({0.0, 0.0}), spl::ControlPoint({0.0, 3.0}), spl::ControlPoint({4.0, 3.0}),
+      spl::ControlPoint({4.0, 0.0})
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 0),
@@ -115,14 +115,14 @@ class NURBS1DFig5_26 : public Test {  // NOLINT
          ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{2}, ParametricCoordinate{2},
          ParametricCoordinate{2},
          ParametricCoordinate{2}}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({0.0, 1.5})),
-        baf::ControlPoint(std::vector<double>({1.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({2.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({4.0, 1.5})),
-        baf::ControlPoint(std::vector<double>({4.0, 0.0}))
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({0.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({0.0, 1.5})),
+        spl::ControlPoint(std::vector<double>({1.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({2.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({3.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({4.0, 1.5})),
+        spl::ControlPoint(std::vector<double>({4.0, 0.0}))
     };
     std::vector<double> weights = {1, 0.8, 1.4, 1.2, 1.1, 0.8, 1.4};
     nurbs_1d_before_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
@@ -141,13 +141,13 @@ TEST_F(NURBS1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
               nurbs_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetKnot(6).Get(), DoubleEq(2));
   ASSERT_THAT(nurbs_1d_after_->GetNumberOfControlPoints(), nurbs_1d_before_->GetNumberOfControlPoints() - 1);
-  std::vector<baf::ControlPoint> new_control_points = {
-      baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-      baf::ControlPoint(std::vector<double>({0.0, 1.5})),
-      baf::ControlPoint(std::vector<double>({1.0, 2.0})),
-      baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-      baf::ControlPoint(std::vector<double>({4.0, 1.5})),
-      baf::ControlPoint(std::vector<double>({4.0, 0.0}))
+  std::vector<spl::ControlPoint> new_control_points = {
+      spl::ControlPoint(std::vector<double>({0.0, 0.0})),
+      spl::ControlPoint(std::vector<double>({0.0, 1.5})),
+      spl::ControlPoint(std::vector<double>({1.0, 2.0})),
+      spl::ControlPoint(std::vector<double>({3.0, 2.0})),
+      spl::ControlPoint(std::vector<double>({4.0, 1.5})),
+      spl::ControlPoint(std::vector<double>({4.0, 0.0}))
   };
   std::vector<double> new_weights = {1, 0.8, 1.4, 1.1, 0.8, 1.4};
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
@@ -178,30 +178,30 @@ class BSpline2DFig5_28 : public Test {  // NOLINT
             {zero, zero, zero, zero, ParametricCoordinate{0.3}, ParametricCoordinate{0.3}, ParametricCoordinate{0.3},
              ParametricCoordinate{0.7},
              one, one, one, one}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint({0, 1, 4}), baf::ControlPoint({1, 1, 4.5}), baf::ControlPoint({2.5, 1, 3.5}),
-        baf::ControlPoint({3.5, 1, 2.5}), baf::ControlPoint({5, 1, 2}), baf::ControlPoint({6.5, 1, 2.5}),
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint({0, 1, 4}), spl::ControlPoint({1, 1, 4.5}), spl::ControlPoint({2.5, 1, 3.5}),
+        spl::ControlPoint({3.5, 1, 2.5}), spl::ControlPoint({5, 1, 2}), spl::ControlPoint({6.5, 1, 2.5}),
 
-        baf::ControlPoint({0, 1.5, 3.9}), baf::ControlPoint({1, 1.5, 4.4}), baf::ControlPoint({2.5, 1.5, 3.4}),
-        baf::ControlPoint({3.5, 1.5, 2.4}), baf::ControlPoint({5, 1.5, 1.9}), baf::ControlPoint({6.5, 1.5, 2.4}),
+        spl::ControlPoint({0, 1.5, 3.9}), spl::ControlPoint({1, 1.5, 4.4}), spl::ControlPoint({2.5, 1.5, 3.4}),
+        spl::ControlPoint({3.5, 1.5, 2.4}), spl::ControlPoint({5, 1.5, 1.9}), spl::ControlPoint({6.5, 1.5, 2.4}),
 
-        baf::ControlPoint({0, 2, 3.8}), baf::ControlPoint({1, 2, 4.3}), baf::ControlPoint({2.5, 2, 3.3}),
-        baf::ControlPoint({3.5, 2, 2.3}), baf::ControlPoint({5, 2, 1.8}), baf::ControlPoint({6.5, 2, 2.3}),
+        spl::ControlPoint({0, 2, 3.8}), spl::ControlPoint({1, 2, 4.3}), spl::ControlPoint({2.5, 2, 3.3}),
+        spl::ControlPoint({3.5, 2, 2.3}), spl::ControlPoint({5, 2, 1.8}), spl::ControlPoint({6.5, 2, 2.3}),
 
-        baf::ControlPoint({0, 2.5, 3.7}), baf::ControlPoint({1, 2.5, 4.2}), baf::ControlPoint({2.5, 2.5, 3.2}),
-        baf::ControlPoint({3.5, 2.5, 2.2}), baf::ControlPoint({5, 2.5, 1.7}), baf::ControlPoint({6.5, 2.5, 2.2}),
+        spl::ControlPoint({0, 2.5, 3.7}), spl::ControlPoint({1, 2.5, 4.2}), spl::ControlPoint({2.5, 2.5, 3.2}),
+        spl::ControlPoint({3.5, 2.5, 2.2}), spl::ControlPoint({5, 2.5, 1.7}), spl::ControlPoint({6.5, 2.5, 2.2}),
 
-        baf::ControlPoint({0, 3, 3.6}), baf::ControlPoint({1, 3, 4.1}), baf::ControlPoint({2.5, 3, 3.1}),
-        baf::ControlPoint({3.5, 3, 2.1}), baf::ControlPoint({5, 3, 1.6}), baf::ControlPoint({6.5, 3, 2.1}),
+        spl::ControlPoint({0, 3, 3.6}), spl::ControlPoint({1, 3, 4.1}), spl::ControlPoint({2.5, 3, 3.1}),
+        spl::ControlPoint({3.5, 3, 2.1}), spl::ControlPoint({5, 3, 1.6}), spl::ControlPoint({6.5, 3, 2.1}),
 
-        baf::ControlPoint({0, 4, 3.3}), baf::ControlPoint({1, 4, 3.8}), baf::ControlPoint({2.5, 4, 2.8}),
-        baf::ControlPoint({3.5, 4, 1.8}), baf::ControlPoint({5, 4, 1.3}), baf::ControlPoint({6.5, 4, 1.8}),
+        spl::ControlPoint({0, 4, 3.3}), spl::ControlPoint({1, 4, 3.8}), spl::ControlPoint({2.5, 4, 2.8}),
+        spl::ControlPoint({3.5, 4, 1.8}), spl::ControlPoint({5, 4, 1.3}), spl::ControlPoint({6.5, 4, 1.8}),
 
-        baf::ControlPoint({0, 5, 3}), baf::ControlPoint({1, 5, 3.5}), baf::ControlPoint({2.5, 5, 2.5}),
-        baf::ControlPoint({3.5, 5, 1.5}), baf::ControlPoint({5, 5, 1}), baf::ControlPoint({6.5, 5, 1.5}),
+        spl::ControlPoint({0, 5, 3}), spl::ControlPoint({1, 5, 3.5}), spl::ControlPoint({2.5, 5, 2.5}),
+        spl::ControlPoint({3.5, 5, 1.5}), spl::ControlPoint({5, 5, 1}), spl::ControlPoint({6.5, 5, 1.5}),
 
-        baf::ControlPoint({0, 5.5, 3}), baf::ControlPoint({1, 5.5, 3.5}), baf::ControlPoint({2.5, 5.5, 2.5}),
-        baf::ControlPoint({3.5, 5.5, 1.5}), baf::ControlPoint({5, 5.5, 1}), baf::ControlPoint({6.5, 5.5, 1.5})
+        spl::ControlPoint({0, 5.5, 3}), spl::ControlPoint({1, 5.5, 3.5}), spl::ControlPoint({2.5, 5.5, 2.5}),
+        spl::ControlPoint({3.5, 5.5, 1.5}), spl::ControlPoint({5, 5.5, 1}), spl::ControlPoint({6.5, 5.5, 1.5})
     };
     bspline_2d_before_ = std::make_shared<spl::BSpline<2>>(knot_vector_before, degree, control_points);
     spl::BSpline<2> b_spline_after(*bspline_2d_before_);
@@ -246,30 +246,30 @@ class NURBS2DFig5_28 : public Test {  // NOLINT
             {zero, zero, zero, zero, ParametricCoordinate{0.3}, ParametricCoordinate{0.3}, ParametricCoordinate{0.3},
              ParametricCoordinate{0.7},
              one, one, one, one}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint({0, 1, 4}), baf::ControlPoint({1, 1, 4.5}), baf::ControlPoint({2.5, 1, 3.5}),
-        baf::ControlPoint({3.5, 1, 2.5}), baf::ControlPoint({5, 1, 2}), baf::ControlPoint({6.5, 1, 2.5}),
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint({0, 1, 4}), spl::ControlPoint({1, 1, 4.5}), spl::ControlPoint({2.5, 1, 3.5}),
+        spl::ControlPoint({3.5, 1, 2.5}), spl::ControlPoint({5, 1, 2}), spl::ControlPoint({6.5, 1, 2.5}),
 
-        baf::ControlPoint({0, 1.5, 3.9}), baf::ControlPoint({1, 1.5, 4.4}), baf::ControlPoint({2.5, 1.5, 3.4}),
-        baf::ControlPoint({3.5, 1.5, 2.4}), baf::ControlPoint({5, 1.5, 1.9}), baf::ControlPoint({6.5, 1.5, 2.4}),
+        spl::ControlPoint({0, 1.5, 3.9}), spl::ControlPoint({1, 1.5, 4.4}), spl::ControlPoint({2.5, 1.5, 3.4}),
+        spl::ControlPoint({3.5, 1.5, 2.4}), spl::ControlPoint({5, 1.5, 1.9}), spl::ControlPoint({6.5, 1.5, 2.4}),
 
-        baf::ControlPoint({0, 2, 3.8}), baf::ControlPoint({1, 2, 4.3}), baf::ControlPoint({2.5, 2, 3.3}),
-        baf::ControlPoint({3.5, 2, 2.3}), baf::ControlPoint({5, 2, 1.8}), baf::ControlPoint({6.5, 2, 2.3}),
+        spl::ControlPoint({0, 2, 3.8}), spl::ControlPoint({1, 2, 4.3}), spl::ControlPoint({2.5, 2, 3.3}),
+        spl::ControlPoint({3.5, 2, 2.3}), spl::ControlPoint({5, 2, 1.8}), spl::ControlPoint({6.5, 2, 2.3}),
 
-        baf::ControlPoint({0, 2.5, 3.7}), baf::ControlPoint({1, 2.5, 4.2}), baf::ControlPoint({2.5, 2.5, 3.2}),
-        baf::ControlPoint({3.5, 2.5, 2.2}), baf::ControlPoint({5, 2.5, 1.7}), baf::ControlPoint({6.5, 2.5, 2.2}),
+        spl::ControlPoint({0, 2.5, 3.7}), spl::ControlPoint({1, 2.5, 4.2}), spl::ControlPoint({2.5, 2.5, 3.2}),
+        spl::ControlPoint({3.5, 2.5, 2.2}), spl::ControlPoint({5, 2.5, 1.7}), spl::ControlPoint({6.5, 2.5, 2.2}),
 
-        baf::ControlPoint({0, 3, 3.6}), baf::ControlPoint({1, 3, 4.1}), baf::ControlPoint({2.5, 3, 3.1}),
-        baf::ControlPoint({3.5, 3, 2.1}), baf::ControlPoint({5, 3, 1.6}), baf::ControlPoint({6.5, 3, 2.1}),
+        spl::ControlPoint({0, 3, 3.6}), spl::ControlPoint({1, 3, 4.1}), spl::ControlPoint({2.5, 3, 3.1}),
+        spl::ControlPoint({3.5, 3, 2.1}), spl::ControlPoint({5, 3, 1.6}), spl::ControlPoint({6.5, 3, 2.1}),
 
-        baf::ControlPoint({0, 4, 3.3}), baf::ControlPoint({1, 4, 3.8}), baf::ControlPoint({2.5, 4, 2.8}),
-        baf::ControlPoint({3.5, 4, 1.8}), baf::ControlPoint({5, 4, 1.3}), baf::ControlPoint({6.5, 4, 1.8}),
+        spl::ControlPoint({0, 4, 3.3}), spl::ControlPoint({1, 4, 3.8}), spl::ControlPoint({2.5, 4, 2.8}),
+        spl::ControlPoint({3.5, 4, 1.8}), spl::ControlPoint({5, 4, 1.3}), spl::ControlPoint({6.5, 4, 1.8}),
 
-        baf::ControlPoint({0, 5, 3}), baf::ControlPoint({1, 5, 3.5}), baf::ControlPoint({2.5, 5, 2.5}),
-        baf::ControlPoint({3.5, 5, 1.5}), baf::ControlPoint({5, 5, 1}), baf::ControlPoint({6.5, 5, 1.5}),
+        spl::ControlPoint({0, 5, 3}), spl::ControlPoint({1, 5, 3.5}), spl::ControlPoint({2.5, 5, 2.5}),
+        spl::ControlPoint({3.5, 5, 1.5}), spl::ControlPoint({5, 5, 1}), spl::ControlPoint({6.5, 5, 1.5}),
 
-        baf::ControlPoint({0, 5.5, 3}), baf::ControlPoint({1, 5.5, 3.5}), baf::ControlPoint({2.5, 5.5, 2.5}),
-        baf::ControlPoint({3.5, 5.5, 1.5}), baf::ControlPoint({5, 5.5, 1}), baf::ControlPoint({6.5, 5.5, 1.5})
+        spl::ControlPoint({0, 5.5, 3}), spl::ControlPoint({1, 5.5, 3.5}), spl::ControlPoint({2.5, 5.5, 2.5}),
+        spl::ControlPoint({3.5, 5.5, 1.5}), spl::ControlPoint({5, 5.5, 1}), spl::ControlPoint({6.5, 5.5, 1.5})
     };
     std::vector<double> weights = {1, 0.98, 0.96, 0.94, 0.96, 0.94,
                                    1, 0.99, 0.97, 0.96, 0.98, 1,
@@ -319,21 +319,21 @@ class A3DBSplineForKnotRemoval : public Test {  // NOLINT
         std::make_shared<baf::KnotVector>(baf::KnotVector({zero, zero, one, one})),
         std::make_shared<baf::KnotVector>(
             baf::KnotVector({zero, zero, zero, ParametricCoordinate{0.3}, ParametricCoordinate{0.3}, one, one, one}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint({0, 1, 4}), baf::ControlPoint({1, 1, 4.5}), baf::ControlPoint({2.5, 1, 3.5}),
-        baf::ControlPoint({0, 1, 6}), baf::ControlPoint({1, 1, 6.5}), baf::ControlPoint({2.5, 1, 5.5}),
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint({0, 1, 4}), spl::ControlPoint({1, 1, 4.5}), spl::ControlPoint({2.5, 1, 3.5}),
+        spl::ControlPoint({0, 1, 6}), spl::ControlPoint({1, 1, 6.5}), spl::ControlPoint({2.5, 1, 5.5}),
 
-        baf::ControlPoint({0, 1.5, 3.9}), baf::ControlPoint({1, 1.5, 4.4}), baf::ControlPoint({2.5, 1.5, 3.4}),
-        baf::ControlPoint({0, 1.5, 5.9}), baf::ControlPoint({1, 1.5, 6.4}), baf::ControlPoint({2.5, 1.5, 5.4}),
+        spl::ControlPoint({0, 1.5, 3.9}), spl::ControlPoint({1, 1.5, 4.4}), spl::ControlPoint({2.5, 1.5, 3.4}),
+        spl::ControlPoint({0, 1.5, 5.9}), spl::ControlPoint({1, 1.5, 6.4}), spl::ControlPoint({2.5, 1.5, 5.4}),
 
-        baf::ControlPoint({0, 2, 3.8}), baf::ControlPoint({1, 2, 4.3}), baf::ControlPoint({2.5, 2, 3.3}),
-        baf::ControlPoint({0, 2, 5.8}), baf::ControlPoint({1, 2, 6.3}), baf::ControlPoint({2.5, 2, 5.3}),
+        spl::ControlPoint({0, 2, 3.8}), spl::ControlPoint({1, 2, 4.3}), spl::ControlPoint({2.5, 2, 3.3}),
+        spl::ControlPoint({0, 2, 5.8}), spl::ControlPoint({1, 2, 6.3}), spl::ControlPoint({2.5, 2, 5.3}),
 
-        baf::ControlPoint({0, 2.5, 3.7}), baf::ControlPoint({1, 2.5, 4.2}), baf::ControlPoint({2.5, 2.5, 3.2}),
-        baf::ControlPoint({0, 2.5, 5.7}), baf::ControlPoint({1, 2.5, 6.2}), baf::ControlPoint({2.5, 2.5, 5.2}),
+        spl::ControlPoint({0, 2.5, 3.7}), spl::ControlPoint({1, 2.5, 4.2}), spl::ControlPoint({2.5, 2.5, 3.2}),
+        spl::ControlPoint({0, 2.5, 5.7}), spl::ControlPoint({1, 2.5, 6.2}), spl::ControlPoint({2.5, 2.5, 5.2}),
 
-        baf::ControlPoint({0, 3, 3.6}), baf::ControlPoint({1, 3, 4.1}), baf::ControlPoint({2.5, 3, 3.1}),
-        baf::ControlPoint({0, 3, 5.6}), baf::ControlPoint({1, 3, 6.1}), baf::ControlPoint({2.5, 3, 5.1})
+        spl::ControlPoint({0, 3, 3.6}), spl::ControlPoint({1, 3, 4.1}), spl::ControlPoint({2.5, 3, 3.1}),
+        spl::ControlPoint({0, 3, 5.6}), spl::ControlPoint({1, 3, 6.1}), spl::ControlPoint({2.5, 3, 5.1})
     };
     bspline_3d_before_ = std::make_shared<spl::BSpline<3>>(knot_vector_before, degree, control_points);
     spl::BSpline<3> b_spline_after(*bspline_3d_before_);
@@ -375,21 +375,21 @@ class A3DNURBSForKnotRemoval : public Test {  // NOLINT
         std::make_shared<baf::KnotVector>(baf::KnotVector({zero, zero, one, one})),
         std::make_shared<baf::KnotVector>(
             baf::KnotVector({zero, zero, zero, ParametricCoordinate{0.3}, ParametricCoordinate{0.3}, one, one, one}))};
-    std::vector<baf::ControlPoint> control_points = {
-        baf::ControlPoint({0, 1, 4}), baf::ControlPoint({1, 1, 4.5}), baf::ControlPoint({2.5, 1, 3.5}),
-        baf::ControlPoint({0, 1, 6}), baf::ControlPoint({1, 1, 6.5}), baf::ControlPoint({2.5, 1, 5.5}),
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint({0, 1, 4}), spl::ControlPoint({1, 1, 4.5}), spl::ControlPoint({2.5, 1, 3.5}),
+        spl::ControlPoint({0, 1, 6}), spl::ControlPoint({1, 1, 6.5}), spl::ControlPoint({2.5, 1, 5.5}),
 
-        baf::ControlPoint({0, 1.5, 3.9}), baf::ControlPoint({1, 1.5, 4.4}), baf::ControlPoint({2.5, 1.5, 3.4}),
-        baf::ControlPoint({0, 1.5, 5.9}), baf::ControlPoint({1, 1.5, 6.4}), baf::ControlPoint({2.5, 1.5, 5.4}),
+        spl::ControlPoint({0, 1.5, 3.9}), spl::ControlPoint({1, 1.5, 4.4}), spl::ControlPoint({2.5, 1.5, 3.4}),
+        spl::ControlPoint({0, 1.5, 5.9}), spl::ControlPoint({1, 1.5, 6.4}), spl::ControlPoint({2.5, 1.5, 5.4}),
 
-        baf::ControlPoint({0, 2, 3.8}), baf::ControlPoint({1, 2, 4.3}), baf::ControlPoint({2.5, 2, 3.3}),
-        baf::ControlPoint({0, 2, 5.8}), baf::ControlPoint({1, 2, 6.3}), baf::ControlPoint({2.5, 2, 5.3}),
+        spl::ControlPoint({0, 2, 3.8}), spl::ControlPoint({1, 2, 4.3}), spl::ControlPoint({2.5, 2, 3.3}),
+        spl::ControlPoint({0, 2, 5.8}), spl::ControlPoint({1, 2, 6.3}), spl::ControlPoint({2.5, 2, 5.3}),
 
-        baf::ControlPoint({0, 2.5, 3.7}), baf::ControlPoint({1, 2.5, 4.2}), baf::ControlPoint({2.5, 2.5, 3.2}),
-        baf::ControlPoint({0, 2.5, 5.7}), baf::ControlPoint({1, 2.5, 6.2}), baf::ControlPoint({2.5, 2.5, 5.2}),
+        spl::ControlPoint({0, 2.5, 3.7}), spl::ControlPoint({1, 2.5, 4.2}), spl::ControlPoint({2.5, 2.5, 3.2}),
+        spl::ControlPoint({0, 2.5, 5.7}), spl::ControlPoint({1, 2.5, 6.2}), spl::ControlPoint({2.5, 2.5, 5.2}),
 
-        baf::ControlPoint({0, 3, 3.6}), baf::ControlPoint({1, 3, 4.1}), baf::ControlPoint({2.5, 3, 3.1}),
-        baf::ControlPoint({0, 3, 5.6}), baf::ControlPoint({1, 3, 6.1}), baf::ControlPoint({2.5, 3, 5.1})
+        spl::ControlPoint({0, 3, 3.6}), spl::ControlPoint({1, 3, 4.1}), spl::ControlPoint({2.5, 3, 3.1}),
+        spl::ControlPoint({0, 3, 5.6}), spl::ControlPoint({1, 3, 6.1}), spl::ControlPoint({2.5, 3, 5.1})
     };
     std::vector<double> weights = {1, 1.02, 1.04, 1.06, 1.04, 1.02,
                                    0.98, 0.99, 1, 0.99, 1, 1.01,

@@ -38,26 +38,26 @@ class MockParameterSpace : public spl::ParameterSpace<1> {
 
 class MockPhysicalSpace : public spl::PhysicalSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetControlPoint, baf::ControlPoint(std::array<int, 1>));
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1>));
 };
 
 void mock_physicalSpace(const std::shared_ptr<NiceMock<MockPhysicalSpace>> &physical_space) {
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 1>{0}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 0.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 1>{1}))
-      .WillByDefault(Return(baf::ControlPoint({0.0, 1.0})));
+      .WillByDefault(Return(spl::ControlPoint({0.0, 1.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 1>{2}))
-      .WillByDefault(Return(baf::ControlPoint({1.0, 1.0})));
+      .WillByDefault(Return(spl::ControlPoint({1.0, 1.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 1>{3}))
-      .WillByDefault(Return(baf::ControlPoint({1.5, 1.5})));
+      .WillByDefault(Return(spl::ControlPoint({1.5, 1.5})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 1>{4}))
-      .WillByDefault(Return(baf::ControlPoint({2.0, 1.3})));
+      .WillByDefault(Return(spl::ControlPoint({2.0, 1.3})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 1>{5}))
-      .WillByDefault(Return(baf::ControlPoint({3.0, 2.0})));
+      .WillByDefault(Return(spl::ControlPoint({3.0, 2.0})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 1>{6}))
-      .WillByDefault(Return(baf::ControlPoint({4.0, 1.5})));
+      .WillByDefault(Return(spl::ControlPoint({4.0, 1.5})));
   ON_CALL(*physical_space, GetControlPoint(std::array<int, 1>{7}))
-      .WillByDefault(Return(baf::ControlPoint({4.0, 0.0})));
+      .WillByDefault(Return(spl::ControlPoint({4.0, 0.0})));
 }
 
 void set_throw_method(const std::shared_ptr<NiceMock<MockParameterSpace>> &parameter_space) {
@@ -263,14 +263,14 @@ class ABSplineWithSplineGenerator : public Test {
          ParametricCoordinate{5},
          ParametricCoordinate{5}})};
     control_points_ = {
-        baf::ControlPoint(std::vector<double>({0.0, 0.0})),
-        baf::ControlPoint(std::vector<double>({0.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({1.0, 1.0})),
-        baf::ControlPoint(std::vector<double>({1.5, 1.5})),
-        baf::ControlPoint(std::vector<double>({2.0, 1.3})),
-        baf::ControlPoint(std::vector<double>({3.0, 2.0})),
-        baf::ControlPoint(std::vector<double>({4.0, 1.5})),
-        baf::ControlPoint(std::vector<double>({4.0, 0.0}))
+        spl::ControlPoint(std::vector<double>({0.0, 0.0})),
+        spl::ControlPoint(std::vector<double>({0.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({1.0, 1.0})),
+        spl::ControlPoint(std::vector<double>({1.5, 1.5})),
+        spl::ControlPoint(std::vector<double>({2.0, 1.3})),
+        spl::ControlPoint(std::vector<double>({3.0, 2.0})),
+        spl::ControlPoint(std::vector<double>({4.0, 1.5})),
+        spl::ControlPoint(std::vector<double>({4.0, 0.0}))
     };
     knot_vector_[0] = {std::make_shared<baf::KnotVector>(knot_vector[0])};
     spl::BSplineGenerator<1> b_spline_generator(knot_vector_, degree_, control_points_);
@@ -281,7 +281,7 @@ class ABSplineWithSplineGenerator : public Test {
   std::unique_ptr<spl::BSpline<1>> b_spline;
   baf::KnotVectors<1> knot_vector_;
   std::array<Degree, 1> degree_;
-  std::vector<baf::ControlPoint> control_points_;
+  std::vector<spl::ControlPoint> control_points_;
 };
 
 TEST_F(ABSplineWithSplineGenerator, Returns0_0For0AndDim0) {  // NOLINT

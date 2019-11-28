@@ -24,7 +24,7 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
  public:
   WeightedPhysicalSpace() = default;
-  WeightedPhysicalSpace(const std::vector<baf::ControlPoint> &control_points, std::vector<double> weights,
+  WeightedPhysicalSpace(const std::vector<spl::ControlPoint> &control_points, std::vector<double> weights,
       std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points)
       : PhysicalSpace<PARAMETRIC_DIMENSIONALITY>(control_points, number_of_points), weights_(std::move(weights)) {
     if (control_points.size() != weights_.size()) {
@@ -51,7 +51,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
                       }) && PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::AreEqual(rhs, tolerance);
   }
 
-  virtual baf::ControlPoint GetHomogenousControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
+  virtual spl::ControlPoint GetHomogenousControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
     auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
     point_handler.SetCurrentIndex(indices);
     int first = this->dimension_ * point_handler.GetCurrent1DIndex();
@@ -61,10 +61,10 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
       coordinates.emplace_back(this->control_points_[first + coordinate] * weights_[first / this->dimension_]);
     }
     coordinates.push_back(this->weights_[point_handler.GetCurrent1DIndex()]);
-    return baf::ControlPoint(coordinates);
+    return spl::ControlPoint(coordinates);
   }
 
-  virtual baf::ControlPoint GetHomogenousControlPoint(int index_1d) const {
+  virtual spl::ControlPoint GetHomogenousControlPoint(int index_1d) const {
     auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
     point_handler.SetCurrentIndex(index_1d);
     int first = this->dimension_ * point_handler.GetCurrent1DIndex();
@@ -74,7 +74,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
       coordinates.emplace_back(this->control_points_[first + coordinate] * weights_[first / this->dimension_]);
     }
     coordinates.push_back(this->weights_[point_handler.GetCurrent1DIndex()]);
-    return baf::ControlPoint(coordinates);
+    return spl::ControlPoint(coordinates);
   }
 
   double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const override {
@@ -100,7 +100,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
   }
 
   void SetWeightedControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices,
-      const baf::ControlPoint &control_point, double weight) {
+      const spl::ControlPoint &control_point, double weight) {
     PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SetControlPoint(indices, control_point);
     SetWeight(indices, weight);
   }

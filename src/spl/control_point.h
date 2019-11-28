@@ -21,10 +21,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/util/named_type.h"
 #include "src/util/stl_container_access.h"
 
-namespace splinelib::src::baf {
+namespace splinelib::src::spl {
 class ControlPoint {
  public:
-  // TODO(all): would it be appropriate to use NamedType Dimension here?
   explicit ControlPoint(int number_of_dimensions);
   explicit ControlPoint(std::vector<double> coordinates);
   ControlPoint(std::initializer_list<double> const &coordinates);
@@ -45,14 +44,7 @@ class ControlPoint {
   friend ControlPoint operator*(ControlPoint const &control_point, double scalar);
   friend ControlPoint operator*(double scalar, ControlPoint const &control_point);
 
-  // This method transforms the ControlPoint by first scaling it with the given scaling vector and then applying the
-  // rotational transformation (orthogonal) matrix.
-  // TODO(all): why 4x4 transformation matrix and not 3x3? save homogeneous and not heterogeneous control point
-  //  coordinates?
-  ControlPoint Transform(std::array<std::array<double, 4>, 4> const &transformation_matrix,
-                         std::array<double, 3> const &scaling) const;
-
-  double GetEuclideanNorm() const;
+  double ComputeTwoNorm() const;
 
  protected:
   std::vector<double> coordinates_;
@@ -64,6 +56,6 @@ ControlPoint operator*(ControlPoint const &control_point, double scalar);
 ControlPoint operator*(double scalar, ControlPoint const &control_point);
 
 #include "src/spl/control_point.inc"
-}  // namespace splinelib::src::baf
+}  // namespace splinelib::src::spl
 
 #endif  // SRC_SPL_CONTROL_POINT_H_
