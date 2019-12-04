@@ -69,6 +69,12 @@ TEST_F(TwoIntegerVectorsForVectorUtils, CanComputeCrossProduct) {  // NOLINT
       int_vector_b_with_first_three_components, int_vector_a_with_first_three_components), std::vector({5, -10, 5}));
 }
 
+TEST_F(TwoIntegerVectorsForVectorUtils, ThrowForComputationOfCrossProductWithNonThreeDimensionalVectors) {  // NOLINT
+  ASSERT_THROW(util::vector_utils::ComputeCrossProduct(int_vector_a_, int_vector_b_), std::invalid_argument);
+  int_vector_a_.erase(int_vector_a_.begin(), int_vector_a_.begin() + 1);
+  ASSERT_THROW(util::vector_utils::ComputeCrossProduct(int_vector_a_, int_vector_b_), std::invalid_argument);
+}
+
 TEST_F(TwoIntegerVectorsForVectorUtils, CanBeFiltered) {  // NOLINT
   std::vector<int> filtered = util::vector_utils::GetEntriesAtIndices(int_vector_a_, {1, 2});
   ASSERT_THAT(filtered.size(), 2);
@@ -127,6 +133,13 @@ TEST_F(TwoDoubleVectorsForVectorUtils, CanComputeCrossProduct) {  // NOLINT
   ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vector_b_, double_vector_a_)[0], DoubleNear(2.09, 1e-10));
   ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vector_b_, double_vector_a_)[1], DoubleEq(-4.18));
   ASSERT_THAT(util::vector_utils::ComputeCrossProduct(double_vector_b_, double_vector_a_)[2], DoubleNear(2.09, 1e-10));
+}
+
+TEST_F(TwoDoubleVectorsForVectorUtils, ThrowForComputationOfCrossProductWithNonThreeDimensionalVectors) {  // NOLINT
+  double_vector_a_.erase(double_vector_a_.begin(), double_vector_a_.begin() + 1);
+  ASSERT_THROW(util::vector_utils::ComputeCrossProduct(double_vector_a_, double_vector_b_), std::invalid_argument);
+  double_vector_b_.erase(double_vector_b_.begin(), double_vector_b_.begin() + 1);
+  ASSERT_THROW(util::vector_utils::ComputeCrossProduct(double_vector_a_, double_vector_b_), std::invalid_argument);
 }
 
 TEST_F(TwoDoubleVectorsForVectorUtils, CanBeFiltered) {  // NOLINT

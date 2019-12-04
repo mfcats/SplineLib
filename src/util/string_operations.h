@@ -18,6 +18,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <string>
 #include <vector>
 
+#include "stl_container_access.h"
+
 namespace splinelib::src::util::string_operations {
 bool StartsWith(std::string const &string, std::string const &start_of_string);
 bool EndsWith(std::string const &string, std::string const &end_of_string);

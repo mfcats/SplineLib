@@ -56,6 +56,10 @@ double ComputeDistance(std::vector<TYPE> const &vectorA, std::vector<TYPE> const
 
 template<typename TYPE>
 std::vector<TYPE> ComputeCrossProduct(std::vector<TYPE> const &a, std::vector<TYPE> const &b) {
+  if (a.size() != 3 || b.size() != 3) {
+    throw std::invalid_argument("splinelib::src::util::vector_utils::GetEntriesAtIndices: Cross Product is only "
+                                "defined for two vectors in three-dimensional space.");
+  }
   std::vector<TYPE> result(a.size());
   result[0] = a[1] * b[2] - a[2] * b[1];
   result[1] = a[2] * b[0] - a[0] * b[2];

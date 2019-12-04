@@ -19,7 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 template<typename TYPE>
 TYPE ConvertStringToNumber(std::string string) {
   int sign = 1;
-  if (string[0] == '-') {
+  if (GetFront(string) == '-') {
     sign = -1;
     string.erase(0, 1);
   }
@@ -48,10 +48,10 @@ TYPE ConvertStringToNumber(std::string string) {
     }
   }
   if (exponent_starting_index != npos) {
-    if (string[exponent_starting_index + 1] == '-') {
+    if (GetValue(string, exponent_starting_index + 1) == '-') {
       factor = -1;
       ++exponent_starting_index;
-    } else if (string[exponent_starting_index + 1] == '+') {
+    } else if (GetValue(string, exponent_starting_index + 1) == '+') {
       ++exponent_starting_index;
     }
     int const potency = std::stoi(string.substr(exponent_starting_index + 1, string_length - exponent_starting_index));
