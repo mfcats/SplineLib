@@ -39,7 +39,7 @@ double BSplineBasisFunction::Evaluate(ParametricCoordinate const &parametric_coo
 double BSplineBasisFunction::EvaluateDerivative(ParametricCoordinate const &parametric_coordinate,
                                                 Derivative const &derivative) const {
   if (derivative.Get() == 0) return Evaluate(parametric_coordinate);
-  if (IsCoordinateInSupport(parametric_coordinate))
+  if (IsCoordinateInSupport(parametric_coordinate) && (derivative.Get() <= degree_.Get()))
     return EvaluateDerivativeOnSupport(parametric_coordinate, derivative);
   return 0.0;
 }

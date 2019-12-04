@@ -18,6 +18,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/baf/knot_vector.h"
 #include "src/util/named_type.h"
 
+// A ZeroDegreeBSplineBasisFunction N_{i,0} is a step function. It equals one in the interval [u_i, u_{i+p+1}) resp.
+// [u_i, u_{i+p+1}], which is stored in the member variables start_knot_, end_knot_ and end_knot_is_last_knot_ (true for
+// end_knot_ u_{i+1} equaling the last knot u_m causing the latter case) of the base class BSplineBasisFunction.
+// Everywhere else the function equals zero.
+// The derivative is defined to be zero on the whole knot vector interval [u_0, u_m].
 namespace splinelib::src::baf {
 class ZeroDegreeBSplineBasisFunction : public BSplineBasisFunction {
  public:

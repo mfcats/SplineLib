@@ -21,6 +21,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/baf/knot_vector.h"
 #include "src/util/named_type.h"
 
+// A NonZeroDegreeBSplineBasisFunction N_{i,p} is a piecewise polynomial function of degree p. It is a linear
+// combination of the basis functions N_{i,p-1} and N_{i+1,p-1} (see NURBS book equation 2.5). Therefore, for each
+// NonZeroDegreeBSplineBasisFunction a pointer to these two basis functions of degree (p-1) is set in constructor, so
+// that it can be evaluated recursively.
+// Outside the interval [u_i, u_{i+p+1}) resp. [u_i, u_{i+p+1}], which is stored in the member variables start_knot_,
+// end_knot_ and end_knot_is_last_knot_ (true for end_knot_ u_{i+1} equaling the last knot u_m causing the latter case)
+// of the base class BSplineBasisFunction, the function equals zero.
+// As the factors 1/(u_{i+p}-u_i) and 1/(u_{i+p+1}-u_{i+1}) are constant, used in evaluation and derivative evaluation
+// formula, but can equal 1/0, they are set in constructor and checked for denominator of zero. In that case the factor
+// is set to zero.
 namespace splinelib::src::baf {
 class NonZeroDegreeBSplineBasisFunction : public BSplineBasisFunction {
  public:

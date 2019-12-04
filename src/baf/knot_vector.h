@@ -26,7 +26,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 // parametric coordinates, on which basis functions can be defined. For a knot vector of degree p there is the
 // additional condition that the first p+1 knots and the last p+1 knots are respectively equal a = u_0 = ... = u_p and
 // b = u_{m-p} = ... = u_m.
-// Example (knot vector of degree 2 with repeated knot 0.5 and m+1 = i knots):
+// Example (knot vector of degree 2 with repeated knot 0.5 and m+1 = 9 knots):
 //   KnotVector knot_vector({0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 1.0, 1.0, 1.0});
 //   sixth_knot = knot_vector[5];  // Returns sixth knot 0.75.
 //   number_of_knots = knot_vector.GetNumberOfKnots();  // Returns m+1 = 9.

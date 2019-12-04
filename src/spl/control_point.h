@@ -55,6 +55,7 @@ ControlPoint operator+(ControlPoint const &lhs, ControlPoint const &rhs);
 ControlPoint operator-(ControlPoint const &lhs, ControlPoint const &rhs);
 ControlPoint operator*(ControlPoint const &control_point, double scalar);
 ControlPoint operator*(double scalar, ControlPoint const &control_point);
+// Check if absolute distance between all coordinates is smaller than the epsilon defined in NumericSettings.
 bool operator==(ControlPoint const &lhs, ControlPoint const &rhs);
 
 #include "src/spl/control_point.inc"

@@ -19,11 +19,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/baf/knot_vector.h"
 #include "src/util/named_type.h"
 
+// BSplineBasisFunctions are piecewise polynomial functions of a specific degree forming a basis for the vector space of
+// all piecewise polynomial functions of the desired degree for a fixed knot vector sequence. Each BSplineBasisFunction
+// N_{i,p} is only nonzero on a limited number of subintervals of the knot vector and thus provides local support.
+// Therefore, not the entire knot vector is saved but only the interval where the BSplineBasisFunction is nonzero. As
+// computation for the last knot is different it is also memorized if the end knot is the last knot of the knot vector.
 namespace splinelib::src::baf {
 class BSplineBasisFunction {
  public:
   using ConstBSplineBasisFunctionIterator = std::vector<std::shared_ptr<BSplineBasisFunction>>::const_iterator;
 
+  // Computation of a set of basis functions requires specification of a knot vector and a degree. This function also
+  // creates all basis functions of lower degree required for evaluation.
   static BSplineBasisFunction * CreateDynamic(KnotVector const &knot_vector, KnotSpan const &start_of_support,
                                               Degree const &degree);
 
@@ -34,10 +41,11 @@ class BSplineBasisFunction {
   BSplineBasisFunction & operator=(BSplineBasisFunction &&rhs) = delete;
   virtual ~BSplineBasisFunction() = default;
 
-  // The evaluation of the i-th basis function of degree p > 0 N_{i,p} is a linear combination of the basis functions
-  // N_{i,p-1} and N_{i+1,p-1} (see NURBS book equation 2.5). Therefore, for each basis function of degree > 0 a pointer
-  // to these two basis functions is set in constructor, so that a basis function can be evaluated recursively.
+  // For evaluation the recurrence formula due to DeBoor, Cox, and Mansfield is implemented
+  // (see NURBS book equation 2.5).
   double Evaluate(ParametricCoordinate const &parametric_coordinate) const;
+  // For derivative evaluation the formula 2.9 in NURBS book is implemented. For 0th derivative Evaulate is called and
+  // for derivative greater than degree p or parametric coordinate not in local support zero is returned.
   double EvaluateDerivative(ParametricCoordinate const &parametric_coordinate, Derivative const &derivative) const;
 
  protected:
