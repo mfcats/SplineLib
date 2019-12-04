@@ -18,10 +18,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <random>
 
 namespace splinelib::src::util::random {
-template<class TYPE>
+template<typename TYPE>
 TYPE GetBinomialRandom(double min, double max, double distance);
 
-template<class TYPE>
+template<typename TYPE>
 TYPE GetUniformRandom(double min, double max);
 
 #include "src/util/random.inc"

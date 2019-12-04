@@ -66,14 +66,14 @@ TEST_F(AKnotVectorOfDegree2, CanBeAssignedByInitializerList) {  // NOLINT
   ASSERT_THAT(knot_vector, Eq(knot_vector_));
 }
 
-TEST_F(AKnotVectorOfDegree2, CanBeCreatedWithMoveConstructor) {  // NOLINT
-  baf::KnotVector moved_knot_vector(std::move(knot_vector_));
-  ASSERT_THAT(moved_knot_vector[5], Eq(ParametricCoordinate{0.75}));
-}
-
 TEST_F(AKnotVectorOfDegree2, CanBeCopied) {  // NOLINT
   baf::KnotVector copied_knot_vector = knot_vector_;
   ASSERT_THAT(copied_knot_vector, Eq(knot_vector_));
+}
+
+TEST_F(AKnotVectorOfDegree2, CanBeCreatedWithMoveConstructor) {  // NOLINT
+  baf::KnotVector moved_knot_vector(std::move(knot_vector_));
+  ASSERT_THAT(moved_knot_vector[5], Eq(ParametricCoordinate{0.75}));
 }
 
 TEST_F(AKnotVectorOfDegree2, CanBeAssigned) {  // NOLINT
@@ -83,9 +83,9 @@ TEST_F(AKnotVectorOfDegree2, CanBeAssigned) {  // NOLINT
 }
 
 TEST_F(AKnotVectorOfDegree2, CanBeMoveAssigned) {  // NOLINT
-  baf::KnotVector knot_vector_to_assign({ParametricCoordinate{0.0}, ParametricCoordinate{1.0}});
-  knot_vector_to_assign = std::move(knot_vector_);
-  ASSERT_THAT(knot_vector_to_assign[5], Eq(ParametricCoordinate{0.75}));
+  baf::KnotVector knot_vector_to_move_assign({ParametricCoordinate{0.0}, ParametricCoordinate{1.0}});
+  knot_vector_to_move_assign = std::move(knot_vector_);
+  ASSERT_THAT(knot_vector_to_move_assign[5], Eq(ParametricCoordinate{0.75}));
 }
 
 TEST_F(AKnotVectorOfDegree2, ReturnsKnot0_75AtIndex5WithMethodGetKnot) {  // NOLINT

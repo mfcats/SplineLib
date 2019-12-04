@@ -40,25 +40,25 @@ bool operator==(spl::ControlPoint const &lhs, spl::ControlPoint const &rhs) {
 }
 
 TEST_F(AControlPoint, CanBeCopied) {  // NOLINT
-  spl::ControlPoint copy_of_a(control_point_a_);
-  ASSERT_TRUE(operator==(copy_of_a, control_point_a_));
+  spl::ControlPoint copied_control_point_a(control_point_a_);
+  ASSERT_TRUE(operator==(copied_control_point_a, control_point_a_));
 }
 
 TEST_F(AControlPoint, CanBeMoved) {  // NOLINT
-  spl::ControlPoint copy_of_a(std::move(control_point_a_));
-  ASSERT_TRUE(operator==(copy_of_a, control_point_a_));
+  spl::ControlPoint moved_control_point_a(std::move(control_point_a_));
+  ASSERT_THAT(moved_control_point_a.GetValueForDimension(Dimension{1}), DoubleEq(2.0));
 }
 
 TEST_F(AControlPoint, CanBeAssigned) {  // NOLINT
-  spl::ControlPoint copy_of_a(3);
-  copy_of_a = std::move(control_point_a_);
-  ASSERT_TRUE(operator==(copy_of_a, control_point_a_));
+  spl::ControlPoint control_point_to_assign(3);
+  control_point_to_assign = std::move(control_point_a_);
+  ASSERT_TRUE(operator==(control_point_to_assign, control_point_a_));
 }
 
 TEST_F(AControlPoint, CanBeMoveAssigned) {  // NOLINT
-  spl::ControlPoint copy_of_a(3);
-  copy_of_a = std::move(control_point_a_);
-  ASSERT_TRUE(operator==(copy_of_a, control_point_a_));
+  spl::ControlPoint control_point_to_move_assign(3);
+  control_point_to_move_assign = std::move(control_point_a_);
+  ASSERT_THAT(control_point_to_move_assign.GetValueForDimension(Dimension{1}), DoubleEq(2.0));
 }
 
 TEST_F(AControlPoint, ReturnsCorrectDimensionalityOf2) {  // NOLINT

@@ -13,7 +13,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 // NOLINT(build/header_guard)
 
-template<class TYPE>
+template<typename TYPE>
 TYPE GetBinomialRandom(double min, double max, double distance) {
   unsigned seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
   static std::default_random_engine generator(seed);
@@ -21,7 +21,7 @@ TYPE GetBinomialRandom(double min, double max, double distance) {
   return distribution(generator) * distance + min;
 }
 
-template<class TYPE>
+template<typename TYPE>
 TYPE GetUniformRandom(double min, double max) {
   unsigned seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
   static std::default_random_engine generator(seed);

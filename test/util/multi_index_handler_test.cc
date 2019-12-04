@@ -40,10 +40,21 @@ TEST_F(AMultiIndexHandler1D, CanBeCopied) {  // NOLINT
   ASSERT_THAT(copied_multi_index_handler_1D, Eq(*multi_index_handler_1D_));
 }
 
+TEST_F(AMultiIndexHandler1D, CanBeCreatedWithMoveConstructor) {  // NOLINT
+  util::MultiIndexHandler<1> moved_multi_index_handler_1D(std::move(*multi_index_handler_1D_));
+  ASSERT_THAT(moved_multi_index_handler_1D.GetNumberOfTotalMultiIndices(), Eq(10));
+}
+
 TEST_F(AMultiIndexHandler1D, CanBeAssigned) {  // NOLINT
-  util::MultiIndexHandler<1> multi_index_handler_1D_to_be_assigned{};
-  multi_index_handler_1D_to_be_assigned = *multi_index_handler_1D_;
-  ASSERT_THAT(multi_index_handler_1D_to_be_assigned, Eq(*multi_index_handler_1D_));
+  util::MultiIndexHandler<1> multi_index_handler_1D_to_assign{};
+  multi_index_handler_1D_to_assign = *multi_index_handler_1D_;
+  ASSERT_THAT(multi_index_handler_1D_to_assign, Eq(*multi_index_handler_1D_));
+}
+
+TEST_F(AMultiIndexHandler1D, CanBeMoveAssigned) {  // NOLINT
+  util::MultiIndexHandler<1> multi_index_handler_1D_to_move_assign{};
+  multi_index_handler_1D_to_move_assign = std::move(*multi_index_handler_1D_);
+  ASSERT_THAT(multi_index_handler_1D_to_move_assign.GetNumberOfTotalMultiIndices(), Eq(10));
 }
 
 TEST_F(AMultiIndexHandler1D, Returns1DIndex1AfterUsingPostIncrementOperator) {  // NOLINT
