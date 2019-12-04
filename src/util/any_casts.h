@@ -19,6 +19,11 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
 
+// The namespace any_casts handles std::any objects that contain shared pointer to splines. If it is not known which
+// parametric dimensionality a spline has or if it is rational, this class converts the std::any object correctly into a
+// pointer to a spline without throwing an exception.
+// An exception only is thrown when the std::any object does not contain a pointer to a spline or differs from given
+// (maximum expected) parametric dimensionality.
 namespace splinelib::src::util::any_casts {
 template<int PARAMETRIC_DIMENSIONALITY>
 std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> GetSpline(std::any const &spline);

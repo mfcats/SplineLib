@@ -21,13 +21,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 namespace splinelib::src::baf {
 BSplineBasisFunction * BSplineBasisFunction::CreateDynamic(KnotVector const &knot_vector,
                                                            KnotSpan const &start_of_support, Degree const &degree) {
-  if (degree < Degree{0}) {
+  if (degree < Degree{0})
     throw std::logic_error("splinelib::src::baf::BSplineBasisFunction::CreateDynamic: Basis function degree must be "
-                             "positive. Given degree is " + std::to_string(degree.Get()));
-  }
-  if (degree == Degree{0}) {
-    return new ZeroDegreeBSplineBasisFunction(knot_vector, start_of_support);
-  }
+                           "positive. Given degree is " + std::to_string(degree.Get()));
+  if (degree == Degree{0}) return new ZeroDegreeBSplineBasisFunction(knot_vector, start_of_support);
   return new NonZeroDegreeBSplineBasisFunction(knot_vector, start_of_support, degree);
 }
 
