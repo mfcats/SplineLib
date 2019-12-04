@@ -39,11 +39,17 @@ double ControlPoint::ComputeTwoNorm() const {
 }
 
 ControlPoint operator+(ControlPoint const &lhs, ControlPoint const &rhs) {
+  if (lhs.GetDimensionality() != rhs.GetDimensionality())
+    throw std::invalid_argument("splinelib::src::spl::control_point::operator+: Only ControlPoints of the same "
+                                "dimensionality can be added.");
   std::vector<double> const coordinates_new = util::vector_utils::ComputeSum(lhs.coordinates_, rhs.coordinates_);
   return ControlPoint(coordinates_new);
 }
 
 ControlPoint operator-(ControlPoint const &lhs, ControlPoint const &rhs) {
+  if (lhs.GetDimensionality() != rhs.GetDimensionality())
+    throw std::invalid_argument("splinelib::src::spl::control_point::operator+: Only ControlPoints of the same "
+                                "dimensionality can be subtracted.");
   std::vector<double> const coordinates_new = util::vector_utils::ComputeDifference(lhs.coordinates_, rhs.coordinates_);
   return ControlPoint(coordinates_new);
 }
@@ -60,5 +66,13 @@ ControlPoint operator*(double scalar, ControlPoint const &control_point) {
   std::transform(control_point.coordinates_.begin(), control_point.coordinates_.end(), coordinates_new.begin(),
                  std::bind(std::multiplies<>(), std::placeholders::_1, scalar));
   return ControlPoint(coordinates_new);
+}
+
+bool operator==(ControlPoint const &lhs, ControlPoint const &rhs) {
+  if (lhs.GetDimensionality() != rhs.GetDimensionality()) return false;
+  for (Dimension current_dimension{0}; current_dimension < Dimension{rhs.GetDimensionality()}; ++current_dimension) {
+    if (!util::numeric_settings::AreEqual(rhs[current_dimension] , lhs[current_dimension])) return false;
+  }
+  return true;
 }
 }  // namespace splinelib::src::spl

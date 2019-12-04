@@ -43,6 +43,7 @@ class ControlPoint {
   friend ControlPoint operator-(ControlPoint const &lhs, ControlPoint const &rhs);
   friend ControlPoint operator*(ControlPoint const &control_point, double scalar);
   friend ControlPoint operator*(double scalar, ControlPoint const &control_point);
+  friend bool operator==(ControlPoint const &lhs, ControlPoint const &rhs);
 
   double ComputeTwoNorm() const;
 
@@ -54,6 +55,7 @@ ControlPoint operator+(ControlPoint const &lhs, ControlPoint const &rhs);
 ControlPoint operator-(ControlPoint const &lhs, ControlPoint const &rhs);
 ControlPoint operator*(ControlPoint const &control_point, double scalar);
 ControlPoint operator*(double scalar, ControlPoint const &control_point);
+bool operator==(ControlPoint const &lhs, ControlPoint const &rhs);
 
 #include "src/spl/control_point.inc"
 }  // namespace splinelib::src::spl

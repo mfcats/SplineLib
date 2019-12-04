@@ -23,8 +23,6 @@ using testing::Test;
 
 using namespace splinelib::src;
 
-// TODO(all): should there only be one ASSERT test per TEST_F instance or can some of the following tests be aggregated?
-
 class AVectorForSTLContainerAccess : public Test {
  public:
   AVectorForSTLContainerAccess() : a_vector_({0.5, 1.2, 2.9, -3.4, -5}) {}
