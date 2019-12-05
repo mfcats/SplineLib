@@ -33,7 +33,7 @@ namespace splinelib::src::util {
 //   1d_index_d3/dx2dy = Get1DIndex();  // Store 5 in 1d_index_d3/dx2dy.
 //   ++derivative_handler;  // Move from {2, 1, 0} to {0, 0, 1}.
 //   maximum_1d_index = derivative_handler.GetNumberOfTotalMultiIndices();  // Returns number of possible different
-//   multi-indices.
+//   // multi-indices.
 //   derivative_handler = derivative_handler + 5;  // Move from {0, 0, 1} to maximum multi-index {2, 1, 1}.
 //   ++derivative_handler;  // Move from maximum multi-index {2, 1, 1} back to first multi-index {0, 0, 0}.
 template<int PARAMETRIC_DIMENSIONALITY>

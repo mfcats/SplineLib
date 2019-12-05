@@ -16,6 +16,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include <cmath>
 
+// The namespace numeric_settings contains an epsilon factor defined as ten times the machine epsilon of a type TYPE and
+// the function AreEqual that checks if two numbers are equal within this tolerance.
+// Example (type double, assuming 2.22045e-16 as machine epsilon, real value depending on machine):
+//   double epsilon = GetEpsilon<double>();  // Returns 2.22045e-15.
+//   bool are_equal = AreEqual<double>(0, 2e-15);  // Returns true as |0-(2e-15)| is smaller than the epsilon factor.
+//   are_equal = AreEqual<double>(0, 2e-14);  // Returns false as |0-(2e-14)| is bigger than the epsilon factor.
 namespace splinelib::src::util::numeric_settings {
 template<typename TYPE>
 constexpr TYPE GetEpsilon();
