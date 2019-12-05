@@ -16,6 +16,13 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/util/named_type.h"
 
+// The namespace stl_container_access guarantees safe access to stl containers (checking whether index is within the
+// bounds of valid elements via member function .at()) in debug mode and fast, but possibly unsafe access in release
+// mode (using member operator[]).
+// Example (vector of length 3):
+//   std::vector<int> vector(3, 0);  // Create vector with {0, 0, 0}.
+//   GetValue(vector, 1);  // Returns 0 in release and debug mode.
+//   GetValue(vector, 3);  // Throws out_of_range error in debug mode and causes undefined behaviour in release mode.
 namespace splinelib::src::util::stl_container_access {
 template<typename CONTAINER_TYPE>
 constexpr typename CONTAINER_TYPE::value_type &GetValue(CONTAINER_TYPE &container,  // NOLINT(runtime/references)
