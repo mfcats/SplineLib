@@ -18,11 +18,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/baf/knot_vector.h"
 #include "src/util/named_type.h"
 
-// A ZeroDegreeBSplineBasisFunction N_{i,0} is a step function. It equals one in the interval [u_i, u_{i+p+1}) resp.
-// [u_i, u_{i+p+1}], which is stored in the member variables start_knot_, end_knot_ and end_knot_is_last_knot_ (true for
-// end_knot_ u_{i+1} equaling the last knot u_m causing the latter case) of the base class BSplineBasisFunction.
+// A ZeroDegreeBSplineBasisFunction N_{i,0} is a step function. It equals one in the half-open interval [u_i, u_{i+p+1})
+// which is stored in the member variables start_knot_ and end_knot_ of the base class BSplineBasisFunction resp. in the
+// closed interval [u_i, u_{i+p+1}] when end_knot_ u_{i+1} equals the last knot u_m of the knot vector and then
+// end_knot_is_last_knot_ is set to true.
 // Everywhere else the function equals zero.
 // The derivative is defined to be zero on the whole knot vector interval [u_0, u_m].
+// Example (basis function N_{2,0} for simplest knot vector of degree 2, see NURBS book example 2.1):
+//   ZeroDegreeBSplineBasisFunction basis_function(KnotVector{0.0, 0.0, 0.0, 1.0, 1.0, 1.0}, KnotSpan{2});
+//   Degree p = basis_function.GetDegree();  // Returns 0.
+//   ParametricCoordinate start_knot = basis_function.GetStartKnot();  // Returns 0.0;
+//   ParametricCoordinate end_knot = basis_function.GetEndKnot();  // Returns 1.0;
+//   double evaluate = basis_function.Evaluate(ParametricCoordinate{0.5});  // Returns 1.0;
+//   double evaluate_derivative = basis_function.EvaluateDerivative(ParametricCoordinate{0.5});  // Returns 0.0;
+//   // The basis functions with knot span 0, 1 or 3 are always evaluated to zero as they are defined on an interval of
+//   // length zero. For N_{3,0} end_knot_is_last_knot_ would equal true.
 namespace splinelib::src::baf {
 class ZeroDegreeBSplineBasisFunction : public BSplineBasisFunction {
  public:

@@ -44,8 +44,8 @@ class BSplineBasisFunction {
   // For evaluation the recurrence formula due to DeBoor, Cox, and Mansfield is implemented
   // (see NURBS book equation 2.5).
   double Evaluate(ParametricCoordinate const &parametric_coordinate) const;
-  // For derivative evaluation the formula 2.9 in NURBS book is implemented. For 0th derivative Evaulate is called and
-  // for derivative greater than degree p or parametric coordinate not in local support zero is returned.
+  // For derivative evaluation the formula 2.9 in NURBS book is implemented. For 0th derivative Evaluate is called and
+  // for parametric coordinate not in local support zero is returned.
   double EvaluateDerivative(ParametricCoordinate const &parametric_coordinate, Derivative const &derivative) const;
 
  protected:

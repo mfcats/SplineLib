@@ -25,12 +25,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 // combination of the basis functions N_{i,p-1} and N_{i+1,p-1} (see NURBS book equation 2.5). Therefore, for each
 // NonZeroDegreeBSplineBasisFunction a pointer to these two basis functions of degree (p-1) is set in constructor, so
 // that it can be evaluated recursively.
-// Outside the interval [u_i, u_{i+p+1}) resp. [u_i, u_{i+p+1}], which is stored in the member variables start_knot_,
-// end_knot_ and end_knot_is_last_knot_ (true for end_knot_ u_{i+1} equaling the last knot u_m causing the latter case)
-// of the base class BSplineBasisFunction, the function equals zero.
+// It equals zero outside the half-open interval [u_i, u_{i+p+1}) which is stored in the member variables start_knot_
+// and end_knot_ of the base class BSplineBasisFunction resp. in the closed interval [u_i, u_{i+p+1}] when end_knot_
+// u_{i+1} equals the last knot u_m of the knot vector and then end_knot_is_last_knot_ is set to true.
 // As the factors 1/(u_{i+p}-u_i) and 1/(u_{i+p+1}-u_{i+1}) are constant, used in evaluation and derivative evaluation
 // formula, but can equal 1/0, they are set in constructor and checked for denominator of zero. In that case the factor
 // is set to zero.
+// Example (basis function N_{0,2} for simplest knot vector of degree 2, see NURBS book example 2.1):
+//   NonZeroDegreeBSplineBasisFunction basis_function(KnotVector{0.0, 0.0, 0.0, 1.0, 1.0, 1.0}, KnotSpan{0}, Degree{2});
+//   Degree p = basis_function.GetDegree();  // Returns Degree{2}.
+//   ParametricCoordinate start_knot = basis_function.GetStartKnot();  // Returns ParametricCoordinate{0.0};
+//   ParametricCoordinate end_knot = basis_function.GetEndKnot();  // Returns ParametricCoordinate{1.0};
+//   double left_factor = basis_function.left_denominator_inverse_;  // Returns 0.0 as 1/(0-0) is defined to be 0.
+//   double right_factor = basis_function.right_denominator_inverse_;  // Returns 1.0 as result of 1/(1-0).
+//   double evaluate = basis_function.Evaluate(ParametricCoordinate{0.5});  // Returns 0.25;
+//   double evaluate_derivative = basis_function.EvaluateDerivative(ParametricCoordinate{0.5});  // Returns -1.0;
 namespace splinelib::src::baf {
 class NonZeroDegreeBSplineBasisFunction : public BSplineBasisFunction {
  public:
