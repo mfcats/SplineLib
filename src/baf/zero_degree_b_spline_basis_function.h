@@ -26,11 +26,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 // The derivative is defined to be zero on the whole knot vector interval [u_0, u_m].
 // Example (basis function N_{2,0} for simplest knot vector of degree 2, see NURBS book example 2.1):
 //   ZeroDegreeBSplineBasisFunction basis_function(KnotVector{0.0, 0.0, 0.0, 1.0, 1.0, 1.0}, KnotSpan{2});
-//   Degree p = basis_function.GetDegree();  // Returns 0.
-//   ParametricCoordinate start_knot = basis_function.GetStartKnot();  // Returns 0.0;
-//   ParametricCoordinate end_knot = basis_function.GetEndKnot();  // Returns 1.0;
-//   double evaluate = basis_function.Evaluate(ParametricCoordinate{0.5});  // Returns 1.0;
-//   double evaluate_derivative = basis_function.EvaluateDerivative(ParametricCoordinate{0.5});  // Returns 0.0;
+//   // Constructor sets start_knot_ to 0.0, end_knot_ to 1.0 and end_knot_is_last_knot_ to false.
+//   evaluate = basis_function.Evaluate(ParametricCoordinate{0.5});  // Returns 1.0;
+//   evaluate_derivative = basis_function.EvaluateDerivative(ParametricCoordinate{0.5});  // Returns 0.0;
 //   // The basis functions with knot span 0, 1 or 3 are always evaluated to zero as they are defined on an interval of
 //   // length zero. For N_{3,0} end_knot_is_last_knot_ would equal true.
 namespace splinelib::src::baf {

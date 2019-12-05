@@ -31,8 +31,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 //   sixth_knot = knot_vector[5];  // Returns sixth knot 0.75.
 //   number_of_knots = knot_vector.GetNumberOfKnots();  // Returns m+1 = 9.
 //   number_of_different_knots = knot_vector.GetNumberOfDifferentKnots();  // Returns 4 = |U|.
-//   multiplicity_of_0_5 = knot_vector.GetMultiplicity(ParametricCoordinate{0.5});  // Returns multiplicity of u = 0.5
-//   Multiplicity{2}.
+//   multiplicity_of_0_5 = knot_vector.GetMultiplicity(ParametricCoordinate{0.5});  // Returns Multiplicity{2}.
 //   is_1_2_in_range = knot_vector.IsInRange(ParametricCoordinate{1.2});  // Returns false as 1.2 is greater u_m = 1.0.
 //   is_1_0_last_knot = knot_vector.IsLastKnot(ParametricCoordinate{1.0});  // Returns true as u_m = 1.0.
 namespace splinelib::src::baf {

@@ -46,9 +46,9 @@ class A1DAnyBSplineForAnyCasts : public Test {
     baf::KnotVectors<1> knot_vector_ptr = {std::make_shared<baf::KnotVector>(baf::KnotVector(
         {ParametricCoordinate(0), ParametricCoordinate(0), ParametricCoordinate(1), ParametricCoordinate(1)}))};
     std::vector<spl::ControlPoint> control_points = {spl::ControlPoint{0.0}, spl::ControlPoint{1.2}};
-    std::shared_ptr<spl::BSpline<1>> b_spline_1d_ptr = std::make_shared<spl::BSpline<1>>(knot_vector_ptr, degree,
-                                                                                         control_points);
-    b_spline_1d_any_ = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_1d_ptr);
+    std::shared_ptr<spl::BSpline<1>> b_spline_1d_pointer = std::make_shared<spl::BSpline<1>>(knot_vector_ptr, degree,
+                                                                                             control_points);
+    b_spline_1d_any_ = std::make_any<std::shared_ptr<spl::BSpline<1>>>(b_spline_1d_pointer);
   }
 
  protected:
@@ -79,9 +79,9 @@ class A2DAnyNURBSForAnyCasts : public Test {
     std::vector<spl::ControlPoint> control_points = {spl::ControlPoint{0.0}, spl::ControlPoint{1.2},
                                                      spl::ControlPoint{-1.0}, spl::ControlPoint{-2.2}};
     std::vector<double> weights = {1.0, 2.0, 1.5, 0.7};
-    std::shared_ptr<spl::NURBS<2>> nurbs_2d_ptr = std::make_shared<spl::NURBS<2>>(knot_vector_ptr, degree,
-                                                                                  control_points, weights);
-    nurbs_2d_any_ = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_2d_ptr);
+    std::shared_ptr<spl::NURBS<2>> nurbs_2d_pointer = std::make_shared<spl::NURBS<2>>(knot_vector_ptr, degree,
+                                                                                      control_points, weights);
+    nurbs_2d_any_ = std::make_any<std::shared_ptr<spl::NURBS<2>>>(nurbs_2d_pointer);
   }
 
  protected:
