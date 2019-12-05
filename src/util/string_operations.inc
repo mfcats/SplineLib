@@ -73,6 +73,7 @@ std::vector<TYPE> ConvertStringVectorToNumberVector(std::vector<std::string> con
   return converted;
 }
 
+// TODO(all): is it always , and ;?
 template<typename TYPE>
 std::vector<TYPE> ConvertDelimitedStringToNumberVector(std::string string) {
   std::vector<TYPE> vector;

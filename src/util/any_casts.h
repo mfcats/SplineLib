@@ -21,9 +21,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 // The namespace any_casts handles std::any objects that contain shared pointer to splines. If it is not known which
 // parametric dimensionality a spline has or if it is rational, this class converts the std::any object correctly into a
-// pointer to a spline without throwing an exception.
-// An exception only is thrown when the std::any object does not contain a pointer to a spline or differs from given
-// (maximum expected) parametric dimensionality.
+// pointer to a spline without throwing an exception. An exception only is thrown when the std::any object does not
+// contain a pointer to a spline or differs from given (maximum expected) parametric dimensionality.
+// Example (std::any object containing a pointer to a two-dimensional NURBS):
+//   std::any any_object = std::make_any<std::shared_pointer<spl::NURBS<2>>>(nurbs_2d_pointer);
+//   bool is_rational = IsRational(any_object);  // Returns true;
+//   int spline_dimension = GetSplineDimension<2>(any_object);  // Returns 2.
+//   spline_dimension = GetSplineDimension<1>(any_object);  // Throws std::logic_error as maximum expected dimension of
+//                                                          // 1 is lower than actual dimension of 2.
+//   auto spline_pointer = GetSpline(any_object);  // Returns nurbs_2d_pointer.
 namespace splinelib::src::util::any_casts {
 template<int PARAMETRIC_DIMENSIONALITY>
 std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> GetSpline(std::any const &spline);
