@@ -145,14 +145,14 @@ class ParameterSpace {
       if (!this->GetKnotVector(dim)->IsInRange(param_coord[dim])) {
         std::stringstream message;
         message << "The parametric coordinate " << param_coord[dim].Get() << " is outside the knot vector range from "
-                << GetKnotVector(dim)->GetKnot(0).Get() << " to " << GetKnotVector(dim)->GetLastKnot().Get() << ".";
+                << (*GetKnotVector(dim))[0].Get() << " to " << GetKnotVector(dim)->GetLastKnot().Get() << ".";
         throw std::range_error(message.str());
       }
     }
   }
 
   double GetKnotVectorRange(int direction) const {
-    return GetKnotVector(direction)->GetLastKnot().Get() - GetKnotVector(direction)->GetKnot(0).Get();
+    return GetKnotVector(direction)->GetLastKnot().Get() - (*GetKnotVector(direction))[0].Get();
   }
 
   void InsertKnot(ParametricCoordinate knot, int dimension) {
@@ -205,7 +205,7 @@ class ParameterSpace {
       }
       std::array<std::vector<ParametricCoordinate>, 2> new_knots;
       for (int j = first_knot[i]; j < last_knot[i]; ++j) {
-        new_knots[i].push_back(knot_vector_[dimension]->GetKnot(j));
+        new_knots[i].push_back((*knot_vector_[dimension])[j]);
       }
       new_knot_vectors[i][dimension] = std::make_shared<baf::KnotVector>(baf::KnotVector(new_knots[i]));
     }
@@ -219,13 +219,13 @@ class ParameterSpace {
         throw std::runtime_error("There have to be at least 2p + 2 knots.");
       }
       for (int j = 1; j < degree_[i].Get() + 1; j++) {
-        if (knot_vector_[i]->GetKnot(0).Get() != knot_vector_[i]->GetKnot(j).Get()) {
+        if ((*knot_vector_[i])[0].Get() != (*knot_vector_[i])[j].Get()) {
           throw std::runtime_error("The first knot must have multiplicity p+1.");
         }
       }
       for (int j = static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - 2;
            j > static_cast<int>(knot_vector_[i]->GetNumberOfKnots()) - degree_[i].Get() - 2; j--) {
-        if (knot_vector_[i]->GetLastKnot().Get() != knot_vector_[i]->GetKnot(j).Get()) {
+        if (knot_vector_[i]->GetLastKnot().Get() != (*knot_vector_[i])[j].Get()) {
           throw std::runtime_error("The last knot must have multiplicity p+1.");
         }
       }

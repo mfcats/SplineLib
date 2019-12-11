@@ -72,9 +72,9 @@ class A2DRandomNURBSGenerator : public Test {  // NOLINT
 
 TEST_F(A2DRandomNURBSGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
   spl::ParameterSpace<2> parameter_space = *nurbs_generator_.GetParameterSpace();
-  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetKnot(0).Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
   ASSERT_THAT(parameter_space.GetKnotVector(0)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetKnot(0).Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
   ASSERT_THAT(parameter_space.GetKnotVector(1)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
 }
 
@@ -101,11 +101,11 @@ class A3DRandomNURBSGenerator : public Test {  // NOLINT
 
 TEST_F(A3DRandomNURBSGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
   spl::ParameterSpace<3> parameter_space = *nurbs_generator_.GetParameterSpace();
-  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetKnot(0).Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
   ASSERT_THAT(parameter_space.GetKnotVector(0)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetKnot(0).Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
   ASSERT_THAT(parameter_space.GetKnotVector(1)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(2)->GetKnot(0).Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(parameter_space.GetKnotVector(2)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
   ASSERT_THAT(parameter_space.GetKnotVector(2)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
 }
 

@@ -47,7 +47,7 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
   ASSERT_THAT(bspline_1d_after_->RemoveKnot(ParametricCoordinate(1), 0, 0.1), 1);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
-  ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(6).Get(), DoubleEq(2));
+  ASSERT_THAT((*bspline_1d_after_->GetKnotVector(0))[6].Get(), DoubleEq(2));
   ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() - 1);
   std::vector<spl::ControlPoint> new_control_points = {
       spl::ControlPoint({0.0, 0.0}), spl::ControlPoint({0.0, 1.5}), spl::ControlPoint({1.0, 2.0}),
@@ -66,7 +66,7 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyTwoTimes) {  // NOLINT
   ASSERT_THAT(bspline_1d_after_->RemoveKnot(ParametricCoordinate(1), 0, 0.0, 2), 2);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 2);
-  ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(5).Get(), DoubleEq(2));
+  ASSERT_THAT((*bspline_1d_after_->GetKnotVector(0))[5].Get(), DoubleEq(2));
   ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() - 2);
   std::vector<spl::ControlPoint> new_control_points = {
       spl::ControlPoint({0.0, 0.0}), spl::ControlPoint({0.0, 1.5}), spl::ControlPoint({2.0, 2.5}),
@@ -85,7 +85,7 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyThreeTimesAtOnce) {  // NOLINT
   ASSERT_THAT(bspline_1d_after_->RemoveKnot(ParametricCoordinate(1), 0, 0.5, 3), 3);
   ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               bspline_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 3);
-  ASSERT_THAT(bspline_1d_after_->GetKnotVector(0)->GetKnot(4).Get(), DoubleEq(2));
+  ASSERT_THAT((*bspline_1d_after_->GetKnotVector(0))[4].Get(), DoubleEq(2));
   ASSERT_THAT(bspline_1d_after_->GetNumberOfControlPoints(), bspline_1d_before_->GetNumberOfControlPoints() - 3);
   std::vector<spl::ControlPoint> new_control_points = {
       spl::ControlPoint({0.0, 0.0}), spl::ControlPoint({0.0, 3.0}), spl::ControlPoint({4.0, 3.0}),
@@ -139,7 +139,7 @@ TEST_F(NURBS1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
   nurbs_1d_after_->RemoveKnot(ParametricCoordinate(1), 0, 0.81);
   ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetNumberOfKnots(),
               nurbs_1d_before_->GetKnotVector(0)->GetNumberOfKnots() - 1);
-  ASSERT_THAT(nurbs_1d_after_->GetKnotVector(0)->GetKnot(6).Get(), DoubleEq(2));
+  ASSERT_THAT((*nurbs_1d_after_->GetKnotVector(0))[6].Get(), DoubleEq(2));
   ASSERT_THAT(nurbs_1d_after_->GetNumberOfControlPoints(), nurbs_1d_before_->GetNumberOfControlPoints() - 1);
   std::vector<spl::ControlPoint> new_control_points = {
       spl::ControlPoint(std::vector<double>({0.0, 0.0})),
@@ -217,7 +217,7 @@ TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
   ASSERT_THAT(bspline_2d_after_->RemoveKnot(ParametricCoordinate(0.3), 1, 0.075), 1);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 1);
-  ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetKnot(6).Get(), DoubleEq(0.7));
+  ASSERT_THAT((*bspline_2d_after_->GetKnotVector(1))[6].Get(), DoubleEq(0.7));
   ASSERT_THAT(bspline_2d_after_->GetNumberOfControlPoints(), bspline_2d_before_->GetNumberOfControlPoints() - 6);
   ASSERT_THAT(bspline_2d_before_->AreGeometricallyEqual(*bspline_2d_after_), false);
   ASSERT_THAT(bspline_2d_before_->AreGeometricallyEqual(*bspline_2d_after_, 0.075), true);
@@ -227,7 +227,7 @@ TEST_F(BSpline2DFig5_28, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
   ASSERT_THAT(bspline_2d_after_->RemoveKnot(ParametricCoordinate(0.3), 1, 0.12, 2), 2);
   ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 2);
-  ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetKnot(5).Get(), DoubleEq(0.7));
+  ASSERT_THAT((*bspline_2d_after_->GetKnotVector(1))[5].Get(), DoubleEq(0.7));
   ASSERT_THAT(bspline_2d_after_->GetNumberOfControlPoints(), bspline_2d_before_->GetNumberOfControlPoints() - 12);
   ASSERT_THAT(bspline_2d_before_->AreGeometricallyEqual(*bspline_2d_after_), false);
   ASSERT_THAT(bspline_2d_before_->AreGeometricallyEqual(*bspline_2d_after_, 0.1), true);
@@ -293,7 +293,7 @@ TEST_F(NURBS2DFig5_28, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
   ASSERT_THAT(nurbs_2d_after_->RemoveKnot(ParametricCoordinate(0.3), 1, 2.2), 1);
   ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               nurbs_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 1);
-  ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetKnot(6).Get(), DoubleEq(0.7));
+  ASSERT_THAT((*nurbs_2d_after_->GetKnotVector(1))[6].Get(), DoubleEq(0.7));
   ASSERT_THAT(nurbs_2d_after_->GetNumberOfControlPoints(), nurbs_2d_before_->GetNumberOfControlPoints() - 6);
   ASSERT_THAT(nurbs_2d_before_->AreGeometricallyEqual(*nurbs_2d_after_), false);
   ASSERT_THAT(nurbs_2d_before_->AreGeometricallyEqual(*nurbs_2d_after_, 0.08), true);
@@ -303,7 +303,7 @@ TEST_F(NURBS2DFig5_28, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
   ASSERT_THAT(nurbs_2d_after_->RemoveKnot(ParametricCoordinate(0.3), 1, 2.2, 2), 2);
   ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
               nurbs_2d_before_->GetKnotVector(1)->GetNumberOfKnots() - 2);
-  ASSERT_THAT(nurbs_2d_after_->GetKnotVector(1)->GetKnot(5).Get(), DoubleEq(0.7));
+  ASSERT_THAT((*nurbs_2d_after_->GetKnotVector(1))[5].Get(), DoubleEq(0.7));
   ASSERT_THAT(nurbs_2d_after_->GetNumberOfControlPoints(), nurbs_2d_before_->GetNumberOfControlPoints() - 12);
   ASSERT_THAT(nurbs_2d_before_->AreGeometricallyEqual(*nurbs_2d_after_), false);
   ASSERT_THAT(nurbs_2d_before_->AreGeometricallyEqual(*nurbs_2d_after_, 0.07), true);
@@ -349,7 +349,7 @@ TEST_F(A3DBSplineForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
   ASSERT_THAT(bspline_3d_after_->RemoveKnot(ParametricCoordinate(0.3), 2, 0.21), 1);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
               bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 1);
-  ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(5).Get(), DoubleEq(1));
+  ASSERT_THAT((*bspline_3d_after_->GetKnotVector(2))[5].Get(), DoubleEq(1));
   ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 6);
   ASSERT_THAT(bspline_3d_before_->AreGeometricallyEqual(*bspline_3d_after_, 0.1), false);
   ASSERT_THAT(bspline_3d_before_->AreGeometricallyEqual(*bspline_3d_after_, 0.2), true);
@@ -359,7 +359,7 @@ TEST_F(A3DBSplineForKnotRemoval, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
   ASSERT_THAT(bspline_3d_after_->RemoveKnot(ParametricCoordinate(0.3), 2, 0.28, 2), 2);
   ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
               bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 2);
-  ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetKnot(4).Get(), DoubleEq(1));
+  ASSERT_THAT((*bspline_3d_after_->GetKnotVector(2))[4].Get(), DoubleEq(1));
   ASSERT_THAT(bspline_3d_after_->GetNumberOfControlPoints(), bspline_3d_before_->GetNumberOfControlPoints() - 12);
   ASSERT_THAT(bspline_3d_before_->AreGeometricallyEqual(*bspline_3d_after_, 0.1), false);
   ASSERT_THAT(bspline_3d_before_->AreGeometricallyEqual(*bspline_3d_after_, 0.2), true);
@@ -410,7 +410,7 @@ TEST_F(A3DNURBSForKnotRemoval, RemovesKnot0_3CorrectlyOneTime) {  // NOLINT
   ASSERT_THAT(nurbs_3d_after_->RemoveKnot(ParametricCoordinate(0.3), 2, 3.86), 1);
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
               nurbs_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 1);
-  ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetKnot(5).Get(), DoubleEq(1));
+  ASSERT_THAT((*nurbs_3d_after_->GetKnotVector(2))[5].Get(), DoubleEq(1));
   ASSERT_THAT(nurbs_3d_after_->GetNumberOfControlPoints(), nurbs_3d_before_->GetNumberOfControlPoints() - 6);
   ASSERT_THAT(nurbs_3d_before_->AreGeometricallyEqual(*nurbs_3d_after_, 0.1), false);
   ASSERT_THAT(nurbs_3d_before_->AreGeometricallyEqual(*nurbs_3d_after_, 0.2), true);
@@ -420,7 +420,7 @@ TEST_F(A3DNURBSForKnotRemoval, RemovesKnot0_3CorrectlyTwoTimes) {  // NOLINT
   ASSERT_THAT(nurbs_3d_after_->RemoveKnot(ParametricCoordinate(0.3), 2, 5.3, 2), 2);
   ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
               nurbs_3d_before_->GetKnotVector(2)->GetNumberOfKnots() - 2);
-  ASSERT_THAT(nurbs_3d_after_->GetKnotVector(2)->GetKnot(4).Get(), DoubleEq(1));
+  ASSERT_THAT((*nurbs_3d_after_->GetKnotVector(2))[4].Get(), DoubleEq(1));
   ASSERT_THAT(nurbs_3d_after_->GetNumberOfControlPoints(), nurbs_3d_before_->GetNumberOfControlPoints() - 12);
   ASSERT_THAT(nurbs_3d_before_->AreGeometricallyEqual(*nurbs_3d_after_, 0.1), false);
   ASSERT_THAT(nurbs_3d_before_->AreGeometricallyEqual(*nurbs_3d_after_, 0.22), true);

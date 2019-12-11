@@ -84,9 +84,9 @@ class Projection {
       const std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> &spline, const std::vector<int> &dimensions) {
     std::vector<std::array<ParametricCoordinate, 2>> elements;
     for (int j = 0; j < spline->GetKnotVector(0)->GetNumberOfKnots() - spline->GetDegree(0).Get() - 1; ++j) {
-      if ((spline->GetKnotVector(0)->GetKnot(j).Get() - spline->GetKnotVector(0)->GetKnot(j + 1).Get()) != 0) {
-        elements.emplace_back(std::array<ParametricCoordinate, 2>({spline->GetKnotVector(0)->GetKnot(j),
-                                                                      spline->GetKnotVector(0)->GetKnot(j + 1)}));
+      if (((*spline->GetKnotVector(0))[j].Get() - (*spline->GetKnotVector(0))[j + 1].Get()) != 0) {
+        elements.emplace_back(std::array<ParametricCoordinate, 2>({(*spline->GetKnotVector(0))[j],
+                                                                   (*spline->GetKnotVector(0))[j + 1]}));
       }
     }
     std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> ParametricCoordinates = {ParametricCoordinate{0}};
@@ -112,9 +112,9 @@ class Projection {
                                                       const std::vector<double> &point_phys_coords,
                                                       const std::shared_ptr<spl::Spline<2>> &spline,
                                                       const std::vector<int> &dimensions) {
-    double first_knot1 = spline->GetKnotVector(0)->GetKnot(0).Get();
+    double first_knot1 = spline->GetKnotVector(0)->GetFirstKnot().Get();
     double last_knot1 = spline->GetKnotVector(0)->GetLastKnot().Get();
-    double first_knot2 = spline->GetKnotVector(1)->GetKnot(0).Get();
+    double first_knot2 = spline->GetKnotVector(1)->GetFirstKnot().Get();
     double last_knot2 = spline->GetKnotVector(1)->GetLastKnot().Get();
     std::array<ParametricCoordinate, 2> param_coords =
         {ParametricCoordinate(first_knot1), ParametricCoordinate(first_knot2)};
@@ -150,8 +150,8 @@ class Projection {
       std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coords,
       const std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> &spline) {
     for (auto &coord : param_coords) {
-      if (coord < spline->GetKnotVector(0)->GetKnot(0)) {
-        coord = spline->GetKnotVector(0)->GetKnot(0);
+      if (coord < spline->GetKnotVector(0)->GetFirstKnot()) {
+        coord = spline->GetKnotVector(0)->GetFirstKnot();
       } else if (coord > spline->GetKnotVector(0)->GetLastKnot()) {
         coord = spline->GetKnotVector(0)->GetLastKnot();
       }

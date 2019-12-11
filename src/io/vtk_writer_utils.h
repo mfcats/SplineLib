@@ -28,7 +28,7 @@ class VTKWriterUtils {
       std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline_ptr) {
     std::array<double, 2 * PARAMETRIC_DIMENSIONALITY> knots{};
     for (int i = 0; i < 2 * PARAMETRIC_DIMENSIONALITY; ++i) {
-      knots[i] = i < PARAMETRIC_DIMENSIONALITY ? spline_ptr->GetKnotVector(i)->GetKnot(0).Get()
+      knots[i] = i < PARAMETRIC_DIMENSIONALITY ? (*(spline_ptr->GetKnotVector(i)))[0].Get()
                                                : spline_ptr->GetKnotVector(
               i - PARAMETRIC_DIMENSIONALITY)->GetLastKnot().Get();
     }

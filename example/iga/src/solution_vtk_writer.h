@@ -39,7 +39,7 @@ class SolutionVTKWriter {
     std::array<int, PARAMETRIC_DIMENSIONALITY> num_pnts{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       baf::KnotVector knots = *spl->GetKnotVector(i);
-      dxi.emplace_back((knots.GetKnot(knots.GetNumberOfKnots() - 1) - knots.GetKnot(0)).Get() / scattering[0][i]);
+      dxi.emplace_back((knots.GetKnot(knots.GetNumberOfKnots() - 1) - knots.GetFirstKnot()).Get() / scattering[0][i]);
       num_pnts[i] = scattering[0][i] + 1;
     }
     std::vector<double> point_data;
@@ -47,7 +47,7 @@ class SolutionVTKWriter {
     while (true) {
       std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coords{};
       for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
-        param_coords[i] = spl->GetKnotVector(i)->GetKnot(0) + ParametricCoordinate{mih[i] * dxi[i]};
+        param_coords[i] = spl->GetKnotVector(i)->GetFirstKnot() + ParametricCoordinate{mih[i] * dxi[i]};
       }
       point_data.emplace_back(solution_spl->Evaluate(param_coords, {cp_dim})[0]);
       if (mih.Get1DIndex() == mih.Get1DLength() - 1) break;

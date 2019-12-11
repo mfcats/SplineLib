@@ -69,14 +69,14 @@ TEST_F(BSplineFig5_9, IsSubdividedAtKnot0_7InFirstDirection) {  // NOLINT
   auto splines = bspline_2d_->SudivideSpline(ParametricCoordinate{0.7}, 0);
   ASSERT_THAT(splines[0]->GetKnotVector(0)->GetNumberOfKnots(), 8);
   ASSERT_THAT(splines[1]->GetKnotVector(0)->GetNumberOfKnots(), 8);
-  ASSERT_THAT(splines[0]->GetKnotVector(0)->GetKnot(0).Get(), DoubleEq(0));
-  ASSERT_THAT(splines[0]->GetKnotVector(0)->GetKnot(3).Get(), DoubleEq(0));
-  ASSERT_THAT(splines[0]->GetKnotVector(0)->GetKnot(4).Get(), DoubleEq(0.7));
-  ASSERT_THAT(splines[0]->GetKnotVector(0)->GetKnot(7).Get(), DoubleEq(0.7));
-  ASSERT_THAT(splines[1]->GetKnotVector(0)->GetKnot(0).Get(), DoubleEq(0.7));
-  ASSERT_THAT(splines[1]->GetKnotVector(0)->GetKnot(3).Get(), DoubleEq(0.7));
-  ASSERT_THAT(splines[1]->GetKnotVector(0)->GetKnot(4).Get(), DoubleEq(1));
-  ASSERT_THAT(splines[1]->GetKnotVector(0)->GetKnot(7).Get(), DoubleEq(1));
+  ASSERT_THAT(splines[0]->GetKnotVector(0)->GetFirstKnot().Get(), DoubleEq(0));
+  ASSERT_THAT((*splines[0]->GetKnotVector(0))[3].Get(), DoubleEq(0));
+  ASSERT_THAT((*splines[0]->GetKnotVector(0))[4].Get(), DoubleEq(0.7));
+  ASSERT_THAT((*splines[0]->GetKnotVector(0))[7].Get(), DoubleEq(0.7));
+  ASSERT_THAT(splines[1]->GetKnotVector(0)->GetFirstKnot().Get(), DoubleEq(0.7));
+  ASSERT_THAT((*splines[1]->GetKnotVector(0))[3].Get(), DoubleEq(0.7));
+  ASSERT_THAT((*splines[1]->GetKnotVector(0))[4].Get(), DoubleEq(1));
+  ASSERT_THAT((*splines[1]->GetKnotVector(0))[7].Get(), DoubleEq(1));
   double steps = 100;
   for (int i = 0; i <= steps; ++i) {
     ParametricCoordinate coord2 = ParametricCoordinate{util::random::GetUniformRandom<double>(0.0, 1.0)};

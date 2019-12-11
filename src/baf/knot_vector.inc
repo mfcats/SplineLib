@@ -37,9 +37,9 @@ inline ParametricCoordinate KnotVector::GetLastKnot() const {
   return GetBack(knots_);
 }
 
-inline ParametricCoordinate KnotVector::GetKnot(int index) const {
-  return GetValue(knots_, index);
-}
+//inline ParametricCoordinate KnotVector::GetKnot(int index) const {
+//  return GetValue(knots_, index);
+//}
 
 inline bool KnotVector::IsInRange(ParametricCoordinate const &parametric_coordinate) const {
   return ((parametric_coordinate >= GetFront(knots_)) && (parametric_coordinate <= GetBack(knots_)));

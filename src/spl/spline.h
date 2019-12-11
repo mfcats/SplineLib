@@ -114,7 +114,7 @@ class Spline {
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord{};
       for (int dim = 0; dim < PARAMETRIC_DIMENSIONALITY; ++dim) {
-        double span = GetKnotVector(dim)->GetLastKnot().Get() - GetKnotVector(dim)->GetKnot(0).Get();
+        double span = GetKnotVector(dim)->GetLastKnot().Get() - GetKnotVector(dim)->GetFirstKnot().Get();
         param_coord[dim] = ParametricCoordinate(span / number * point_handler[Dimension{dim}]);
       }
       std::vector<double> evaluate_this = Evaluate(param_coord, dimensions);
@@ -187,8 +187,8 @@ class Spline {
       auto first = knot_span.Get() - degree.Get() + i;
       std::vector<double> scaling;
       for (int j = first; j <= last; ++j) {
-        ParametricCoordinate low_knot = GetKnotVector(dimension)->GetKnot(j);
-        ParametricCoordinate upper_knot = GetKnotVector(dimension)->GetKnot(j + degree.Get() - i + 1);
+        ParametricCoordinate low_knot = (*GetKnotVector(dimension))[j];
+        ParametricCoordinate upper_knot = (*GetKnotVector(dimension))[j + degree.Get() - i + 1];
         scaling.emplace_back((knot.Get() - low_knot.Get()) / (upper_knot.Get() - low_knot.Get()));
       }
       this->AdjustControlPoints(scaling, static_cast<int>(first), static_cast<int>(last), dimension);
@@ -213,8 +213,8 @@ class Spline {
       auto first = knot_span.Get() - degree.Get();
       std::vector<double> scaling;
       for (int i = first; i <= last; ++i) {
-        ParametricCoordinate low_knot = GetKnotVector(dimension)->GetKnot(i);
-        ParametricCoordinate upper_knot = GetKnotVector(dimension)->GetKnot(i + degree.Get() + 1);
+        ParametricCoordinate low_knot = (*GetKnotVector(dimension))[i];
+        ParametricCoordinate upper_knot = (*GetKnotVector(dimension))[i + degree.Get() + 1];
         scaling.emplace_back((knot.Get() - low_knot.Get()) / (upper_knot.Get() - low_knot.Get()));
       }
       bool is_removed = this->RemoveControlPoints(scaling, first, static_cast<int>(last), dimension, tolerance);
@@ -317,11 +317,11 @@ class Spline {
     std::vector<int> diff(GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2, GetDegree(dimension).Get() - 1);
     for (int current_knot_span = 0; current_knot_span < GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2;
          ++current_knot_span, ++current_knot) {
-      while (GetKnotVector(dimension)->GetKnot(current_knot) == GetKnotVector(dimension)->GetKnot(current_knot + 1)) {
+      while ((*GetKnotVector(dimension))[current_knot] == (*GetKnotVector(dimension))[current_knot + 1]) {
         ++current_knot;
         --diff[current_knot_span];
       }
-      InsertKnot(GetKnotVector(dimension)->GetKnot(current_knot), dimension,
+      InsertKnot((*GetKnotVector(dimension))[current_knot], dimension,
                  static_cast<size_t>(diff[current_knot_span]));
       current_knot += diff[current_knot_span];
     }
@@ -332,9 +332,9 @@ class Spline {
     auto current_knot = GetDegree(dimension).Get() + 1;
     for (int current_knot_span = 0; current_knot_span < GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 2;
          ++current_knot_span, ++current_knot) {
-      RemoveKnot(GetKnotVector(dimension)->GetKnot(current_knot), dimension,
+      RemoveKnot((*GetKnotVector(dimension))[current_knot], dimension,
                  util::numeric_settings::GetEpsilon<double>(), static_cast<size_t>(diff[current_knot_span]));
-      while (GetKnotVector(dimension)->GetKnot(current_knot) == GetKnotVector(dimension)->GetKnot(current_knot + 1)) {
+      while ((*GetKnotVector(dimension))[current_knot] == (*GetKnotVector(dimension))[current_knot + 1]) {
         ++current_knot;
       }
     }
