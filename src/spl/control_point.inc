@@ -17,10 +17,6 @@ inline double ControlPoint::operator[](Dimension const &dimension) const {
   return GetValue(coordinates_, dimension);
 }
 
-//inline double ControlPoint:[Dimension const &dimension] const {
-//  return GetValue(coordinates_, dimension);
-//}
-
 inline int ControlPoint::GetDimensionality() const {
   return coordinates_.size();
 }

@@ -11,8 +11,8 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#ifndef SRC_SPL_RANDOM_NURBS_GENERATOR_H_
-#define SRC_SPL_RANDOM_NURBS_GENERATOR_H_
+#ifndef TEST_SPL_RANDOM_SPLINE_GENERATOR_RANDOM_NURBS_GENERATOR_H_
+#define TEST_SPL_RANDOM_SPLINE_GENERATOR_RANDOM_NURBS_GENERATOR_H_
 
 #include <memory>
 #include <vector>
@@ -48,4 +48,4 @@ class RandomNURBSGenerator : public NURBSGenerator<PARAMETRIC_DIMENSIONALITY> {
 };
 }  // namespace splinelib::src::spl
 
-#endif  // SRC_SPL_RANDOM_NURBS_GENERATOR_H_
+#endif  // TEST_SPL_RANDOM_SPLINE_GENERATOR_RANDOM_NURBS_GENERATOR_H_

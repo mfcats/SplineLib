@@ -12,6 +12,8 @@
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+add_subdirectory(random_spline_generator)
+
 set(
         TEST_SOURCES
         ${TEST_SOURCES}
@@ -30,8 +32,6 @@ set(
         ${CMAKE_CURRENT_SOURCE_DIR}/physical_space_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/projection_curve_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/projection_surface_test.cc
-        ${CMAKE_CURRENT_SOURCE_DIR}/random_b_spline_generator_test.cc
-        ${CMAKE_CURRENT_SOURCE_DIR}/random_nurbs_generator_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/spline_subdivision_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/square_generator_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/surface_generator_test.cc

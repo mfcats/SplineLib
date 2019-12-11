@@ -64,7 +64,6 @@ class KnotVector {
 
   ParametricCoordinate GetFirstKnot() const;
   ParametricCoordinate GetLastKnot() const;
-//  virtual ParametricCoordinate GetKnot(int index) const;
 
   // The i-th knot span is defined as the half-open interval (u_i, u_{i+1}]. The last knot is defined to be in the last
   // non-zero knot span. For U = {0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 1.0, 1.0, 1.0} u = 0.0 is in knot span 2, u = 0.5 in
