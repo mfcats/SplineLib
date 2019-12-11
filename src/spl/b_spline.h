@@ -153,8 +153,8 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
       coordinates.reserve(upper_control_point.GetDimensionality());
       for (int j = 0; j < upper_control_point.GetDimensionality(); ++j) {
         coordinates.emplace_back(
-            scaling[current_point_index - first] * upper_control_point.GetValueForDimension(Dimension{j})
-            + (1 - scaling[current_point_index - first]) * lower_control_point.GetValueForDimension(Dimension{j}));
+            scaling[current_point_index - first] * upper_control_point[Dimension{j}]
+            + (1 - scaling[current_point_index - first]) * lower_control_point[Dimension{j}]);
       }
       return spl::ControlPoint(coordinates);
     }

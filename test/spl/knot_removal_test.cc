@@ -55,9 +55,9 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 0),
-                DoubleEq(new_control_points[i].GetValueForDimension(Dimension{0})));
+                DoubleEq(new_control_points[i][Dimension{0}]));
     ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 1),
-                DoubleEq(new_control_points[i].GetValueForDimension(Dimension{1})));
+                DoubleEq(new_control_points[i][Dimension{1}]));
   }
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*bspline_1d_after_), true);
 }
@@ -74,9 +74,9 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyTwoTimes) {  // NOLINT
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 0),
-                DoubleEq(new_control_points[i].GetValueForDimension(Dimension{0})));
+                DoubleEq(new_control_points[i][Dimension{0}]));
     ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 1),
-                DoubleEq(new_control_points[i].GetValueForDimension(Dimension{1})));
+                DoubleEq(new_control_points[i][Dimension{1}]));
   }
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*bspline_1d_after_), true);
 }
@@ -93,9 +93,9 @@ TEST_F(BSpline1DFig5_26, RemovesKnot1_0CorrectlyThreeTimesAtOnce) {  // NOLINT
   };
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 0),
-                DoubleEq(new_control_points[i].GetValueForDimension(Dimension{0})));
+                DoubleEq(new_control_points[i][Dimension{0}]));
     ASSERT_THAT(bspline_1d_after_->GetControlPoint(i, 1),
-                DoubleEq(new_control_points[i].GetValueForDimension(Dimension{1})));
+                DoubleEq(new_control_points[i][Dimension{1}]));
   }
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*bspline_1d_after_, 0.2), false);
   ASSERT_THAT(bspline_1d_before_->AreGeometricallyEqual(*bspline_1d_after_, 0.3), true);
@@ -153,7 +153,7 @@ TEST_F(NURBS1DFig5_26, RemovesKnot1_0CorrectlyOneTime) {  // NOLINT
   for (int i = 0; i < static_cast<int>(new_control_points.size()); ++i) {
     for (int j = 0; j < 2; ++j) {
       ASSERT_THAT(nurbs_1d_after_->GetControlPoint(i, j),
-                  DoubleEq(new_control_points[i].GetValueForDimension(Dimension{j})));
+                  DoubleEq(new_control_points[i][Dimension{j}]));
     }
     ASSERT_THAT(nurbs_1d_after_->GetWeight(i), DoubleEq(new_weights[i]));
   }

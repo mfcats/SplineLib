@@ -39,7 +39,7 @@ TEST_F(ThreeControlPointsOfDimensionality2And3, ControlPointACanBeCopied) {  // 
 
 TEST_F(ThreeControlPointsOfDimensionality2And3, ControlPointACanBeMoved) {  // NOLINT
   spl::ControlPoint moved_control_point_a(std::move(control_point_a_));
-  ASSERT_THAT(moved_control_point_a.GetValueForDimension(Dimension{1}), DoubleEq(0.7));
+  ASSERT_THAT(moved_control_point_a[Dimension{1}], DoubleEq(0.7));
 }
 
 TEST_F(ThreeControlPointsOfDimensionality2And3, ControlPointACanBeAssigned) {  // NOLINT
@@ -51,7 +51,7 @@ TEST_F(ThreeControlPointsOfDimensionality2And3, ControlPointACanBeAssigned) {  /
 TEST_F(ThreeControlPointsOfDimensionality2And3, ControlPointACanBeMoveAssigned) {  // NOLINT
   spl::ControlPoint control_point_to_move_assign(3);
   control_point_to_move_assign = std::move(control_point_a_);
-  ASSERT_THAT(control_point_to_move_assign.GetValueForDimension(Dimension{1}), DoubleEq(0.7));
+  ASSERT_THAT(control_point_to_move_assign[Dimension{1}], DoubleEq(0.7));
 }
 
 TEST_F(ThreeControlPointsOfDimensionality2And3, ControlPointAReturnsCorrectDimensionalityOf2) {  // NOLINT
@@ -59,12 +59,12 @@ TEST_F(ThreeControlPointsOfDimensionality2And3, ControlPointAReturnsCorrectDimen
 }
 
 TEST_F(ThreeControlPointsOfDimensionality2And3, ControlPointAReturns1ForDimension0) {  // NOLINT
-  ASSERT_THAT(control_point_a_.GetValueForDimension(Dimension{0}), DoubleEq(1.0));
+  ASSERT_THAT(control_point_a_[Dimension{0}], DoubleEq(1.0));
   ASSERT_THAT(control_point_a_[Dimension{0}], DoubleEq(1.0));
 }
 
 TEST_F(ThreeControlPointsOfDimensionality2And3, ControlPointAReturns0_7ForDimension1) {  // NOLINT
-  ASSERT_THAT(control_point_a_.GetValueForDimension(Dimension{1}), DoubleEq(0.7));
+  ASSERT_THAT(control_point_a_[Dimension{1}], DoubleEq(0.7));
   ASSERT_THAT(control_point_a_[Dimension{1}], DoubleEq(0.7));
 }
 

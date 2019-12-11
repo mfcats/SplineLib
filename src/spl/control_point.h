@@ -34,7 +34,7 @@ class ControlPoint {
   ~ControlPoint() = default;
 
   double operator[](Dimension const &dimension) const;
-  double GetValueForDimension(Dimension const &dimension) const;
+//  double[Dimension const &dimension] const;
   int GetDimensionality() const;
 
   void SetValue(Dimension dimension, double value);

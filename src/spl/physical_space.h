@@ -44,7 +44,7 @@ class PhysicalSpace {
         throw std::runtime_error("The dimension has to be the same for all control points.");
       }
       for (int i = 0; i < dimension_; ++i) {
-        control_points_.emplace_back(cp.GetValueForDimension(Dimension{i}));
+        control_points_.emplace_back(cp[Dimension{i}]);
       }
     }
   }
@@ -103,7 +103,7 @@ class PhysicalSpace {
     point_handler.SetCurrentIndex(indices);
     int first = dimension_ * point_handler.GetCurrent1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      control_points_[first + coordinate] = control_point.GetValueForDimension(Dimension{coordinate});
+      control_points_[first + coordinate] = control_point[Dimension{coordinate}];
     }
     number_of_points_ = number_of_points_before;
   }
@@ -116,7 +116,7 @@ class PhysicalSpace {
     point_handler.SetCurrentIndex(index_1d);
     int first = dimension_ * point_handler.GetCurrent1DIndex();
     for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      control_points_[first + coordinate] = control_point.GetValueForDimension(Dimension{coordinate});
+      control_points_[first + coordinate] = control_point[Dimension{coordinate}];
     }
     number_of_points_ = number_of_points_before;
   }
