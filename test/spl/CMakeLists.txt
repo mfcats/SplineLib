@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-add_subdirectory(random_spline_generator)
+add_subdirectory(random)
 
 set(
         TEST_SOURCES

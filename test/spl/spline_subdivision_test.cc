@@ -15,8 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
-#include "test/spl/random_spline_generator/random_b_spline_generator.h"
-#include "test/spl/random_spline_generator/random_nurbs_generator.h"
+#include "test/spl/random/random_b_spline_generator.h"
+#include "test/spl/random/random_nurbs_generator.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -94,7 +94,7 @@ class Random1DBSplineToSplit : public Test {  // NOLINT
  public:
   Random1DBSplineToSplit() {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0}, ParametricCoordinate{1}};
-    spl::RandomBSplineGenerator<1> spline_generator(limits, 10, 2);
+    splinelib::test::spl::random::RandomBSplineGenerator<1> spline_generator(limits, 10, 2);
     spl::BSpline<1> b_spline(spline_generator);
     b_spline_1d_ = std::make_shared<spl::BSpline<1>>(b_spline);
   }
@@ -119,7 +119,7 @@ class Random1DNURBSToSplit : public Test {  // NOLINT
  public:
   Random1DNURBSToSplit() {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0}, ParametricCoordinate{1}};
-    spl::RandomNURBSGenerator<1> spline_generator(limits, 10, 3);
+    splinelib::test::spl::random::RandomNURBSGenerator<1> spline_generator(limits, 10, 3);
     spl::NURBS<1> nurbs(spline_generator);
     nurbs_1d_ = std::make_shared<spl::NURBS<1>>(nurbs);
   }
@@ -144,7 +144,7 @@ class Random2DBSplineToSplit : public Test {  // NOLINT
  public:
   Random2DBSplineToSplit() {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0}, ParametricCoordinate{1}};
-    spl::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
+    splinelib::test::spl::random::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
     spl::BSpline<2> b_spline(spline_generator);
     b_spline_2d_ = std::make_shared<spl::BSpline<2>>(b_spline);
   }
@@ -172,7 +172,7 @@ class Random2DNURBSToSplit : public Test {  // NOLINT
  public:
   Random2DNURBSToSplit() {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0}, ParametricCoordinate{1}};
-    spl::RandomNURBSGenerator<2> spline_generator(limits, 10, 3);
+    splinelib::test::spl::random::RandomNURBSGenerator<2> spline_generator(limits, 10, 3);
     spl::NURBS<2> nurbs(spline_generator);
     nurbs_2d_ = std::make_shared<spl::NURBS<2>>(nurbs);
   }
@@ -200,7 +200,7 @@ class Random3DBSplineToSplit : public Test {  // NOLINT
  public:
   Random3DBSplineToSplit() {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0}, ParametricCoordinate{1}};
-    spl::RandomBSplineGenerator<3> spline_generator(limits, 10, 3);
+    splinelib::test::spl::random::RandomBSplineGenerator<3> spline_generator(limits, 10, 3);
     spl::BSpline<3> b_spline(spline_generator);
     b_spline_3d_ = std::make_shared<spl::BSpline<3>>(b_spline);
   }

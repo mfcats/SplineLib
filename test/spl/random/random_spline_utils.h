@@ -11,8 +11,8 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#ifndef TEST_SPL_RANDOM_SPLINE_GENERATOR_RANDOM_SPLINE_UTILS_H_
-#define TEST_SPL_RANDOM_SPLINE_GENERATOR_RANDOM_SPLINE_UTILS_H_
+#ifndef TEST_SPL_RANDOM_RANDOM_SPLINE_UTILS_H_
+#define TEST_SPL_RANDOM_RANDOM_SPLINE_UTILS_H_
 
 #include <memory>
 #include <vector>
@@ -21,7 +21,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/spl/parameter_space.h"
 #include "src/spl/physical_space.h"
 
-namespace splinelib::src::spl {
+namespace splinelib::test::spl::random {
+using namespace splinelib::src;
 template<int PARAMETRIC_DIMENSIONALITY>
 class RandomSplineUtils {
  public:
@@ -56,9 +57,9 @@ class RandomSplineUtils {
     return knot_vectors;
   }
 
-  static std::vector<spl::ControlPoint> GetRandomControlPoints(int dimension, const std::array<int,
+  static std::vector<src::spl::ControlPoint> GetRandomControlPoints(int dimension, const std::array<int,
       PARAMETRIC_DIMENSIONALITY> &number_of_points) {
-    std::vector<spl::ControlPoint> control_points;
+    std::vector<src::spl::ControlPoint> control_points;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(number_of_points);
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       std::vector<double> coordinates;
@@ -101,6 +102,6 @@ class RandomSplineUtils {
     return number_of_knots;
   }
 };
-}  // namespace splinelib::src::spl
+}  // namespace splinelib::test::spl::random
 
-#endif  // TEST_SPL_RANDOM_SPLINE_GENERATOR_RANDOM_SPLINE_UTILS_H_
+#endif  // TEST_SPL_RANDOM_RANDOM_SPLINE_UTILS_H_

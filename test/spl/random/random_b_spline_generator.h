@@ -11,8 +11,8 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#ifndef TEST_SPL_RANDOM_SPLINE_GENERATOR_RANDOM_B_SPLINE_GENERATOR_H_
-#define TEST_SPL_RANDOM_SPLINE_GENERATOR_RANDOM_B_SPLINE_GENERATOR_H_
+#ifndef TEST_SPL_RANDOM_RANDOM_B_SPLINE_GENERATOR_H_
+#define TEST_SPL_RANDOM_RANDOM_B_SPLINE_GENERATOR_H_
 
 #include <memory>
 #include <vector>
@@ -20,9 +20,10 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/spl/b_spline_generator.h"
 #include "random_spline_utils.h"
 
-namespace splinelib::src::spl {
+namespace splinelib::test::spl::random {
+using namespace splinelib::src;
 template<int PARAMETRIC_DIMENSIONALITY>
-class RandomBSplineGenerator : public BSplineGenerator<PARAMETRIC_DIMENSIONALITY> {
+ class RandomBSplineGenerator : public src::spl::BSplineGenerator<PARAMETRIC_DIMENSIONALITY> {
  public:
   RandomBSplineGenerator() = default;
   RandomBSplineGenerator(const RandomBSplineGenerator<PARAMETRIC_DIMENSIONALITY> &other) = delete;
@@ -38,13 +39,14 @@ class RandomBSplineGenerator : public BSplineGenerator<PARAMETRIC_DIMENSIONALITY
         RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetRandomKnotVectors(coord_limits, degrees);
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points =
         RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetNumberOfPoints(degrees, knot_vectors);
-    std::vector<spl::ControlPoint> control_points =
+    std::vector<src::spl::ControlPoint> control_points =
         RandomSplineUtils<PARAMETRIC_DIMENSIONALITY>::GetRandomControlPoints(dimension, number_of_points);
     this->physical_space_ =
-        std::make_shared<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(control_points, number_of_points);
-    this->parameter_space_ = std::make_shared<ParameterSpace<PARAMETRIC_DIMENSIONALITY>>(knot_vectors, degrees);
+        std::make_shared<src::spl::PhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(control_points, number_of_points);
+    this->parameter_space_ =
+        std::make_shared<src::spl::ParameterSpace<PARAMETRIC_DIMENSIONALITY>>(knot_vectors, degrees);
   }
 };
-}  // namespace splinelib::src::spl
+}  // namespace splinelib::test::spl::random
 
-#endif  // TEST_SPL_RANDOM_SPLINE_GENERATOR_RANDOM_B_SPLINE_GENERATOR_H_
+#endif  // TEST_SPL_RANDOM_RANDOM_B_SPLINE_GENERATOR_H_

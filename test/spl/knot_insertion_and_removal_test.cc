@@ -15,8 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
-#include "test/spl/random_spline_generator/random_b_spline_generator.h"
-#include "test/spl/random_spline_generator/random_nurbs_generator.h"
+#include "test/spl/random/random_b_spline_generator.h"
+#include "test/spl/random/random_nurbs_generator.h"
 
 using testing::Test;
 using testing::DoubleNear;
@@ -28,7 +28,7 @@ class Random1DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
   Random1DBSplineForKnotInsertionAndRemoval()
       : removed_{0}, param_coord_(ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}) {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    spl::RandomBSplineGenerator<1> spline_generator(limits, 10, 3);
+    splinelib::test::spl::random::RandomBSplineGenerator<1> spline_generator(limits, 10, 3);
     spl::BSpline<1> b_spline(spline_generator);
     original_ = std::make_shared<spl::BSpline<1>>(b_spline);
 
@@ -102,7 +102,7 @@ class Random1DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
   Random1DNURBSForKnotInsertionAndRemoval()
       : removed_{0}, param_coord_(ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}) {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    spl::RandomNURBSGenerator<1> spline_generator(limits, 10, 3);
+    splinelib::test::spl::random::RandomNURBSGenerator<1> spline_generator(limits, 10, 3);
     spl::NURBS<1> nurbs(spline_generator);
     original_ = std::make_shared<spl::NURBS<1>>(nurbs);
 
@@ -178,7 +178,7 @@ class Random2DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)},
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}} {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    spl::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
+    splinelib::test::spl::random::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
     spl::BSpline<2> b_spline(spline_generator);
     original_ = std::make_shared<spl::BSpline<2>>(b_spline);
 
@@ -268,7 +268,7 @@ class Random2DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)},
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}} {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    spl::RandomNURBSGenerator<2> spline_generator(limits, 8, 3);
+    splinelib::test::spl::random::RandomNURBSGenerator<2> spline_generator(limits, 8, 3);
     spl::NURBS<2> nurbs(spline_generator);
     original_ = std::make_shared<spl::NURBS<2>>(nurbs);
 
@@ -354,7 +354,7 @@ class Random3DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)},
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}} {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    spl::RandomBSplineGenerator<3> spline_generator(limits, 10, 3);
+    splinelib::test::spl::random::RandomBSplineGenerator<3> spline_generator(limits, 10, 3);
     spl::BSpline<3> b_spline(spline_generator);
     original_ = std::make_shared<spl::BSpline<3>>(b_spline);
 
@@ -452,7 +452,7 @@ class Random3DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)},
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}} {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    spl::RandomNURBSGenerator<3> spline_generator(limits, 5, 3);
+    splinelib::test::spl::random::RandomNURBSGenerator<3> spline_generator(limits, 5, 3);
     spl::NURBS<3> nurbs(spline_generator);
     original_ = std::make_shared<spl::NURBS<3>>(nurbs);
 
