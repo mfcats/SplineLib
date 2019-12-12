@@ -48,12 +48,8 @@ class Random1DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
 };
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneMoreKnotAfterKnotInsertion) {  // NOLINT
-  EXPECT_THAT(after_insertion_->GetKnotVector(0)->GetNumberOfKnots(),
+  ASSERT_THAT(after_insertion_->GetKnotVector(0)->GetNumberOfKnots(),
               original_->GetKnotVector(0)->GetNumberOfKnots() + 1);
-
-  // TODO(all): Add this to all tests that use random splines.
-  if (testing::Test::HasFailure())
-    splinelib::test::random_spline_writer::WriteToXML<1>(original_, testing::UnitTest::GetInstance());
 }
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneMoreControlPointAfterKnotInsertion) {  // NOLINT
@@ -72,7 +68,7 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
 }
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasRemovedKnot) {  // NOLINT
-  ASSERT_THAT(removed_, 1);
+  ASSERT_THAT(removed_, true);
 }
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneLessKnotAfterKnotRemoval) {  // NOLINT
@@ -97,6 +93,13 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
   ASSERT_THAT(original_->AreEqual((*after_removal_.get()), 1e-10), true);
+}
+
+// The test fixture below is used to check if any test before failed. If a test failed, the random spline is written to
+// an XML-file and the user is notified.
+TEST_F(Random1DBSplineForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<1>(original_, testing::UnitTest::GetInstance());
 }
 
 class Random1DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
@@ -168,6 +171,11 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
   }
+}
+
+TEST_F(Random1DNURBSForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<1>(original_, testing::UnitTest::GetInstance());
 }
 
 class Random2DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
@@ -256,6 +264,11 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
   }
 }
 
+TEST_F(Random2DBSplineForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<2>(original_, testing::UnitTest::GetInstance());
+}
+
 class Random2DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
   Random2DNURBSForKnotInsertionAndRemoval() : removed_({0}), param_coord_{
@@ -335,6 +348,11 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
   }
+}
+
+TEST_F(Random2DNURBSForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<2>(original_, testing::UnitTest::GetInstance());
 }
 
 // TODO(Corinna, Christoph): remove random test and use deterministic for dimension 2 and 3
@@ -432,6 +450,11 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
   }
 }
 
+TEST_F(Random3DBSplineForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<3>(original_, testing::UnitTest::GetInstance());
+}
+
 class Random3DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
  public:
   Random3DNURBSForKnotInsertionAndRemoval() : removed_({0}), param_coord_{
@@ -524,4 +547,9 @@ TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
                   DoubleNear(original_->Evaluate(param_coord, {j})[0], 1e-10));
     }
   }
+}
+
+TEST_F(Random3DNURBSForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<3>(original_, testing::UnitTest::GetInstance());
 }
