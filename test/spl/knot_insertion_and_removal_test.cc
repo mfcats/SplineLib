@@ -17,6 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/spl/nurbs.h"
 #include "src/util/random.h"
 #include "test/spl/random/random_spline_utils.h"
+#include "test/spl/random/write_random_spline.h"
 
 using testing::Test;
 using testing::DoubleNear;
@@ -46,8 +47,12 @@ class Random1DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
 };
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneMoreKnotAfterKnotInsertion) {  // NOLINT
-  ASSERT_THAT(after_insertion_->GetKnotVector(0)->GetNumberOfKnots(),
+  EXPECT_THAT(after_insertion_->GetKnotVector(0)->GetNumberOfKnots(),
               original_->GetKnotVector(0)->GetNumberOfKnots() + 1);
+
+  // TODO(all): Add this to all tests that use random splines.
+  if (testing::Test::HasFailure())
+    splinelib::test::random_spline_writer::WriteToXML(original_, testing::UnitTest::GetInstance());
 }
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneMoreControlPointAfterKnotInsertion) {  // NOLINT
