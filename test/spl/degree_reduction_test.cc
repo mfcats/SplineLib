@@ -12,13 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.*/
 
 #include <memory>
+#include <test/spl/random/random_spline_utils.h>
 
 #include "gmock/gmock.h"
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
-#include "test/spl/random/random_b_spline_generator.h"
-#include "test/spl/random/random_nurbs_generator.h"
 
 using testing::Test;
 
@@ -214,8 +213,7 @@ class Random2DNURBSForDegreeElevationAndReductionForDimension0 : public Test {  
  public:
   Random2DNURBSForDegreeElevationAndReductionForDimension0() {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomNURBSGenerator<2> spline_generator(limits, 3, 3);
-    original_ = std::make_shared<spl::NURBS<2>>(spline_generator);
+    original_ = splinelib::test::RandomSplineUtils<2>::GenerateRandomNURBS(limits, 3, 3);
     elevated_and_reduced_ = std::make_shared<spl::NURBS<2>>(*original_);
     elevated_and_reduced_->ElevateDegreeForDimension(0);
     successful_ = elevated_and_reduced_->ReduceDegreeForDimension(0);
@@ -260,8 +258,7 @@ class Random3DBSplineForDegreeElevationAndReductionForDimension0 : public Test {
  public:
   Random3DBSplineForDegreeElevationAndReductionForDimension0() {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomBSplineGenerator<3> spline_generator(limits, 4, 3);
-    original_ = std::make_shared<spl::BSpline<3>>(spline_generator);
+    original_ = splinelib::test::RandomSplineUtils<3>::GenerateRandomBSpline(limits, 4, 3);
     elevated_and_reduced_ = std::make_shared<spl::BSpline<3>>(*original_);
     elevated_and_reduced_->ElevateDegreeForDimension(0);
     successful_ = elevated_and_reduced_->ReduceDegreeForDimension(0);
@@ -325,8 +322,7 @@ class Random3DNURBSForDegreeElevationAndReductionForDimension1 : public Test {  
  public:
   Random3DNURBSForDegreeElevationAndReductionForDimension1() {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomNURBSGenerator<3> spline_generator(limits, 3, 3);
-    original_ = std::make_shared<spl::NURBS<3>>(spline_generator);
+    original_ = splinelib::test::RandomSplineUtils<3>::GenerateRandomNURBS(limits, 3, 3);
     elevated_and_reduced_ = std::make_shared<spl::NURBS<3>>(*original_);
     elevated_and_reduced_->ElevateDegreeForDimension(1);
     successful_ = elevated_and_reduced_->ReduceDegreeForDimension(1);

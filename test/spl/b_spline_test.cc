@@ -159,8 +159,7 @@ class ABSpline : public Test {
   ABSpline() :
       parameter_space(std::make_shared<NiceMock<MockParameterSpace>>()),
       physical_space(std::make_shared<NiceMock<MockPhysicalSpace>>()) {
-    spl::BSplineGenerator<1> b_spline_generator(physical_space, parameter_space);
-    b_spline = std::make_unique<spl::BSpline<1>>(b_spline_generator);
+    b_spline = std::make_unique<spl::BSpline<1>>(physical_space, parameter_space);
   }
 
  protected:
@@ -273,8 +272,7 @@ class ABSplineWithSplineGenerator : public Test {
         spl::ControlPoint(std::vector<double>({4.0, 0.0}))
     };
     knot_vector_[0] = {std::make_shared<baf::KnotVector>(knot_vector[0])};
-    spl::BSplineGenerator<1> b_spline_generator(knot_vector_, degree_, control_points_);
-    b_spline = std::make_unique<spl::BSpline<1>>(b_spline_generator);
+    b_spline = std::make_unique<spl::BSpline<1>>(knot_vector_, degree_, control_points_);
   }
 
  protected:

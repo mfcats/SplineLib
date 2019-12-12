@@ -37,11 +37,8 @@ class A3DNurbsWithAllWeights1 : public Test {
       parameter_space(std::make_shared<NiceMock<MockParameterSpace3d>>()),
       w_physical_space(std::make_shared<NiceMock<MockWeightedPhysicalSpace3d>>()),
       physical_space(std::make_shared<NiceMock<MockPhysicalSpace3d>>()) {
-    spl::NURBSGenerator<3> nurbs_generator(w_physical_space, parameter_space);
-    spl::BSplineGenerator<3> bspline_generator(physical_space, parameter_space);
-
-    nurbs_ = std::make_unique<spl::NURBS<3>>(nurbs_generator);
-    bspline_ = std::make_unique<spl::BSpline<3>>(bspline_generator);
+    nurbs_ = std::make_unique<spl::NURBS<3>>(w_physical_space, parameter_space);
+    bspline_ = std::make_unique<spl::BSpline<3>>(physical_space, parameter_space);
   }
 
  protected:

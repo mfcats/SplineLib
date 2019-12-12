@@ -14,109 +14,108 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "src/spl/b_spline.h"
-#include "test/spl/random/random_b_spline_generator.h"
+#include "test/spl/random/random_spline_utils.h"
 
 using testing::Test;
 using testing::DoubleEq;
 using testing::DoubleNear;
 
 using namespace splinelib::src;
-using namespace splinelib::test::spl::random;
+using namespace splinelib::test;
 
-class A1DRandomBSplineGenerator : public Test {  // NOLINT
+class A1DRandomBSpline : public Test {  // NOLINT
  public:
-  A1DRandomBSplineGenerator() : b_spline_generator_(RandomBSplineGenerator<1>(limits_, max_degree_, dimension_)) {}
+  A1DRandomBSpline()
+    : random_b_spline_(RandomSplineUtils<1>::GenerateRandomBSpline(limits_, max_degree_, dimension_)) {}
 
  protected:
   const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{0.5}, ParametricCoordinate{2.75}}};
   const int max_degree_{10};
   const int dimension_{2};
-  RandomBSplineGenerator<1> b_spline_generator_;
+  std::shared_ptr<spl::BSpline<1>> random_b_spline_;
 };
 
-TEST_F(A1DRandomBSplineGenerator, CreatesCorrectKnots) {  // NOLINT
-  spl::ParameterSpace<1> parameter_space = *b_spline_generator_.GetParameterSpace();
-  size_t degree = static_cast<size_t>(parameter_space.GetDegree(0).Get());
-  baf::KnotVector knot_vector = *parameter_space.GetKnotVector(0);
-  size_t number_of_knots = knot_vector.GetNumberOfKnots();
+TEST_F(A1DRandomBSpline, CreatesCorrectKnots) {  // NOLINT
+
+  size_t degree = static_cast<size_t>(random_b_spline_->GetDegree(0).Get());
+  auto knot_vector = random_b_spline_->GetKnotVector(0);
+  size_t number_of_knots = knot_vector->GetNumberOfKnots();
   size_t i = 0;
   for (; i < degree + 1; ++i) {
-    ASSERT_THAT(knot_vector[i].Get(), DoubleEq(limits_[0].Get()));
+    ASSERT_THAT((*knot_vector)[i].Get(), DoubleEq(limits_[0].Get()));
   }
   for (; i < number_of_knots - degree - 1; ++i) {
-    ASSERT_THAT(knot_vector[i].Get() - knot_vector[i - 1].Get(),
+    ASSERT_THAT((*knot_vector)[i].Get() - (*knot_vector)[i - 1].Get(),
                 DoubleNear((limits_[1].Get() - limits_[0].Get()) / (number_of_knots - 2 * degree - 1), 0.00000001));
   }
   for (; i < number_of_knots; ++i) {
-    ASSERT_THAT(knot_vector[i].Get(), DoubleEq(limits_[1].Get()));
+    ASSERT_THAT((*knot_vector)[i].Get(), DoubleEq(limits_[1].Get()));
   }
 }
 
-TEST_F(A1DRandomBSplineGenerator, RegardsMaximalDegree) {  // NOLINT
-  ASSERT_LE(b_spline_generator_.GetParameterSpace()->GetDegree(0).Get(), max_degree_);
+TEST_F(A1DRandomBSpline, RegardsMaximalDegree) {  // NOLINT
+  ASSERT_LE(random_b_spline_->GetDegree(0).Get(), max_degree_);
 }
 
-TEST_F(A1DRandomBSplineGenerator, RegardsPhysicalDimension) {  // NOLINT
-  ASSERT_LE(b_spline_generator_.GetPhysicalSpace()->GetDimension(), dimension_);
+TEST_F(A1DRandomBSpline, RegardsPhysicalDimension) {  // NOLINT
+  ASSERT_LE(random_b_spline_->GetPointDim(), dimension_);
 }
 
-class A2DRandomBSplineGenerator : public Test {  // NOLINT
+class A2DRandomBSpline : public Test {  // NOLINT
  public:
-  A2DRandomBSplineGenerator() : b_spline_generator_(RandomBSplineGenerator<2>(limits_, max_degree_, dimension_)) {}
+  A2DRandomBSpline()
+    : random_b_spline_(RandomSplineUtils<2>::GenerateRandomBSpline(limits_, max_degree_, dimension_)) {}
 
  protected:
   const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{0.0}, ParametricCoordinate{10.0}}};
   const int max_degree_{8};
   const int dimension_{3};
-  RandomBSplineGenerator<2> b_spline_generator_;
+  std::shared_ptr<spl::BSpline<2>> random_b_spline_;
 };
 
-TEST_F(A2DRandomBSplineGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
-  spl::ParameterSpace<2> parameter_space = *b_spline_generator_.GetParameterSpace();
-  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
+TEST_F(A2DRandomBSpline, RegardsParametricCoordinateLimits) {  // NOLINT
+  ASSERT_THAT(random_b_spline_->GetKnotVector(0)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(random_b_spline_->GetKnotVector(0)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
+  ASSERT_THAT(random_b_spline_->GetKnotVector(1)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(random_b_spline_->GetKnotVector(1)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
 }
 
-TEST_F(A2DRandomBSplineGenerator, RegardsMaximalDegree) {  // NOLINT
-  spl::ParameterSpace<2> parameter_space = *b_spline_generator_.GetParameterSpace();
-  ASSERT_LE(parameter_space.GetDegree(0).Get(), max_degree_);
-  ASSERT_LE(parameter_space.GetDegree(1).Get(), max_degree_);
+TEST_F(A2DRandomBSpline, RegardsMaximalDegree) {  // NOLINT
+  ASSERT_LE(random_b_spline_->GetDegree(0).Get(), max_degree_);
+  ASSERT_LE(random_b_spline_->GetDegree(1).Get(), max_degree_);
 }
 
-TEST_F(A2DRandomBSplineGenerator, RegardsPhysicalDimension) {  // NOLINT
-  ASSERT_LE(b_spline_generator_.GetPhysicalSpace()->GetDimension(), dimension_);
+TEST_F(A2DRandomBSpline, RegardsPhysicalDimension) {  // NOLINT
+  ASSERT_LE(random_b_spline_->GetPointDim(), dimension_);
 }
 
-class A3DRandomBSplineGenerator : public Test {  // NOLINT
+class A3DRandomBSpline : public Test {  // NOLINT
  public:
-  A3DRandomBSplineGenerator() : b_spline_generator_(RandomBSplineGenerator<3>(limits_, max_degree_, dimension_)) {}
+  A3DRandomBSpline()
+    : random_b_spline_(RandomSplineUtils<3>::GenerateRandomBSpline(limits_, max_degree_, dimension_)) {}
 
  protected:
   const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{2.0}, ParametricCoordinate{3.0}}};
   const int max_degree_{20};
   const int dimension_{4};
-  RandomBSplineGenerator<3> b_spline_generator_;
+  std::shared_ptr<spl::BSpline<3>> random_b_spline_;
 };
 
-TEST_F(A3DRandomBSplineGenerator, RegardsParametricCoordinateLimits) {  // NOLINT
-  spl::ParameterSpace<3> parameter_space = *b_spline_generator_.GetParameterSpace();
-  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(0)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(1)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(2)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
-  ASSERT_THAT(parameter_space.GetKnotVector(2)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
+TEST_F(A3DRandomBSpline, RegardsParametricCoordinateLimits) {  // NOLINT
+  ASSERT_THAT(random_b_spline_->GetKnotVector(0)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(random_b_spline_->GetKnotVector(0)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
+  ASSERT_THAT(random_b_spline_->GetKnotVector(1)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(random_b_spline_->GetKnotVector(1)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
+  ASSERT_THAT(random_b_spline_->GetKnotVector(2)->GetFirstKnot().Get(), DoubleEq(limits_[0].Get()));
+  ASSERT_THAT(random_b_spline_->GetKnotVector(2)->GetLastKnot().Get(), DoubleEq(limits_[1].Get()));
 }
 
-TEST_F(A3DRandomBSplineGenerator, RegardsMaximalDegree) {  // NOLINT
-  spl::ParameterSpace<3> parameter_space = *b_spline_generator_.GetParameterSpace();
-  ASSERT_LE(parameter_space.GetDegree(0).Get(), max_degree_);
-  ASSERT_LE(parameter_space.GetDegree(1).Get(), max_degree_);
-  ASSERT_LE(parameter_space.GetDegree(2).Get(), max_degree_);
+TEST_F(A3DRandomBSpline, RegardsMaximalDegree) {  // NOLINT
+  ASSERT_LE(random_b_spline_->GetDegree(0).Get(), max_degree_);
+  ASSERT_LE(random_b_spline_->GetDegree(1).Get(), max_degree_);
+  ASSERT_LE(random_b_spline_->GetDegree(2).Get(), max_degree_);
 }
 
-TEST_F(A3DRandomBSplineGenerator, RegardsPhysicalDimension) {  // NOLINT
-  ASSERT_LE(b_spline_generator_.GetPhysicalSpace()->GetDimension(), dimension_);
+TEST_F(A3DRandomBSpline, RegardsPhysicalDimension) {  // NOLINT
+  ASSERT_LE(random_b_spline_->GetPointDim(), dimension_);
 }

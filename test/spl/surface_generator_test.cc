@@ -14,7 +14,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "src/spl/nurbs.h"
-#include "src/spl/nurbs_generator.h"
 #include "src/spl/surface_generator.h"
 #include "src/util/numeric_settings.h"
 #include "src/io/vtk_writer.h"
@@ -162,16 +161,14 @@ class ASurface : public Test {
       parameter_section(std::make_shared<NiceMock<MockParameterSpaceSection>>()) {
     nbInter = 11;
     nbInterCmp = 2;
-    spl::NURBSGenerator<1> nurbs_generator1(w_physical_trajectory, parameter_trajectory);
-    spl::NURBSGenerator<1> nurbs_generator2(w_physical_section, parameter_section);
-    nurbs1 = std::make_shared<spl::NURBS<1>>(nurbs_generator1);
-    nurbs2 = std::make_shared<spl::NURBS<1>>(nurbs_generator2);
+    nurbs1 = std::make_shared<spl::NURBS<1>>(w_physical_trajectory, parameter_trajectory);
+    nurbs2 = std::make_shared<spl::NURBS<1>>(w_physical_section, parameter_section);
 
     mock_weightedPhysicalSpaceSection(w_physical_section);
     mock_weightedPhysicalSpaceTrajectory(w_physical_trajectory);
     mock_parameterSpaceSection(parameter_section);
     spl::SurfaceGenerator surfaceGenerator = spl::SurfaceGenerator(nurbs1, nurbs2);
-    nurbsJoined = std::make_shared<spl::NURBS<2>>(surfaceGenerator);
+    nurbsJoined = surfaceGenerator.GenerateSurface();
     std::vector<std::array<double, 3>> scaling = {{1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}, {1.0, 1.0, 1.0},
                                                   {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5}, {0.5, 0.5, 0.5},
                                                   {0.5, 0.5, 0.5},
@@ -180,8 +177,8 @@ class ASurface : public Test {
 
     spl::SurfaceGenerator surfaceGeneratorScaled = spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling);
     spl::SurfaceGenerator surfaceGeneratorScaledCmp = spl::SurfaceGenerator(nurbs1, nurbs2, nbInterCmp, scalingCmp);
-    nurbsJoinedScaled = std::make_shared<spl::NURBS<2>>(surfaceGeneratorScaled);
-    nurbsJoinedScaledCmp = std::make_shared<spl::NURBS<2>>(surfaceGeneratorScaledCmp);
+    nurbsJoinedScaled = surfaceGeneratorScaled.GenerateSurface();
+    nurbsJoinedScaledCmp = surfaceGeneratorScaledCmp.GenerateSurface();
   }
 
  protected:
@@ -420,24 +417,22 @@ class AComplexSurface : public Test {
       w_physical_section(std::make_shared<NiceMock<MockWeightedPhysicalSpaceSectionC>>()),
       w_physical_trajectory(std::make_shared<NiceMock<MockWeightedPhysicalSpaceTrajectoryC>>()),
       parameter_section(std::make_shared<NiceMock<MockParameterSpaceSection>>()) {
-    spl::NURBSGenerator<1> nurbs_generator1(w_physical_trajectory, parameter_trajectory);
-    spl::NURBSGenerator<1> nurbs_generator2(w_physical_section, parameter_section);
     mock_weightedPhysicalSpaceSectionC(w_physical_section);
     mock_weightedPhysicalSpaceTrajectoryC(w_physical_trajectory);
     mock_parameterSpaceSection(parameter_section);
-    nurbs1 = std::make_shared<spl::NURBS<1>>(nurbs_generator1);
-    nurbs2 = std::make_shared<spl::NURBS<1>>(nurbs_generator2);
+    nurbs1 = std::make_shared<spl::NURBS<1>>(w_physical_trajectory, parameter_trajectory);
+    nurbs2 = std::make_shared<spl::NURBS<1>>(w_physical_section, parameter_section);
     nbInter = 101;
     std::vector<std::array<double, 3>> scaling(nbInter, {1.0, 1.0, 1.0});
     spl::SurfaceGenerator surfaceGenerator = spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling);
-    nurbsJoined = std::make_shared<spl::NURBS<2>>(surfaceGenerator);
+    nurbsJoined = surfaceGenerator.GenerateSurface();
     double fct;
     for (int i = 50; i < 90; ++i) {
       fct = i < 70 ? (1 - 0.04 * (i - 50)) : (1 - 0.04 * (90 - i));
       scaling[i] = {fct, fct, fct};
     }
     spl::SurfaceGenerator surfaceGeneratorScaled = spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling);
-    nurbsJoinedScaled = std::make_shared<spl::NURBS<2>>(surfaceGeneratorScaled);
+    nurbsJoinedScaled = surfaceGeneratorScaled.GenerateSurface();
   }
 
  protected:
@@ -519,13 +514,11 @@ class AComplexSurface2 : public Test {
       parameter_section(std::make_shared<NiceMock<MockParameterSpaceSection>>()),
       w_physical_section(std::make_shared<NiceMock<MockWeightedPhysicalSpaceSectionC>>()),
       w_physical_trajectory(std::make_shared<NiceMock<MockWeightedPhysicalSpaceTrajectoryC>>()) {
-    spl::NURBSGenerator<1> nurbs_generator1(w_physical_trajectory, parameter_trajectory);
-    spl::NURBSGenerator<1> nurbs_generator2(w_physical_section, parameter_section);
     mock_weightedPhysicalSpaceSectionC(w_physical_section);
     mock_weightedPhysicalSpaceTrajectoryC(w_physical_trajectory);
     mock_parameterSpaceSection(parameter_section);
-    nurbs1 = std::make_shared<spl::NURBS<1>>(nurbs_generator1);
-    nurbs2 = std::make_shared<spl::NURBS<1>>(nurbs_generator2);
+    nurbs1 = std::make_shared<spl::NURBS<1>>(w_physical_trajectory, parameter_trajectory);
+    nurbs2 = std::make_shared<spl::NURBS<1>>(w_physical_section, parameter_section);
     nbInter = 101;
   }
 

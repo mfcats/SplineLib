@@ -14,7 +14,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "gmock/gmock.h"
 
 #include "src/spl/nurbs.h"
-#include "src/spl/nurbs_generator.h"
 #include "src/util/numeric_settings.h"
 
 using testing::Test;
@@ -94,8 +93,7 @@ class NurbsEx4_1 : public Test {
   NurbsEx4_1() :
       parameter_space(std::make_shared<NiceMock<MockParameterSpace14111>>()),
       w_physical_space(std::make_shared<NiceMock<MockWeightedPhysicalSpace14111>>()) {
-    spl::NURBSGenerator<1> nurbs_generator(w_physical_space, parameter_space);
-    nurbs = std::make_unique<spl::NURBS<1>>(nurbs_generator);
+    nurbs = std::make_unique<spl::NURBS<1>>(w_physical_space, parameter_space);
   }
 
  protected:
@@ -263,8 +261,7 @@ class ANurbs : public Test {
   ANurbs() :
       parameter_space(std::make_shared<NiceMock<MockParameterSpace1009>>()),
       w_physical_space(std::make_shared<NiceMock<MockWeightedPhysicalSpace1009>>()) {
-    spl::NURBSGenerator<1> nurbs_generator(w_physical_space, parameter_space);
-    nurbs = std::make_unique<spl::NURBS<1>>(nurbs_generator);
+    nurbs = std::make_unique<spl::NURBS<1>>(w_physical_space, parameter_space);
   }
 
  protected:
@@ -451,8 +448,7 @@ class NurbsDerivativeEx4_2 : public Test {
   NurbsDerivativeEx4_2() :
       parameter_space(std::make_shared<NiceMock<MockParameterSpace112>>()),
       w_physical_space(std::make_shared<NiceMock<MockWeightedPhysicalSpace112>>()) {
-    spl::NURBSGenerator<1> nurbs_generator(w_physical_space, parameter_space);
-    nurbs = std::make_unique<spl::NURBS<1>>(nurbs_generator);
+    nurbs = std::make_unique<spl::NURBS<1>>(w_physical_space, parameter_space);
   }
 
  protected:
@@ -545,8 +541,7 @@ class ANURBSWithSplineGenerator : public Test {
         spl::ControlPoint(std::vector<double>({4.0, 1.0})),
         spl::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
-    spl::NURBSGenerator<1> nurbs_generator(knot_vector, degree, control_points, weights);
-    nurbs = std::make_unique<spl::NURBS<1>>(nurbs_generator);
+    nurbs = std::make_unique<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
   }
 
  protected:

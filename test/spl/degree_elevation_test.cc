@@ -17,8 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
-#include "test/spl/random/random_b_spline_generator.h"
-#include "test/spl/random/random_nurbs_generator.h"
+#include "test/spl/random/random_spline_utils.h"
 
 using testing::Test;
 
@@ -185,8 +184,7 @@ class Random2DNURBSForDegreeElevationForDimension0 : public Test {  // NOLINT
  public:
   Random2DNURBSForDegreeElevationForDimension0() {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomNURBSGenerator<2> spline_generator(limits, 3, 3);
-    original_ = std::make_shared<spl::NURBS<2>>(spline_generator);
+    original_ = splinelib::test::RandomSplineUtils<2>::GenerateRandomNURBS(limits, 3, 3);
     elevated_ = std::make_shared<spl::NURBS<2>>(*original_);
     elevated_->ElevateDegreeForDimension(0);
   }
@@ -224,8 +222,7 @@ class Random3DBSplineForDegreeElevationForDimension0 : public Test {  // NOLINT
  public:
   Random3DBSplineForDegreeElevationForDimension0() {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomBSplineGenerator<3> spline_generator(limits, 4, 3);
-    original_ = std::make_shared<spl::BSpline<3>>(spline_generator);
+    original_ = splinelib::test::RandomSplineUtils<3>::GenerateRandomBSpline(limits, 4, 3);
     elevated_ = std::make_shared<spl::BSpline<3>>(*original_);
     elevated_->ElevateDegreeForDimension(0);
   }
@@ -272,8 +269,7 @@ class Random3DNURBSForDegreeElevationForDimension1 : public Test {  // NOLINT
  public:
   Random3DNURBSForDegreeElevationForDimension1() {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomNURBSGenerator<3> spline_generator(limits, 3, 3);
-    original_ = std::make_shared<spl::NURBS<3>>(spline_generator);
+    original_ = splinelib::test::RandomSplineUtils<3>::GenerateRandomNURBS(limits, 3, 3);
     elevated_ = std::make_shared<spl::NURBS<3>>(*original_);
     elevated_->ElevateDegreeForDimension(1);
   }

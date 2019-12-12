@@ -18,17 +18,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <cmath>
 
 #include "src/spl/control_point.h"
-#include "src/spl/nurbs_generator.h"
 #include "src/spl/nurbs.h"
 
 namespace splinelib::src::spl {
-class SurfaceGenerator : public NURBSGenerator<2> {
+class SurfaceGenerator {
  public:
   SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T, std::shared_ptr<NURBS<1>> const &nurbs_C);
 
   SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
                    std::shared_ptr<NURBS<1>> const &nurbs_C,
                    int nbInter, std::vector<std::array<double, 3>> scaling);
+
+  std::shared_ptr<spl::NURBS<2>> GenerateSurface();
 
   std::shared_ptr<ParameterSpace<2>> JoinParameterSpaces(std::shared_ptr<NURBS<1>> const &nurbs_T,
                                                          std::shared_ptr<NURBS<1>> const &nurbs_C) const;
@@ -62,6 +63,10 @@ class SurfaceGenerator : public NURBSGenerator<2> {
   spl::ControlPoint Transform(spl::ControlPoint const &control_point,
                               std::array<std::array<double, 4>, 4> const &transformation_matrix,
                               std::array<double, 3> const &scaling) const;
+
+ private:
+  std::shared_ptr<spl::ParameterSpace<2>> parameter_space_;
+  std::shared_ptr<spl::WeightedPhysicalSpace<2>> weighted_physical_space_;
 };
 }  // namespace splinelib::src::spl
 

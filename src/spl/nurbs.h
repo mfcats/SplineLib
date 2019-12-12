@@ -22,7 +22,6 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/b_spline.h"
 #include "src/spl/spline.h"
-#include "src/spl/nurbs_generator.h"
 #include "src/spl/weighted_physical_space.h"
 
 namespace splinelib::src::spl {
@@ -40,9 +39,10 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
         WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>(control_points, weights, number_of_points));
   }
 
-  explicit NURBS(NURBSGenerator<PARAMETRIC_DIMENSIONALITY> nurbs_generator) : Spline<PARAMETRIC_DIMENSIONALITY>(
-      nurbs_generator.GetParameterSpace()) {
-    physical_space_ = nurbs_generator.GetWeightedPhysicalSpace();
+  NURBS(std::shared_ptr<WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>> weighted_physical_space,
+        std::shared_ptr<ParameterSpace<PARAMETRIC_DIMENSIONALITY>> parameter_space) {
+    physical_space_ = weighted_physical_space;
+    this->parameter_space_ = parameter_space;
   }
 
   NURBS(const NURBS<PARAMETRIC_DIMENSIONALITY> &nurbs) : Spline<PARAMETRIC_DIMENSIONALITY>(nurbs) {

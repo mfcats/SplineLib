@@ -36,8 +36,7 @@ class A2DBSpline : public Test {
   A2DBSpline() :
       parameter_space(std::make_shared<NiceMock<Mock2dParameterSpace>>()),
       physical_space(std::make_shared<NiceMock<Mock2dPhysicalSpace>>()) {
-    spl::BSplineGenerator<2> b_spline_generator(physical_space, parameter_space);
-    b_spline = std::make_unique<spl::BSpline<2>>(b_spline_generator);
+    b_spline = std::make_unique<spl::BSpline<2>>(physical_space, parameter_space);
   }
 
  protected:

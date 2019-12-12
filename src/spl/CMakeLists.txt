@@ -41,16 +41,13 @@ install(
 install(
         FILES
         b_spline.h
-        b_spline_generator.h
         control_point.h
         control_point.inc
         nurbs.h
-        nurbs_generator.h
         parameter_space.h
         physical_space.h
         projection.h
         spline.h
-        spline_generator.h
         square_generator.h
         surface_generator.h
         weighted_physical_space.h

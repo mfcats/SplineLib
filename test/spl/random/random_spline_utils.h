@@ -17,15 +17,43 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <memory>
 #include <vector>
 
+#include "src/spl/b_spline.h"
+#include "src/spl/nurbs.h"
 #include "src/util/random.h"
 #include "src/spl/parameter_space.h"
 #include "src/spl/physical_space.h"
 
-namespace splinelib::test::spl::random {
+namespace splinelib::test {
 using namespace splinelib::src;
 template<int PARAMETRIC_DIMENSIONALITY>
 class RandomSplineUtils {
  public:
+  static std::shared_ptr<spl::BSpline<PARAMETRIC_DIMENSIONALITY>> GenerateRandomBSpline(
+      std::array<ParametricCoordinate, 2> coord_limits, int max_degree, int dimension) {
+    std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees = GetRandomDegrees(max_degree);
+    baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vectors = GetRandomKnotVectors(coord_limits, degrees);
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points = GetNumberOfPoints(degrees, knot_vectors);
+    std::vector<spl::ControlPoint> control_points = GetRandomControlPoints(dimension, number_of_points);
+    auto physical_space = std::make_shared<spl::PhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(control_points,
+                                                                                          number_of_points);
+    auto parameter_space = std::make_shared<spl::ParameterSpace<PARAMETRIC_DIMENSIONALITY>>(knot_vectors, degrees);
+    return std::make_shared<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>(physical_space, parameter_space);
+  }
+
+  static std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> GenerateRandomNURBS(
+      std::array<ParametricCoordinate, 2> coord_limits, int max_degree, int dimension) {
+    std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees = GetRandomDegrees(max_degree);
+    baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vectors = GetRandomKnotVectors(coord_limits, degrees);
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points = GetNumberOfPoints(degrees, knot_vectors);
+    std::vector<src::spl::ControlPoint> control_points = GetRandomControlPoints(dimension, number_of_points);
+    std::vector<double> weights = GetRandomWeights(number_of_points);
+    auto physical_space = std::make_shared<src::spl::WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(
+        control_points, weights, number_of_points);
+    auto parameter_space = std::make_shared<src::spl::ParameterSpace<PARAMETRIC_DIMENSIONALITY>>(knot_vectors, degrees);
+    return std::make_shared<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>(physical_space, parameter_space);
+  }
+
+ private:
   static std::array<Degree, PARAMETRIC_DIMENSIONALITY> GetRandomDegrees(int max_degree) {
     std::array<Degree, PARAMETRIC_DIMENSIONALITY> degrees{};
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
@@ -57,8 +85,8 @@ class RandomSplineUtils {
     return knot_vectors;
   }
 
-  static std::vector<src::spl::ControlPoint> GetRandomControlPoints(int dimension, const std::array<int,
-      PARAMETRIC_DIMENSIONALITY> &number_of_points) {
+  static std::vector<src::spl::ControlPoint> GetRandomControlPoints(
+      int dimension, const std::array<int, PARAMETRIC_DIMENSIONALITY> &number_of_points) {
     std::vector<src::spl::ControlPoint> control_points;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(number_of_points);
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
@@ -92,7 +120,6 @@ class RandomSplineUtils {
     return number_of_points;
   }
 
- private:
   static std::array<int, PARAMETRIC_DIMENSIONALITY> GetNumberOfKnots(
       const std::array<Degree, PARAMETRIC_DIMENSIONALITY> &degree) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_knots{};

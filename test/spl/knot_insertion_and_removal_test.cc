@@ -15,8 +15,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
-#include "test/spl/random/random_b_spline_generator.h"
-#include "test/spl/random/random_nurbs_generator.h"
+#include "src/util/random.h"
+#include "test/spl/random/random_spline_utils.h"
 
 using testing::Test;
 using testing::DoubleNear;
@@ -28,14 +28,10 @@ class Random1DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
   Random1DBSplineForKnotInsertionAndRemoval()
       : removed_{0}, param_coord_(ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}) {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomBSplineGenerator<1> spline_generator(limits, 10, 3);
-    spl::BSpline<1> b_spline(spline_generator);
-    original_ = std::make_shared<spl::BSpline<1>>(b_spline);
-
-    spl::BSpline<1> insertion_spline(b_spline);
+    original_ = splinelib::test::RandomSplineUtils<1>::GenerateRandomBSpline(limits, 10, 3);
+    spl::BSpline<1> insertion_spline(*original_);
     insertion_spline.InsertKnot(param_coord_, 0);
     after_insertion_ = std::make_shared<spl::BSpline<1>>(insertion_spline);
-
     spl::BSpline<1> removal_spline(insertion_spline);
     removed_ = removal_spline.RemoveKnot(param_coord_, 0, 1e-10);
     after_removal_ = std::make_shared<spl::BSpline<1>>(removal_spline);
@@ -102,11 +98,8 @@ class Random1DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
   Random1DNURBSForKnotInsertionAndRemoval()
       : removed_{0}, param_coord_(ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}) {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomNURBSGenerator<1> spline_generator(limits, 10, 3);
-    spl::NURBS<1> nurbs(spline_generator);
-    original_ = std::make_shared<spl::NURBS<1>>(nurbs);
-
-    spl::NURBS<1> insertion_spline(nurbs);
+    original_ = splinelib::test::RandomSplineUtils<1>::GenerateRandomNURBS(limits, 10, 3);
+    spl::NURBS<1> insertion_spline(*original_);
     insertion_spline.InsertKnot(param_coord_, 0);
     after_insertion_ = std::make_shared<spl::NURBS<1>>(insertion_spline);
 
@@ -178,16 +171,12 @@ class Random2DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)},
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}} {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomBSplineGenerator<2> spline_generator(limits, 10, 3);
-    spl::BSpline<2> b_spline(spline_generator);
-    original_ = std::make_shared<spl::BSpline<2>>(b_spline);
-
-    spl::BSpline<2> insertion_spline(b_spline);
+    original_ = splinelib::test::RandomSplineUtils<2>::GenerateRandomBSpline(limits, 10, 3);
+    spl::BSpline<2> insertion_spline(*original_);
     insertion_spline.InsertKnot(param_coord_[0], 0);
     insertion_spline.InsertKnot(param_coord_[1], 1);
     insertion_spline.InsertKnot(param_coord_[2], 1);
     after_insertion_ = std::make_shared<spl::BSpline<2>>(insertion_spline);
-
     spl::BSpline<2> removal_spline(insertion_spline);
     removed_[0] = removal_spline.RemoveKnot(param_coord_[0], 0, 1e-10);
     removed_[1] = removal_spline.RemoveKnot(param_coord_[1], 1, 1e-10);
@@ -268,16 +257,12 @@ class Random2DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)},
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}} {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomNURBSGenerator<2> spline_generator(limits, 8, 3);
-    spl::NURBS<2> nurbs(spline_generator);
-    original_ = std::make_shared<spl::NURBS<2>>(nurbs);
-
-    spl::NURBS<2> insertion_spline(nurbs);
+    original_ = splinelib::test::RandomSplineUtils<2>::GenerateRandomNURBS(limits, 8, 3);
+    spl::NURBS<2> insertion_spline(*original_);
     insertion_spline.InsertKnot(param_coord_[0], 0);
     insertion_spline.InsertKnot(param_coord_[1], 0);
     insertion_spline.InsertKnot(param_coord_[2], 1);
     after_insertion_ = std::make_shared<spl::NURBS<2>>(insertion_spline);
-
     spl::NURBS<2> removal_spline(insertion_spline);
     removed_[0] = removal_spline.RemoveKnot(param_coord_[0], 0, 1e-10);
     removed_[1] = removal_spline.RemoveKnot(param_coord_[1], 0, 1e-10);
@@ -354,16 +339,12 @@ class Random3DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)},
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}} {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomBSplineGenerator<3> spline_generator(limits, 10, 3);
-    spl::BSpline<3> b_spline(spline_generator);
-    original_ = std::make_shared<spl::BSpline<3>>(b_spline);
-
-    spl::BSpline<3> insertion_spline(b_spline);
+    original_ = splinelib::test::RandomSplineUtils<3>::GenerateRandomBSpline(limits, 10, 3);
+    spl::BSpline<3> insertion_spline(*original_);
     insertion_spline.InsertKnot(param_coord_[0], 0);
     insertion_spline.InsertKnot(param_coord_[1], 1);
     insertion_spline.InsertKnot(param_coord_[2], 2);
     after_insertion_ = std::make_shared<spl::BSpline<3>>(insertion_spline);
-
     spl::BSpline<3> removal_spline(insertion_spline);
     removed_[0] = removal_spline.RemoveKnot(param_coord_[0], 0, 1e-10);
     removed_[1] = removal_spline.RemoveKnot(param_coord_[1], 1, 1e-10);
@@ -452,16 +433,12 @@ class Random3DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)},
       ParametricCoordinate{util::random::GetUniformRandom<double>(0.01, 0.99)}} {
     std::array<ParametricCoordinate, 2> limits = {ParametricCoordinate{0.0}, ParametricCoordinate{1.0}};
-    splinelib::test::spl::random::RandomNURBSGenerator<3> spline_generator(limits, 5, 3);
-    spl::NURBS<3> nurbs(spline_generator);
-    original_ = std::make_shared<spl::NURBS<3>>(nurbs);
-
-    spl::NURBS<3> insertion_spline(nurbs);
+    original_ = splinelib::test::RandomSplineUtils<3>::GenerateRandomNURBS(limits, 5, 3);
+    spl::NURBS<3> insertion_spline(*original_);
     insertion_spline.InsertKnot(param_coord_[0], 0);
     insertion_spline.InsertKnot(param_coord_[1], 1);
     insertion_spline.InsertKnot(param_coord_[2], 2);
     after_insertion_ = std::make_shared<spl::NURBS<3>>(insertion_spline);
-
     spl::NURBS<3> removal_spline(insertion_spline);
     removed_[0] = removal_spline.RemoveKnot(param_coord_[0], 0, 1e-10);
     removed_[1] = removal_spline.RemoveKnot(param_coord_[1], 1, 1e-10);

@@ -19,8 +19,7 @@ SquareGenerator::SquareGenerator(Degree degree, u_int64_t number_of_knots) : deg
 std::unique_ptr<BSpline<2>> SquareGenerator::CreateSquare() const {
   auto parameter_space = std::make_shared<ParameterSpace<2>>(GenerateParameterSpace());
   auto physical_space = std::make_shared<PhysicalSpace<2>>(GeneratePhysicalSpace());
-  BSplineGenerator<2> spline_generator(physical_space, parameter_space);
-  return std::make_unique<BSpline<2>>(spline_generator);
+  return std::make_unique<BSpline<2>>(physical_space, parameter_space);
 }
 
 ParameterSpace<2> SquareGenerator::GenerateParameterSpace() const {

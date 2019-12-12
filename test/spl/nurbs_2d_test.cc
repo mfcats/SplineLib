@@ -38,8 +38,7 @@ class A2DNurbs : public Test {
   A2DNurbs() :
       parameter_space(std::make_shared<NiceMock<MockParameterSpace1>>()),
       w_physical_space(std::make_shared<NiceMock<MockWeightedPhysicalSpace1>>()) {
-    spl::NURBSGenerator<2> nurbs_generator(w_physical_space, parameter_space);
-    nurbs_ = std::make_unique<spl::NURBS<2>>(nurbs_generator);
+    nurbs_ = std::make_unique<spl::NURBS<2>>(w_physical_space, parameter_space);
   }
 
  protected:
@@ -165,10 +164,8 @@ class A2DNurbsWithAllWeights1 : public Test {
       parameter_space_m(std::make_shared<NiceMock<MockParameterSpace2>>()),
       w_physical_space_m(std::make_shared<NiceMock<MockWeightedPhysicalSpace2>>()),
       physical_space_m(std::make_shared<NiceMock<MockPhysicalSpace2>>()) {
-    spl::NURBSGenerator<2> nurbs_generator(w_physical_space_m, parameter_space_m);
-    nurbs_ = std::make_unique<spl::NURBS<2>>(nurbs_generator);
-    spl::BSplineGenerator<2> bspline_generator(physical_space_m, parameter_space_m);
-    bspline_ = std::make_unique<spl::BSpline<2>>(bspline_generator);
+    nurbs_ = std::make_unique<spl::NURBS<2>>(w_physical_space_m, parameter_space_m);
+    bspline_ = std::make_unique<spl::BSpline<2>>(physical_space_m, parameter_space_m);
   }
 
  protected:

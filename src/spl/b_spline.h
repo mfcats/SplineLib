@@ -20,11 +20,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <utility>
 #include <vector>
 
-#include "src/spl/b_spline_generator.h"
 #include "src/util/multi_index_handler.h"
 #include "src/util/numeric_operations.h"
 #include "src/spl/spline.h"
-#include "spline_generator.h"
 #include "src/util/vector_utils.h"
 
 namespace splinelib::src::spl {
@@ -42,9 +40,10 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
         PhysicalSpace<PARAMETRIC_DIMENSIONALITY>(control_points, number_of_points));
   }
 
-  explicit BSpline(BSplineGenerator<PARAMETRIC_DIMENSIONALITY> b_spline_generator) : Spline<PARAMETRIC_DIMENSIONALITY>(
-      b_spline_generator.GetParameterSpace()) {
-    physical_space_ = b_spline_generator.GetPhysicalSpace();
+  BSpline(std::shared_ptr<PhysicalSpace<PARAMETRIC_DIMENSIONALITY>> physical_space,
+          std::shared_ptr<ParameterSpace<PARAMETRIC_DIMENSIONALITY>> parameter_space) {
+    this->parameter_space_ = parameter_space;
+    physical_space_ = physical_space;
   }
 
   BSpline(const BSpline<PARAMETRIC_DIMENSIONALITY> &bspline) : Spline<PARAMETRIC_DIMENSIONALITY>(bspline) {

@@ -17,14 +17,18 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 namespace splinelib::src::spl {
 SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
-                                        std::shared_ptr<NURBS<1>> const &nurbs_C) {
+                                   std::shared_ptr<NURBS<1>> const &nurbs_C) {
   this->parameter_space_ = JoinParameterSpaces(nurbs_T, nurbs_C);
-  this->physical_space_ = JoinPhysicalSpaces(nurbs_T, nurbs_C);
+  this->weighted_physical_space_ = JoinPhysicalSpaces(nurbs_T, nurbs_C);
+}
+
+std::shared_ptr<spl::NURBS<2>> SurfaceGenerator::GenerateSurface() {
+  return std::make_shared<spl::NURBS<2>>(weighted_physical_space_, parameter_space_);
 }
 
 std::shared_ptr<ParameterSpace<2>>
 SurfaceGenerator::JoinParameterSpaces(std::shared_ptr<NURBS<1>> const &nurbs_T,
-                                           std::shared_ptr<NURBS<1>> const &nurbs_C) const {
+                                      std::shared_ptr<NURBS<1>> const &nurbs_C) const {
   std::array<std::shared_ptr<baf::KnotVector>, 2>
       joined_knot_vector = {nurbs_T->GetKnotVector(0), nurbs_C->GetKnotVector(0)};
   std::array<Degree, 2> joined_degree = {nurbs_T->GetDegree(0), nurbs_C->GetDegree(0)};
@@ -118,7 +122,7 @@ SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
   std::array<Degree, 2> joined_degree = {nurbs_T->GetDegree(0), nurbs_C->GetDegree(0)};
   this->parameter_space_ = std::make_shared<ParameterSpace<2>>(ParameterSpace<2>(
       joined_knot_vector, joined_degree));
-  this->physical_space_ = std::make_shared<WeightedPhysicalSpace<2>>(WeightedPhysicalSpace<2>(
+  this->weighted_physical_space_ = std::make_shared<WeightedPhysicalSpace<2>>(WeightedPhysicalSpace<2>(
       j_control_points, j_weights, j_number_of_points));
 }
 
