@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
 #include "test/spl/random/random_spline_utils.h"
+#include "test/spl/random/write_random_spline.h"
 
 using testing::Test;
 

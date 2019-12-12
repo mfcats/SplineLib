@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
+#include "src/spl/spline.h"
 #include "src/util/random.h"
 #include "src/spl/parameter_space.h"
 #include "src/spl/physical_space.h"

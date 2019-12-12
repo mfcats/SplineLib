@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
+#include "src/spl/spline.h"
 #include "src/util/random.h"
 #include "test/spl/random/random_spline_utils.h"
 #include "test/spl/random/write_random_spline.h"
@@ -52,7 +53,7 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneMoreKnotAfterKnotInserti
 
   // TODO(all): Add this to all tests that use random splines.
   if (testing::Test::HasFailure())
-    splinelib::test::random_spline_writer::WriteToXML(original_, testing::UnitTest::GetInstance());
+    splinelib::test::random_spline_writer::WriteToXML<1>(original_, testing::UnitTest::GetInstance());
 }
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneMoreControlPointAfterKnotInsertion) {  // NOLINT
