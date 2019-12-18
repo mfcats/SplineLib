@@ -34,6 +34,8 @@ class A1DRandomBSplineToWriteForFailingTest : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> random_b_spline_;
 };
 
+// TODO(Corinna, Christoph): Where should this method be defined? Actually it is in
+//  splinelib/test/io/io_converter_executables_test.cc, but should it be in splinelib/test/util?
 std::string GetCommandOutput(const std::string &command);
 
 TEST_F(A1DRandomBSplineToWriteForFailingTest, WritesCorrectXMLFile) {  // NOLINT
