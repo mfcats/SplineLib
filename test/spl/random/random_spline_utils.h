@@ -130,6 +130,6 @@ class RandomSplineUtils {
     return number_of_knots;
   }
 };
-}  // namespace splinelib::test::spl::random
+}  // namespace splinelib::test
 
 #endif  // TEST_SPL_RANDOM_RANDOM_SPLINE_UTILS_H_

@@ -36,7 +36,6 @@ class A1DRandomBSpline : public Test {  // NOLINT
 };
 
 TEST_F(A1DRandomBSpline, CreatesCorrectKnots) {  // NOLINT
-
   size_t degree = static_cast<size_t>(random_b_spline_->GetDegree(0).Get());
   auto knot_vector = random_b_spline_->GetKnotVector(0);
   size_t number_of_knots = knot_vector->GetNumberOfKnots();

@@ -12,12 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.*/
 
 #include <memory>
-#include <test/spl/random/random_spline_utils.h>
 
 #include "gmock/gmock.h"
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
+#include "test/spl/random/random_spline_utils.h"
 
 using testing::Test;
 

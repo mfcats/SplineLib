@@ -12,4 +12,4 @@
 # You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-list(APPEND TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/random_spline_utils_test.cc)
+set(TEST_SOURCES ${TEST_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/random_spline_utils_test.cc PARENT_SCOPE)
