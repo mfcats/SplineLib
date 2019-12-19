@@ -13,6 +13,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 // NOLINT(build/header_guard)
 
+#include <vector>
+
 template<int PARAMETRIC_DIMENSIONALITY>
 PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::PhysicalSpace(const std::vector<spl::ControlPoint> &control_points,
                                                         std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points)

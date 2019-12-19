@@ -11,8 +11,8 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#ifndef TEST_SPL_B_SPLINE_2D_MOCKING_H_
-#define TEST_SPL_B_SPLINE_2D_MOCKING_H_
+#ifndef TEST_SPL_MOCKING_B_SPLINE_2D_MOCKING_H_
+#define TEST_SPL_MOCKING_B_SPLINE_2D_MOCKING_H_
 
 #include <array>
 #include <numeric>
@@ -427,4 +427,4 @@ void mock_2dparameterSpace(const std::shared_ptr<NiceMock<Mock2dParameterSpace>>
       .WillByDefault(Return(Degree{2}));
 }
 
-#endif  // TEST_SPL_B_SPLINE_2D_MOCKING_H_
+#endif  // TEST_SPL_MOCKING_B_SPLINE_2D_MOCKING_H_

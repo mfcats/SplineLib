@@ -11,6 +11,9 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
+#ifndef TEST_SPL_MOCKING_NURBS_1D_MOCKING_H_
+#define TEST_SPL_MOCKING_NURBS_1D_MOCKING_H_
+
 #include "gmock/gmock.h"
 
 #include "src/spl/nurbs.h"
@@ -313,3 +316,5 @@ void mock_parameterSpace_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace
   ON_CALL(*parameter_space, GetDegree(0))
       .WillByDefault(Return(Degree{2}));
 }
+
+#endif  // TEST_SPL_MOCKING_NURBS_1D_MOCKING_H_
