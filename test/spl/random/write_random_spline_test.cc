@@ -36,19 +36,6 @@ class A1DRandomBSplineToWriteForFailingTest : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> random_b_spline_;
 };
 
-std::string GetStringFromDoubleWithHighPrecision(const double value) {
-  std::ostringstream out;
-  out.precision(16);
-  out << value;
-  return out.str();
-}
-
-TEST_F(A1DRandomBSplineToWriteForFailingTest, test) {  // NOLINT
-  double double_to_write = 1.0/3;
-  std::cout << GetStringFromDoubleWithHighPrecision(double_to_write) << std::endl;
-  std::cout << double_to_write << std::endl;
-}
-
 TEST_F(A1DRandomBSplineToWriteForFailingTest, WritesCorrectXMLFile) {  // NOLINT
   ASSERT_THAT(testing::UnitTest::GetInstance()->failed_test_count(), Eq(0));
 
@@ -73,6 +60,6 @@ TEST_F(A1DRandomBSplineToWriteForFailingTest, WritesCorrectXMLFile) {  // NOLINT
   newFile.close();
   io::XMLReader xml_reader;
   auto written_b_spline = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader.ReadFile("random.xml")[0]);
-  ASSERT_THAT(written_b_spline->AreEqual(*random_b_spline_, 10e-8), true);
+  ASSERT_THAT(written_b_spline->AreEqual(*random_b_spline_), true);
   remove("random.xml");
 }

@@ -19,6 +19,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/util/any_casts.h"
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
+#include "src/util/string_operations.h"
 
 namespace splinelib::src::io {
 template<int PARAMETRIC_DIMENSIONALITY>
@@ -47,7 +48,7 @@ class IRITWriterUtils {
       string += "      [KV ";
       std::shared_ptr<baf::KnotVector> knot_vector = spline->GetKnotVector(dimension);
       for (int knot = 0; knot < knot_vector->GetNumberOfKnots(); knot++) {
-        string += std::to_string((*knot_vector)[knot].Get()) +
+        string += util::string_operations::GetStringWithHighPrecision((*knot_vector)[knot].Get()) +
             (knot < knot_vector->GetNumberOfKnots() - 1 ? " " : "]\n");
       }
     }
@@ -65,10 +66,12 @@ class IRITWriterUtils {
     }
     for (int control_point = 0; control_point < point_handler.GetNumberOfTotalMultiIndices();
          ++control_point, point_handler++) {
-      string += "      [" + (rational ? std::to_string(nurbs->GetWeight(point_handler.GetCurrentIndex())) + " " : "");
+      string += "      [" + (rational ? util::string_operations::GetStringWithHighPrecision(
+          nurbs->GetWeight(point_handler.GetCurrentIndex())) + " " : "");
       for (int dimension = 0; dimension < spline_ptr->GetPointDim(); dimension++) {
-        string += std::to_string(spline_ptr->GetControlPoint(point_handler.GetCurrentIndex(), dimension)
-                                     * (rational ? nurbs->GetWeight(point_handler.GetCurrentIndex()) : 1))
+        string += util::string_operations::GetStringWithHighPrecision(
+            spline_ptr->GetControlPoint(point_handler.GetCurrentIndex(), dimension) *
+            (rational ? nurbs->GetWeight(point_handler.GetCurrentIndex()) : 1))
             + (dimension < spline_ptr->GetPointDim() - 1 ? " " : "]\n");
       }
     }

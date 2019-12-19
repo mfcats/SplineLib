@@ -303,9 +303,9 @@ TEST_F(AnIRITWriter, CreatesCorrectFile) {  // NOLINT
   ASSERT_THAT(file.find("[TRIVAR BSPLINE 2 2 2 2 2 2 E3"), Ne(std::string::npos));
   ASSERT_THAT(file.find("[TRIVAR BSPLINE 2 2 2 2 2 2 P3"), Ne(std::string::npos));
   ASSERT_THAT(file.find("[KV "), Ne(std::string::npos));
-  ASSERT_THAT(file.find(" 1.000000]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("[0.800000 0.300000 -0.400000]"), Ne(std::string::npos));
-  ASSERT_THAT(file.find("[0.500000 1.000000 0.250000]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find(" 0.33333333333333 0.5 0.66666666666667 0.83333333333333 1 1 1]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[0.8 0.3 -0.4]"), Ne(std::string::npos));
+  ASSERT_THAT(file.find("[0.5 1 0.25]"), Ne(std::string::npos));
   remove("splines.itd");
 }
 

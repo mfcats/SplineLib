@@ -17,8 +17,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <array>
 #include <fstream>
 
-#include "src/util/any_casts.h"
 #include "src/spl/spline.h"
+#include "src/util/any_casts.h"
+#include "src/util/string_operations.h"
 
 namespace splinelib::src::io {
 template<int PARAMETRIC_DIMENSIONALITY>
@@ -65,7 +66,9 @@ class VTKWriterUtils {
             knots[j] + point_handler[Dimension{j}] * (knots[j + PARAMETRIC_DIMENSIONALITY] - knots[j]) / scattering[j]);
       }
       for (int k = 0; k < 3; ++k) {
-        file << (k < spline_ptr->GetPointDim() ? spline_ptr->Evaluate(coords, {k})[0] : 0) << (k < 2 ? ' ' : '\n');
+        file << (k < spline_ptr->GetPointDim() ?
+                util::string_operations::GetStringWithHighPrecision(spline_ptr->Evaluate(coords, {k})[0]) : "0")
+             << (k < 2 ? ' ' : '\n');
       }
     }
   }

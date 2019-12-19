@@ -21,6 +21,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
+#include "src/util/string_operations.h"
 
 namespace splinelib::src::io {
 template<int PARAMETRIC_DIMENSIONALITY>
@@ -44,7 +45,7 @@ class XMLWriterUtils {
       baf::KnotVector knot_vector = *spline_ptr->GetKnotVector(i);
       std::string string;
       for (ParametricCoordinate knot : knot_vector) {
-        string += "\n        " + std::to_string(knot.Get());
+        string += "\n        " + util::string_operations::GetStringWithHighPrecision(knot.Get());
       }
       knots.append_child(pugi::node_pcdata).text() = (string + "\n      ").c_str();
     }
@@ -59,7 +60,7 @@ class XMLWriterUtils {
       auto indices = point_handler.GetCurrentIndex();
       string += "\n      ";
       for (int j = 0; j < spline_ptr->GetPointDim(); j++) {
-        string += std::to_string(spline_ptr->GetControlPoint(indices, j)) + "  ";
+        string += util::string_operations::GetStringWithHighPrecision(spline_ptr->GetControlPoint(indices, j)) + "  ";
       }
     }
     values.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
@@ -72,7 +73,7 @@ class XMLWriterUtils {
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> weight_handler(nurbs->GetPointsPerDirection());
     for (int i = 0; i < weight_handler.GetNumberOfTotalMultiIndices(); ++i, weight_handler++) {
       auto indices = weight_handler.GetCurrentIndex();
-      string += "\n      " + std::to_string(nurbs->GetWeight(indices)) + "  ";
+      string += "\n      " + util::string_operations::GetStringWithHighPrecision(nurbs->GetWeight(indices)) + "  ";
     }
     weights.append_child(pugi::node_pcdata).text() = (string + "\n    ").c_str();
   }

@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #define SRC_UTIL_STRING_OPERATIONS_H_
 
 #include <cmath>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -33,6 +34,9 @@ template<typename TYPE>
 std::vector<TYPE> ConvertStringVectorToNumberVector(std::vector<std::string> const &string_vector);
 template<typename TYPE>
 std::vector<TYPE> ConvertDelimitedStringToNumberVector(std::string string);
+
+template<typename TYPE>
+std::string GetStringWithHighPrecision(TYPE value);
 
 #include "src/util/string_operations.inc"
 }  // namespace splinelib::src::util::string_operations

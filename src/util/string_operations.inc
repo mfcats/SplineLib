@@ -92,3 +92,11 @@ std::vector<TYPE> ConvertDelimitedStringToNumberVector(std::string string) {
   }
   return vector;
 }
+
+template<typename TYPE>
+std::string GetStringWithHighPrecision(const TYPE value) {
+  std::ostringstream out;
+  out.precision(16);
+  out << value;
+  return out.str();
+}

@@ -109,3 +109,20 @@ TEST_F(StringOperations, SplitStringDelimitedByCommaOrSemicolonIntoDoubleVector)
   ASSERT_THAT(divided[4], DoubleEq(10.1));
   ASSERT_THAT(divided.back(), DoubleEq(9.0));
 }
+
+TEST_F(StringOperations, ConvertsBoolsTrueAndFalseToStrings) {  // NOLINT
+  ASSERT_THAT(util::string_operations::GetStringWithHighPrecision(true), "1");
+  ASSERT_THAT(util::string_operations::GetStringWithHighPrecision(false), "0");
+}
+
+TEST_F(StringOperations, ConvertsInteger1AndMinus1ToStrings) {  // NOLINT
+  ASSERT_THAT(util::string_operations::GetStringWithHighPrecision(1), "1");
+  ASSERT_THAT(util::string_operations::GetStringWithHighPrecision(-1), "-1");
+}
+
+TEST_F(StringOperations, ConvertsDoublesToStringsWith16DecimalPlacesIfExisting) {  // NOLINT
+  ASSERT_THAT(util::string_operations::GetStringWithHighPrecision(0.0), "0");
+  ASSERT_THAT(util::string_operations::GetStringWithHighPrecision(0.123), "0.123");
+  ASSERT_THAT(util::string_operations::GetStringWithHighPrecision(1.0 / 3.0), "0.3333333333333333");
+  ASSERT_THAT(util::string_operations::GetStringWithHighPrecision(-1.0 / 6.0), "-0.1666666666666667");
+}
