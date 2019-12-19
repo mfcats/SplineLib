@@ -12,13 +12,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 <http://www.gnu.org/licenses/>.*/
 
 #include <array>
-#include <numeric>
 
 #include "gmock/gmock.h"
 
 #include "src/spl/nurbs.h"
 #include "src/spl/b_spline.h"
-#include "nurbs_2d_mocking.h"
+#include "test/spl/mocking/nurbs_2d_mocking.h"
 
 using testing::Test;
 using ::testing::NiceMock;

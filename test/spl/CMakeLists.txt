@@ -17,17 +17,17 @@ add_subdirectory(random)
 set(
         TEST_SOURCES
         ${TEST_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/b_spline_1d_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/b_spline_2d_test.cc
-        ${CMAKE_CURRENT_SOURCE_DIR}/b_spline_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/control_point_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/spline_degree_elevation_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/spline_degree_reduction_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/spline_knot_insertion_and_removal_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/spline_knot_insertion_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/spline_knot_removal_test.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/nurbs_1d_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/nurbs_2d_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/nurbs_3d_test.cc
-        ${CMAKE_CURRENT_SOURCE_DIR}/nurbs_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/parameter_space_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/physical_space_test.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/spline_projection_curve_test.cc

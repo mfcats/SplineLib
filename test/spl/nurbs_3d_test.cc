@@ -15,7 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
-#include "nurbs_3d_mocking.h"
+#include "test/spl/mocking/nurbs_3d_mocking.h"
 #include "src/util/numeric_settings.h"
 
 using testing::Test;
