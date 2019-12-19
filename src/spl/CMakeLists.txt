@@ -46,6 +46,7 @@ install(
         nurbs.h
         parameter_space.h
         physical_space.h
+        physical_space.inc
         projection.h
         spline.h
         square_generator.h

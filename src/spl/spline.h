@@ -261,7 +261,8 @@ class Spline {
     cps_per_dir[dimension] -= num_bezier_segments;
     GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(cps_per_dir);
-    int delta_num_cps = GetPhysicalSpace()->GetNumberOfControlPoints() - point_handler.GetNumberOfTotalMultiIndices();
+    int delta_num_cps =
+        GetPhysicalSpace()->GetNumberOfControlPoints() - point_handler.GetNumberOfTotalMultiIndices();
     GetPhysicalSpace()->RemoveControlPoints(delta_num_cps);
     parameter_space_->ReduceDegree(dimension);
     parameter_space_->DecrementMultiplicityOfAllKnots(dimension);

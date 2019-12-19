@@ -27,192 +27,55 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class PhysicalSpace {
  public:
   PhysicalSpace() = default;
-  virtual ~PhysicalSpace() = default;
   PhysicalSpace(const std::vector<spl::ControlPoint> &control_points,
-      std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points) : dimension_(control_points[0].GetDimensionality()),
-      number_of_points_(number_of_points) {
-    uint64_t total_number_of_points = 1;
-    for (int dim = 0; dim < PARAMETRIC_DIMENSIONALITY; dim++) {
-      total_number_of_points *= number_of_points[dim];
-    }
-    if (total_number_of_points != control_points.size()) {
-      throw std::runtime_error(
-          "The given number of control points in each dimension doesn't fit the length of the control point vector.");
-    }
-    for (auto &&cp : control_points) {
-      if (cp.GetDimensionality() != dimension_) {
-        throw std::runtime_error("The dimension has to be the same for all control points.");
-      }
-      for (int i = 0; i < dimension_; ++i) {
-        control_points_.emplace_back(cp[Dimension{i}]);
-      }
-    }
-  }
-
-  PhysicalSpace(const PhysicalSpace &physical_space) : dimension_(physical_space.dimension_),
-                                                       number_of_points_(physical_space.number_of_points_),
-                                                       control_points_(physical_space.control_points_) {}
-
+                std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points);
+  PhysicalSpace(const PhysicalSpace &physical_space);
   PhysicalSpace(PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &&other) noexcept = default;
   PhysicalSpace & operator=(const PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs) = default;
   PhysicalSpace & operator=(PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &&rhs) noexcept = default;
+  virtual ~PhysicalSpace() = default;
 
   bool AreEqual(const PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs,
-      double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
-    return std::equal(control_points_.begin(), control_points_.end(),
-                      rhs.control_points_.begin(), rhs.control_points_.end(),
-                      [&](double cp_a, double cp_b) {
-                        return util::numeric_settings::AreEqual<double>(cp_a, cp_b, tolerance);
-                      })
-        && std::equal(number_of_points_.begin(), number_of_points_.end(),
-                      rhs.number_of_points_.begin(), rhs.number_of_points_.end(),
-                      [&](int number_a, int number_b) {
-                        return util::numeric_settings::AreEqual<double>(number_a, number_b);
-                      });
-  }
+                double tolerance = util::numeric_settings::GetEpsilon<double>()) const;
 
-  virtual spl::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
-    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
-    point_handler.SetCurrentIndex(indices);
-    int first = dimension_ * point_handler.GetCurrent1DIndex();
-    std::vector<double> coordinates;
-    coordinates.reserve(dimension_);
-    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      coordinates.emplace_back(control_points_[first + coordinate]);
-    }
-    return spl::ControlPoint(coordinates);
-  }
-
-  virtual spl::ControlPoint GetControlPoint(int index_1d) const {
-    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
-    point_handler.SetCurrentIndex(index_1d);
-    int first = dimension_ * point_handler.GetCurrent1DIndex();
-    std::vector<double> coordinates;
-    coordinates.reserve(dimension_);
-    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      coordinates.emplace_back(control_points_[first + coordinate]);
-    }
-    return spl::ControlPoint(coordinates);
-  }
+  virtual spl::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const;
+  virtual spl::ControlPoint GetControlPoint(int index_1d) const;
 
   void SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, const spl::ControlPoint &control_point,
-      int dimension = 0, int (*before)(int) = nullptr) {
-    const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_);
-    if (before != nullptr) number_of_points_[dimension] = before(number_of_points_[dimension]);
-    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
-    point_handler.SetCurrentIndex(indices);
-    int first = dimension_ * point_handler.GetCurrent1DIndex();
-    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      control_points_[first + coordinate] = control_point[Dimension{coordinate}];
-    }
-    number_of_points_ = number_of_points_before;
-  }
+                       int dimension = 0, int (*before)(int) = nullptr);
+  void SetControlPoint(int index_1d, const spl::ControlPoint &control_point,
+                       int dimension = 0, int (*before)(int) = nullptr);
 
-  void SetControlPoint(int index_1d, const spl::ControlPoint &control_point, int dimension = 0,
-      int (*before)(int) = nullptr) {
-    const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_);
-    if (before != nullptr) number_of_points_[dimension] = before(number_of_points_[dimension]);
-    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
-    point_handler.SetCurrentIndex(index_1d);
-    int first = dimension_ * point_handler.GetCurrent1DIndex();
-    for (int coordinate = 0; coordinate < dimension_; coordinate++) {
-      control_points_[first + coordinate] = control_point[Dimension{coordinate}];
-    }
-    number_of_points_ = number_of_points_before;
-  }
+  virtual void AddControlPoints(int number);
+  virtual void RemoveControlPoints(int number);
 
-  virtual void AddControlPoints(int number) {
-    for (int i = 0; i < number; ++i) {
-      for (int j = 0; j < dimension_; ++j) {
-        control_points_.emplace_back(0.0);
-      }
-    }
-  }
+  virtual int GetNumberOfControlPoints() const;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetPointsPerDirection() const;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetMaximumPointIndexInEachDirection() const;
 
-  virtual void RemoveControlPoints(int number) {
-    control_points_.erase(control_points_.end() - number * dimension_, control_points_.end());
-  }
+  void IncrementNumberOfPoints(int dimension);
+  void DecrementNumberOfPoints(int dimension);
 
-  virtual int GetNumberOfControlPoints() const {
-    return static_cast<int>(control_points_.size()) / dimension_;
-  }
+  void SetNumberOfPoints(int dimension, int value);
 
-  std::array<int, PARAMETRIC_DIMENSIONALITY> GetPointsPerDirection() const {
-    return number_of_points_;
-  }
+  virtual int GetDimension() const;
 
-  std::array<int, PARAMETRIC_DIMENSIONALITY> GetMaximumPointIndexInEachDirection() const {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> maximum_index = number_of_points_;
-    for (auto &index : maximum_index) {
-      --index;
-    }
-    return maximum_index;
-  }
+  virtual double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> /*indices*/) const;
+  virtual double GetWeight(int /*index_1d*/) const;
 
-  void IncrementNumberOfPoints(int dimension) {
-    ++number_of_points_[dimension];
-  }
+  double GetExpansion() const;
 
-  void DecrementNumberOfPoints(int dimension) {
-    --number_of_points_[dimension];
-  }
+  double GetMaximumDistanceFromOrigin() const;
 
-  void SetNumberOfPoints(int dimension, int value) {
-    number_of_points_[dimension] = value;
-  }
-
-  virtual int GetDimension() const {
-    return dimension_;
-  }
-
-  virtual double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> /*indices*/) const {
-    return 1.0;
-  }
-
-  virtual double GetWeight(int /*index_1d*/) const {
-    return 1.0;
-  }
-
-  double GetExpansion() const {
-    double expansion = 0;
-    for (auto &cp : control_points_) {
-      if (cp > expansion) expansion = cp;
-    }
-    return expansion;
-  }
-
-  double GetMaximumDistanceFromOrigin() const {
-    double maximum = 0;
-    std::vector<double> point(dimension_, 0);
-    std::vector<double> origin(dimension_, 0);
-    for (int i = 0; i < GetNumberOfControlPoints(); ++i) {
-      for (int j = 0; j < dimension_; ++j) {
-        point[j] = control_points_[i * dimension_ + j];
-      }
-      double distance = util::vector_utils::ComputeDistance(origin, point);
-      if (distance > maximum) maximum = distance;
-    }
-    return maximum;
-  }
-
-  std::vector<spl::ControlPoint> GetDividedControlPoints(int first, int length, int dimension) {
-    std::vector<spl::ControlPoint> points;
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = GetPointsPerDirection();
-    point_handler_length[dimension] = length;
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
-    for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
-      auto indices = point_handler.GetCurrentIndex();
-      indices[dimension] += first;
-      points.emplace_back(GetControlPoint(indices));
-    }
-    return points;
-  }
+  std::vector<spl::ControlPoint> GetDividedControlPoints(int first, int length, int dimension);
 
  protected:
-  int dimension_{};
+  int dimensionality_{};
   std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_{};
   std::vector<double> control_points_;
 };
+
+#include "src/spl/physical_space.inc"
 }  // namespace splinelib::src::spl
 
 #endif  // SRC_SPL_PHYSICAL_SPACE_H_

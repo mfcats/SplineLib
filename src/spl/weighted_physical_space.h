@@ -54,11 +54,11 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
   virtual spl::ControlPoint GetHomogenousControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
     auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
     point_handler.SetCurrentIndex(indices);
-    int first = this->dimension_ * point_handler.GetCurrent1DIndex();
+    int first = this->dimensionality_ * point_handler.GetCurrent1DIndex();
     std::vector<double> coordinates;
-    coordinates.reserve(this->dimension_);
-    for (int coordinate = 0; coordinate < this->dimension_; coordinate++) {
-      coordinates.emplace_back(this->control_points_[first + coordinate] * weights_[first / this->dimension_]);
+    coordinates.reserve(this->dimensionality_);
+    for (int coordinate = 0; coordinate < this->dimensionality_; coordinate++) {
+      coordinates.emplace_back(this->control_points_[first + coordinate] * weights_[first / this->dimensionality_]);
     }
     coordinates.push_back(this->weights_[point_handler.GetCurrent1DIndex()]);
     return spl::ControlPoint(coordinates);
@@ -67,11 +67,11 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
   virtual spl::ControlPoint GetHomogenousControlPoint(int index_1d) const {
     auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
     point_handler.SetCurrentIndex(index_1d);
-    int first = this->dimension_ * point_handler.GetCurrent1DIndex();
+    int first = this->dimensionality_ * point_handler.GetCurrent1DIndex();
     std::vector<double> coordinates;
-    coordinates.reserve(this->dimension_);
-    for (int coordinate = 0; coordinate < this->dimension_; coordinate++) {
-      coordinates.emplace_back(this->control_points_[first + coordinate] * weights_[first / this->dimension_]);
+    coordinates.reserve(this->dimensionality_);
+    for (int coordinate = 0; coordinate < this->dimensionality_; coordinate++) {
+      coordinates.emplace_back(this->control_points_[first + coordinate] * weights_[first / this->dimensionality_]);
     }
     coordinates.push_back(this->weights_[point_handler.GetCurrent1DIndex()]);
     return spl::ControlPoint(coordinates);
