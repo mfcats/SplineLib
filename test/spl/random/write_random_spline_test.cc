@@ -38,28 +38,54 @@ class A1DRandomBSplineToWriteForFailingTest : public Test {  // NOLINT
 
 TEST_F(A1DRandomBSplineToWriteForFailingTest, WritesCorrectXMLFile) {  // NOLINT
   ASSERT_THAT(testing::UnitTest::GetInstance()->failed_test_count(), Eq(0));
-
-  io::XMLWriter xml_writer;
-  xml_writer.WriteFile({std::make_any<std::shared_ptr<splinelib::src::spl::BSpline<1>>>(random_b_spline_)},
-                       xml_file_with_random_spline);
-  std::system(("cat " + std::string(xml_file_with_random_spline)).c_str());
-  std::cout << std::endl;
-  remove(xml_file_with_random_spline);
-
   testing::internal::CaptureStdout();
-  random_spline_writer::WriteToXML<1>(random_b_spline_, testing::UnitTest::GetInstance());
+  random_spline_writer::WriteToXML<1>({random_b_spline_, random_b_spline_}, testing::UnitTest::GetInstance());
   std::string output = testing::internal::GetCapturedStdout();
   std::string expected_message = "\nAt least one test in test case A1DRandomBSplineToWriteForFailingTest failed. Here "
-                                 "is the tested B-spline in XML-format:\n\n";
+                                 "is the tested B-spline (and the modified version(s)) in XML-format:\n\n";
   ASSERT_THAT(output.substr(0, expected_message.length()), expected_message);
   std::string xml_file_output = output.substr(expected_message.length(), output.length() - expected_message.length());
-  std::cout << xml_file_output << std::endl;
   std::ofstream newFile;
   newFile.open("random.xml");
   newFile << xml_file_output;
   newFile.close();
   io::XMLReader xml_reader;
-  auto written_b_spline = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader.ReadFile("random.xml")[0]);
-  ASSERT_THAT(written_b_spline->AreEqual(*random_b_spline_), true);
+  auto first_written_b_spline = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader.ReadFile("random.xml")[0]);
+  auto second_written_b_spline = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader.ReadFile("random.xml")[0]);
+  ASSERT_THAT(first_written_b_spline->AreEqual(*random_b_spline_), true);
+  ASSERT_THAT(second_written_b_spline->AreEqual(*random_b_spline_), true);
+  remove("random.xml");
+}
+
+class A1DRandomNURBSToWriteForFailingTest : public Test {  // NOLINT
+ public:
+  A1DRandomNURBSToWriteForFailingTest()
+      : random_nurbs_(RandomSplineUtils<1>::GenerateRandomNURBS(limits_, max_degree_, dimension_)) {}
+
+ protected:
+  const std::array<ParametricCoordinate, 2> limits_{{ParametricCoordinate{0}, ParametricCoordinate{1}}};
+  const int max_degree_{4};
+  const int dimension_{2};
+  std::shared_ptr<spl::NURBS<1>> random_nurbs_;
+};
+
+TEST_F(A1DRandomNURBSToWriteForFailingTest, WritesCorrectXMLFile) {  // NOLINT
+  ASSERT_THAT(testing::UnitTest::GetInstance()->failed_test_count(), Eq(0));
+  testing::internal::CaptureStdout();
+  random_spline_writer::WriteToXML<1>({random_nurbs_, random_nurbs_}, testing::UnitTest::GetInstance());
+  std::string output = testing::internal::GetCapturedStdout();
+  std::string expected_message = "\nAt least one test in test case A1DRandomNURBSToWriteForFailingTest failed. Here "
+                                 "is the tested NURBS (and the modified version(s)) in XML-format:\n\n";
+  ASSERT_THAT(output.substr(0, expected_message.length()), expected_message);
+  std::string xml_file_output = output.substr(expected_message.length(), output.length() - expected_message.length());
+  std::ofstream newFile;
+  newFile.open("random.xml");
+  newFile << xml_file_output;
+  newFile.close();
+  io::XMLReader xml_reader;
+  auto first_written_nurbs = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(xml_reader.ReadFile("random.xml")[0]);
+  auto second_written_nurbs = std::any_cast<std::shared_ptr<spl::NURBS<1>>>(xml_reader.ReadFile("random.xml")[0]);
+  ASSERT_THAT(first_written_nurbs->AreEqual(*random_nurbs_), true);
+  ASSERT_THAT(second_written_nurbs->AreEqual(*random_nurbs_), true);
   remove("random.xml");
 }

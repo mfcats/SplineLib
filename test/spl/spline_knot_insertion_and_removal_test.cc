@@ -99,7 +99,8 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertio
 // an XML-file and the user is notified.
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
   if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
-    splinelib::test::random_spline_writer::WriteToXML<1>(original_, testing::UnitTest::GetInstance());
+    splinelib::test::random_spline_writer::WriteToXML<1>({original_, after_insertion_, after_removal_},
+                                                         testing::UnitTest::GetInstance());
 }
 
 class Random1DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
@@ -175,7 +176,8 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
   if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count())
-    splinelib::test::random_spline_writer::WriteToXML<1>(original_, testing::UnitTest::GetInstance());
+    splinelib::test::random_spline_writer::WriteToXML<1>({original_, after_insertion_, after_removal_},
+                                                         testing::UnitTest::GetInstance());
 }
 
 class Random2DBSplineForKnotInsertionAndRemoval : public Test {  // NOLINT
@@ -266,7 +268,8 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
 
 TEST_F(Random2DBSplineForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
   if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
-    splinelib::test::random_spline_writer::WriteToXML<2>(original_, testing::UnitTest::GetInstance());
+    splinelib::test::random_spline_writer::WriteToXML<2>({original_, after_insertion_, after_removal_},
+                                                         testing::UnitTest::GetInstance());
 }
 
 class Random2DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
@@ -352,7 +355,8 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
 
 TEST_F(Random2DNURBSForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
   if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
-    splinelib::test::random_spline_writer::WriteToXML<2>(original_, testing::UnitTest::GetInstance());
+    splinelib::test::random_spline_writer::WriteToXML<2>({original_, after_insertion_, after_removal_},
+                                                         testing::UnitTest::GetInstance());
 }
 
 // TODO(Corinna, Christoph): remove random test and use deterministic for dimension 2 and 3
@@ -452,7 +456,8 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
 
 TEST_F(Random3DBSplineForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
   if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
-    splinelib::test::random_spline_writer::WriteToXML<3>(original_, testing::UnitTest::GetInstance());
+    splinelib::test::random_spline_writer::WriteToXML<3>({original_, after_insertion_, after_removal_},
+                                                         testing::UnitTest::GetInstance());
 }
 
 class Random3DNURBSForKnotInsertionAndRemoval : public Test {  // NOLINT
@@ -551,5 +556,6 @@ TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
 
 TEST_F(Random3DNURBSForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
   if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
-    splinelib::test::random_spline_writer::WriteToXML<3>(original_, testing::UnitTest::GetInstance());
+    splinelib::test::random_spline_writer::WriteToXML<3>({original_, after_insertion_, after_removal_},
+                                                         testing::UnitTest::GetInstance());
 }

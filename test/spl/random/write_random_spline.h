@@ -29,26 +29,38 @@ You should have received a copy of the GNU Lesser General Public License along w
 // The functions below are used to write a random spline in XML-format to console whenever a test fails.
 namespace splinelib::test::random_spline_writer {
 template<int PARAMETRIC_DIMENSIONALITY>
-static void WriteToXML(std::shared_ptr<splinelib::src::spl::BSpline<PARAMETRIC_DIMENSIONALITY>> spl,
+static void WriteToXML(std::vector<std::shared_ptr<splinelib::src::spl::BSpline<PARAMETRIC_DIMENSIONALITY>>> splines,
                        testing::UnitTest* test_instance) {
   splinelib::src::io::XMLWriter xml_writer;
-  xml_writer.WriteFile({std::make_any<std::shared_ptr<splinelib::src::spl::BSpline<PARAMETRIC_DIMENSIONALITY>>>(spl)},
-                       xml_file_with_random_spline);
+  std::vector<std::any> any_splines;
+  any_splines.reserve(splines.size());
+  for (int spline_index = 0; spline_index < static_cast<int>(splines.size()); ++spline_index) {
+    any_splines.emplace_back(
+        std::make_any<std::shared_ptr<splinelib::src::spl::BSpline<PARAMETRIC_DIMENSIONALITY>>>(splines[spline_index]));
+  }
+  xml_writer.WriteFile(any_splines, xml_file_with_random_spline);
   std::cout << std::endl << "At least one test in test case " << test_instance->current_test_case()->name() <<
-               " failed. Here is the tested B-spline in XML-format:" << std::endl << std::endl;
+               " failed. Here is the tested B-spline (and the modified version(s)) in XML-format:" << std::endl <<
+               std::endl;
   std::system(("cat " + std::string(xml_file_with_random_spline)).c_str());
   std::cout << std::endl;
   remove(xml_file_with_random_spline);
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-static void WriteToXML(std::shared_ptr<splinelib::src::spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spl,
+static void WriteToXML(std::vector<std::shared_ptr<splinelib::src::spl::NURBS<PARAMETRIC_DIMENSIONALITY>>> splines,
                        testing::UnitTest* test_instance) {
   splinelib::src::io::XMLWriter xml_writer;
-  xml_writer.WriteFile({std::make_any<std::shared_ptr<splinelib::src::spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spl)},
-                       xml_file_with_random_spline);
+  std::vector<std::any> any_splines;
+  any_splines.reserve(splines.size());
+  for (int spline_index = 0; spline_index < static_cast<int>(splines.size()); ++spline_index) {
+    any_splines.emplace_back(
+        std::make_any<std::shared_ptr<splinelib::src::spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(splines[spline_index]));
+  }
+  xml_writer.WriteFile(any_splines, xml_file_with_random_spline);
   std::cout << std::endl << "At least one test in test case " << test_instance->current_test_case()->name() <<
-               " failed. Here is the tested NURBS in XML-format:" << std::endl << std::endl;
+               " failed. Here is the tested NURBS (and the modified version(s)) in XML-format:" << std::endl <<
+               std::endl;
   std::system(("cat " + std::string(xml_file_with_random_spline)).c_str());
   std::cout << std::endl;
   remove(xml_file_with_random_spline);
