@@ -72,6 +72,11 @@ TEST_F(BSplineFig5_35ForDegreeElevationForDimension0, DoesNotChangeGeometrically
   ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_), true);
 }
 
+TEST_F(BSplineFig5_35ForDegreeElevationForDimension0, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<1>({original_, elevated_}, testing::UnitTest::GetInstance());
+}
+
 class ALinearNURBSForDegreeElevationForDimension0 : public Test {  // NOLINT
  public:
   ALinearNURBSForDegreeElevationForDimension0() {
@@ -116,6 +121,11 @@ TEST_F(ALinearNURBSForDegreeElevationForDimension0, HasNumberOfNonZeroKnotSpansM
 
 TEST_F(ALinearNURBSForDegreeElevationForDimension0, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
   ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(ALinearNURBSForDegreeElevationForDimension0, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<1>({original_, elevated_}, testing::UnitTest::GetInstance());
 }
 
 class A2DBSplineForDegreeElevationForDimension0 : public Test {  // NOLINT
@@ -181,6 +191,11 @@ TEST_F(A2DBSplineForDegreeElevationForDimension0, DoesNotChangeGeometricallyAfte
   ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_, 1e-10), true);
 }
 
+TEST_F(A2DBSplineForDegreeElevationForDimension0, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<2>({original_, elevated_}, testing::UnitTest::GetInstance());
+}
+
 class Random2DNURBSForDegreeElevationForDimension0 : public Test {  // NOLINT
  public:
   Random2DNURBSForDegreeElevationForDimension0() {
@@ -217,6 +232,11 @@ TEST_F(Random2DNURBSForDegreeElevationForDimension0, HasNumberOfNonZeroKnotSpans
 
 TEST_F(Random2DNURBSForDegreeElevationForDimension0, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
   ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random2DNURBSForDegreeElevationForDimension0, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<2>({original_, elevated_}, testing::UnitTest::GetInstance());
 }
 
 class Random3DBSplineForDegreeElevationForDimension0 : public Test {  // NOLINT
@@ -266,6 +286,11 @@ TEST_F(Random3DBSplineForDegreeElevationForDimension0, DoesNotChangeGeometricall
   ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_), true);
 }
 
+TEST_F(Random3DBSplineForDegreeElevationForDimension0, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<3>({original_, elevated_}, testing::UnitTest::GetInstance());
+}
+
 class Random3DNURBSForDegreeElevationForDimension1 : public Test {  // NOLINT
  public:
   Random3DNURBSForDegreeElevationForDimension1() {
@@ -304,4 +329,9 @@ TEST_F(Random3DNURBSForDegreeElevationForDimension1, HasNumberOfNonZeroKnotSpans
 
 TEST_F(Random3DNURBSForDegreeElevationForDimension1, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
   ASSERT_THAT(elevated_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random3DNURBSForDegreeElevationForDimension1, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<3>({original_, elevated_}, testing::UnitTest::GetInstance());
 }

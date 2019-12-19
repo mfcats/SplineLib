@@ -18,6 +18,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
 #include "test/spl/random/random_spline_utils.h"
+#include "test/spl/random/write_random_spline.h"
 
 using testing::Test;
 
@@ -85,6 +86,12 @@ TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, // NOLINT
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
 }
 
+TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<1>({original_, elevated_and_reduced_},
+                                                         testing::UnitTest::GetInstance());
+}
+
 class ALinearNURBSForDegreeElevationAndReductionForDimension0 : public Test {  // NOLINT
  public:
   ALinearNURBSForDegreeElevationAndReductionForDimension0() {
@@ -134,6 +141,12 @@ TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedNumb
 TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, // NOLINT
        DoesNotChangeGeometricallyAfterDegreeElevationAndReduction) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<1>({original_, elevated_and_reduced_},
+                                                         testing::UnitTest::GetInstance());
 }
 
 class A2DBSplineForDegreeElevationAndReductionForDimension0 : public Test {  // NOLINT
@@ -209,6 +222,12 @@ TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
 }
 
+TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<2>({original_, elevated_and_reduced_},
+                                                         testing::UnitTest::GetInstance());
+}
+
 class Random2DNURBSForDegreeElevationAndReductionForDimension0 : public Test {  // NOLINT
  public:
   Random2DNURBSForDegreeElevationAndReductionForDimension0() {
@@ -252,6 +271,12 @@ TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, // NOLINT
 TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, // NOLINT
        DoesNotChangeGeometricallyAfterDegreeElevationAndReduction) {  // NOLINT
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<2>({original_, elevated_and_reduced_},
+                                                         testing::UnitTest::GetInstance());
 }
 
 class Random3DBSplineForDegreeElevationAndReductionForDimension0 : public Test {  // NOLINT
@@ -318,6 +343,12 @@ TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
 }
 
+TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<3>({original_, elevated_and_reduced_},
+                                                         testing::UnitTest::GetInstance());
+}
+
 class Random3DNURBSForDegreeElevationAndReductionForDimension1 : public Test {  // NOLINT
  public:
   Random3DNURBSForDegreeElevationAndReductionForDimension1() {
@@ -380,4 +411,10 @@ TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, // NOLINT
   successful_ = successful_ && elevated_and_reduced_->ReduceDegreeForDimension(2);
   ASSERT_THAT(successful_, true);
   ASSERT_THAT(elevated_and_reduced_->AreGeometricallyEqual(*original_), true);
+}
+
+TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
+    splinelib::test::random_spline_writer::WriteToXML<3>({original_, elevated_and_reduced_},
+                                                         testing::UnitTest::GetInstance());
 }
