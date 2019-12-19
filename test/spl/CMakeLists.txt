@@ -44,3 +44,5 @@ set(
         ${CMAKE_CURRENT_SOURCE_DIR}/surface_generator_test
         PARENT_SCOPE
 )
+
+set(PATH_TO_RANDOM_XML_FILE ${CMAKE_CURRENT_BINARY_DIR}/file_with_random_spline.xml PARENT_SCOPE)

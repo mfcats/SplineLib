@@ -98,7 +98,7 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertio
 // The test fixture below is used to check if any test before failed. If a test failed, the random spline is written to
 // an XML-file and the user is notified.
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
-  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
     splinelib::test::random_spline_writer::WriteToXML<1>(original_, testing::UnitTest::GetInstance());
 }
 
@@ -174,7 +174,7 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
 }
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
-  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count())
     splinelib::test::random_spline_writer::WriteToXML<1>(original_, testing::UnitTest::GetInstance());
 }
 
@@ -265,7 +265,7 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
 }
 
 TEST_F(Random2DBSplineForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
-  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
     splinelib::test::random_spline_writer::WriteToXML<2>(original_, testing::UnitTest::GetInstance());
 }
 
@@ -351,7 +351,7 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
 }
 
 TEST_F(Random2DNURBSForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
-  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
     splinelib::test::random_spline_writer::WriteToXML<2>(original_, testing::UnitTest::GetInstance());
 }
 
@@ -451,7 +451,7 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfte
 }
 
 TEST_F(Random3DBSplineForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
-  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
     splinelib::test::random_spline_writer::WriteToXML<3>(original_, testing::UnitTest::GetInstance());
 }
 
@@ -550,6 +550,6 @@ TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
 }
 
 TEST_F(Random3DNURBSForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
-  if (testing::UnitTest::GetInstance()->failed_test_count() > 0)
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
     splinelib::test::random_spline_writer::WriteToXML<3>(original_, testing::UnitTest::GetInstance());
 }

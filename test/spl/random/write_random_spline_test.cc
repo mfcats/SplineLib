@@ -11,6 +11,8 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
+#include <fstream>
+
 #include "gmock/gmock.h"
 
 #include "src/io/xml_reader.h"
@@ -34,19 +36,43 @@ class A1DRandomBSplineToWriteForFailingTest : public Test {  // NOLINT
   std::shared_ptr<spl::BSpline<1>> random_b_spline_;
 };
 
-// TODO(Corinna, Christoph): Where should this method be defined? Actually it is in
-//  splinelib/test/io/io_converter_executables_test.cc, but should it be in splinelib/test/util?
-std::string GetCommandOutput(const std::string &command);
+std::string GetStringFromDoubleWithHighPrecision(const double value) {
+  std::ostringstream out;
+  out.precision(16);
+  out << value;
+  return out.str();
+}
+
+TEST_F(A1DRandomBSplineToWriteForFailingTest, test) {  // NOLINT
+  double double_to_write = 1.0/3;
+  std::cout << GetStringFromDoubleWithHighPrecision(double_to_write) << std::endl;
+  std::cout << double_to_write << std::endl;
+}
 
 TEST_F(A1DRandomBSplineToWriteForFailingTest, WritesCorrectXMLFile) {  // NOLINT
   ASSERT_THAT(testing::UnitTest::GetInstance()->failed_test_count(), Eq(0));
+
+  io::XMLWriter xml_writer;
+  xml_writer.WriteFile({std::make_any<std::shared_ptr<splinelib::src::spl::BSpline<1>>>(random_b_spline_)},
+                       xml_file_with_random_spline);
+  std::system(("cat " + std::string(xml_file_with_random_spline)).c_str());
+  std::cout << std::endl;
+  remove(xml_file_with_random_spline);
+
+  testing::internal::CaptureStdout();
   random_spline_writer::WriteToXML<1>(random_b_spline_, testing::UnitTest::GetInstance());
-  std::unique_ptr<io::XMLReader> xml_reader = std::make_unique<io::XMLReader>();
-  std::string directory = GetCommandOutput("pwd");
-  directory.erase(directory.length() - 1);
-  const char* path_to_xml_file =
-      (directory + "/spl/A1DRandomBSplineToWriteForFailingTest_WritesCorrectXMLFile.xml").c_str();
-  auto b_spline_after = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader->ReadFile(path_to_xml_file)[0]);
-  ASSERT_THAT(b_spline_after->AreEqual(*random_b_spline_, 10e-10), true);
-  remove(path_to_xml_file);
+  std::string output = testing::internal::GetCapturedStdout();
+  std::string expected_message = "\nAt least one test in test case A1DRandomBSplineToWriteForFailingTest failed. Here "
+                                 "is the tested B-spline in XML-format:\n\n";
+  ASSERT_THAT(output.substr(0, expected_message.length()), expected_message);
+  std::string xml_file_output = output.substr(expected_message.length(), output.length() - expected_message.length());
+  std::cout << xml_file_output << std::endl;
+  std::ofstream newFile;
+  newFile.open("random.xml");
+  newFile << xml_file_output;
+  newFile.close();
+  io::XMLReader xml_reader;
+  auto written_b_spline = std::any_cast<std::shared_ptr<spl::BSpline<1>>>(xml_reader.ReadFile("random.xml")[0]);
+  ASSERT_THAT(written_b_spline->AreEqual(*random_b_spline_, 10e-8), true);
+  remove("random.xml");
 }
