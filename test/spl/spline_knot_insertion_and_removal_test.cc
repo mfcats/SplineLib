@@ -175,7 +175,7 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterK
 }
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, WriteRandomSplineToXMLIfAnyPreviousTestFailed) {  // NOLINT
-  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count())
+  if (testing::UnitTest::GetInstance()->current_test_case()->failed_test_count() > 0)
     splinelib::test::random_spline_writer::WriteToXML<1>({original_, after_insertion_, after_removal_},
                                                          testing::UnitTest::GetInstance());
 }
