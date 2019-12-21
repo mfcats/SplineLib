@@ -17,7 +17,12 @@ set(SOURCES
         square_generator.cc
         surface_generator.cc)
 
-add_library(splinelibspl SHARED ${SOURCES})
+if(STATIC)
+    add_library(splinelibspl STATIC ${SOURCES})
+else()
+    add_library(splinelibspl SHARED ${SOURCES})
+endif()
+
 target_include_directories(splinelibspl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_link_libraries(splinelibspl splinelibbaf)
 

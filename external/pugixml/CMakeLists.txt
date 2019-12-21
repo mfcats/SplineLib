@@ -16,7 +16,12 @@
 set(SOURCES
         pugixml.cpp)
 
-add_library(pugixmllib SHARED ${SOURCES})
+if(STATIC)
+    add_library(pugixmllib STATIC ${SOURCES})
+else()
+    add_library(pugixmllib SHARED ${SOURCES})
+endif()
+
 target_include_directories(pugixmllib PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 install(

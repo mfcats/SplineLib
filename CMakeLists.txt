@@ -59,8 +59,19 @@ else()
 endif()
 
 add_subdirectory(src)
-add_subdirectory(test)
 add_subdirectory(external)
+
+# Allow user to disable GoogleTest
+if(NOGTEST)
+    message(STATUS "Building without GoogleTest!")
+else()
+    add_subdirectory(test)
+endif()
+
+# Allow user to build static libraries
+if(STATIC)
+  message(STATUS "Building static libraries!")
+endif()
 
 # Package configuration
 write_basic_package_version_file(

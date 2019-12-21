@@ -25,7 +25,11 @@ set(SOURCES
         xml_reader.cc
         xml_writer.cc)
 
-add_library(splinelibio SHARED ${SOURCES})
+if(STATIC)
+    add_library(splinelibio STATIC ${SOURCES})
+else()
+    add_library(splinelibio SHARED ${SOURCES})
+endif()
 
 target_include_directories(splinelibio PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_link_libraries(splinelibio splinelibspl pugixmllib)

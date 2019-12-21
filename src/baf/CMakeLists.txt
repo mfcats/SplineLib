@@ -15,13 +15,18 @@
 
 set(SOURCES
         b_spline_basis_function.cc
-		basis_function.cc
+	basis_function.cc
         basis_function_factory.cc
         control_point.cc
         knot_vector.cc
-		zero_degree_b_spline_basis_function.cc)
+	zero_degree_b_spline_basis_function.cc)
 
-add_library(splinelibbaf SHARED ${SOURCES})
+if(STATIC)
+    add_library(splinelibbaf STATIC ${SOURCES})
+else()
+    add_library(splinelibbaf SHARED ${SOURCES})
+endif()
+
 target_include_directories(splinelibbaf PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_link_libraries(splinelibbaf splinelibutil)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
