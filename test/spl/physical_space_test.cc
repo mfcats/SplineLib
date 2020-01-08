@@ -53,23 +53,23 @@ TEST_F(A1DPhysicalSpace, ReturnsCorrectControlPoint) {  // NOLINT
 }
 
 TEST_F(A1DPhysicalSpace, ReturnsCorrectNumberOfPointsInEachDirection) {  // NOLINT
-  ASSERT_THAT(physical_space.GetPointsPerDirection()[0], 5);
+  ASSERT_THAT(physical_space.GetNumberOfPointsPerDirection()[0], 5);
 }
 
 TEST_F(A1DPhysicalSpace, ReturnsCorrectMaximumPointIndexForEachDirection) {  // NOLINT
-  ASSERT_THAT(physical_space.GetMaximumPointIndexInEachDirection()[0], 4);
+  ASSERT_THAT(physical_space.GetMaximumPointIndexPerDirection()[0], 4);
 }
 
 TEST_F(A1DPhysicalSpace, ReturnsCorrectDimension) {  // NOLINT
-  ASSERT_THAT(physical_space.GetDimension(), 2);
+  ASSERT_THAT(physical_space.GetDimensionality(), 2);
 }
 
 TEST_F(A1DPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
-  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 5);
+  ASSERT_THAT(physical_space.GetTotalNumberOfControlPoints(), 5);
   // TODO(Corinna, Christoph): It should not be possible to add a control point without specifying a dimension.
   // physical_space.AddControlPoints(1);
   // physical_space.SetControlPoint(5, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
-  // ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 6);
+  // ASSERT_THAT(physical_space.GetTotalNumberOfControlPoints(), 6);
   // ASSERT_THAT(physical_space.GetControlPoint(5)[0], DoubleEq(6.0));
   // ASSERT_THAT(physical_space.GetControlPoint(5)[1], DoubleEq(0.0));
   physical_space.SetControlPoint(4, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
@@ -78,10 +78,10 @@ TEST_F(A1DPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
 }
 
 TEST_F(A1DPhysicalSpace, RemovesControlPoint) {  // NOLINT
-  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 5);
+  ASSERT_THAT(physical_space.GetTotalNumberOfControlPoints(), 5);
   // TODO(Corinna, Christoph): Same problem as above.
   physical_space.RemoveControlPoints(2);
-  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 3);
+  ASSERT_THAT(physical_space.GetTotalNumberOfControlPoints(), 3);
   ASSERT_THAT(physical_space.GetControlPoint(2)[Dimension{0}], DoubleEq(3.0));
   ASSERT_THAT(physical_space.GetControlPoint(2)[Dimension{1}], DoubleEq(2.0));
 }
@@ -95,8 +95,8 @@ TEST_F(A1DPhysicalSpace, ReturnsCorrectMaximumDistanceFromOrigin) {  // NOLINT
 }
 
 TEST_F(A1DPhysicalSpace, ReturnsCorrectDividedControlPoints) {  // NOLINT
-  ASSERT_THAT(physical_space.GetDividedControlPoints(2, 2, 0).size(), 2);
-  ASSERT_THAT(physical_space.GetDividedControlPoints(2, 2, 0)[0][Dimension{0}], DoubleEq(3.0));
+  ASSERT_THAT(physical_space.SplitControlPoints(Dimension{0}, 2, 2).size(), 2);
+  ASSERT_THAT(physical_space.SplitControlPoints(Dimension{0}, 2, 2)[0][Dimension{0}], DoubleEq(3.0));
 }
 
 TEST_F(A1DPhysicalSpace, EvaluatesThatCopiedSpaceEqualsOriginalSpace) {  // NOLINT
@@ -145,29 +145,29 @@ TEST_F(A2DPhysicalSpace, ReturnsCorrectInnerControlPointFor1DIndex) {  // NOLINT
 }
 
 TEST_F(A2DPhysicalSpace, ReturnsDefaultWeight) {  // NOLINT
-  ASSERT_THAT(physical_space.GetWeight(std::array<int, 2>{1, 2}), DoubleEq(1.0));
+  ASSERT_THAT(physical_space.GetWeight(std::array<int, 2>{1, 2}).Get(), DoubleEq(1.0));
 }
 
 TEST_F(A2DPhysicalSpace, ReturnsCorrectNumberOfPointsInEachDirection) {  // NOLINT
-  ASSERT_THAT(physical_space.GetPointsPerDirection()[0], 3);
-  ASSERT_THAT(physical_space.GetPointsPerDirection()[1], 2);
+  ASSERT_THAT(physical_space.GetNumberOfPointsPerDirection()[0], 3);
+  ASSERT_THAT(physical_space.GetNumberOfPointsPerDirection()[1], 2);
 }
 
 TEST_F(A2DPhysicalSpace, ReturnsCorrectMaximumPointIndexForEachDirection) {  // NOLINT
-  ASSERT_THAT(physical_space.GetMaximumPointIndexInEachDirection()[0], 2);
-  ASSERT_THAT(physical_space.GetMaximumPointIndexInEachDirection()[1], 1);
+  ASSERT_THAT(physical_space.GetMaximumPointIndexPerDirection()[0], 2);
+  ASSERT_THAT(physical_space.GetMaximumPointIndexPerDirection()[1], 1);
 }
 
 TEST_F(A2DPhysicalSpace, ReturnsCorrectDimension) {  // NOLINT
-  ASSERT_THAT(physical_space.GetDimension(), 2);
+  ASSERT_THAT(physical_space.GetDimensionality(), 2);
 }
 
 TEST_F(A2DPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
-  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 6);
+  ASSERT_THAT(physical_space.GetTotalNumberOfControlPoints(), 6);
   // TODO(Corinna, Christoph): It should not be possible to add a control point without specifying a dimension.
   // physical_space.AddControlPoints(1);
   // physical_space.SetControlPoint(6, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
-  // ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 7);
+  // ASSERT_THAT(physical_space.GetTotalNumberOfControlPoints(), 7);
   // ASSERT_THAT(physical_space.GetControlPoint(6)[0], DoubleEq(6.0));
   // ASSERT_THAT(physical_space.GetControlPoint(6)[1], DoubleEq(0.0));
   physical_space.SetControlPoint(5, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
@@ -176,10 +176,10 @@ TEST_F(A2DPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
 }
 
 TEST_F(A2DPhysicalSpace, RemovesControlPoint) {  // NOLINT
-  ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 6);
+  ASSERT_THAT(physical_space.GetTotalNumberOfControlPoints(), 6);
   // TODO(Corinna, Christoph): Same problem as above.
   // physical_space.RemoveControlPoints(2);
-  // ASSERT_THAT(physical_space.GetNumberOfControlPoints(), 4);
+  // ASSERT_THAT(physical_space.GetTotalNumberOfControlPoints(), 4);
   ASSERT_THAT(physical_space.GetControlPoint(3)[Dimension{0}], DoubleEq(0.0));
   ASSERT_THAT(physical_space.GetControlPoint(3)[Dimension{1}], DoubleEq(2.0));
 }
@@ -193,8 +193,8 @@ TEST_F(A2DPhysicalSpace, ReturnsCorrectMaximumDistanceFromOrigin) {  // NOLINT
 }
 
 TEST_F(A2DPhysicalSpace, ReturnsCorrectDividedControlPoints) {  // NOLINT
-  ASSERT_THAT(physical_space.GetDividedControlPoints(1, 2, 0).size(), 4);
-  ASSERT_THAT(physical_space.GetDividedControlPoints(1, 2, 0)[2][Dimension{0}], DoubleEq(1.5));
+  ASSERT_THAT(physical_space.SplitControlPoints(Dimension{0}, 1, 2).size(), 4);
+  ASSERT_THAT(physical_space.SplitControlPoints(Dimension{0}, 1, 2)[2][Dimension{0}], DoubleEq(1.5));
 }
 
 TEST_F(A2DPhysicalSpace, EvaluatesThatCopiedSpaceEqualsOriginalSpace) {  // NOLINT

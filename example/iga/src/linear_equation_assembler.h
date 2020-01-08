@@ -76,7 +76,7 @@ class LinearEquationAssembler {
   }
 
   std::array<std::array<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY - 1>>, 2>, PARAMETRIC_DIMENSIONALITY> GetBoundarySplines() const {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> points_per_dir = spline_->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> points_per_dir = spline_->GetNumberOfPointsPerDirection();
     std::array<std::array<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY - 1>>, 2>, PARAMETRIC_DIMENSIONALITY> boundary_splines;
     std::array<std::array<std::vector<int>, 2>, PARAMETRIC_DIMENSIONALITY> boundary_spline_connectivity = GetBoundarySplineConnectivity();
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
@@ -106,7 +106,7 @@ class LinearEquationAssembler {
   }
 
   std::array<std::array<std::vector<int>, 2>, PARAMETRIC_DIMENSIONALITY> GetBoundarySplineConnectivity() const {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> points_per_dir = spline_->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> points_per_dir = spline_->GetNumberOfPointsPerDirection();
     std::array<std::array<std::vector<int>, 2>, PARAMETRIC_DIMENSIONALITY> boundary_spl_connectivity;
     for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
       util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mih(points_per_dir);
@@ -124,7 +124,7 @@ class LinearEquationAssembler {
   }
 
   void SetZeroBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB) {
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mih(spline_->GetPointsPerDirection());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mih(spline_->GetNumberOfPointsPerDirection());
     while (true) {
       bool on_boundary = false;
       for (int i = 0; i < PARAMETRIC_DIMENSIONALITY; ++i) {
@@ -144,7 +144,7 @@ class LinearEquationAssembler {
 
   void SetDirichletBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB,
                       std::shared_ptr<arma::dvec> Dirichlet = nullptr) {
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mih(spline_->GetPointsPerDirection());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mih(spline_->GetNumberOfPointsPerDirection());
     uint64_t num_boundary_cp = 0;
     if (Dirichlet == nullptr) Dirichlet = std::make_shared<arma::dvec>((*vecB).size(), arma::fill::zeros);
     while (true) {
@@ -169,8 +169,8 @@ class LinearEquationAssembler {
   /* void SetLinearBC(const std::shared_ptr<arma::dmat> &matA, const std::shared_ptr<arma::dvec> &vecB) {
     uint64_t l = 0;
     uint64_t k = 0;
-    int n = spline_->GetPointsPerDirection()[0];
-    int m = spline_->GetPointsPerDirection()[1];
+    int n = spline_->GetNumberOfPointsPerDirection()[0];
+    int m = spline_->GetNumberOfPointsPerDirection()[1];
     for (int j = 0; j < m; ++j) {
       for (int i = 0; i < n; ++i) {
         if (i == 0) {

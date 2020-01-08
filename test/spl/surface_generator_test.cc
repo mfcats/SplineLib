@@ -38,37 +38,37 @@ class MockParameterSpaceSection : public spl::ParameterSpace<1> {
 
 class MockWeightedPhysicalSpaceSection : public spl::WeightedPhysicalSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
-  MOCK_CONST_METHOD0(GetNumberOfControlPoints, int());
-  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1>));
-  MOCK_CONST_METHOD0(GetDimension, int());
+  MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 1> const &));
+  MOCK_CONST_METHOD0(GetTotalNumberOfControlPoints, int());
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1> const &));
+  MOCK_CONST_METHOD0(GetDimensionality, int());
 };
 
 class MockWeightedPhysicalSpaceTrajectory : public spl::WeightedPhysicalSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
-  MOCK_CONST_METHOD0(GetNumberOfControlPoints, int());
+  MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 1> const &));
+  MOCK_CONST_METHOD0(GetTotalNumberOfControlPoints, int());
   MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 1>));
-  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1>));
-  MOCK_CONST_METHOD0(GetDimension, int());
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1> const &));
+  MOCK_CONST_METHOD0(GetDimensionality, int());
 };
 
 void mock_weightsSection(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceSection>> &w_physical_space) {
   ON_CALL(*w_physical_space, GetWeight(_))
-      .WillByDefault(Return(1));
+      .WillByDefault(Return(Weight{1.0}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{1}))
-      .WillByDefault(Return(0.70710));
+      .WillByDefault(Return(Weight{0.70710}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{3}))
-      .WillByDefault(Return(0.70710));
+      .WillByDefault(Return(Weight{0.70710}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{5}))
-      .WillByDefault(Return(0.70710));
+      .WillByDefault(Return(Weight{0.70710}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{7}))
-      .WillByDefault(Return(0.70710));
+      .WillByDefault(Return(Weight{0.70710}));
 }
 
 void mock_weightsTrajectory(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceTrajectory>> &w_physical_space) {
   ON_CALL(*w_physical_space, GetWeight(_))
-      .WillByDefault(Return(1.0));
+      .WillByDefault(Return(Weight{1.0}));
 }
 
 void mock_controlPointSection(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceSection>> &w_physical_space) {
@@ -111,8 +111,8 @@ void mock_weightedPhysicalSpaceSection(const std::shared_ptr<NiceMock<MockWeight
                                        &w_physical_space) {
   mock_weightsSection(w_physical_space);
   mock_controlPointSection(w_physical_space);
-  ON_CALL(*w_physical_space, GetNumberOfControlPoints()).WillByDefault(Return(9));
-  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(3));
+  ON_CALL(*w_physical_space, GetTotalNumberOfControlPoints()).WillByDefault(Return(9));
+  ON_CALL(*w_physical_space, GetDimensionality()).WillByDefault(Return(3));
 }
 
 void mock_weightedPhysicalSpaceTrajectory(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceTrajectory>>
@@ -120,8 +120,8 @@ void mock_weightedPhysicalSpaceTrajectory(const std::shared_ptr<NiceMock<MockWei
   mock_weightsTrajectory(w_physical_space);
   mock_homogenousTrajectory(w_physical_space);
   mock_controlPointTrajectory(w_physical_space);
-  ON_CALL(*w_physical_space, GetNumberOfControlPoints()).WillByDefault(Return(2));
-  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(3));
+  ON_CALL(*w_physical_space, GetTotalNumberOfControlPoints()).WillByDefault(Return(2));
+  ON_CALL(*w_physical_space, GetDimensionality()).WillByDefault(Return(3));
 }
 
 void mock_parameterSpaceSection(const std::shared_ptr<NiceMock<MockParameterSpaceSection>> &parameter_space) {
@@ -208,7 +208,7 @@ TEST_F(ASurface, ReturnsCorrectNumberOfKnots) {  // NOLINT
 }
 
 TEST_F(ASurface, ReturnsCorrectNumberOfControlPoints) { //NOLINT
-  ASSERT_THAT(nurbsJoined->GetNumberOfControlPoints(), 18);
+  ASSERT_THAT(nurbsJoined->GetTotalNumberOfControlPoints(), 18);
 }
 
 TEST_F(ASurface, ReturnsCorrectWeights) {  // NOLINT
@@ -231,7 +231,7 @@ TEST_F(ASurface, ReturnsCorrectNumberOfKnotsAfterScaling) {  // NOLINT
 }
 
 TEST_F(ASurface, ReturnsCorrectNumberOfControlPointsAfterScaling) {  // NOLINT
-  ASSERT_THAT(nurbsJoinedScaled->GetNumberOfControlPoints(), 99);
+  ASSERT_THAT(nurbsJoinedScaled->GetTotalNumberOfControlPoints(), 99);
 }
 
 TEST_F(ASurface, RetursCorrectControlPointsAfterScaling) {  // NOLINT
@@ -245,7 +245,7 @@ TEST_F(ASurface, ReturnCorrectControlPoint_0DimAfterScaling) {  // NOLINT
 }
 
 TEST_F(ASurface, CompareBothMethods_nbControlPoints) {  // NOLINT
-  ASSERT_THAT(nurbsJoined->GetNumberOfControlPoints(), nurbsJoinedScaledCmp->GetNumberOfControlPoints());
+  ASSERT_THAT(nurbsJoined->GetTotalNumberOfControlPoints(), nurbsJoinedScaledCmp->GetTotalNumberOfControlPoints());
 }
 
 TEST_F(ASurface, CompareBothMethods_nbKnots) {  // NOLINT
@@ -275,41 +275,41 @@ TEST_F(ASurface, ReturnsCorrectVTK) {  // NOLINT
 
 class MockWeightedPhysicalSpaceSectionC : public spl::WeightedPhysicalSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
-  MOCK_CONST_METHOD0(GetNumberOfControlPoints, int());
-  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1>));
-  MOCK_CONST_METHOD0(GetDimension, int());
+  MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 1> const &));
+  MOCK_CONST_METHOD0(GetTotalNumberOfControlPoints, int());
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1> const &));
+  MOCK_CONST_METHOD0(GetDimensionality, int());
 };
 
 class MockWeightedPhysicalSpaceTrajectoryC : public spl::WeightedPhysicalSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
-  MOCK_CONST_METHOD0(GetNumberOfControlPoints, int());
+  MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 1> const &));
+  MOCK_CONST_METHOD0(GetTotalNumberOfControlPoints, int());
   MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 1>));
-  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1>));
-  MOCK_CONST_METHOD0(GetDimension, int());
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1> const &));
+  MOCK_CONST_METHOD0(GetDimensionality, int());
 };
 
 void mock_weightsSectionC(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceSectionC>> &w_physical_space) {
   ON_CALL(*w_physical_space, GetWeight(_))
-      .WillByDefault(Return(1));
+      .WillByDefault(Return(Weight{1.0}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{1}))
-      .WillByDefault(Return(0.70710));
+      .WillByDefault(Return(Weight{0.70710}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{3}))
-      .WillByDefault(Return(0.70710));
+      .WillByDefault(Return(Weight{0.70710}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{5}))
-      .WillByDefault(Return(0.70710));
+      .WillByDefault(Return(Weight{0.70710}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{7}))
-      .WillByDefault(Return(0.70710));
+      .WillByDefault(Return(Weight{0.70710}));
 }
 
 void mock_weightsTrajectoryC(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceTrajectoryC>> &w_physical_space) {
   ON_CALL(*w_physical_space, GetWeight(_))
-      .WillByDefault(Return(0.5));
+      .WillByDefault(Return(Weight{0.5}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{0}))
-      .WillByDefault(Return(1.0));
+      .WillByDefault(Return(Weight{1.0}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{6}))
-      .WillByDefault(Return(1.0));
+      .WillByDefault(Return(Weight{1.0}));
 }
 
 void mock_controlPointSectionC(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceSectionC>> &w_physical_space) {
@@ -373,8 +373,8 @@ void mock_weightedPhysicalSpaceSectionC(const std::shared_ptr<NiceMock<MockWeigh
                                         &w_physical_space) {
   mock_weightsSectionC(w_physical_space);
   mock_controlPointSectionC(w_physical_space);
-  ON_CALL(*w_physical_space, GetNumberOfControlPoints()).WillByDefault(Return(9));
-  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(3));
+  ON_CALL(*w_physical_space, GetTotalNumberOfControlPoints()).WillByDefault(Return(9));
+  ON_CALL(*w_physical_space, GetDimensionality()).WillByDefault(Return(3));
 }
 
 void mock_weightedPhysicalSpaceTrajectoryC(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpaceTrajectoryC>>
@@ -382,8 +382,8 @@ void mock_weightedPhysicalSpaceTrajectoryC(const std::shared_ptr<NiceMock<MockWe
   mock_weightsTrajectoryC(w_physical_space);
   mock_homogenousTrajectoryC(w_physical_space);
   mock_controlPointTrajectoryC(w_physical_space);
-  ON_CALL(*w_physical_space, GetNumberOfControlPoints()).WillByDefault(Return(7));
-  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(3));
+  ON_CALL(*w_physical_space, GetTotalNumberOfControlPoints()).WillByDefault(Return(7));
+  ON_CALL(*w_physical_space, GetDimensionality()).WillByDefault(Return(3));
 }
 
 /* Two 1-dimensional nurbs spline with following properties :
@@ -539,4 +539,3 @@ TEST_F(AComplexSurface2, ThrowsExceptionIfDegreeTooLow) {  // NOLINT
   ASSERT_THROW(spl::SurfaceGenerator surfaceGenerator =
                    spl::SurfaceGenerator(nurbs1, nurbs2, nbInter, scaling), std::runtime_error);
 }
-

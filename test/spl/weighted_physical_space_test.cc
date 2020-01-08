@@ -46,7 +46,7 @@ TEST_F(A1DWeightedPhysicalSpace, ThrowsForDifferingNumberOfControlPointsAndWeigh
 }
 
 TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectWeight) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetWeight(2), DoubleEq(0.8));
+  ASSERT_THAT(weighted_physical_space.GetWeight(2).Get(), DoubleEq(0.8));
 }
 
 TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectMinimumWeight) {  // NOLINT
@@ -81,24 +81,24 @@ TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPoint) {  //
 }
 
 TEST_F(A1DWeightedPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 5);
+  ASSERT_THAT(weighted_physical_space.GetTotalNumberOfControlPoints(), 5);
   // TODO(Corinna, Christoph): It should not be possible to add a control point without specifying a dimension.
   // weighted_physical_space.AddControlPoints(1);
   // weighted_physical_space.SetControlPoint(5, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   // weighted_physical_space.SetWeight(5, 4.3);
-  // ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 6);
+  // ASSERT_THAT(weighted_physical_space.GetTotalNumberOfControlPoints(), 6);
   // ASSERT_THAT(weighted_physical_space.GetControlPoint(5)[Dimension{0}], DoubleEq(6.0));
   // ASSERT_THAT(weighted_physical_space.GetWeight(5), DoubleEq(4.3));
   weighted_physical_space.SetControlPoint(4, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   weighted_physical_space.SetWeight(4, 4.3);
   ASSERT_THAT(weighted_physical_space.GetControlPoint(4)[Dimension{0}], DoubleEq(6.0));
-  ASSERT_THAT(weighted_physical_space.GetWeight(4), DoubleEq(4.3));
+  ASSERT_THAT(weighted_physical_space.GetWeight(4).Get(), DoubleEq(4.3));
 }
 
 TEST_F(A1DWeightedPhysicalSpace, RemovesControlPointAndWeight) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 5);
+  ASSERT_THAT(weighted_physical_space.GetTotalNumberOfControlPoints(), 5);
   weighted_physical_space.RemoveControlPoints(2);
-  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 3);
+  ASSERT_THAT(weighted_physical_space.GetTotalNumberOfControlPoints(), 3);
   ASSERT_THAT(weighted_physical_space.GetWeights().size(), 3);
 }
 
@@ -139,27 +139,27 @@ TEST_F(A2DWeightedPhysicalSpace, ThrowsForDifferingNumberOfControlPointsAndWeigh
 }
 
 TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstWeightFor2DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetWeight({0, 0}), DoubleEq(0.5));
+  ASSERT_THAT(weighted_physical_space.GetWeight({0, 0}).Get(), DoubleEq(0.5));
 }
 
 TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerWeightFor2DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetWeight({0, 1}), DoubleEq(1.0));
+  ASSERT_THAT(weighted_physical_space.GetWeight({0, 1}).Get(), DoubleEq(1.0));
 }
 
 TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastWeightFor2DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetWeight({2, 1}), DoubleEq(3.8));
+  ASSERT_THAT(weighted_physical_space.GetWeight({2, 1}).Get(), DoubleEq(3.8));
 }
 
 TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstWeightFor1DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetWeight(0), DoubleEq(0.5));
+  ASSERT_THAT(weighted_physical_space.GetWeight(0).Get(), DoubleEq(0.5));
 }
 
 TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerWeightFor1DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetWeight(3), DoubleEq(1.0));
+  ASSERT_THAT(weighted_physical_space.GetWeight(3).Get(), DoubleEq(1.0));
 }
 
 TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastWeightFor1DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetWeight(5), DoubleEq(3.8));
+  ASSERT_THAT(weighted_physical_space.GetWeight(5).Get(), DoubleEq(3.8));
 }
 
 TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectMinimumWeight) {  // NOLINT
@@ -212,24 +212,24 @@ TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPointFor1DIn
 }
 
 TEST_F(A2DWeightedPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 6);
+  ASSERT_THAT(weighted_physical_space.GetTotalNumberOfControlPoints(), 6);
   // TODO(Corinna, Christoph): It should not be possible to add a control point without specifying a dimension.
   // weighted_physical_space.AddControlPoints(1);
   // weighted_physical_space.SetControlPoint(6, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   // weighted_physical_space.SetWeight(6, 4.3);
-  // ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 7);
+  // ASSERT_THAT(weighted_physical_space.GetTotalNumberOfControlPoints(), 7);
   // ASSERT_THAT(weighted_physical_space.GetControlPoint(6)[Dimension{0}], DoubleEq(6.0));
   // ASSERT_THAT(weighted_physical_space.GetWeight(6), DoubleEq(4.3));
   weighted_physical_space.SetControlPoint(5, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
   weighted_physical_space.SetWeight(5, 4.3);
   ASSERT_THAT(weighted_physical_space.GetControlPoint(5)[Dimension{0}], DoubleEq(6.0));
-  ASSERT_THAT(weighted_physical_space.GetWeight(5), DoubleEq(4.3));
+  ASSERT_THAT(weighted_physical_space.GetWeight(5).Get(), DoubleEq(4.3));
 }
 
 TEST_F(A2DWeightedPhysicalSpace, Removes2ControlPointsAndWeights) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 6);
+  ASSERT_THAT(weighted_physical_space.GetTotalNumberOfControlPoints(), 6);
   weighted_physical_space.RemoveControlPoints(2);
-  ASSERT_THAT(weighted_physical_space.GetNumberOfControlPoints(), 4);
+  ASSERT_THAT(weighted_physical_space.GetTotalNumberOfControlPoints(), 4);
   ASSERT_THAT(weighted_physical_space.GetWeights().size(), 4);
 }
 

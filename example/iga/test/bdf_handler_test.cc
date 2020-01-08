@@ -175,12 +175,12 @@ TEST_F(ALine, Test) {  // NOLINT
   iga::LinearEquationAssembler<2> linear_equation_assembler(nurbs_);
   iga::ElementIntegralCalculator<2> elm_itg_calc = iga::ElementIntegralCalculator<2>(nurbs_);
   iga::itg::IntegrationRule rule = iga::itg::FivePointGaussLegendre();
-  int n = nurbs_->GetNumberOfControlPoints();
+  int n = nurbs_->GetTotalNumberOfControlPoints();
   std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
 
-  int m = nurbs_->GetPointsPerDirection()[0];
+  int m = nurbs_->GetNumberOfPointsPerDirection()[0];
   auto a = std::make_shared<arma::dvec>(m, arma::fill::ones);
   auto b = std::make_shared<arma::dvec>(m, arma::fill::ones);
   *b *= (-1);
@@ -215,7 +215,7 @@ TEST_F(ALine, Test) {  // NOLINT
   iga::SolutionVTKWriter<2> solution_vtk_writer;
   iga::PoissonProblem<2> poisson_problem(nurbs_, rule);
 
-  int n = nurbs_->GetNumberOfControlPoints();
+  int n = nurbs_->GetTotalNumberOfControlPoints();
   std::shared_ptr<arma::dvec> dirichlet_bc = std::make_shared<arma::dvec>(n, arma::fill::zeros);
 
   auto solutions = poisson_problem.GetUnsteadyStateSolution(0.5, 25, dirichlet_bc);

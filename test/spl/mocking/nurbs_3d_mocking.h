@@ -41,20 +41,20 @@ class MockParameterSpace3d : public spl::ParameterSpace<3> {
 
 class MockWeightedPhysicalSpace3d : public spl::WeightedPhysicalSpace<3> {
  public:
-  MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 3>));
+  MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 3> const &));
   MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 3>));
-  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 3>));
-  MOCK_CONST_METHOD0(GetDimension, int());
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 3> const &));
+  MOCK_CONST_METHOD0(GetDimensionality, int());
 };
 
 class MockPhysicalSpace3d : public spl::PhysicalSpace<3> {
  public:
-  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 3>));
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 3> const &));
 };
 
 void mock_weights3d(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace3d>> &w_physical_space) {
   ON_CALL(*w_physical_space, GetWeight(_))
-      .WillByDefault(Return(1));
+      .WillByDefault(Return(Weight{1.0}));
 }
 
 void mock_homogenous3d(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace3d>> &w_physical_space) {
@@ -111,7 +111,7 @@ void mock_homogenous3d(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace3
 void mock_weightedPhysicalSpace3d(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace3d>> &w_physical_space) {
   mock_weights3d(w_physical_space);
   mock_homogenous3d(w_physical_space);
-  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(2));
+  ON_CALL(*w_physical_space, GetDimensionality()).WillByDefault(Return(2));
 }
 
 void mock_physicalSpace3d(const std::shared_ptr<NiceMock<MockPhysicalSpace3d>> &physical_space) {

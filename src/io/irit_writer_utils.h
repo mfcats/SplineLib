@@ -25,8 +25,8 @@ namespace splinelib::src::io {
 template<int PARAMETRIC_DIMENSIONALITY>
 class IRITWriterUtils {
  public:
-  static std::string GetNumberOfControlPoints(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline) {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points = spline->GetPointsPerDirection();
+  static std::string GetTotalNumberOfControlPoints(std::shared_ptr<spl::Spline<PARAMETRIC_DIMENSIONALITY>> spline) {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points = spline->GetNumberOfPointsPerDirection();
     std::string string;
     for (const auto &points : number_of_points) {
       string += std::to_string(points) + " ";
@@ -59,7 +59,7 @@ class IRITWriterUtils {
   const std::any &spline
   ) {
     std::string string;
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(spline_ptr->GetPointsPerDirection());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(spline_ptr->GetNumberOfPointsPerDirection());
     std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> nurbs;
     if (rational) {
       nurbs = std::any_cast<std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>>(spline);

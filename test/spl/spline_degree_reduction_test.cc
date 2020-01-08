@@ -78,7 +78,7 @@ TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, HasUnchangedNu
 }
 
 TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfControlPoints) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetNumberOfControlPoints(), original_->GetNumberOfControlPoints());
+  ASSERT_THAT(elevated_and_reduced_->GetTotalNumberOfControlPoints(), original_->GetTotalNumberOfControlPoints());
 }
 
 TEST_F(BSplineFig5_35ForDegreeElevationAndReductionForDimension0, // NOLINT
@@ -135,7 +135,7 @@ TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedNumb
 }
 
 TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedNumberOfControlPoints) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetNumberOfControlPoints(), original_->GetNumberOfControlPoints());
+  ASSERT_THAT(elevated_and_reduced_->GetTotalNumberOfControlPoints(), original_->GetTotalNumberOfControlPoints());
 }
 
 TEST_F(ALinearNURBSForDegreeElevationAndReductionForDimension0, // NOLINT
@@ -201,8 +201,8 @@ TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, HasUnchangedNumber
 
 TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
        HasUnchangedNumberOfControlPointsInAllDirections) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
-  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+  ASSERT_THAT(elevated_and_reduced_->GetNumberOfPointsPerDirection()[0], original_->GetNumberOfPointsPerDirection()[0]);
+  ASSERT_THAT(elevated_and_reduced_->GetNumberOfPointsPerDirection()[1], original_->GetNumberOfPointsPerDirection()[1]);
 }
 
 TEST_F(A2DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
@@ -264,8 +264,8 @@ TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, HasUnchangedNum
 
 TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, // NOLINT
        HasUnchangedNumberOfControlPointsInAllDimensions) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
-  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+  ASSERT_THAT(elevated_and_reduced_->GetNumberOfPointsPerDirection()[0], original_->GetNumberOfPointsPerDirection()[0]);
+  ASSERT_THAT(elevated_and_reduced_->GetNumberOfPointsPerDirection()[1], original_->GetNumberOfPointsPerDirection()[1]);
 }
 
 TEST_F(Random2DNURBSForDegreeElevationAndReductionForDimension0, // NOLINT
@@ -320,8 +320,8 @@ TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
 
 TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
        HasUnchangedNumberOfControlPointsInAllDimensions) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
-  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
+  ASSERT_THAT(elevated_and_reduced_->GetNumberOfPointsPerDirection()[0], original_->GetNumberOfPointsPerDirection()[0]);
+  ASSERT_THAT(elevated_and_reduced_->GetNumberOfPointsPerDirection()[1], original_->GetNumberOfPointsPerDirection()[1]);
 }
 
 TEST_F(Random3DBSplineForDegreeElevationAndReductionForDimension0, // NOLINT
@@ -389,9 +389,9 @@ TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, // NOLINT
 
 TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, // NOLINT
        HasUnchangedNumberOfControlPointsInAllDimensions) {  // NOLINT
-  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0]);
-  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1]);
-  ASSERT_THAT(elevated_and_reduced_->GetPointsPerDirection()[2], original_->GetPointsPerDirection()[2]);
+  ASSERT_THAT(elevated_and_reduced_->GetNumberOfPointsPerDirection()[0], original_->GetNumberOfPointsPerDirection()[0]);
+  ASSERT_THAT(elevated_and_reduced_->GetNumberOfPointsPerDirection()[1], original_->GetNumberOfPointsPerDirection()[1]);
+  ASSERT_THAT(elevated_and_reduced_->GetNumberOfPointsPerDirection()[2], original_->GetNumberOfPointsPerDirection()[2]);
 }
 
 TEST_F(Random3DNURBSForDegreeElevationAndReductionForDimension1, // NOLINT

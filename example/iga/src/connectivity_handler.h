@@ -51,7 +51,7 @@ class ConnectivityHandler {
   }
 
   int Get1DGlobalIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> global_indices) {
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mult_ind_handl_cp(spline_->GetPointsPerDirection());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> mult_ind_handl_cp(spline_->GetNumberOfPointsPerDirection());
     mult_ind_handl_cp.SetCurrentIndex(global_indices);
     return mult_ind_handl_cp.Get1DIndex() + 1;
   }

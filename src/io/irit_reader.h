@@ -37,7 +37,7 @@ class IRITReader : public Reader {
   std::any Get2DSpline(int start, const std::vector<std::string> &entries) const;
   std::any Get3DSpline(int start, const std::vector<std::string> &entries) const;
 
-  static int GetNumberOfControlPoints(int start, const std::vector<std::string> &entries);
+  static int GetTotalNumberOfControlPoints(int start, const std::vector<std::string> &entries);
 
   std::vector<spl::ControlPoint> GetControlPoints(int start, const std::vector<std::string> &entries,
                                                   bool rational, std::vector<double> weights) const;

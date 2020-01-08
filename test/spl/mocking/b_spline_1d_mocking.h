@@ -39,7 +39,7 @@ class MockParameterSpace : public spl::ParameterSpace<1> {
 
 class MockPhysicalSpace : public spl::PhysicalSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1>));
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1> const &));
 };
 
 void mock_physicalSpace(const std::shared_ptr<NiceMock<MockPhysicalSpace>> &physical_space) {

@@ -59,24 +59,24 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
   bool AreEqual(const BSpline<PARAMETRIC_DIMENSIONALITY> &rhs,
       double tolerance = util::numeric_settings::GetEpsilon<double>()) const {
     return this->parameter_space_->AreEqual(*rhs.parameter_space_.get(), tolerance)
-        && physical_space_->AreEqual(*rhs.physical_space_.get(), tolerance);
+        && physical_space_->AreEqual(*rhs.physical_space_.get(), Tolerance{tolerance});
   }
 
   void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     ++point_handler_length[dimension];
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     std::array<int, PARAMETRIC_DIMENSIONALITY> maximum_point_index =
-        physical_space_->GetMaximumPointIndexInEachDirection();
+        physical_space_->GetMaximumPointIndexPerDirection();
     ++maximum_point_index[dimension];
     point_handler.SetCurrentIndex(maximum_point_index);
-    physical_space_->AddControlPoints(this->GetNumberOfControlPoints() / maximum_point_index[dimension]);
+    physical_space_->AddControlPoints(this->GetTotalNumberOfControlPoints() / maximum_point_index[dimension]);
     for (int i = point_handler.GetNumberOfTotalMultiIndices() - 1; i >= 0; --i, --point_handler) {
       auto current_point_index = point_handler[Dimension{dimension}];
       std::array<int, PARAMETRIC_DIMENSIONALITY> indices = point_handler.GetCurrentIndex();
       spl::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling,
                                                                current_point_index, first, last);
-      physical_space_->SetControlPoint(indices, new_control_point, dimension,
+      physical_space_->SetControlPoint(indices, new_control_point, Dimension{dimension},
                                        util::numeric_operations::increment<int>);
     }
     physical_space_->IncrementNumberOfPoints(dimension);
@@ -91,7 +91,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
       return false;
     }
     SetNewControlPoints(temp, last, i - off, off, dimension);
-    physical_space_->RemoveControlPoints(this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension]);
+    physical_space_->RemoveControlPoints(this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension]);
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
   }
@@ -110,7 +110,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     int first = 0;
     for (int i = 0; i < 2; ++i) {
       int length = new_knots[i][dimension]->GetNumberOfKnots() - this->GetDegree(dimension).Get() - 1;
-      std::vector<spl::ControlPoint> points = physical_space_->GetDividedControlPoints(first, length, dimension);
+      std::vector<spl::ControlPoint> points = physical_space_->SplitControlPoints(Dimension{dimension}, first, length);
       spl::BSpline<PARAMETRIC_DIMENSIONALITY> spline(new_knots[i], degrees, points);
       subdivided_splines[i] = std::make_shared<spl::BSpline<PARAMETRIC_DIMENSIONALITY>>(spline);
       first = length;
@@ -161,7 +161,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
   }
 
   void SetNewControlPoints(const std::vector<double> &temp, int last, int ii, int off, int dimension) {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     for (int m = 0; m < point_handler.GetNumberOfTotalMultiIndices(); ++m, ++point_handler) {
       int k = point_handler[Dimension{dimension}];
@@ -171,23 +171,23 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
         std::vector<double> coordinates(temp.begin() + index, temp.begin() + index + this->GetPointDim());
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k - off < ii ? k : k - 1;
-        physical_space_->SetControlPoint(indices, spl::ControlPoint(coordinates), dimension,
+        physical_space_->SetControlPoint(indices, spl::ControlPoint(coordinates), Dimension{dimension},
                                          util::numeric_operations::decrement<int>);
       }
-      if ((k <= off && k - off < 1) || (k >= last + 1 && k < this->GetPointsPerDirection()[dimension])) {
+      if ((k <= off && k - off < 1) || (k >= last + 1 && k < this->GetNumberOfPointsPerDirection()[dimension])) {
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k <= off ? k : k - 1;
-        physical_space_->SetControlPoint(indices, this->GetControlPoint(point_handler.GetCurrentIndex()), dimension,
-                                         util::numeric_operations::decrement<int>);
+        physical_space_->SetControlPoint(indices, this->GetControlPoint(point_handler.GetCurrentIndex()),
+                                         Dimension{dimension}, util::numeric_operations::decrement<int>);
       }
     }
   }
 
   std::vector<double> GetTempNewControlPoints(const std::vector<double> &scaling, int off, int last,
                                               int i, int j, int dimension) const {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
-    int new_points = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
+    int new_points = this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension];
     std::vector<double> temp(new_points * this->GetPointDim() * (last - off + 2), 0);
     std::shared_ptr<std::vector<double>> temp_ptr = std::make_shared<std::vector<double>>(temp);
     for (int l = 0; l < point_handler.GetNumberOfTotalMultiIndices(); ++l, ++point_handler) {
@@ -223,10 +223,10 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
 
   bool IsKnotRemovable(double alfi, const std::vector<double> &temp, double tolerance,
                        int i, int j, int off, int dimension) const {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     point_handler_length[dimension] = 0;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
-    int new_points = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
+    int new_points = this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension];
     size_t temp_length = temp.size() / new_points;
     for (int l = 0; l < new_points; ++l, ++point_handler) {
       std::vector<double> temp1(this->GetPointDim() + 1, 1), temp2(this->GetPointDim() + 1, 1);

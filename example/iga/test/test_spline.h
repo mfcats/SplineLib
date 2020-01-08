@@ -107,7 +107,7 @@ class AnIGATestSpline : public Test {
 
   iga::LinearEquationAssembler<2> linear_equation_assembler = iga::LinearEquationAssembler<2>(nurbs_);
   iga::ElementIntegralCalculator<2> elm_itg_calc = iga::ElementIntegralCalculator<2>(nurbs_);
-  int n = nurbs_->GetNumberOfControlPoints();
+  int n = nurbs_->GetTotalNumberOfControlPoints();
   std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
@@ -169,7 +169,7 @@ class AnIGATestSpline2 : public Test {
 
   iga::LinearEquationAssembler<2> linear_equation_assembler = iga::LinearEquationAssembler<2>(nurbs_);
   iga::ElementIntegralCalculator<2> elm_itg_calc = iga::ElementIntegralCalculator<2>(nurbs_);
-  int n = nurbs_->GetNumberOfControlPoints();
+  int n = nurbs_->GetTotalNumberOfControlPoints();
   std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::zeros);

@@ -56,7 +56,7 @@ void IRITWriter::Write1DSpline(std::ofstream &file, const std::any &spline) cons
   std::shared_ptr<spl::Spline<1>> spline_ptr = util::any_casts::GetSpline<1>(spline);
   bool rational = util::any_casts::IsRational<1>(spline);
   file << "[CURVE BSPLINE "
-      + IRITWriterUtils<1>::GetNumberOfControlPoints(spline_ptr) + IRITWriterUtils<1>::GetOrder(spline_ptr)
+      + IRITWriterUtils<1>::GetTotalNumberOfControlPoints(spline_ptr) + IRITWriterUtils<1>::GetOrder(spline_ptr)
       + GetPointType(rational, spline_ptr->GetPointDim()) + "\n" + IRITWriterUtils<1>::GetKnotVectors(spline_ptr)
       + IRITWriterUtils<1>::GetControlPoints(util::any_casts::IsRational<1>(spline), spline_ptr, spline);
 }
@@ -65,7 +65,7 @@ void IRITWriter::Write2DSpline(std::ofstream &file, const std::any &spline) cons
   std::shared_ptr<spl::Spline<2>> spline_ptr = util::any_casts::GetSpline<2>(spline);
   bool rational = util::any_casts::IsRational<2>(spline);
   file << "[SURFACE BSPLINE "
-      + IRITWriterUtils<2>::GetNumberOfControlPoints(spline_ptr) + IRITWriterUtils<2>::GetOrder(spline_ptr)
+      + IRITWriterUtils<2>::GetTotalNumberOfControlPoints(spline_ptr) + IRITWriterUtils<2>::GetOrder(spline_ptr)
       + GetPointType(rational, spline_ptr->GetPointDim()) + "\n" + IRITWriterUtils<2>::GetKnotVectors(spline_ptr)
       + IRITWriterUtils<2>::GetControlPoints(util::any_casts::IsRational<2>(spline), spline_ptr, spline);
 }
@@ -74,7 +74,7 @@ void IRITWriter::Write3DSpline(std::ofstream &file, const std::any &spline) cons
   std::shared_ptr<spl::Spline<3>> spline_ptr = util::any_casts::GetSpline<3>(spline);
   bool rational = util::any_casts::IsRational<3>(spline);
   file << "[TRIVAR BSPLINE "
-      + IRITWriterUtils<3>::GetNumberOfControlPoints(spline_ptr) + IRITWriterUtils<3>::GetOrder(spline_ptr)
+      + IRITWriterUtils<3>::GetTotalNumberOfControlPoints(spline_ptr) + IRITWriterUtils<3>::GetOrder(spline_ptr)
       + GetPointType(rational, spline_ptr->GetPointDim()) + "\n" + IRITWriterUtils<3>::GetKnotVectors(spline_ptr)
       + IRITWriterUtils<3>::GetControlPoints(util::any_casts::IsRational<3>(spline), spline_ptr, spline);
 }

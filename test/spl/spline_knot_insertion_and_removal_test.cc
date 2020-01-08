@@ -53,7 +53,7 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneMoreKnotAfterKnotInserti
 }
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneMoreControlPointAfterKnotInsertion) {  // NOLINT
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0] + 1);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[0], original_->GetNumberOfPointsPerDirection()[0] + 1);
 }
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
@@ -77,7 +77,7 @@ TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneLessKnotAfterKnotRemoval
 }
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, HasOneLessControlPointAfterKnotRemoval) {  // NOLINT
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[0], after_insertion_->GetPointsPerDirection()[0] - 1);
+  ASSERT_THAT(after_removal_->GetNumberOfPointsPerDirection()[0], after_insertion_->GetNumberOfPointsPerDirection()[0] - 1);
 }
 
 TEST_F(Random1DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotRemoval) {  // NOLINT
@@ -132,7 +132,7 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, HasOneMoreKnotAfterKnotInsertion
 }
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, HasOneMoreControlPointAfterKnotInsertion) {  // NOLINT
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0] + 1);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[0], original_->GetNumberOfPointsPerDirection()[0] + 1);
 }
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
@@ -156,7 +156,7 @@ TEST_F(Random1DNURBSForKnotInsertionAndRemoval, HasOneLessKnotAfterKnotRemoval) 
 }
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, HasOneLessControlPointAfterKnotRemoval) {  // NOLINT
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[0], after_insertion_->GetPointsPerDirection()[0] - 1);
+  ASSERT_THAT(after_removal_->GetNumberOfPointsPerDirection()[0], after_insertion_->GetNumberOfPointsPerDirection()[0] - 1);
 }
 
 TEST_F(Random1DNURBSForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
@@ -216,8 +216,8 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, HasOneMoreKnotPerDirectionAfte
 }
 
 TEST_F(Random2DBSplineForKnotInsertionAndRemoval, HasOneMoreControlPointPerDirectionAfterKnotInsertion) {  // NOLINT
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0] + 1);
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1] + 2);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[0], original_->GetNumberOfPointsPerDirection()[0] + 1);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[1], original_->GetNumberOfPointsPerDirection()[1] + 2);
 }
 
 TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
@@ -246,8 +246,8 @@ TEST_F(Random2DBSplineForKnotInsertionAndRemoval, HasOneLessKnotPerDirectionAfte
 }
 
 TEST_F(Random2DBSplineForKnotInsertionAndRemoval, HasOneLessControlPointPerDirectionAfterKnotRemoval) {  // NOLINT
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[0], after_insertion_->GetPointsPerDirection()[0] - 1);
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[1], after_insertion_->GetPointsPerDirection()[1] - 2);
+  ASSERT_THAT(after_removal_->GetNumberOfPointsPerDirection()[0], after_insertion_->GetNumberOfPointsPerDirection()[0] - 1);
+  ASSERT_THAT(after_removal_->GetNumberOfPointsPerDirection()[1], after_insertion_->GetNumberOfPointsPerDirection()[1] - 2);
 }
 
 TEST_F(Random2DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
@@ -308,8 +308,8 @@ TEST_F(Random2DNURBSForKnotInsertionAndRemoval, HasOneMoreKnotPerDirectionAfterK
 }
 
 TEST_F(Random2DNURBSForKnotInsertionAndRemoval, HasOneMoreControlPointPerDirectionAfterKnotInsertion) {  // NOLINT
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0] + 2);
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1] + 1);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[0], original_->GetNumberOfPointsPerDirection()[0] + 2);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[1], original_->GetNumberOfPointsPerDirection()[1] + 1);
 }
 
 TEST_F(Random2DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
@@ -398,9 +398,9 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, HasOneMoreKnotPerDirectionAfte
 }
 
 TEST_F(Random3DBSplineForKnotInsertionAndRemoval, HasOneMoreControlPointPerDirectionAfterKnotInsertion) {  // NOLINT
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0] + 1);
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1] + 1);
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[2], original_->GetPointsPerDirection()[2] + 1);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[0], original_->GetNumberOfPointsPerDirection()[0] + 1);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[1], original_->GetNumberOfPointsPerDirection()[1] + 1);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[2], original_->GetNumberOfPointsPerDirection()[2] + 1);
 }
 
 TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
@@ -432,9 +432,9 @@ TEST_F(Random3DBSplineForKnotInsertionAndRemoval, HasOneLessKnotPerDirectionAfte
 }
 
 TEST_F(Random3DBSplineForKnotInsertionAndRemoval, HasOneLessControlPointPerDirectionAfterKnotRemoval) {  // NOLINT
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[0], after_insertion_->GetPointsPerDirection()[0] - 1);
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[1], after_insertion_->GetPointsPerDirection()[1] - 1);
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[2], after_insertion_->GetPointsPerDirection()[2] - 1);
+  ASSERT_THAT(after_removal_->GetNumberOfPointsPerDirection()[0], after_insertion_->GetNumberOfPointsPerDirection()[0] - 1);
+  ASSERT_THAT(after_removal_->GetNumberOfPointsPerDirection()[1], after_insertion_->GetNumberOfPointsPerDirection()[1] - 1);
+  ASSERT_THAT(after_removal_->GetNumberOfPointsPerDirection()[2], after_insertion_->GetNumberOfPointsPerDirection()[2] - 1);
 }
 
 TEST_F(Random3DBSplineForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT
@@ -498,9 +498,9 @@ TEST_F(Random3DNURBSForKnotInsertionAndRemoval, HasOneMoreKnotPerDirectionAfterK
 }
 
 TEST_F(Random3DNURBSForKnotInsertionAndRemoval, HasOneMoreControlPointPerDirectionAfterKnotInsertion) {  // NOLINT
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[0], original_->GetPointsPerDirection()[0] + 1);
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[1], original_->GetPointsPerDirection()[1] + 1);
-  ASSERT_THAT(after_insertion_->GetPointsPerDirection()[2], original_->GetPointsPerDirection()[2] + 1);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[0], original_->GetNumberOfPointsPerDirection()[0] + 1);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[1], original_->GetNumberOfPointsPerDirection()[1] + 1);
+  ASSERT_THAT(after_insertion_->GetNumberOfPointsPerDirection()[2], original_->GetNumberOfPointsPerDirection()[2] + 1);
 }
 
 TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeGeometricallyAfterKnotInsertion) {  // NOLINT
@@ -532,9 +532,9 @@ TEST_F(Random3DNURBSForKnotInsertionAndRemoval, HasOneLessKnotPerDirectionAfterK
 }
 
 TEST_F(Random3DNURBSForKnotInsertionAndRemoval, HasOneLessControlPointPerDirectionAfterKnotRemoval) {  // NOLINT
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[0], after_insertion_->GetPointsPerDirection()[0] - 1);
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[1], after_insertion_->GetPointsPerDirection()[1] - 1);
-  ASSERT_THAT(after_removal_->GetPointsPerDirection()[2], after_insertion_->GetPointsPerDirection()[2] - 1);
+  ASSERT_THAT(after_removal_->GetNumberOfPointsPerDirection()[0], after_insertion_->GetNumberOfPointsPerDirection()[0] - 1);
+  ASSERT_THAT(after_removal_->GetNumberOfPointsPerDirection()[1], after_insertion_->GetNumberOfPointsPerDirection()[1] - 1);
+  ASSERT_THAT(after_removal_->GetNumberOfPointsPerDirection()[2], after_insertion_->GetNumberOfPointsPerDirection()[2] - 1);
 }
 
 TEST_F(Random3DNURBSForKnotInsertionAndRemoval, DoesNotChangeAfterKnotInsertionAndRemoval) {  // NOLINT

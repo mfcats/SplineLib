@@ -48,11 +48,11 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
                       rhs.weights_.begin(), rhs.weights_.end(),
                       [&](double weight_a, double weight_b) {
                         return util::numeric_settings::AreEqual<double>(weight_a, weight_b, tolerance);
-                      }) && PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::AreEqual(rhs, tolerance);
+                      }) && PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::AreEqual(rhs, Tolerance{tolerance});
   }
 
   virtual spl::ControlPoint GetHomogenousControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
-    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_per_dimension_);
     point_handler.SetCurrentIndex(indices);
     int first = this->dimensionality_ * point_handler.GetCurrent1DIndex();
     std::vector<double> coordinates;
@@ -65,7 +65,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
   }
 
   virtual spl::ControlPoint GetHomogenousControlPoint(int index_1d) const {
-    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_per_dimension_);
     point_handler.SetCurrentIndex(index_1d);
     int first = this->dimensionality_ * point_handler.GetCurrent1DIndex();
     std::vector<double> coordinates;
@@ -77,18 +77,18 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
     return spl::ControlPoint(coordinates);
   }
 
-  double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const override {
-    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
-    point_handler.SetCurrentIndex(indices);
+  Weight GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) const override {
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_per_dimension_);
+    point_handler.SetCurrentIndex(multi_index);
     int first = point_handler.GetCurrent1DIndex();
-    return weights_[first];
+    return Weight{weights_[first]};
   }
 
-  double GetWeight(int index_1d) const override {
-    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
+  Weight GetWeight(int index_1d) const override {
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_per_dimension_);
     point_handler.SetCurrentIndex(index_1d);
     int first = point_handler.GetCurrent1DIndex();
-    return weights_[first];
+    return Weight{weights_[first]};
   }
 
   double GetMinimumWeight() const {
@@ -107,24 +107,24 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
 
   void SetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, double weight, int dimension = 0,
       int (*before)(int) = nullptr) {
-    const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(this->number_of_points_);
-    if (before != nullptr) this->number_of_points_[dimension] = before(this->number_of_points_[dimension]);
-    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
+    const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(this->number_of_points_per_dimension_);
+    if (before != nullptr) this->number_of_points_per_dimension_[dimension] = before(this->number_of_points_per_dimension_[dimension]);
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_per_dimension_);
     point_handler.SetCurrentIndex(indices);
     int first = point_handler.GetCurrent1DIndex();
     weights_[first] = weight;
-    this->number_of_points_ = number_of_points_before;
+    this->number_of_points_per_dimension_ = number_of_points_before;
   }
 
   void SetWeight(int index_1d, double weight, int dimension = 0,
                  int (*before)(int) = nullptr) {
-    const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(this->number_of_points_);
-    if (before != nullptr) this->number_of_points_[dimension] = before(this->number_of_points_[dimension]);
-    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_);
+    const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(this->number_of_points_per_dimension_);
+    if (before != nullptr) this->number_of_points_per_dimension_[dimension] = before(this->number_of_points_per_dimension_[dimension]);
+    auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(this->number_of_points_per_dimension_);
     point_handler.SetCurrentIndex(index_1d);
     int first = point_handler.GetCurrent1DIndex();
     weights_[first] = weight;
-    this->number_of_points_ = number_of_points_before;
+    this->number_of_points_per_dimension_ = number_of_points_before;
   }
 
   void AddControlPoints(int number) override {
@@ -145,13 +145,13 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
 
   std::vector<double> GetDividedWeights(int first, int length, int dimension) {
     std::vector<double> weights;
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     point_handler_length[dimension] = length;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       auto indices = point_handler.GetCurrentIndex();
       indices[dimension] += first;
-      weights.emplace_back(GetWeight(indices));
+      weights.emplace_back(GetWeight(indices).Get());
     }
     return weights;
   }

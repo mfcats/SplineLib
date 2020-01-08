@@ -36,7 +36,7 @@ TEST_F(AnIGATestSpline, TestSolutionVTKWriterRefined) {  // NOLINT
     nurbs_refined->InsertKnot(ParametricCoordinate(knot), 1);
   }
   iga::LinearEquationAssembler linear_equation_assembler_ref(nurbs_refined);
-  int n_ref = nurbs_refined->GetNumberOfControlPoints();
+  int n_ref = nurbs_refined->GetTotalNumberOfControlPoints();
   std::shared_ptr<arma::dmat> matA_ref = std::make_shared<arma::dmat>(n_ref, n_ref, arma::fill::zeros);
   std::shared_ptr<arma::dvec> vecB_ref = std::make_shared<arma::dvec>(n_ref, arma::fill::zeros);
   std::shared_ptr<arma::dvec> srcCp_ref = std::make_shared<arma::dvec>(n_ref, arma::fill::ones);

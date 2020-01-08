@@ -39,12 +39,12 @@ std::shared_ptr<WeightedPhysicalSpace<2>> SurfaceGenerator::JoinPhysicalSpaces(
     std::shared_ptr<NURBS<1>> const &nurbs_T,
     std::shared_ptr<NURBS<1>> const &nurbs_C) const {
   std::array<int, 2> j_number_of_points =
-      {nurbs_T->GetNumberOfControlPoints(), nurbs_C->GetNumberOfControlPoints()};
+      {nurbs_T->GetTotalNumberOfControlPoints(), nurbs_C->GetTotalNumberOfControlPoints()};
   std::vector<spl::ControlPoint> j_control_points;
   std::vector<double> joined_weights;
-  for (int i = 0; i < nurbs_C->GetNumberOfControlPoints(); ++i) {
+  for (int i = 0; i < nurbs_C->GetTotalNumberOfControlPoints(); ++i) {
     std::array<int, 1> index_space_2 = {i};
-    for (int j = 0; j < nurbs_T->GetNumberOfControlPoints(); ++j) {
+    for (int j = 0; j < nurbs_T->GetTotalNumberOfControlPoints(); ++j) {
       std::array<int, 1> index_space_1 = {j};
       j_control_points.emplace_back(nurbs_T->GetControlPoint(index_space_1) +
           nurbs_C->GetControlPoint(index_space_2));
@@ -71,7 +71,7 @@ SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
                                                     std::array<double, 4>({0.0, 0.0, 1.0, 0.0}),
                                                     std::array<double, 4>({0.0, 0.0, 0.0, 1.0})});
   double weight_v;
-  int m = nurbs_C->GetNumberOfControlPoints();
+  int m = nurbs_C->GetTotalNumberOfControlPoints();
   std::vector<spl::ControlPoint> j_control_points(nbInter * m, spl::ControlPoint({0.0, 0.0, 0.0}));
   std::vector<double> j_weights(nbInter * m, 0.0);
   v_i.reserve(nbInter);

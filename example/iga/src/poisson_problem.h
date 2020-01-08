@@ -27,7 +27,7 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class PoissonProblem {
  public:
   PoissonProblem(std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> spl, const iga::itg::IntegrationRule &rule) :
-  spline_(std::move(spl)), num_cp_(spline_->GetNumberOfControlPoints()), rule_(rule) {
+  spline_(std::move(spl)), num_cp_(spline_->GetTotalNumberOfControlPoints()), rule_(rule) {
     linear_equation_assembler_ = std::make_shared<iga::LinearEquationAssembler<PARAMETRIC_DIMENSIONALITY>>(spline_);
     elm_itg_calc_ = std::make_shared<iga::ElementIntegralCalculator<PARAMETRIC_DIMENSIONALITY>>(spline_);
     matA_ = std::make_shared<arma::dmat>(num_cp_, num_cp_, arma::fill::zeros);

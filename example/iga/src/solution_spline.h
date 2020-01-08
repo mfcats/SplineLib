@@ -25,9 +25,9 @@ class SolutionSpline {
  public:
   SolutionSpline(const std::shared_ptr<spl::NURBS<PARAMETRIC_DIMENSIONALITY>> &spl, const arma::dvec &solution) {
     std::vector<spl::ControlPoint> control_points;
-    std::array<int, PARAMETRIC_DIMENSIONALITY> points_per_direction = spl->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> points_per_direction = spl->GetNumberOfPointsPerDirection();
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(points_per_direction);
-    for (uint64_t i = 0, l = 0; i < static_cast<uint64_t>(spl->GetNumberOfControlPoints()); ++i, ++point_handler, ++l) {
+    for (uint64_t i = 0, l = 0; i < static_cast<uint64_t>(spl->GetTotalNumberOfControlPoints()); ++i, ++point_handler, ++l) {
       std::vector<double> temp;
       for (int j = 0; j < spl->GetPointDim(); ++j) {
         temp.emplace_back(spl->GetControlPoint(point_handler.GetCurrentIndex(), j));

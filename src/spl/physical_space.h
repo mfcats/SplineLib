@@ -27,51 +27,56 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class PhysicalSpace {
  public:
   PhysicalSpace() = default;
-  PhysicalSpace(const std::vector<spl::ControlPoint> &control_points,
-                std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points);
-  PhysicalSpace(const PhysicalSpace &physical_space);
+  PhysicalSpace(std::vector<ControlPoint> const &control_points,
+                std::array<int, PARAMETRIC_DIMENSIONALITY> const &number_of_points);
+  PhysicalSpace(PhysicalSpace const &physical_space) = default;
   PhysicalSpace(PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &&other) noexcept = default;
-  PhysicalSpace & operator=(const PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs) = default;
+  PhysicalSpace & operator=(PhysicalSpace<PARAMETRIC_DIMENSIONALITY> const &rhs) = default;
   PhysicalSpace & operator=(PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &&rhs) noexcept = default;
   virtual ~PhysicalSpace() = default;
 
-  bool AreEqual(const PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs,
-                double tolerance = util::numeric_settings::GetEpsilon<double>()) const;
+  virtual int GetDimensionality() const;
+  int GetNumberOfPointsForDimension(Dimension const &dimension) const;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetNumberOfPointsPerDirection() const;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetMaximumPointIndexPerDirection() const;
+  virtual int GetTotalNumberOfControlPoints() const;
 
-  virtual spl::ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const;
-  virtual spl::ControlPoint GetControlPoint(int index_1d) const;
+  virtual ControlPoint GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) const;
+  virtual ControlPoint GetControlPoint(int index_1d) const;
+  std::vector<double> GetControlPoints() const;
 
-  void SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, const spl::ControlPoint &control_point,
-                       int dimension = 0, int (*before)(int) = nullptr);
-  void SetControlPoint(int index_1d, const spl::ControlPoint &control_point,
-                       int dimension = 0, int (*before)(int) = nullptr);
+  virtual Weight GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> const &/*indices*/) const;
+  virtual Weight GetWeight(int /*index_1d*/) const;
+  std::vector<Weight> GetWeights() const {
+    return std::vector<Weight>(total_number_of_points, Weight{1.0});
+  }
+
+  void SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index, ControlPoint const &control_point,
+                       Dimension const &dimension = Dimension{0}, int (*before)(int) = nullptr);
+  void SetControlPoint(int index_1d, ControlPoint const &control_point,
+                       Dimension const &dimension = Dimension{0}, int (*before)(int) = nullptr);
+
+  double GetExpansion() const;
+  double GetMaximumDistanceFromOrigin() const;
+
+  std::vector<ControlPoint> SplitControlPoints(Dimension const &dimension, int offset, int length);
+
+  bool AreEqual(PhysicalSpace<PARAMETRIC_DIMENSIONALITY> const &rhs,
+                Tolerance const &tolerance = Tolerance{util::numeric_settings::GetEpsilon<double>()}) const;
+
+  // TODO(all): The following methods should become protected.
+  void IncrementNumberOfPoints(int dimension);
+  void DecrementNumberOfPoints(int dimension);
 
   virtual void AddControlPoints(int number);
   virtual void RemoveControlPoints(int number);
 
-  virtual int GetNumberOfControlPoints() const;
-  std::array<int, PARAMETRIC_DIMENSIONALITY> GetPointsPerDirection() const;
-  std::array<int, PARAMETRIC_DIMENSIONALITY> GetMaximumPointIndexInEachDirection() const;
-
-  void IncrementNumberOfPoints(int dimension);
-  void DecrementNumberOfPoints(int dimension);
-
   void SetNumberOfPoints(int dimension, int value);
-
-  virtual int GetDimension() const;
-
-  virtual double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> /*indices*/) const;
-  virtual double GetWeight(int /*index_1d*/) const;
-
-  double GetExpansion() const;
-
-  double GetMaximumDistanceFromOrigin() const;
-
-  std::vector<spl::ControlPoint> GetDividedControlPoints(int first, int length, int dimension);
 
  protected:
   int dimensionality_{};
-  std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_{};
+  std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_per_dimension_{};
+  int total_number_of_points;
   std::vector<double> control_points_;
 };
 

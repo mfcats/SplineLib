@@ -138,16 +138,16 @@ class Spline {
     return parameter_space_->GetKnotVectorRange(direction);
   }
 
-  int GetNumberOfControlPoints() const {
-    return GetPhysicalSpace()->GetNumberOfControlPoints();
+  int GetTotalNumberOfControlPoints() const {
+    return GetPhysicalSpace()->GetTotalNumberOfControlPoints();
   }
 
-  std::array<int, PARAMETRIC_DIMENSIONALITY> GetPointsPerDirection() const {
-    return GetPhysicalSpace()->GetPointsPerDirection();
+  std::array<int, PARAMETRIC_DIMENSIONALITY> GetNumberOfPointsPerDirection() const {
+    return GetPhysicalSpace()->GetNumberOfPointsPerDirection();
   }
 
   int GetPointDim() const {
-    return GetPhysicalSpace()->GetDimension();
+    return GetPhysicalSpace()->GetDimensionality();
   }
 
   double GetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, int dimension) const {
@@ -171,11 +171,11 @@ class Spline {
   }
 
   double GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
-    return GetPhysicalSpace()->GetWeight(indices);
+    return GetPhysicalSpace()->GetWeight(indices).Get();
   }
 
   double GetWeight(int index_1d) const {
-    return GetPhysicalSpace()->GetWeight(index_1d);
+    return GetPhysicalSpace()->GetWeight(index_1d).Get();
   }
 
   void InsertKnot(ParametricCoordinate knot, int dimension, size_t multiplicity = 1) {
@@ -232,11 +232,11 @@ class Spline {
     for (uint64_t i = 0; i < num_bezier_segments; ++i) {
       bezier_segments[i] = DegreeElevateBezierSegment(GetBezierSegment(dimension, i), alpha, dimension);
     }
-    std::array<int, PARAMETRIC_DIMENSIONALITY> cps_per_dir = GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> cps_per_dir = GetNumberOfPointsPerDirection();
     cps_per_dir[dimension] += (GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> cp_handler(cps_per_dir);
     GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
-    int delta_num_cps = cp_handler.GetNumberOfTotalMultiIndices() - GetPhysicalSpace()->GetNumberOfControlPoints();
+    int delta_num_cps = cp_handler.GetNumberOfTotalMultiIndices() - GetPhysicalSpace()->GetTotalNumberOfControlPoints();
     GetPhysicalSpace()->AddControlPoints(delta_num_cps);
     parameter_space_->ElevateDegree(dimension);
     parameter_space_->IncrementMultiplicityOfAllKnots(dimension);
@@ -257,12 +257,12 @@ class Spline {
         return false;
       }
     }
-    std::array<int, PARAMETRIC_DIMENSIONALITY> cps_per_dir = GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> cps_per_dir = GetNumberOfPointsPerDirection();
     cps_per_dir[dimension] -= num_bezier_segments;
     GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(cps_per_dir);
     int delta_num_cps =
-        GetPhysicalSpace()->GetNumberOfControlPoints() - point_handler.GetNumberOfTotalMultiIndices();
+        GetPhysicalSpace()->GetTotalNumberOfControlPoints() - point_handler.GetNumberOfTotalMultiIndices();
     GetPhysicalSpace()->RemoveControlPoints(delta_num_cps);
     parameter_space_->ReduceDegree(dimension);
     parameter_space_->DecrementMultiplicityOfAllKnots(dimension);
@@ -342,9 +342,9 @@ class Spline {
   }
 
   std::vector<spl::ControlPoint> GetBezierSegment(int dimension, int segment) const {
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointsPerDirection());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetNumberOfPointsPerDirection());
     int width = GetDegree(dimension).Get() + 1;
-    int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
+    int segment_length = GetTotalNumberOfControlPoints() / GetNumberOfPointsPerDirection()[dimension];
     std::vector<spl::ControlPoint> bezier_cps(static_cast<size_t>(width * segment_length),
                                               spl::ControlPoint(GetPointDim() + 1));
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
@@ -365,7 +365,7 @@ class Spline {
   std::vector<spl::ControlPoint> DegreeElevateBezierSegment(const std::vector<spl::ControlPoint> &bezier_cps,
                                                             std::vector<double> alpha, int dimension) const {
     int width = GetDegree(dimension).Get() + 2;
-    int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
+    int segment_length = GetTotalNumberOfControlPoints() / GetNumberOfPointsPerDirection()[dimension];
     util::MultiIndexHandler<2> cp_handler_new({width, segment_length});
     util::MultiIndexHandler<2> cp_handler_old({width - 1, segment_length});
     std::vector<spl::ControlPoint> new_cps(cp_handler_new.GetNumberOfTotalMultiIndices(),
@@ -383,7 +383,7 @@ class Spline {
 
   std::vector<spl::ControlPoint> DegreeReduceBezierSegment(const std::vector<spl::ControlPoint> &bezier_cps,
                                                            double tolerance, int dimension, bool* successful) {
-    int segment_length = GetNumberOfControlPoints() / GetPointsPerDirection()[dimension];
+    int segment_length = GetTotalNumberOfControlPoints() / GetNumberOfPointsPerDirection()[dimension];
     util::MultiIndexHandler<2> cp_handler_old({GetDegree(dimension).Get() + 1, segment_length});
     util::MultiIndexHandler<2> cp_handler_new({GetDegree(dimension).Get(), segment_length});
     double max_error_bound = 0.0;
@@ -431,7 +431,7 @@ class Spline {
 
   void SetNewBezierSegmentControlPoints(const std::vector<std::vector<spl::ControlPoint>> &bezier_segments,
                                         int dimension) {
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetPointsPerDirection());
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(GetNumberOfPointsPerDirection());
     int width = GetDegree(dimension).Get() + 1;
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
       int index_in_dir = point_handler[Dimension{dimension}];

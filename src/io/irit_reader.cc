@@ -102,7 +102,7 @@ std::any IRITReader::Get3DSpline(int start, const std::vector<std::string> &entr
       std::make_shared<spl::NURBS<3>>(knot_vector, degree, control_points, weights));
 }
 
-int IRITReader::GetNumberOfControlPoints(int start, const std::vector<std::string> &entries) {
+int IRITReader::GetTotalNumberOfControlPoints(int start, const std::vector<std::string> &entries) {
   int total_number_of_points = 1;
   for (int i = 0; i < GetDimension(entries[start]); i++) {
     total_number_of_points *=
@@ -116,7 +116,7 @@ std::vector<spl::ControlPoint> IRITReader::GetControlPoints(int start,
                                                                 bool rational,
                                                                 std::vector<double> weights) const {
   std::vector<spl::ControlPoint> control_points;
-  int number_of_control_points = GetNumberOfControlPoints(start, entries);
+  int number_of_control_points = GetTotalNumberOfControlPoints(start, entries);
   start = GetPositionOfFirstControlPoint(start, entries);
   for (int i = 0; i < number_of_control_points; i++) {
     std::vector<double> coordinates;
@@ -140,7 +140,7 @@ std::vector<spl::ControlPoint> IRITReader::GetControlPoints(int start,
 std::vector<double> IRITReader::GetWeights(int start,
                                                const std::vector<std::string> &entries,
                                                bool rational) const {
-  auto number_of_control_points = static_cast<size_t>(GetNumberOfControlPoints(start, entries));
+  auto number_of_control_points = static_cast<size_t>(GetTotalNumberOfControlPoints(start, entries));
   std::vector<double> weights(number_of_control_points, 1.0);
   if (rational) {
     start = GetPositionOfFirstControlPoint(start, entries);

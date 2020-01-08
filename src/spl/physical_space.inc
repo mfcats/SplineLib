@@ -16,9 +16,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 template<int PARAMETRIC_DIMENSIONALITY>
-PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::PhysicalSpace(const std::vector<spl::ControlPoint> &control_points,
-                                                        std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points)
-    : dimensionality_(control_points[0].GetDimensionality()), number_of_points_(number_of_points) {
+PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::PhysicalSpace(std::vector<spl::ControlPoint> const &control_points,
+                                                        std::array<int, PARAMETRIC_DIMENSIONALITY> const &number_of_points)
+    : dimensionality_(control_points[0].GetDimensionality()), number_of_points_per_dimension_(number_of_points) {
   uint64_t total_number_of_points = 1;
   for (Dimension dimension{0}; dimension < Dimension{PARAMETRIC_DIMENSIONALITY}; ++dimension) {
     total_number_of_points *= number_of_points[dimension.Get()];
@@ -38,26 +38,22 @@ PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::PhysicalSpace(const std::vector<spl::C
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::PhysicalSpace(const PhysicalSpace &physical_space)
-    : dimensionality_(physical_space.dimensionality_), number_of_points_(physical_space.number_of_points_),
-      control_points_(physical_space.control_points_) {}
-
-template<int PARAMETRIC_DIMENSIONALITY>
-bool PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::AreEqual(const PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &rhs,
-                                                        double tolerance) const {
+bool PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::AreEqual(PhysicalSpace<PARAMETRIC_DIMENSIONALITY> const &rhs,
+                                                        Tolerance const &tolerance) const {
   return std::equal(
       control_points_.begin(), control_points_.end(), rhs.control_points_.begin(), rhs.control_points_.end(),
-      [&](double cp_a, double cp_b) {return util::numeric_settings::AreEqual<double>(cp_a, cp_b, tolerance);}) &&
+      [&](double cp_a, double cp_b) {return util::numeric_settings::AreEqual<double>(cp_a, cp_b, tolerance.Get());}) &&
          std::equal(
-      number_of_points_.begin(), number_of_points_.end(), rhs.number_of_points_.begin(), rhs.number_of_points_.end(),
-      [&](int number_a, int number_b) {return util::numeric_settings::AreEqual<double>(number_a, number_b);});
+             number_of_points_per_dimension_.begin(), number_of_points_per_dimension_.end(),
+             rhs.number_of_points_per_dimension_.begin(), rhs.number_of_points_per_dimension_.end(),
+             [&](int number_a, int number_b) {return util::numeric_settings::AreEqual<double>(number_a, number_b);});
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
 spl::ControlPoint PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetControlPoint(
-    std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
-  auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
-  point_handler.SetCurrentIndex(indices);
+    std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) const {
+  auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_per_dimension_);
+  point_handler.SetCurrentIndex(multi_index);
   int first = dimensionality_ * point_handler.GetCurrent1DIndex();
   std::vector<double> coordinates;
   coordinates.reserve(dimensionality_);
@@ -69,7 +65,7 @@ spl::ControlPoint PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetControlPoint(
 
 template<int PARAMETRIC_DIMENSIONALITY>
 spl::ControlPoint PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetControlPoint(int index_1d) const {
-  auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
+  auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_per_dimension_);
   point_handler.SetCurrentIndex(index_1d);
   int first = dimensionality_ * point_handler.GetCurrent1DIndex();
   std::vector<double> coordinates;
@@ -81,31 +77,34 @@ spl::ControlPoint PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetControlPoint(int 
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices,
-    const spl::ControlPoint &control_point, int dimension, int (*before)(int)) {
-  const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_);
-  if (before != nullptr) number_of_points_[dimension] = before(number_of_points_[dimension]);
-  auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
-  point_handler.SetCurrentIndex(indices);
+void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SetControlPoint(
+    std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index,
+    ControlPoint const &control_point, Dimension const &dimension, int (*before)(int)) {
+  const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_per_dimension_);
+  if (before != nullptr)
+    GetValue(number_of_points_per_dimension_, dimension) = before(GetValue(number_of_points_per_dimension_, dimension));
+  auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_per_dimension_);
+  point_handler.SetCurrentIndex(multi_index);
   int first = dimensionality_ * point_handler.GetCurrent1DIndex();
   for (int coordinate = 0; coordinate < dimensionality_; coordinate++) {
     control_points_[first + coordinate] = control_point[Dimension{coordinate}];
   }
-  number_of_points_ = number_of_points_before;
+  number_of_points_per_dimension_ = number_of_points_before;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SetControlPoint(int index_1d, const spl::ControlPoint &control_point,
-                                                               int dimension, int (*before)(int)) {
-  const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_);
-  if (before != nullptr) number_of_points_[dimension] = before(number_of_points_[dimension]);
-  auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_);
+void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SetControlPoint(int index_1d, ControlPoint const &control_point,
+                                                               Dimension const &dimension, int (*before)(int)) {
+  const std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_before(number_of_points_per_dimension_);
+  if (before != nullptr)
+    GetValue(number_of_points_per_dimension_, dimension) = before(GetValue(number_of_points_per_dimension_, dimension));
+  auto point_handler = util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>(number_of_points_per_dimension_);
   point_handler.SetCurrentIndex(index_1d);
   int first = dimensionality_ * point_handler.GetCurrent1DIndex();
   for (int coordinate = 0; coordinate < dimensionality_; coordinate++) {
     control_points_[first + coordinate] = control_point[Dimension{coordinate}];
   }
-  number_of_points_ = number_of_points_before;
+  number_of_points_per_dimension_ = number_of_points_before;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
@@ -123,19 +122,19 @@ void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::RemoveControlPoints(int number) {
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-int PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetNumberOfControlPoints() const {
+int PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetTotalNumberOfControlPoints() const {
   return static_cast<int>(control_points_.size()) / dimensionality_;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-std::array<int, PARAMETRIC_DIMENSIONALITY> PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetPointsPerDirection() const {
-  return number_of_points_;
+std::array<int, PARAMETRIC_DIMENSIONALITY> PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetNumberOfPointsPerDirection() const {
+  return number_of_points_per_dimension_;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
 std::array<int, PARAMETRIC_DIMENSIONALITY>
-PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetMaximumPointIndexInEachDirection() const {
-  std::array<int, PARAMETRIC_DIMENSIONALITY> maximum_index = number_of_points_;
+PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetMaximumPointIndexPerDirection() const {
+  std::array<int, PARAMETRIC_DIMENSIONALITY> maximum_index = number_of_points_per_dimension_;
   for (auto &index : maximum_index) {
     --index;
   }
@@ -144,33 +143,33 @@ PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetMaximumPointIndexInEachDirection() 
 
 template<int PARAMETRIC_DIMENSIONALITY>
 void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::IncrementNumberOfPoints(int dimension) {
-  ++number_of_points_[dimension];
+  ++number_of_points_per_dimension_[dimension];
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
 void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DecrementNumberOfPoints(int dimension) {
-  --number_of_points_[dimension];
+  --number_of_points_per_dimension_[dimension];
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
 void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SetNumberOfPoints(int dimension, int value) {
-  number_of_points_[dimension] = value;
+  number_of_points_per_dimension_[dimension] = value;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-int PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetDimension() const {
+int PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetDimensionality() const {
   return dimensionality_;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-double PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetWeight(
-    std::array<int, PARAMETRIC_DIMENSIONALITY> /*indices*/) const {
-  return 1.0;
+Weight PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetWeight(
+    std::array<int, PARAMETRIC_DIMENSIONALITY> const &/*indices*/) const {
+  return Weight{1.0};
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-double PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetWeight(int /*index_1d*/) const {
-  return 1.0;
+Weight PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetWeight(int /*index_1d*/) const {
+  return Weight{1.0};
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
@@ -187,7 +186,7 @@ double PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetMaximumDistanceFromOrigin() 
   double maximum = 0;
   std::vector<double> point(dimensionality_, 0);
   std::vector<double> origin(dimensionality_, 0);
-  for (int i = 0; i < GetNumberOfControlPoints(); ++i) {
+  for (int i = 0; i < GetTotalNumberOfControlPoints(); ++i) {
     for (int j = 0; j < dimensionality_; ++j) {
       point[j] = control_points_[i * dimensionality_ + j];
     }
@@ -198,16 +197,27 @@ double PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetMaximumDistanceFromOrigin() 
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-std::vector<spl::ControlPoint> PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetDividedControlPoints(int first, int length,
-                                                                                                 int dimension) {
+std::vector<spl::ControlPoint> PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SplitControlPoints(const Dimension &dimension,
+                                                                                            int offset,
+                                                                                            int length) {
   std::vector<spl::ControlPoint> points;
-  std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = GetPointsPerDirection();
-  point_handler_length[dimension] = length;
+  std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = GetNumberOfPointsPerDirection();
+  GetValue(point_handler_length, dimension) = length;
   util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
   for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
     auto indices = point_handler.GetCurrentIndex();
-    indices[dimension] += first;
+    GetValue(indices, dimension) += offset;
     points.emplace_back(GetControlPoint(indices));
   }
   return points;
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+int PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetNumberOfPointsForDimension(Dimension const &dimension) const {
+  return GetValue(number_of_points_per_dimension_, dimension);
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+std::vector<double> PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetControlPoints() const {
+  return control_points_;
 }

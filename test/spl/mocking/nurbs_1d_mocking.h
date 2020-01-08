@@ -36,16 +36,16 @@ class MockParameterSpace14111 : public spl::ParameterSpace<1> {
 
 class MockWeightedPhysicalSpace14111 : public spl::WeightedPhysicalSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
+  MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 1> const &));
   MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 1>));
-  MOCK_CONST_METHOD0(GetDimension, int());
+  MOCK_CONST_METHOD0(GetDimensionality, int());
 };
 
 void mock_weights(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace14111>> &w_physical_space) {
   ON_CALL(*w_physical_space, GetWeight(_))
-      .WillByDefault(Return(1));
+      .WillByDefault(Return(Weight{1.0}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{1}))
-      .WillByDefault(Return(4));
+      .WillByDefault(Return(Weight{4.0}));
 }
 
 void mock_homogenous(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace14111>> &w_physical_space) {
@@ -63,7 +63,7 @@ void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysi
                                 &w_physical_space) {
   mock_weights(w_physical_space);
   mock_homogenous(w_physical_space);
-  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(2));
+  ON_CALL(*w_physical_space, GetDimensionality()).WillByDefault(Return(2));
 }
 
 void set_get_basis_function_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace14111>> &parameter_space) {
@@ -93,26 +93,26 @@ class MockParameterSpace1009 : public spl::ParameterSpace<1> {
 
 class MockWeightedPhysicalSpace1009 : public spl::WeightedPhysicalSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
+  MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 1> const &));
   MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 1>));
-  MOCK_CONST_METHOD0(GetDimension, int());
+  MOCK_CONST_METHOD0(GetDimensionality, int());
 };
 
 void mock_weights(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace1009>> &w_physical_space) {
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{0}))
-      .WillByDefault(Return(1.0));
+      .WillByDefault(Return(Weight{1.0}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{1}))
-      .WillByDefault(Return(0.9));
+      .WillByDefault(Return(Weight{0.9}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{2}))
-      .WillByDefault(Return(0.7));
+      .WillByDefault(Return(Weight{0.7}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{3}))
-      .WillByDefault(Return(0.5));
+      .WillByDefault(Return(Weight{0.5}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{4}))
-      .WillByDefault(Return(0.8));
+      .WillByDefault(Return(Weight{0.8}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{5}))
-      .WillByDefault(Return(1.2));
+      .WillByDefault(Return(Weight{1.2}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{6}))
-      .WillByDefault(Return(2.0));
+      .WillByDefault(Return(Weight{2.0}));
 }
 
 void mock_homogenous(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace1009>> &w_physical_space) {
@@ -136,7 +136,7 @@ void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysi
                                 &w_physical_space) {
   mock_weights(w_physical_space);
   mock_homogenous(w_physical_space);
-  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(3));
+  ON_CALL(*w_physical_space, GetDimensionality()).WillByDefault(Return(3));
 }
 
 void set_throw_method(const std::shared_ptr<NiceMock<MockParameterSpace1009>> &parameter_space) {
@@ -221,16 +221,16 @@ class MockParameterSpace112 : public spl::ParameterSpace<1> {
 
 class MockWeightedPhysicalSpace112 : public spl::WeightedPhysicalSpace<1> {
  public:
-  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1>));
-  MOCK_CONST_METHOD1(GetWeight, double(std::array<int, 1>));
-  MOCK_CONST_METHOD0(GetDimension, int());
+  MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 1> const &));
+  MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 1> const &));
+  MOCK_CONST_METHOD0(GetDimensionality, int());
 };
 
 void mock_weights(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace112>> &w_physical_space) {
   ON_CALL(*w_physical_space, GetWeight(_))
-      .WillByDefault(Return(1.0));
+      .WillByDefault(Return(Weight{1.0}));
   ON_CALL(*w_physical_space, GetWeight(std::array<int, 1>{2}))
-      .WillByDefault(Return(2.0));
+      .WillByDefault(Return(Weight{2.0}));
 }
 
 void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysicalSpace112>>
@@ -242,7 +242,7 @@ void mock_weightedPhysicalSpace(const std::shared_ptr<NiceMock<MockWeightedPhysi
       .WillByDefault(Return(spl::ControlPoint({1.0, 1.0, 1.0})));
   ON_CALL(*w_physical_space, GetControlPoint(std::array<int, 1>{2}))
       .WillByDefault(Return(spl::ControlPoint({0.0, 1.0, 2.0})));
-  ON_CALL(*w_physical_space, GetDimension()).WillByDefault(Return(2));
+  ON_CALL(*w_physical_space, GetDimensionality()).WillByDefault(Return(2));
 }
 
 void set_get_basis_function_nurbs(const std::shared_ptr<NiceMock<MockParameterSpace112>> &parameter_space) {

@@ -52,7 +52,7 @@ TEST_F(AnIGATestSpline, TestSolutionVTKWriter) {  // NOLINT
 
   iga::LinearEquationAssembler<1> linear_equation_assembler = iga::LinearEquationAssembler<1>(nurbs_);
   iga::ElementIntegralCalculator<1> elm_itg_calc = iga::ElementIntegralCalculator<1>(nurbs_);
-  int n = nurbs_->GetNumberOfControlPoints();
+  int n = nurbs_->GetTotalNumberOfControlPoints();
   std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);
@@ -163,7 +163,7 @@ class ACube : public Test {
 
   iga::LinearEquationAssembler<3> linear_equation_assembler = iga::LinearEquationAssembler<3>(nurbs_);
   iga::ElementIntegralCalculator<3> elm_itg_calc = iga::ElementIntegralCalculator<3>(nurbs_);
-  int n = nurbs_->GetNumberOfControlPoints();
+  int n = nurbs_->GetTotalNumberOfControlPoints();
   std::shared_ptr<arma::dmat> matA = std::make_shared<arma::dmat>(n, n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> vecB = std::make_shared<arma::dvec>(n, arma::fill::zeros);
   std::shared_ptr<arma::dvec> srcCp = std::make_shared<arma::dvec>(n, arma::fill::ones);

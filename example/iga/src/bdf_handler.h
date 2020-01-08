@@ -42,7 +42,7 @@ class BDFHandler {
 
  private:
   arma::dmat GetTimeDiscretizationMatrix(const iga::itg::IntegrationRule &rule) const {
-    auto num_cp = static_cast<uint64_t>(spline_->GetNumberOfControlPoints());
+    auto num_cp = static_cast<uint64_t>(spline_->GetTotalNumberOfControlPoints());
     arma::dmat A(num_cp, num_cp, arma::fill::zeros);
     for (int e = 0; e < elm_gen_->GetNumberOfElements(); ++e) {
       std::vector<iga::elm::ElementIntegrationPoint<PARAMETRIC_DIMENSIONALITY>> elm_intgr_pnts =

@@ -53,7 +53,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
   NURBS(const NURBS<PARAMETRIC_DIMENSIONALITY> &nurbs, const std::vector<spl::ControlPoint> &control_points)
       : Spline<PARAMETRIC_DIMENSIONALITY>(nurbs) {
     WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>
-        weighted_physical_space(control_points, nurbs.physical_space_->GetWeights(), nurbs.GetPointsPerDirection());
+        weighted_physical_space(control_points, nurbs.physical_space_->GetWeights(), nurbs.GetNumberOfPointsPerDirection());
     physical_space_ = std::make_shared<WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(weighted_physical_space);
   }
 
@@ -73,21 +73,21 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
   }
 
   void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     ++point_handler_length[dimension];
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     std::array<int, PARAMETRIC_DIMENSIONALITY> maximum_point_index =
-        physical_space_->GetMaximumPointIndexInEachDirection();
+        physical_space_->GetMaximumPointIndexPerDirection();
     ++maximum_point_index[dimension];
     point_handler.SetCurrentIndex(maximum_point_index);
-    int new_points = physical_space_->GetNumberOfControlPoints() / maximum_point_index[dimension];
+    int new_points = physical_space_->GetTotalNumberOfControlPoints() / maximum_point_index[dimension];
     physical_space_->AddControlPoints(new_points);
     for (int i = point_handler.GetNumberOfTotalMultiIndices() - 1; i >= 0; --i, --point_handler) {
       auto current_point = point_handler[Dimension{dimension}];
       std::array<int, PARAMETRIC_DIMENSIONALITY> indices = point_handler.GetCurrentIndex();
       spl::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling, current_point, first, last);
       double new_weight = GetNewWeight(indices, dimension, scaling, current_point, first, last);
-      physical_space_->SetControlPoint(indices, new_control_point, dimension,
+      physical_space_->SetControlPoint(indices, new_control_point, Dimension{dimension},
                                        util::numeric_operations::increment<int>);
       physical_space_->SetWeight(indices, new_weight, dimension, util::numeric_operations::increment<int>);
     }
@@ -105,7 +105,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
     }
     SetNewControlPoints(temp, last, i - off, off, dimension);
     SetNewWeights(temp_w, last, i - off, off, dimension);
-    physical_space_->RemoveControlPoints(this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension]);
+    physical_space_->RemoveControlPoints(this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension]);
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
   }
@@ -125,7 +125,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
     int first = 0;
     for (int i = 0; i < 2; ++i) {
       int length = new_knot_vectors[i][dimension]->GetNumberOfKnots() - degrees[dimension].Get() - 1;
-      std::vector<spl::ControlPoint> points = physical_space_->GetDividedControlPoints(first, length, dimension);
+      std::vector<spl::ControlPoint> points = physical_space_->SplitControlPoints(Dimension{dimension}, first, length);
       std::vector<double> weights = physical_space_->GetDividedWeights(first, length, dimension);
       spl::NURBS<PARAMETRIC_DIMENSIONALITY> spline(new_knot_vectors[i], degrees, points, weights);
       subdivided_splines[i] = std::make_shared<spl::NURBS<PARAMETRIC_DIMENSIONALITY>>(spline);
@@ -165,7 +165,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
                                             int dimension) const {
     if (derivative == std::array<int, PARAMETRIC_DIMENSIONALITY>{0}) {
       return this->parameter_space_->GetBasisFunctions(indices, param_coord)
-          * physical_space_->GetWeight(indices) / GetEvaluatedWeightSum(param_coord);
+          * physical_space_->GetWeight(indices).Get() / GetEvaluatedWeightSum(param_coord);
     }
     return (GetEvaluatedDerivativeWeight(param_coord, derivative, indices)
         - GetDerivativesSum(param_coord, derivative, indices, dimension))
@@ -219,14 +219,14 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
 
   double GetEvaluatedWeight(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord,
       std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
-    return this->parameter_space_->GetBasisFunctions(indices, param_coord) * physical_space_->GetWeight(indices);
+    return this->parameter_space_->GetBasisFunctions(indices, param_coord) * physical_space_->GetWeight(indices).Get();
   }
 
   double GetEvaluatedDerivativeWeight(std::array<ParametricCoordinate, PARAMETRIC_DIMENSIONALITY> param_coord,
                                       std::array<int, PARAMETRIC_DIMENSIONALITY> derivative,
                                       std::array<int, PARAMETRIC_DIMENSIONALITY> indices) const {
     return this->parameter_space_->GetBasisFunctionDerivatives(indices, param_coord, derivative)
-        * physical_space_->GetWeight(indices);
+        * physical_space_->GetWeight(indices).Get();
   }
 
   util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> GetDerivativeHandler(
@@ -281,20 +281,20 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
                       int current_point, int first, int last) {
     if (current_point > last) {
       --indices[dimension];
-      return physical_space_->GetWeight(indices);
+      return physical_space_->GetWeight(indices).Get();
     }
     if (current_point >= first) {
       std::array<int, PARAMETRIC_DIMENSIONALITY> lower_indices = indices;
       --lower_indices[dimension];
-      double upper_weight = physical_space_->GetWeight(indices);
-      double lower_weight = physical_space_->GetWeight(lower_indices);
+      double upper_weight = physical_space_->GetWeight(indices).Get();
+      double lower_weight = physical_space_->GetWeight(lower_indices).Get();
       return scaling[current_point - first] * upper_weight + (1 - scaling[current_point - first]) * lower_weight;
     }
-    return physical_space_->GetWeight(indices);
+    return physical_space_->GetWeight(indices).Get();
   }
 
   void SetNewControlPoints(const std::vector<double> &temp, int last, int ii, int off, int dimension) {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     for (int m = 0; m < point_handler.GetNumberOfTotalMultiIndices(); ++m, ++point_handler) {
       int k = point_handler[Dimension{dimension}];
@@ -304,20 +304,20 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
         std::vector<double> coordinates(temp.begin() + index, temp.begin() + index + this->GetPointDim());
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k - off < ii ? k : k - 1;
-        physical_space_->SetControlPoint(indices, spl::ControlPoint(coordinates), dimension,
+        physical_space_->SetControlPoint(indices, spl::ControlPoint(coordinates), Dimension{dimension},
                                          util::numeric_operations::decrement<int>);
       }
-      if ((k <= off && k - off < 1) || (k >= last + 1 && k < this->GetPointsPerDirection()[dimension])) {
+      if ((k <= off && k - off < 1) || (k >= last + 1 && k < this->GetNumberOfPointsPerDirection()[dimension])) {
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k <= off ? k : k - 1;
-        physical_space_->SetControlPoint(indices, this->GetControlPoint(point_handler.GetCurrentIndex()), dimension,
-                                         util::numeric_operations::decrement<int>);
+        physical_space_->SetControlPoint(indices, this->GetControlPoint(point_handler.GetCurrentIndex()),
+                                         Dimension{dimension}, util::numeric_operations::decrement<int>);
       }
     }
   }
 
   void SetNewWeights(const std::vector<double> &temp, int last, int ii, int off, int dimension) {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
     for (int m = 0; m < point_handler.GetNumberOfTotalMultiIndices(); ++m, ++point_handler) {
       int k = point_handler[Dimension{dimension}];
@@ -327,7 +327,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
         indices[dimension] = k - off < ii ? k : k - 1;
         physical_space_->SetWeight(indices, temp[index], dimension, util::numeric_operations::decrement<int>);
       }
-      if ((k <= off && k - off < 1) || (k >= last + 1 && k < this->GetPointsPerDirection()[dimension])) {
+      if ((k <= off && k - off < 1) || (k >= last + 1 && k < this->GetNumberOfPointsPerDirection()[dimension])) {
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k <= off ? k : k - 1;
         physical_space_->SetWeight(indices, this->GetWeight(point_handler.GetCurrentIndex()), dimension,
@@ -338,9 +338,9 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
 
   std::vector<double> GetTempNewControlPoints(const std::vector<double> &scaling, const std::vector<double> &temp_w,
                                               int off, int last, int i, int j, int dimension) const {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
-    int new_points = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
+    int new_points = this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension];
     std::vector<double> temp(new_points * this->GetPointDim() * (last - off + 2), 0);
     std::shared_ptr<std::vector<double>> temp_ptr = std::make_shared<std::vector<double>>(temp);
     for (int l = 0; l < point_handler.GetNumberOfTotalMultiIndices(); ++l, ++point_handler) {
@@ -377,9 +377,9 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
 
   std::vector<double> GetTempNewWeights(const std::vector<double> &scaling, int off, int last,
                                         int i, int j, int dimension) const {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
-    int new_control_points = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
+    int new_control_points = this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension];
     std::vector<double> temp_w(new_control_points * (last - off + 2), 0);
     std::shared_ptr<std::vector<double>> temp_w_ptr = std::make_shared<std::vector<double>>(temp_w);
     for (int l = 0; l < point_handler.GetNumberOfTotalMultiIndices(); ++l, ++point_handler) {
@@ -416,10 +416,10 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
     auto minw = physical_space_->GetMinimumWeight();
     tolerance = tolerance * minw / (1 + maxdist);
 
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetPointsPerDirection();
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     point_handler_length[dimension] = 0;
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
-    int new_points = this->GetNumberOfControlPoints() / this->GetPointsPerDirection()[dimension];
+    int new_points = this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension];
     size_t temp_length = temp.size() / new_points;
     size_t temp_w_length = temp_w.size() / new_points;
     for (int l = 0; l < new_points; ++l, ++point_handler) {
@@ -439,7 +439,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
           temp2[k] = alfi * temp[offset + (i - off + 1) * this->GetPointDim() + k] * temp_w[w_offset + i - off + 1]
               + (1 - alfi) * temp[offset + (i - off - 1) * this->GetPointDim() + k] * temp_w[w_offset + i - off - 1];
         }
-        temp1[this->GetPointDim()] = physical_space_->GetWeight(indices);
+        temp1[this->GetPointDim()] = physical_space_->GetWeight(indices).Get();
         temp2[this->GetPointDim()] =
             alfi * temp_w[w_offset + i - off + 1] + (1 - alfi) * temp_w[w_offset + i - off - 1];
         if (util::vector_utils::ComputeDistance(temp1, temp2) > tolerance) {

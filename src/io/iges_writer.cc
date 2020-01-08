@@ -137,13 +137,13 @@ void IGESWriter::GetParameterData1D(std::string *contents,
   for (auto &knot : knots) {
     contents->append(util::string_operations::GetStringWithHighPrecision(knot.Get()) + delimiter);
   }
-  for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
+  for (int i = 0; i < spl->GetTotalNumberOfControlPoints(); ++i) {
     contents->append(util::string_operations::GetStringWithHighPrecision(spl->GetWeight(i)) + delimiter);
   }
-  for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
+  for (int i = 0; i < spl->GetTotalNumberOfControlPoints(); ++i) {
     for (int j = 0; j < 3; ++j) {
       contents->append(util::string_operations::GetStringWithHighPrecision(Get3DControlPoint(spl, i, j)));
-      if (i != spl->GetNumberOfControlPoints() - 1 || j != 2) {
+      if (i != spl->GetTotalNumberOfControlPoints() - 1 || j != 2) {
         contents->append(delimiter);
       }
     }
@@ -174,13 +174,13 @@ void IGESWriter::GetParameterData2D(std::string *contents,
   for (auto &i : knots2) {
     contents->append(util::string_operations::GetStringWithHighPrecision(i.Get()) + delimiter);
   }
-  for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
+  for (int i = 0; i < spl->GetTotalNumberOfControlPoints(); ++i) {
     contents->append(util::string_operations::GetStringWithHighPrecision(spl->GetWeight(i)) + delimiter);
   }
-  for (int i = 0; i < spl->GetNumberOfControlPoints(); ++i) {
+  for (int i = 0; i < spl->GetTotalNumberOfControlPoints(); ++i) {
     for (int j = 0; j < 3; ++j) {
       contents->append(util::string_operations::GetStringWithHighPrecision(Get3DControlPoint(spl, i, j)));
-      if (i != spl->GetNumberOfControlPoints() - 1 || j != 2) {
+      if (i != spl->GetTotalNumberOfControlPoints() - 1 || j != 2) {
         contents->append(delimiter);
       }
     }
