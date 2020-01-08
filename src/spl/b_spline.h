@@ -91,7 +91,8 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
       return false;
     }
     SetNewControlPoints(temp, last, i - off, off, dimension);
-    physical_space_->RemoveControlPoints(this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension]);
+    physical_space_->RemoveControlPoints(
+        this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension]);
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
   }

@@ -14,6 +14,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 #ifndef SRC_SPL_PHYSICAL_SPACE_H_
 #define SRC_SPL_PHYSICAL_SPACE_H_
 
+#include <cstdint>
 #include <stdexcept>
 #include <vector>
 
@@ -28,7 +29,7 @@ class PhysicalSpace {
  public:
   PhysicalSpace() = default;
   PhysicalSpace(std::vector<ControlPoint> const &control_points,
-                std::array<int, PARAMETRIC_DIMENSIONALITY> const &number_of_points);
+                std::array<int, PARAMETRIC_DIMENSIONALITY> const &number_of_points_per_direction);
   PhysicalSpace(PhysicalSpace const &physical_space) = default;
   PhysicalSpace(PhysicalSpace<PARAMETRIC_DIMENSIONALITY> &&other) noexcept = default;
   PhysicalSpace & operator=(PhysicalSpace<PARAMETRIC_DIMENSIONALITY> const &rhs) = default;
@@ -48,7 +49,7 @@ class PhysicalSpace {
   virtual Weight GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> const &/*indices*/) const;
   virtual Weight GetWeight(int /*index_1d*/) const;
   std::vector<Weight> GetWeights() const {
-    return std::vector<Weight>(total_number_of_points, Weight{1.0});
+    return std::vector<Weight>(total_number_of_points_, Weight{1.0});
   }
 
   void SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index, ControlPoint const &control_point,
@@ -76,7 +77,7 @@ class PhysicalSpace {
  protected:
   int dimensionality_{};
   std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_per_dimension_{};
-  int total_number_of_points;
+  uint64_t total_number_of_points_;
   std::vector<double> control_points_;
 };
 

@@ -16,20 +16,24 @@ You should have received a copy of the GNU Lesser General Public License along w
 #include <vector>
 
 template<int PARAMETRIC_DIMENSIONALITY>
-PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::PhysicalSpace(std::vector<spl::ControlPoint> const &control_points,
-                                                        std::array<int, PARAMETRIC_DIMENSIONALITY> const &number_of_points)
-    : dimensionality_(control_points[0].GetDimensionality()), number_of_points_per_dimension_(number_of_points) {
-  uint64_t total_number_of_points = 1;
+PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::PhysicalSpace(
+    std::vector<spl::ControlPoint> const &control_points,
+    std::array<int, PARAMETRIC_DIMENSIONALITY> const &number_of_points_per_direction)
+    : dimensionality_(GetFront(control_points).GetDimensionality()),
+      number_of_points_per_dimension_(number_of_points_per_direction) {
+  total_number_of_points_ = 1;
   for (Dimension dimension{0}; dimension < Dimension{PARAMETRIC_DIMENSIONALITY}; ++dimension) {
-    total_number_of_points *= number_of_points[dimension.Get()];
+    total_number_of_points_ *= GetValue(number_of_points_per_dimension_, dimension);
   }
-  if (total_number_of_points != control_points.size()) {
+  if (total_number_of_points_ != control_points.size()) {
     throw std::runtime_error(
-        "The given number of control points in each dimension doesn't fit the length of the control point vector.");
+        "splinelib::src::spl::PhysicalSpace::PhysicalSpace: Multiplying the specified number of points per dimension"
+        "does not yield the total number of points provided.");
   }
   for (auto &&control_point : control_points) {
     if (control_point.GetDimensionality() != dimensionality_) {
-      throw std::runtime_error("The dimension has to be the same for all control points.");
+      throw std::runtime_error("splinelib::src::spl::PhysicalSpace::PhysicalSpace: Control point of insufficient"
+                               "dimensionality provided.");
     }
     for (Dimension dimension{0}; dimension < Dimension{dimensionality_}; ++dimension) {
       control_points_.emplace_back(control_point[dimension]);
@@ -127,7 +131,8 @@ int PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetTotalNumberOfControlPoints() co
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-std::array<int, PARAMETRIC_DIMENSIONALITY> PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetNumberOfPointsPerDirection() const {
+std::array<int, PARAMETRIC_DIMENSIONALITY>
+PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetNumberOfPointsPerDirection() const {
   return number_of_points_per_dimension_;
 }
 

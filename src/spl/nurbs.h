@@ -53,7 +53,8 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
   NURBS(const NURBS<PARAMETRIC_DIMENSIONALITY> &nurbs, const std::vector<spl::ControlPoint> &control_points)
       : Spline<PARAMETRIC_DIMENSIONALITY>(nurbs) {
     WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>
-        weighted_physical_space(control_points, nurbs.physical_space_->GetWeights(), nurbs.GetNumberOfPointsPerDirection());
+        weighted_physical_space(control_points, nurbs.physical_space_->GetWeights(),
+                                nurbs.GetNumberOfPointsPerDirection());
     physical_space_ = std::make_shared<WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(weighted_physical_space);
   }
 
@@ -105,7 +106,8 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
     }
     SetNewControlPoints(temp, last, i - off, off, dimension);
     SetNewWeights(temp_w, last, i - off, off, dimension);
-    physical_space_->RemoveControlPoints(this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension]);
+    physical_space_->RemoveControlPoints(
+        this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension]);
     physical_space_->DecrementNumberOfPoints(dimension);
     return true;
   }

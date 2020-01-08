@@ -174,7 +174,8 @@ TEST_F(A2DBSplineForDegreeElevationForDimension0, HasNumberOfDifferentKnotsMoreK
 
 TEST_F(A2DBSplineForDegreeElevationForDimension0, HasNumberOfNonZeroKnotSpansMoreControlPoints) {  // NOLINT
   ASSERT_THAT(elevated_->GetNumberOfPointsPerDirection()[0],
-              original_->GetNumberOfPointsPerDirection()[0] + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+              original_->GetNumberOfPointsPerDirection()[0] +
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
   ASSERT_THAT(elevated_->GetNumberOfPointsPerDirection()[1], original_->GetNumberOfPointsPerDirection()[1]);
 }
 
@@ -226,7 +227,8 @@ TEST_F(Random2DNURBSForDegreeElevationForDimension0, HasNumberOfDifferentKnotsMo
 
 TEST_F(Random2DNURBSForDegreeElevationForDimension0, HasNumberOfNonZeroKnotSpansMoreControlPoints) {  // NOLINT
   ASSERT_THAT(elevated_->GetNumberOfPointsPerDirection()[0],
-              original_->GetNumberOfPointsPerDirection()[0] + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+              original_->GetNumberOfPointsPerDirection()[0] +
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
   ASSERT_THAT(elevated_->GetNumberOfPointsPerDirection()[1], original_->GetNumberOfPointsPerDirection()[1]);
 }
 
@@ -271,7 +273,8 @@ TEST_F(Random3DBSplineForDegreeElevationForDimension0, HasNumberOfDifferentKnots
 
 TEST_F(Random3DBSplineForDegreeElevationForDimension0, HasNumberOfNonZeroKnotSpansMoreControlPoints) {  // NOLINT
   ASSERT_THAT(elevated_->GetNumberOfPointsPerDirection()[0],
-              original_->GetNumberOfPointsPerDirection()[0] + original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
+              original_->GetNumberOfPointsPerDirection()[0] +
+              original_->GetKnotVector(0)->GetNumberOfDifferentKnots() - 1);
   ASSERT_THAT(elevated_->GetNumberOfPointsPerDirection()[1], original_->GetNumberOfPointsPerDirection()[1]);
 }
 
@@ -324,7 +327,8 @@ TEST_F(Random3DNURBSForDegreeElevationForDimension1, HasNumberOfDifferentKnotsMo
 TEST_F(Random3DNURBSForDegreeElevationForDimension1, HasNumberOfNonZeroKnotSpansMoreControlPoints) {  // NOLINT
   ASSERT_THAT(elevated_->GetNumberOfPointsPerDirection()[0], original_->GetNumberOfPointsPerDirection()[0]);
   ASSERT_THAT(elevated_->GetNumberOfPointsPerDirection()[1],
-              original_->GetNumberOfPointsPerDirection()[1] + original_->GetKnotVector(1)->GetNumberOfDifferentKnots() - 1);
+              original_->GetNumberOfPointsPerDirection()[1] +
+              original_->GetKnotVector(1)->GetNumberOfDifferentKnots() - 1);
 }
 
 TEST_F(Random3DNURBSForDegreeElevationForDimension1, DoesNotChangeGeometricallyAfterDegreeElevation) {  // NOLINT
