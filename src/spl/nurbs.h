@@ -329,7 +329,8 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
         int index = point_handler.CollapseDimension(Dimension{dimension}) * (last - off + 2) + k - off;
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = k - off < ii ? k : k - 1;
-        physical_space_->SetWeight(indices, Weight{temp[index]}, Dimension{dimension}, util::numeric_operations::decrement<int>);
+        physical_space_->SetWeight(indices, Weight{temp[index]}, Dimension{dimension},
+                                   util::numeric_operations::decrement<int>);
       }
       if ((k <= off && k - off < 1) || (k >= last + 1 && k < this->GetNumberOfPointsPerDirection()[dimension])) {
         auto indices = point_handler.GetCurrentIndex();

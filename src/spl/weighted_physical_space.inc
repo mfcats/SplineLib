@@ -11,8 +11,9 @@ of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser Gene
 You should have received a copy of the GNU Lesser General Public License along with SplineLib.  If not, see
 <http://www.gnu.org/licenses/>.*/
 
-#include <vector>
+// NOLINT(build/header_guard)
 
+#include <vector>
 
 template<int PARAMETRIC_DIMENSIONALITY>
 WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::WeightedPhysicalSpace(
