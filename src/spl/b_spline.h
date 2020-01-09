@@ -79,7 +79,8 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
       physical_space_->SetControlPoint(indices, new_control_point, Dimension{dimension},
                                        util::numeric_operations::increment<int>);
     }
-    physical_space_->IncrementNumberOfPoints(dimension);
+    // TODO(all): Find a better solution than this.
+    physical_space_->IncrementNumberOfPoints(Dimension{dimension});
   }
 
   bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
@@ -93,7 +94,8 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     SetNewControlPoints(temp, last, i - off, off, dimension);
     physical_space_->RemoveControlPoints(
         this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension]);
-    physical_space_->DecrementNumberOfPoints(dimension);
+    // TODO(all): Find a better solution than this.
+    physical_space_->DecrementNumberOfPoints(Dimension{dimension});
     return true;
   }
 

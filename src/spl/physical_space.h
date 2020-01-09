@@ -48,9 +48,7 @@ class PhysicalSpace {
 
   virtual Weight GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> const &/*indices*/) const;
   virtual Weight GetWeight(int /*index_1d*/) const;
-  std::vector<Weight> GetWeights() const {
-    return std::vector<Weight>(total_number_of_points_, Weight{1.0});
-  }
+  std::vector<Weight> GetWeights() const;
 
   void SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index, ControlPoint const &control_point,
                        Dimension const &dimension = Dimension{0}, int (*before)(int) = nullptr);
@@ -66,18 +64,20 @@ class PhysicalSpace {
                 Tolerance const &tolerance = Tolerance{util::numeric_settings::GetEpsilon<double>()}) const;
 
   // TODO(all): The following methods should become protected.
-  void IncrementNumberOfPoints(int dimension);
-  void DecrementNumberOfPoints(int dimension);
+  void IncrementNumberOfPoints(Dimension dimension);
+  void DecrementNumberOfPoints(Dimension dimension);
 
+  // TODO(all): The argument should be a dimension and an index for this dimension.
   virtual void AddControlPoints(int number);
   virtual void RemoveControlPoints(int number);
 
-  void SetNumberOfPoints(int dimension, int value);
+  // TODO(all): This method should not be necessary but done when adding and removing control points.
+  void SetNumberOfPoints(Dimension dimension, int value);
 
  protected:
   int dimensionality_{};
   std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points_per_dimension_{};
-  uint64_t total_number_of_points_;
+  uint64_t total_number_of_points_{};
   std::vector<double> control_points_;
 };
 

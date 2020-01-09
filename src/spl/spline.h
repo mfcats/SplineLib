@@ -235,7 +235,8 @@ class Spline {
     std::array<int, PARAMETRIC_DIMENSIONALITY> cps_per_dir = GetNumberOfPointsPerDirection();
     cps_per_dir[dimension] += (GetKnotVector(dimension)->GetNumberOfDifferentKnots() - 1);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> cp_handler(cps_per_dir);
-    GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
+    // TODO(all): Find a better solution than this one.
+    GetPhysicalSpace()->SetNumberOfPoints(Dimension{dimension}, cps_per_dir[dimension]);
     int delta_num_cps = cp_handler.GetNumberOfTotalMultiIndices() - GetPhysicalSpace()->GetTotalNumberOfControlPoints();
     GetPhysicalSpace()->AddControlPoints(delta_num_cps);
     parameter_space_->ElevateDegree(dimension);
@@ -259,7 +260,8 @@ class Spline {
     }
     std::array<int, PARAMETRIC_DIMENSIONALITY> cps_per_dir = GetNumberOfPointsPerDirection();
     cps_per_dir[dimension] -= num_bezier_segments;
-    GetPhysicalSpace()->SetNumberOfPoints(dimension, cps_per_dir[dimension]);
+    // TODO(all): Find a better solution than this one.
+    GetPhysicalSpace()->SetNumberOfPoints(Dimension{dimension}, cps_per_dir[dimension]);
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(cps_per_dir);
     int delta_num_cps =
         GetPhysicalSpace()->GetTotalNumberOfControlPoints() - point_handler.GetNumberOfTotalMultiIndices();

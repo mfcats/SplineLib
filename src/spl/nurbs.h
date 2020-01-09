@@ -92,7 +92,8 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
                                        util::numeric_operations::increment<int>);
       physical_space_->SetWeight(indices, new_weight, dimension, util::numeric_operations::increment<int>);
     }
-    physical_space_->IncrementNumberOfPoints(dimension);
+    // TODO(all): Find a better solution than this one.
+    physical_space_->IncrementNumberOfPoints(Dimension{dimension});
   }
 
   bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
@@ -108,7 +109,8 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
     SetNewWeights(temp_w, last, i - off, off, dimension);
     physical_space_->RemoveControlPoints(
         this->GetTotalNumberOfControlPoints() / this->GetNumberOfPointsPerDirection()[dimension]);
-    physical_space_->DecrementNumberOfPoints(dimension);
+    // TODO(all): Find a better solution than this one.
+    physical_space_->DecrementNumberOfPoints(Dimension{dimension});
     return true;
   }
 
