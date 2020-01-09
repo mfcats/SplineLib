@@ -56,7 +56,7 @@ class A1DNURBSForXML {  // NOLINT
         spl::ControlPoint(std::vector<double>({0.0, 1.0})),
         spl::ControlPoint(std::vector<double>({1.0, 1.0}))
     };
-    std::vector<double> weights = {2.0, 1.75, 0.36};
+    std::vector<Weight> weights = {Weight{2.0}, Weight{1.75}, Weight{0.36}};
     nurbs_1d_ = std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
   }
 
@@ -119,7 +119,8 @@ class A2DNURBSForXML {  // NOLINT
         spl::ControlPoint(std::vector<double>({1.0, 0.8})),
         spl::ControlPoint(std::vector<double>({2.0, 1.0}))
     };
-    std::vector<double> weights = {2.0, 1.75, 0.36, 1.0, 1.0, 0.05, 1.0, 1.0, 1.0};
+    std::vector<Weight> weights = {Weight{2.0}, Weight{1.75}, Weight{0.36}, Weight{1.0}, Weight{1.0}, Weight{0.05},
+                                   Weight{1.0}, Weight{1.0}, Weight{1.0}};
 
     nurbs_2d_ = std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
   }
@@ -191,7 +192,8 @@ class A3DNURBSForXML {  // NOLINT
         spl::ControlPoint(std::vector<double>({4.7, 0.8, 4.7, 0.8})),
         spl::ControlPoint(std::vector<double>({5.0, 1.0, 5.0, 1.0}))
     };
-    std::vector<double> weights = {2.0, 1.75, 0.36, 1.0, 1.0, 0.05, 1.0, 1.0, 1.0, 2.3, 1.9, 1.4};
+    std::vector<Weight> weights = {Weight{2.0}, Weight{1.75}, Weight{0.36}, Weight{1.0}, Weight{1.0}, Weight{0.05},
+                                   Weight{1.0}, Weight{1.0}, Weight{1.0}, Weight{2.3}, Weight{1.9}, Weight{1.4}};
 
     nurbs_3d_ = std::make_shared<spl::NURBS<3>>(knot_vector, degree, control_points, weights);
   }
@@ -232,7 +234,9 @@ class A4DNURBSForXML {  // NOLINT
         spl::ControlPoint(std::vector<double>({0.4, 0.8, 4.7, 0.8})),
         spl::ControlPoint(std::vector<double>({0.0, 1.0, 5.0, 1.0}))
     };
-    std::vector<double> weights = {2.0, 1.75, 0.36, 1.0, 1.0, 0.05, 1.0, 1.0, 1.0, 2.3, 1.9, 1.4, 8.0, 0.01, 1.0, 3.2};
+    std::vector<Weight> weights = {Weight{2.0}, Weight{1.75}, Weight{0.36}, Weight{1.0}, Weight{1.0}, Weight{0.05},
+                                   Weight{1.0}, Weight{1.0}, Weight{1.0}, Weight{2.3}, Weight{1.9}, Weight{1.4},
+                                   Weight{8.0}, Weight{0.01}, Weight{1.0}, Weight{3.2}};
 
     nurbs_4d_ = std::make_shared<spl::NURBS<4>>(knot_vector, degree, control_points, weights);
   }

@@ -41,7 +41,7 @@ class XMLReader : public Reader {
 
   std::vector<spl::ControlPoint> GetControlPoints(pugi::xml_node *spline);
 
-  std::vector<double> GetWeights(pugi::xml_node *spline);
+  std::vector<Weight> GetWeights(pugi::xml_node *spline);
 
   int FindCoordinatePosition(const std::string &string);
 };

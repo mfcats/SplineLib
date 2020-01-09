@@ -47,7 +47,7 @@ class RandomSplineUtils {
     baf::KnotVectors<PARAMETRIC_DIMENSIONALITY> knot_vectors = GetRandomKnotVectors(coord_limits, degrees);
     std::array<int, PARAMETRIC_DIMENSIONALITY> number_of_points = GetNumberOfPoints(degrees, knot_vectors);
     std::vector<src::spl::ControlPoint> control_points = GetRandomControlPoints(dimension, number_of_points);
-    std::vector<double> weights = GetRandomWeights(number_of_points);
+    std::vector<Weight> weights = GetRandomWeights(number_of_points);
     auto physical_space = std::make_shared<src::spl::WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>>(
         control_points, weights, number_of_points);
     auto parameter_space = std::make_shared<src::spl::ParameterSpace<PARAMETRIC_DIMENSIONALITY>>(knot_vectors, degrees);
@@ -101,12 +101,12 @@ class RandomSplineUtils {
     return control_points;
   }
 
-  static std::vector<double> GetRandomWeights(const std::array<int, PARAMETRIC_DIMENSIONALITY> &number_of_points) {
+  static std::vector<Weight> GetRandomWeights(const std::array<int, PARAMETRIC_DIMENSIONALITY> &number_of_points) {
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(number_of_points);
-    std::vector<double> weights;
+    std::vector<Weight> weights;
     weights.reserve(point_handler.GetNumberOfTotalMultiIndices());
     for (int i = 0; i < point_handler.GetNumberOfTotalMultiIndices(); ++i, ++point_handler) {
-      weights.emplace_back(util::random::GetBinomialRandom<double>(0.1, 2, 0.1));
+      weights.emplace_back(Weight{util::random::GetBinomialRandom<double>(0.1, 2, 0.1)});
     }
     return weights;
   }

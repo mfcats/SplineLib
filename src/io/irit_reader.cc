@@ -112,9 +112,9 @@ int IRITReader::GetTotalNumberOfControlPoints(int start, const std::vector<std::
 }
 
 std::vector<spl::ControlPoint> IRITReader::GetControlPoints(int start,
-                                                                const std::vector<std::string> &entries,
-                                                                bool rational,
-                                                                std::vector<double> weights) const {
+                                                            const std::vector<std::string> &entries,
+                                                            bool rational,
+                                                            std::vector<Weight> weights) const {
   std::vector<spl::ControlPoint> control_points;
   int number_of_control_points = GetTotalNumberOfControlPoints(start, entries);
   start = GetPositionOfFirstControlPoint(start, entries);
@@ -124,11 +124,11 @@ std::vector<spl::ControlPoint> IRITReader::GetControlPoints(int start,
       coordinates.push_back(
           util::string_operations::ConvertStringToNumber<double>(util::string_operations::TrimSpacesAndSquareBrackets(
               entries[start++])) /
-          weights[i]);
+          weights[i].Get());
     }
     coordinates.push_back(
         util::string_operations::ConvertStringToNumber<double>(util::string_operations::TrimSpacesAndSquareBrackets(
-            entries[start++])) / weights[i]);
+            entries[start++])) / weights[i].Get());
     if (rational) {
       coordinates.erase(coordinates.begin());
     }
@@ -137,17 +137,16 @@ std::vector<spl::ControlPoint> IRITReader::GetControlPoints(int start,
   return control_points;
 }
 
-std::vector<double> IRITReader::GetWeights(int start,
-                                               const std::vector<std::string> &entries,
-                                               bool rational) const {
+std::vector<Weight> IRITReader::GetWeights(int start,
+                                           const std::vector<std::string> &entries,
+                                           bool rational) const {
   auto number_of_control_points = static_cast<size_t>(GetTotalNumberOfControlPoints(start, entries));
-  std::vector<double> weights(number_of_control_points, 1.0);
+  std::vector<Weight> weights(number_of_control_points, Weight{1.0});
   if (rational) {
     start = GetPositionOfFirstControlPoint(start, entries);
     for (auto i = 0u; i < number_of_control_points; i++) {
-      weights[i] =
-          util::string_operations::ConvertStringToNumber<double>(util::string_operations::TrimSpacesAndSquareBrackets(
-              entries[start++]));
+      weights[i] = Weight{util::string_operations::ConvertStringToNumber<double>(
+              util::string_operations::TrimSpacesAndSquareBrackets(entries[start++]))};
       while (!util::string_operations::EndsWith(entries[start++], "]")) {}
     }
   }

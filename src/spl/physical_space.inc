@@ -110,10 +110,10 @@ Weight PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetWeight(int /*index_1d*/) con
   return Weight{1.0};
 }
 
-//template<int PARAMETRIC_DIMENSIONALITY>
-//std::vector<Weight> PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetWeights() const {
-//  return std::vector<Weight>(total_number_of_points_, Weight{1.0});
-//}
+template<int PARAMETRIC_DIMENSIONALITY>
+std::vector<Weight> PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetWeights() const {
+  return std::vector<Weight>(total_number_of_points_, Weight{1.0});
+}
 
 template<int PARAMETRIC_DIMENSIONALITY>
 void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SetControlPoint(

@@ -30,14 +30,14 @@ class A1DWeightedPhysicalSpace : public Test {
         spl::ControlPoint(std::vector<double>({4.0, 1.0})),
         spl::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
-    weights_ = {0.5, 0.75, 0.8, 1.0, 1.2};
+    weights_ = {Weight{0.5}, Weight{0.75}, Weight{0.8}, Weight{1.0}, Weight{1.2}};
     weighted_physical_space = spl::WeightedPhysicalSpace<1>(control_points, weights_, {5});
   }
 
  protected:
   spl::WeightedPhysicalSpace<1> weighted_physical_space;
   std::vector<spl::ControlPoint> control_points;
-  std::vector<double> weights_;
+  std::vector<Weight> weights_;
 };
 
 TEST_F(A1DWeightedPhysicalSpace, ThrowsForDifferingNumberOfControlPointsAndWeights) {  // NOLINT
@@ -90,7 +90,7 @@ TEST_F(A1DWeightedPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
   // ASSERT_THAT(weighted_physical_space.GetControlPoint(5)[Dimension{0}], DoubleEq(6.0));
   // ASSERT_THAT(weighted_physical_space.GetWeight(5), DoubleEq(4.3));
   weighted_physical_space.SetControlPoint(4, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
-  weighted_physical_space.SetWeight(4, 4.3);
+  weighted_physical_space.SetWeight(4, Weight{4.3});
   ASSERT_THAT(weighted_physical_space.GetControlPoint(4)[Dimension{0}], DoubleEq(6.0));
   ASSERT_THAT(weighted_physical_space.GetWeight(4).Get(), DoubleEq(4.3));
 }
@@ -103,8 +103,8 @@ TEST_F(A1DWeightedPhysicalSpace, RemovesControlPointAndWeight) {  // NOLINT
 }
 
 TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectDividedControlPoints) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetDividedWeights(2, 2, 0).size(), 2);
-  ASSERT_THAT(weighted_physical_space.GetDividedWeights(2, 2, 0)[0], DoubleEq(0.8));
+  ASSERT_THAT(weighted_physical_space.SplitWeights(Dimension{0}, 2, 2).size(), 2);
+  ASSERT_THAT(weighted_physical_space.SplitWeights(Dimension{0}, 2, 2)[0].Get(), DoubleEq(0.8));
 }
 
 TEST_F(A1DWeightedPhysicalSpace, EvaluatesThatCopiedSpaceEqualsOriginalSpace) {  // NOLINT
@@ -123,14 +123,14 @@ class A2DWeightedPhysicalSpace : public Test {
         spl::ControlPoint(std::vector<double>({1.5, 2.5})),
         spl::ControlPoint(std::vector<double>({5.0, 1.0}))
     };
-    weights_ = {0.5, 0.75, 0.8, 1.0, 1.2, 3.8};
+    weights_ = {Weight{0.5}, Weight{0.75}, Weight{0.8}, Weight{1.0}, Weight{1.2}, Weight{3.8}};
     weighted_physical_space = spl::WeightedPhysicalSpace<2>(control_points, weights_, {3, 2});
   }
 
  protected:
   spl::WeightedPhysicalSpace<2> weighted_physical_space;
   std::vector<spl::ControlPoint> control_points;
-  std::vector<double> weights_;
+  std::vector<Weight> weights_;
 };
 
 TEST_F(A2DWeightedPhysicalSpace, ThrowsForDifferingNumberOfControlPointsAndWeights) {  // NOLINT
@@ -221,7 +221,7 @@ TEST_F(A2DWeightedPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
   // ASSERT_THAT(weighted_physical_space.GetControlPoint(6)[Dimension{0}], DoubleEq(6.0));
   // ASSERT_THAT(weighted_physical_space.GetWeight(6), DoubleEq(4.3));
   weighted_physical_space.SetControlPoint(5, spl::ControlPoint(std::vector<double>({6.0, 0.0})));
-  weighted_physical_space.SetWeight(5, 4.3);
+  weighted_physical_space.SetWeight(5, Weight{4.3});
   ASSERT_THAT(weighted_physical_space.GetControlPoint(5)[Dimension{0}], DoubleEq(6.0));
   ASSERT_THAT(weighted_physical_space.GetWeight(5).Get(), DoubleEq(4.3));
 }
@@ -234,8 +234,8 @@ TEST_F(A2DWeightedPhysicalSpace, Removes2ControlPointsAndWeights) {  // NOLINT
 }
 
 TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectDividedWeights) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetDividedWeights(1, 2, 0).size(), 4);
-  ASSERT_THAT(weighted_physical_space.GetDividedWeights(1, 2, 0)[2], DoubleEq(1.2));
+  ASSERT_THAT(weighted_physical_space.SplitWeights(Dimension{0}, 1, 2).size(), 4);
+  ASSERT_THAT(weighted_physical_space.SplitWeights(Dimension{0}, 1, 2)[2].Get(), DoubleEq(1.2));
 }
 
 TEST_F(A2DWeightedPhysicalSpace, EvaluatesThatCopiedSpaceEqualsOriginalSpace) {  // NOLINT
@@ -259,14 +259,14 @@ class A1DWeightedPhysicalSpace_a : public Test {
         spl::ControlPoint(std::vector<double>({4.0, 1.0})),
         spl::ControlPoint(std::vector<double>({5.0, -1.0}))
     };
-    weights_ = {1, 4, 1, 1, 1};
+    weights_ = {Weight{1}, Weight{4}, Weight{1}, Weight{1}, Weight{1}};
     weighted_physical_space = spl::WeightedPhysicalSpace<1>(control_points, weights_, {5});
   }
 
  protected:
   spl::WeightedPhysicalSpace<1> weighted_physical_space;
   std::vector<spl::ControlPoint> control_points;
-  std::vector<double> weights_;
+  std::vector<Weight> weights_;
 };
 
 TEST_F(A1DWeightedPhysicalSpace_a, ReturnsHomogeneousControlPoint) {  // NOLINT

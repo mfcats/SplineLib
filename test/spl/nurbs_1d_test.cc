@@ -236,7 +236,7 @@ class ANURBSWithSplineGenerator : public Test {
              ParametricCoordinate{2},
              ParametricCoordinate{3}, ParametricCoordinate{3}, ParametricCoordinate{3}}))};
     std::array<Degree, 1> degree = {Degree{2}};
-    std::vector<double> weights = {1, 4, 1, 1, 1};
+    std::vector<Weight> weights = {Weight{1}, Weight{4}, Weight{1}, Weight{1}, Weight{1}};
     std::vector<spl::ControlPoint> control_points = {
         spl::ControlPoint(std::vector<double>({0.0, 0.0})),
         spl::ControlPoint(std::vector<double>({1.0, 1.0})),

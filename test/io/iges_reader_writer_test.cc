@@ -39,16 +39,17 @@ class AnIGESReaderAndWriter : public Test {
 
     std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
 
-    std::vector<double> weights = {1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 1.0, 0.70710678118654757,
-                                   1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 0.50000000000000011,
-                                   0.70710678118654757, 0.50000000000000011, 0.70710678118654757, 0.50000000000000011,
-                                   0.70710678118654757, 0.50000000000000011, 0.70710678118654757, 1.0,
-                                   0.70710678118654757, 1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 1.0,
-                                   0.70710678118654757, 1.0, 0.70710678118654757, 0.50000000000000011,
-                                   0.70710678118654757, 0.50000000000000011, 0.70710678118654757, 0.50000000000000011,
-                                   0.70710678118654757, 0.50000000000000011, 0.70710678118654757, 1.0,
-                                   0.70710678118654757, 1.0, 0.70710678118654757, 1.0, 0.70710678118654757, 1.0,
-                                   0.70710678118654757, 1.0};
+    Weight weight_0_5{0.50000000000000011}, weight_0_7{0.70710678118654757}, weight_1{1.0};
+    std::vector<Weight> weights = {weight_1, weight_0_7, weight_1, weight_0_7, weight_1, weight_0_7,
+                                   weight_1, weight_0_7, weight_1, weight_0_7, weight_0_5,
+                                   weight_0_7, weight_0_5, weight_0_7, weight_0_5,
+                                   weight_0_7, weight_0_5, weight_0_7, weight_1,
+                                   weight_0_7, weight_1, weight_0_7, weight_1, weight_0_7, weight_1,
+                                   weight_0_7, weight_1, weight_0_7, weight_0_5,
+                                   weight_0_7, weight_0_5, weight_0_7, weight_0_5,
+                                   weight_0_7, weight_0_5, weight_0_7, weight_1,
+                                   weight_0_7, weight_1, weight_0_7, weight_1, weight_0_7, weight_1,
+                                   weight_0_7, weight_1};
 
     std::vector<spl::ControlPoint> control_points = {
         spl::ControlPoint(std::vector<double>({0.0, 0.0, -1.0})),

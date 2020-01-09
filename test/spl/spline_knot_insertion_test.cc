@@ -109,7 +109,8 @@ class NURBS1DEx5_2 : public Test {  // NOLINT
         spl::ControlPoint(std::vector<double>({1.0, 2.0})),
         spl::ControlPoint(std::vector<double>({1.3, 2.3}))
     };
-    std::vector<double> weights = {1.0, 1.0, 2.0, 4.0, 1.0, 4.0, 2.0, 1.0};
+    std::vector<Weight> weights = {Weight{1.0}, Weight{1.0}, Weight{2.0}, Weight{4.0}, Weight{1.0}, Weight{4.0},
+                                   Weight{2.0}, Weight{1.0}};
     nurbs_1d_before_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
     spl::NURBS<1> nurbs_after(*nurbs_1d_before_);
     nurbs_1d_after_ = std::make_shared<spl::NURBS<1>>(nurbs_after);

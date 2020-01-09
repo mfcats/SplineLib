@@ -110,9 +110,14 @@ std::vector<spl::ControlPoint> XMLReader::GetControlPoints(pugi::xml_node *splin
   return points;
 }
 
-std::vector<double> XMLReader::GetWeights(pugi::xml_node *spline) {
-  return util::string_operations::ConvertStringVectorToNumberVector<double>(
+std::vector<Weight> XMLReader::GetWeights(pugi::xml_node *spline) {
+  std::vector<double> weight_values = util::string_operations::ConvertStringVectorToNumberVector<double>(
       util::string_operations::SplitStringAtDelimiter(spline->child("wght").first_child().value(), ' '));
+  std::vector<Weight> weights(weight_values.size(), Weight{0.0});
+  for (int current_index = 0; current_index < static_cast<int>(weight_values.size()); ++current_index) {
+    GetValue(weights, current_index) = Weight{GetValue(weight_values, current_index)};
+  }
+  return weights;
 }
 
 int XMLReader::FindCoordinatePosition(const std::string &string) {

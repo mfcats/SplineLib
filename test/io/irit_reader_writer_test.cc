@@ -63,7 +63,7 @@ class A1DNURBSForIRIT {  // NOLINT
          ParametricCoordinate{0.5},
          ParametricCoordinate{0.75}, ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}))};
     std::array<Degree, 1> degree = {Degree{2}};
-    std::vector<double> weights = {0.5, 0.5, 0.5, 1, 1, 1};
+    std::vector<Weight> weights = {Weight{0.5}, Weight{0.5}, Weight{0.5}, Weight{1}, Weight{1}, Weight{1}};
     std::vector<spl::ControlPoint> control_points = {
         spl::ControlPoint(std::vector<double>({0, 0})),
         spl::ControlPoint(std::vector<double>({1, 0.3})),
@@ -125,7 +125,8 @@ class A2DNURBSForIRIT {  // NOLINT
              ParametricCoordinate{1},
              ParametricCoordinate{1}}))};
     std::array<Degree, 2> degree = {Degree{2}, Degree{2}};
-    std::vector<double> weights = {0.5, 0.5, 0.5, 1, 1, 1, 2, 2, 2};
+    std::vector<Weight> weights = {Weight{0.5}, Weight{0.5}, Weight{0.5}, Weight{1}, Weight{1}, Weight{1}, Weight{2},
+                                   Weight{2}, Weight{2}};
     std::vector<spl::ControlPoint> control_points = {
         spl::ControlPoint(std::vector<double>({0, 0})),
         spl::ControlPoint(std::vector<double>({1, 0.3})),
@@ -191,7 +192,8 @@ class A3DNURBSForIRIT {  // NOLINT
             baf::KnotVector({ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1},
                              ParametricCoordinate{1}}))};
     std::array<Degree, 3> degree = {Degree{1}, Degree{1}, Degree{1}};
-    std::vector<double> weights = {0.2, 0.3, 0.5, 0.75, 1, 1.3, 1.5, 2};
+    std::vector<Weight> weights = {Weight{0.2}, Weight{0.3}, Weight{0.5}, Weight{0.75}, Weight{1}, Weight{1.3},
+                                   Weight{1.5}, Weight{2}};
     std::vector<spl::ControlPoint> control_points = {
         spl::ControlPoint(std::vector<double>({0, 0, 0})),
         spl::ControlPoint(std::vector<double>({1, 0, 0})),

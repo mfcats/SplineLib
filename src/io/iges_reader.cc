@@ -60,7 +60,7 @@ std::any IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
   std::array<Degree, 1> degree{};
   degree[0] = Degree{static_cast<int>(parameterData[2])};
   baf::KnotVectors<1> knot_vector;
-  std::vector<double> weights;
+  std::vector<Weight> weights;
   std::vector<spl::ControlPoint> control_points;
   std::array<int, 2> knotsStartEnd{};
   std::array<int, 2> weightsStartEnd{};
@@ -77,7 +77,7 @@ std::any IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
   }
   knot_vector[0] = std::make_shared<baf::KnotVector>(knots);
   for (int i = weightsStartEnd[0]; i <= weightsStartEnd[1]; ++i) {
-    weights.push_back(parameterData[i]);
+    weights.push_back(Weight{parameterData[i]});
   }
   std::vector<double> controlPointCoordinates;
   for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {
@@ -108,7 +108,7 @@ std::any IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
   degree[0] = Degree{static_cast<int>(parameterData[3])};
   degree[1] = Degree{static_cast<int>(parameterData[4])};
   baf::KnotVectors<2> knot_vector;
-  std::vector<double> weights;
+  std::vector<Weight> weights;
   std::vector<spl::ControlPoint> control_points;
   std::array<std::array<int, 2>, 2> knotsStartEnd{};
   std::array<int, 2> weightsStartEnd{};
@@ -131,7 +131,7 @@ std::any IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
   knot_vector[0] = std::make_shared<baf::KnotVector>(knots[0]);
   knot_vector[1] = std::make_shared<baf::KnotVector>(knots[1]);
   for (int i = weightsStartEnd[0]; i <= weightsStartEnd[1]; ++i) {
-    weights.push_back(parameterData[i]);
+    weights.push_back(Weight{parameterData[i]});
   }
   std::vector<double> controlPointCoordinates;
   for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {

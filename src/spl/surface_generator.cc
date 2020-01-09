@@ -41,14 +41,14 @@ std::shared_ptr<WeightedPhysicalSpace<2>> SurfaceGenerator::JoinPhysicalSpaces(
   std::array<int, 2> j_number_of_points =
       {nurbs_T->GetTotalNumberOfControlPoints(), nurbs_C->GetTotalNumberOfControlPoints()};
   std::vector<spl::ControlPoint> j_control_points;
-  std::vector<double> joined_weights;
+  std::vector<Weight> joined_weights;
   for (int i = 0; i < nurbs_C->GetTotalNumberOfControlPoints(); ++i) {
     std::array<int, 1> index_space_2 = {i};
     for (int j = 0; j < nurbs_T->GetTotalNumberOfControlPoints(); ++j) {
       std::array<int, 1> index_space_1 = {j};
       j_control_points.emplace_back(nurbs_T->GetControlPoint(index_space_1) +
           nurbs_C->GetControlPoint(index_space_2));
-      joined_weights.emplace_back(nurbs_T->GetWeight(index_space_1) * nurbs_C->GetWeight(index_space_2));
+      joined_weights.emplace_back(Weight{nurbs_T->GetWeight(index_space_1) * nurbs_C->GetWeight(index_space_2)});
     }
   }
   return std::make_shared<WeightedPhysicalSpace<2>>(WeightedPhysicalSpace<2>(
@@ -73,7 +73,7 @@ SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
   double weight_v;
   int m = nurbs_C->GetTotalNumberOfControlPoints();
   std::vector<spl::ControlPoint> j_control_points(nbInter * m, spl::ControlPoint({0.0, 0.0, 0.0}));
-  std::vector<double> j_weights(nbInter * m, 0.0);
+  std::vector<Weight> j_weights(nbInter * m, Weight{0.0});
   v_i.reserve(nbInter);
   for (int i = 0; i < nbInter; ++i) {
     v_i.emplace_back(ParametricCoordinate{i * step_size});
@@ -90,7 +90,7 @@ SurfaceGenerator::SurfaceGenerator(std::shared_ptr<NURBS<1>> const &nurbs_T,
       int indexControlPoint = j * nbInter + i;
       spl::ControlPoint control_point_j = nurbs_C->GetControlPoint(std::array<int, 1>({j}));
       j_control_points[indexControlPoint] = Transform(control_point_j, transMatrix, scaling[i]);
-      j_weights[indexControlPoint] = nurbs_C->GetWeight(std::array<int, 1>({j})) * weight_v;
+      j_weights[indexControlPoint] = Weight{nurbs_C->GetWeight(std::array<int, 1>({j})) * weight_v};
     }
   }
   // removed old constructor baf::KnotVector knot_vector_t(v_i, nurbs_T->GetDegree(0), nbInter);

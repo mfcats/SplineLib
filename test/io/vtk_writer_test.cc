@@ -33,7 +33,7 @@ class A1DNURBSForVTKWriter {  // NOLINT
         spl::ControlPoint(std::vector<double>({5.0, 0.0})),
         spl::ControlPoint(std::vector<double>({5.2, 2.0}))
     };
-    std::vector<double> weights = {3.0, 0.5, 1.8};
+    std::vector<Weight> weights = {Weight{3.0}, Weight{0.5}, Weight{1.8}};
     nurbs_1d_ = std::make_shared<spl::NURBS<1>>(knot_vector, degree, control_points, weights);
   }
 
@@ -63,7 +63,8 @@ class A2DNURBSForVTKWriter {  // NOLINT
         spl::ControlPoint(std::vector<double>({-4.2, 1.5, -0.5})),
         spl::ControlPoint(std::vector<double>({-3.5, 2.0, -1.5}))
     };
-    std::vector<double> weights = {3.0, 0.5, 1.8, 2.0, 2.5, 1.8, 1.0, 0.8, 0.2};
+    std::vector<Weight> weights = {Weight{3.0}, Weight{0.5}, Weight{1.8}, Weight{2.0}, Weight{2.5}, Weight{1.8},
+                                   Weight{1.0}, Weight{0.8}, Weight{0.2}};
     nurbs_2d_ = std::make_shared<spl::NURBS<2>>(knot_vector, degree, control_points, weights);
   }
 
@@ -92,7 +93,8 @@ class A3DNURBSForVTKWriter {  // NOLINT
         spl::ControlPoint(std::vector<double>({0.1, 2.2, 1.6})),
         spl::ControlPoint(std::vector<double>({1.7, 2.0, 2.2}))
     };
-    std::vector<double> weights = {3.0, 0.5, 1.8, 2.0, 1.8, 1.0, 0.8, 0.2};
+    std::vector<Weight> weights = {Weight{3.0}, Weight{0.5}, Weight{1.8}, Weight{2.0}, Weight{1.8}, Weight{1.0},
+                                   Weight{0.8}, Weight{0.2}};
     nurbs_3d_ = std::make_shared<spl::NURBS<3>>(knot_vector, degree, control_points, weights);
   }
 

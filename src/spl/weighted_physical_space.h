@@ -24,45 +24,42 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
  public:
   WeightedPhysicalSpace() = default;
-  WeightedPhysicalSpace(std::vector<spl::ControlPoint> const &control_points, std::vector<double> const &weights,
+  WeightedPhysicalSpace(std::vector<spl::ControlPoint> const &control_points, std::vector<Weight> const &weights,
                         std::array<int, PARAMETRIC_DIMENSIONALITY> const &number_of_points);
-  WeightedPhysicalSpace(WeightedPhysicalSpace const &other);
+  WeightedPhysicalSpace(WeightedPhysicalSpace const &other) = default;
   WeightedPhysicalSpace(WeightedPhysicalSpace &&other) noexcept = default;
   WeightedPhysicalSpace & operator=(WeightedPhysicalSpace const &rhs) = default;
   WeightedPhysicalSpace & operator=(WeightedPhysicalSpace &&rhs) noexcept = default;
   ~WeightedPhysicalSpace() override = default;
 
-  bool AreEqual(WeightedPhysicalSpace const &rhs, double tolerance = util::numeric_settings::GetEpsilon<double>()) const;
+  Weight GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) const override;
+  Weight GetWeight(int index_1d) const override;
+  std::vector<Weight> GetWeights() const override;
+
+  void SetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index, Weight const &weight,
+                 Dimension const &dimension = Dimension{0}, int (*before)(int) = nullptr);
+  void SetWeight(int index_1d, Weight const &weight, Dimension const &dimension = Dimension{0},
+                 int (*before)(int) = nullptr);
 
   virtual ControlPoint GetHomogenousControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) const;
-
   virtual ControlPoint GetHomogenousControlPoint(int index_1d) const;
 
-  Weight GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) const override;
-
-  Weight GetWeight(int index_1d) const override;
+  void SetWeightedControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index,
+                               ControlPoint const &control_point, Weight const &weight);
 
   double GetMinimumWeight() const;
 
-  void SetWeightedControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index,
-                               ControlPoint const &control_point, double weight);
+  std::vector<Weight> SplitWeights(Dimension dimension, int offset, int length);
 
-  void SetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index, double weight, int dimension = 0,
-                 int (*before)(int) = nullptr);
+  bool AreEqual(WeightedPhysicalSpace const &rhs,
+                Tolerance const &tolerance = Tolerance{util::numeric_settings::GetEpsilon<double>()}) const;
 
-  void SetWeight(int index_1d, double weight, int dimension = 0,
-                 int (*before)(int) = nullptr);
-
-  void AddControlPoints(int number) final;
-
-  void RemoveControlPoints(int number) final;
-
-  virtual std::vector<double> GetWeights() const;  // final;  Weight instead of double
-
-  std::vector<double> GetDividedWeights(int first, int length, int dimension);
+  // TODO(all): The arguments should be a dimension and an index for this dimension or the method should be private.
+  void AddControlPoints(int number) override;
+  void RemoveControlPoints(int number) override;
 
  private:
-  std::vector<double> weights_;
+  std::vector<Weight> weights_;
 };
 
 #include "src/spl/weighted_physical_space.inc"

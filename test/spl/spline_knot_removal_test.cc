@@ -127,7 +127,8 @@ class NURBS1DFig5_26 : public Test {  // NOLINT
         spl::ControlPoint(std::vector<double>({4.0, 1.5})),
         spl::ControlPoint(std::vector<double>({4.0, 0.0}))
     };
-    std::vector<double> weights = {1, 0.8, 1.4, 1.2, 1.1, 0.8, 1.4};
+    std::vector<Weight> weights = {Weight{1.0}, Weight{0.8}, Weight{1.4}, Weight{1.2}, Weight{1.1}, Weight{0.8},
+                                   Weight{1.4}};
     nurbs_1d_before_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
     spl::NURBS<1> nurbs_after(*nurbs_1d_before_);
     nurbs_1d_after_ = std::make_shared<spl::NURBS<1>>(nurbs_after);
@@ -276,14 +277,14 @@ class NURBS2DFig5_28 : public Test {  // NOLINT
         spl::ControlPoint({0, 5.5, 3}), spl::ControlPoint({1, 5.5, 3.5}), spl::ControlPoint({2.5, 5.5, 2.5}),
         spl::ControlPoint({3.5, 5.5, 1.5}), spl::ControlPoint({5, 5.5, 1}), spl::ControlPoint({6.5, 5.5, 1.5})
     };
-    std::vector<double> weights = {1, 0.98, 0.96, 0.94, 0.96, 0.94,
-                                   1, 0.99, 0.97, 0.96, 0.98, 1,
-                                   1.01, 1.02, 1.01, 1, 1, 1,
-                                   1, 1, 1, 1, 1.01, 1.02,
-                                   1.01, 1.03, 1.04, 1.02, 1.01, 1,
-                                   1, 0.95, 0.98, 1, 1.05, 1.01,
-                                   0.95, 0.9, 0.8, 0.9, 1, 0.95,
-                                   0.9, 1, 1.01, 1.02, 1, 0.8};
+    std::vector<Weight> weights = {Weight{1}, Weight{0.98}, Weight{0.96}, Weight{0.94}, Weight{0.96}, Weight{0.94},
+                                   Weight{1}, Weight{0.99}, Weight{0.97}, Weight{0.96}, Weight{0.98}, Weight{1},
+                                   Weight{1.01}, Weight{1.02}, Weight{1.01}, Weight{1}, Weight{1}, Weight{1},
+                                   Weight{1}, Weight{1}, Weight{1}, Weight{1}, Weight{1.01}, Weight{1.02},
+                                   Weight{1.01}, Weight{1.03}, Weight{1.04}, Weight{1.02}, Weight{1.01}, Weight{1},
+                                   Weight{1}, Weight{0.95}, Weight{0.98}, Weight{1}, Weight{1.05}, Weight{1.01},
+                                   Weight{0.95}, Weight{0.9}, Weight{0.8}, Weight{0.9}, Weight{1}, Weight{0.95},
+                                   Weight{0.9}, Weight{1}, Weight{1.01}, Weight{1.02}, Weight{1}, Weight{0.8}};
     nurbs_2d_before_ = std::make_shared<spl::NURBS<2>>(knot_vector_before, degree, control_points, weights);
     spl::NURBS<2> nurbs_after(*nurbs_2d_before_);
     nurbs_2d_after_ = std::make_shared<spl::NURBS<2>>(nurbs_after);
@@ -398,11 +399,11 @@ class A3DNURBSForKnotRemoval : public Test {  // NOLINT
         spl::ControlPoint({0, 3, 3.6}), spl::ControlPoint({1, 3, 4.1}), spl::ControlPoint({2.5, 3, 3.1}),
         spl::ControlPoint({0, 3, 5.6}), spl::ControlPoint({1, 3, 6.1}), spl::ControlPoint({2.5, 3, 5.1})
     };
-    std::vector<double> weights = {1, 1.02, 1.04, 1.06, 1.04, 1.02,
-                                   0.98, 0.99, 1, 0.99, 1, 1.01,
-                                   1, 1.02, 0.99, 1.05, 0.98, 1,
-                                   0.95, 0.96, 0.97, 0.98, 0.99, 1,
-                                   0.98, 1, 1.03, 1.05, 1, 0.97};
+    std::vector<Weight> weights = {Weight{1}, Weight{1.02}, Weight{1.04}, Weight{1.06}, Weight{1.04}, Weight{1.02},
+                                   Weight{0.98}, Weight{0.99}, Weight{1}, Weight{0.99}, Weight{1}, Weight{1.01},
+                                   Weight{1}, Weight{1.02}, Weight{0.99}, Weight{1.05}, Weight{0.98}, Weight{1},
+                                   Weight{0.95}, Weight{0.96}, Weight{0.97}, Weight{0.98}, Weight{0.99}, Weight{1},
+                                   Weight{0.98}, Weight{1}, Weight{1.03}, Weight{1.05}, Weight{1}, Weight{0.97}};
     nurbs_3d_before_ = std::make_shared<spl::NURBS<3>>(knot_vector_before, degree, control_points, weights);
     spl::NURBS<3> nurbs_after(*nurbs_3d_before_);
     nurbs_3d_after_ = std::make_shared<spl::NURBS<3>>(nurbs_after);

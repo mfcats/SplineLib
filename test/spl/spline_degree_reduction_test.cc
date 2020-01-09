@@ -106,7 +106,7 @@ class ALinearNURBSForDegreeElevationAndReductionForDimension0 : public Test {  /
         spl::ControlPoint(std::vector<double>({2.0, 2.0})),
         spl::ControlPoint(std::vector<double>({2.0, 3.0}))
     };
-    std::vector<double> weights = {1.0, 1.5, 0.5, 1.0};
+    std::vector<Weight> weights = {Weight{1.0}, Weight{1.5}, Weight{0.5}, Weight{1.0}};
     original_ = std::make_shared<spl::NURBS<1>>(knot_vector_before, degree, control_points, weights);
     elevated_and_reduced_ = std::make_shared<spl::NURBS<1>>(*original_);
     elevated_and_reduced_->ElevateDegreeForDimension(0);
