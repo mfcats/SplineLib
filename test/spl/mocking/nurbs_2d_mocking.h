@@ -42,7 +42,7 @@ class MockParameterSpace1 : public spl::ParameterSpace<2> {
 class MockWeightedPhysicalSpace1 : public spl::WeightedPhysicalSpace<2> {
  public:
   MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 2> const &));
-  MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 2>));
+  MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 2> const &));
   MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 2> const &));
   MOCK_CONST_METHOD0(GetDimensionality, int());
 };
@@ -327,7 +327,7 @@ class MockPhysicalSpace2 : public spl::PhysicalSpace<2> {
 class MockWeightedPhysicalSpace2 : public spl::WeightedPhysicalSpace<2> {
  public:
   MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 2> const &));
-  MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 2>));
+  MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 2> const &));
   MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 2> const &));
   MOCK_CONST_METHOD0(GetDimensionality, int());
 };

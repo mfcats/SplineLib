@@ -34,10 +34,10 @@ class MockParameterSpace14111 : public spl::ParameterSpace<1> {
   MOCK_CONST_METHOD1(ThrowIfParametricCoordinateOutsideKnotVectorRange, void(std::array<ParametricCoordinate, 1>));
 };
 
-class MockWeightedPhysicalSpace14111 : public spl::WeightedPhysicalSpace<1> {
+ class MockWeightedPhysicalSpace14111 : public spl::WeightedPhysicalSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 1> const &));
-  MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 1>));
+  MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 1> const &));
   MOCK_CONST_METHOD0(GetDimensionality, int());
 };
 
@@ -94,7 +94,7 @@ class MockParameterSpace1009 : public spl::ParameterSpace<1> {
 class MockWeightedPhysicalSpace1009 : public spl::WeightedPhysicalSpace<1> {
  public:
   MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 1> const &));
-  MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 1>));
+  MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 1> const &));
   MOCK_CONST_METHOD0(GetDimensionality, int());
 };
 

@@ -48,7 +48,7 @@ class PhysicalSpace {
 
   virtual Weight GetWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> const &/*indices*/) const;
   virtual Weight GetWeight(int /*index_1d*/) const;
-  std::vector<Weight> GetWeights() const;
+//  virtual std::vector<Weight> GetWeights() const;
 
   void SetControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index, ControlPoint const &control_point,
                        Dimension const &dimension = Dimension{0}, int (*before)(int) = nullptr);

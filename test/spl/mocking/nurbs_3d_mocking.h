@@ -42,7 +42,7 @@ class MockParameterSpace3d : public spl::ParameterSpace<3> {
 class MockWeightedPhysicalSpace3d : public spl::WeightedPhysicalSpace<3> {
  public:
   MOCK_CONST_METHOD1(GetWeight, Weight(std::array<int, 3> const &));
-  MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 3>));
+  MOCK_CONST_METHOD1(GetHomogenousControlPoint, spl::ControlPoint(std::array<int, 3> const &));
   MOCK_CONST_METHOD1(GetControlPoint, spl::ControlPoint(std::array<int, 3> const &));
   MOCK_CONST_METHOD0(GetDimensionality, int());
 };
