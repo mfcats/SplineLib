@@ -77,7 +77,7 @@ std::any IGESReader::Create1DSpline(const std::vector<double> &parameterData) {
   }
   knot_vector[0] = std::make_shared<baf::KnotVector>(knots);
   for (int i = weightsStartEnd[0]; i <= weightsStartEnd[1]; ++i) {
-    weights.push_back(Weight{parameterData[i]});
+    weights.emplace_back(parameterData[i]);
   }
   std::vector<double> controlPointCoordinates;
   for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {
@@ -131,7 +131,7 @@ std::any IGESReader::Create2DSpline(const std::vector<double> &parameterData) {
   knot_vector[0] = std::make_shared<baf::KnotVector>(knots[0]);
   knot_vector[1] = std::make_shared<baf::KnotVector>(knots[1]);
   for (int i = weightsStartEnd[0]; i <= weightsStartEnd[1]; ++i) {
-    weights.push_back(Weight{parameterData[i]});
+    weights.emplace_back(parameterData[i]);
   }
   std::vector<double> controlPointCoordinates;
   for (int i = controlPointsStartEnd[0]; i <= controlPointsStartEnd[1]; ++i) {

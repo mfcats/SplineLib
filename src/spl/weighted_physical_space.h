@@ -24,7 +24,7 @@ template<int PARAMETRIC_DIMENSIONALITY>
 class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
  public:
   WeightedPhysicalSpace() = default;
-  WeightedPhysicalSpace(std::vector<spl::ControlPoint> const &control_points, std::vector<Weight> const &weights,
+  WeightedPhysicalSpace(std::vector<ControlPoint> const &control_points, std::vector<Weight> const &weights,
                         std::array<int, PARAMETRIC_DIMENSIONALITY> const &number_of_points);
   WeightedPhysicalSpace(WeightedPhysicalSpace const &other) = default;
   WeightedPhysicalSpace(WeightedPhysicalSpace &&other) noexcept = default;

@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 template<int PARAMETRIC_DIMENSIONALITY>
 WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::WeightedPhysicalSpace(
-    std::vector<spl::ControlPoint> const &control_points, std::vector<Weight> const &weights,
+    std::vector<ControlPoint> const &control_points, std::vector<Weight> const &weights,
     std::array<int, PARAMETRIC_DIMENSIONALITY> const &number_of_points)
     : PhysicalSpace<PARAMETRIC_DIMENSIONALITY>(control_points, number_of_points), weights_(weights) {
   if (control_points.size() != weights_.size()) {

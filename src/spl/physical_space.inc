@@ -17,7 +17,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 template<int PARAMETRIC_DIMENSIONALITY>
 PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::PhysicalSpace(
-    std::vector<spl::ControlPoint> const &control_points,
+    std::vector<ControlPoint> const &control_points,
     std::array<int, PARAMETRIC_DIMENSIONALITY> const &number_of_points_per_direction)
     : dimensionality_(GetFront(control_points).GetDimensionality()),
       number_of_points_per_dimension_(number_of_points_per_direction) {

@@ -201,3 +201,51 @@ TEST_F(A2DPhysicalSpace, EvaluatesThatCopiedSpaceEqualsOriginalSpace) {  // NOLI
   spl::PhysicalSpace<2> copy(physical_space);
   ASSERT_THAT(physical_space.AreEqual(copy), true);
 }
+
+template<int DIM>
+void print_tensor(std::vector<int> const &v, std::array<int, DIM> n) {
+  std::array<int, DIM + 1> length{};
+  length[0] = 3;
+  for (int i = 0; i < DIM; ++i) length[i + 1] = n[i];
+  util::MultiIndexHandler<DIM + 1> handler(length);
+  for (int i = 0; i < handler.GetNumberOfTotalMultiIndices() / 3; ++i, ++handler) {
+    std::cout << "(" << v[(handler++).GetCurrent1DIndex()] << " " << v[(handler++).GetCurrent1DIndex()] << " " <<
+                 v[handler.GetCurrent1DIndex()] << ")  ";
+    if (handler[Dimension{1}] == n[0] - 1) {
+      std::cout << std::endl;
+      if (DIM > 1 && handler[Dimension{2}] == n[1] - 1) {
+        std::cout << std::endl;
+        if (DIM > 2 && handler[Dimension{3}] == n[2] - 1) std::cout << std::endl;
+      }
+    }
+  }
+}
+
+template<int DIM>
+void add_slice(std::vector<int> &v, std::array<int, DIM> n, int index, Dimension const &dim) {
+  std::array<int, DIM + 1> length{};
+  length[0] = 3;
+  for (int i = 0; i < DIM; ++i) length[i + 1] = n[i];
+  util::MultiIndexHandler<DIM + 1> handler(length);
+  handler--;
+  Dimension dim_intern = dim + Dimension{1};
+  handler.SetCurrentIndexForDimension(index, dim_intern);
+  for (int i = 0; i < handler.GetLengthForCollapsedDimension(dim_intern); ++i, handler.SubtractWithConstantDimension(dim_intern)) {
+      v.insert(v.begin() + handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(dim_intern) + 1, 142 + i);
+  }
+}
+TEST_F(A2DPhysicalSpace, testing_control_point_adding) {
+  const int DIM = 4;
+  std::array<int, DIM> n{2, 2, 2, 2};
+  int index = 0;
+  Dimension dimension{3};
+
+  util::MultiIndexHandler<DIM> handler(n);
+  std::vector<int> v(handler.GetNumberOfTotalMultiIndices() * 3, 0);
+  for (int i = 0; i < handler.GetNumberOfTotalMultiIndices() * 3; ++i) v[i] = i;
+  print_tensor<DIM>(v, n);
+  add_slice<DIM>(v, n, index, dimension);
+  GetValue(n, dimension) += 1;
+  std::cout << "----------------------------------------------" << std::endl << std::endl;
+  print_tensor<DIM>(v, n);
+}
