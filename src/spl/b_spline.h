@@ -62,7 +62,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
         && physical_space_->AreEqual(*rhs.physical_space_.get(), Tolerance{tolerance});
   }
 
-  void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
+  void AdjustControlPoints_old(std::vector<double> scaling, int first, int last, int dimension) {
     std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     ++point_handler_length[dimension];
     util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
@@ -81,6 +81,49 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
     }
     // TODO(all): Find a better solution than this.
     physical_space_->IncrementNumberOfPoints(Dimension{dimension});
+  }
+
+  void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
+    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
+    ++point_handler_length[dimension];
+    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
+    std::array<int, PARAMETRIC_DIMENSIONALITY> maximum_point_index =
+        physical_space_->GetMaximumPointIndexPerDirection();
+    ++maximum_point_index[dimension];
+    point_handler.SetCurrentIndex(maximum_point_index);
+    physical_space_->AddControlPointSlice(Dimension{dimension}, last);  // AddControlPoints(this->GetTotalNumberOfControlPoints() / maximum_point_index[dimension]);
+
+    for (int k = last; k >= first; --k) {
+      util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> handler(this->GetNumberOfPointsPerDirection());
+      handler--;
+      handler.SetCurrentIndexForDimension(k, Dimension{dimension});
+      for (int i = handler.GetLengthForCollapsedDimension(Dimension{dimension}) - 1; i >= 0;
+           --i, handler.SubtractWithConstantDimension(Dimension{dimension})) {
+        auto a = handler.GetCurrent1DIndex() - 1;
+        auto b = handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(Dimension{dimension});
+        auto c = physical_space_->GetControlPoint(a);
+        auto d = physical_space_->GetControlPoint(b);
+        auto e = k - first;
+        auto f = scaling[e];
+        auto g = (1 - scaling[k - first]) * physical_space_->GetControlPoint(handler.GetCurrent1DIndex() - 1);
+        auto h = (scaling[k - first]) * physical_space_->GetControlPoint(handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(Dimension{dimension}));
+        auto new_control_point = (1 - scaling[k - first]) * physical_space_->GetControlPoint(handler.GetCurrent1DIndex() - 1) +
+            (scaling[k - first]) * physical_space_->GetControlPoint(handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(Dimension{dimension}));
+        physical_space_->SetControlPoint(handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(Dimension{dimension}),
+            new_control_point);
+      }
+    }
+
+//    for (int i = point_handler.GetNumberOfTotalMultiIndices() - 1; i >= 0; --i, --point_handler) {
+//      auto current_point_index = point_handler[Dimension{dimension}];
+//      std::array<int, PARAMETRIC_DIMENSIONALITY> indices = point_handler.GetCurrentIndex();
+//      spl::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling,
+//                                                               current_point_index, first, last);
+//      physical_space_->SetControlPoint(indices, new_control_point, Dimension{dimension},
+//                                       util::numeric_operations::increment<int>);
+//    }
+    // TODO(all): Find a better solution than this.
+    // physical_space_->IncrementNumberOfPoints(Dimension{dimension});
   }
 
   bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {

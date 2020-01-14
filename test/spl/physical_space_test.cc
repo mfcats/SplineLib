@@ -223,22 +223,21 @@ void print_tensor(std::vector<int> const &v, std::array<int, DIM> n) {
 
 template<int DIM>
 void add_slice(std::vector<int> &v, std::array<int, DIM> n, int index, Dimension const &dim) {
-  std::array<int, DIM + 1> length{};
-  length[0] = 3;
-  for (int i = 0; i < DIM; ++i) length[i + 1] = n[i];
-  util::MultiIndexHandler<DIM + 1> handler(length);
+  util::MultiIndexHandler<DIM> handler(n);
   handler--;
-  Dimension dim_intern = dim + Dimension{1};
-  handler.SetCurrentIndexForDimension(index, dim_intern);
-  for (int i = 0; i < handler.GetLengthForCollapsedDimension(dim_intern); ++i, handler.SubtractWithConstantDimension(dim_intern)) {
-      v.insert(v.begin() + handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(dim_intern) + 1, 142 + i);
+  handler.SetCurrentIndexForDimension(index, dim);
+  for (int i = handler.GetLengthForCollapsedDimension(dim) - 1; i >= 0; --i, handler.SubtractWithConstantDimension(dim)) {
+    for (int j = 0; j < 3; ++j) {
+      v.insert(v.begin() + (handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(dim) + 1) * 3 + j, 142 + 3*i + j);
+    }
   }
 }
+
 TEST_F(A2DPhysicalSpace, testing_control_point_adding) {
   const int DIM = 4;
   std::array<int, DIM> n{2, 2, 2, 2};
   int index = 0;
-  Dimension dimension{3};
+  Dimension dimension{2};
 
   util::MultiIndexHandler<DIM> handler(n);
   std::vector<int> v(handler.GetNumberOfTotalMultiIndices() * 3, 0);
@@ -248,4 +247,7 @@ TEST_F(A2DPhysicalSpace, testing_control_point_adding) {
   GetValue(n, dimension) += 1;
   std::cout << "----------------------------------------------" << std::endl << std::endl;
   print_tensor<DIM>(v, n);
+
+  physical_space.AddControlPointSlice(Dimension{0}, 0);
+  int i = 0;
 }
