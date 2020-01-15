@@ -153,6 +153,20 @@ void WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::AddControlPoints(int numb
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
+void WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DoubleControlPointSlice(Dimension const &dimension, int index) {
+  PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DoubleControlPointSlice(dimension, index);
+  util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> handler(this->number_of_points_per_dimension_);
+  handler--;
+  handler.SetCurrentIndexForDimension(index, dimension);
+  for (int i = handler.GetLengthForCollapsedDimension(dimension) - 1; i >= 0;
+       --i, handler.SubtractWithConstantDimension(dimension)) {
+    auto position_weight = handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(dimension) + 1;
+    Weight new_weight_value = GetValue(weights_, handler.GetCurrent1DIndex());
+    weights_.insert(weights_.begin() + position_weight, new_weight_value);
+  }
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
 void WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::RemoveControlPoints(int number) {
   PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::RemoveControlPoints(number);
   auto last = weights_.end();

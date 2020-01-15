@@ -73,6 +73,27 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
     return physical_space_->GetHomogenousControlPoint(indices)[Dimension{dimension}];
   }
 
+  void AdjustControlPoints_new_unfinished(std::vector<double> scaling, int first, int last, int dimension) {
+    physical_space_->DoubleControlPointSlice(Dimension{dimension}, last);
+    for (int index_point_slice_to_adjust = last; index_point_slice_to_adjust >= first; --index_point_slice_to_adjust) {
+      util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> handler(this->GetNumberOfPointsPerDirection());
+      --handler;
+      handler.SetCurrentIndexForDimension(index_point_slice_to_adjust, Dimension{dimension});
+      for (int i = handler.GetLengthForCollapsedDimension(Dimension{dimension}) - 1; i >= 0;
+           --i, handler.SubtractWithConstantDimension(Dimension{dimension})) {
+        int current_upper_point_index = handler.GetCurrent1DIndex();
+        int current_lower_point_index = handler.GetCurrent1DIndex() - handler.GetCurrentSliceSize(Dimension{dimension});
+        double current_scaling = scaling[index_point_slice_to_adjust - first];
+        auto new_control_point = (1 - current_scaling) * physical_space_->GetControlPoint(current_lower_point_index) +
+                                 current_scaling * physical_space_->GetControlPoint(current_upper_point_index);
+        auto new_weight = Weight{(1 - current_scaling) * physical_space_->GetWeight(current_lower_point_index).Get() +
+                                 current_scaling * physical_space_->GetWeight(current_upper_point_index).Get()};
+        physical_space_->SetControlPoint(handler.GetCurrent1DIndex(), new_control_point);
+        physical_space_->SetWeight(handler.GetCurrent1DIndex(), new_weight);
+      }
+    }
+  }
+
   void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
     std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
     ++point_handler_length[dimension];

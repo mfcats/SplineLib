@@ -222,6 +222,33 @@ void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::AddControlPoints(int number) {
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
+void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DoubleControlPointSlice(Dimension const &dimension, int index) {
+  if (dimension.Get() >= PARAMETRIC_DIMENSIONALITY) {
+    throw std::logic_error("The dimension to add control points has to be smaller than the parametric dimensionality"
+                           "of the physical space.");
+  }
+  if (index >= GetValue(number_of_points_per_dimension_, dimension)) {
+    throw std::invalid_argument("The index after which the control point slice is added has to be smaller than the "
+                                "numnber of points in the given dimension.");
+  }
+  util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> handler(number_of_points_per_dimension_);
+  handler--;
+  handler.SetCurrentIndexForDimension(index, dimension);
+  for (int i = handler.GetLengthForCollapsedDimension(dimension) - 1; i >= 0;
+       --i, handler.SubtractWithConstantDimension(dimension)) {
+    for (Dimension current_dimension{0}; current_dimension < Dimension{dimensionality_}; ++current_dimension) {
+      auto position = (handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(dimension) + 1) *
+          dimensionality_ + current_dimension.Get();
+      double new_value = GetValue(control_points_,
+                                  handler.GetCurrent1DIndex() * dimensionality_ + current_dimension.Get());
+      control_points_.insert(control_points_.begin() + position, new_value);
+    }
+  }
+  ++GetValue(number_of_points_per_dimension_, dimension);
+  total_number_of_points_ += handler.GetLengthForCollapsedDimension(dimension);
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
 void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::RemoveControlPoints(int number) {
   auto last = control_points_.end();
   control_points_.erase(last - number * dimensionality_, last);

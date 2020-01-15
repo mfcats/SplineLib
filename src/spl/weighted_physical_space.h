@@ -56,6 +56,7 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
 
   // TODO(all): The arguments should be a dimension and an index for this dimension or the method should be private.
   void AddControlPoints(int number) override;
+  void DoubleControlPointSlice(Dimension const &dimension, int index) override;
   void RemoveControlPoints(int number) override;
 
  private:

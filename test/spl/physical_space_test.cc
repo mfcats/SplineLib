@@ -248,6 +248,6 @@ TEST_F(A2DPhysicalSpace, testing_control_point_adding) {
   std::cout << "----------------------------------------------" << std::endl << std::endl;
   print_tensor<DIM>(v, n);
 
-  physical_space.AddControlPointSlice(Dimension{0}, 0);
+  physical_space.DoubleControlPointSlice(Dimension{0}, 0);
   int i = 0;
 }

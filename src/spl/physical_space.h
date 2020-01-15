@@ -69,28 +69,7 @@ class PhysicalSpace {
 
   // TODO(all): The argument should be a dimension and an index for this dimension.
   virtual void AddControlPoints(int number);
-  virtual void AddControlPointSlice(Dimension const &dimension, int index) {
-    if (dimension.Get() >= PARAMETRIC_DIMENSIONALITY) {
-      throw std::logic_error("The dimension to add control points has to be smaller than the parametric dimensionality"
-                             "of the physical space.");
-    }
-    if (index >= GetValue(number_of_points_per_dimension_, dimension)) {
-      throw std::invalid_argument("The index after which the control point slice is added has to be smaller than the "
-                                  "numnber of points in the given dimension.");
-    }
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> handler(number_of_points_per_dimension_);
-    handler--;
-    handler.SetCurrentIndexForDimension(index, dimension);
-    for (int i = handler.GetLengthForCollapsedDimension(dimension) - 1; i >= 0; --i, handler.SubtractWithConstantDimension(dimension)) {
-      for (int j = 0; j < dimensionality_; ++j) {
-        auto position = (handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(dimension) + 1) * dimensionality_ + j;
-        double new_value = GetValue(control_points_, handler.GetCurrent1DIndex() * dimensionality_ + j);
-        control_points_.insert(control_points_.begin() + position, new_value);
-      }
-    }
-    ++GetValue(number_of_points_per_dimension_, dimension);
-    total_number_of_points_ += handler.GetLengthForCollapsedDimension(dimension);
-  }
+  virtual void DoubleControlPointSlice(Dimension const &dimension, int index);
   virtual void RemoveControlPoints(int number);
 
   // TODO(all): This method should not be necessary but done when adding and removing control points.
