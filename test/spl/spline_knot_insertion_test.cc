@@ -15,6 +15,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 #include "src/spl/b_spline.h"
 #include "src/spl/nurbs.h"
+#include "test/spl/random/random_spline_utils.h"
 
 using testing::Test;
 using testing::DoubleEq;
@@ -275,5 +276,147 @@ TEST_F(BSpline1DFig5_16, InsertsKnot0_3MultipleTimes) {  // NOLINT
     std::array<ParametricCoordinate, 1> param_coord{ParametricCoordinate(i / 100.0)};
     ASSERT_THAT(bspline_1d_after_->Evaluate(param_coord, {0})[0],
                 DoubleNear(bspline_1d_before_->Evaluate(param_coord, {0})[0], 0.00001));
+  }
+}
+
+class BSpline2DForKnotInsertion : public Test {  // NOLINT
+ public:
+  BSpline2DForKnotInsertion() {
+    std::array<Degree, 2> degree = {Degree{1}, Degree{2}};
+    baf::KnotVectors<2> knot_vector_before = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.7},
+             ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}))
+    };
+    baf::KnotVectors<2> knot_vector_after = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.7},
+             ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}}))
+    };
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({0.0, 0.0})), spl::ControlPoint(std::vector<double>({1.0, 0.5})),
+        spl::ControlPoint(std::vector<double>({0.5, 1.5})), spl::ControlPoint(std::vector<double>({1.5, 2.0})),
+        spl::ControlPoint(std::vector<double>({2.3, 2.0})), spl::ControlPoint(std::vector<double>({3.3, 2.5})),
+        spl::ControlPoint(std::vector<double>({3.0, 0.0})), spl::ControlPoint(std::vector<double>({4.0, 0.5}))
+    };
+    bspline_2d_before_ = std::make_shared<spl::BSpline<2>>(knot_vector_before, degree, control_points);
+    bspline_2d_after_ = std::make_shared<spl::BSpline<2>>(knot_vector_after, degree, control_points);
+    bspline_2d_after_->InsertKnot(ParametricCoordinate{0.8}, 0);
+    bspline_2d_after_->InsertKnot(ParametricCoordinate{0.2}, 1);
+    bspline_2d_after_->InsertKnot(ParametricCoordinate{0.8}, 1);
+    bspline_2d_after_->InsertKnot(ParametricCoordinate{0.2}, 0);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<2>> bspline_2d_before_;
+  std::shared_ptr<spl::BSpline<2>> bspline_2d_after_;
+};
+
+TEST_F(BSpline2DForKnotInsertion, HasTwoMoreKnotPerDirectionAfterFourKnotInsertions) {  // NOLINT
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              bspline_2d_before_->GetKnotVector(0)->GetNumberOfKnots() + 2);
+  ASSERT_THAT(bspline_2d_after_->GetKnotVector(1)->GetNumberOfKnots(),
+              bspline_2d_before_->GetKnotVector(1)->GetNumberOfKnots() + 2);
+}
+
+TEST_F(BSpline2DForKnotInsertion, HasTwoMoreControlPointsPerDirectionAfterFourKnotInsertions) {  // NOLINT
+  ASSERT_THAT(bspline_2d_after_->GetNumberOfPointsPerDirection()[0],
+              bspline_2d_before_->GetNumberOfPointsPerDirection()[0] + 2);
+  ASSERT_THAT(bspline_2d_after_->GetNumberOfPointsPerDirection()[1],
+              bspline_2d_before_->GetNumberOfPointsPerDirection()[1] + 2);
+}
+
+TEST_F(BSpline2DForKnotInsertion, DoesNotChangeGeometricallyAfterFourKnotInsertions) {  // NOLINT
+  for (int evaluated_point = 0; evaluated_point < 25; ++evaluated_point) {
+    std::array<ParametricCoordinate, 2>
+        param_coord{ParametricCoordinate{util::random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::random::GetUniformRandom<double>(0.0, 1.0)}};
+    for (int j = 0; j < bspline_2d_before_->GetPointDim(); ++j) {
+      ASSERT_THAT(bspline_2d_after_->Evaluate(param_coord, {j})[0],
+                  DoubleNear(bspline_2d_before_->Evaluate(param_coord, {j})[0], 1e-10));
+    }
+  }
+}
+
+class BSpline3DForKnotInsertion : public Test {  // NOLINT
+ public:
+  BSpline3DForKnotInsertion() {
+    std::array<Degree, 3> degree = {Degree{1}, Degree{2}, Degree{1}};
+    baf::KnotVectors<3> knot_vector_before = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.7},
+             ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}}))
+    };
+    baf::KnotVectors<3> knot_vector_after = {
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{0.7},
+             ParametricCoordinate{1}, ParametricCoordinate{1}, ParametricCoordinate{1}})),
+        std::make_shared<baf::KnotVector>(baf::KnotVector(
+            {ParametricCoordinate{0}, ParametricCoordinate{0}, ParametricCoordinate{1}, ParametricCoordinate{1}}))
+    };
+    std::vector<spl::ControlPoint> control_points = {
+        spl::ControlPoint(std::vector<double>({0.0, 0.0})), spl::ControlPoint(std::vector<double>({1.0, 0.5})),
+        spl::ControlPoint(std::vector<double>({0.5, 1.5})), spl::ControlPoint(std::vector<double>({1.5, 2.0})),
+        spl::ControlPoint(std::vector<double>({2.3, 2.0})), spl::ControlPoint(std::vector<double>({3.3, 2.5})),
+        spl::ControlPoint(std::vector<double>({3.0, 0.0})), spl::ControlPoint(std::vector<double>({4.0, 0.5})),
+
+        spl::ControlPoint(std::vector<double>({0.0, 0.0})), spl::ControlPoint(std::vector<double>({1.0, 0.5})),
+        spl::ControlPoint(std::vector<double>({0.5, 1.5})), spl::ControlPoint(std::vector<double>({1.5, 2.0})),
+        spl::ControlPoint(std::vector<double>({2.3, 2.0})), spl::ControlPoint(std::vector<double>({3.3, 2.5})),
+        spl::ControlPoint(std::vector<double>({3.0, 0.0})), spl::ControlPoint(std::vector<double>({4.0, 0.5}))
+    };
+    bspline_3d_before_ = std::make_shared<spl::BSpline<3>>(knot_vector_before, degree, control_points);
+    bspline_3d_after_ = std::make_shared<spl::BSpline<3>>(knot_vector_after, degree, control_points);
+    bspline_3d_after_->InsertKnot(ParametricCoordinate{0.8}, 0);
+    bspline_3d_after_->InsertKnot(ParametricCoordinate{0.2}, 1);
+    bspline_3d_after_->InsertKnot(ParametricCoordinate{0.8}, 2);
+    bspline_3d_after_->InsertKnot(ParametricCoordinate{0.2}, 2);
+    bspline_3d_after_->InsertKnot(ParametricCoordinate{0.8}, 1);
+    bspline_3d_after_->InsertKnot(ParametricCoordinate{0.2}, 0);
+  }
+
+ protected:
+  std::shared_ptr<spl::BSpline<3>> bspline_3d_before_;
+  std::shared_ptr<spl::BSpline<3>> bspline_3d_after_;
+};
+
+TEST_F(BSpline3DForKnotInsertion, HasTwoMoreKnotPerDirectionAfterSixKnotInsertions) {  // NOLINT
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(0)->GetNumberOfKnots(),
+              bspline_3d_before_->GetKnotVector(0)->GetNumberOfKnots() + 2);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(1)->GetNumberOfKnots(),
+              bspline_3d_before_->GetKnotVector(1)->GetNumberOfKnots() + 2);
+  ASSERT_THAT(bspline_3d_after_->GetKnotVector(2)->GetNumberOfKnots(),
+              bspline_3d_before_->GetKnotVector(2)->GetNumberOfKnots() + 2);
+}
+
+TEST_F(BSpline3DForKnotInsertion, HasTwoMoreControlPointsPerDirectionAfterSixKnotInsertions) {  // NOLINT
+  ASSERT_THAT(bspline_3d_after_->GetNumberOfPointsPerDirection()[0],
+              bspline_3d_before_->GetNumberOfPointsPerDirection()[0] + 2);
+  ASSERT_THAT(bspline_3d_after_->GetNumberOfPointsPerDirection()[1],
+              bspline_3d_before_->GetNumberOfPointsPerDirection()[1] + 2);
+  ASSERT_THAT(bspline_3d_after_->GetNumberOfPointsPerDirection()[2],
+              bspline_3d_before_->GetNumberOfPointsPerDirection()[2] + 2);
+}
+
+TEST_F(BSpline3DForKnotInsertion, DoesNotChangeGeometricallyAfterFourKnotInsertions) {  // NOLINT
+  for (int evaluated_point = 0; evaluated_point < 36; ++evaluated_point) {
+    std::array<ParametricCoordinate, 3>
+        param_coord{ParametricCoordinate{util::random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::random::GetUniformRandom<double>(0.0, 1.0)},
+                    ParametricCoordinate{util::random::GetUniformRandom<double>(0.0, 1.0)}};
+    for (int j = 0; j < bspline_3d_before_->GetPointDim(); ++j) {
+      ASSERT_THAT(bspline_3d_after_->Evaluate(param_coord, {j})[0],
+                  DoubleNear(bspline_3d_before_->Evaluate(param_coord, {j})[0], 1e-10));
+    }
   }
 }
