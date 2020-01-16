@@ -38,6 +38,10 @@ template<typename TYPE, typename NAME>
 constexpr NamedType<TYPE, NAME> operator+(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
 template<typename TYPE, typename NAME>
 constexpr NamedType<TYPE, NAME> operator-(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs);
+template<typename TYPE, typename NAME>
+constexpr NamedType<TYPE, NAME> operator*(TYPE factor_lhs, NamedType<TYPE, NAME> const &rhs);
+template<typename TYPE, typename NAME>
+constexpr NamedType<TYPE, NAME> operator*(NamedType<TYPE, NAME> const &lhs, TYPE factor_rhs);
 
 // NamedType<TYPE, NAME>s are used to check for semantic of arguments (variables) at compile time. Actual definitions of
 // named types are placed at the end of this file.
@@ -70,6 +74,8 @@ class NamedType {
   friend constexpr bool operator<= <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
   friend constexpr NamedType operator+ <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
   friend constexpr NamedType operator- <TYPE, NAME>(NamedType const &lhs, NamedType const &rhs);
+  friend constexpr NamedType operator* <TYPE, NAME>(TYPE factor_lhs, NamedType const &rhs);
+  friend constexpr NamedType operator* <TYPE, NAME>(NamedType const &lhs, TYPE factor_rhs);
 
   TYPE & Get();
   constexpr TYPE const & Get() const;

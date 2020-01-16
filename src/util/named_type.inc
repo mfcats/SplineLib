@@ -106,3 +106,13 @@ template<typename TYPE, typename NAME>
 constexpr NamedType<TYPE, NAME> operator-(NamedType<TYPE, NAME> const &lhs, NamedType<TYPE, NAME> const &rhs) {
   return NamedType<TYPE, NAME>{lhs.value_ - rhs.value_};
 }
+
+template<typename TYPE, typename NAME>
+constexpr NamedType<TYPE, NAME> operator*(TYPE factor_lhs, NamedType<TYPE, NAME> const &rhs) {
+return NamedType<TYPE, NAME>{factor_lhs * rhs.value_};
+}
+
+template<typename TYPE, typename NAME>
+constexpr NamedType<TYPE, NAME> operator*(NamedType<TYPE, NAME> const &lhs, TYPE factor_rhs) {
+  return NamedType<TYPE, NAME>{lhs.value_ * factor_rhs};
+}

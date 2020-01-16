@@ -117,6 +117,13 @@ TEST_F(TwoNamedIntegerTypes, CanBeSubtractedToPlusOrMinus12) {  // NOLINT
   ASSERT_THAT((named_integer_type_b_ - named_integer_type_a_).Get(), Eq(-12));
 }
 
+TEST_F(TwoNamedIntegerTypes, CanBeMulitpliedByPlusAndMinus2To20And4) {  // NOLINT
+  ASSERT_THAT((2 * named_integer_type_a_).Get(), Eq(20));
+  ASSERT_THAT((named_integer_type_a_ * 2).Get(), Eq(20));
+  ASSERT_THAT((-2 * named_integer_type_b_).Get(), Eq(4));
+  ASSERT_THAT((named_integer_type_b_ * (-2)).Get(), Eq(4));
+}
+
 class TwoNamedDoubleTypes : public Test {
  public:
   TwoNamedDoubleTypes() = default;
@@ -209,4 +216,11 @@ TEST_F(TwoNamedDoubleTypes, CanBeAddedTo7_4399) {  // NOLINT
 TEST_F(TwoNamedDoubleTypes, CanBeSubtractedToPlusOrMinus12_5801) {  // NOLINT
   ASSERT_THAT((named_double_type_a_ - named_double_type_b_).Get(), DoubleEq(12.5801));
   ASSERT_THAT((named_double_type_b_ - named_double_type_a_).Get(), DoubleEq(-12.5801));
+}
+
+TEST_F(TwoNamedDoubleTypes, CanBeMulitpliedByPlusAndMinus1_5To15_015And3_85515) {  // NOLINT
+  ASSERT_THAT((1.5 * named_double_type_a_).Get(), Eq(15.015));
+  ASSERT_THAT((named_double_type_a_ * 1.5).Get(), Eq(15.015));
+  ASSERT_THAT((-1.5 * named_double_type_b_).Get(), Eq(3.85515));
+  ASSERT_THAT((named_double_type_b_ * (-1.5)).Get(), Eq(3.85515));
 }
