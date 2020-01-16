@@ -73,7 +73,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
     return physical_space_->GetHomogenousControlPoint(indices)[Dimension{dimension}];
   }
 
-  void AdjustControlPoints_new_unfinished(std::vector<double> scaling, int first, int last, int dimension) {
+  void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
     physical_space_->DoubleControlPointSlice(Dimension{dimension}, last);
     for (int index_point_slice_to_adjust = last; index_point_slice_to_adjust >= first; --index_point_slice_to_adjust) {
       util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> handler(this->GetNumberOfPointsPerDirection());
@@ -84,37 +84,12 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
         int current_upper_point_index = handler.GetCurrent1DIndex();
         int current_lower_point_index = handler.GetCurrent1DIndex() - handler.GetCurrentSliceSize(Dimension{dimension});
         double current_scaling = scaling[index_point_slice_to_adjust - first];
-        auto new_control_point = (1 - current_scaling) * physical_space_->GetControlPoint(current_lower_point_index) +
-                                 current_scaling * physical_space_->GetControlPoint(current_upper_point_index);
-        auto new_weight = Weight{(1 - current_scaling) * physical_space_->GetWeight(current_lower_point_index).Get() +
-                                 current_scaling * physical_space_->GetWeight(current_upper_point_index).Get()};
-        physical_space_->SetControlPoint(handler.GetCurrent1DIndex(), new_control_point);
-        physical_space_->SetWeight(handler.GetCurrent1DIndex(), new_weight);
+        auto new_control_point =
+            ((1 - current_scaling) * physical_space_->GetHomogenousControlPoint(current_lower_point_index) +
+            current_scaling * physical_space_->GetHomogenousControlPoint(current_upper_point_index));
+        physical_space_->SetHomogeneousControlPoint(handler.GetCurrentIndex(), new_control_point);
       }
     }
-  }
-
-  void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
-    std::array<int, PARAMETRIC_DIMENSIONALITY> point_handler_length = this->GetNumberOfPointsPerDirection();
-    ++point_handler_length[dimension];
-    util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(point_handler_length);
-    std::array<int, PARAMETRIC_DIMENSIONALITY> maximum_point_index =
-        physical_space_->GetMaximumPointIndexPerDirection();
-    ++maximum_point_index[dimension];
-    point_handler.SetCurrentIndex(maximum_point_index);
-    int new_points = physical_space_->GetTotalNumberOfControlPoints() / maximum_point_index[dimension];
-    physical_space_->AddControlPoints(new_points);
-    for (int i = point_handler.GetNumberOfTotalMultiIndices() - 1; i >= 0; --i, --point_handler) {
-      auto current_point = point_handler[Dimension{dimension}];
-      std::array<int, PARAMETRIC_DIMENSIONALITY> indices = point_handler.GetCurrentIndex();
-      spl::ControlPoint new_control_point = GetNewControlPoint(indices, dimension, scaling, current_point, first, last);
-      Weight new_weight = Weight{GetNewWeight(indices, dimension, scaling, current_point, first, last)};
-      physical_space_->SetControlPoint(indices, new_control_point, Dimension{dimension},
-                                       util::numeric_operations::increment<int>);
-      physical_space_->SetWeight(indices, new_weight, Dimension{dimension}, util::numeric_operations::increment<int>);
-    }
-    // TODO(all): Find a better solution than this one.
-    physical_space_->IncrementNumberOfPoints(Dimension{dimension});
   }
 
   bool RemoveControlPoints(std::vector<double> scaling, int first, int last, int dimension, double tolerance) override {
@@ -276,46 +251,6 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
       bc *= binomialCoefficient(numbers[i], subsets[i]);
     }
     return bc;
-  }
-
-  spl::ControlPoint GetNewControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, int dimension,
-      std::vector<double> scaling, int current_point, int first, int last) {
-    if (current_point > last) {
-      --indices[dimension];
-      return physical_space_->GetControlPoint(indices);
-    }
-    if (current_point >= first) {
-      std::array<int, PARAMETRIC_DIMENSIONALITY> lower_indices = indices;
-      --lower_indices[dimension];
-      spl::ControlPoint upper_control_point = physical_space_->GetHomogenousControlPoint(indices);
-      spl::ControlPoint lower_control_point = physical_space_->GetHomogenousControlPoint(lower_indices);
-      std::vector<double> coordinates;
-      coordinates.reserve(upper_control_point.GetDimensionality());
-      double new_weight = GetNewWeight(indices, dimension, scaling, current_point, first, last);
-      for (int j = 0; j < upper_control_point.GetDimensionality(); ++j) {
-        coordinates.emplace_back((scaling[current_point - first] *
-        upper_control_point[Dimension{j}] + (1 - scaling[current_point - first]) *
-        lower_control_point[Dimension{j}]) / new_weight);
-      }
-      return spl::ControlPoint(coordinates);
-    }
-    return physical_space_->GetControlPoint(indices);
-  }
-
-  double GetNewWeight(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, int dimension, std::vector<double> scaling,
-                      int current_point, int first, int last) {
-    if (current_point > last) {
-      --indices[dimension];
-      return physical_space_->GetWeight(indices).Get();
-    }
-    if (current_point >= first) {
-      std::array<int, PARAMETRIC_DIMENSIONALITY> lower_indices = indices;
-      --lower_indices[dimension];
-      double upper_weight = physical_space_->GetWeight(indices).Get();
-      double lower_weight = physical_space_->GetWeight(lower_indices).Get();
-      return scaling[current_point - first] * upper_weight + (1 - scaling[current_point - first]) * lower_weight;
-    }
-    return physical_space_->GetWeight(indices).Get();
   }
 
   void SetNewControlPoints(const std::vector<double> &temp, int last, int ii, int off, int dimension) {

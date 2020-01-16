@@ -232,7 +232,7 @@ void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DoubleControlPointSlice(Dimension
                                 "numnber of points in the given dimension.");
   }
   util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> handler(number_of_points_per_dimension_);
-  handler--;
+  --handler;
   handler.SetCurrentIndexForDimension(index, dimension);
   for (int i = handler.GetLengthForCollapsedDimension(dimension) - 1; i >= 0;
        --i, handler.SubtractWithConstantDimension(dimension)) {

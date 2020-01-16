@@ -113,6 +113,20 @@ bool WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::AreEqual(WeightedPhysical
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
+void WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SetHomogeneousControlPoint(
+    std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index,
+    ControlPoint const &homogeneous_control_point) {
+  // TODO(Corinna): throw for wrong dimension
+  std::vector<double> coordinates(this->dimensionality_, 0.0);
+  for (Dimension current_dimension{0}; current_dimension < Dimension{this->dimensionality_}; ++current_dimension) {
+    GetValue(coordinates, current_dimension) =
+        homogeneous_control_point[current_dimension] / homogeneous_control_point[Dimension{this->dimensionality_}];
+  }
+  PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SetControlPoint(multi_index, ControlPoint(coordinates));
+  SetWeight(multi_index, Weight{homogeneous_control_point[Dimension{this->dimensionality_}]});
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
 void WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SetWeightedControlPoint(
     std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index,
     ControlPoint const &control_point, Weight const &weight) {
@@ -154,9 +168,8 @@ void WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::AddControlPoints(int numb
 
 template<int PARAMETRIC_DIMENSIONALITY>
 void WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DoubleControlPointSlice(Dimension const &dimension, int index) {
-  PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DoubleControlPointSlice(dimension, index);
   util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> handler(this->number_of_points_per_dimension_);
-  handler--;
+  --handler;
   handler.SetCurrentIndexForDimension(index, dimension);
   for (int i = handler.GetLengthForCollapsedDimension(dimension) - 1; i >= 0;
        --i, handler.SubtractWithConstantDimension(dimension)) {
@@ -164,6 +177,7 @@ void WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DoubleControlPointSlice(D
     Weight new_weight_value = GetValue(weights_, handler.GetCurrent1DIndex());
     weights_.insert(weights_.begin() + position_weight, new_weight_value);
   }
+  PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DoubleControlPointSlice(dimension, index);
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>

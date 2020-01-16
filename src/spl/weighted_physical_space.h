@@ -44,6 +44,8 @@ class WeightedPhysicalSpace : public PhysicalSpace<PARAMETRIC_DIMENSIONALITY> {
   virtual ControlPoint GetHomogenousControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) const;
   virtual ControlPoint GetHomogenousControlPoint(int index_1d) const;
 
+  void SetHomogeneousControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index,
+                                  ControlPoint const &homogeneous_control_point);
   void SetWeightedControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index,
                                ControlPoint const &control_point, Weight const &weight);
 
