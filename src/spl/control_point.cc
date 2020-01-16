@@ -67,6 +67,13 @@ ControlPoint operator*(double scalar, ControlPoint const &control_point) {
   return ControlPoint(coordinates_new);
 }
 
+ControlPoint operator/(ControlPoint const &control_point, double scalar) {
+  std::vector<double> coordinates_new(control_point.GetDimensionality());
+  std::transform(control_point.coordinates_.begin(), control_point.coordinates_.end(), coordinates_new.begin(),
+                 std::bind(std::divides<>(), std::placeholders::_1, scalar));
+  return ControlPoint(coordinates_new);
+}
+
 bool operator==(ControlPoint const &lhs, ControlPoint const &rhs) {
   if (lhs.GetDimensionality() != rhs.GetDimensionality()) return false;
   for (Dimension current_dimension{0}; current_dimension < Dimension{rhs.GetDimensionality()}; ++current_dimension) {

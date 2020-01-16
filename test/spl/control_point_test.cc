@@ -95,6 +95,10 @@ TEST_F(ThreeControlPointsOfDimensionality2And3, Return0_5And0_35AfterMultiplicat
   ASSERT_THAT((0.5 * control_point_a_), Eq(spl::ControlPoint({0.5, 0.35})));
 }
 
+TEST_F(ThreeControlPointsOfDimensionality2And3, Return0_5And0_35AfterDivisionOfControlPointByScalarMinus0_5) {  // NOLINT
+  ASSERT_THAT((control_point_a_ / (-0.5)), Eq(spl::ControlPoint({-2, -1.4})));
+}
+
 TEST_F(ThreeControlPointsOfDimensionality2And3, ControlPointBReturnsTwoNormOfSquareRootOf5) {  // NOLINT
   ASSERT_THAT(control_point_b_.ComputeTwoNorm(), DoubleEq(sqrt(5.0)));
 }
