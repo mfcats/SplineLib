@@ -68,7 +68,7 @@ class BSpline : public Spline<PARAMETRIC_DIMENSIONALITY> {
       util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> handler(this->GetNumberOfPointsPerDirection());
       --handler;
       handler.SetCurrentIndexForDimension(index_point_slice_to_adjust, Dimension{dimension});
-      for (int i = handler.GetLengthForCollapsedDimension(Dimension{dimension}) - 1; i >= 0;
+      for (int i = handler.GetNumberOfMultiIndicesForCollapsedDimension(Dimension{dimension}) - 1; i >= 0;
            --i, handler.SubtractWithConstantDimension(Dimension{dimension})) {
         int current_upper_point_index = handler.GetCurrent1DIndex();
         int current_lower_point_index = handler.GetCurrent1DIndex() - handler.GetCurrentSliceSize(Dimension{dimension});

@@ -56,22 +56,8 @@ class MultiIndexHandler {
   MultiIndexHandler & operator+(int count);
   // Jumps count multi-index values backwards.
   MultiIndexHandler & operator-(int count);
-  void SubtractWithConstantDimension(Dimension const &dimension) {
-    MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> multi_index_handler_without_constant_dimension =
-        GetMultiIndexHandlerWithCollapsedDimension(dimension);
-    --multi_index_handler_without_constant_dimension;
-    std::array<int, PARAMETRIC_DIMENSIONALITY - 1> multi_index = multi_index_handler_without_constant_dimension.GetCurrentIndex();
-    for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY};
-         ++current_dimension) {
-      int &current_index = GetValue(current_multi_index_value_, current_dimension);
-      if (current_dimension < dimension) {
-        current_index = GetValue(multi_index, current_dimension);
-      } else if (current_dimension > dimension) {
-        Dimension const lower_dimension = (current_dimension - Dimension{1});
-        current_index = GetValue(multi_index, lower_dimension);
-      }
-    }
-  }
+  // Jumps one multi-index value backwards discounting the given dimension.
+  void SubtractWithConstantDimension(Dimension const &dimension);
   bool operator==(const MultiIndexHandler &rhs) const;
   bool operator!=(const MultiIndexHandler &rhs) const;
 
@@ -85,9 +71,7 @@ class MultiIndexHandler {
   int Get1DIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) const;
   void SetCurrentIndex(std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index);
   void SetCurrentIndex(int index_1d);
-  void SetCurrentIndexForDimension(int value, Dimension const &dimension) {
-    GetValue(current_multi_index_value_, dimension) = value;
-  }
+  void SetCurrentIndexForDimension(int value, Dimension const &dimension);
 
   // Returns array which contains how often each dimension of the multi-index can still be increased before overflowing.
   std::array<int, PARAMETRIC_DIMENSIONALITY> GetComplementaryIndex() const;
@@ -95,48 +79,19 @@ class MultiIndexHandler {
   int GetNumberOfTotalMultiIndices() const;
   // Returns 1DIndex for projection of current multi-index onto tensor-product array without given dimension.
   int CollapseDimension(Dimension const &dimension) const;
-  int GetLengthForCollapsedDimension(Dimension const &dimension) const {
-    if (PARAMETRIC_DIMENSIONALITY == 0 || (PARAMETRIC_DIMENSIONALITY == 1 && dimension.Get() == 0)) return PARAMETRIC_DIMENSIONALITY;
-    MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> multi_index_handler_with_collapsed_dimension =
-        GetMultiIndexHandlerWithCollapsedDimension(dimension);
-    return multi_index_handler_with_collapsed_dimension.GetNumberOfTotalMultiIndices();
-  }
-  int GetCurrentSliceSize(Dimension const &maximum_dimension) const {
-    return GetCurrentSliceSize(multi_index_length_, maximum_dimension);
-  }
-  int GetCurrentSliceComplementFill(Dimension const &maximum_dimension) const {
-    int current_slice_fill = 0;
-    for (Dimension current_dimension{0}; current_dimension < maximum_dimension; ++current_dimension) {
-      int const current_slice_size = GetCurrentSliceSize(current_dimension);
-      current_slice_fill += (GetValue(GetComplementaryIndex(), current_dimension) * current_slice_size);
-    }
-    return current_slice_fill;
-  }
+  int GetNumberOfMultiIndicesForCollapsedDimension(Dimension const &dimension) const;
+
+  // Counts difference in 1DIndex if the multi-index value of given maximum_dimension is increased by one.
+  int GetCurrentSliceSize(Dimension const &maximum_dimension) const;
+  // Counts difference in 1DIndex until the multi-index value of given maximum_dimension is increased by one.
+  int GetCurrentSliceComplementFill(Dimension const &maximum_dimension) const;
 
  private:
-  // Counts difference in 1DIndex if the multi-index value of given maximum_dimension is increased by one.
   static int GetCurrentSliceSize(std::array<int, PARAMETRIC_DIMENSIONALITY> const &length,
                                  Dimension const &maximum_dimension);
 
-  MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> GetMultiIndexHandlerWithCollapsedDimension(Dimension const & dimension) const {
-    std::array<int, PARAMETRIC_DIMENSIONALITY - 1> multi_index{}, length{};
-    for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY - 1};
-         ++current_dimension) {
-      int &current_index = GetValue(multi_index, current_dimension);
-      int &current_length = GetValue(length, current_dimension);
-      if (current_dimension < dimension) {
-        current_index = GetValue(current_multi_index_value_, current_dimension);
-        current_length = GetValue(multi_index_length_, current_dimension);
-      } else if (current_dimension >= dimension) {
-        Dimension const next_dimension = (current_dimension + Dimension{1});
-        current_index = GetValue(current_multi_index_value_, next_dimension);
-        current_length = GetValue(multi_index_length_, next_dimension);
-      }
-    }
-    MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> multi_index_handler_with_collapsed_dimension(length);
-    multi_index_handler_with_collapsed_dimension.SetCurrentIndex(multi_index);
-    return multi_index_handler_with_collapsed_dimension;
-  }
+  MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1>
+  GetMultiIndexHandlerWithCollapsedDimension(Dimension const & dimension) const;
 
   bool overflowed_{};
   std::array<int, PARAMETRIC_DIMENSIONALITY> multi_index_length_{};

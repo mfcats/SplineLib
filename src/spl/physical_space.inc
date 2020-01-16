@@ -203,11 +203,6 @@ bool PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::AreEqual(PhysicalSpace<PARAMETRIC
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::IncrementNumberOfPoints(Dimension dimension) {
-  ++GetValue(number_of_points_per_dimension_, dimension);
-}
-
-template<int PARAMETRIC_DIMENSIONALITY>
 void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DecrementNumberOfPoints(Dimension dimension) {
   --GetValue(number_of_points_per_dimension_, dimension);
 }
@@ -234,10 +229,10 @@ void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DoubleControlPointSlice(Dimension
   util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> handler(number_of_points_per_dimension_);
   --handler;
   handler.SetCurrentIndexForDimension(index, dimension);
-  for (int i = handler.GetLengthForCollapsedDimension(dimension) - 1; i >= 0;
+  for (int i = handler.GetNumberOfMultiIndicesForCollapsedDimension(dimension) - 1; i >= 0;
        --i, handler.SubtractWithConstantDimension(dimension)) {
     for (Dimension current_dimension{0}; current_dimension < Dimension{dimensionality_}; ++current_dimension) {
-      auto position = (handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(dimension) + 1) *
+      auto position = (handler.GetCurrent1DIndex() + handler.GetCurrentSliceComplementFill(dimension)) *
           dimensionality_ + current_dimension.Get();
       double new_value = GetValue(control_points_,
                                   handler.GetCurrent1DIndex() * dimensionality_ + current_dimension.Get());
@@ -245,7 +240,7 @@ void PhysicalSpace<PARAMETRIC_DIMENSIONALITY>::DoubleControlPointSlice(Dimension
     }
   }
   ++GetValue(number_of_points_per_dimension_, dimension);
-  total_number_of_points_ += handler.GetLengthForCollapsedDimension(dimension);
+  total_number_of_points_ += handler.GetNumberOfMultiIndicesForCollapsedDimension(dimension);
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>

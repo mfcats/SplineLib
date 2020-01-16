@@ -99,6 +99,25 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIME
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
+void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SubtractWithConstantDimension(Dimension const &dimension) {
+  MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> multi_index_handler_without_constant_dimension =
+      GetMultiIndexHandlerWithCollapsedDimension(dimension);
+  --multi_index_handler_without_constant_dimension;
+  std::array<int, PARAMETRIC_DIMENSIONALITY - 1> multi_index =
+      multi_index_handler_without_constant_dimension.GetCurrentIndex();
+  for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY};
+       ++current_dimension) {
+    int &current_index = GetValue(current_multi_index_value_, current_dimension);
+    if (current_dimension < dimension) {
+      current_index = GetValue(multi_index, current_dimension);
+    } else if (current_dimension > dimension) {
+      Dimension const lower_dimension = (current_dimension - Dimension{1});
+      current_index = GetValue(multi_index, lower_dimension);
+    }
+  }
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
 bool MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::operator==(const MultiIndexHandler &rhs) const {
   return this->overflowed_ == rhs.overflowed_ && this->multi_index_length_ == rhs.multi_index_length_ &&
       this->current_multi_index_value_ == rhs.current_multi_index_value_;
@@ -156,23 +175,19 @@ template<int PARAMETRIC_DIMENSIONALITY>
 inline void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndex(
     std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) {
   for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY}; ++current_dimension) {
-    if (GetValue(multi_index, current_dimension) < 0)
+    if (GetValue(multi_index, current_dimension) < 0 ||
+        GetValue(multi_index, current_dimension) >= GetValue(multi_index_length_, current_dimension))
       throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::SetCurrentIndex: All indices have to be "
-                                  "non-negative.");
-    if (GetValue(multi_index, current_dimension) >= GetValue(multi_index_length_, current_dimension))
-      throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::SetCurrentIndex: Each index has to be "
-                                  "smaller than the given corresponding maximum index.");
+                                  "non-negative and smaller than the given corresponding maximum index.");
   }
   current_multi_index_value_ = multi_index;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
 void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndex(int index_1d) {
-  if (index_1d < 0) throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::SetCurrentIndex: The 1D "
-                                                "index has to be non-negative.");
-  if (index_1d >= GetNumberOfTotalMultiIndices())
+  if (index_1d < 0 || index_1d >= GetNumberOfTotalMultiIndices())
     throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::SetCurrentIndex: The 1D index has to be "
-                                "smaller than the number of possible multi-indices.");
+                                "non-negative and smaller than the number of possible multi-indices.");
   for (Dimension current_dimension{PARAMETRIC_DIMENSIONALITY - 1}; current_dimension >= Dimension{0};
        --current_dimension) {
     int const current_slice_size = GetCurrentSliceSize(multi_index_length_, current_dimension);
@@ -180,6 +195,17 @@ void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndex(int index_1d)
     current_value = static_cast<int>(index_1d / current_slice_size);
     index_1d -= (current_value * current_slice_size);
   }
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndexForDimension(int value, Dimension const &dimension) {
+  if (dimension >= Dimension{PARAMETRIC_DIMENSIONALITY} || dimension < Dimension{0})
+    throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::SetCurrentIndexForDimension: The given "
+                                "dimension has to be between 0 and (PARAMETRIC_DIMENSIONALITY - 1).");
+  if (value < 0 || value >= GetValue(multi_index_length_, dimension))
+    throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::SetCurrentIndexForDimension: The index has "
+                                "to be non-negative and smaller than the multi-index length in the given dimension.");
+  GetValue(current_multi_index_value_, dimension) = value;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
@@ -201,6 +227,51 @@ std::array<int, PARAMETRIC_DIMENSIONALITY> MultiIndexHandler<PARAMETRIC_DIMENSIO
 
 template<int PARAMETRIC_DIMENSIONALITY>
 int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::CollapseDimension(Dimension const &dimension) const {
+  MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> multi_index_handler_with_collapsed_dimension =
+      GetMultiIndexHandlerWithCollapsedDimension(dimension);
+  return multi_index_handler_with_collapsed_dimension.GetCurrent1DIndex();
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::GetNumberOfMultiIndicesForCollapsedDimension(
+    Dimension const &dimension) const {
+  if (PARAMETRIC_DIMENSIONALITY == 0 || (PARAMETRIC_DIMENSIONALITY == 1 && dimension.Get() == 0))
+    return PARAMETRIC_DIMENSIONALITY;
+  MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> multi_index_handler_with_collapsed_dimension =
+      GetMultiIndexHandlerWithCollapsedDimension(dimension);
+  return multi_index_handler_with_collapsed_dimension.GetNumberOfTotalMultiIndices();
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::GetCurrentSliceSize(Dimension const &maximum_dimension) const {
+  return GetCurrentSliceSize(multi_index_length_, maximum_dimension);
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::GetCurrentSliceComplementFill(
+    Dimension const &maximum_dimension) const {
+  int current_slice_fill = 1;
+  for (Dimension current_dimension{0}; current_dimension < maximum_dimension; ++current_dimension) {
+    int const current_slice_size = GetCurrentSliceSize(current_dimension);
+    current_slice_fill += (GetValue(GetComplementaryIndex(), current_dimension) * current_slice_size);
+  }
+  return current_slice_fill;
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::GetCurrentSliceSize(
+    std::array<int, PARAMETRIC_DIMENSIONALITY> const &length, Dimension const &maximum_dimension) {
+  int current_slice_size = 1;
+  for (Dimension dimension{0}; dimension < maximum_dimension; ++dimension) {
+    current_slice_size *= GetValue(length, dimension);
+  }
+  return current_slice_size;
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1>
+    MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::GetMultiIndexHandlerWithCollapsedDimension(
+        Dimension const &dimension) const {
   std::array<int, PARAMETRIC_DIMENSIONALITY - 1> multi_index{}, length{};
   for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY - 1};
        ++current_dimension) {
@@ -215,15 +286,7 @@ int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::CollapseDimension(Dimension co
       current_length = GetValue(multi_index_length_, next_dimension);
     }
   }
-  return MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1>::Get1DIndex(length, multi_index);
-}
-
-template<int PARAMETRIC_DIMENSIONALITY>
-int MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::GetCurrentSliceSize(
-    std::array<int, PARAMETRIC_DIMENSIONALITY> const &length, Dimension const &maximum_dimension) {
-  int current_slice_size = 1;
-  for (Dimension dimension{0}; dimension < maximum_dimension; ++dimension) {
-    current_slice_size *= GetValue(length, dimension);
-  }
-  return current_slice_size;
+  MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> multi_index_handler_with_collapsed_dimension(length);
+  multi_index_handler_with_collapsed_dimension.SetCurrentIndex(multi_index);
+  return multi_index_handler_with_collapsed_dimension;
 }

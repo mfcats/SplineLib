@@ -64,7 +64,6 @@ class PhysicalSpace {
                 Tolerance const &tolerance = Tolerance{util::numeric_settings::GetEpsilon<double>()}) const;
 
   // TODO(all): The following methods should become protected.
-  void IncrementNumberOfPoints(Dimension dimension);
   void DecrementNumberOfPoints(Dimension dimension);
 
   // TODO(all): The argument should be a dimension and an index for this dimension.
