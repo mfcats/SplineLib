@@ -72,7 +72,7 @@ void WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::SetWeight(int index_1d, W
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-ControlPoint WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetHomogenousControlPoint(
+ControlPoint WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetHomogeneousControlPoint(
     std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) const {
   std::vector<double> coordinates(this->dimensionality_ + 1, 0.0);
   util::MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> point_handler(this->number_of_points_per_dimension_);
@@ -89,7 +89,7 @@ ControlPoint WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetHomogenousCont
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
-ControlPoint WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetHomogenousControlPoint(int index_1d) const {
+ControlPoint WeightedPhysicalSpace<PARAMETRIC_DIMENSIONALITY>::GetHomogeneousControlPoint(int index_1d) const {
   std::vector<double> coordinates(this->dimensionality_ + 1, 0.0);
   int index_first_coordinate = this->dimensionality_ * index_1d;
   double const weight = GetValue(weights_, index_1d).Get();

@@ -100,21 +100,10 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIME
 
 template<int PARAMETRIC_DIMENSIONALITY>
 void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SubtractWithConstantDimension(Dimension const &dimension) {
+  ThrowIfDimensionInvalid();
   MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> multi_index_handler_without_constant_dimension =
       GetMultiIndexHandlerWithCollapsedDimension(dimension);
-  --multi_index_handler_without_constant_dimension;
-  std::array<int, PARAMETRIC_DIMENSIONALITY - 1> multi_index =
-      multi_index_handler_without_constant_dimension.GetCurrentIndex();
-  for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY};
-       ++current_dimension) {
-    int &current_index = GetValue(current_multi_index_value_, current_dimension);
-    if (current_dimension < dimension) {
-      current_index = GetValue(multi_index, current_dimension);
-    } else if (current_dimension > dimension) {
-      Dimension const lower_dimension = (current_dimension - Dimension{1});
-      current_index = GetValue(multi_index, lower_dimension);
-    }
-  }
+  BackslideCollapsedDimension(--multi_index_handler_without_constant_dimension, dimension);
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
@@ -175,19 +164,14 @@ template<int PARAMETRIC_DIMENSIONALITY>
 inline void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndex(
     std::array<int, PARAMETRIC_DIMENSIONALITY> const &multi_index) {
   for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY}; ++current_dimension) {
-    if (GetValue(multi_index, current_dimension) < 0 ||
-        GetValue(multi_index, current_dimension) >= GetValue(multi_index_length_, current_dimension))
-      throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::SetCurrentIndex: All indices have to be "
-                                  "non-negative and smaller than the given corresponding maximum index.");
+    ThrowIfIndexInvalid(GetValue(multi_index, current_dimension), current_dimension);
   }
   current_multi_index_value_ = multi_index;
 }
 
 template<int PARAMETRIC_DIMENSIONALITY>
 void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndex(int index_1d) {
-  if (index_1d < 0 || index_1d >= GetNumberOfTotalMultiIndices())
-    throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::SetCurrentIndex: The 1D index has to be "
-                                "non-negative and smaller than the number of possible multi-indices.");
+  ThrowIf1DIndexInvalid(index_1d);
   for (Dimension current_dimension{PARAMETRIC_DIMENSIONALITY - 1}; current_dimension >= Dimension{0};
        --current_dimension) {
     int const current_slice_size = GetCurrentSliceSize(multi_index_length_, current_dimension);
@@ -199,12 +183,8 @@ void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndex(int index_1d)
 
 template<int PARAMETRIC_DIMENSIONALITY>
 void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndexForDimension(int value, Dimension const &dimension) {
-  if (dimension >= Dimension{PARAMETRIC_DIMENSIONALITY} || dimension < Dimension{0})
-    throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::SetCurrentIndexForDimension: The given "
-                                "dimension has to be between 0 and (PARAMETRIC_DIMENSIONALITY - 1).");
-  if (value < 0 || value >= GetValue(multi_index_length_, dimension))
-    throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::SetCurrentIndexForDimension: The index has "
-                                "to be non-negative and smaller than the multi-index length in the given dimension.");
+  ThrowIfDimensionInvalid();
+  ThrowIfIndexInvalid();
   GetValue(current_multi_index_value_, dimension) = value;
 }
 
@@ -289,4 +269,43 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1>
   MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> multi_index_handler_with_collapsed_dimension(length);
   multi_index_handler_with_collapsed_dimension.SetCurrentIndex(multi_index);
   return multi_index_handler_with_collapsed_dimension;
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::BackslideCollapsedDimension(
+    MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> const &multi_index_handler_without_constant_dimension,
+    Dimension const &dimension) {
+  std::array<int, PARAMETRIC_DIMENSIONALITY - 1> multi_index =
+      multi_index_handler_without_constant_dimension.GetCurrentIndex();
+  for (Dimension current_dimension{0}; current_dimension < Dimension{PARAMETRIC_DIMENSIONALITY};
+       ++current_dimension) {
+    int &current_index = GetValue(current_multi_index_value_, current_dimension);
+    if (current_dimension < dimension) {
+      current_index = GetValue(multi_index, current_dimension);
+    } else if (current_dimension > dimension) {
+      Dimension const lower_dimension = (current_dimension - Dimension{1});
+      current_index = GetValue(multi_index, lower_dimension);
+    }
+  }
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::ThrowIfDimensionInvalid(Dimension const &dimension) const {
+  if (dimension < Dimension{0} || dimension >= Dimension{PARAMETRIC_DIMENSIONALITY})
+    throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::ThrowIfDimensionInvalid: The given dimension "
+                                "has to be between 0 and (PARAMETRIC_DIMENSIONALITY - 1).");
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::ThrowIfIndexInvalid(int index, Dimension const &dimension) const {
+  if (index < 0 || index >= GetValue(multi_index_length_, dimension))
+    throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::ThrowIfIndexInvalid: The index has to "
+                                "be non-negative and smaller than the multi-index length in the given dimension.");
+}
+
+template<int PARAMETRIC_DIMENSIONALITY>
+void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::ThrowIf1DIndexInvalid(int index_1d) const {
+  if (index_1d < 0 || index_1d >= GetNumberOfTotalMultiIndices())
+    throw std::invalid_argument("splinelib::src::util::MultiIndexHandler::ThrowIf1DIndexInvalid: The 1D index has "
+                                "to be non-negative and smaller than the number of possible multi-indices.");
 }

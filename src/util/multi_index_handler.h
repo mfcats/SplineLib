@@ -92,6 +92,13 @@ class MultiIndexHandler {
 
   MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1>
   GetMultiIndexHandlerWithCollapsedDimension(Dimension const & dimension) const;
+  void BackslideCollapsedDimension(
+      MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> const &multi_index_handler_without_constant_dimension,
+      Dimension const &dimension);
+
+  void ThrowIfDimensionInvalid(Dimension const &dimension) const;
+  void ThrowIfIndexInvalid(int index, Dimension const &dimension) const;
+  void ThrowIf1DIndexInvalid(int index_1d) const;
 
   bool overflowed_{};
   std::array<int, PARAMETRIC_DIMENSIONALITY> multi_index_length_{};

@@ -70,7 +70,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
   }
 
   double GetHomogeneousControlPoint(std::array<int, PARAMETRIC_DIMENSIONALITY> indices, int dimension) const {
-    return physical_space_->GetHomogenousControlPoint(indices)[Dimension{dimension}];
+    return physical_space_->GetHomogeneousControlPoint(indices)[Dimension{dimension}];
   }
 
   void AdjustControlPoints(std::vector<double> scaling, int first, int last, int dimension) override {
@@ -85,8 +85,8 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
         int current_lower_point_index = handler.GetCurrent1DIndex() - handler.GetCurrentSliceSize(Dimension{dimension});
         double current_scaling = scaling[index_point_slice_to_adjust - first];
         auto new_control_point =
-            ((1 - current_scaling) * physical_space_->GetHomogenousControlPoint(current_lower_point_index) +
-            current_scaling * physical_space_->GetHomogenousControlPoint(current_upper_point_index));
+            ((1 - current_scaling) * physical_space_->GetHomogeneousControlPoint(current_lower_point_index) +
+            current_scaling * physical_space_->GetHomogeneousControlPoint(current_upper_point_index));
         physical_space_->SetHomogeneousControlPoint(handler.GetCurrentIndex(), new_control_point);
       }
     }
@@ -144,10 +144,10 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
                                   int dimension) const override {
     if (this->GetPointDim() == dimension) {
       return this->parameter_space_->GetBasisFunctions(indices, param_coord)
-          * physical_space_->GetHomogenousControlPoint(indices)[Dimension{dimension}];
+          * physical_space_->GetHomogeneousControlPoint(indices)[Dimension{dimension}];
     }
     return this->parameter_space_->GetBasisFunctions(indices, param_coord)
-        * physical_space_->GetHomogenousControlPoint(indices)[Dimension{dimension}]
+        * physical_space_->GetHomogeneousControlPoint(indices)[Dimension{dimension}]
         / GetEvaluatedWeightSum(param_coord);
   }
 
@@ -396,7 +396,7 @@ class NURBS : public Spline<PARAMETRIC_DIMENSIONALITY> {
         auto indices = point_handler.GetCurrentIndex();
         indices[dimension] = i;
         for (int k = 0; k < this->GetPointDim(); ++k) {
-          temp1[k] = physical_space_->GetHomogenousControlPoint(indices)[Dimension{k}];
+          temp1[k] = physical_space_->GetHomogeneousControlPoint(indices)[Dimension{k}];
           temp2[k] = alfi * temp[offset + (i - off + 1) * this->GetPointDim() + k] * temp_w[w_offset + i - off + 1]
               + (1 - alfi) * temp[offset + (i - off - 1) * this->GetPointDim() + k] * temp_w[w_offset + i - off - 1];
         }

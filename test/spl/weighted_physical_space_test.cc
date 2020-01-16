@@ -53,30 +53,30 @@ TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectMinimumWeight) {  // NOLINT
   ASSERT_THAT(weighted_physical_space.GetMinimumWeight(), DoubleEq(0.5));
 }
 
-TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPoint) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectFirstHomogeneousControlPoint) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 1>{0})[Dimension{0}], DoubleEq(0.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 1>{0})[Dimension{1}], DoubleEq(0.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 1>{0})[Dimension{2}], DoubleEq(0.5));
 }
 
-TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectInnerHomogenousControlPoint) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectInnerHomogeneousControlPoint) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 1>{2})[Dimension{0}], DoubleEq(2.4));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 1>{2})[Dimension{1}], DoubleEq(1.6));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 1>{2})[Dimension{2}], DoubleEq(0.8));
 }
 
-TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPoint) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+TEST_F(A1DWeightedPhysicalSpace, ReturnsCorrectLastHomogeneousControlPoint) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 1>{4})[Dimension{0}], DoubleEq(6.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 1>{4})[Dimension{1}], DoubleEq(-1.2));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 1>{4})[Dimension{2}], DoubleEq(1.2));
 }
 
@@ -166,49 +166,49 @@ TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectMinimumWeight) {  // NOLINT
   ASSERT_THAT(weighted_physical_space.GetMinimumWeight(), DoubleEq(0.5));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPointFor2DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstHomogeneousControlPointFor2DIndex) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 2>{0, 0})[Dimension{0}], DoubleEq(0.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 2>{0, 0})[Dimension{1}], DoubleEq(0.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 2>{0, 0})[Dimension{2}], DoubleEq(0.5));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerHomogenousControlPointFor2DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerHomogeneousControlPointFor2DIndex) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 2>{1, 1})[Dimension{0}], DoubleEq(1.8));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 2>{1, 1})[Dimension{1}], DoubleEq(3.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 2>{1, 1})[Dimension{2}], DoubleEq(1.2));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPointFor2DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastHomogeneousControlPointFor2DIndex) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 2>{2, 1})[Dimension{0}], DoubleEq(19.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 2>{2, 1})[Dimension{1}], DoubleEq(3.8));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(
       std::array<int, 2>{2, 1})[Dimension{2}], DoubleEq(3.8));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstHomogenousControlPointFor1DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(0)[Dimension{0}], DoubleEq(0.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(0)[Dimension{1}], DoubleEq(0.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(0)[Dimension{2}], DoubleEq(0.5));
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectFirstHomogeneousControlPointFor1DIndex) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(0)[Dimension{0}], DoubleEq(0.0));
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(0)[Dimension{1}], DoubleEq(0.0));
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(0)[Dimension{2}], DoubleEq(0.5));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerHomogenousControlPointFor1DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(4)[Dimension{0}], DoubleEq(1.8));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(4)[Dimension{1}], DoubleEq(3.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(4)[Dimension{2}], DoubleEq(1.2));
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectInnerHomogeneousControlPointFor1DIndex) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(4)[Dimension{0}], DoubleEq(1.8));
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(4)[Dimension{1}], DoubleEq(3.0));
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(4)[Dimension{2}], DoubleEq(1.2));
 }
 
-TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastHomogenousControlPointFor1DIndex) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(5)[Dimension{0}], DoubleEq(19.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(5)[Dimension{1}], DoubleEq(3.8));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(5)[Dimension{2}], DoubleEq(3.8));
+TEST_F(A2DWeightedPhysicalSpace, ReturnsCorrectLastHomogeneousControlPointFor1DIndex) {  // NOLINT
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(5)[Dimension{0}], DoubleEq(19.0));
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(5)[Dimension{1}], DoubleEq(3.8));
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(5)[Dimension{2}], DoubleEq(3.8));
 }
 
 TEST_F(A2DWeightedPhysicalSpace, AddsAndSetsNewControlPoint) {  // NOLINT
@@ -270,7 +270,7 @@ class A1DWeightedPhysicalSpace_a : public Test {
 };
 
 TEST_F(A1DWeightedPhysicalSpace_a, ReturnsHomogeneousControlPoint) {  // NOLINT
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(1)[Dimension{0}], DoubleEq(4.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(1)[Dimension{1}], DoubleEq(4.0));
-  ASSERT_THAT(weighted_physical_space.GetHomogenousControlPoint(1)[Dimension{2}], DoubleEq(4.0));
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(1)[Dimension{0}], DoubleEq(4.0));
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(1)[Dimension{1}], DoubleEq(4.0));
+  ASSERT_THAT(weighted_physical_space.GetHomogeneousControlPoint(1)[Dimension{2}], DoubleEq(4.0));
 }
