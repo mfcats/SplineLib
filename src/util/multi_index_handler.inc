@@ -100,7 +100,7 @@ MultiIndexHandler<PARAMETRIC_DIMENSIONALITY> & MultiIndexHandler<PARAMETRIC_DIME
 
 template<int PARAMETRIC_DIMENSIONALITY>
 void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SubtractWithConstantDimension(Dimension const &dimension) {
-  ThrowIfDimensionInvalid();
+  ThrowIfDimensionInvalid(dimension);
   MultiIndexHandler<PARAMETRIC_DIMENSIONALITY - 1> multi_index_handler_without_constant_dimension =
       GetMultiIndexHandlerWithCollapsedDimension(dimension);
   BackslideCollapsedDimension(--multi_index_handler_without_constant_dimension, dimension);
@@ -183,8 +183,8 @@ void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndex(int index_1d)
 
 template<int PARAMETRIC_DIMENSIONALITY>
 void MultiIndexHandler<PARAMETRIC_DIMENSIONALITY>::SetCurrentIndexForDimension(int value, Dimension const &dimension) {
-  ThrowIfDimensionInvalid();
-  ThrowIfIndexInvalid();
+  ThrowIfDimensionInvalid(dimension);
+  ThrowIfIndexInvalid(value, dimension);
   GetValue(current_multi_index_value_, dimension) = value;
 }
 
