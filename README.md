@@ -1,3 +1,5 @@
+**This repository is no longer maintained. The work is continued under https://github.com/SplineLib/SplineLib.**
+
 # SplineLib
 Library for spline manipulation.
 
